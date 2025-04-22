@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 
+// Extended Node interface with d3 simulation properties
 interface Node extends d3.SimulationNodeDatum {
   id: string;
   group: number;
@@ -13,6 +14,7 @@ interface Node extends d3.SimulationNodeDatum {
   fy?: number | null;
 }
 
+// Extended Link interface for the simulation
 interface Link extends d3.SimulationLinkDatum<Node> {
   source: string | Node;
   target: string | Node;
@@ -88,7 +90,7 @@ const NetworkVisualization: React.FC = () => {
       )
       .force("charge", d3.forceManyBody().strength(-200))
       .force("center", d3.forceCenter(width / 2, height / 2))
-      .force("collision", d3.forceCollide().radius(d => (d.size || 10) + 10));
+      .force("collision", d3.forceCollide().radius(d => (d as Node).size + 10));
     
     // Color scale for different agent groups
     const color = d3.scaleOrdinal<string>()
