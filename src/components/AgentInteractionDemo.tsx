@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/hooks/use-toast";
 
 interface Message {
   role: string;
@@ -62,10 +64,11 @@ const AgentInteractionDemo: React.FC = () => {
     }]);
     
     // Clear input
+    const currentInput = userInput;
     setUserInput("");
     
     // Start processing
-    simulateAgentInteraction(userInput);
+    simulateAgentInteraction(currentInput);
   };
 
   const simulateAgentInteraction = async (input: string) => {
@@ -81,6 +84,8 @@ const AgentInteractionDemo: React.FC = () => {
       const threadMessages = [
         { role: "user", content: input }
       ];
+      
+      console.log("Sending request to OpenAI Agent:", OPENAI_ASSISTANT_ID);
       const resp = await fetch(
         `https://qeqfbywgcokyxvubjlhy.supabase.co/functions/v1/custom-agent`,
         {
@@ -92,20 +97,35 @@ const AgentInteractionDemo: React.FC = () => {
           }),
         }
       );
+      
+      if (!resp.ok) {
+        const errorText = await resp.text();
+        throw new Error(`API request failed with status ${resp.status}: ${errorText}`);
+      }
+      
       const data = await resp.json();
+      console.log("Received response:", data);
+      
       if (data.reply) {
-        // Unpack/reformat data as appropriate for reply (you may want different logic if your Assistant API response format is different)
-        const content = typeof data.reply === "string"
-          ? data.reply
-          : data.reply.choices?.[0]?.message?.content || JSON.stringify(data.reply);
-        addAgentMessage("OpenAI Agent", content);
+        addAgentMessage("OpenAI Agent", data.reply);
       } else if (data.error) {
         addAgentMessage("OpenAI Agent", "There was an error fetching a reply: " + data.error);
+        toast({
+          title: "Error",
+          description: data.error,
+          variant: "destructive"
+        });
       } else {
         addAgentMessage("OpenAI Agent", "No response received from agent.");
       }
     } catch (err: any) {
+      console.error("Error communicating with agent:", err);
       addAgentMessage("OpenAI Agent", "Error: " + err.message);
+      toast({
+        title: "Connection Error",
+        description: "Failed to connect to the OpenAI Agent. Please check your API key and try again.",
+        variant: "destructive"
+      });
     }
 
     setIsProcessing(false);
