@@ -1,13 +1,12 @@
-
 import { useEffect } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
 import FeatureCard from "@/components/FeatureCard";
 import AgentInteractionDemo from "@/components/AgentInteractionDemo";
 import ContactSection from "@/components/ContactSection";
+import PartnerToolsSection from "@/components/PartnerToolsSection";
 import { features } from "@/data/featureData";
 import { Button } from "@/components/ui/button";
-import { Database, Layers, Code, Users } from "lucide-react";
 
 const Index = () => {
   useEffect(() => {
@@ -30,6 +29,7 @@ const Index = () => {
             <a href="#features" className="text-sm font-medium hover:text-agent-purple transition-colors">Features</a>
             <a href="#showcase" className="text-sm font-medium hover:text-agent-purple transition-colors">Showcase</a>
             <a href="#demo" className="text-sm font-medium hover:text-agent-purple transition-colors">Demo</a>
+            <a href="#partners" className="text-sm font-medium hover:text-agent-purple transition-colors">Partners</a>
             <a href="#contact" className="text-sm font-medium hover:text-agent-purple transition-colors">Contact</a>
           </nav>
           <Button className="bg-gradient-to-r from-agent-blue to-agent-purple hover:from-agent-purple hover:to-agent-blue transition-all duration-300">
@@ -87,6 +87,11 @@ const Index = () => {
           
           <AgentInteractionDemo />
         </div>
+      </section>
+      
+      {/* Partner Tools Section */}
+      <section id="partners">
+        <PartnerToolsSection />
       </section>
       
       {/* Contact Section */}
