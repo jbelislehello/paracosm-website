@@ -3,8 +3,8 @@ import React from "react";
 
 export interface Agent {
   name: string;
-  role: string;
   color: string;
+  description: string;  // Adding the description property to the interface
   thinking?: boolean;
 }
 
