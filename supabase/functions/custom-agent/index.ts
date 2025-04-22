@@ -35,6 +35,7 @@ serve(async (req) => {
         headers: {
           Authorization: `Bearer ${openAIApiKey}`,
           "Content-Type": "application/json",
+          "OpenAI-Beta": "assistants=v2"  // Added required OpenAI-Beta header
         },
         body: JSON.stringify({
           messages: messages.map(msg => ({
@@ -63,6 +64,7 @@ serve(async (req) => {
         headers: {
           Authorization: `Bearer ${openAIApiKey}`,
           "Content-Type": "application/json",
+          "OpenAI-Beta": "assistants=v2"  // Added required OpenAI-Beta header
         },
         body: JSON.stringify({
           assistant_id: agent_id
@@ -94,6 +96,7 @@ serve(async (req) => {
           headers: {
             Authorization: `Bearer ${openAIApiKey}`,
             "Content-Type": "application/json",
+            "OpenAI-Beta": "assistants=v2"  // Added required OpenAI-Beta header
           }
         }
       );
@@ -127,6 +130,7 @@ serve(async (req) => {
         headers: {
           Authorization: `Bearer ${openAIApiKey}`,
           "Content-Type": "application/json",
+          "OpenAI-Beta": "assistants=v2"  // Added required OpenAI-Beta header
         }
       }
     );
