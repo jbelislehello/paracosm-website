@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -18,6 +17,8 @@ interface Agent {
   color: string;
   thinking?: boolean;
 }
+
+const OPENAI_ASSISTANT_ID = "<REPLACE_WITH_YOUR_AGENT_ID>"; // Set your OpenAI agent/assistant ID here
 
 const AgentInteractionDemo: React.FC = () => {
   const [userInput, setUserInput] = useState<string>("");
@@ -69,83 +70,44 @@ const AgentInteractionDemo: React.FC = () => {
 
   const simulateAgentInteraction = async (input: string) => {
     setIsProcessing(true);
-    
     // Activate coordinator first
     setActiveAgents([agents[0]]);
-    
-    // Coordinator thinking
     await simulateThinking("Coordinator");
+    addAgentMessage("Coordinator", "I'll send your question directly to our OpenAI Agent for a response...");
     
-    // Coordinator response
-    addAgentMessage("Coordinator", "I'll help coordinate a response to your query. Let me activate the relevant agents.");
-    
-    // Activate researcher
-    setActiveAgents(prev => [...prev, agents[1]]);
-    await simulateThinking("Researcher");
-    
-    addAgentMessage("Researcher", "Gathering relevant information for analysis...");
-    
-    if (input.toLowerCase().includes("agentic") || 
-        input.toLowerCase().includes("ecosystem") || 
-        input.toLowerCase().includes("ai")) {
-      
-      addAgentMessage(
-        "Researcher", 
-        "Based on my analysis, agentic ecosystems represent interconnected AI systems that work together to accomplish complex tasks. They feature specialized agents for processing, knowledge retrieval, and action execution."
+    // Send request to Supabase Edge Function
+    try {
+      // Build message array as OpenAI expects
+      const threadMessages = [
+        { role: "user", content: input }
+      ];
+      const resp = await fetch(
+        `https://qeqfbywgcokyxvubjlhy.supabase.co/functions/v1/custom-agent`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            messages: threadMessages,
+            agent_id: OPENAI_ASSISTANT_ID,
+          }),
+        }
       );
-    } else {
-      addAgentMessage(
-        "Researcher", 
-        "I've analyzed your request and gathered information from multiple sources to provide context and background for your query."
-      );
+      const data = await resp.json();
+      if (data.reply) {
+        // Unpack/reformat data as appropriate for reply (you may want different logic if your Assistant API response format is different)
+        const content = typeof data.reply === "string"
+          ? data.reply
+          : data.reply.choices?.[0]?.message?.content || JSON.stringify(data.reply);
+        addAgentMessage("OpenAI Agent", content);
+      } else if (data.error) {
+        addAgentMessage("OpenAI Agent", "There was an error fetching a reply: " + data.error);
+      } else {
+        addAgentMessage("OpenAI Agent", "No response received from agent.");
+      }
+    } catch (err: any) {
+      addAgentMessage("OpenAI Agent", "Error: " + err.message);
     }
-    
-    // Activate writer
-    setActiveAgents(prev => [...prev, agents[2]]);
-    await simulateThinking("Writer");
-    
-    if (input.toLowerCase().includes("agentic") || 
-        input.toLowerCase().includes("ecosystem") || 
-        input.toLowerCase().includes("ai")) {
-      
-      addAgentMessage(
-        "Writer", 
-        "An agentic ecosystem is a collaborative network of specialized AI agents, each with specific capabilities. When combined, they can handle complex workflows by sharing information and coordinating their efforts. This approach enables more sophisticated problem-solving than any single AI model could achieve alone."
-      );
-    } else {
-      addAgentMessage(
-        "Writer", 
-        "I've formulated a response based on the researcher's findings. Our agentic ecosystem approach allows us to break down complex requests into manageable parts, with each agent contributing its specialized knowledge."
-      );
-    }
-    
-    // Activate validator
-    setActiveAgents(prev => [...prev, agents[3]]);
-    await simulateThinking("Validator");
-    
-    addAgentMessage(
-      "Validator", 
-      "I've verified the information provided by the other agents and confirm its accuracy. The response has been validated for correctness and relevance to your query."
-    );
-    
-    // Final coordinator response
-    await simulateThinking("Coordinator");
-    
-    if (input.toLowerCase().includes("agentic") || 
-        input.toLowerCase().includes("ecosystem") || 
-        input.toLowerCase().includes("ai")) {
-      
-      addAgentMessage(
-        "Coordinator", 
-        "Here's your comprehensive answer about agentic ecosystems. As you've seen, our agents work together by sharing context and building on each other's outputs. This is just a simplified demo - in a full implementation, agents would have access to tools, databases, and APIs to provide more detailed and accurate responses."
-      );
-    } else {
-      addAgentMessage(
-        "Coordinator", 
-        "We've completed processing your request through our agentic ecosystem. This demonstration shows how multiple specialized agents can collaborate to handle complex requests. In a production environment, these agents would have more extensive capabilities including external tool use and deeper domain knowledge."
-      );
-    }
-    
+
     setIsProcessing(false);
     setActiveAgents([]);
   };
