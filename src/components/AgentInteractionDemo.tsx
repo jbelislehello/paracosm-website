@@ -18,7 +18,7 @@ interface Agent {
   thinking?: boolean;
 }
 
-const OPENAI_ASSISTANT_ID = "<REPLACE_WITH_YOUR_AGENT_ID>"; // Set your OpenAI agent/assistant ID here
+const OPENAI_ASSISTANT_ID = "asst_LFYl9jFQgXGrTOlcnAaWO4gS"; // Updated with your specific Assistant ID
 
 const AgentInteractionDemo: React.FC = () => {
   const [userInput, setUserInput] = useState<string>("");
