@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 const Index = () => {
   useEffect(() => {
     // Set page title
-    document.title = "AgenticVerse - Build Powerful Agent Ecosystems";
+    document.title = "Paracosm - Explore Interconnected Worlds";
   }, []);
 
   return (
@@ -20,19 +20,19 @@ const Index = () => {
       <header className="fixed w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
         <div className="container flex items-center justify-between py-4">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-agent-blue to-agent-purple rounded-md flex items-center justify-center">
-              <span className="text-white font-bold">A</span>
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-md flex items-center justify-center">
+              <span className="text-white font-bold">P</span>
             </div>
-            <span className="font-bold text-lg">AgenticVerse</span>
+            <span className="font-bold text-lg">Paracosm</span>
           </div>
           <nav className="hidden md:flex gap-6">
-            <a href="#features" className="text-sm font-medium hover:text-agent-purple transition-colors">Features</a>
-            <a href="#showcase" className="text-sm font-medium hover:text-agent-purple transition-colors">Showcase</a>
-            <a href="#demo" className="text-sm font-medium hover:text-agent-purple transition-colors">Demo</a>
-            <a href="#partners" className="text-sm font-medium hover:text-agent-purple transition-colors">Partners</a>
-            <a href="#contact" className="text-sm font-medium hover:text-agent-purple transition-colors">Contact</a>
+            <a href="#features" className="text-sm font-medium hover:text-purple-600 transition-colors">Features</a>
+            <a href="#showcase" className="text-sm font-medium hover:text-purple-600 transition-colors">Showcase</a>
+            <a href="#demo" className="text-sm font-medium hover:text-purple-600 transition-colors">Demo</a>
+            <a href="#partners" className="text-sm font-medium hover:text-purple-600 transition-colors">Partners</a>
+            <a href="#contact" className="text-sm font-medium hover:text-purple-600 transition-colors">Contact</a>
           </nav>
-          <Button className="bg-gradient-to-r from-agent-blue to-agent-purple hover:from-agent-purple hover:to-agent-blue transition-all duration-300">
+          <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300">
             Get Started
           </Button>
         </div>
@@ -103,39 +103,39 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-agent-blue to-agent-purple rounded-md flex items-center justify-center">
-                  <span className="text-white font-bold">A</span>
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-md flex items-center justify-center">
+                  <span className="text-white font-bold">P</span>
                 </div>
-                <span className="font-bold text-lg text-white">AgenticVerse</span>
+                <span className="font-bold text-lg text-white">Paracosm</span>
               </div>
               <p className="text-sm text-slate-400 mb-4">
-                Building the future of interconnected AI systems and agent ecosystems.
+                Exploring interconnected worlds and pushing the boundaries of imagination.
               </p>
             </div>
             
             <div>
               <h3 className="font-semibold text-white mb-4">Resources</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-sm hover:text-agent-purple">Documentation</a></li>
-                <li><a href="#" className="text-sm hover:text-agent-purple">API Reference</a></li>
-                <li><a href="#" className="text-sm hover:text-agent-purple">Examples</a></li>
-                <li><a href="#" className="text-sm hover:text-agent-purple">Blog</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Documentation</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">API Reference</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Examples</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Blog</a></li>
               </ul>
             </div>
             
             <div>
               <h3 className="font-semibold text-white mb-4">Company</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-sm hover:text-agent-purple">About Us</a></li>
-                <li><a href="#" className="text-sm hover:text-agent-purple">Careers</a></li>
-                <li><a href="#" className="text-sm hover:text-agent-purple">Contact Us</a></li>
-                <li><a href="#" className="text-sm hover:text-agent-purple">Legal</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">About Us</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Careers</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Contact Us</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Legal</a></li>
               </ul>
             </div>
           </div>
           
           <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-slate-400">© 2025 AgenticVerse. All rights reserved.</p>
+            <p className="text-sm text-slate-400">© 2025 Paracosm. All rights reserved.</p>
             <div className="flex space-x-4 mt-4 md:mt-0">
               <a href="#" className="text-slate-400 hover:text-white">Twitter</a>
               <a href="#" className="text-slate-400 hover:text-white">GitHub</a>
