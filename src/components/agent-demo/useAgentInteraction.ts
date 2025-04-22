@@ -29,6 +29,7 @@ export default function useAgentInteraction(): UseAgentInteraction {
   ]);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [activeAgents, setActiveAgents] = useState<Agent[]>([]);
+  const [assistantId, setAssistantId] = useState<string>(OPENAI_ASSISTANT_ID);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -62,7 +63,7 @@ export default function useAgentInteraction(): UseAgentInteraction {
       const { data, error } = await supabase.functions.invoke("custom-agent", {
         body: {
           messages: [{ role: "user", content: input }],
-          agent_id: OPENAI_ASSISTANT_ID,
+          agent_id: assistantId,
         },
       });
 
@@ -72,6 +73,12 @@ export default function useAgentInteraction(): UseAgentInteraction {
 
       if (data?.reply) {
         addAgentMessage("OpenAI Agent", data.reply);
+        
+        // Store the assistant_id if it was returned
+        if (data.assistant_id && data.assistant_id !== assistantId) {
+          console.log(`Saving new assistant ID: ${data.assistant_id}`);
+          setAssistantId(data.assistant_id);
+        }
       } else {
         addAgentMessage("OpenAI Agent", "No response received from agent.");
       }

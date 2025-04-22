@@ -18,14 +18,49 @@ serve(async (req) => {
   try {
     const { messages, agent_id } = await req.json();
 
-    if (!agent_id) {
-      throw new Error("Missing OpenAI agent (assistant) ID.");
-    }
     if (!Array.isArray(messages)) {
       throw new Error("Messages must be sent as an array.");
     }
 
-    console.log(`Creating thread with assistant ${agent_id}...`);
+    // If no agent_id is provided or it's empty, create a new assistant
+    let assistantId = agent_id;
+    
+    if (!assistantId) {
+      console.log("No assistant ID provided, creating a new assistant...");
+      
+      // Create a new assistant
+      const assistantResponse = await fetch(
+        "https://api.openai.com/v1/assistants",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${openAIApiKey}`,
+            "Content-Type": "application/json",
+            "OpenAI-Beta": "assistants=v2"
+          },
+          body: JSON.stringify({
+            name: "Paracosm Agent",
+            description: "A helpful AI assistant that specializes in providing information about AI agents and their interactions.",
+            model: "gpt-4o-mini",
+            instructions: "You are a helpful and knowledgeable assistant that specializes in explaining concepts related to AI agents, their interactions, and how they work together. Provide clear, concise, and informative responses. Be friendly and approachable."
+          })
+        }
+      );
+
+      if (!assistantResponse.ok) {
+        const assistantError = await assistantResponse.text();
+        console.error("Assistant creation failed:", assistantError);
+        throw new Error(`Assistant creation failed: ${assistantError}`);
+      }
+
+      const assistant = await assistantResponse.json();
+      assistantId = assistant.id;
+      console.log(`Created new assistant with ID: ${assistantId}`);
+    } else {
+      console.log(`Using provided assistant ID: ${assistantId}`);
+    }
+
+    console.log(`Creating thread with assistant ${assistantId}...`);
     
     // Create a thread with the initial messages
     const threadResponse = await fetch(
@@ -35,7 +70,7 @@ serve(async (req) => {
         headers: {
           Authorization: `Bearer ${openAIApiKey}`,
           "Content-Type": "application/json",
-          "OpenAI-Beta": "assistants=v2"  // Added required OpenAI-Beta header
+          "OpenAI-Beta": "assistants=v2"
         },
         body: JSON.stringify({
           messages: messages.map(msg => ({
@@ -64,10 +99,10 @@ serve(async (req) => {
         headers: {
           Authorization: `Bearer ${openAIApiKey}`,
           "Content-Type": "application/json",
-          "OpenAI-Beta": "assistants=v2"  // Added required OpenAI-Beta header
+          "OpenAI-Beta": "assistants=v2"
         },
         body: JSON.stringify({
-          assistant_id: agent_id
+          assistant_id: assistantId
         })
       }
     );
@@ -96,7 +131,7 @@ serve(async (req) => {
           headers: {
             Authorization: `Bearer ${openAIApiKey}`,
             "Content-Type": "application/json",
-            "OpenAI-Beta": "assistants=v2"  // Added required OpenAI-Beta header
+            "OpenAI-Beta": "assistants=v2"
           }
         }
       );
@@ -130,7 +165,7 @@ serve(async (req) => {
         headers: {
           Authorization: `Bearer ${openAIApiKey}`,
           "Content-Type": "application/json",
-          "OpenAI-Beta": "assistants=v2"  // Added required OpenAI-Beta header
+          "OpenAI-Beta": "assistants=v2"
         }
       }
     );
@@ -157,7 +192,11 @@ serve(async (req) => {
       content = lastAssistantMessage.content[0].text?.value || "";
     }
 
-    return new Response(JSON.stringify({ reply: content }), {
+    // Return both the reply and the assistant ID for future use
+    return new Response(JSON.stringify({ 
+      reply: content,
+      assistant_id: assistantId
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
