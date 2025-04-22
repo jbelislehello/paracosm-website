@@ -2,16 +2,20 @@
 import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 
-interface Node {
+interface Node extends d3.SimulationNodeDatum {
   id: string;
   group: number;
   size: number;
   label: string;
+  x?: number;
+  y?: number;
+  fx?: number | null;
+  fy?: number | null;
 }
 
-interface Link {
-  source: string;
-  target: string;
+interface Link extends d3.SimulationLinkDatum<Node> {
+  source: string | Node;
+  target: string | Node;
   value: number;
 }
 
@@ -75,10 +79,10 @@ const NetworkVisualization: React.FC = () => {
     };
     
     // Create the force simulation
-    const simulation = d3.forceSimulation<Node, Link>()
+    const simulation = d3.forceSimulation<Node>()
       .nodes(data.nodes)
       .force("link", d3.forceLink<Node, Link>()
-          .id(d => (d as Node).id)
+          .id(d => d.id)
           .links(data.links)
           .distance(d => 100 - d.value * 8)
       )
@@ -110,8 +114,12 @@ const NetworkVisualization: React.FC = () => {
       .data(data.links)
       .join("line")
       .attr("stroke", d => {
-        const sourceNode = data.nodes.find(n => n.id === d.source);
-        const targetNode = data.nodes.find(n => n.id === d.target);
+        const sourceNode = typeof d.source === 'string' 
+          ? data.nodes.find(n => n.id === d.source)
+          : d.source as Node;
+        const targetNode = typeof d.target === 'string'
+          ? data.nodes.find(n => n.id === d.target)
+          : d.target as Node;
         return d3.interpolateRgb(
           color(`${sourceNode?.group || 1}`),
           color(`${targetNode?.group || 1}`)
@@ -179,9 +187,14 @@ const NetworkVisualization: React.FC = () => {
       animateDataFlow(link, i);
     });
     
-    function animateDataFlow(link: any, index: number) {
-      const sourceNode = data.nodes.find(n => n.id === link.source);
-      const targetNode = data.nodes.find(n => n.id === link.target);
+    function animateDataFlow(link: Link, index: number) {
+      const sourceNode = typeof link.source === 'string' 
+        ? data.nodes.find(n => n.id === link.source)
+        : link.source as Node;
+      
+      const targetNode = typeof link.target === 'string'
+        ? data.nodes.find(n => n.id === link.target)
+        : link.target as Node;
       
       if (!sourceNode || !targetNode) return;
       
@@ -209,10 +222,22 @@ const NetworkVisualization: React.FC = () => {
     // Update positions on each tick
     simulation.on("tick", () => {
       link
-        .attr("x1", d => (d.source as unknown as Node).x || 0)
-        .attr("y1", d => (d.source as unknown as Node).y || 0)
-        .attr("x2", d => (d.target as unknown as Node).x || 0)
-        .attr("y2", d => (d.target as unknown as Node).y || 0);
+        .attr("x1", d => {
+          const source = typeof d.source === 'string' ? null : d.source;
+          return source?.x || 0;
+        })
+        .attr("y1", d => {
+          const source = typeof d.source === 'string' ? null : d.source;
+          return source?.y || 0;
+        })
+        .attr("x2", d => {
+          const target = typeof d.target === 'string' ? null : d.target;
+          return target?.x || 0;
+        })
+        .attr("y2", d => {
+          const target = typeof d.target === 'string' ? null : d.target;
+          return target?.y || 0;
+        });
       
       node.attr("transform", d => `translate(${d.x || 0},${d.y || 0})`);
     });
