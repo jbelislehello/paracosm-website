@@ -4,6 +4,7 @@ import { toast } from "@/hooks/use-toast";
 import { AGENTS, OPENAI_ASSISTANT_ID } from "./agentConstants";
 import type { Agent } from "./ActiveAgentsDisplay";
 import type { Message } from "./AgentMessageBubble";
+import { supabase } from "@/integrations/supabase/client";
 
 interface UseAgentInteraction {
   userInput: string;
@@ -57,39 +58,25 @@ export default function useAgentInteraction(): UseAgentInteraction {
     addAgentMessage("Coordinator", "I'll send your question directly to our OpenAI Agent for a response...");
 
     try {
-      const threadMessages = [{ role: "user", content: input }];
-      const resp = await fetch(
-        `https://qeqfbywgcokyxvubjlhy.supabase.co/functions/v1/custom-agent`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            messages: threadMessages,
-            agent_id: OPENAI_ASSISTANT_ID,
-          }),
-        }
-      );
+      // Using Supabase Functions SDK to make the call with proper auth
+      const { data, error } = await supabase.functions.invoke("custom-agent", {
+        body: {
+          messages: [{ role: "user", content: input }],
+          agent_id: OPENAI_ASSISTANT_ID,
+        },
+      });
 
-      if (!resp.ok) {
-        const errorText = await resp.text();
-        throw new Error(`API request failed with status ${resp.status}: ${errorText}`);
+      if (error) {
+        throw new Error(`API request failed: ${error.message}`);
       }
 
-      const data = await resp.json();
-
-      if (data.reply) {
+      if (data?.reply) {
         addAgentMessage("OpenAI Agent", data.reply);
-      } else if (data.error) {
-        addAgentMessage("OpenAI Agent", "There was an error fetching a reply: " + data.error);
-        toast({
-          title: "Error",
-          description: data.error,
-          variant: "destructive",
-        });
       } else {
         addAgentMessage("OpenAI Agent", "No response received from agent.");
       }
     } catch (err: any) {
+      console.error("Agent interaction error:", err);
       addAgentMessage("OpenAI Agent", "Error: " + err.message);
       toast({
         title: "Connection Error",
