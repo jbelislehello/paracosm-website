@@ -174,7 +174,7 @@ const NetworkVisualization: React.FC = () => {
     node.selectAll("circle")
       .append("animate")
       .attr("attributeName", "r")
-      .attr("values", d => `${d.size};${d.size + 2};${d.size}`)
+      .attr("values", (d: Node) => `${d.size};${d.size + 2};${d.size}`)
       .attr("dur", d => `${3 + Math.random() * 2}s`)
       .attr("repeatCount", "indefinite");
     
