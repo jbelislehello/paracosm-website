@@ -1,8 +1,9 @@
+
 import { useEffect } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
 import FeatureCard from "@/components/FeatureCard";
-import AgentInteractionDemo from "@/components/AgentInteractionDemo";
+import InnovationJournal from "@/components/InnovationJournal";
 import ContactSection from "@/components/ContactSection";
 import PartnerToolsSection from "@/components/PartnerToolsSection";
 import { features } from "@/data/featureData";
@@ -11,7 +12,7 @@ import { Button } from "@/components/ui/button";
 const Index = () => {
   useEffect(() => {
     // Set page title
-    document.title = "Paracosm - Explore Interconnected Worlds";
+    document.title = "Paracosm - Innovation Journal";
   }, []);
 
   return (
@@ -28,7 +29,7 @@ const Index = () => {
           <nav className="hidden md:flex gap-6">
             <a href="#features" className="text-sm font-medium hover:text-purple-600 transition-colors">Features</a>
             <a href="#showcase" className="text-sm font-medium hover:text-purple-600 transition-colors">Showcase</a>
-            <a href="#demo" className="text-sm font-medium hover:text-purple-600 transition-colors">Demo</a>
+            <a href="#journal" className="text-sm font-medium hover:text-purple-600 transition-colors">Journal</a>
             <a href="#partners" className="text-sm font-medium hover:text-purple-600 transition-colors">Partners</a>
             <a href="#contact" className="text-sm font-medium hover:text-purple-600 transition-colors">Contact</a>
           </nav>
@@ -44,9 +45,9 @@ const Index = () => {
       {/* Features Section */}
       <section id="features" className="py-20 px-4">
         <div className="container max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Build Powerful Agent Ecosystems</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Build Powerful Innovation Ecosystems</h2>
           <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
-            Create interconnected AI systems that work together, communicate, and solve complex problems with our comprehensive toolset.
+            Navigate the three gardens of exploration using the Calm Magic Framework to unlock organizational potential and transform how teams think, collaborate, and innovate.
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -66,9 +67,9 @@ const Index = () => {
       {/* Network Visualization */}
       <section id="showcase" className="py-16 px-4 bg-slate-100 dark:bg-slate-800/50">
         <div className="container max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Visualize Your Agent Network</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Visualize Your Innovation Network</h2>
           <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
-            See how agents communicate, share information, and collaborate in real-time with our interactive visualizations.
+            See how ideas flow between the three gardens and track the emotional landscape of your innovation journey in real-time.
           </p>
           
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-2 md:p-6 overflow-hidden">
@@ -77,15 +78,15 @@ const Index = () => {
         </div>
       </section>
       
-      {/* Interactive Demo */}
-      <section id="demo" className="py-20 px-4">
+      {/* Innovation Journal */}
+      <section id="journal" className="py-20 px-4">
         <div className="container max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Experience Agent Interaction</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">🌱 Innovation Journal</h2>
           <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
-            Try our interactive demo to see how agents can process information, learn, and collaborate.
+            Navigate the Gardens of Exploration using the Calm Magic Framework. Map your internal territory and capture insights as they emerge.
           </p>
           
-          <AgentInteractionDemo />
+          <InnovationJournal />
         </div>
       </section>
       
@@ -109,7 +110,7 @@ const Index = () => {
                 <span className="font-bold text-lg text-white">Paracosm</span>
               </div>
               <p className="text-sm text-slate-400 mb-4">
-                Exploring interconnected worlds and pushing the boundaries of imagination.
+                Exploring interconnected worlds and pushing the boundaries of imagination through the Calm Magic Framework.
               </p>
             </div>
             
@@ -117,7 +118,7 @@ const Index = () => {
               <h3 className="font-semibold text-white mb-4">Resources</h3>
               <ul className="space-y-2">
                 <li><a href="#" className="text-sm hover:text-purple-600">Documentation</a></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">API Reference</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Framework Guide</a></li>
                 <li><a href="#" className="text-sm hover:text-purple-600">Examples</a></li>
                 <li><a href="#" className="text-sm hover:text-purple-600">Blog</a></li>
               </ul>
