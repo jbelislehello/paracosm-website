@@ -31,9 +31,9 @@ const GardenSelector: React.FC<GardenSelectorProps> = ({ selectedGarden, onSelec
                 : 'hover:scale-105'
             }`}
             style={{
-              ringColor: selectedGarden === garden.type ? garden.color : undefined,
+              '--ring-color': selectedGarden === garden.type ? garden.color : undefined,
               borderColor: selectedGarden === garden.type ? garden.color : undefined
-            }}
+            } as React.CSSProperties}
             onClick={() => onSelectGarden(garden.type)}
           >
             <CardHeader>
