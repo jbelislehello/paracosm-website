@@ -2,10 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ArrowLeft, BookOpen, BarChart3, Workflow } from 'lucide-react';
 import GardenSelector from './journal/GardenSelector';
 import CalmMagicCompass from './journal/CalmMagicCompass';
 import JournalInterface from './journal/JournalInterface';
+import CalmMagicProcessDiagram from './calm-magic/CalmMagicProcessDiagram';
+import EngineeringQualityFramework from './calm-magic/EngineeringQualityFramework';
+import ProcessStatusTracker from './calm-magic/ProcessStatusTracker';
+import CalmMagicDocumentation from './calm-magic/CalmMagicDocumentation';
 import { useJournal } from '@/hooks/useJournal';
 import { GardenType, EmotionalState } from '@/types/journal';
 import { supabase } from '@/integrations/supabase/client';
@@ -22,7 +27,9 @@ const InnovationJournal = () => {
     free_level: 50
   });
   const [savedEmotionalState, setSavedEmotionalState] = useState<EmotionalState | null>(null);
+  const [savedJournalEntry, setSavedJournalEntry] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState('process');
 
   const { saveEmotionalState, saveJournalEntry, loading } = useJournal();
   const { toast } = useToast();
@@ -84,18 +91,23 @@ const InnovationJournal = () => {
 
   const handleJournalSave = async (entry: any) => {
     if (user) {
-      await saveJournalEntry(entry);
+      const saved = await saveJournalEntry(entry);
+      if (saved) {
+        setSavedJournalEntry(saved);
+      }
     } else {
       toast({
         title: "Demo Mode",
         description: "Entry saved in demo mode. Sign in to persist your reflections.",
       });
+      setSavedJournalEntry(entry);
     }
     
     // Reset to garden selection for next entry
     setCurrentStep('garden');
     setSelectedGarden(null);
     setSavedEmotionalState(null);
+    setSavedJournalEntry(null);
     setEmotionalState({
       love_level: 50,
       magic_level: 50,
@@ -114,77 +126,138 @@ const InnovationJournal = () => {
     }
   };
 
+  const handleNavigateToStep = (step: 'garden' | 'compass' | 'journal') => {
+    setCurrentStep(step);
+  };
+
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      {currentStep !== 'garden' && (
-        <Button 
-          variant="ghost" 
-          onClick={handleBack}
-          className="mb-6 flex items-center gap-2"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back
-        </Button>
-      )}
+    <div className="max-w-7xl mx-auto p-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="process" className="flex items-center gap-2">
+            <Workflow className="w-4 h-4" />
+            Process
+          </TabsTrigger>
+          <TabsTrigger value="diagram" className="flex items-center gap-2">
+            <BarChart3 className="w-4 h-4" />
+            Diagram
+          </TabsTrigger>
+          <TabsTrigger value="quality" className="flex items-center gap-2">
+            <BarChart3 className="w-4 h-4" />
+            Quality
+          </TabsTrigger>
+          <TabsTrigger value="docs" className="flex items-center gap-2">
+            <BookOpen className="w-4 h-4" />
+            Documentation
+          </TabsTrigger>
+        </TabsList>
 
-      {currentStep === 'garden' && (
-        <GardenSelector
-          selectedGarden={selectedGarden}
-          onSelectGarden={handleGardenSelect}
-        />
-      )}
-
-      {currentStep === 'compass' && selectedGarden && (
-        <div className="space-y-6">
-          <div className="text-center">
-            <h2 className="text-2xl font-bold mb-4">
-              Entering the {selectedGarden.charAt(0).toUpperCase() + selectedGarden.slice(1)} Garden
-            </h2>
-            <p className="text-slate-600 dark:text-slate-300">
-              Take a moment to read your internal territory before beginning your reflection.
-            </p>
-          </div>
-          
-          <div className="max-w-2xl mx-auto">
-            <CalmMagicCompass
-              emotionalState={emotionalState}
-              onStateChange={setEmotionalState}
-            />
-            
+        <TabsContent value="process" className="space-y-6">
+          {currentStep !== 'garden' && (
             <Button 
-              onClick={handleEmotionalStateComplete}
-              disabled={loading}
-              className="w-full mt-6"
-              size="lg"
+              variant="ghost" 
+              onClick={handleBack}
+              className="mb-6 flex items-center gap-2"
             >
-              {loading ? 'Saving State...' : 'Begin Reflection'}
+              <ArrowLeft className="w-4 h-4" />
+              Back
             </Button>
+          )}
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Process Area */}
+            <div className="lg:col-span-2">
+              {currentStep === 'garden' && (
+                <GardenSelector
+                  selectedGarden={selectedGarden}
+                  onSelectGarden={handleGardenSelect}
+                />
+              )}
+
+              {currentStep === 'compass' && selectedGarden && (
+                <div className="space-y-6">
+                  <div className="text-center">
+                    <h2 className="text-2xl font-bold mb-4">
+                      Entering the {selectedGarden.charAt(0).toUpperCase() + selectedGarden.slice(1)} Garden
+                    </h2>
+                    <p className="text-slate-600 dark:text-slate-300">
+                      Take a moment to read your internal territory before beginning your reflection.
+                    </p>
+                  </div>
+                  
+                  <CalmMagicCompass
+                    emotionalState={emotionalState}
+                    onStateChange={setEmotionalState}
+                  />
+                  
+                  <Button 
+                    onClick={handleEmotionalStateComplete}
+                    disabled={loading}
+                    className="w-full"
+                    size="lg"
+                  >
+                    {loading ? 'Saving State...' : 'Begin Reflection'}
+                  </Button>
+                </div>
+              )}
+
+              {currentStep === 'journal' && selectedGarden && (
+                <JournalInterface
+                  garden={selectedGarden}
+                  emotionalState={savedEmotionalState}
+                  onSaveEntry={handleJournalSave}
+                  loading={loading}
+                />
+              )}
+            </div>
+
+            {/* Process Status Sidebar */}
+            <div className="space-y-6">
+              <ProcessStatusTracker
+                selectedGarden={selectedGarden}
+                emotionalState={savedEmotionalState}
+                journalEntry={savedJournalEntry}
+                currentStep={currentStep}
+                onNavigateToStep={handleNavigateToStep}
+              />
+
+              {savedEmotionalState && (
+                <EngineeringQualityFramework
+                  emotionalState={savedEmotionalState}
+                  journalEntry={savedJournalEntry}
+                />
+              )}
+            </div>
           </div>
-        </div>
-      )}
 
-      {currentStep === 'journal' && selectedGarden && (
-        <div className="max-w-4xl mx-auto">
-          <JournalInterface
-            garden={selectedGarden}
+          {!user && (
+            <Card className="mt-8 max-w-2xl mx-auto">
+              <CardContent className="p-6 text-center">
+                <h3 className="text-lg font-semibold mb-2">Demo Mode</h3>
+                <p className="text-sm text-slate-600 dark:text-slate-300">
+                  You're experiencing the Innovation Journal in demo mode. 
+                  Sign in to save your reflections and access team collaboration features.
+                </p>
+              </CardContent>
+            </Card>
+          )}
+        </TabsContent>
+
+        <TabsContent value="diagram">
+          <CalmMagicProcessDiagram />
+        </TabsContent>
+
+        <TabsContent value="quality">
+          <EngineeringQualityFramework
             emotionalState={savedEmotionalState}
-            onSaveEntry={handleJournalSave}
-            loading={loading}
+            journalEntry={savedJournalEntry}
           />
-        </div>
-      )}
+        </TabsContent>
 
-      {!user && (
-        <Card className="mt-8 max-w-2xl mx-auto">
-          <CardContent className="p-6 text-center">
-            <h3 className="text-lg font-semibold mb-2">Demo Mode</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-300">
-              You're experiencing the Innovation Journal in demo mode. 
-              Sign in to save your reflections and access team collaboration features.
-            </p>
-          </CardContent>
-        </Card>
-      )}
+        <TabsContent value="docs">
+          <CalmMagicDocumentation />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
