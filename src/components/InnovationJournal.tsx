@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -24,7 +23,7 @@ const InnovationJournal = () => {
   const [problemAnalysis, setProblemAnalysis] = useState<any>(null);
   const [prototypeData, setPrototypeData] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
-  const [activeTab, setActiveTab] = useState('process');
+  const [activeTab, setActiveTab] = useState('framework');
 
   const { loading } = useJournal();
   const { toast } = useToast();
@@ -130,13 +129,13 @@ const InnovationJournal = () => {
     <div className="max-w-7xl mx-auto p-6">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="process" className="flex items-center gap-2">
-            <Workflow className="w-4 h-4" />
-            Process
-          </TabsTrigger>
-          <TabsTrigger value="diagram" className="flex items-center gap-2">
+          <TabsTrigger value="framework" className="flex items-center gap-2">
             <BarChart3 className="w-4 h-4" />
             Framework
+          </TabsTrigger>
+          <TabsTrigger value="process" className="flex items-center gap-2">
+            <Workflow className="w-4 h-4" />
+            Interactive Process
           </TabsTrigger>
           <TabsTrigger value="quality" className="flex items-center gap-2">
             <BarChart3 className="w-4 h-4" />
@@ -147,6 +146,13 @@ const InnovationJournal = () => {
             Documentation
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="framework" className="space-y-6">
+          <ProductDevelopmentSteps
+            currentStep={currentStep}
+            completedSteps={completedSteps}
+          />
+        </TabsContent>
 
         <TabsContent value="process" className="space-y-6">
           {currentStep > 1 && (
@@ -166,17 +172,8 @@ const InnovationJournal = () => {
               {renderCurrentStep()}
             </div>
 
-            {/* Process Status Sidebar */}
+            {/* Progress Summary Sidebar */}
             <div className="space-y-6">
-              <Card>
-                <CardContent className="p-4">
-                  <ProductDevelopmentSteps
-                    currentStep={currentStep}
-                    completedSteps={completedSteps}
-                  />
-                </CardContent>
-              </Card>
-
               {(stakeholderData || problemAnalysis || prototypeData) && (
                 <Card>
                   <CardContent className="p-4">
@@ -218,10 +215,6 @@ const InnovationJournal = () => {
               </CardContent>
             </Card>
           )}
-        </TabsContent>
-
-        <TabsContent value="diagram">
-          <CalmMagicProcessDiagram />
         </TabsContent>
 
         <TabsContent value="quality">
