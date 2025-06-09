@@ -211,6 +211,18 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
           <p className="text-xl md:text-2xl mb-8 text-gray-700 dark:text-gray-200">
             Design, deploy, and manage interconnected AI agents that work together to solve complex problems
           </p>
+          
+          {/* Floating CTA on the left */}
+          <div className="flex justify-start">
+            <Button 
+              size="lg" 
+              onClick={onDiscoverFramework}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl flex items-center gap-2"
+            >
+              <Sparkles className="w-5 h-5" />
+              Get Started
+            </Button>
+          </div>
         </div>
       </div>
     </section>
