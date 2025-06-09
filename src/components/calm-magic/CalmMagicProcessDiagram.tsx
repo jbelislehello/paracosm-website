@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -57,9 +56,9 @@ const CalmMagicProcessDiagram: React.FC = () => {
             <g id="garden-phase">
               <rect x="50" y="50" width="300" height="220" rx="10" fill="#f8fafc" stroke="#2563eb" strokeWidth="2"/>
               <text x="200" y="80" textAnchor="middle" className="text-lg font-bold fill-slate-800">Phase 1: Residency Selection</text>
-              <text x="200" y="100" textAnchor="middle" className="text-sm fill-slate-600">Choose your Calm Magic Constellation</text>
+              <text x="200" y="100" textAnchor="middle" className="text-sm fill-slate-600">Choose the residency context</text>
               
-              {/* Intelligence Constellation - Stellae Intelligentia */}
+              {/* Intelligence Constellation - User Intelligences */}
               <g id="intelligence-constellation">
                 {/* Main constellation circle */}
                 <circle cx="120" cy="140" r="25" fill="#2563eb"/>
@@ -123,12 +122,11 @@ const CalmMagicProcessDiagram: React.FC = () => {
                   <text x="135" y="135" className="text-xs font-bold" fill="#f59e0b">FREE</text>
                 </g>
                 
-                {/* Constellation name */}
-                <text x="120" y="195" textAnchor="middle" className="text-xs font-semibold fill-slate-700">Stellae Intelligentia</text>
-                <text x="120" y="208" textAnchor="middle" className="text-xs fill-slate-500">Constellation of Knowing</text>
+                {/* Updated constellation name */}
+                <text x="120" y="195" textAnchor="middle" className="text-xs font-semibold fill-slate-700">User Intelligences</text>
               </g>
 
-              {/* Systems Constellation - Stellae Systemica */}
+              {/* Systems Constellation - Organizational Systems */}
               <g id="systems-constellation">
                 {/* Main constellation circle */}
                 <circle cx="200" cy="140" r="25" fill="#7c3aed"/>
@@ -190,12 +188,11 @@ const CalmMagicProcessDiagram: React.FC = () => {
                   <text x="215" y="135" className="text-xs font-bold" fill="#f59e0b">FREE</text>
                 </g>
                 
-                {/* Constellation name */}
-                <text x="200" y="195" textAnchor="middle" className="text-xs font-semibold fill-slate-700">Stellae Systemica</text>
-                <text x="200" y="208" textAnchor="middle" className="text-xs fill-slate-500">Constellation of Flow</text>
+                {/* Updated constellation name */}
+                <text x="200" y="195" textAnchor="middle" className="text-xs font-semibold fill-slate-700">Organizational Systems</text>
               </g>
               
-              {/* Prototypes Constellation - Stellae Prototypia */}
+              {/* Prototypes Constellation - Vision Prototypes */}
               <g id="prototypes-constellation">
                 {/* Main constellation circle */}
                 <circle cx="280" cy="140" r="25" fill="#db2777"/>
@@ -258,9 +255,8 @@ const CalmMagicProcessDiagram: React.FC = () => {
                   <text x="295" y="135" className="text-xs font-bold" fill="#f59e0b">FREE</text>
                 </g>
                 
-                {/* Constellation name */}
-                <text x="280" y="195" textAnchor="middle" className="text-xs font-semibold fill-slate-700">Stellae Prototypia</text>
-                <text x="280" y="208" textAnchor="middle" className="text-xs fill-slate-500">Constellation of Becoming</text>
+                {/* Updated constellation name */}
+                <text x="280" y="195" textAnchor="middle" className="text-xs font-semibold fill-slate-700">Vision Prototypes</text>
               </g>
               
               {/* Cosmic connection lines between constellations */}
