@@ -3,40 +3,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Sparkles, 
-  X, 
-  Minimize2, 
-  Maximize2, 
-  Brain, 
-  Compass, 
-  BookOpen,
-  ArrowRight,
-  ChevronLeft,
-  ChevronRight,
-  Users,
-  Search,
-  Lightbulb,
-  Code,
-  Handshake
-} from 'lucide-react';
-
+import { Sparkles, X, Minimize2, Maximize2, Brain, Compass, BookOpen, ArrowRight, ChevronLeft, ChevronRight, Users, Search, Lightbulb, Code, Handshake } from 'lucide-react';
 interface CalmMagicAssistantProps {
   onStartJourney?: () => void;
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
-
-const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({ 
-  onStartJourney, 
+const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
+  onStartJourney,
   isOpen: controlledIsOpen,
   onOpenChange
 }) => {
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-
   const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
-  
   const setIsOpen = (open: boolean) => {
     if (onOpenChange) {
       onOpenChange(open);
@@ -44,75 +24,65 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
       setInternalIsOpen(open);
     }
   };
-
-  const processSteps = [
-    { icon: <Users className="w-4 h-4" />, name: 'Stakeholder Research', phase: 'Understanding' },
-    { icon: <Search className="w-4 h-4" />, name: 'Problem Analysis', phase: 'Understanding' },
-    { icon: <Lightbulb className="w-4 h-4" />, name: 'Diegetic Prototype', phase: 'Understanding' },
-    { icon: <Code className="w-4 h-4" />, name: 'Technical Requirements', phase: 'Implementation' },
-    { icon: <Handshake className="w-4 h-4" />, name: 'Handover Ritual', phase: 'Implementation' }
-  ];
-
-  const bridgeElements = [
-    { name: 'Diegetic Prototype', description: 'Demo that feels real and tells a complete story' },
-    { name: 'Systems Intelligence', description: 'Technical specs that preserve the original vision' },
-    { name: 'Handover Ritual', description: 'Engineers understand not just what to build, but why' }
-  ];
-
+  const processSteps = [{
+    icon: <Users className="w-4 h-4" />,
+    name: 'Stakeholder Research',
+    phase: 'Understanding'
+  }, {
+    icon: <Search className="w-4 h-4" />,
+    name: 'Problem Analysis',
+    phase: 'Understanding'
+  }, {
+    icon: <Lightbulb className="w-4 h-4" />,
+    name: 'Diegetic Prototype',
+    phase: 'Understanding'
+  }, {
+    icon: <Code className="w-4 h-4" />,
+    name: 'Technical Requirements',
+    phase: 'Implementation'
+  }, {
+    icon: <Handshake className="w-4 h-4" />,
+    name: 'Handover Ritual',
+    phase: 'Implementation'
+  }];
+  const bridgeElements = [{
+    name: 'Diegetic Prototype',
+    description: 'Demo that feels real and tells a complete story'
+  }, {
+    name: 'Systems Intelligence',
+    description: 'Technical specs that preserve the original vision'
+  }, {
+    name: 'Handover Ritual',
+    description: 'Engineers understand not just what to build, but why'
+  }];
   if (!isOpen) {
-    return (
-      <div className="fixed left-4 top-1/2 -translate-y-1/2 z-50">
-        <Button
-          onClick={() => setIsOpen(true)}
-          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 text-white p-3 rounded-r-xl rounded-l-lg shadow-lg transition-all duration-300 hover:shadow-xl"
-        >
-          <Sparkles className="w-5 h-5 mr-2" />
-          <span className="text-sm font-medium">Product Framework</span>
-          <ChevronRight className="w-4 h-4 ml-1" />
-        </Button>
-      </div>
-    );
+    return <div className="fixed left-4 top-1/2 -translate-y-1/2 z-50">
+        
+      </div>;
   }
-
-  return (
-    <div className={`fixed left-0 top-1/2 -translate-y-1/2 z-50 transition-all duration-300 ${isMinimized ? 'w-16' : 'w-80'}`}>
+  return <div className={`fixed left-0 top-1/2 -translate-y-1/2 z-50 transition-all duration-300 ${isMinimized ? 'w-16' : 'w-80'}`}>
       <Card className="h-[600px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-r-2 border-gradient-to-b from-blue-500 to-purple-500 shadow-2xl rounded-r-xl rounded-l-none">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            {!isMinimized && (
-              <CardTitle className="flex items-center gap-2 text-lg">
+            {!isMinimized && <CardTitle className="flex items-center gap-2 text-lg">
                 <Sparkles className="w-5 h-5 text-purple-600" />
                 Product Development Framework
-              </CardTitle>
-            )}
+              </CardTitle>}
             <div className="flex gap-1">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsMinimized(!isMinimized)}
-                className="h-8 w-8 p-0"
-              >
+              <Button variant="ghost" size="sm" onClick={() => setIsMinimized(!isMinimized)} className="h-8 w-8 p-0">
                 {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
               </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsOpen(false)}
-                className="h-8 w-8 p-0"
-              >
+              <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)} className="h-8 w-8 p-0">
                 <X className="w-4 h-4" />
               </Button>
             </div>
           </div>
-          {!isMinimized && (
-            <Badge variant="outline" className="w-fit">
+          {!isMinimized && <Badge variant="outline" className="w-fit">
               Imagineering to Engineering Framework
-            </Badge>
-          )}
+            </Badge>}
         </CardHeader>
 
-        {!isMinimized && (
-          <CardContent className="p-4 overflow-y-auto h-[520px]">
+        {!isMinimized && <CardContent className="p-4 overflow-y-auto h-[520px]">
             <Tabs defaultValue="overview" className="w-full">
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -145,10 +115,7 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
                   </div>
                 </div>
 
-                <Button 
-                  onClick={onStartJourney}
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600"
-                >
+                <Button onClick={onStartJourney} className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600">
                   Start Development Process
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
@@ -172,24 +139,20 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
                     <h4 className="font-medium text-blue-800 dark:text-blue-200 text-sm mb-2">
                       Phase 1: Understanding (Steps 1-3)
                     </h4>
-                    {processSteps.slice(0, 3).map((step, index) => (
-                      <div key={index} className="flex items-center gap-2 text-xs text-blue-700 dark:text-blue-300">
+                    {processSteps.slice(0, 3).map((step, index) => <div key={index} className="flex items-center gap-2 text-xs text-blue-700 dark:text-blue-300">
                         {step.icon}
                         <span>{index + 1}. {step.name}</span>
-                      </div>
-                    ))}
+                      </div>)}
                   </div>
 
                   <div className="bg-purple-50 dark:bg-purple-950/30 p-3 rounded-lg">
                     <h4 className="font-medium text-purple-800 dark:text-purple-200 text-sm mb-2">
                       Phase 2: Implementation (Steps 4-7)
                     </h4>
-                    {processSteps.slice(3, 5).map((step, index) => (
-                      <div key={index} className="flex items-center gap-2 text-xs text-purple-700 dark:text-purple-300">
+                    {processSteps.slice(3, 5).map((step, index) => <div key={index} className="flex items-center gap-2 text-xs text-purple-700 dark:text-purple-300">
                         {step.icon}
                         <span>{index + 4}. {step.name}</span>
-                      </div>
-                    ))}
+                      </div>)}
                     <div className="text-xs text-purple-600 dark:text-purple-400 mt-1">
                       + Systems Intelligence & Development Tracking
                     </div>
@@ -208,19 +171,14 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
               <TabsContent value="bridge" className="space-y-3">
                 <h3 className="font-semibold text-center">The Bridge Elements</h3>
                 
-                {bridgeElements.map((element, index) => (
-                  <div 
-                    key={index}
-                    className="p-3 rounded-lg border bg-slate-50 dark:bg-slate-800/50"
-                  >
+                {bridgeElements.map((element, index) => <div key={index} className="p-3 rounded-lg border bg-slate-50 dark:bg-slate-800/50">
                     <h4 className="font-medium text-sm text-slate-800 dark:text-slate-200">
                       {element.name}
                     </h4>
                     <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
                       {element.description}
                     </p>
-                  </div>
-                ))}
+                  </div>)}
 
                 <div className="bg-amber-50 dark:bg-amber-950/30 p-3 rounded-lg">
                   <h4 className="font-medium text-amber-800 dark:text-amber-200 text-sm">
@@ -234,22 +192,17 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
                 </div>
               </TabsContent>
             </Tabs>
-          </CardContent>
-        )}
+          </CardContent>}
 
-        {isMinimized && (
-          <CardContent className="p-2">
+        {isMinimized && <CardContent className="p-2">
             <div className="flex flex-col items-center gap-2">
               <Sparkles className="w-6 h-6 text-purple-600" />
               <div className="text-xs text-center text-slate-600 dark:text-slate-300 writing-mode-vertical">
                 Product Framework
               </div>
             </div>
-          </CardContent>
-        )}
+          </CardContent>}
       </Card>
-    </div>
-  );
+    </div>;
 };
-
 export default CalmMagicAssistant;
