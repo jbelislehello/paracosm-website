@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
@@ -530,30 +529,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       {/* Content with higher z-index */}
       <div className="container relative px-4 py-12 md:py-24" style={{ zIndex: 10 }}>
         <div className="max-w-4xl mx-auto text-center">
-          {/* Transformation headline with backdrop protection */}
-          <div className="mb-8 relative z-20">
-            <div className="backdrop-blur-sm bg-white/20 dark:bg-slate-900/20 rounded-2xl p-8 border border-white/30">
-              <h2 className="text-xl md:text-2xl font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                Get Ready for Transformation
-              </h2>
-              <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-6">
-                The UX & Product Development Framework for the AI ERA
-              </p>
-              
-              {/* Centered CTA with enhanced z-index */}
-              <div className="flex justify-center relative z-30">
-                <Button 
-                  size="lg" 
-                  onClick={onDiscoverFramework}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl flex items-center gap-2 relative z-40"
-                >
-                  <Sparkles className="w-5 h-5" />
-                  Discover Calm Magic
-                </Button>
-              </div>
-            </div>
-          </div>
-
           {/* Main headline with backdrop protection */}
           <div className="backdrop-blur-sm bg-white/10 dark:bg-slate-900/10 rounded-2xl p-8 border border-white/20 relative z-20">
             <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-agent-blue via-agent-purple to-agent-pink animate-gradient-x mb-6">
