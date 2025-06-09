@@ -1069,9 +1069,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
             <p className="text-xl md:text-2xl mb-8 text-gray-700 dark:text-gray-200">
               Design, deploy, and manage interconnected AI agents that work together to solve complex problems
             </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
-              💡 Triple-click anywhere on the canvas to create a new garden
-            </p>
           </div>
         </div>
       </div>
