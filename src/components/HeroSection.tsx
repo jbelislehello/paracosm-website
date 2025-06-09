@@ -1,6 +1,6 @@
-
 import React, { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import { Sparkles } from "lucide-react";
 
 interface HeroSectionProps {
   onDiscoverFramework?: () => void;
@@ -222,8 +222,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
             Design, deploy, and manage interconnected AI agents that work together to solve complex problems
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-gradient-to-r from-agent-blue to-agent-purple hover:from-agent-purple hover:to-agent-blue transition-all duration-300 text-white px-8">
-              Get Started
+            <Button 
+              size="lg" 
+              onClick={onDiscoverFramework}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300 text-white px-8 flex items-center gap-2"
+            >
+              <Sparkles className="w-5 h-5" />
+              Product Framework
             </Button>
             <Button size="lg" variant="outline" className="border-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
               Watch Demo

@@ -58,7 +58,7 @@ const Index = () => {
         </div>
       </header>
       
-      {/* Product Development Framework Assistant - Floating */}
+      {/* Product Development Framework Assistant - Modal */}
       <CalmMagicAssistant 
         onStartJourney={handleStartJourney} 
         isOpen={isCalmMagicOpen}
