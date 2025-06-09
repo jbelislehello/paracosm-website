@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
@@ -37,233 +38,199 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
     window.addEventListener('resize', resize);
     resize();
     
-    // Gardens, nodes, connections and story text
-    const gardens: Garden[] = [];
-    const growingNodes: GrowingNode[] = [];
-    const connections: Connection[] = [];
-    const storyTexts: StoryText[] = [];
+    // Energetic axes data
+    const energeticAxes = [
+      { key: 'love', name: 'LOVE', color: '#ef4444', angle: 0 }, // top
+      { key: 'magic', name: 'MAGIC', color: '#8b5cf6', angle: Math.PI / 2 }, // right
+      { key: 'calm', name: 'CALM', color: '#06b6d4', angle: Math.PI }, // bottom
+      { key: 'open', name: 'OPEN', color: '#10b981', angle: (3 * Math.PI) / 2 }, // left
+      { key: 'free', name: 'FREE', color: '#f59e0b', angle: 0 } // center, moving
+    ];
+
+    // Energy centers, flowing particles, and sacred geometry
+    const energyCenters: EnergyCenter[] = [];
+    const flowingParticles: FlowingParticle[] = [];
+    const sacredPatterns: SacredPattern[] = [];
+    const poetryTexts: PoetryText[] = [];
     
-    class Garden {
+    class EnergyCenter {
       x: number;
       y: number;
       baseRadius: number;
       currentRadius: number;
-      breathingPhase: number;
-      breathingSpeed: number;
+      pulsePhase: number;
+      pulseSpeed: number;
       color: string;
-      type: string;
-      moveSpeed: number;
-      targetX: number;
-      targetY: number;
-      verticalDirection: number;
-      verticalSpeed: number;
       name: string;
+      type: string;
+      glowIntensity: number;
+      orbitAngle: number;
+      orbitRadius: number;
+      orbitSpeed: number;
+      centerX: number;
+      centerY: number;
       
-      constructor(x: number, y: number, type: string) {
+      constructor(x: number, y: number, type: string, name: string, color: string, isOrbiting = true) {
+        this.centerX = window.innerWidth / 2;
+        this.centerY = window.innerHeight / 2;
         this.x = x;
         this.y = y;
-        this.targetX = x;
-        this.targetY = y;
-        this.baseRadius = 120 + Math.random() * 80; // Even larger for full page
+        this.baseRadius = isOrbiting ? 30 + Math.random() * 20 : 60;
         this.currentRadius = this.baseRadius;
-        this.breathingPhase = Math.random() * Math.PI * 2;
-        this.breathingSpeed = 0.008 + Math.random() * 0.004; // Slower breathing
+        this.pulsePhase = Math.random() * Math.PI * 2;
+        this.pulseSpeed = 0.02 + Math.random() * 0.015;
+        this.color = color;
+        this.name = name;
         this.type = type;
-        this.moveSpeed = 0.2 + Math.random() * 0.15;
-        this.verticalDirection = Math.random() > 0.5 ? 1 : -1;
-        this.verticalSpeed = 0.15 + Math.random() * 0.2;
-        
-        // Garden colors and names from Calm Magic framework
-        switch(type) {
-          case 'intelligence':
-            this.color = '#2563eb';
-            this.name = 'Garden of Intelligence';
-            break;
-          case 'systems':
-            this.color = '#7c3aed';
-            this.name = 'Garden of Systems';
-            break;
-          case 'prototypes':
-            this.color = '#db2777';
-            this.name = 'Garden of Prototypes';
-            break;
-          default:
-            this.color = '#6b7280';
-            this.name = 'Garden of Innovation';
-        }
+        this.glowIntensity = 0.8 + Math.random() * 0.4;
+        this.orbitAngle = Math.random() * Math.PI * 2;
+        this.orbitRadius = isOrbiting ? 120 + Math.random() * 100 : 0;
+        this.orbitSpeed = isOrbiting ? 0.008 + Math.random() * 0.004 : 0;
       }
       
       update() {
-        // Breathing animation - expand and contract
-        this.breathingPhase += this.breathingSpeed;
-        const breathingMultiplier = 1 + Math.sin(this.breathingPhase) * 0.3;
-        this.currentRadius = this.baseRadius * breathingMultiplier;
+        // Pulsing/breathing animation
+        this.pulsePhase += this.pulseSpeed;
+        const pulseMultiplier = 1 + Math.sin(this.pulsePhase) * 0.3;
+        this.currentRadius = this.baseRadius * pulseMultiplier;
+        this.glowIntensity = 0.6 + Math.sin(this.pulsePhase) * 0.4;
         
-        // Vertical movement throughout the page
-        this.y += this.verticalDirection * this.verticalSpeed;
-        
-        // Seamless vertical wrapping
-        if (this.y < -this.currentRadius - 100) {
-          this.y = window.innerHeight + this.currentRadius + 100;
-        } else if (this.y > window.innerHeight + this.currentRadius + 100) {
-          this.y = -this.currentRadius - 100;
+        // Orbital movement for axis centers
+        if (this.orbitRadius > 0) {
+          this.orbitAngle += this.orbitSpeed;
+          this.x = this.centerX + Math.cos(this.orbitAngle) * this.orbitRadius;
+          this.y = this.centerY + Math.sin(this.orbitAngle) * this.orbitRadius;
         }
-        
-        // Gentle horizontal drift
-        this.x += Math.sin(Date.now() * 0.0001 + this.breathingPhase) * 0.2;
-        
-        // Keep within horizontal bounds
-        if (this.x < this.currentRadius) this.x = this.currentRadius;
-        if (this.x > window.innerWidth - this.currentRadius) this.x = window.innerWidth - this.currentRadius;
       }
       
       draw() {
         if (!ctx) return;
         
-        // Draw garden circle with breathing effect
+        // Draw energy field with multiple layers
+        for (let i = 3; i >= 1; i--) {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.currentRadius * i * 0.6, 0, Math.PI * 2);
+          
+          const gradient = ctx.createRadialGradient(
+            this.x, this.y, 0,
+            this.x, this.y, this.currentRadius * i * 0.6
+          );
+          
+          const alpha = (this.glowIntensity / i) * 0.3;
+          gradient.addColorStop(0, `${this.color}${Math.floor(alpha * 255).toString(16).padStart(2, '0')}`);
+          gradient.addColorStop(0.5, `${this.color}${Math.floor(alpha * 0.5 * 255).toString(16).padStart(2, '0')}`);
+          gradient.addColorStop(1, `${this.color}00`);
+          
+          ctx.fillStyle = gradient;
+          ctx.fill();
+        }
+        
+        // Core energy center
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.currentRadius, 0, Math.PI * 2);
-        
-        // Create gradient for garden with high visibility
-        const gradient = ctx.createRadialGradient(
-          this.x, this.y, 0,
-          this.x, this.y, this.currentRadius
-        );
-        gradient.addColorStop(0, `${this.color}60`);
-        gradient.addColorStop(0.5, `${this.color}40`);
-        gradient.addColorStop(1, `${this.color}20`);
-        
-        ctx.fillStyle = gradient;
+        ctx.arc(this.x, this.y, this.currentRadius * 0.4, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
         ctx.fill();
         
-        // Draw garden border with pulsing effect - high visibility
-        ctx.strokeStyle = `${this.color}CC`;
-        ctx.lineWidth = 3 + Math.sin(this.breathingPhase) * 1;
-        ctx.stroke();
-        
-        // Add strong glow
+        // Glow effect
         ctx.shadowColor = this.color;
-        ctx.shadowBlur = 20 + Math.sin(this.breathingPhase) * 10;
-        ctx.stroke();
+        ctx.shadowBlur = 20 * this.glowIntensity;
+        ctx.fill();
         ctx.shadowBlur = 0;
         
-        // Draw garden name with high visibility
-        ctx.fillStyle = `${this.color}FF`;
-        ctx.font = `${16 + Math.sin(this.breathingPhase) * 2}px Inter, sans-serif`;
-        ctx.textAlign = 'center';
-        ctx.fillText(this.name, this.x, this.y - this.currentRadius - 25);
+        // Energy name
+        if (this.name !== 'FREE') {
+          ctx.fillStyle = `${this.color}CC`;
+          ctx.font = `${12 + Math.sin(this.pulsePhase) * 2}px Inter, sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.fillText(this.name, this.x, this.y - this.currentRadius - 15);
+        }
       }
     }
     
-    class GrowingNode {
+    class FlowingParticle {
       x: number;
       y: number;
       size: number;
-      maxSize: number;
-      growthRate: number;
       color: string;
-      type: string;
+      speed: number;
+      angle: number;
       life: number;
       maxLife: number;
       alpha: number;
-      speedX: number;
-      speedY: number;
-      parentGarden: Garden | null;
-      orbitAngle: number;
-      orbitRadius: number;
-      orbitSpeed: number;
+      spiralRadius: number;
+      spiralAngle: number;
+      spiralSpeed: number;
+      centerX: number;
+      centerY: number;
+      trail: Array<{x: number; y: number; alpha: number}>;
       
-      constructor(x: number, y: number, type: string, parentGarden?: Garden) {
-        this.x = x;
-        this.y = y;
-        this.size = 1;
-        this.maxSize = 3 + Math.random() * 4;
-        this.growthRate = 0.02 + Math.random() * 0.015;
-        this.type = type;
-        this.maxLife = 500 + Math.random() * 400;
+      constructor(centerX: number, centerY: number, color: string) {
+        this.centerX = centerX;
+        this.centerY = centerY;
+        this.spiralRadius = 50 + Math.random() * 200;
+        this.spiralAngle = Math.random() * Math.PI * 2;
+        this.spiralSpeed = 0.02 + Math.random() * 0.02;
+        this.x = centerX + Math.cos(this.spiralAngle) * this.spiralRadius;
+        this.y = centerY + Math.sin(this.spiralAngle) * this.spiralRadius;
+        this.size = 1 + Math.random() * 3;
+        this.color = color;
+        this.speed = 0.5 + Math.random() * 1;
+        this.angle = Math.random() * Math.PI * 2;
+        this.maxLife = 300 + Math.random() * 200;
         this.life = this.maxLife;
         this.alpha = 1;
-        this.speedX = (Math.random() - 0.5) * 0.2;
-        this.speedY = (Math.random() - 0.5) * 0.2;
-        this.parentGarden = parentGarden || null;
-        this.orbitAngle = Math.random() * Math.PI * 2;
-        this.orbitRadius = 60 + Math.random() * 120;
-        this.orbitSpeed = 0.003 + Math.random() * 0.008;
-        
-        // Node colors from Calm Magic process
-        switch(type) {
-          case 'love':
-            this.color = '#ef4444';
-            break;
-          case 'magic':
-            this.color = '#8b5cf6';
-            break;
-          case 'calm':
-            this.color = '#06b6d4';
-            break;
-          case 'open':
-            this.color = '#10b981';
-            break;
-          case 'free':
-            this.color = '#f59e0b';
-            break;
-          case 'insight':
-            this.color = '#3b82f6';
-            break;
-          case 'connection':
-            this.color = '#8b5cf6';
-            break;
-          case 'transformation':
-            this.color = '#db2777';
-            break;
-          default:
-            this.color = '#6b7280';
-        }
+        this.trail = [];
       }
       
       update() {
-        // Growth phase
-        if (this.size < this.maxSize) {
-          this.size += this.growthRate;
-        }
+        // Clockwise spiral movement for FREE energy
+        this.spiralAngle += this.spiralSpeed;
+        this.spiralRadius += Math.sin(this.spiralAngle * 3) * 0.5;
         
-        // Orbit around parent garden if exists
-        if (this.parentGarden) {
-          this.orbitAngle += this.orbitSpeed;
-          this.x = this.parentGarden.x + Math.cos(this.orbitAngle) * this.orbitRadius;
-          this.y = this.parentGarden.y + Math.sin(this.orbitAngle) * this.orbitRadius;
-        } else {
-          // Free movement
-          this.x += this.speedX;
-          this.y += this.speedY;
-          
-          // Wrap around screen edges
-          if (this.x < 0) this.x = window.innerWidth;
-          if (this.x > window.innerWidth) this.x = 0;
-          if (this.y < 0) this.y = window.innerHeight;
-          if (this.y > window.innerHeight) this.y = 0;
+        // Update position
+        this.x = this.centerX + Math.cos(this.spiralAngle) * this.spiralRadius;
+        this.y = this.centerY + Math.sin(this.spiralAngle) * this.spiralRadius;
+        
+        // Add to trail
+        this.trail.push({ x: this.x, y: this.y, alpha: this.alpha });
+        if (this.trail.length > 10) {
+          this.trail.shift();
         }
         
         // Life cycle
         this.life--;
         this.alpha = this.life / this.maxLife;
+        
+        // Update trail alpha
+        this.trail.forEach((point, index) => {
+          point.alpha = (index / this.trail.length) * this.alpha;
+        });
       }
       
       draw() {
         if (!ctx) return;
         
-        ctx.globalAlpha = this.alpha; // Full visibility
+        // Draw trail
+        this.trail.forEach((point, index) => {
+          if (index < this.trail.length - 1) {
+            ctx.globalAlpha = point.alpha * 0.6;
+            ctx.beginPath();
+            ctx.arc(point.x, point.y, this.size * (index / this.trail.length), 0, Math.PI * 2);
+            ctx.fillStyle = this.color;
+            ctx.fill();
+          }
+        });
         
-        // Draw growing node with pulsing effect
-        const pulseSize = this.size + Math.sin(Date.now() * 0.004) * 0.3;
+        // Draw main particle
+        ctx.globalAlpha = this.alpha;
         ctx.beginPath();
-        ctx.arc(this.x, this.y, pulseSize, 0, Math.PI * 2);
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
         ctx.fill();
         
-        // Add strong glow effect
+        // Glow effect
         ctx.shadowColor = this.color;
-        ctx.shadowBlur = 15;
+        ctx.shadowBlur = 10;
         ctx.fill();
         ctx.shadowBlur = 0;
         
@@ -271,41 +238,79 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       }
     }
     
-    class Connection {
-      from: { x: number; y: number };
-      to: { x: number; y: number };
-      life: number;
-      maxLife: number;
+    class SacredPattern {
+      x: number;
+      y: number;
+      radius: number;
+      rotation: number;
+      rotationSpeed: number;
       color: string;
+      alpha: number;
+      type: string;
+      pulsePhase: number;
       
-      constructor(from: { x: number; y: number }, to: { x: number; y: number }, color: string) {
-        this.from = { ...from };
-        this.to = { ...to };
-        this.maxLife = 200 + Math.random() * 150;
-        this.life = this.maxLife;
+      constructor(x: number, y: number, type: string, color: string) {
+        this.x = x;
+        this.y = y;
+        this.radius = 80 + Math.random() * 60;
+        this.rotation = 0;
+        this.rotationSpeed = 0.005 + Math.random() * 0.01;
         this.color = color;
+        this.alpha = 0.2 + Math.random() * 0.3;
+        this.type = type;
+        this.pulsePhase = Math.random() * Math.PI * 2;
       }
       
       update() {
-        this.life--;
+        this.rotation += this.rotationSpeed;
+        this.pulsePhase += 0.01;
+        this.alpha = 0.2 + Math.sin(this.pulsePhase) * 0.2;
       }
       
       draw() {
         if (!ctx) return;
-        const alpha = this.life / this.maxLife;
         
-        ctx.globalAlpha = alpha * 0.8; // High visibility
-        ctx.beginPath();
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        ctx.globalAlpha = this.alpha;
         ctx.strokeStyle = this.color;
-        ctx.lineWidth = 2;
-        ctx.moveTo(this.from.x, this.from.y);
-        ctx.lineTo(this.to.x, this.to.y);
-        ctx.stroke();
-        ctx.globalAlpha = 1;
+        ctx.lineWidth = 1;
+        
+        if (this.type === 'mandala') {
+          // Draw mandala pattern
+          const points = 8;
+          for (let i = 0; i < points; i++) {
+            const angle = (i / points) * Math.PI * 2;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(Math.cos(angle) * this.radius, Math.sin(angle) * this.radius);
+            ctx.stroke();
+            
+            // Add circles at each point
+            ctx.beginPath();
+            ctx.arc(Math.cos(angle) * this.radius * 0.7, Math.sin(angle) * this.radius * 0.7, 5, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+        } else if (this.type === 'spiral') {
+          // Draw golden spiral
+          ctx.beginPath();
+          for (let i = 0; i < 100; i++) {
+            const angle = i * 0.3;
+            const radius = i * 2;
+            const x = Math.cos(angle) * radius;
+            const y = Math.sin(angle) * radius;
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+        }
+        
+        ctx.restore();
       }
     }
     
-    class StoryText {
+    class PoetryText {
       x: number;
       y: number;
       text: string;
@@ -314,24 +319,30 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       alpha: number;
       color: string;
       size: number;
+      driftX: number;
+      driftY: number;
       
       constructor(x: number, y: number, text: string, color: string) {
         this.x = x;
         this.y = y;
         this.text = text;
-        this.maxLife = 220 + Math.random() * 140;
+        this.maxLife = 400 + Math.random() * 200;
         this.life = this.maxLife;
         this.alpha = 0;
         this.color = color;
-        this.size = 12 + Math.random() * 4;
+        this.size = 11 + Math.random() * 3;
+        this.driftX = (Math.random() - 0.5) * 0.2;
+        this.driftY = -0.1 - Math.random() * 0.2;
       }
       
       update() {
         this.life--;
+        this.x += this.driftX;
+        this.y += this.driftY;
         
         // Fade in and out
-        const fadeInDuration = this.maxLife * 0.25;
-        const fadeOutDuration = this.maxLife * 0.35;
+        const fadeInDuration = this.maxLife * 0.3;
+        const fadeOutDuration = this.maxLife * 0.4;
         
         if (this.life > this.maxLife - fadeInDuration) {
           this.alpha = (this.maxLife - this.life) / fadeInDuration;
@@ -340,15 +351,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         } else {
           this.alpha = 1;
         }
-        
-        // Gentle upward drift
-        this.y -= 0.15;
       }
       
       draw() {
         if (!ctx) return;
         
-        ctx.globalAlpha = this.alpha; // Full visibility
+        ctx.globalAlpha = this.alpha * 0.8;
         ctx.fillStyle = this.color;
         ctx.font = `${this.size}px Inter, sans-serif`;
         ctx.textAlign = 'center';
@@ -357,152 +365,167 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       }
     }
     
-    // Story phrases for the Calm Magic process
-    const storyPhrases = [
-      "Ideas crystallize...",
-      "Systems emerge...",
-      "Prototypes bloom...",
-      "Insights flow...",
-      "Connections form...",
-      "Innovation grows...",
-      "Transformation begins...",
-      "Love guides creation...",
-      "Magic sparks possibility...",
-      "Calm grounds vision...",
-      "Openness invites change...",
-      "Freedom enables flow...",
-      "Gardens of thought...",
-      "Seeds of innovation...",
-      "Roots of understanding...",
-      "Branches of possibility...",
-      "Fruits of creation...",
-      "Wisdom emerges...",
-      "Clarity unfolds...",
-      "Purpose reveals itself..."
+    // Poetry phrases for the energetic axes
+    const poetryPhrases = [
+      "Love ignites...", "Aliveness flows...", "Hearts connect...",
+      "Magic unfolds...", "Spaciousness opens...", "Intuition whispers...",
+      "Calm centers...", "Wholeness emerges...", "Ground stabilizes...",
+      "Open transforms...", "Change dances...", "Originality blooms...",
+      "Freedom spirals...", "Integration weaves...", "Neurogenesis sparks...",
+      "Energy moves...", "Consciousness expands...", "Sacred geometry forms...",
+      "Wisdom crystallizes...", "Harmony resonates...", "Creation breathes..."
     ];
     
-    // Initialize gardens across the full canvas
-    const createGardens = () => {
-      const gardenTypes = ['intelligence', 'systems', 'prototypes'];
+    // Initialize energy centers
+    const initializeEnergyCenters = () => {
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
       
-      for (let i = 0; i < 5; i++) { // More gardens for full page coverage
-        const x = (window.innerWidth / 6) + (i * window.innerWidth / 5);
-        const y = Math.random() * window.innerHeight;
-        const type = gardenTypes[i % gardenTypes.length];
-        gardens.push(new Garden(x, y, type));
-      }
+      // Central heart center
+      energyCenters.push(new EnergyCenter(centerX, centerY, 'heart', 'HEART', '#ffffff', false));
+      
+      // Four cardinal axes orbiting the center
+      energeticAxes.slice(0, 4).forEach((axis, index) => {
+        const angle = (index * Math.PI) / 2;
+        const x = centerX + Math.cos(angle) * 150;
+        const y = centerY + Math.sin(angle) * 150;
+        energyCenters.push(new EnergyCenter(x, y, axis.key, axis.name, axis.color));
+      });
     };
     
-    // Create growing nodes around gardens and independently
-    const spawnGrowingNode = () => {
-      if (growingNodes.length > 50) return; // More nodes for richer experience
+    // Spawn flowing particles (FREE energy)
+    const spawnFlowingParticle = () => {
+      if (flowingParticles.length > 30) return;
       
-      const nodeTypes = ['love', 'magic', 'calm', 'open', 'free', 'insight', 'connection', 'transformation'];
-      const type = nodeTypes[Math.floor(Math.random() * nodeTypes.length)];
-      
-      let x, y, parentGarden = null;
-      
-      // 70% chance to spawn near a garden, 30% independent
-      if (gardens.length > 0 && Math.random() < 0.7) {
-        parentGarden = gardens[Math.floor(Math.random() * gardens.length)];
-        const angle = Math.random() * Math.PI * 2;
-        const distance = parentGarden.currentRadius + 40 + Math.random() * 100;
-        x = parentGarden.x + Math.cos(angle) * distance;
-        y = parentGarden.y + Math.sin(angle) * distance;
-      } else {
-        x = Math.random() * window.innerWidth;
-        y = Math.random() * window.innerHeight;
-      }
-      
-      growingNodes.push(new GrowingNode(x, y, type, parentGarden));
-    };
-    
-    // Spawn story text
-    const spawnStoryText = () => {
-      if (storyTexts.length > 12) return;
-      
-      const phrase = storyPhrases[Math.floor(Math.random() * storyPhrases.length)];
-      const x = Math.random() * window.innerWidth;
-      const y = Math.random() * window.innerHeight;
-      const colors = ['#2563eb60', '#7c3aed60', '#db277760', '#ef444460', '#8b5cf660', '#06b6d460'];
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+      const colors = ['#ef4444', '#8b5cf6', '#06b6d4', '#10b981', '#f59e0b'];
       const color = colors[Math.floor(Math.random() * colors.length)];
       
-      storyTexts.push(new StoryText(x, y, phrase, color));
+      flowingParticles.push(new FlowingParticle(centerX, centerY, color));
     };
     
-    // Optimized animation loop with performance monitoring
+    // Spawn sacred patterns
+    const spawnSacredPattern = () => {
+      if (sacredPatterns.length > 8) return;
+      
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+      const types = ['mandala', 'spiral'];
+      const type = types[Math.floor(Math.random() * types.length)];
+      const colors = ['#ef444420', '#8b5cf620', '#06b6d420', '#10b98120', '#f59e0b20'];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      
+      sacredPatterns.push(new SacredPattern(x, y, type, color));
+    };
+    
+    // Spawn poetry text
+    const spawnPoetryText = () => {
+      if (poetryTexts.length > 8) return;
+      
+      const phrase = poetryPhrases[Math.floor(Math.random() * poetryPhrases.length)];
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+      const colors = ['#ef444460', '#8b5cf660', '#06b6d460', '#10b98160', '#f59e0b60'];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      
+      poetryTexts.push(new PoetryText(x, y, phrase, color));
+    };
+    
+    // Create energy connections between centers
+    const drawEnergyConnections = () => {
+      if (!ctx || energyCenters.length < 2) return;
+      
+      const heartCenter = energyCenters[0];
+      
+      // Draw connections from heart to all axes
+      energyCenters.slice(1).forEach((center, index) => {
+        const gradient = ctx.createLinearGradient(
+          heartCenter.x, heartCenter.y,
+          center.x, center.y
+        );
+        gradient.addColorStop(0, `${heartCenter.color}40`);
+        gradient.addColorStop(1, `${center.color}40`);
+        
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 2 + Math.sin(Date.now() * 0.003 + index) * 1;
+        ctx.globalAlpha = 0.6;
+        
+        ctx.beginPath();
+        ctx.moveTo(heartCenter.x, heartCenter.y);
+        ctx.lineTo(center.x, center.y);
+        ctx.stroke();
+        
+        ctx.globalAlpha = 1;
+      });
+    };
+    
+    // Animation loop
     const animate = () => {
       if (!ctx || !canvas) return;
       
-      // Clear canvas with full transparency
-      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      // Create cosmic background
+      const gradient = ctx.createRadialGradient(
+        window.innerWidth / 2, window.innerHeight / 2, 0,
+        window.innerWidth / 2, window.innerHeight / 2, Math.max(window.innerWidth, window.innerHeight)
+      );
+      gradient.addColorStop(0, '#0f172a');
+      gradient.addColorStop(0.5, '#1e293b');
+      gradient.addColorStop(1, '#020617');
       
-      // Update and draw gardens
-      gardens.forEach(garden => {
-        garden.update();
-        garden.draw();
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
+      
+      // Spawn elements
+      if (Math.random() < 0.08) spawnFlowingParticle();
+      if (Math.random() < 0.02) spawnSacredPattern();
+      if (Math.random() < 0.015) spawnPoetryText();
+      
+      // Update and draw sacred patterns
+      for (let i = sacredPatterns.length - 1; i >= 0; i--) {
+        sacredPatterns[i].update();
+        sacredPatterns[i].draw();
+        
+        if (sacredPatterns[i].alpha <= 0) {
+          sacredPatterns.splice(i, 1);
+        }
+      }
+      
+      // Draw energy connections
+      drawEnergyConnections();
+      
+      // Update and draw energy centers
+      energyCenters.forEach(center => {
+        center.update();
+        center.draw();
       });
       
-      // Spawn new growing nodes occasionally
-      if (Math.random() < 0.06) {
-        spawnGrowingNode();
-      }
-      
-      // Spawn story text occasionally
-      if (Math.random() < 0.015) {
-        spawnStoryText();
-      }
-      
-      // Update and draw growing nodes
-      for (let i = growingNodes.length - 1; i >= 0; i--) {
-        growingNodes[i].update();
-        growingNodes[i].draw();
+      // Update and draw flowing particles
+      for (let i = flowingParticles.length - 1; i >= 0; i--) {
+        flowingParticles[i].update();
+        flowingParticles[i].draw();
         
-        // Remove expired nodes
-        if (growingNodes[i].life <= 0) {
-          growingNodes.splice(i, 1);
+        if (flowingParticles[i].life <= 0) {
+          flowingParticles.splice(i, 1);
         }
       }
       
-      // Update and draw story texts
-      for (let i = storyTexts.length - 1; i >= 0; i--) {
-        storyTexts[i].update();
-        storyTexts[i].draw();
+      // Update and draw poetry texts
+      for (let i = poetryTexts.length - 1; i >= 0; i--) {
+        poetryTexts[i].update();
+        poetryTexts[i].draw();
         
-        if (storyTexts[i].life <= 0) {
-          storyTexts.splice(i, 1);
-        }
-      }
-      
-      // Create connections between gardens
-      if (Math.random() < 0.03) {
-        if (gardens.length >= 2) {
-          const garden1 = gardens[Math.floor(Math.random() * gardens.length)];
-          const garden2 = gardens[Math.floor(Math.random() * gardens.length)];
-          if (garden1 !== garden2) {
-            connections.push(new Connection(
-              { x: garden1.x, y: garden1.y },
-              { x: garden2.x, y: garden2.y },
-              garden1.color
-            ));
-          }
-        }
-      }
-      
-      // Update and draw connections
-      for (let i = connections.length - 1; i >= 0; i--) {
-        connections[i].update();
-        connections[i].draw();
-        
-        if (connections[i].life <= 0) {
-          connections.splice(i, 1);
+        if (poetryTexts[i].life <= 0) {
+          poetryTexts.splice(i, 1);
         }
       }
       
       animationIdRef.current = requestAnimationFrame(animate);
     };
     
-    createGardens();
+    initializeEnergyCenters();
+    spawnSacredPattern();
+    spawnSacredPattern();
     animate();
     
     return () => {
@@ -515,7 +538,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
   
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
-      {/* Background canvas with maximum visibility */}
+      {/* Energetic background canvas */}
       <canvas 
         ref={canvasRef} 
         className="absolute inset-0 w-full h-full pointer-events-none"
