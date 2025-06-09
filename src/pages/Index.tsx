@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
@@ -140,7 +139,6 @@ const Index = () => {
               <h3 className="font-semibold text-white mb-4">Resources</h3>
               <ul className="space-y-2">
                 <li><a href="/calm-magic-assistant" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-purple-600">Calm Magic Assistant</a></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Framework Guide</a></li>
                 <li><a href="#" className="text-sm hover:text-purple-600">Implementation Examples</a></li>
                 <li><a href="#" className="text-sm hover:text-purple-600">Case Studies</a></li>
                 <li><a href="#" className="text-sm hover:text-purple-600">Best Practices</a></li>
