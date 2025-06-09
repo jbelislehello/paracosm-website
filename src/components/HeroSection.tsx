@@ -8,18 +8,30 @@ interface HeroSectionProps {
 
 const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationIdRef = useRef<number>();
 
   useEffect(() => {
+    // Check for reduced motion preference
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas to full page dimensions
+    // Set canvas to full viewport dimensions with proper scaling
     const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+      
+      ctx.scale(dpr, dpr);
     };
     
     window.addEventListener('resize', resize);
@@ -52,14 +64,14 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         this.y = y;
         this.targetX = x;
         this.targetY = y;
-        this.baseRadius = 80 + Math.random() * 60; // Much larger gardens
+        this.baseRadius = 120 + Math.random() * 80; // Even larger for full page
         this.currentRadius = this.baseRadius;
         this.breathingPhase = Math.random() * Math.PI * 2;
-        this.breathingSpeed = 0.01 + Math.random() * 0.005;
+        this.breathingSpeed = 0.008 + Math.random() * 0.004; // Slower breathing
         this.type = type;
-        this.moveSpeed = 0.3 + Math.random() * 0.2;
+        this.moveSpeed = 0.2 + Math.random() * 0.15;
         this.verticalDirection = Math.random() > 0.5 ? 1 : -1;
-        this.verticalSpeed = 0.2 + Math.random() * 0.3;
+        this.verticalSpeed = 0.15 + Math.random() * 0.2;
         
         // Garden colors and names from Calm Magic framework
         switch(type) {
@@ -84,25 +96,25 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       update() {
         // Breathing animation - expand and contract
         this.breathingPhase += this.breathingSpeed;
-        const breathingMultiplier = 1 + Math.sin(this.breathingPhase) * 0.4;
+        const breathingMultiplier = 1 + Math.sin(this.breathingPhase) * 0.3;
         this.currentRadius = this.baseRadius * breathingMultiplier;
         
         // Vertical movement throughout the page
         this.y += this.verticalDirection * this.verticalSpeed;
         
-        // Bounce off edges and continue flowing
-        if (this.y < -this.currentRadius) {
-          this.y = canvas.height + this.currentRadius;
-        } else if (this.y > canvas.height + this.currentRadius) {
-          this.y = -this.currentRadius;
+        // Seamless vertical wrapping
+        if (this.y < -this.currentRadius - 100) {
+          this.y = window.innerHeight + this.currentRadius + 100;
+        } else if (this.y > window.innerHeight + this.currentRadius + 100) {
+          this.y = -this.currentRadius - 100;
         }
         
         // Gentle horizontal drift
-        this.x += Math.sin(Date.now() * 0.0001 + this.breathingPhase) * 0.3;
+        this.x += Math.sin(Date.now() * 0.0001 + this.breathingPhase) * 0.2;
         
         // Keep within horizontal bounds
         if (this.x < this.currentRadius) this.x = this.currentRadius;
-        if (this.x > canvas.width - this.currentRadius) this.x = canvas.width - this.currentRadius;
+        if (this.x > window.innerWidth - this.currentRadius) this.x = window.innerWidth - this.currentRadius;
       }
       
       draw() {
@@ -112,34 +124,34 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.currentRadius, 0, Math.PI * 2);
         
-        // Create gradient for garden
+        // Create gradient for garden with enhanced transparency
         const gradient = ctx.createRadialGradient(
           this.x, this.y, 0,
           this.x, this.y, this.currentRadius
         );
-        gradient.addColorStop(0, `${this.color}20`);
-        gradient.addColorStop(0.5, `${this.color}15`);
-        gradient.addColorStop(1, `${this.color}05`);
+        gradient.addColorStop(0, `${this.color}15`);
+        gradient.addColorStop(0.5, `${this.color}08`);
+        gradient.addColorStop(1, `${this.color}02`);
         
         ctx.fillStyle = gradient;
         ctx.fill();
         
         // Draw garden border with pulsing effect
-        ctx.strokeStyle = `${this.color}60`;
-        ctx.lineWidth = 3 + Math.sin(this.breathingPhase) * 1;
+        ctx.strokeStyle = `${this.color}40`;
+        ctx.lineWidth = 2 + Math.sin(this.breathingPhase) * 0.8;
         ctx.stroke();
         
-        // Add gentle glow
+        // Add subtle glow
         ctx.shadowColor = this.color;
-        ctx.shadowBlur = 20 + Math.sin(this.breathingPhase) * 10;
+        ctx.shadowBlur = 15 + Math.sin(this.breathingPhase) * 8;
         ctx.stroke();
         ctx.shadowBlur = 0;
         
-        // Draw garden name
-        ctx.fillStyle = `${this.color}80`;
-        ctx.font = `${16 + Math.sin(this.breathingPhase) * 2}px Inter, sans-serif`;
+        // Draw garden name with enhanced transparency
+        ctx.fillStyle = `${this.color}60`;
+        ctx.font = `${14 + Math.sin(this.breathingPhase) * 1.5}px Inter, sans-serif`;
         ctx.textAlign = 'center';
-        ctx.fillText(this.name, this.x, this.y - this.currentRadius - 20);
+        ctx.fillText(this.name, this.x, this.y - this.currentRadius - 25);
       }
     }
     
@@ -165,18 +177,18 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         this.x = x;
         this.y = y;
         this.size = 1;
-        this.maxSize = 4 + Math.random() * 6;
-        this.growthRate = 0.03 + Math.random() * 0.02;
+        this.maxSize = 3 + Math.random() * 4;
+        this.growthRate = 0.02 + Math.random() * 0.015;
         this.type = type;
-        this.maxLife = 400 + Math.random() * 300;
+        this.maxLife = 500 + Math.random() * 400;
         this.life = this.maxLife;
         this.alpha = 1;
-        this.speedX = (Math.random() - 0.5) * 0.3;
-        this.speedY = (Math.random() - 0.5) * 0.3;
+        this.speedX = (Math.random() - 0.5) * 0.2;
+        this.speedY = (Math.random() - 0.5) * 0.2;
         this.parentGarden = parentGarden || null;
         this.orbitAngle = Math.random() * Math.PI * 2;
-        this.orbitRadius = 50 + Math.random() * 100;
-        this.orbitSpeed = 0.005 + Math.random() * 0.01;
+        this.orbitRadius = 60 + Math.random() * 120;
+        this.orbitSpeed = 0.003 + Math.random() * 0.008;
         
         // Node colors from Calm Magic process
         switch(type) {
@@ -226,10 +238,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
           this.y += this.speedY;
           
           // Wrap around screen edges
-          if (this.x < 0) this.x = canvas.width;
-          if (this.x > canvas.width) this.x = 0;
-          if (this.y < 0) this.y = canvas.height;
-          if (this.y > canvas.height) this.y = 0;
+          if (this.x < 0) this.x = window.innerWidth;
+          if (this.x > window.innerWidth) this.x = 0;
+          if (this.y < 0) this.y = window.innerHeight;
+          if (this.y > window.innerHeight) this.y = 0;
         }
         
         // Life cycle
@@ -240,18 +252,18 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       draw() {
         if (!ctx) return;
         
-        ctx.globalAlpha = this.alpha;
+        ctx.globalAlpha = this.alpha * 0.7; // Enhanced transparency
         
         // Draw growing node with pulsing effect
-        const pulseSize = this.size + Math.sin(Date.now() * 0.005) * 0.5;
+        const pulseSize = this.size + Math.sin(Date.now() * 0.004) * 0.3;
         ctx.beginPath();
         ctx.arc(this.x, this.y, pulseSize, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
         ctx.fill();
         
-        // Add glow effect
+        // Add subtle glow effect
         ctx.shadowColor = this.color;
-        ctx.shadowBlur = 12;
+        ctx.shadowBlur = 8;
         ctx.fill();
         ctx.shadowBlur = 0;
         
@@ -269,7 +281,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       constructor(from: { x: number; y: number }, to: { x: number; y: number }, color: string) {
         this.from = { ...from };
         this.to = { ...to };
-        this.maxLife = 180 + Math.random() * 120;
+        this.maxLife = 200 + Math.random() * 150;
         this.life = this.maxLife;
         this.color = color;
       }
@@ -282,10 +294,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         if (!ctx) return;
         const alpha = this.life / this.maxLife;
         
-        ctx.globalAlpha = alpha * 0.4;
+        ctx.globalAlpha = alpha * 0.25; // Enhanced transparency
         ctx.beginPath();
         ctx.strokeStyle = this.color;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1.5;
         ctx.moveTo(this.from.x, this.from.y);
         ctx.lineTo(this.to.x, this.to.y);
         ctx.stroke();
@@ -307,19 +319,19 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         this.x = x;
         this.y = y;
         this.text = text;
-        this.maxLife = 180 + Math.random() * 120;
+        this.maxLife = 220 + Math.random() * 140;
         this.life = this.maxLife;
         this.alpha = 0;
         this.color = color;
-        this.size = 14 + Math.random() * 6;
+        this.size = 12 + Math.random() * 4;
       }
       
       update() {
         this.life--;
         
         // Fade in and out
-        const fadeInDuration = this.maxLife * 0.2;
-        const fadeOutDuration = this.maxLife * 0.3;
+        const fadeInDuration = this.maxLife * 0.25;
+        const fadeOutDuration = this.maxLife * 0.35;
         
         if (this.life > this.maxLife - fadeInDuration) {
           this.alpha = (this.maxLife - this.life) / fadeInDuration;
@@ -330,13 +342,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         }
         
         // Gentle upward drift
-        this.y -= 0.2;
+        this.y -= 0.15;
       }
       
       draw() {
         if (!ctx) return;
         
-        ctx.globalAlpha = this.alpha * 0.8;
+        ctx.globalAlpha = this.alpha * 0.6; // Enhanced transparency
         ctx.fillStyle = this.color;
         ctx.font = `${this.size}px Inter, sans-serif`;
         ctx.textAlign = 'center';
@@ -363,16 +375,19 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       "Seeds of innovation...",
       "Roots of understanding...",
       "Branches of possibility...",
-      "Fruits of creation..."
+      "Fruits of creation...",
+      "Wisdom emerges...",
+      "Clarity unfolds...",
+      "Purpose reveals itself..."
     ];
     
     // Initialize gardens across the full canvas
     const createGardens = () => {
       const gardenTypes = ['intelligence', 'systems', 'prototypes'];
       
-      for (let i = 0; i < 4; i++) { // More gardens for full page
-        const x = (canvas.width / 5) + (i * canvas.width / 4);
-        const y = Math.random() * canvas.height;
+      for (let i = 0; i < 5; i++) { // More gardens for full page coverage
+        const x = (window.innerWidth / 6) + (i * window.innerWidth / 5);
+        const y = Math.random() * window.innerHeight;
         const type = gardenTypes[i % gardenTypes.length];
         gardens.push(new Garden(x, y, type));
       }
@@ -380,23 +395,23 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
     
     // Create growing nodes around gardens and independently
     const spawnGrowingNode = () => {
-      if (growingNodes.length > 40) return; // More nodes for richer experience
+      if (growingNodes.length > 50) return; // More nodes for richer experience
       
       const nodeTypes = ['love', 'magic', 'calm', 'open', 'free', 'insight', 'connection', 'transformation'];
       const type = nodeTypes[Math.floor(Math.random() * nodeTypes.length)];
       
       let x, y, parentGarden = null;
       
-      // 60% chance to spawn near a garden, 40% independent
-      if (gardens.length > 0 && Math.random() < 0.6) {
+      // 70% chance to spawn near a garden, 30% independent
+      if (gardens.length > 0 && Math.random() < 0.7) {
         parentGarden = gardens[Math.floor(Math.random() * gardens.length)];
         const angle = Math.random() * Math.PI * 2;
-        const distance = parentGarden.currentRadius + 30 + Math.random() * 80;
+        const distance = parentGarden.currentRadius + 40 + Math.random() * 100;
         x = parentGarden.x + Math.cos(angle) * distance;
         y = parentGarden.y + Math.sin(angle) * distance;
       } else {
-        x = Math.random() * canvas.width;
-        y = Math.random() * canvas.height;
+        x = Math.random() * window.innerWidth;
+        y = Math.random() * window.innerHeight;
       }
       
       growingNodes.push(new GrowingNode(x, y, type, parentGarden));
@@ -404,20 +419,23 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
     
     // Spawn story text
     const spawnStoryText = () => {
-      if (storyTexts.length > 8) return;
+      if (storyTexts.length > 12) return;
       
       const phrase = storyPhrases[Math.floor(Math.random() * storyPhrases.length)];
-      const x = Math.random() * canvas.width;
-      const y = Math.random() * canvas.height;
-      const colors = ['#2563eb80', '#7c3aed80', '#db277780', '#ef444480', '#8b5cf680'];
+      const x = Math.random() * window.innerWidth;
+      const y = Math.random() * window.innerHeight;
+      const colors = ['#2563eb60', '#7c3aed60', '#db277760', '#ef444460', '#8b5cf660', '#06b6d460'];
       const color = colors[Math.floor(Math.random() * colors.length)];
       
       storyTexts.push(new StoryText(x, y, phrase, color));
     };
     
-    // Animation loop
+    // Optimized animation loop with performance monitoring
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (!ctx || !canvas) return;
+      
+      // Clear canvas with full transparency
+      ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
       
       // Update and draw gardens
       gardens.forEach(garden => {
@@ -426,12 +444,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       });
       
       // Spawn new growing nodes occasionally
-      if (Math.random() < 0.08) {
+      if (Math.random() < 0.06) {
         spawnGrowingNode();
       }
       
       // Spawn story text occasionally
-      if (Math.random() < 0.02) {
+      if (Math.random() < 0.015) {
         spawnStoryText();
       }
       
@@ -457,7 +475,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       }
       
       // Create connections between gardens
-      if (Math.random() < 0.04) {
+      if (Math.random() < 0.03) {
         if (gardens.length >= 2) {
           const garden1 = gardens[Math.floor(Math.random() * gardens.length)];
           const garden2 = gardens[Math.floor(Math.random() * gardens.length)];
@@ -481,7 +499,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         }
       }
       
-      requestAnimationFrame(animate);
+      animationIdRef.current = requestAnimationFrame(animate);
     };
     
     createGardens();
@@ -489,50 +507,62 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
     
     return () => {
       window.removeEventListener('resize', resize);
+      if (animationIdRef.current) {
+        cancelAnimationFrame(animationIdRef.current);
+      }
     };
   }, []);
   
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
-      {/* Full page canvas background */}
+      {/* Enhanced background canvas with guaranteed z-index positioning */}
       <canvas 
         ref={canvasRef} 
-        className="fixed inset-0 w-full h-full z-0 pointer-events-none"
-        style={{ opacity: 0.7 }}
+        className="fixed inset-0 w-full h-full pointer-events-none"
+        style={{ 
+          zIndex: -10,
+          opacity: 0.6,
+          mixBlendMode: 'multiply'
+        }}
+        aria-hidden="true"
       ></canvas>
       
-      {/* Content */}
-      <div className="container relative z-10 px-4 py-12 md:py-24">
+      {/* Content with enhanced z-index protection */}
+      <div className="container relative px-4 py-12 md:py-24" style={{ zIndex: 10 }}>
         <div className="max-w-4xl mx-auto text-center">
-          {/* Transformation headline */}
-          <div className="mb-8">
-            <h2 className="text-xl md:text-2xl font-semibold text-slate-700 dark:text-slate-300 mb-2">
-              Get Ready for Transformation
-            </h2>
-            <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-6">
-              The UX & Product Development Framework for the AI ERA
-            </p>
-            
-            {/* Centered CTA under transformation headline */}
-            <div className="flex justify-center">
-              <Button 
-                size="lg" 
-                onClick={onDiscoverFramework}
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl flex items-center gap-2"
-              >
-                <Sparkles className="w-5 h-5" />
-                Discover Calm Magic
-              </Button>
+          {/* Transformation headline with backdrop protection */}
+          <div className="mb-8 relative z-20">
+            <div className="backdrop-blur-sm bg-white/10 dark:bg-slate-900/10 rounded-2xl p-8 border border-white/20">
+              <h2 className="text-xl md:text-2xl font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                Get Ready for Transformation
+              </h2>
+              <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-6">
+                The UX & Product Development Framework for the AI ERA
+              </p>
+              
+              {/* Centered CTA with enhanced z-index */}
+              <div className="flex justify-center relative z-30">
+                <Button 
+                  size="lg" 
+                  onClick={onDiscoverFramework}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl flex items-center gap-2 relative z-40"
+                >
+                  <Sparkles className="w-5 h-5" />
+                  Discover Calm Magic
+                </Button>
+              </div>
             </div>
           </div>
 
-          {/* Main headline */}
-          <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-agent-blue via-agent-purple to-agent-pink animate-gradient-x mb-6">
-            Build Your Agentic Ecosystem
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 text-gray-700 dark:text-gray-200">
-            Design, deploy, and manage interconnected AI agents that work together to solve complex problems
-          </p>
+          {/* Main headline with backdrop protection */}
+          <div className="backdrop-blur-sm bg-white/5 dark:bg-slate-900/5 rounded-2xl p-8 border border-white/10 relative z-20">
+            <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-agent-blue via-agent-purple to-agent-pink animate-gradient-x mb-6">
+              Build Your Agentic Ecosystem
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 text-gray-700 dark:text-gray-200">
+              Design, deploy, and manage interconnected AI agents that work together to solve complex problems
+            </p>
+          </div>
         </div>
       </div>
     </section>
