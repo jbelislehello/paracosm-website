@@ -14,23 +14,77 @@ const CalmMagicProcessDiagram: React.FC = () => {
       <CardContent>
         <div className="overflow-x-auto">
           <svg viewBox="0 0 1200 800" className="w-full h-auto">
+            {/* Define patterns and markers */}
+            <defs>
+              <pattern id="dottedPattern" patternUnits="userSpaceOnUse" width="4" height="4">
+                <circle cx="2" cy="2" r="1" fill="#94a3b8" opacity="0.5"/>
+              </pattern>
+              <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+              </marker>
+              <marker id="clockwiseArrow" markerWidth="12" markerHeight="8" refX="10" refY="4" orient="auto">
+                <polygon points="0 0, 12 4, 0 8" fill="#f59e0b"/>
+              </marker>
+            </defs>
+
             {/* Garden Selection Phase */}
             <g id="garden-phase">
               <rect x="50" y="50" width="300" height="150" rx="10" fill="#f8fafc" stroke="#2563eb" strokeWidth="2"/>
               <text x="200" y="80" textAnchor="middle" className="text-lg font-bold fill-slate-800">Phase 1: Garden Selection</text>
               
-              {/* Three Gardens */}
-              <circle cx="120" cy="120" r="25" fill="#2563eb"/>
-              <text x="120" y="126" textAnchor="middle" className="text-white text-sm">🧠</text>
-              <text x="120" y="155" textAnchor="middle" className="text-xs fill-slate-600">Intelligence</text>
+              {/* Intelligence Garden */}
+              <g id="intelligence-garden">
+                <circle cx="120" cy="120" r="25" fill="#2563eb"/>
+                <circle cx="120" cy="120" r="15" fill="url(#dottedPattern)"/>
+                <text x="120" y="126" textAnchor="middle" className="text-white text-sm">🧠</text>
+                <text x="120" y="155" textAnchor="middle" className="text-xs fill-slate-600">Intelligence</text>
+                
+                {/* Energetic Axes for Intelligence Garden */}
+                <text x="120" y="88" textAnchor="middle" className="text-xs font-bold" fill="#ef4444">LOVE</text>
+                <text x="152" y="125" textAnchor="middle" className="text-xs font-bold" fill="#8b5cf6">MAGIC</text>
+                <text x="120" y="158" textAnchor="middle" className="text-xs font-bold" fill="#06b6d4">CALM</text>
+                <text x="88" y="125" textAnchor="middle" className="text-xs font-bold" fill="#10b981">OPEN</text>
+                
+                {/* FREE arrow - clockwise */}
+                <path d="M 120 110 A 10 10 0 0 1 130 120" stroke="#f59e0b" strokeWidth="2" fill="none" markerEnd="url(#clockwiseArrow)"/>
+                <text x="135" y="115" className="text-xs font-bold" fill="#f59e0b">FREE</text>
+              </g>
+
+              {/* Systems Garden */}
+              <g id="systems-garden">
+                <circle cx="200" cy="120" r="25" fill="#7c3aed"/>
+                <circle cx="200" cy="120" r="15" fill="url(#dottedPattern)"/>
+                <text x="200" y="126" textAnchor="middle" className="text-white text-sm">⚙️</text>
+                <text x="200" y="155" textAnchor="middle" className="text-xs fill-slate-600">Systems</text>
+                
+                {/* Energetic Axes for Systems Garden */}
+                <text x="200" y="88" textAnchor="middle" className="text-xs font-bold" fill="#ef4444">LOVE</text>
+                <text x="232" y="125" textAnchor="middle" className="text-xs font-bold" fill="#8b5cf6">MAGIC</text>
+                <text x="200" y="158" textAnchor="middle" className="text-xs font-bold" fill="#06b6d4">CALM</text>
+                <text x="168" y="125" textAnchor="middle" className="text-xs font-bold" fill="#10b981">OPEN</text>
+                
+                {/* FREE arrow - clockwise */}
+                <path d="M 200 110 A 10 10 0 0 1 210 120" stroke="#f59e0b" strokeWidth="2" fill="none" markerEnd="url(#clockwiseArrow)"/>
+                <text x="215" y="115" className="text-xs font-bold" fill="#f59e0b">FREE</text>
+              </g>
               
-              <circle cx="200" cy="120" r="25" fill="#7c3aed"/>
-              <text x="200" y="126" textAnchor="middle" className="text-white text-sm">⚙️</text>
-              <text x="200" y="155" textAnchor="middle" className="text-xs fill-slate-600">Systems</text>
-              
-              <circle cx="280" cy="120" r="25" fill="#db2777"/>
-              <text x="280" y="126" textAnchor="middle" className="text-white text-sm">🌱</text>
-              <text x="280" y="155" textAnchor="middle" className="text-xs fill-slate-600">Prototypes</text>
+              {/* Prototypes Garden */}
+              <g id="prototypes-garden">
+                <circle cx="280" cy="120" r="25" fill="#db2777"/>
+                <circle cx="280" cy="120" r="15" fill="url(#dottedPattern)"/>
+                <text x="280" y="126" textAnchor="middle" className="text-white text-sm">🌱</text>
+                <text x="280" y="155" textAnchor="middle" className="text-xs fill-slate-600">Prototypes</text>
+                
+                {/* Energetic Axes for Prototypes Garden */}
+                <text x="280" y="88" textAnchor="middle" className="text-xs font-bold" fill="#ef4444">LOVE</text>
+                <text x="312" y="125" textAnchor="middle" className="text-xs font-bold" fill="#8b5cf6">MAGIC</text>
+                <text x="280" y="158" textAnchor="middle" className="text-xs font-bold" fill="#06b6d4">CALM</text>
+                <text x="248" y="125" textAnchor="middle" className="text-xs font-bold" fill="#10b981">OPEN</text>
+                
+                {/* FREE arrow - clockwise */}
+                <path d="M 280 110 A 10 10 0 0 1 290 120" stroke="#f59e0b" strokeWidth="2" fill="none" markerEnd="url(#clockwiseArrow)"/>
+                <text x="295" y="115" className="text-xs font-bold" fill="#f59e0b">FREE</text>
+              </g>
             </g>
 
             {/* Emotional State Mapping */}
@@ -126,12 +180,6 @@ const CalmMagicProcessDiagram: React.FC = () => {
             </g>
 
             {/* Flow Arrows */}
-            <defs>
-              <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
-              </marker>
-            </defs>
-            
             <path d="M 350 125 Q 375 125 400 125" stroke="#64748b" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)"/>
             <path d="M 750 150 Q 775 150 800 150" stroke="#64748b" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)"/>
             <path d="M 600 250 Q 600 275 600 300" stroke="#64748b" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)"/>
