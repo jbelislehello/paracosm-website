@@ -85,6 +85,42 @@ const InnovationJournal = () => {
     setCurrentStep(step);
   };
 
+  const researchContexts = [
+    {
+      type: 'user_research',
+      name: 'User Research Context',
+      description: 'Study how people actually work and what frustrates them in their daily tasks',
+      icon: '👥',
+      color: '#2563eb',
+      prompts: [
+        'Who are the primary users affected by this problem?',
+        'What specific tasks do they struggle with?'
+      ]
+    },
+    {
+      type: 'organizational_analysis',
+      name: 'Organizational Analysis',
+      description: 'Understand system dynamics, processes, and structural constraints',
+      icon: '🏢',
+      color: '#7c3aed',
+      prompts: [
+        'What organizational processes are involved?',
+        'Where do bottlenecks typically occur?'
+      ]
+    },
+    {
+      type: 'vision_exploration',
+      name: 'Vision Exploration',
+      description: 'Imagine future scenarios and breakthrough possibilities',
+      icon: '🚀',
+      color: '#db2777',
+      prompts: [
+        'What would the ideal future state look like?',
+        'What new capabilities could be unlocked?'
+      ]
+    }
+  ];
+
   const renderCurrentStep = () => {
     switch (currentStep) {
       case 1:
@@ -148,6 +184,45 @@ const InnovationJournal = () => {
         </TabsList>
 
         <TabsContent value="framework" className="space-y-6">
+          <div className="space-y-6">
+            <div className="text-center space-y-2">
+              <h2 className="text-2xl font-bold">Step 1: Stakeholder Research</h2>
+              <p className="text-slate-600 dark:text-slate-300">
+                Choose your research context to begin understanding the problem space
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {researchContexts.map((context) => (
+                <Card 
+                  key={context.type}
+                  className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-105"
+                >
+                  <CardContent className="p-6 text-center">
+                    <div 
+                      className="w-16 h-16 mx-auto rounded-full flex items-center justify-center text-2xl mb-4"
+                      style={{ backgroundColor: `${context.color}20` }}
+                    >
+                      {context.icon}
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2">{context.name}</h3>
+                    <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
+                      {context.description}
+                    </p>
+                    <div className="space-y-2">
+                      <div className="text-xs font-medium text-slate-500">Key Questions:</div>
+                      <ul className="text-xs text-slate-500 space-y-1">
+                        {context.prompts.map((prompt, idx) => (
+                          <li key={idx}>• {prompt}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+
           <ProductDevelopmentSteps
             currentStep={currentStep}
             completedSteps={completedSteps}
