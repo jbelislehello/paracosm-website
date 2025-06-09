@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
@@ -48,7 +49,7 @@ const Index = () => {
             onClick={handleDiscoverFramework}
             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300"
           >
-            Product Framework
+            Get Started
           </Button>
         </div>
       </header>

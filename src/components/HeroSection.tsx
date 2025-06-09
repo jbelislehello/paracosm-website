@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
@@ -203,17 +204,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
             </p>
           </div>
 
-          {/* Framework CTA */}
-          <div className="mb-12">
-            <Button 
-              size="lg" 
-              onClick={onDiscoverFramework}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 transition-all duration-300 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl"
-            >
-              Discover the Calm Magic Product Development Framework
-            </Button>
-          </div>
-
           {/* Main headline */}
           <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-agent-blue via-agent-purple to-agent-pink animate-gradient-x mb-6">
             Build Your Agentic Ecosystem
@@ -221,16 +211,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
           <p className="text-xl md:text-2xl mb-8 text-gray-700 dark:text-gray-200">
             Design, deploy, and manage interconnected AI agents that work together to solve complex problems
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
-              onClick={onDiscoverFramework}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300 text-white px-8 flex items-center gap-2"
-            >
-              <Sparkles className="w-5 h-5" />
-              Product Framework
-            </Button>
-          </div>
         </div>
       </div>
     </section>
