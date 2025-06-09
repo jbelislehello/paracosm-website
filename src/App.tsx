@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { PartnerToolsProvider } from "./context/PartnerToolsContext";
 import Index from "./pages/Index";
+import RelationalHealing from "./pages/RelationalHealing";
 import NotFound from "./pages/NotFound";
 import React from "react";
 
@@ -18,6 +19,7 @@ const App = () => (
         <PartnerToolsProvider>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/calm-magic-assistant" element={<RelationalHealing />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
