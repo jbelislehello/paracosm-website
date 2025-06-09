@@ -531,6 +531,16 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         <div className="max-w-4xl mx-auto text-center">
           {/* Main headline with backdrop protection */}
           <div className="backdrop-blur-sm bg-white/10 dark:bg-slate-900/10 rounded-2xl p-8 border border-white/20 relative z-20">
+            {/* Product Framework CTA Button - Top Left Corner */}
+            <Button 
+              onClick={onDiscoverFramework}
+              className="absolute -top-2 -left-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300 text-white px-4 py-2 text-sm font-semibold shadow-lg hover:shadow-xl flex items-center gap-2 z-30 rounded-lg"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span className="hidden sm:inline">Product Framework</span>
+              <span className="sm:hidden">Framework</span>
+            </Button>
+            
             <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-agent-blue via-agent-purple to-agent-pink animate-gradient-x mb-6">
               Build Your Agentic Ecosystem
             </h1>
