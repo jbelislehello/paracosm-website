@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
@@ -26,99 +25,219 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
     window.addEventListener('resize', resize);
     resize();
     
-    // Particle system for Calm Magic process
-    const particles: Particle[] = [];
+    // Garden circles and growing nodes
+    const gardens: Garden[] = [];
+    const growingNodes: GrowingNode[] = [];
     const connections: Connection[] = [];
     
-    class Particle {
+    class Garden {
       x: number;
       y: number;
-      size: number;
-      speedX: number;
-      speedY: number;
+      baseRadius: number;
+      currentRadius: number;
+      breathingPhase: number;
+      breathingSpeed: number;
       color: string;
       type: string;
+      moveSpeed: number;
+      targetX: number;
+      targetY: number;
       
-      constructor(x: number, y: number, size: number, type: string) {
+      constructor(x: number, y: number, type: string) {
         this.x = x;
         this.y = y;
-        this.size = size;
-        this.speedX = (Math.random() - 0.5) * 0.3;
-        this.speedY = (Math.random() - 0.5) * 0.3;
+        this.targetX = x;
+        this.targetY = y;
+        this.baseRadius = 40 + Math.random() * 30;
+        this.currentRadius = this.baseRadius;
+        this.breathingPhase = Math.random() * Math.PI * 2;
+        this.breathingSpeed = 0.02 + Math.random() * 0.01;
         this.type = type;
+        this.moveSpeed = 0.5 + Math.random() * 0.3;
         
-        // Calm Magic process colors
+        // Garden colors from Calm Magic framework
         switch(type) {
           case 'intelligence':
-            this.color = '#2563eb'; // blue - Garden of Intelligence
+            this.color = '#2563eb'; // blue
             break;
           case 'systems':
-            this.color = '#7c3aed'; // purple - Garden of Systems
+            this.color = '#7c3aed'; // purple
             break;
           case 'prototypes':
-            this.color = '#db2777'; // pink - Garden of Prototypes
-            break;
-          case 'love':
-            this.color = '#ef4444'; // red - Love axis
-            break;
-          case 'magic':
-            this.color = '#8b5cf6'; // violet - Magic axis
-            break;
-          case 'calm':
-            this.color = '#06b6d4'; // cyan - Calm axis
-            break;
-          case 'open':
-            this.color = '#10b981'; // emerald - Open axis
-            break;
-          case 'free':
-            this.color = '#f59e0b'; // amber - Free axis
+            this.color = '#db2777'; // pink
             break;
           default:
-            this.color = '#6b7280'; // gray - Documentation
+            this.color = '#6b7280'; // gray
         }
       }
       
       update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
+        // Breathing animation - expand and contract
+        this.breathingPhase += this.breathingSpeed;
+        const breathingMultiplier = 1 + Math.sin(this.breathingPhase) * 0.3;
+        this.currentRadius = this.baseRadius * breathingMultiplier;
         
-        // Bounce off edges with slight dampening
-        if (this.x < 0 || this.x > canvas.width) {
-          this.speedX *= -0.8;
-          this.x = Math.max(0, Math.min(canvas.width, this.x));
+        // Gentle movement toward target
+        const dx = this.targetX - this.x;
+        const dy = this.targetY - this.y;
+        this.x += dx * 0.005;
+        this.y += dy * 0.005;
+        
+        // Occasionally set new target
+        if (Math.random() < 0.002) {
+          this.targetX = Math.random() * canvas.width;
+          this.targetY = Math.random() * canvas.height;
         }
-        if (this.y < 0 || this.y > canvas.height) {
-          this.speedY *= -0.8;
-          this.y = Math.max(0, Math.min(canvas.height, this.y));
-        }
+        
+        // Keep gardens within bounds
+        if (this.x < this.currentRadius) this.targetX = this.currentRadius + 50;
+        if (this.x > canvas.width - this.currentRadius) this.targetX = canvas.width - this.currentRadius - 50;
+        if (this.y < this.currentRadius) this.targetY = this.currentRadius + 50;
+        if (this.y > canvas.height - this.currentRadius) this.targetY = canvas.height - this.currentRadius - 50;
       }
       
       draw() {
         if (!ctx) return;
+        
+        // Draw garden circle with breathing effect
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.currentRadius, 0, Math.PI * 2);
+        
+        // Create gradient for garden
+        const gradient = ctx.createRadialGradient(
+          this.x, this.y, 0,
+          this.x, this.y, this.currentRadius
+        );
+        gradient.addColorStop(0, `${this.color}30`);
+        gradient.addColorStop(0.7, `${this.color}20`);
+        gradient.addColorStop(1, `${this.color}10`);
+        
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        
+        // Draw garden border
+        ctx.strokeStyle = `${this.color}80`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        // Add gentle glow
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 15;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+      }
+    }
+    
+    class GrowingNode {
+      x: number;
+      y: number;
+      size: number;
+      maxSize: number;
+      growthRate: number;
+      color: string;
+      type: string;
+      life: number;
+      maxLife: number;
+      alpha: number;
+      speedX: number;
+      speedY: number;
+      
+      constructor(x: number, y: number, type: string) {
+        this.x = x;
+        this.y = y;
+        this.size = 1;
+        this.maxSize = 3 + Math.random() * 4;
+        this.growthRate = 0.05 + Math.random() * 0.03;
+        this.type = type;
+        this.maxLife = 300 + Math.random() * 200;
+        this.life = this.maxLife;
+        this.alpha = 1;
+        this.speedX = (Math.random() - 0.5) * 0.2;
+        this.speedY = (Math.random() - 0.5) * 0.2;
+        
+        // Node colors from 5-axis compass and process elements
+        switch(type) {
+          case 'love':
+            this.color = '#ef4444'; // red
+            break;
+          case 'magic':
+            this.color = '#8b5cf6'; // violet
+            break;
+          case 'calm':
+            this.color = '#06b6d4'; // cyan
+            break;
+          case 'open':
+            this.color = '#10b981'; // emerald
+            break;
+          case 'free':
+            this.color = '#f59e0b'; // amber
+            break;
+          case 'insight':
+            this.color = '#3b82f6'; // blue
+            break;
+          case 'connection':
+            this.color = '#8b5cf6'; // purple
+            break;
+          default:
+            this.color = '#6b7280'; // gray
+        }
+      }
+      
+      update() {
+        // Growth phase
+        if (this.size < this.maxSize) {
+          this.size += this.growthRate;
+        }
+        
+        // Movement
+        this.x += this.speedX;
+        this.y += this.speedY;
+        
+        // Gentle bouncing
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -0.8;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -0.8;
+        this.x = Math.max(0, Math.min(canvas.width, this.x));
+        this.y = Math.max(0, Math.min(canvas.height, this.y));
+        
+        // Life cycle
+        this.life--;
+        this.alpha = this.life / this.maxLife;
+      }
+      
+      draw() {
+        if (!ctx) return;
+        
+        ctx.globalAlpha = this.alpha;
+        
+        // Draw growing node
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
         ctx.fill();
         
-        // Add a gentle glow effect
+        // Add glow effect
         ctx.shadowColor = this.color;
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = 8;
         ctx.fill();
         ctx.shadowBlur = 0;
+        
+        ctx.globalAlpha = 1;
       }
     }
     
     class Connection {
-      from: Particle;
-      to: Particle;
+      from: { x: number; y: number };
+      to: { x: number; y: number };
       life: number;
       maxLife: number;
+      color: string;
       
-      constructor(from: Particle, to: Particle) {
-        this.from = from;
-        this.to = to;
-        this.maxLife = 120 + Math.random() * 180;
+      constructor(from: { x: number; y: number }, to: { x: number; y: number }, color: string) {
+        this.from = { ...from };
+        this.to = { ...to };
+        this.maxLife = 120 + Math.random() * 100;
         this.life = this.maxLife;
+        this.color = color;
       }
       
       update() {
@@ -129,92 +248,94 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         if (!ctx) return;
         const alpha = this.life / this.maxLife;
         
-        // Create flowing gradient for process connections
-        const gradient = ctx.createLinearGradient(this.from.x, this.from.y, this.to.x, this.to.y);
-        gradient.addColorStop(0, `${this.from.color}${Math.floor(alpha * 80).toString(16).padStart(2, '0')}`);
-        gradient.addColorStop(1, `${this.to.color}${Math.floor(alpha * 80).toString(16).padStart(2, '0')}`);
-        
+        ctx.globalAlpha = alpha * 0.6;
         ctx.beginPath();
-        ctx.strokeStyle = gradient;
-        ctx.lineWidth = 1.2 * alpha;
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 1.5;
         ctx.moveTo(this.from.x, this.from.y);
         ctx.lineTo(this.to.x, this.to.y);
         ctx.stroke();
+        ctx.globalAlpha = 1;
       }
     }
     
-    // Create Calm Magic process particles
-    const createParticles = () => {
-      const processTypes = [
-        'intelligence', 'systems', 'prototypes', // Garden types
-        'love', 'magic', 'calm', 'open', 'free', // 5-axis compass
-        'documentation' // Process output
-      ];
+    // Initialize gardens
+    const createGardens = () => {
+      const gardenTypes = ['intelligence', 'systems', 'prototypes'];
       
-      for (let i = 0; i < 20; i++) {
-        const size = 2.5 + Math.random() * 3.5;
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
-        
-        // Distribute particle types to show process flow
-        let type;
-        const randomValue = Math.random();
-        if (randomValue < 0.3) {
-          // Garden types (30%)
-          const gardenTypes = ['intelligence', 'systems', 'prototypes'];
-          type = gardenTypes[Math.floor(Math.random() * gardenTypes.length)];
-        } else if (randomValue < 0.8) {
-          // Compass axes (50%)
-          const axisTypes = ['love', 'magic', 'calm', 'open', 'free'];
-          type = axisTypes[Math.floor(Math.random() * axisTypes.length)];
-        } else {
-          // Documentation/output (20%)
-          type = 'documentation';
-        }
-        
-        particles.push(new Particle(x, y, size, type));
+      for (let i = 0; i < 3; i++) {
+        const x = (canvas.width / 4) + (i * canvas.width / 3);
+        const y = canvas.height / 2 + (Math.random() - 0.5) * 200;
+        gardens.push(new Garden(x, y, gardenTypes[i]));
       }
+    };
+    
+    // Create growing nodes around gardens
+    const spawnGrowingNode = () => {
+      if (growingNodes.length > 25) return;
+      
+      const nodeTypes = ['love', 'magic', 'calm', 'open', 'free', 'insight', 'connection'];
+      const type = nodeTypes[Math.floor(Math.random() * nodeTypes.length)];
+      
+      // Spawn near gardens or randomly
+      let x, y;
+      if (gardens.length > 0 && Math.random() < 0.7) {
+        const garden = gardens[Math.floor(Math.random() * gardens.length)];
+        const angle = Math.random() * Math.PI * 2;
+        const distance = garden.currentRadius + 20 + Math.random() * 50;
+        x = garden.x + Math.cos(angle) * distance;
+        y = garden.y + Math.sin(angle) * distance;
+      } else {
+        x = Math.random() * canvas.width;
+        y = Math.random() * canvas.height;
+      }
+      
+      growingNodes.push(new GrowingNode(x, y, type));
     };
     
     // Animation loop
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
-      // Update and draw particles
-      particles.forEach(particle => {
-        particle.update();
-        particle.draw();
+      // Update and draw gardens
+      gardens.forEach(garden => {
+        garden.update();
+        garden.draw();
       });
       
-      // Create meaningful connections based on process flow
-      if (Math.random() < 0.03 && particles.length > 1) {
-        // Prefer connections that make sense in the Calm Magic process
-        const gardenParticles = particles.filter(p => ['intelligence', 'systems', 'prototypes'].includes(p.type));
-        const compassParticles = particles.filter(p => ['love', 'magic', 'calm', 'open', 'free'].includes(p.type));
-        const docParticles = particles.filter(p => p.type === 'documentation');
+      // Spawn new growing nodes occasionally
+      if (Math.random() < 0.05) {
+        spawnGrowingNode();
+      }
+      
+      // Update and draw growing nodes
+      for (let i = growingNodes.length - 1; i >= 0; i--) {
+        growingNodes[i].update();
+        growingNodes[i].draw();
         
-        let from, to;
-        
-        if (gardenParticles.length > 0 && compassParticles.length > 0 && Math.random() < 0.6) {
-          // Garden to compass connection (process flow)
-          from = gardenParticles[Math.floor(Math.random() * gardenParticles.length)];
-          to = compassParticles[Math.floor(Math.random() * compassParticles.length)];
-        } else if (compassParticles.length > 1 && Math.random() < 0.3) {
-          // Compass to compass (emotional state integration)
-          from = compassParticles[Math.floor(Math.random() * compassParticles.length)];
-          to = compassParticles[Math.floor(Math.random() * compassParticles.length)];
-        } else if (compassParticles.length > 0 && docParticles.length > 0) {
-          // Compass to documentation (output)
-          from = compassParticles[Math.floor(Math.random() * compassParticles.length)];
-          to = docParticles[Math.floor(Math.random() * docParticles.length)];
-        } else {
-          // Random connection as fallback
-          from = particles[Math.floor(Math.random() * particles.length)];
-          to = particles[Math.floor(Math.random() * particles.length)];
+        // Remove expired nodes
+        if (growingNodes[i].life <= 0) {
+          growingNodes.splice(i, 1);
         }
+      }
+      
+      // Create connections between gardens and nodes
+      if (Math.random() < 0.03) {
+        const garden = gardens[Math.floor(Math.random() * gardens.length)];
+        const nearbyNodes = growingNodes.filter(node => {
+          const distance = Math.sqrt(
+            Math.pow(node.x - garden.x, 2) + Math.pow(node.y - garden.y, 2)
+          );
+          return distance < garden.currentRadius + 80;
+        });
         
-        if (from !== to) {
-          connections.push(new Connection(from, to));
+        if (nearbyNodes.length > 0) {
+          const node = nearbyNodes[Math.floor(Math.random() * nearbyNodes.length)];
+          connections.push(new Connection(
+            { x: garden.x, y: garden.y },
+            { x: node.x, y: node.y },
+            garden.color
+          ));
         }
       }
       
@@ -223,7 +344,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         connections[i].update();
         connections[i].draw();
         
-        // Remove expired connections
         if (connections[i].life <= 0) {
           connections.splice(i, 1);
         }
@@ -232,7 +352,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       requestAnimationFrame(animate);
     };
     
-    createParticles();
+    createGardens();
     animate();
     
     return () => {
@@ -246,7 +366,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       <canvas 
         ref={canvasRef} 
         className="absolute inset-0 w-full h-full z-0"
-        style={{ opacity: 0.7 }}
+        style={{ opacity: 0.8 }}
       ></canvas>
       
       {/* Content */}
