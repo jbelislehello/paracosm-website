@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
@@ -124,32 +125,32 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.currentRadius, 0, Math.PI * 2);
         
-        // Create gradient for garden with increased opacity
+        // Create gradient for garden with high visibility
         const gradient = ctx.createRadialGradient(
           this.x, this.y, 0,
           this.x, this.y, this.currentRadius
         );
-        gradient.addColorStop(0, `${this.color}25`);
-        gradient.addColorStop(0.5, `${this.color}15`);
-        gradient.addColorStop(1, `${this.color}08`);
+        gradient.addColorStop(0, `${this.color}60`);
+        gradient.addColorStop(0.5, `${this.color}40`);
+        gradient.addColorStop(1, `${this.color}20`);
         
         ctx.fillStyle = gradient;
         ctx.fill();
         
-        // Draw garden border with pulsing effect - increased opacity
-        ctx.strokeStyle = `${this.color}80`;
-        ctx.lineWidth = 2 + Math.sin(this.breathingPhase) * 0.8;
+        // Draw garden border with pulsing effect - high visibility
+        ctx.strokeStyle = `${this.color}CC`;
+        ctx.lineWidth = 3 + Math.sin(this.breathingPhase) * 1;
         ctx.stroke();
         
-        // Add subtle glow
+        // Add strong glow
         ctx.shadowColor = this.color;
-        ctx.shadowBlur = 15 + Math.sin(this.breathingPhase) * 8;
+        ctx.shadowBlur = 20 + Math.sin(this.breathingPhase) * 10;
         ctx.stroke();
         ctx.shadowBlur = 0;
         
-        // Draw garden name with increased opacity
-        ctx.fillStyle = `${this.color}80`;
-        ctx.font = `${14 + Math.sin(this.breathingPhase) * 1.5}px Inter, sans-serif`;
+        // Draw garden name with high visibility
+        ctx.fillStyle = `${this.color}FF`;
+        ctx.font = `${16 + Math.sin(this.breathingPhase) * 2}px Inter, sans-serif`;
         ctx.textAlign = 'center';
         ctx.fillText(this.name, this.x, this.y - this.currentRadius - 25);
       }
@@ -252,7 +253,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       draw() {
         if (!ctx) return;
         
-        ctx.globalAlpha = this.alpha * 0.9; // Increased transparency
+        ctx.globalAlpha = this.alpha; // Full visibility
         
         // Draw growing node with pulsing effect
         const pulseSize = this.size + Math.sin(Date.now() * 0.004) * 0.3;
@@ -261,9 +262,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         ctx.fillStyle = this.color;
         ctx.fill();
         
-        // Add subtle glow effect
+        // Add strong glow effect
         ctx.shadowColor = this.color;
-        ctx.shadowBlur = 8;
+        ctx.shadowBlur = 15;
         ctx.fill();
         ctx.shadowBlur = 0;
         
@@ -294,10 +295,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         if (!ctx) return;
         const alpha = this.life / this.maxLife;
         
-        ctx.globalAlpha = alpha * 0.4; // Increased transparency
+        ctx.globalAlpha = alpha * 0.8; // High visibility
         ctx.beginPath();
         ctx.strokeStyle = this.color;
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 2;
         ctx.moveTo(this.from.x, this.from.y);
         ctx.lineTo(this.to.x, this.to.y);
         ctx.stroke();
@@ -348,7 +349,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       draw() {
         if (!ctx) return;
         
-        ctx.globalAlpha = this.alpha * 0.8; // Increased transparency
+        ctx.globalAlpha = this.alpha; // Full visibility
         ctx.fillStyle = this.color;
         ctx.font = `${this.size}px Inter, sans-serif`;
         ctx.textAlign = 'center';
@@ -515,24 +516,23 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
   
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
-      {/* Enhanced background canvas with improved visibility */}
+      {/* Background canvas with maximum visibility */}
       <canvas 
         ref={canvasRef} 
-        className="fixed inset-0 w-full h-full pointer-events-none"
+        className="absolute inset-0 w-full h-full pointer-events-none"
         style={{ 
-          zIndex: -10,
-          opacity: 0.9,
-          mixBlendMode: 'normal'
+          zIndex: 1,
+          opacity: 1
         }}
         aria-hidden="true"
       ></canvas>
       
-      {/* Content with enhanced z-index protection */}
+      {/* Content with higher z-index */}
       <div className="container relative px-4 py-12 md:py-24" style={{ zIndex: 10 }}>
         <div className="max-w-4xl mx-auto text-center">
           {/* Transformation headline with backdrop protection */}
           <div className="mb-8 relative z-20">
-            <div className="backdrop-blur-sm bg-white/10 dark:bg-slate-900/10 rounded-2xl p-8 border border-white/20">
+            <div className="backdrop-blur-sm bg-white/20 dark:bg-slate-900/20 rounded-2xl p-8 border border-white/30">
               <h2 className="text-xl md:text-2xl font-semibold text-slate-700 dark:text-slate-300 mb-2">
                 Get Ready for Transformation
               </h2>
@@ -555,7 +555,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
           </div>
 
           {/* Main headline with backdrop protection */}
-          <div className="backdrop-blur-sm bg-white/5 dark:bg-slate-900/5 rounded-2xl p-8 border border-white/10 relative z-20">
+          <div className="backdrop-blur-sm bg-white/10 dark:bg-slate-900/10 rounded-2xl p-8 border border-white/20 relative z-20">
             <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-agent-blue via-agent-purple to-agent-pink animate-gradient-x mb-6">
               Build Your Agentic Ecosystem
             </h1>
