@@ -24,80 +24,80 @@ const CalmMagicProcessDiagram: React.FC = () => {
               </marker>
             </defs>
 
-            {/* Garden Selection Phase - Simplified */}
+            {/* Garden Selection Phase - Three Column Layout */}
             <g id="garden-phase">
-              <rect x="50" y="50" width="300" height="220" rx="10" fill="#f8fafc" stroke="#2563eb" strokeWidth="2"/>
-              <text x="200" y="80" textAnchor="middle" className="text-lg font-bold fill-slate-800">Phase 1: Residency Selection</text>
-              <text x="200" y="100" textAnchor="middle" className="text-sm fill-slate-600">Choose the residency context</text>
+              <rect x="50" y="50" width="350" height="200" rx="10" fill="#f8fafc" stroke="#2563eb" strokeWidth="2"/>
+              <text x="225" y="80" textAnchor="middle" className="text-lg font-bold fill-slate-800">Phase 1: Residency Selection</text>
+              <text x="225" y="100" textAnchor="middle" className="text-sm fill-slate-600">Choose the residency context</text>
               
-              {/* Intelligence Constellation - User Intelligences */}
+              {/* User Intelligences - Column 1 */}
               <g id="intelligence-constellation">
                 <circle cx="120" cy="140" r="25" fill="#2563eb"/>
-                <circle cx="120" cy="140" r="15" fill="url(#dottedPattern)"/>
                 <text x="120" y="146" textAnchor="middle" className="text-white text-sm">🧠</text>
-                <text x="120" y="195" textAnchor="middle" className="text-xs font-semibold fill-slate-700">User Intelligences</text>
+                <text x="120" y="180" textAnchor="middle" className="text-xs font-semibold fill-slate-700">User</text>
+                <text x="120" y="195" textAnchor="middle" className="text-xs font-semibold fill-slate-700">Intelligences</text>
               </g>
 
-              {/* Systems Constellation - Organizational Systems */}
+              {/* Organizational Systems - Column 2 */}
               <g id="systems-constellation">
-                <circle cx="200" cy="140" r="25" fill="#7c3aed"/>
-                <circle cx="200" cy="140" r="15" fill="url(#dottedPattern)"/>
-                <text x="200" y="146" textAnchor="middle" className="text-white text-sm">⚙️</text>
-                <text x="200" y="195" textAnchor="middle" className="text-xs font-semibold fill-slate-700">Organizational Systems</text>
+                <circle cx="225" cy="140" r="25" fill="#7c3aed"/>
+                <text x="225" y="146" textAnchor="middle" className="text-white text-sm">⚙️</text>
+                <text x="225" y="180" textAnchor="middle" className="text-xs font-semibold fill-slate-700">Organizational</text>
+                <text x="225" y="195" textAnchor="middle" className="text-xs font-semibold fill-slate-700">Systems</text>
               </g>
               
-              {/* Prototypes Constellation - Vision Prototypes */}
+              {/* Vision Prototypes - Column 3 */}
               <g id="prototypes-constellation">
-                <circle cx="280" cy="140" r="25" fill="#db2777"/>
-                <circle cx="280" cy="140" r="15" fill="url(#dottedPattern)"/>
-                <text x="280" y="146" textAnchor="middle" className="text-white text-sm">🌱</text>
-                <text x="280" y="195" textAnchor="middle" className="text-xs font-semibold fill-slate-700">Vision Prototypes</text>
+                <circle cx="330" cy="140" r="25" fill="#db2777"/>
+                <text x="330" y="146" textAnchor="middle" className="text-white text-sm">🌱</text>
+                <text x="330" y="180" textAnchor="middle" className="text-xs font-semibold fill-slate-700">Vision</text>
+                <text x="330" y="195" textAnchor="middle" className="text-xs font-semibold fill-slate-700">Prototypes</text>
               </g>
             </g>
 
             {/* Emotional State Mapping */}
             <g id="compass-phase">
-              <rect x="400" y="50" width="350" height="200" rx="10" fill="#f1f5f9" stroke="#7c3aed" strokeWidth="2"/>
-              <text x="575" y="80" textAnchor="middle" className="text-lg font-bold fill-slate-800">Phase 2: Emotional State Mapping</text>
+              <rect x="450" y="50" width="350" height="200" rx="10" fill="#f1f5f9" stroke="#7c3aed" strokeWidth="2"/>
+              <text x="625" y="80" textAnchor="middle" className="text-lg font-bold fill-slate-800">Phase 2: Emotional State Mapping</text>
               
               {/* 5-Axis Compass */}
-              <circle cx="575" cy="150" r="60" fill="none" stroke="#7c3aed" strokeWidth="2"/>
+              <circle cx="625" cy="150" r="60" fill="none" stroke="#7c3aed" strokeWidth="2"/>
               
               {/* LOVE Axis */}
-              <line x1="575" y1="90" x2="575" y2="110" stroke="#ef4444" strokeWidth="3"/>
-              <text x="580" y="85" className="text-xs font-bold fill-red-500">LOVE</text>
+              <line x1="625" y1="90" x2="625" y2="110" stroke="#ef4444" strokeWidth="3"/>
+              <text x="630" y="85" className="text-xs font-bold fill-red-500">LOVE</text>
               
               {/* MAGIC Axis */}
-              <line x1="635" y1="150" x2="615" y2="150" stroke="#8b5cf6" strokeWidth="3"/>
-              <text x="640" y="155" className="text-xs font-bold fill-purple-500">MAGIC</text>
+              <line x1="685" y1="150" x2="665" y2="150" stroke="#8b5cf6" strokeWidth="3"/>
+              <text x="690" y="155" className="text-xs font-bold fill-purple-500">MAGIC</text>
               
               {/* CALM Axis */}
-              <line x1="575" y1="210" x2="575" y2="190" stroke="#06b6d4" strokeWidth="3"/>
-              <text x="580" y="225" className="text-xs font-bold fill-cyan-500">CALM</text>
+              <line x1="625" y1="210" x2="625" y2="190" stroke="#06b6d4" strokeWidth="3"/>
+              <text x="630" y="225" className="text-xs font-bold fill-cyan-500">CALM</text>
               
               {/* OPEN Axis */}
-              <line x1="515" y1="150" x2="535" y2="150" stroke="#10b981" strokeWidth="3"/>
-              <text x="470" y="155" className="text-xs font-bold fill-emerald-500">OPEN</text>
+              <line x1="565" y1="150" x2="585" y2="150" stroke="#10b981" strokeWidth="3"/>
+              <text x="520" y="155" className="text-xs font-bold fill-emerald-500">OPEN</text>
               
               {/* FREE Axis */}
-              <line x1="545" y1="120" x2="555" y2="130" stroke="#f59e0b" strokeWidth="3"/>
-              <text x="520" y="115" className="text-xs font-bold fill-amber-500">FREE</text>
+              <line x1="595" y1="120" x2="605" y2="130" stroke="#f59e0b" strokeWidth="3"/>
+              <text x="570" y="115" className="text-xs font-bold fill-amber-500">FREE</text>
             </g>
 
             {/* Journal Interface */}
             <g id="journal-phase">
-              <rect x="800" y="50" width="350" height="200" rx="10" fill="#fefce8" stroke="#10b981" strokeWidth="2"/>
-              <text x="975" y="80" textAnchor="middle" className="text-lg font-bold fill-slate-800">Phase 3: Reflection & Documentation</text>
+              <rect x="850" y="50" width="300" height="200" rx="10" fill="#fefce8" stroke="#10b981" strokeWidth="2"/>
+              <text x="1000" y="80" textAnchor="middle" className="text-lg font-bold fill-slate-800">Phase 3: Reflection & Documentation</text>
               
-              <rect x="820" y="100" width="150" height="40" rx="5" fill="white" stroke="#10b981"/>
-              <text x="895" y="125" textAnchor="middle" className="text-sm fill-slate-700">Shadow Self</text>
+              <rect x="870" y="100" width="120" height="40" rx="5" fill="white" stroke="#10b981"/>
+              <text x="930" y="125" textAnchor="middle" className="text-sm fill-slate-700">Shadow Self</text>
               
-              <rect x="980" y="100" width="150" height="40" rx="5" fill="white" stroke="#10b981"/>
-              <text x="1055" y="125" textAnchor="middle" className="text-sm fill-slate-700">Higher Self</text>
+              <rect x="1010" y="100" width="120" height="40" rx="5" fill="white" stroke="#10b981"/>
+              <text x="1070" y="125" textAnchor="middle" className="text-sm fill-slate-700">Higher Self</text>
               
-              <rect x="820" y="160" width="310" height="60" rx="5" fill="white" stroke="#10b981"/>
-              <text x="975" y="185" textAnchor="middle" className="text-sm fill-slate-700">Contextual Insights</text>
-              <text x="975" y="205" textAnchor="middle" className="text-xs fill-slate-500">Garden-specific prompts & reflections</text>
+              <rect x="870" y="160" width="260" height="60" rx="5" fill="white" stroke="#10b981"/>
+              <text x="1000" y="185" textAnchor="middle" className="text-sm fill-slate-700">Contextual Insights</text>
+              <text x="1000" y="205" textAnchor="middle" className="text-xs fill-slate-500">Garden-specific prompts & reflections</text>
             </g>
 
             {/* Quality Gates */}
@@ -148,13 +148,13 @@ const CalmMagicProcessDiagram: React.FC = () => {
             </g>
 
             {/* Flow Arrows */}
-            <path d="M 350 125 Q 375 125 400 125" stroke="#64748b" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)"/>
-            <path d="M 750 150 Q 775 150 800 150" stroke="#64748b" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)"/>
+            <path d="M 400 125 Q 425 125 450 125" stroke="#64748b" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)"/>
+            <path d="M 800 150 Q 825 150 850 150" stroke="#64748b" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)"/>
             <path d="M 600 250 Q 600 275 600 300" stroke="#64748b" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)"/>
             <path d="M 600 400 Q 600 425 600 450" stroke="#64748b" strokeWidth="2" fill="none" markerEnd="url(#arrowhead)"/>
 
             {/* Feedback Loop */}
-            <path d="M 900 450 Q 1050 400 1050 250 Q 1050 100 400 100" stroke="#9333ea" strokeWidth="2" fill="none" strokeDasharray="5,5" markerEnd="url(#arrowhead)"/>
+            <path d="M 900 450 Q 1050 400 1050 250 Q 1050 100 450 100" stroke="#9333ea" strokeWidth="2" fill="none" strokeDasharray="5,5" markerEnd="url(#arrowhead)"/>
             <text x="1060" y="300" className="text-xs fill-purple-600 font-semibold">Feedback Loop</text>
             
             {/* Process Labels */}
