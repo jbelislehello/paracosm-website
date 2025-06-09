@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
@@ -20,10 +19,6 @@ const Index = () => {
 
   const handleStartJourney = () => {
     // Open the Calm Magic assistant
-    setIsCalmMagicOpen(true);
-  };
-
-  const handleOpenAssistant = () => {
     setIsCalmMagicOpen(true);
   };
 
@@ -50,10 +45,10 @@ const Index = () => {
             <a href="#contact" className="text-sm font-medium hover:text-purple-600 transition-colors">Contact</a>
           </nav>
           <Button 
-            onClick={handleOpenAssistant}
+            onClick={handleDiscoverFramework}
             className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300"
           >
-            Get Started
+            Product Framework
           </Button>
         </div>
       </header>
