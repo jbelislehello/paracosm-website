@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -132,10 +131,11 @@ const ContactSection: React.FC = () => {
               </div>
               
               <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
-                <h4 className="font-semibold mb-2">Call Us</h4>
-                <a href="tel:+15551234567" className="text-blue-600 hover:underline">
-                  +1 (555) 123-4567
-                </a>
+                <h4 className="font-semibold mb-2">Office</h4>
+                <div className="text-slate-600 dark:text-slate-300">
+                  <p>477 Saint-François-Xavier</p>
+                  <p>Bureau 208</p>
+                </div>
               </div>
             </div>
           </div>
