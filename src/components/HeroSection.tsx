@@ -21,6 +21,39 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    // Triple-click detection
+    let clickCount = 0;
+    let clickTimer: number | null = null;
+
+    const handleTripleClick = (event: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = event.clientX - rect.left;
+      const clickY = event.clientY - rect.top;
+      
+      clickCount++;
+      
+      if (clickCount === 1) {
+        clickTimer = window.setTimeout(() => {
+          clickCount = 0;
+        }, 600); // Reset after 600ms
+      } else if (clickCount === 3) {
+        if (clickTimer) {
+          clearTimeout(clickTimer);
+          clickTimer = null;
+        }
+        clickCount = 0;
+        
+        // Create new garden at click position
+        createNewGarden(clickX, clickY);
+        
+        // Visual feedback
+        expandingCircles.push(new ExpandingCircle(clickX, clickY, '#10b981', 200));
+        keyPhrases.push(new KeyPhrase(clickX, clickY - 50, 'NEW GARDEN CREATED', '#10b981'));
+      }
+    };
+
+    canvas.addEventListener('click', handleTripleClick);
+
     // Set canvas to full viewport dimensions with proper scaling
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
@@ -105,6 +138,37 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       { key: 'open', name: 'OPEN', color: '#10b981' },
       { key: 'free', name: 'FREE', color: '#f59e0b' }
     ];
+
+    const newGardenColors = ['#14b8a6', '#f97316', '#84cc16', '#06b6d4', '#8b5cf6'];
+    const newGardenIcons = ['✨', '🔮', '⭐', '💫', '🌟'];
+    let gardenCounter = 0;
+
+    const createNewGarden = (x: number, y: number) => {
+      const colorIndex = gardenCounter % newGardenColors.length;
+      const newGarden = {
+        key: `garden_${Date.now()}`,
+        name: `GARDEN ${gardenCounter + 1}`,
+        color: newGardenColors[colorIndex],
+        icon: newGardenIcons[colorIndex],
+        x: x,
+        y: y,
+        baseRadius: 50,
+        currentRadius: 50,
+        pulsePhase: Math.random() * Math.PI * 2,
+        attractionRadius: 130,
+        velocityX: (Math.random() - 0.5) * 0.4,
+        velocityY: (Math.random() - 0.5) * 0.4,
+        connectionCount: 0,
+        glowIntensity: 1,
+        state: 'active' as 'dormant' | 'active' | 'resonating' | 'expanding',
+        lastExpansionTime: Date.now(),
+        activityLevel: 5
+      };
+      
+      gardens.push(newGarden);
+      constellationPatterns.push(new ConstellationPattern(newGarden));
+      gardenCounter++;
+    };
 
     // Arrays for different effect systems
     const forceNodes: ForceNode[] = [];
@@ -261,7 +325,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       'COHERENT EVOLUTION'
     ];
 
-    // ... keep existing code (Spark, Ripple, FlowParticle, ForceNode, ConnectionLine, ConstellationPattern classes)
     class Spark {
       x: number;
       y: number;
@@ -417,6 +480,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       isAttracted: boolean;
       pulsePhase: number;
       wasAttracted: boolean;
+      orbitalAngle: number;
+      orbitalRadius: number;
+      orbitalSpeed: number;
       
       constructor(force: any) {
         this.x = Math.random() * window.innerWidth;
@@ -430,6 +496,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         this.isAttracted = false;
         this.wasAttracted = false;
         this.pulsePhase = Math.random() * Math.PI * 2;
+        this.orbitalAngle = Math.random() * Math.PI * 2;
+        this.orbitalRadius = 80 + Math.random() * 50;
+        this.orbitalSpeed = 0.01 + Math.random() * 0.02;
       }
       
       update() {
@@ -467,14 +536,23 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
             }
           }
           
-          // Attraction force
-          const dx = nearestGarden.x - this.x;
-          const dy = nearestGarden.y - this.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          const force = 0.0008;
+          // Orbital mechanics around garden
+          this.orbitalAngle += this.orbitalSpeed;
           
-          this.velocityX += (dx / distance) * force;
-          this.velocityY += (dy / distance) * force;
+          // Calculate desired orbital position
+          const desiredX = nearestGarden.x + Math.cos(this.orbitalAngle) * this.orbitalRadius;
+          const desiredY = nearestGarden.y + Math.sin(this.orbitalAngle) * this.orbitalRadius;
+          
+          // Apply force towards orbital position
+          const dx = desiredX - this.x;
+          const dy = desiredY - this.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          const force = 0.003;
+          
+          if (distance > 0) {
+            this.velocityX += (dx / distance) * force;
+            this.velocityY += (dy / distance) * force;
+          }
           
           // Add flow particles along connection
           if (Math.random() < 0.1) {
@@ -487,13 +565,17 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
           }
           this.isAttracted = false;
           this.targetGarden = null;
+          
+          // Free movement when not attracted
+          this.velocityX += (Math.random() - 0.5) * 0.1;
+          this.velocityY += (Math.random() - 0.5) * 0.1;
         }
         
         // Apply velocity with damping
         this.x += this.velocityX;
         this.y += this.velocityY;
-        this.velocityX *= 0.98;
-        this.velocityY *= 0.98;
+        this.velocityX *= 0.95;
+        this.velocityY *= 0.95;
         
         // Boundary wrapping
         if (this.x < 0) this.x = window.innerWidth;
@@ -673,7 +755,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         // Trigger expanding circles based on garden state and activity
         if (garden.state === 'active' && currentTime - garden.lastExpansionTime > 2000) {
           expandingCircles.push(new ExpandingCircle(garden.x, garden.y, garden.color, 150));
-          const phrases = gardenPhrases[garden.key as keyof typeof gardenPhrases];
+          const phrases = gardenPhrases[garden.key as keyof typeof gardenPhrases] || ['ACTIVITY DETECTED', 'ENERGY FLOWING', 'CONNECTIONS FORMING'];
           const phrase = phrases[Math.floor(Math.random() * phrases.length)];
           keyPhrases.push(new KeyPhrase(garden.x, garden.y - 100, phrase, garden.color));
           garden.lastExpansionTime = currentTime;
@@ -739,20 +821,22 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       
       // Update constellation patterns to follow gardens
       constellationPatterns.forEach((pattern, index) => {
-        const garden = gardens[index];
-        const deltaX = garden.x - pattern.garden.x;
-        const deltaY = garden.y - pattern.garden.y;
-        
-        pattern.garden.x = garden.x;
-        pattern.garden.y = garden.y;
-        pattern.garden.connectionCount = garden.connectionCount;
-        
-        pattern.stars.forEach(star => {
-          star.x += deltaX;
-          star.y += deltaY;
-        });
-        
-        pattern.update();
+        if (index < gardens.length) {
+          const garden = gardens[index];
+          const deltaX = garden.x - pattern.garden.x;
+          const deltaY = garden.y - pattern.garden.y;
+          
+          pattern.garden.x = garden.x;
+          pattern.garden.y = garden.y;
+          pattern.garden.connectionCount = garden.connectionCount;
+          
+          pattern.stars.forEach(star => {
+            star.x += deltaX;
+            star.y += deltaY;
+          });
+          
+          pattern.update();
+        }
       });
       
       // Clear old connection lines
@@ -882,6 +966,17 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
               );
               ctx.fill();
             }
+          } else {
+            // Generic pattern for new gardens
+            for (let i = 0; i < 4; i++) {
+              const angle = time + (i * Math.PI / 2);
+              const x = garden.x + Math.cos(angle) * (garden.currentRadius * 0.25);
+              const y = garden.y + Math.sin(angle) * (garden.currentRadius * 0.25);
+              ctx.fillStyle = garden.color;
+              ctx.beginPath();
+              ctx.arc(x, y, 2, 0, Math.PI * 2);
+              ctx.fill();
+            }
           }
           
           ctx.globalAlpha = 1;
@@ -931,6 +1026,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
     animate();
     
     return () => {
+      canvas.removeEventListener('click', handleTripleClick);
       window.removeEventListener('resize', resize);
       if (animationIdRef.current) {
         cancelAnimationFrame(animationIdRef.current);
@@ -943,7 +1039,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       {/* White background canvas with garden dynamics */}
       <canvas 
         ref={canvasRef} 
-        className="absolute inset-0 w-full h-full pointer-events-none"
+        className="absolute inset-0 w-full h-full pointer-events-auto cursor-crosshair"
         style={{ 
           zIndex: 1,
           opacity: 1,
@@ -972,6 +1068,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
             </h1>
             <p className="text-xl md:text-2xl mb-8 text-gray-700 dark:text-gray-200">
               Design, deploy, and manage interconnected AI agents that work together to solve complex problems
+            </p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
+              💡 Triple-click anywhere on the canvas to create a new garden
             </p>
           </div>
         </div>
