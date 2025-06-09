@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
@@ -212,8 +211,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
             Design, deploy, and manage interconnected AI agents that work together to solve complex problems
           </p>
           
-          {/* Floating CTA on the left */}
-          <div className="flex justify-start">
+          {/* Centered CTA */}
+          <div className="flex justify-center">
             <Button 
               size="lg" 
               onClick={onDiscoverFramework}
