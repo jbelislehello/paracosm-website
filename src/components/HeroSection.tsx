@@ -2,7 +2,11 @@
 import React, { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 
-const HeroSection: React.FC = () => {
+interface HeroSectionProps {
+  onDiscoverFramework?: () => void;
+}
+
+const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -188,7 +192,29 @@ const HeroSection: React.FC = () => {
       
       {/* Content */}
       <div className="container relative z-10 px-4 py-12 md:py-24">
-        <div className="max-w-3xl mx-auto text-center">
+        <div className="max-w-4xl mx-auto text-center">
+          {/* Transformation headline */}
+          <div className="mb-8">
+            <h2 className="text-xl md:text-2xl font-semibold text-slate-700 dark:text-slate-300 mb-2">
+              Get Ready for Transformation
+            </h2>
+            <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400">
+              The UX & Product Development Framework for the AI ERA
+            </p>
+          </div>
+
+          {/* Framework CTA */}
+          <div className="mb-12">
+            <Button 
+              size="lg" 
+              onClick={onDiscoverFramework}
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 transition-all duration-300 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl"
+            >
+              Discover the Calm Magic Product Development Framework
+            </Button>
+          </div>
+
+          {/* Main headline */}
           <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-agent-blue via-agent-purple to-agent-pink animate-gradient-x mb-6">
             Build Your Agentic Ecosystem
           </h1>
@@ -204,7 +230,7 @@ const HeroSection: React.FC = () => {
             </Button>
           </div>
           
-          {/* Floating badge */}
+          {/* Floating badges */}
           <div className="absolute top-1/4 right-[15%] animate-float hidden md:block">
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow-xl px-4 py-2 flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-agent-green"></div>
@@ -212,7 +238,6 @@ const HeroSection: React.FC = () => {
             </div>
           </div>
           
-          {/* Floating badge */}
           <div className="absolute bottom-1/4 left-[15%] animate-float animation-delay-1000 hidden md:block">
             <div className="bg-white dark:bg-slate-800 rounded-lg shadow-xl px-4 py-2 flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-agent-purple"></div>

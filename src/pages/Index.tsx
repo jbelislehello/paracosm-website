@@ -27,6 +27,10 @@ const Index = () => {
     setIsCalmMagicOpen(true);
   };
 
+  const handleDiscoverFramework = () => {
+    setIsCalmMagicOpen(true);
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       {/* Navigation */}
@@ -62,7 +66,7 @@ const Index = () => {
       />
       
       {/* Hero Section */}
-      <HeroSection />
+      <HeroSection onDiscoverFramework={handleDiscoverFramework} />
       
       {/* Features Section */}
       <section id="features" className="py-20 px-4">
