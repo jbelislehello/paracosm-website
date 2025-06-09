@@ -27,7 +27,7 @@ const ContactSection: React.FC = () => {
       <div className="container max-w-6xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Ready to Get Started?</h2>
         <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
-          Contact us to learn more about how our agentic ecosystem platform can transform your AI capabilities.
+          Contact us to learn more about how our product development framework can transform your ideation to implementation process.
         </p>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -60,7 +60,7 @@ const ContactSection: React.FC = () => {
               
               <Button 
                 type="submit" 
-                className="w-full bg-gradient-to-r from-agent-blue to-agent-purple hover:from-agent-purple hover:to-agent-blue transition-all duration-300"
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300"
               >
                 Send Message
               </Button>
@@ -70,53 +70,53 @@ const ContactSection: React.FC = () => {
           {/* Right Column - Info */}
           <div className="flex flex-col gap-8">
             <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
-              <h3 className="text-xl font-bold mb-6">Why Choose AgenticVerse</h3>
+              <h3 className="text-xl font-bold mb-6">Why Choose Paracosm</h3>
               
               <ul className="space-y-4">
                 <li className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-agent-blue/20 rounded-full flex items-center justify-center mt-0.5">
-                    <div className="w-2 h-2 rounded-full bg-agent-blue"></div>
+                  <div className="w-6 h-6 bg-blue-600/20 rounded-full flex items-center justify-center mt-0.5">
+                    <div className="w-2 h-2 rounded-full bg-blue-600"></div>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm">Modular Architecture</h4>
+                    <h4 className="font-semibold text-sm">Structured Framework</h4>
                     <p className="text-sm text-slate-600 dark:text-slate-300">
-                      Build custom agent networks tailored to your specific use cases.
+                      Bridge the gap between creative vision and technical implementation.
                     </p>
                   </div>
                 </li>
                 
                 <li className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-agent-purple/20 rounded-full flex items-center justify-center mt-0.5">
-                    <div className="w-2 h-2 rounded-full bg-agent-purple"></div>
+                  <div className="w-6 h-6 bg-purple-600/20 rounded-full flex items-center justify-center mt-0.5">
+                    <div className="w-2 h-2 rounded-full bg-purple-600"></div>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm">Advanced Visualization</h4>
+                    <h4 className="font-semibold text-sm">Diegetic Prototyping</h4>
                     <p className="text-sm text-slate-600 dark:text-slate-300">
-                      See exactly how your agents interact and optimize their communication.
+                      Create working demos that tell a complete story and preserve original vision.
                     </p>
                   </div>
                 </li>
                 
                 <li className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-agent-pink/20 rounded-full flex items-center justify-center mt-0.5">
-                    <div className="w-2 h-2 rounded-full bg-agent-pink"></div>
+                  <div className="w-6 h-6 bg-green-600/20 rounded-full flex items-center justify-center mt-0.5">
+                    <div className="w-2 h-2 rounded-full bg-green-600"></div>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm">Enterprise Ready</h4>
+                    <h4 className="font-semibold text-sm">Handover Ritual</h4>
                     <p className="text-sm text-slate-600 dark:text-slate-300">
-                      Secure, scalable infrastructure built for mission-critical applications.
+                      Ensure engineers understand not just what to build, but why it matters.
                     </p>
                   </div>
                 </li>
                 
                 <li className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-agent-green/20 rounded-full flex items-center justify-center mt-0.5">
-                    <div className="w-2 h-2 rounded-full bg-agent-green"></div>
+                  <div className="w-6 h-6 bg-orange-600/20 rounded-full flex items-center justify-center mt-0.5">
+                    <div className="w-2 h-2 rounded-full bg-orange-600"></div>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-sm">Expert Support</h4>
+                    <h4 className="font-semibold text-sm">Vision Preservation</h4>
                     <p className="text-sm text-slate-600 dark:text-slate-300">
-                      Our team of specialists provides guidance at every step of your journey.
+                      Prevent the "technically correct but practically useless" problem.
                     </p>
                   </div>
                 </li>
@@ -126,14 +126,14 @@ const ContactSection: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
                 <h4 className="font-semibold mb-2">Email Us</h4>
-                <a href="mailto:contact@agenticverse.ai" className="text-agent-blue hover:underline">
-                  contact@agenticverse.ai
+                <a href="mailto:jbelisle@helloarchitekt.com" className="text-blue-600 hover:underline">
+                  jbelisle@helloarchitekt.com
                 </a>
               </div>
               
               <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
                 <h4 className="font-semibold mb-2">Call Us</h4>
-                <a href="tel:+15551234567" className="text-agent-blue hover:underline">
+                <a href="tel:+15551234567" className="text-blue-600 hover:underline">
                   +1 (555) 123-4567
                 </a>
               </div>
