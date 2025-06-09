@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -55,7 +56,7 @@ const CalmMagicProcessDiagram: React.FC = () => {
             {/* Garden Selection Phase - Enhanced as Constellations */}
             <g id="garden-phase">
               <rect x="50" y="50" width="300" height="220" rx="10" fill="#f8fafc" stroke="#2563eb" strokeWidth="2"/>
-              <text x="200" y="80" textAnchor="middle" className="text-lg font-bold fill-slate-800">Phase 1: Constellation Selection</text>
+              <text x="200" y="80" textAnchor="middle" className="text-lg font-bold fill-slate-800">Phase 1: Residency Selection</text>
               <text x="200" y="100" textAnchor="middle" className="text-sm fill-slate-600">Choose your Calm Magic Constellation</text>
               
               {/* Intelligence Constellation - Stellae Intelligentia */}
