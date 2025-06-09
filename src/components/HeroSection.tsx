@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
@@ -54,7 +53,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         velocityX: 0.3,
         velocityY: 0.2,
         connectionCount: 0,
-        glowIntensity: 1
+        glowIntensity: 1,
+        state: 'dormant' as 'dormant' | 'active' | 'resonating' | 'expanding',
+        lastExpansionTime: 0,
+        activityLevel: 0
       },
       { 
         key: 'systems', 
@@ -70,7 +72,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         velocityX: -0.25,
         velocityY: 0.3,
         connectionCount: 0,
-        glowIntensity: 1
+        glowIntensity: 1,
+        state: 'dormant' as 'dormant' | 'active' | 'resonating' | 'expanding',
+        lastExpansionTime: 0,
+        activityLevel: 0
       },
       { 
         key: 'prototypes', 
@@ -86,7 +91,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         velocityX: 0.2,
         velocityY: -0.25,
         connectionCount: 0,
-        glowIntensity: 1
+        glowIntensity: 1,
+        state: 'dormant' as 'dormant' | 'active' | 'resonating' | 'expanding',
+        lastExpansionTime: 0,
+        activityLevel: 0
       }
     ];
 
@@ -105,7 +113,155 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
     const sparks: Spark[] = [];
     const ripples: Ripple[] = [];
     const flowParticles: FlowParticle[] = [];
+    const expandingCircles: ExpandingCircle[] = [];
+    const keyPhrases: KeyPhrase[] = [];
 
+    class ExpandingCircle {
+      x: number;
+      y: number;
+      radius: number;
+      maxRadius: number;
+      color: string;
+      alpha: number;
+      expansionSpeed: number;
+      lineWidth: number;
+      
+      constructor(x: number, y: number, color: string, maxRadius: number = 200) {
+        this.x = x;
+        this.y = y;
+        this.radius = 10;
+        this.maxRadius = maxRadius;
+        this.color = color;
+        this.alpha = 0.8;
+        this.expansionSpeed = 2 + Math.random() * 2;
+        this.lineWidth = 2;
+      }
+      
+      update() {
+        this.radius += this.expansionSpeed;
+        this.alpha = Math.max(0, 0.8 * (1 - this.radius / this.maxRadius));
+        this.lineWidth = Math.max(0.5, 2 * (1 - this.radius / this.maxRadius));
+        return this.radius < this.maxRadius;
+      }
+      
+      draw() {
+        if (!ctx) return;
+        
+        ctx.globalAlpha = this.alpha;
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = this.lineWidth;
+        
+        // Main expanding circle
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.stroke();
+        
+        // Inner circle for depth
+        if (this.radius > 30) {
+          ctx.globalAlpha = this.alpha * 0.3;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius * 0.7, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    class KeyPhrase {
+      x: number;
+      y: number;
+      text: string;
+      color: string;
+      alpha: number;
+      life: number;
+      maxLife: number;
+      fontSize: number;
+      velocityY: number;
+      
+      constructor(x: number, y: number, text: string, color: string) {
+        this.x = x;
+        this.y = y;
+        this.text = text;
+        this.color = color;
+        this.alpha = 0;
+        this.life = 180; // 3 seconds at 60fps
+        this.maxLife = 180;
+        this.fontSize = 14;
+        this.velocityY = -0.5;
+      }
+      
+      update() {
+        this.life--;
+        this.y += this.velocityY;
+        
+        // Fade in for first third, stay visible for middle third, fade out for last third
+        if (this.life > this.maxLife * 2/3) {
+          this.alpha = (this.maxLife - this.life) / (this.maxLife / 3);
+        } else if (this.life > this.maxLife / 3) {
+          this.alpha = 1;
+        } else {
+          this.alpha = this.life / (this.maxLife / 3);
+        }
+        
+        return this.life > 0;
+      }
+      
+      draw() {
+        if (!ctx) return;
+        
+        ctx.globalAlpha = this.alpha;
+        ctx.fillStyle = this.color;
+        ctx.font = `bold ${this.fontSize}px Inter, sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 8;
+        
+        ctx.fillText(this.text, this.x, this.y);
+        
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    // Garden-specific phrase libraries
+    const gardenPhrases = {
+      intelligence: [
+        'NEURAL PATHWAYS FORMING',
+        'PATTERNS EMERGING',
+        'INSIGHTS CRYSTALLIZING',
+        'KNOWLEDGE SYNTHESIZING',
+        'CONNECTIONS DISCOVERED',
+        'ANALYSIS DEEPENING'
+      ],
+      systems: [
+        'ARCHITECTURE ALIGNING',
+        'STRUCTURES HARMONIZING',
+        'FEEDBACK LOOPS ACTIVE',
+        'SYSTEMS INTEGRATING',
+        'PROCESSES OPTIMIZING',
+        'FLOWS SYNCHRONIZING'
+      ],
+      prototypes: [
+        'IDEAS MATERIALIZING',
+        'CONCEPTS BLOOMING',
+        'VISIONS MANIFESTING',
+        'FUTURES EMERGING',
+        'PROTOTYPES EVOLVING',
+        'POSSIBILITIES EXPANDING'
+      ]
+    };
+
+    const multiGardenPhrases = [
+      'EMERGENCE BEGINS',
+      'SYNERGY ACTIVATED',
+      'COLLECTIVE INTELLIGENCE',
+      'UNIFIED FIELD ACTIVE',
+      'HARMONIC RESONANCE',
+      'COHERENT EVOLUTION'
+    ];
+
+    // ... keep existing code (Spark, Ripple, FlowParticle, ForceNode, ConnectionLine, ConstellationPattern classes)
     class Spark {
       x: number;
       y: number;
@@ -303,6 +459,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
           if (!this.wasAttracted) {
             sparks.push(new Spark(this.x, this.y, this.color));
             nearestGarden.connectionCount++;
+            nearestGarden.activityLevel = Math.min(10, nearestGarden.activityLevel + 1);
             
             // Generate ripple on strong connection
             if (Math.random() < 0.3) {
@@ -326,6 +483,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         } else {
           if (this.wasAttracted && this.targetGarden) {
             this.targetGarden.connectionCount = Math.max(0, this.targetGarden.connectionCount - 1);
+            this.targetGarden.activityLevel = Math.max(0, this.targetGarden.activityLevel - 0.1);
           }
           this.isAttracted = false;
           this.targetGarden = null;
@@ -494,11 +652,38 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
       
-      // Update gardens with dynamic glow intensity
+      // Update gardens with enhanced states and expansion logic
       gardens.forEach(garden => {
         garden.pulsePhase += 0.02;
         garden.currentRadius = garden.baseRadius + Math.sin(garden.pulsePhase) * 15;
         garden.glowIntensity = 1 + garden.connectionCount * 0.3;
+        
+        // Update garden state based on activity
+        const currentTime = Date.now();
+        if (garden.connectionCount > 0) {
+          if (garden.state === 'dormant') garden.state = 'active';
+          if (garden.connectionCount >= 3 && garden.state === 'active') garden.state = 'resonating';
+        } else {
+          if (garden.state !== 'dormant') {
+            garden.activityLevel = Math.max(0, garden.activityLevel - 0.05);
+            if (garden.activityLevel < 1) garden.state = 'dormant';
+          }
+        }
+        
+        // Trigger expanding circles based on garden state and activity
+        if (garden.state === 'active' && currentTime - garden.lastExpansionTime > 2000) {
+          expandingCircles.push(new ExpandingCircle(garden.x, garden.y, garden.color, 150));
+          const phrases = gardenPhrases[garden.key as keyof typeof gardenPhrases];
+          const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+          keyPhrases.push(new KeyPhrase(garden.x, garden.y - 100, phrase, garden.color));
+          garden.lastExpansionTime = currentTime;
+        }
+        
+        if (garden.state === 'resonating' && currentTime - garden.lastExpansionTime > 1500) {
+          expandingCircles.push(new ExpandingCircle(garden.x, garden.y, garden.color, 250));
+          expandingCircles.push(new ExpandingCircle(garden.x, garden.y, garden.color, 180));
+          garden.lastExpansionTime = currentTime;
+        }
         
         // Move gardens
         garden.x += garden.velocityX;
@@ -519,7 +704,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         garden.connectionCount = 0;
       });
       
-      // Check for inter-garden resonance
+      // Check for inter-garden resonance with enhanced effects
+      let activeGardens = 0;
+      gardens.forEach(garden => {
+        if (garden.state !== 'dormant') activeGardens++;
+      });
+      
       for (let i = 0; i < gardens.length; i++) {
         for (let j = i + 1; j < gardens.length; j++) {
           const garden1 = gardens[i];
@@ -528,12 +718,21 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
           const dy = garden1.y - garden2.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
           
-          if (distance < 200 && Math.random() < 0.02) {
-            // Create resonance sparks
-            const midX = (garden1.x + garden2.x) / 2;
-            const midY = (garden1.y + garden2.y) / 2;
-            sparks.push(new Spark(midX, midY, garden1.color));
-            sparks.push(new Spark(midX, midY, garden2.color));
+          if (distance < 200 && garden1.state !== 'dormant' && garden2.state !== 'dormant') {
+            if (Math.random() < 0.02) {
+              // Create resonance sparks and expanding circles
+              const midX = (garden1.x + garden2.x) / 2;
+              const midY = (garden1.y + garden2.y) / 2;
+              sparks.push(new Spark(midX, midY, garden1.color));
+              sparks.push(new Spark(midX, midY, garden2.color));
+              expandingCircles.push(new ExpandingCircle(midX, midY, garden1.color, 300));
+              
+              // Multi-garden phrases
+              if (activeGardens >= 2) {
+                const phrase = multiGardenPhrases[Math.floor(Math.random() * multiGardenPhrases.length)];
+                keyPhrases.push(new KeyPhrase(midX, midY - 50, phrase, '#ffffff'));
+              }
+            }
           }
         }
       }
@@ -569,48 +768,59 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         }
       });
       
-      // Update and filter sparks
+      // Update and filter all effect arrays
       for (let i = sparks.length - 1; i >= 0; i--) {
         if (!sparks[i].update()) {
           sparks.splice(i, 1);
         }
       }
       
-      // Update and filter ripples
       for (let i = ripples.length - 1; i >= 0; i--) {
         if (!ripples[i].update()) {
           ripples.splice(i, 1);
         }
       }
       
-      // Update and filter flow particles
       for (let i = flowParticles.length - 1; i >= 0; i--) {
         if (!flowParticles[i].update()) {
           flowParticles.splice(i, 1);
         }
       }
       
-      // Draw constellation patterns
+      for (let i = expandingCircles.length - 1; i >= 0; i--) {
+        if (!expandingCircles[i].update()) {
+          expandingCircles.splice(i, 1);
+        }
+      }
+      
+      for (let i = keyPhrases.length - 1; i >= 0; i--) {
+        if (!keyPhrases[i].update()) {
+          keyPhrases.splice(i, 1);
+        }
+      }
+      
+      // Draw all elements in proper order
       constellationPatterns.forEach(pattern => {
         pattern.draw();
       });
       
-      // Draw ripples
+      expandingCircles.forEach(circle => {
+        circle.draw();
+      });
+      
       ripples.forEach(ripple => {
         ripple.draw();
       });
       
-      // Draw connection lines
       connectionLines.forEach(line => {
         line.draw();
       });
       
-      // Draw flow particles
       flowParticles.forEach(particle => {
         particle.draw();
       });
       
-      // Draw gardens with enhanced effects
+      // Draw gardens with enhanced effects and internal logic visualization
       gardens.forEach(garden => {
         // Enhanced garden glow based on connections
         ctx.shadowColor = garden.color;
@@ -624,6 +834,56 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
           ctx.beginPath();
           ctx.arc(garden.x, garden.y, garden.attractionRadius, 0, Math.PI * 2);
           ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+        
+        // Internal logic visualization based on garden type
+        if (garden.state !== 'dormant') {
+          const time = Date.now() * 0.001;
+          ctx.globalAlpha = 0.6;
+          
+          if (garden.key === 'intelligence') {
+            // Neural network pattern
+            for (let i = 0; i < 3; i++) {
+              const angle = time + (i * Math.PI * 2 / 3);
+              const x = garden.x + Math.cos(angle) * (garden.currentRadius * 0.3);
+              const y = garden.y + Math.sin(angle) * (garden.currentRadius * 0.3);
+              ctx.fillStyle = garden.color;
+              ctx.beginPath();
+              ctx.arc(x, y, 3, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          } else if (garden.key === 'systems') {
+            // Gear pattern
+            ctx.strokeStyle = garden.color;
+            ctx.lineWidth = 2;
+            ctx.save();
+            ctx.translate(garden.x, garden.y);
+            ctx.rotate(time);
+            for (let i = 0; i < 6; i++) {
+              ctx.beginPath();
+              ctx.moveTo(0, -garden.currentRadius * 0.2);
+              ctx.lineTo(0, -garden.currentRadius * 0.4);
+              ctx.stroke();
+              ctx.rotate(Math.PI / 3);
+            }
+            ctx.restore();
+          } else if (garden.key === 'prototypes') {
+            // Growing pattern
+            for (let i = 0; i < 5; i++) {
+              const size = (Math.sin(time + i) + 1) * 2;
+              ctx.fillStyle = garden.color;
+              ctx.beginPath();
+              ctx.arc(
+                garden.x + Math.cos(i * 1.26) * (garden.currentRadius * 0.3),
+                garden.y + Math.sin(i * 1.26) * (garden.currentRadius * 0.3),
+                size,
+                0, Math.PI * 2
+              );
+              ctx.fill();
+            }
+          }
+          
           ctx.globalAlpha = 1;
         }
         
@@ -653,14 +913,16 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         ctx.fillText(garden.name, garden.x, garden.y - garden.currentRadius - 20);
       });
       
-      // Draw sparks
       sparks.forEach(spark => {
         spark.draw();
       });
       
-      // Draw force nodes
       forceNodes.forEach(node => {
         node.draw();
+      });
+      
+      keyPhrases.forEach(phrase => {
+        phrase.draw();
       });
       
       animationIdRef.current = requestAnimationFrame(animate);
