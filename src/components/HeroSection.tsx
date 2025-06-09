@@ -124,20 +124,20 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.currentRadius, 0, Math.PI * 2);
         
-        // Create gradient for garden with enhanced transparency
+        // Create gradient for garden with increased opacity
         const gradient = ctx.createRadialGradient(
           this.x, this.y, 0,
           this.x, this.y, this.currentRadius
         );
-        gradient.addColorStop(0, `${this.color}15`);
-        gradient.addColorStop(0.5, `${this.color}08`);
-        gradient.addColorStop(1, `${this.color}02`);
+        gradient.addColorStop(0, `${this.color}25`);
+        gradient.addColorStop(0.5, `${this.color}15`);
+        gradient.addColorStop(1, `${this.color}08`);
         
         ctx.fillStyle = gradient;
         ctx.fill();
         
-        // Draw garden border with pulsing effect
-        ctx.strokeStyle = `${this.color}40`;
+        // Draw garden border with pulsing effect - increased opacity
+        ctx.strokeStyle = `${this.color}80`;
         ctx.lineWidth = 2 + Math.sin(this.breathingPhase) * 0.8;
         ctx.stroke();
         
@@ -147,8 +147,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         ctx.stroke();
         ctx.shadowBlur = 0;
         
-        // Draw garden name with enhanced transparency
-        ctx.fillStyle = `${this.color}60`;
+        // Draw garden name with increased opacity
+        ctx.fillStyle = `${this.color}80`;
         ctx.font = `${14 + Math.sin(this.breathingPhase) * 1.5}px Inter, sans-serif`;
         ctx.textAlign = 'center';
         ctx.fillText(this.name, this.x, this.y - this.currentRadius - 25);
@@ -252,7 +252,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       draw() {
         if (!ctx) return;
         
-        ctx.globalAlpha = this.alpha * 0.7; // Enhanced transparency
+        ctx.globalAlpha = this.alpha * 0.9; // Increased transparency
         
         // Draw growing node with pulsing effect
         const pulseSize = this.size + Math.sin(Date.now() * 0.004) * 0.3;
@@ -294,7 +294,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         if (!ctx) return;
         const alpha = this.life / this.maxLife;
         
-        ctx.globalAlpha = alpha * 0.25; // Enhanced transparency
+        ctx.globalAlpha = alpha * 0.4; // Increased transparency
         ctx.beginPath();
         ctx.strokeStyle = this.color;
         ctx.lineWidth = 1.5;
@@ -348,7 +348,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       draw() {
         if (!ctx) return;
         
-        ctx.globalAlpha = this.alpha * 0.6; // Enhanced transparency
+        ctx.globalAlpha = this.alpha * 0.8; // Increased transparency
         ctx.fillStyle = this.color;
         ctx.font = `${this.size}px Inter, sans-serif`;
         ctx.textAlign = 'center';
@@ -515,14 +515,14 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
   
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
-      {/* Enhanced background canvas with guaranteed z-index positioning */}
+      {/* Enhanced background canvas with improved visibility */}
       <canvas 
         ref={canvasRef} 
         className="fixed inset-0 w-full h-full pointer-events-none"
         style={{ 
           zIndex: -10,
-          opacity: 0.6,
-          mixBlendMode: 'multiply'
+          opacity: 0.9,
+          mixBlendMode: 'normal'
         }}
         aria-hidden="true"
       ></canvas>
