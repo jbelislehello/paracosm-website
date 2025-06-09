@@ -198,9 +198,21 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
             <h2 className="text-xl md:text-2xl font-semibold text-slate-700 dark:text-slate-300 mb-2">
               Get Ready for Transformation
             </h2>
-            <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400">
+            <p className="text-lg md:text-xl text-slate-600 dark:text-slate-400 mb-6">
               The UX & Product Development Framework for the AI ERA
             </p>
+            
+            {/* Centered CTA under transformation headline */}
+            <div className="flex justify-center">
+              <Button 
+                size="lg" 
+                onClick={onDiscoverFramework}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl flex items-center gap-2"
+              >
+                <Sparkles className="w-5 h-5" />
+                Discover Calm Magic
+              </Button>
+            </div>
           </div>
 
           {/* Main headline */}
@@ -210,18 +222,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
           <p className="text-xl md:text-2xl mb-8 text-gray-700 dark:text-gray-200">
             Design, deploy, and manage interconnected AI agents that work together to solve complex problems
           </p>
-          
-          {/* Centered CTA */}
-          <div className="flex justify-center">
-            <Button 
-              size="lg" 
-              onClick={onDiscoverFramework}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl flex items-center gap-2"
-            >
-              <Sparkles className="w-5 h-5" />
-              Get Started
-            </Button>
-          </div>
         </div>
       </div>
     </section>
