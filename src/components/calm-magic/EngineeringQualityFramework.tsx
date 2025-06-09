@@ -41,7 +41,7 @@ const EngineeringQualityFramework: React.FC<EngineeringQualityFrameworkProps> = 
     return { color: 'red', icon: AlertCircle, label: 'Critical' };
   };
 
-  const validateEmotionalStateCompleteness = () => {
+  const validateRequirementsCompleteness = () => {
     if (!emotionalState) return 0;
     
     const requiredFields = ['love_level', 'magic_level', 'calm_level', 'open_level', 'free_level'];
@@ -53,7 +53,7 @@ const EngineeringQualityFramework: React.FC<EngineeringQualityFrameworkProps> = 
     return Math.round((completedFields.length / requiredFields.length) * 100);
   };
 
-  const validateJournalEntryQuality = () => {
+  const validateDocumentationQuality = () => {
     if (!journalEntry) return 0;
     
     let score = 0;
@@ -76,7 +76,7 @@ const EngineeringQualityFramework: React.FC<EngineeringQualityFrameworkProps> = 
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Target className="w-5 h-5" />
-            Engineering Quality Framework
+            Engineering Quality Assurance
           </CardTitle>
           <div className="flex items-center gap-2">
             <StatusIcon className={`w-4 h-4 text-${qualityStatus.color}-500`} />
@@ -88,22 +88,22 @@ const EngineeringQualityFramework: React.FC<EngineeringQualityFrameworkProps> = 
         <CardContent className="space-y-6">
           {/* Process Validation */}
           <div>
-            <h3 className="font-semibold mb-3">Process Validation</h3>
+            <h3 className="font-semibold mb-3">Requirements Validation</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span>Emotional State Completeness</span>
-                  <span>{validateEmotionalStateCompleteness()}%</span>
+                  <span>User Requirements Completeness</span>
+                  <span>{validateRequirementsCompleteness()}%</span>
                 </div>
-                <Progress value={validateEmotionalStateCompleteness()} className="h-2" />
+                <Progress value={validateRequirementsCompleteness()} className="h-2" />
               </div>
               
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span>Journal Entry Quality</span>
-                  <span>{validateJournalEntryQuality()}%</span>
+                  <span>Documentation Quality</span>
+                  <span>{validateDocumentationQuality()}%</span>
                 </div>
-                <Progress value={validateJournalEntryQuality()} className="h-2" />
+                <Progress value={validateDocumentationQuality()} className="h-2" />
               </div>
             </div>
           </div>
@@ -148,20 +148,20 @@ const EngineeringQualityFramework: React.FC<EngineeringQualityFrameworkProps> = 
 
           {/* Engineering Standards Checklist */}
           <div>
-            <h3 className="font-semibold mb-3">Engineering Standards Compliance</h3>
+            <h3 className="font-semibold mb-3">Development Standards Compliance</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-green-500" />
-                  <span className="text-sm">Garden context established</span>
+                  <span className="text-sm">Product context established</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-green-500" />
-                  <span className="text-sm">5-axis emotional mapping complete</span>
+                  <span className="text-sm">User requirements analysis complete</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-green-500" />
-                  <span className="text-sm">Shadow/Higher self integration</span>
+                  <span className="text-sm">Stakeholder validation completed</span>
                 </div>
               </div>
               
@@ -172,7 +172,7 @@ const EngineeringQualityFramework: React.FC<EngineeringQualityFrameworkProps> = 
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-green-500" />
-                  <span className="text-sm">Traceability matrix active</span>
+                  <span className="text-sm">Requirements traceability active</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 text-yellow-500" />
@@ -182,21 +182,21 @@ const EngineeringQualityFramework: React.FC<EngineeringQualityFrameworkProps> = 
             </div>
           </div>
 
-          {/* Transformation Readiness */}
+          {/* Development Readiness */}
           <div>
-            <h3 className="font-semibold mb-3">Transformation Readiness Score</h3>
+            <h3 className="font-semibold mb-3">Development Readiness Score</h3>
             <div className="flex items-center gap-4">
               <div className="flex-1">
                 <Progress value={overallQuality} className="h-4" />
               </div>
               <Badge variant={overallQuality >= 70 ? 'default' : 'outline'}>
-                {overallQuality >= 70 ? 'Ready for Integration' : 'Needs Refinement'}
+                {overallQuality >= 70 ? 'Ready for Implementation' : 'Needs Refinement'}
               </Badge>
             </div>
             <p className="text-sm text-slate-600 mt-2">
               {overallQuality >= 70 
-                ? 'Process meets engineering standards for organizational transformation.'
-                : 'Additional work needed to meet quality thresholds for effective transformation.'
+                ? 'Requirements meet engineering standards for development implementation.'
+                : 'Additional work needed to meet quality thresholds for effective development.'
               }
             </p>
           </div>
