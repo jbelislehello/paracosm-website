@@ -86,7 +86,7 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({ onStartJourney 
           </div>
           {!isMinimized && (
             <Badge variant="outline" className="w-fit">
-              Engineering-Grade Framework
+              Imagineering to Engineering Framework
             </Badge>
           )}
         </CardHeader>
