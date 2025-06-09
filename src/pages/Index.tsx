@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 const Index = () => {
   useEffect(() => {
     // Set page title
-    document.title = "Paracosm - Innovation Journal";
+    document.title = "Paracosm - Product Development Framework";
   }, []);
 
   const handleStartJourney = () => {
@@ -38,7 +38,7 @@ const Index = () => {
           <nav className="hidden md:flex gap-6">
             <a href="#features" className="text-sm font-medium hover:text-purple-600 transition-colors">Features</a>
             <a href="#showcase" className="text-sm font-medium hover:text-purple-600 transition-colors">Showcase</a>
-            <a href="#journal" className="text-sm font-medium hover:text-purple-600 transition-colors">Journal</a>
+            <a href="#journal" className="text-sm font-medium hover:text-purple-600 transition-colors">Framework</a>
             <a href="#partners" className="text-sm font-medium hover:text-purple-600 transition-colors">Partners</a>
             <a href="#contact" className="text-sm font-medium hover:text-purple-600 transition-colors">Contact</a>
           </nav>
@@ -48,7 +48,7 @@ const Index = () => {
         </div>
       </header>
       
-      {/* Calm Magic Assistant - Floating */}
+      {/* Product Development Framework Assistant - Floating */}
       <CalmMagicAssistant onStartJourney={handleStartJourney} />
       
       {/* Hero Section */}
@@ -57,9 +57,9 @@ const Index = () => {
       {/* Features Section */}
       <section id="features" className="py-20 px-4">
         <div className="container max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Build Powerful Innovation Ecosystems</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Bridge Ideas to Products</h2>
           <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
-            Navigate the three gardens of exploration using the Calm Magic Framework to unlock organizational potential and transform how teams think, collaborate, and innovate.
+            Navigate from "good idea" to "working product" using our structured framework that prevents the common gap between creative vision and technical implementation.
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -79,9 +79,9 @@ const Index = () => {
       {/* Network Visualization */}
       <section id="showcase" className="py-16 px-4 bg-slate-100 dark:bg-slate-800/50">
         <div className="container max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Visualize Your Innovation Network</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Visualize Your Development Process</h2>
           <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
-            See how ideas flow between the three gardens and track the emotional landscape of your innovation journey in real-time.
+            See how ideas flow through the framework from stakeholder research to working products, with clear visibility into each phase of the development process.
           </p>
           
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-2 md:p-6 overflow-hidden">
@@ -90,12 +90,12 @@ const Index = () => {
         </div>
       </section>
       
-      {/* Innovation Journal */}
+      {/* Product Development Framework */}
       <section id="journal" className="py-20 px-4">
         <div className="container max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">🌱 Innovation Journal</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">🚀 Product Development Framework</h2>
           <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
-            Navigate the Gardens of Exploration using the Calm Magic Framework. Map your internal territory and capture insights as they emerge.
+            A structured approach that bridges creative ideation with technical implementation. Transform "we should build something" into "here's exactly what to build and why it matters."
           </p>
           
           <InnovationJournal />
@@ -122,17 +122,17 @@ const Index = () => {
                 <span className="font-bold text-lg text-white">Paracosm</span>
               </div>
               <p className="text-sm text-slate-400 mb-4">
-                Exploring interconnected worlds and pushing the boundaries of imagination through the Calm Magic Framework.
+                Bridging the gap between creative vision and technical implementation through structured product development frameworks.
               </p>
             </div>
             
             <div>
               <h3 className="font-semibold text-white mb-4">Resources</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-sm hover:text-purple-600">Documentation</a></li>
                 <li><a href="#" className="text-sm hover:text-purple-600">Framework Guide</a></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Examples</a></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Blog</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Implementation Examples</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Case Studies</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Best Practices</a></li>
               </ul>
             </div>
             

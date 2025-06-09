@@ -14,7 +14,12 @@ import {
   BookOpen,
   ArrowRight,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Users,
+  Search,
+  Lightbulb,
+  Code,
+  Handshake
 } from 'lucide-react';
 
 interface CalmMagicAssistantProps {
@@ -25,18 +30,18 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({ onStartJourney 
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
 
-  const gardens = [
-    { icon: '🧠', name: 'Intelligence Garden', color: '#2563eb' },
-    { icon: '⚙️', name: 'Systems Garden', color: '#7c3aed' },
-    { icon: '🌱', name: 'Prototypes Garden', color: '#db2777' }
+  const processSteps = [
+    { icon: <Users className="w-4 h-4" />, name: 'Stakeholder Research', phase: 'Understanding' },
+    { icon: <Search className="w-4 h-4" />, name: 'Problem Analysis', phase: 'Understanding' },
+    { icon: <Lightbulb className="w-4 h-4" />, name: 'Diegetic Prototype', phase: 'Understanding' },
+    { icon: <Code className="w-4 h-4" />, name: 'Technical Requirements', phase: 'Implementation' },
+    { icon: <Handshake className="w-4 h-4" />, name: 'Handover Ritual', phase: 'Implementation' }
   ];
 
-  const compassAxes = [
-    { name: 'LOVE', color: '#ef4444', description: 'Connection & empathy' },
-    { name: 'MAGIC', color: '#8b5cf6', description: 'Wonder & possibility' },
-    { name: 'CALM', color: '#06b6d4', description: 'Peace & clarity' },
-    { name: 'OPEN', color: '#10b981', description: 'Receptivity & growth' },
-    { name: 'FREE', color: '#f59e0b', description: 'Liberation & flow' }
+  const bridgeElements = [
+    { name: 'Diegetic Prototype', description: 'Demo that feels real and tells a complete story' },
+    { name: 'Systems Intelligence', description: 'Technical specs that preserve the original vision' },
+    { name: 'Handover Ritual', description: 'Engineers understand not just what to build, but why' }
   ];
 
   if (!isOpen) {
@@ -47,7 +52,7 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({ onStartJourney 
           className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 text-white p-3 rounded-r-xl rounded-l-lg shadow-lg transition-all duration-300 hover:shadow-xl"
         >
           <Sparkles className="w-5 h-5 mr-2" />
-          <span className="text-sm font-medium">Calm Magic</span>
+          <span className="text-sm font-medium">Product Framework</span>
           <ChevronRight className="w-4 h-4 ml-1" />
         </Button>
       </div>
@@ -62,7 +67,7 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({ onStartJourney 
             {!isMinimized && (
               <CardTitle className="flex items-center gap-2 text-lg">
                 <Sparkles className="w-5 h-5 text-purple-600" />
-                Calm Magic Assistant
+                Product Development Framework
               </CardTitle>
             )}
             <div className="flex gap-1">
@@ -96,32 +101,32 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({ onStartJourney 
             <Tabs defaultValue="overview" className="w-full">
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="gardens">Gardens</TabsTrigger>
-                <TabsTrigger value="compass">Compass</TabsTrigger>
+                <TabsTrigger value="process">Process</TabsTrigger>
+                <TabsTrigger value="bridge">Bridge</TabsTrigger>
               </TabsList>
 
               <TabsContent value="overview" className="space-y-4">
                 <div className="text-center space-y-3">
-                  <div className="text-2xl">🌱</div>
-                  <h3 className="font-semibold">Transform Your Organization</h3>
+                  <div className="text-2xl">🚀</div>
+                  <h3 className="font-semibold">Bridge Ideas to Products</h3>
                   <p className="text-sm text-slate-600 dark:text-slate-300">
-                    Navigate the three gardens of exploration using our engineering-grade 
-                    framework for organizational transformation.
+                    A structured approach to go from "we should build something" 
+                    to "here's exactly what to build and why it matters."
                   </p>
                 </div>
 
                 <div className="space-y-3">
                   <div className="flex items-center gap-2 text-sm">
-                    <Brain className="w-4 h-4 text-blue-600" />
-                    <span>Select your exploration context</span>
+                    <Users className="w-4 h-4 text-blue-600" />
+                    <span>Study how people actually work</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
-                    <Compass className="w-4 h-4 text-purple-600" />
-                    <span>Map your emotional territory</span>
+                    <Search className="w-4 h-4 text-purple-600" />
+                    <span>Map problems and opportunities</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
-                    <BookOpen className="w-4 h-4 text-green-600" />
-                    <span>Capture insights & patterns</span>
+                    <Lightbulb className="w-4 h-4 text-green-600" />
+                    <span>Build story-driven prototypes</span>
                   </div>
                 </div>
 
@@ -129,77 +134,89 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({ onStartJourney 
                   onClick={onStartJourney}
                   className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600"
                 >
-                  Start Your Journey
+                  Start Development Process
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
 
                 <div className="border-t pt-3 space-y-2">
-                  <h4 className="font-medium text-sm">Process Benefits</h4>
+                  <h4 className="font-medium text-sm">Why Most Projects Fail</h4>
                   <ul className="space-y-1 text-xs text-slate-600 dark:text-slate-300">
-                    <li>• Structured emotional intelligence mapping</li>
-                    <li>• Reproducible transformation processes</li>
-                    <li>• Team collaboration frameworks</li>
-                    <li>• Quality-assured insight generation</li>
+                    <li>• Gap between "good idea" and "working product"</li>
+                    <li>• Engineers get vague requirements</li>
+                    <li>• Solutions are technically correct but practically useless</li>
+                    <li>• Original vision gets lost in translation</li>
                   </ul>
                 </div>
               </TabsContent>
 
-              <TabsContent value="gardens" className="space-y-3">
-                <h3 className="font-semibold text-center">Exploration Gardens</h3>
-                {gardens.map((garden, index) => (
+              <TabsContent value="process" className="space-y-3">
+                <h3 className="font-semibold text-center">7-Step Process</h3>
+                
+                <div className="space-y-3">
+                  <div className="bg-blue-50 dark:bg-blue-950/30 p-3 rounded-lg">
+                    <h4 className="font-medium text-blue-800 dark:text-blue-200 text-sm mb-2">
+                      Phase 1: Understanding (Steps 1-3)
+                    </h4>
+                    {processSteps.slice(0, 3).map((step, index) => (
+                      <div key={index} className="flex items-center gap-2 text-xs text-blue-700 dark:text-blue-300">
+                        {step.icon}
+                        <span>{index + 1}. {step.name}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="bg-purple-50 dark:bg-purple-950/30 p-3 rounded-lg">
+                    <h4 className="font-medium text-purple-800 dark:text-purple-200 text-sm mb-2">
+                      Phase 2: Implementation (Steps 4-7)
+                    </h4>
+                    {processSteps.slice(3, 5).map((step, index) => (
+                      <div key={index} className="flex items-center gap-2 text-xs text-purple-700 dark:text-purple-300">
+                        {step.icon}
+                        <span>{index + 4}. {step.name}</span>
+                      </div>
+                    ))}
+                    <div className="text-xs text-purple-600 dark:text-purple-400 mt-1">
+                      + Systems Intelligence & Development Tracking
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-green-50 dark:bg-green-950/30 p-3 rounded-lg">
+                  <h4 className="font-medium text-green-800 dark:text-green-200 text-sm">Output</h4>
+                  <p className="text-xs text-green-700 dark:text-green-300">
+                    Clear technical specs that preserve the original vision, 
+                    preventing the "technically correct but practically useless" problem.
+                  </p>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="bridge" className="space-y-3">
+                <h3 className="font-semibold text-center">The Bridge Elements</h3>
+                
+                {bridgeElements.map((element, index) => (
                   <div 
                     key={index}
                     className="p-3 rounded-lg border bg-slate-50 dark:bg-slate-800/50"
                   >
-                    <div className="flex items-center gap-3">
-                      <div 
-                        className="w-10 h-10 rounded-full flex items-center justify-center text-lg"
-                        style={{ backgroundColor: `${garden.color}20` }}
-                      >
-                        {garden.icon}
-                      </div>
-                      <div>
-                        <h4 className="font-medium text-sm">{garden.name}</h4>
-                        <p className="text-xs text-slate-600 dark:text-slate-300">
-                          {garden.name === 'Intelligence Garden' && 'Cognitive frameworks & mental models'}
-                          {garden.name === 'Systems Garden' && 'Organizational dynamics & processes'}
-                          {garden.name === 'Prototypes Garden' && 'Future scenarios & innovations'}
-                        </p>
-                      </div>
-                    </div>
+                    <h4 className="font-medium text-sm text-slate-800 dark:text-slate-200">
+                      {element.name}
+                    </h4>
+                    <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
+                      {element.description}
+                    </p>
                   </div>
                 ))}
-              </TabsContent>
 
-              <TabsContent value="compass" className="space-y-3">
-                <h3 className="font-semibold text-center">5-Axis Compass</h3>
-                <div className="text-center mb-4">
-                  <div className="w-20 h-20 mx-auto relative">
-                    <svg viewBox="0 0 80 80" className="w-full h-full">
-                      <circle cx="40" cy="40" r="30" fill="none" stroke="#7c3aed" strokeWidth="2"/>
-                      <line x1="40" y1="10" x2="40" y2="20" stroke="#ef4444" strokeWidth="2"/>
-                      <line x1="70" y1="40" x2="60" y2="40" stroke="#8b5cf6" strokeWidth="2"/>
-                      <line x1="40" y1="70" x2="40" y2="60" stroke="#06b6d4" strokeWidth="2"/>
-                      <line x1="10" y1="40" x2="20" y2="40" stroke="#10b981" strokeWidth="2"/>
-                      <line x1="25" y1="25" x2="30" y2="30" stroke="#f59e0b" strokeWidth="2"/>
-                    </svg>
-                  </div>
+                <div className="bg-amber-50 dark:bg-amber-950/30 p-3 rounded-lg">
+                  <h4 className="font-medium text-amber-800 dark:text-amber-200 text-sm">
+                    Bottom Line
+                  </h4>
+                  <p className="text-xs text-amber-700 dark:text-amber-300">
+                    This framework prevents the common problem where engineering teams 
+                    receive vague requirements and build something that works technically 
+                    but doesn't solve the real problem.
+                  </p>
                 </div>
-                
-                {compassAxes.map((axis, index) => (
-                  <div key={index} className="flex items-center gap-3 p-2 rounded">
-                    <div 
-                      className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: axis.color }}
-                    />
-                    <div>
-                      <span className="font-medium text-sm">{axis.name}</span>
-                      <p className="text-xs text-slate-600 dark:text-slate-300">
-                        {axis.description}
-                      </p>
-                    </div>
-                  </div>
-                ))}
               </TabsContent>
             </Tabs>
           </CardContent>
@@ -210,7 +227,7 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({ onStartJourney 
             <div className="flex flex-col items-center gap-2">
               <Sparkles className="w-6 h-6 text-purple-600" />
               <div className="text-xs text-center text-slate-600 dark:text-slate-300 writing-mode-vertical">
-                Calm Magic
+                Product Framework
               </div>
             </div>
           </CardContent>

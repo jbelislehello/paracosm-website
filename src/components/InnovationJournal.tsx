@@ -3,35 +3,30 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, BookOpen, BarChart3, Workflow } from 'lucide-react';
-import GardenSelector from './journal/GardenSelector';
-import CalmMagicCompass from './journal/CalmMagicCompass';
-import JournalInterface from './journal/JournalInterface';
+import { ArrowLeft, BookOpen, BarChart3, Workflow, Users, Search, Lightbulb } from 'lucide-react';
+import ProductDevelopmentSteps from './calm-magic/ProductDevelopmentSteps';
+import StakeholderResearchInterface from './calm-magic/StakeholderResearchInterface';
+import ProblemAnalysisCanvas from './calm-magic/ProblemAnalysisCanvas';
+import DiegeticPrototypeBuilder from './calm-magic/DiegeticPrototypeBuilder';
 import CalmMagicProcessDiagram from './calm-magic/CalmMagicProcessDiagram';
 import EngineeringQualityFramework from './calm-magic/EngineeringQualityFramework';
 import ProcessStatusTracker from './calm-magic/ProcessStatusTracker';
 import CalmMagicDocumentation from './calm-magic/CalmMagicDocumentation';
 import { useJournal } from '@/hooks/useJournal';
-import { GardenType, EmotionalState } from '@/types/journal';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 const InnovationJournal = () => {
-  const [currentStep, setCurrentStep] = useState<'garden' | 'compass' | 'journal'>('garden');
-  const [selectedGarden, setSelectedGarden] = useState<GardenType | null>(null);
-  const [emotionalState, setEmotionalState] = useState<Partial<EmotionalState>>({
-    love_level: 50,
-    magic_level: 50,
-    calm_level: 50,
-    open_level: 50,
-    free_level: 50
-  });
-  const [savedEmotionalState, setSavedEmotionalState] = useState<EmotionalState | null>(null);
-  const [savedJournalEntry, setSavedJournalEntry] = useState<any>(null);
+  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [completedSteps, setCompletedSteps] = useState<number[]>([]);
+  const [selectedContext, setSelectedContext] = useState<string | null>(null);
+  const [stakeholderData, setStakeholderData] = useState<any>(null);
+  const [problemAnalysis, setProblemAnalysis] = useState<any>(null);
+  const [prototypeData, setPrototypeData] = useState<any>(null);
   const [user, setUser] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('process');
 
-  const { saveEmotionalState, saveJournalEntry, loading } = useJournal();
+  const { loading } = useJournal();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -40,9 +35,8 @@ const InnovationJournal = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         toast({
-          title: "Authentication Required",
-          description: "Please sign in to use the Innovation Journal. The demo will show the interface without saving data.",
-          variant: "destructive",
+          title: "Demo Mode",
+          description: "You're experiencing the Product Development Framework in demo mode. Sign in to save your progress.",
         });
       }
       setUser(user);
@@ -51,83 +45,85 @@ const InnovationJournal = () => {
     checkAuth();
   }, [toast]);
 
-  const handleGardenSelect = (garden: GardenType) => {
-    setSelectedGarden(garden);
-    setEmotionalState(prev => ({ ...prev, garden }));
-    setCurrentStep('compass');
+  const handleContextSelect = (context: string) => {
+    setSelectedContext(context);
+    setCurrentStep(1);
   };
 
-  const handleEmotionalStateComplete = async () => {
-    if (!selectedGarden) return;
-
-    const stateToSave = {
-      garden: selectedGarden,
-      love_level: emotionalState.love_level || 50,
-      magic_level: emotionalState.magic_level || 50,
-      calm_level: emotionalState.calm_level || 50,
-      open_level: emotionalState.open_level || 50,
-      free_level: emotionalState.free_level || 50,
-      shadow_self_notes: emotionalState.shadow_self_notes,
-      higher_self_notes: emotionalState.higher_self_notes
-    };
-
-    if (user) {
-      const saved = await saveEmotionalState(stateToSave);
-      if (saved) {
-        setSavedEmotionalState(saved);
-      }
-    } else {
-      // Demo mode - just proceed without saving
-      setSavedEmotionalState({
-        id: 'demo',
-        user_id: 'demo',
-        ...stateToSave,
-        created_at: new Date().toISOString()
-      });
-    }
-    
-    setCurrentStep('journal');
+  const handleResearchComplete = (data: any) => {
+    setStakeholderData(data);
+    setCompletedSteps([...completedSteps, 1]);
+    setCurrentStep(2);
+    setSelectedContext(null); // Reset for next step
   };
 
-  const handleJournalSave = async (entry: any) => {
-    if (user) {
-      const saved = await saveJournalEntry(entry);
-      if (saved) {
-        setSavedJournalEntry(saved);
-      }
-    } else {
-      toast({
-        title: "Demo Mode",
-        description: "Entry saved in demo mode. Sign in to persist your reflections.",
-      });
-      setSavedJournalEntry(entry);
-    }
+  const handleAnalysisComplete = (analysis: any) => {
+    setProblemAnalysis(analysis);
+    setCompletedSteps([...completedSteps, 2]);
+    setCurrentStep(3);
+  };
+
+  const handlePrototypeComplete = (prototype: any) => {
+    setPrototypeData(prototype);
+    setCompletedSteps([...completedSteps, 3]);
+    setCurrentStep(4);
     
-    // Reset to garden selection for next entry
-    setCurrentStep('garden');
-    setSelectedGarden(null);
-    setSavedEmotionalState(null);
-    setSavedJournalEntry(null);
-    setEmotionalState({
-      love_level: 50,
-      magic_level: 50,
-      calm_level: 50,
-      open_level: 50,
-      free_level: 50
+    toast({
+      title: "Phase 1 Complete!",
+      description: "Understanding the Problem phase is done. Ready to move to Making It Real.",
     });
   };
 
   const handleBack = () => {
-    if (currentStep === 'compass') {
-      setCurrentStep('garden');
-      setSelectedGarden(null);
-    } else if (currentStep === 'journal') {
-      setCurrentStep('compass');
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+      // Remove the current step from completed steps
+      setCompletedSteps(completedSteps.filter(step => step !== currentStep));
     }
   };
 
-  const handleNavigateToStep = (step: 'garden' | 'compass' | 'journal') => {
+  const handleNavigateToStep = (step: number) => {
     setCurrentStep(step);
+  };
+
+  const renderCurrentStep = () => {
+    switch (currentStep) {
+      case 1:
+        return (
+          <StakeholderResearchInterface
+            selectedContext={selectedContext}
+            onContextSelect={handleContextSelect}
+            onCompleteResearch={handleResearchComplete}
+          />
+        );
+      case 2:
+        return (
+          <ProblemAnalysisCanvas
+            onCompleteAnalysis={handleAnalysisComplete}
+            stakeholderData={stakeholderData}
+          />
+        );
+      case 3:
+        return (
+          <DiegeticPrototypeBuilder
+            onCompletePrototype={handlePrototypeComplete}
+            problemAnalysis={problemAnalysis}
+          />
+        );
+      default:
+        return (
+          <div className="text-center space-y-4">
+            <h2 className="text-2xl font-bold">Phase 1 Complete!</h2>
+            <p className="text-slate-600">
+              You've successfully completed the Understanding phase. Next steps would involve 
+              technical requirements extraction, systems intelligence documentation, and handover preparation.
+            </p>
+            <Button onClick={() => setCurrentStep(1)}>
+              Start New Project
+            </Button>
+          </div>
+        );
+    }
   };
 
   return (
@@ -140,7 +136,7 @@ const InnovationJournal = () => {
           </TabsTrigger>
           <TabsTrigger value="diagram" className="flex items-center gap-2">
             <BarChart3 className="w-4 h-4" />
-            Diagram
+            Framework
           </TabsTrigger>
           <TabsTrigger value="quality" className="flex items-center gap-2">
             <BarChart3 className="w-4 h-4" />
@@ -153,79 +149,60 @@ const InnovationJournal = () => {
         </TabsList>
 
         <TabsContent value="process" className="space-y-6">
-          {currentStep !== 'garden' && (
+          {currentStep > 1 && (
             <Button 
               variant="ghost" 
               onClick={handleBack}
               className="mb-6 flex items-center gap-2"
             >
               <ArrowLeft className="w-4 h-4" />
-              Back
+              Back to Previous Step
             </Button>
           )}
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Main Process Area */}
             <div className="lg:col-span-2">
-              {currentStep === 'garden' && (
-                <GardenSelector
-                  selectedGarden={selectedGarden}
-                  onSelectGarden={handleGardenSelect}
-                />
-              )}
-
-              {currentStep === 'compass' && selectedGarden && (
-                <div className="space-y-6">
-                  <div className="text-center">
-                    <h2 className="text-2xl font-bold mb-4">
-                      Entering the {selectedGarden.charAt(0).toUpperCase() + selectedGarden.slice(1)} Garden
-                    </h2>
-                    <p className="text-slate-600 dark:text-slate-300">
-                      Take a moment to read your internal territory before beginning your reflection.
-                    </p>
-                  </div>
-                  
-                  <CalmMagicCompass
-                    emotionalState={emotionalState}
-                    onStateChange={setEmotionalState}
-                  />
-                  
-                  <Button 
-                    onClick={handleEmotionalStateComplete}
-                    disabled={loading}
-                    className="w-full"
-                    size="lg"
-                  >
-                    {loading ? 'Saving State...' : 'Begin Reflection'}
-                  </Button>
-                </div>
-              )}
-
-              {currentStep === 'journal' && selectedGarden && (
-                <JournalInterface
-                  garden={selectedGarden}
-                  emotionalState={savedEmotionalState}
-                  onSaveEntry={handleJournalSave}
-                  loading={loading}
-                />
-              )}
+              {renderCurrentStep()}
             </div>
 
             {/* Process Status Sidebar */}
             <div className="space-y-6">
-              <ProcessStatusTracker
-                selectedGarden={selectedGarden}
-                emotionalState={savedEmotionalState}
-                journalEntry={savedJournalEntry}
-                currentStep={currentStep}
-                onNavigateToStep={handleNavigateToStep}
-              />
+              <Card>
+                <CardContent className="p-4">
+                  <ProductDevelopmentSteps
+                    currentStep={currentStep}
+                    completedSteps={completedSteps}
+                  />
+                </CardContent>
+              </Card>
 
-              {savedEmotionalState && (
-                <EngineeringQualityFramework
-                  emotionalState={savedEmotionalState}
-                  journalEntry={savedJournalEntry}
-                />
+              {(stakeholderData || problemAnalysis || prototypeData) && (
+                <Card>
+                  <CardContent className="p-4">
+                    <h3 className="font-semibold mb-3">Progress Summary</h3>
+                    <div className="space-y-3 text-sm">
+                      {stakeholderData && (
+                        <div className="flex items-center gap-2">
+                          <Users className="w-4 h-4 text-blue-600" />
+                          <span>Research Context: {stakeholderData.context?.replace('_', ' ')}</span>
+                        </div>
+                      )}
+                      {problemAnalysis && (
+                        <div className="flex items-center gap-2">
+                          <Search className="w-4 h-4 text-purple-600" />
+                          <span>Problem Analysis: {Math.round((problemAnalysis.impact_level + problemAnalysis.urgency_level + problemAnalysis.feasibility_level + problemAnalysis.stakeholder_alignment + problemAnalysis.resource_availability) / 5)}% opportunity</span>
+                        </div>
+                      )}
+                      {prototypeData && (
+                        <div className="flex items-center gap-2">
+                          <Lightbulb className="w-4 h-4 text-green-600" />
+                          <span>Prototype: "{prototypeData.title}"</span>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
               )}
             </div>
           </div>
@@ -235,8 +212,8 @@ const InnovationJournal = () => {
               <CardContent className="p-6 text-center">
                 <h3 className="text-lg font-semibold mb-2">Demo Mode</h3>
                 <p className="text-sm text-slate-600 dark:text-slate-300">
-                  You're experiencing the Innovation Journal in demo mode. 
-                  Sign in to save your reflections and access team collaboration features.
+                  You're experiencing the Product Development Framework in demo mode. 
+                  Sign in to save your progress and access team collaboration features.
                 </p>
               </CardContent>
             </Card>
@@ -249,8 +226,8 @@ const InnovationJournal = () => {
 
         <TabsContent value="quality">
           <EngineeringQualityFramework
-            emotionalState={savedEmotionalState}
-            journalEntry={savedJournalEntry}
+            emotionalState={null}
+            journalEntry={null}
           />
         </TabsContent>
 
