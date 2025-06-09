@@ -230,6 +230,11 @@ const InnovationJournal = () => {
         </TabsContent>
 
         <TabsContent value="process" className="space-y-6">
+          {/* Process Overview Diagram */}
+          <div className="mb-8">
+            <CalmMagicProcessDiagram />
+          </div>
+
           {currentStep > 1 && (
             <Button 
               variant="ghost" 
