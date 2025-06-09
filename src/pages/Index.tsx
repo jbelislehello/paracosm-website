@@ -6,6 +6,7 @@ import FeatureCard from "@/components/FeatureCard";
 import InnovationJournal from "@/components/InnovationJournal";
 import ContactSection from "@/components/ContactSection";
 import PartnerToolsSection from "@/components/PartnerToolsSection";
+import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
 import { features } from "@/data/featureData";
 import { Button } from "@/components/ui/button";
 
@@ -14,6 +15,14 @@ const Index = () => {
     // Set page title
     document.title = "Paracosm - Innovation Journal";
   }, []);
+
+  const handleStartJourney = () => {
+    // Scroll to the journal section
+    const journalSection = document.getElementById('journal');
+    if (journalSection) {
+      journalSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
@@ -38,6 +47,9 @@ const Index = () => {
           </Button>
         </div>
       </header>
+      
+      {/* Calm Magic Assistant - Floating */}
+      <CalmMagicAssistant onStartJourney={handleStartJourney} />
       
       {/* Hero Section */}
       <HeroSection />
