@@ -1,5 +1,5 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
 import FeatureCard from "@/components/FeatureCard";
@@ -11,17 +11,20 @@ import { features } from "@/data/featureData";
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
+  const [isCalmMagicOpen, setIsCalmMagicOpen] = useState(false);
+
   useEffect(() => {
     // Set page title
     document.title = "Paracosm - Product Development Framework";
   }, []);
 
   const handleStartJourney = () => {
-    // Scroll to the journal section
-    const journalSection = document.getElementById('journal');
-    if (journalSection) {
-      journalSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    // Open the Calm Magic assistant
+    setIsCalmMagicOpen(true);
+  };
+
+  const handleOpenAssistant = () => {
+    setIsCalmMagicOpen(true);
   };
 
   return (
@@ -42,14 +45,21 @@ const Index = () => {
             <a href="#partners" className="text-sm font-medium hover:text-purple-600 transition-colors">Partners</a>
             <a href="#contact" className="text-sm font-medium hover:text-purple-600 transition-colors">Contact</a>
           </nav>
-          <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300">
+          <Button 
+            onClick={handleOpenAssistant}
+            className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300"
+          >
             Get Started
           </Button>
         </div>
       </header>
       
       {/* Product Development Framework Assistant - Floating */}
-      <CalmMagicAssistant onStartJourney={handleStartJourney} />
+      <CalmMagicAssistant 
+        onStartJourney={handleStartJourney} 
+        isOpen={isCalmMagicOpen}
+        onOpenChange={setIsCalmMagicOpen}
+      />
       
       {/* Hero Section */}
       <HeroSection />

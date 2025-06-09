@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -24,11 +23,27 @@ import {
 
 interface CalmMagicAssistantProps {
   onStartJourney?: () => void;
+  isOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({ onStartJourney }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({ 
+  onStartJourney, 
+  isOpen: controlledIsOpen,
+  onOpenChange
+}) => {
+  const [internalIsOpen, setInternalIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+
+  const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
+  
+  const setIsOpen = (open: boolean) => {
+    if (onOpenChange) {
+      onOpenChange(open);
+    } else {
+      setInternalIsOpen(open);
+    }
+  };
 
   const processSteps = [
     { icon: <Users className="w-4 h-4" />, name: 'Stakeholder Research', phase: 'Understanding' },
