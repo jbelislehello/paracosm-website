@@ -52,7 +52,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         pulsePhase: 0,
         attractionRadius: 150,
         velocityX: 0.3,
-        velocityY: 0.2
+        velocityY: 0.2,
+        connectionCount: 0,
+        glowIntensity: 1
       },
       { 
         key: 'systems', 
@@ -66,7 +68,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         pulsePhase: Math.PI / 3,
         attractionRadius: 150,
         velocityX: -0.25,
-        velocityY: 0.3
+        velocityY: 0.3,
+        connectionCount: 0,
+        glowIntensity: 1
       },
       { 
         key: 'prototypes', 
@@ -80,7 +84,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         pulsePhase: Math.PI * 2 / 3,
         attractionRadius: 150,
         velocityX: 0.2,
-        velocityY: -0.25
+        velocityY: -0.25,
+        connectionCount: 0,
+        glowIntensity: 1
       }
     ];
 
@@ -92,10 +98,156 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       { key: 'free', name: 'FREE', color: '#f59e0b' }
     ];
 
-    // Force nodes array
+    // Arrays for different effect systems
     const forceNodes: ForceNode[] = [];
     const connectionLines: ConnectionLine[] = [];
     const constellationPatterns: ConstellationPattern[] = [];
+    const sparks: Spark[] = [];
+    const ripples: Ripple[] = [];
+    const flowParticles: FlowParticle[] = [];
+
+    class Spark {
+      x: number;
+      y: number;
+      color: string;
+      life: number;
+      maxLife: number;
+      size: number;
+      velocityX: number;
+      velocityY: number;
+      
+      constructor(x: number, y: number, color: string) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.life = 1;
+        this.maxLife = 30 + Math.random() * 20;
+        this.size = 2 + Math.random() * 3;
+        this.velocityX = (Math.random() - 0.5) * 2;
+        this.velocityY = (Math.random() - 0.5) * 2;
+      }
+      
+      update() {
+        this.life--;
+        this.x += this.velocityX;
+        this.y += this.velocityY;
+        this.velocityX *= 0.98;
+        this.velocityY *= 0.98;
+        return this.life > 0;
+      }
+      
+      draw() {
+        if (!ctx) return;
+        
+        const alpha = this.life / this.maxLife;
+        ctx.globalAlpha = alpha;
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 10;
+        
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size * alpha, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    class Ripple {
+      x: number;
+      y: number;
+      radius: number;
+      maxRadius: number;
+      color: string;
+      alpha: number;
+      
+      constructor(x: number, y: number, color: string, maxRadius: number = 200) {
+        this.x = x;
+        this.y = y;
+        this.radius = 0;
+        this.maxRadius = maxRadius;
+        this.color = color;
+        this.alpha = 0.8;
+      }
+      
+      update() {
+        this.radius += 3;
+        this.alpha = Math.max(0, 0.8 * (1 - this.radius / this.maxRadius));
+        return this.radius < this.maxRadius;
+      }
+      
+      draw() {
+        if (!ctx) return;
+        
+        ctx.globalAlpha = this.alpha;
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = 2;
+        
+        // Main ripple
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.stroke();
+        
+        // Secondary ripple
+        if (this.radius > 20) {
+          ctx.globalAlpha = this.alpha * 0.5;
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.radius - 10, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    class FlowParticle {
+      startX: number;
+      startY: number;
+      endX: number;
+      endY: number;
+      currentX: number;
+      currentY: number;
+      progress: number;
+      color: string;
+      size: number;
+      
+      constructor(startX: number, startY: number, endX: number, endY: number, color: string) {
+        this.startX = startX;
+        this.startY = startY;
+        this.endX = endX;
+        this.endY = endY;
+        this.currentX = startX;
+        this.currentY = startY;
+        this.progress = 0;
+        this.color = color;
+        this.size = 2 + Math.random() * 2;
+      }
+      
+      update() {
+        this.progress += 0.02;
+        this.currentX = this.startX + (this.endX - this.startX) * this.progress;
+        this.currentY = this.startY + (this.endY - this.startY) * this.progress;
+        return this.progress < 1;
+      }
+      
+      draw() {
+        if (!ctx) return;
+        
+        const alpha = Math.sin(this.progress * Math.PI);
+        ctx.globalAlpha = alpha;
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 8;
+        
+        ctx.beginPath();
+        ctx.arc(this.currentX, this.currentY, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        
+        ctx.shadowBlur = 0;
+        ctx.globalAlpha = 1;
+      }
+    }
 
     class ForceNode {
       x: number;
@@ -108,6 +260,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       targetGarden: any;
       isAttracted: boolean;
       pulsePhase: number;
+      wasAttracted: boolean;
       
       constructor(force: any) {
         this.x = Math.random() * window.innerWidth;
@@ -119,11 +272,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         this.velocityY = (Math.random() - 0.5) * 1;
         this.targetGarden = null;
         this.isAttracted = false;
+        this.wasAttracted = false;
         this.pulsePhase = Math.random() * Math.PI * 2;
       }
       
       update() {
         this.pulsePhase += 0.05;
+        this.wasAttracted = this.isAttracted;
         
         // Find nearest garden for attraction
         let nearestGarden = null;
@@ -144,6 +299,17 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
           this.isAttracted = true;
           this.targetGarden = nearestGarden;
           
+          // Generate spark when first attracted
+          if (!this.wasAttracted) {
+            sparks.push(new Spark(this.x, this.y, this.color));
+            nearestGarden.connectionCount++;
+            
+            // Generate ripple on strong connection
+            if (Math.random() < 0.3) {
+              ripples.push(new Ripple(nearestGarden.x, nearestGarden.y, nearestGarden.color));
+            }
+          }
+          
           // Attraction force
           const dx = nearestGarden.x - this.x;
           const dy = nearestGarden.y - this.y;
@@ -152,7 +318,15 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
           
           this.velocityX += (dx / distance) * force;
           this.velocityY += (dy / distance) * force;
+          
+          // Add flow particles along connection
+          if (Math.random() < 0.1) {
+            flowParticles.push(new FlowParticle(this.x, this.y, nearestGarden.x, nearestGarden.y, this.color));
+          }
         } else {
+          if (this.wasAttracted && this.targetGarden) {
+            this.targetGarden.connectionCount = Math.max(0, this.targetGarden.connectionCount - 1);
+          }
           this.isAttracted = false;
           this.targetGarden = null;
         }
@@ -175,10 +349,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         
         const pulseSize = this.size + Math.sin(this.pulsePhase) * 2;
         
-        // Glow effect if attracted
+        // Enhanced glow effect if attracted
         if (this.isAttracted) {
           ctx.shadowColor = this.color;
-          ctx.shadowBlur = 15;
+          ctx.shadowBlur = 15 + Math.sin(this.pulsePhase) * 5;
         }
         
         ctx.beginPath();
@@ -205,6 +379,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       endY: number;
       color: string;
       alpha: number;
+      thickness: number;
+      pulsePhase: number;
       
       constructor(node: ForceNode, garden: any) {
         this.startX = node.x;
@@ -212,15 +388,20 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         this.endX = garden.x;
         this.endY = garden.y;
         this.color = node.color;
-        this.alpha = 0.3;
+        this.alpha = 0.4;
+        this.thickness = 1 + Math.random() * 2;
+        this.pulsePhase = Math.random() * Math.PI * 2;
       }
       
       draw() {
         if (!ctx) return;
         
-        ctx.globalAlpha = this.alpha;
+        this.pulsePhase += 0.1;
+        const pulsedAlpha = this.alpha + Math.sin(this.pulsePhase) * 0.2;
+        
+        ctx.globalAlpha = pulsedAlpha;
         ctx.strokeStyle = this.color;
-        ctx.lineWidth = 1;
+        ctx.lineWidth = this.thickness;
         ctx.beginPath();
         ctx.moveTo(this.startX, this.startY);
         ctx.lineTo(this.endX, this.endY);
@@ -261,28 +442,32 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       draw() {
         if (!ctx) return;
         
-        // Draw constellation lines
-        ctx.strokeStyle = this.garden.color + '30';
-        ctx.lineWidth = 0.5;
+        // Enhanced constellation lines with garden connection intensity
+        const intensity = Math.min(1, this.garden.connectionCount / 3);
+        ctx.strokeStyle = this.garden.color + Math.floor(30 + intensity * 40).toString(16);
+        ctx.lineWidth = 0.5 + intensity;
         
         for (let i = 0; i < this.stars.length; i++) {
           const star1 = this.stars[i];
           const star2 = this.stars[(i + 1) % this.stars.length];
           
-          ctx.globalAlpha = Math.min(star1.alpha, star2.alpha);
+          ctx.globalAlpha = Math.min(star1.alpha, star2.alpha) * intensity;
           ctx.beginPath();
           ctx.moveTo(star1.x, star1.y);
           ctx.lineTo(star2.x, star2.y);
           ctx.stroke();
         }
         
-        // Draw stars
+        // Draw stars with enhanced glow
         this.stars.forEach(star => {
-          ctx.globalAlpha = star.alpha;
+          ctx.globalAlpha = star.alpha * intensity;
+          ctx.shadowColor = this.garden.color;
+          ctx.shadowBlur = 5 + intensity * 10;
           ctx.fillStyle = this.garden.color;
           ctx.beginPath();
-          ctx.arc(star.x, star.y, 1.5, 0, Math.PI * 2);
+          ctx.arc(star.x, star.y, 1.5 + intensity, 0, Math.PI * 2);
           ctx.fill();
+          ctx.shadowBlur = 0;
         });
         
         ctx.globalAlpha = 1;
@@ -309,10 +494,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
       
-      // Update gardens
+      // Update gardens with dynamic glow intensity
       gardens.forEach(garden => {
         garden.pulsePhase += 0.02;
         garden.currentRadius = garden.baseRadius + Math.sin(garden.pulsePhase) * 15;
+        garden.glowIntensity = 1 + garden.connectionCount * 0.3;
         
         // Move gardens
         garden.x += garden.velocityX;
@@ -328,7 +514,29 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         
         garden.x = Math.max(garden.baseRadius, Math.min(window.innerWidth - garden.baseRadius, garden.x));
         garden.y = Math.max(garden.baseRadius, Math.min(window.innerHeight - garden.baseRadius, garden.y));
+        
+        // Reset connection count for this frame
+        garden.connectionCount = 0;
       });
+      
+      // Check for inter-garden resonance
+      for (let i = 0; i < gardens.length; i++) {
+        for (let j = i + 1; j < gardens.length; j++) {
+          const garden1 = gardens[i];
+          const garden2 = gardens[j];
+          const dx = garden1.x - garden2.x;
+          const dy = garden1.y - garden2.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          
+          if (distance < 200 && Math.random() < 0.02) {
+            // Create resonance sparks
+            const midX = (garden1.x + garden2.x) / 2;
+            const midY = (garden1.y + garden2.y) / 2;
+            sparks.push(new Spark(midX, midY, garden1.color));
+            sparks.push(new Spark(midX, midY, garden2.color));
+          }
+        }
+      }
       
       // Update constellation patterns to follow gardens
       constellationPatterns.forEach((pattern, index) => {
@@ -338,6 +546,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         
         pattern.garden.x = garden.x;
         pattern.garden.y = garden.y;
+        pattern.garden.connectionCount = garden.connectionCount;
         
         pattern.stars.forEach(star => {
           star.x += deltaX;
@@ -360,9 +569,35 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         }
       });
       
+      // Update and filter sparks
+      for (let i = sparks.length - 1; i >= 0; i--) {
+        if (!sparks[i].update()) {
+          sparks.splice(i, 1);
+        }
+      }
+      
+      // Update and filter ripples
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        if (!ripples[i].update()) {
+          ripples.splice(i, 1);
+        }
+      }
+      
+      // Update and filter flow particles
+      for (let i = flowParticles.length - 1; i >= 0; i--) {
+        if (!flowParticles[i].update()) {
+          flowParticles.splice(i, 1);
+        }
+      }
+      
       // Draw constellation patterns
       constellationPatterns.forEach(pattern => {
         pattern.draw();
+      });
+      
+      // Draw ripples
+      ripples.forEach(ripple => {
+        ripple.draw();
       });
       
       // Draw connection lines
@@ -370,11 +605,27 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         line.draw();
       });
       
-      // Draw gardens
+      // Draw flow particles
+      flowParticles.forEach(particle => {
+        particle.draw();
+      });
+      
+      // Draw gardens with enhanced effects
       gardens.forEach(garden => {
-        // Garden glow
+        // Enhanced garden glow based on connections
         ctx.shadowColor = garden.color;
-        ctx.shadowBlur = 20;
+        ctx.shadowBlur = 20 * garden.glowIntensity;
+        
+        // Magnetic field visualization (subtle)
+        if (garden.connectionCount > 0) {
+          ctx.globalAlpha = 0.1;
+          ctx.strokeStyle = garden.color;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.arc(garden.x, garden.y, garden.attractionRadius, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
         
         // Garden circle
         ctx.beginPath();
@@ -382,7 +633,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         ctx.fillStyle = garden.color + '20';
         ctx.fill();
         
-        // Garden center
+        // Garden center with dynamic intensity
         ctx.beginPath();
         ctx.arc(garden.x, garden.y, garden.currentRadius * 0.4, 0, Math.PI * 2);
         ctx.fillStyle = garden.color;
@@ -396,10 +647,15 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         ctx.textAlign = 'center';
         ctx.fillText(garden.icon, garden.x, garden.y + 7);
         
-        // Garden name
+        // Garden name with enhanced visibility during connections
         ctx.fillStyle = garden.color;
-        ctx.font = 'bold 12px Inter, sans-serif';
+        ctx.font = `bold ${12 + garden.connectionCount}px Inter, sans-serif`;
         ctx.fillText(garden.name, garden.x, garden.y - garden.currentRadius - 20);
+      });
+      
+      // Draw sparks
+      sparks.forEach(spark => {
+        spark.draw();
       });
       
       // Draw force nodes
