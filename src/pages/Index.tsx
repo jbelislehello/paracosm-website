@@ -40,8 +40,8 @@ const Index = () => {
           </div>
           <nav className="hidden md:flex gap-6">
             <a href="#features" className="text-sm font-medium hover:text-purple-600 transition-colors">Features</a>
+            <a href="#framework" className="text-sm font-medium hover:text-purple-600 transition-colors">Framework</a>
             <a href="#showcase" className="text-sm font-medium hover:text-purple-600 transition-colors">Showcase</a>
-            <a href="#journal" className="text-sm font-medium hover:text-purple-600 transition-colors">Framework</a>
             <a href="#partners" className="text-sm font-medium hover:text-purple-600 transition-colors">Partners</a>
             <a href="#contact" className="text-sm font-medium hover:text-purple-600 transition-colors">Contact</a>
           </nav>
@@ -86,6 +86,18 @@ const Index = () => {
         </div>
       </section>
       
+      {/* Product Development Framework */}
+      <section id="framework" className="py-20 px-4">
+        <div className="container max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">🚀 Product Development Framework</h2>
+          <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
+            A structured approach that bridges creative ideation with technical implementation. Transform "we should build something" into "here's exactly what to build and why it matters."
+          </p>
+          
+          <InnovationJournal />
+        </div>
+      </section>
+      
       {/* Network Visualization */}
       <section id="showcase" className="py-16 px-4 bg-slate-100 dark:bg-slate-800/50">
         <div className="container max-w-6xl mx-auto">
@@ -97,18 +109,6 @@ const Index = () => {
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-2 md:p-6 overflow-hidden">
             <NetworkVisualization />
           </div>
-        </div>
-      </section>
-      
-      {/* Product Development Framework */}
-      <section id="journal" className="py-20 px-4">
-        <div className="container max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">🚀 Product Development Framework</h2>
-          <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
-            A structured approach that bridges creative ideation with technical implementation. Transform "we should build something" into "here's exactly what to build and why it matters."
-          </p>
-          
-          <InnovationJournal />
         </div>
       </section>
       
