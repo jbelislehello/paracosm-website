@@ -15,6 +15,7 @@ import CalmMagicDocumentation from './calm-magic/CalmMagicDocumentation';
 import { useJournal } from '@/hooks/useJournal';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+
 const EnhancedInnovationJournal = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
@@ -119,6 +120,11 @@ const EnhancedInnovationJournal = () => {
           <TabsTrigger value="framework" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">
             <BarChart3 className="w-4 h-4" />
             Overview
+          </TabsTrigger>
+          
+          <TabsTrigger value="innovation" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">
+            <Workflow className="w-4 h-4" />
+            Calm Innovation
           </TabsTrigger>
           
           <TabsTrigger value="quality" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">
