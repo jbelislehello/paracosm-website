@@ -5,7 +5,7 @@ import { bridgeElements } from './ProductDevelopmentData';
 const BridgeTab: React.FC = () => {
   return (
     <div className="space-y-3">
-      <h3 className="font-semibold text-center">Bridge Elements</h3>
+      <h3 className="font-semibold text-center">Healing Bridge Elements</h3>
       
       {bridgeElements.map((element, index) => (
         <div key={index} className="p-3 rounded-lg border bg-slate-50 dark:bg-slate-800/50">
@@ -18,14 +18,14 @@ const BridgeTab: React.FC = () => {
         </div>
       ))}
 
-      <div className="bg-amber-50 dark:bg-amber-950/30 p-3 rounded-lg">
-        <h4 className="font-medium text-amber-800 dark:text-amber-200 text-sm">
-          Concept to Product
+      <div className="bg-pink-50 dark:bg-pink-950/30 p-3 rounded-lg">
+        <h4 className="font-medium text-pink-800 dark:text-pink-200 text-sm">
+          Awareness to Transformation
         </h4>
-        <p className="text-xs text-amber-700 dark:text-amber-300">
-          This framework ensures that innovative concepts successfully transition 
-          into working products without losing their essential user value 
-          and problem-solving power during development.
+        <p className="text-xs text-pink-700 dark:text-pink-300">
+          This framework ensures that healing awareness successfully transitions 
+          into transformed relationships without losing emotional depth 
+          and authentic connection during the healing process.
         </p>
       </div>
     </div>

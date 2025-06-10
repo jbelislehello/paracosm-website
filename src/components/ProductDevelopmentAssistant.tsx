@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Sparkles, X, Minimize2, Maximize2, Target } from 'lucide-react';
+import { Heart, X, Minimize2, Maximize2, Sparkles } from 'lucide-react';
 import OverviewTab from './product-development/OverviewTab';
 import ProcessTab from './product-development/ProcessTab';
 import BridgeTab from './product-development/BridgeTab';
@@ -38,13 +38,13 @@ const ProductDevelopmentAssistant: React.FC<ProductDevelopmentAssistantProps> = 
 
   return (
     <div className={`fixed left-0 top-1/2 -translate-y-1/2 z-50 transition-all duration-300 ${isMinimized ? 'w-16' : 'w-80'}`}>
-      <Card className="h-[600px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-r-2 border-gradient-to-b from-blue-500 to-purple-500 shadow-2xl rounded-r-xl rounded-l-none">
+      <Card className="h-[600px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-r-2 border-gradient-to-b from-pink-500 to-purple-500 shadow-2xl rounded-r-xl rounded-l-none">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             {!isMinimized && (
               <CardTitle className="flex items-center gap-2 text-lg">
-                <Sparkles className="w-5 h-5 text-purple-600" />
-                Product Development Framework
+                <Heart className="w-5 h-5 text-pink-600" />
+                Relational Healing Framework
               </CardTitle>
             )}
             <div className="flex gap-1">
@@ -68,7 +68,7 @@ const ProductDevelopmentAssistant: React.FC<ProductDevelopmentAssistantProps> = 
           </div>
           {!isMinimized && (
             <Badge variant="outline" className="w-fit">
-              Imagineering to Engineering Framework
+              Awareness to Transformation Framework
             </Badge>
           )}
         </CardHeader>
@@ -100,9 +100,9 @@ const ProductDevelopmentAssistant: React.FC<ProductDevelopmentAssistantProps> = 
         {isMinimized && (
           <CardContent className="p-2">
             <div className="flex flex-col items-center gap-2">
-              <Target className="w-6 h-6 text-purple-600" />
+              <Sparkles className="w-6 h-6 text-pink-600" />
               <div className="text-xs text-center text-slate-600 dark:text-slate-300 writing-mode-vertical">
-                Product Framework
+                Healing Framework
               </div>
             </div>
           </CardContent>

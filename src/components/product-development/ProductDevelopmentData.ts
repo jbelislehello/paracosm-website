@@ -1,62 +1,62 @@
 
-import { Users, Search, Lightbulb, FileText, Settings, Handshake, Code } from 'lucide-react';
+import { Users, Search, Lightbulb, FileText, Settings, Handshake, Code, Heart, Brain, Sparkles, Target, Users2, Eye, Compass } from 'lucide-react';
 
 export const productDevelopmentSteps = [
   {
-    icon: Users,
-    name: 'Stakeholder Research',
-    phase: 'Understanding',
-    description: 'Understand who you\'re building for and why'
+    icon: Heart,
+    name: 'Healing Assessment & Emotional Mapping',
+    phase: 'Building Awareness',
+    description: 'Choose your healing context to begin understanding your emotional and relational landscape'
   },
   {
-    icon: Search,
-    name: 'Problem Analysis',
-    phase: 'Understanding',
-    description: 'Define the real problem worth solving'
+    icon: Brain,
+    name: 'Relationship Pattern Analysis',
+    phase: 'Building Awareness',
+    description: 'Understand the dynamics, triggers, and communication patterns in your relationships'
   },
   {
-    icon: Lightbulb,
-    name: 'Diegetic Prototyping',
-    phase: 'Understanding',
-    description: 'Create interactive prototypes that demonstrate solutions'
+    icon: Eye,
+    name: 'Healing Visualization & Practice Design',
+    phase: 'Building Awareness',
+    description: 'Create a living vision of healed relationships and design practices to get there'
   },
   {
-    icon: FileText,
-    name: 'Technical Requirements',
-    phase: 'Implementation',
-    description: 'Translate prototype insights into technical specifications'
+    icon: Target,
+    name: 'Healing Practice Framework',
+    phase: 'Creating Transformation',
+    description: 'Turn your healing vision into clear, actionable healing practices'
   },
   {
-    icon: Settings,
-    name: 'Systems Intelligence',
-    phase: 'Implementation',
-    description: 'Design architecture that preserves user experience vision'
+    icon: Compass,
+    name: 'Transformation Intelligence',
+    phase: 'Creating Transformation',
+    description: 'Document exactly what needs to shift and how healing will unfold'
   },
   {
-    icon: Handshake,
-    name: 'Handover Ritual',
-    phase: 'Implementation',
-    description: 'Ensure developers understand the why behind requirements'
+    icon: Users2,
+    name: 'Community Integration Ritual',
+    phase: 'Creating Transformation',
+    description: 'Share your healing journey with community support and accountability'
   },
   {
-    icon: Code,
-    name: 'Development',
-    phase: 'Implementation',
-    description: 'Build the solution with preserved intent'
+    icon: Sparkles,
+    name: 'Healing Progress Tracking',
+    phase: 'Creating Transformation',
+    description: 'Monitor emotional shifts to ensure relationship transformation stays on track'
   }
 ];
 
 export const bridgeElements = [
   {
-    name: 'Diegetic Prototype',
-    description: 'Interactive prototypes that demonstrate user experience in context'
+    name: 'Healing Visualization',
+    description: 'A vision that feels real and tells a complete story of transformation'
   },
   {
-    name: 'Systems Intelligence',
-    description: 'Technical specifications that preserve user experience vision'
+    name: 'Transformation Intelligence',
+    description: 'Healing practices that preserve the original emotional vision'
   },
   {
-    name: 'Handover Ritual',
-    description: 'Ensure developers understand user motivations and experience goals'
+    name: 'Community Integration',
+    description: 'Healers understand not just what to heal, but why it matters deeply'
   }
 ];
