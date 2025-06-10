@@ -3,6 +3,8 @@
  * Force dynamics classes for the hero canvas animation
  */
 
+import { Spark, Ripple, FlowParticle } from './VisualEffects';
+
 export interface Garden {
   key: string;
   name: string;
@@ -81,14 +83,12 @@ export class ForceNode {
       
       // Generate spark when first attracted
       if (!this.wasAttracted) {
-        const { Spark } = require('./VisualEffects');
         sparks.push(new Spark(this.x, this.y, this.color));
         nearestGarden.connectionCount++;
         nearestGarden.activityLevel = Math.min(10, nearestGarden.activityLevel + 1);
         
         // Generate ripple on strong connection
         if (Math.random() < 0.3) {
-          const { Ripple } = require('./VisualEffects');
           ripples.push(new Ripple(nearestGarden.x, nearestGarden.y, nearestGarden.color));
         }
       }
@@ -113,7 +113,6 @@ export class ForceNode {
       
       // Add flow particles along connection
       if (Math.random() < 0.1) {
-        const { FlowParticle } = require('./VisualEffects');
         flowParticles.push(new FlowParticle(this.x, this.y, nearestGarden.x, nearestGarden.y, this.color));
       }
     } else {
