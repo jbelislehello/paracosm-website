@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
@@ -9,6 +10,7 @@ import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
 import { features } from "@/data/featureData";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from 'lucide-react';
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const [isCalmMagicAssistantOpen, setIsCalmMagicAssistantOpen] = useState(false);
@@ -211,7 +213,7 @@ const Index = () => {
             <div>
               <h3 className="font-semibold text-white mb-4">Resources</h3>
               <ul className="space-y-2">
-                <li><a href="/calm-magic-assistant" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-purple-600">Calm Magic Assistant</a></li>
+                <li><Link to="/calm-magic-assistant" className="text-sm hover:text-purple-600">Calm Magic Assistant</Link></li>
                 <li><a href="#" className="text-sm hover:text-purple-600">Implementation Examples</a></li>
                 <li><a href="#" className="text-sm hover:text-purple-600">Case Studies</a></li>
                 <li><a href="#" className="text-sm hover:text-purple-600">Best Practices</a></li>
