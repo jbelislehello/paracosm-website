@@ -2,12 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 const CalmMagicProcessDiagram: React.FC = () => {
   return <Card className="w-full">
-      <CardHeader>
-        
-        <p className="text-sm text-slate-600 dark:text-slate-300 text-center">
-          Engineering-grade framework for organizational transformation
-        </p>
-      </CardHeader>
+      
       <CardContent>
         <div className="overflow-x-auto">
           <svg viewBox="0 0 1200 800" className="w-full h-auto">
