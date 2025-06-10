@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
@@ -155,10 +156,10 @@ const RelationalHealing = () => {
           
           <div className="bg-gradient-to-r from-rose-100 to-purple-100 dark:from-rose-900/20 dark:to-purple-900/20 p-4 rounded-lg mb-8 max-w-2xl mx-auto">
             <p className="text-base font-medium text-rose-800 dark:text-rose-200">
-              🎯 Designed specifically for <strong>Coaches, Community Builders, and Self-Discovery</strong>
+              🧭 <strong>Interactive Exploration Tool:</strong> Experience how personal growth flows through different emotional landscapes
             </p>
             <p className="text-sm text-rose-700 dark:text-rose-300 mt-1">
-              The Calm Magic Assistant is a specialized tool for those guiding others or exploring their own inner transformation.
+              Navigate through Tree (love & connection), River (creative flow), Lake (calm reflection), Forest (open collaboration), and Mountain (free expression) to understand your emotional patterns and transformation pathways.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -167,7 +168,7 @@ const RelationalHealing = () => {
               size="lg" 
               className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 transition-all duration-300"
             >
-              Start Your Coaching Journey
+              Explore Your Emotional Landscape
             </Button>
             <Button 
               variant="outline" 

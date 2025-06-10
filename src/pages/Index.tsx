@@ -95,9 +95,73 @@ const Index = () => {
 
           {/* Two Phase Overview */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-            
+            {/* Calm Magic Assistant Info Panel */}
+            <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 text-white" />
+                </div>
+                <h3 className="text-xl font-bold">Calm Magic Assistant</h3>
+              </div>
+              <p className="text-slate-600 dark:text-slate-300 mb-4">
+                An interactive tool for teams to explore different development approaches through visual landscapes. 
+                Navigate between team dynamics, creative flow, balanced planning, collaborative space, and independent execution.
+              </p>
+              <div className="space-y-2 mb-4">
+                <div className="text-sm text-slate-500 dark:text-slate-400">
+                  • <strong>Team Dynamics:</strong> Explore how love and connection drive project success
+                </div>
+                <div className="text-sm text-slate-500 dark:text-slate-400">
+                  • <strong>Creative Flow:</strong> Discover how magic and innovation emerge in development
+                </div>
+                <div className="text-sm text-slate-500 dark:text-slate-400">
+                  • <strong>Balanced Planning:</strong> Find calm and centered approaches to project management
+                </div>
+                <div className="text-sm text-slate-500 dark:text-slate-400">
+                  • <strong>Open Collaboration:</strong> Create inclusive spaces for all team members
+                </div>
+              </div>
+              <Button 
+                onClick={handleDiscoverFramework}
+                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600"
+              >
+                Open Team Development Tool
+              </Button>
+            </div>
 
-            
+            {/* Framework Overview */}
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700">
+              <h3 className="text-xl font-bold mb-4">How It Works</h3>
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-blue-600/20 rounded-full flex items-center justify-center mt-1">
+                    <span className="text-xs font-bold text-blue-600">1</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">Understand Phase</h4>
+                    <p className="text-sm text-slate-600 dark:text-slate-300">Research stakeholders, analyze problems, and prototype solutions</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-purple-600/20 rounded-full flex items-center justify-center mt-1">
+                    <span className="text-xs font-bold text-purple-600">2</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">Create Phase</h4>
+                    <p className="text-sm text-slate-600 dark:text-slate-300">Build architecture, develop features, and ensure quality</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 bg-green-600/20 rounded-full flex items-center justify-center mt-1">
+                    <span className="text-xs font-bold text-green-600">✓</span>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold">Ship Working Product</h4>
+                    <p className="text-sm text-slate-600 dark:text-slate-300">Deploy, launch, and scale with confidence</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Why This Matters Section */}
