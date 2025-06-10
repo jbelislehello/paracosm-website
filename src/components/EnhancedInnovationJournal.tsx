@@ -146,56 +146,7 @@ const EnhancedInnovationJournal = () => {
           </div>
           
           {/* Interactive Process Flow with enhanced styling */}
-          <div className="mt-8 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 rounded-2xl p-6 border border-slate-200/50 dark:border-slate-700/50">
-            <div className="mb-8">
-              <CalmMagicProcessDiagram />
-            </div>
-
-            {currentStep > 1 && <Button variant="ghost" onClick={() => setCurrentStep(currentStep - 1)} className="mb-6 flex items-center gap-2 hover:bg-slate-200/50 dark:hover:bg-slate-700/50">
-                <ArrowLeft className="w-4 h-4" />
-                Back to Previous Step
-              </Button>}
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              {/* Main Process Area */}
-              <div className="lg:col-span-2">
-                {renderCurrentStep()}
-              </div>
-
-              {/* Progress Summary Sidebar */}
-              <div className="space-y-6">
-                {(stakeholderData || problemAnalysis || prototypeData) && <Card>
-                    <CardContent className="p-4">
-                      <h3 className="font-semibold mb-3">Product Progress</h3>
-                      <div className="space-y-3 text-sm">
-                        {stakeholderData && <div className="flex items-center gap-2">
-                            <Users className="w-4 h-4 text-blue-600" />
-                            <span>Context: {stakeholderData.context?.replace('_', ' ')}</span>
-                          </div>}
-                        {problemAnalysis && <div className="flex items-center gap-2">
-                            <Search className="w-4 h-4 text-purple-600" />
-                            <span>Analysis: {Math.round((problemAnalysis.impact_level + problemAnalysis.urgency_level + problemAnalysis.feasibility_level + problemAnalysis.stakeholder_alignment + problemAnalysis.resource_availability) / 5)}% solution opportunity</span>
-                          </div>}
-                        {prototypeData && <div className="flex items-center gap-2">
-                            <Lightbulb className="w-4 h-4 text-green-600" />
-                            <span>Prototype Vision: "{prototypeData.title}"</span>
-                          </div>}
-                      </div>
-                    </CardContent>
-                  </Card>}
-              </div>
-            </div>
-
-            {!user && <Card className="mt-8 max-w-2xl mx-auto">
-                <CardContent className="p-6 text-center">
-                  <h3 className="text-lg font-semibold mb-2">Demo Mode</h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-300">
-                    You're experiencing the Product Development Framework in demo mode. 
-                    Sign in to save your progress and access team collaboration features.
-                  </p>
-                </CardContent>
-              </Card>}
-          </div>
+          
         </TabsContent>
 
         <TabsContent value="quality">
