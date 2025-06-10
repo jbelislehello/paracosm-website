@@ -11,7 +11,7 @@ import CoachingServices from "@/components/calm-magic/CoachingServices";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { Heart, Users, Sparkles, Calendar, Palette, Music, BookOpen, MapPin, Clock, Video } from "lucide-react";
 
 const RelationalHealing = () => {
@@ -494,5 +494,3 @@ const RelationalHealing = () => {
 };
 
 export default RelationalHealing;
-
-</edits_to_apply>
