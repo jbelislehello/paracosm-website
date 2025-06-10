@@ -6,12 +6,12 @@ import FeatureCard from "@/components/FeatureCard";
 import InnovationJournal from "@/components/InnovationJournal";
 import ContactSection from "@/components/ContactSection";
 import PartnerToolsSection from "@/components/PartnerToolsSection";
-import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
+import ProductDevelopmentAssistant from "@/components/ProductDevelopmentAssistant";
 import { features } from "@/data/featureData";
 import { Button } from "@/components/ui/button";
 
 const Index = () => {
-  const [isCalmMagicOpen, setIsCalmMagicOpen] = useState(false);
+  const [isProductAssistantOpen, setIsProductAssistantOpen] = useState(false);
 
   useEffect(() => {
     // Set page title
@@ -20,11 +20,11 @@ const Index = () => {
 
   const handleStartJourney = () => {
     // Open the Product Development assistant
-    setIsCalmMagicOpen(true);
+    setIsProductAssistantOpen(true);
   };
 
   const handleDiscoverFramework = () => {
-    setIsCalmMagicOpen(true);
+    setIsProductAssistantOpen(true);
   };
 
   return (
@@ -55,10 +55,10 @@ const Index = () => {
       </header>
       
       {/* Product Development Framework Assistant - Modal */}
-      <CalmMagicAssistant 
+      <ProductDevelopmentAssistant 
         onStartJourney={handleStartJourney} 
-        isOpen={isCalmMagicOpen}
-        onOpenChange={setIsCalmMagicOpen}
+        isOpen={isProductAssistantOpen}
+        onOpenChange={setIsProductAssistantOpen}
       />
       
       {/* Hero Section */}
