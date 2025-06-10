@@ -1,16 +1,11 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import CalmMagicProcessDiagram from '@/components/calm-magic/CalmMagicProcessDiagram';
-
 const ProcessTab: React.FC = () => {
-  return (
-    <div className="space-y-6">
+  return <div className="space-y-6">
       <div className="text-center space-y-2">
         <h3 className="font-semibold text-xl">🌱 Calm Magic: 4-Phase Engineering Process</h3>
-        <p className="text-sm text-slate-600 dark:text-slate-300">
-          Engineering-grade framework for organizational transformation through spiritual force dynamics
-        </p>
+        
       </div>
 
       {/* The sophisticated process diagram */}
@@ -95,8 +90,6 @@ const ProcessTab: React.FC = () => {
           The feedback loop ensures each transformation deepens rather than repeats surface patterns.
         </p>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default ProcessTab;
