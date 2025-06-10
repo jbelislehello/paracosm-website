@@ -20,12 +20,16 @@ const BridgeTab: React.FC = () => {
 
       <div className="bg-purple-50 dark:bg-purple-950/30 p-3 rounded-lg">
         <h4 className="font-medium text-purple-800 dark:text-purple-200 text-sm">
-          Imagineering to Engineering
+          Bridging Ideas to Implementation
         </h4>
-        <p className="text-xs text-purple-700 dark:text-purple-300">
-          This framework ensures that creative product ideas successfully transition 
-          into technical implementation without losing user value 
-          and product vision during the development process.
+        <p className="text-xs text-purple-700 dark:text-purple-300 mb-2">
+          Most projects fail because there's a gap between "good idea" and "working product." 
+          This process creates a bridge that prevents the common problem where engineering teams 
+          receive vague requirements and build something technically correct but practically useless.
+        </p>
+        <p className="text-xs text-purple-800 dark:text-purple-200 font-medium">
+          Bottom line: A structured way to go from "we should build something" to 
+          "here's exactly what to build and why it matters."
         </p>
       </div>
     </div>
