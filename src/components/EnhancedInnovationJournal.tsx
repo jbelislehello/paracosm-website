@@ -15,7 +15,6 @@ import CalmMagicDocumentation from './calm-magic/CalmMagicDocumentation';
 import { useJournal } from '@/hooks/useJournal';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-
 const EnhancedInnovationJournal = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
@@ -108,7 +107,7 @@ const EnhancedInnovationJournal = () => {
           </div>;
     }
   };
-  return <div className={`max-w-7xl mx-auto p-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+  return <div className="">
       {/* Edgy Header Section */}
       <div className="relative mb-12">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-cyan-600/10 rounded-3xl blur-3xl" />
