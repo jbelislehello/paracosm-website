@@ -1,8 +1,8 @@
+
 import { useEffect, useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
 import FeatureCard from "@/components/FeatureCard";
-import HealingJournal from "@/components/HealingJournal";
 import ContactSection from "@/components/ContactSection";
 import PartnerToolsSection from "@/components/PartnerToolsSection";
 import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Heart, Users, Sparkles, Calendar, Palette, Music, BookOpen, MapPin, Clock, Video } from "lucide-react";
+import { Heart, Users, Sparkles, Calendar, Palette, Music, BookOpen, MapPin, Clock, Video, ArrowRight, ExternalLink } from "lucide-react";
 
 const RelationalHealing = () => {
   const [isCalmMagicOpen, setIsCalmMagicOpen] = useState(false);
@@ -246,10 +246,9 @@ const RelationalHealing = () => {
       {/* Calm Magic Healing Framework */}
       <section id="framework" className="py-20 px-4">
         <div className="container max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">💫 Calm Magic Coaching Framework</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">💫 Calm Magic Healing Framework</h2>
           <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-8">
-            A structured approach to personal transformation and relationship healing. Experience how we move from 
-            "I want to change" to "here's exactly how I'm growing and why it creates lasting freedom."
+            A structured approach to move from "I want to heal" to "here's exactly how I'm growing and why it creates lasting freedom." Bridge inner work to outer relationships with authentic transformation.
           </p>
           <div className="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-lg mb-16 max-w-4xl mx-auto text-center">
             <p className="text-amber-800 dark:text-amber-200 font-medium">
@@ -259,7 +258,139 @@ const RelationalHealing = () => {
             </p>
           </div>
           
-          <HealingJournal />
+          <div className="max-w-4xl mx-auto space-y-12">
+            {/* Phase 1: Building Awareness */}
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8">
+              <h3 className="text-2xl font-bold mb-4 text-rose-600">Phase 1: Building Awareness (Steps 1-3)</h3>
+              <p className="text-slate-600 dark:text-slate-300 mb-6"><strong>What you do:</strong></p>
+              
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-rose-600/20 rounded-full flex items-center justify-center text-rose-600 font-bold">1</div>
+                  <div>
+                    <h4 className="font-semibold">Inner Landscape Exploration</h4>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-rose-600/20 rounded-full flex items-center justify-center text-rose-600 font-bold">2</div>
+                  <div>
+                    <h4 className="font-semibold">Relational Pattern Mapping</h4>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-rose-600/20 rounded-full flex items-center justify-center text-rose-600 font-bold">3</div>
+                  <div>
+                    <h4 className="font-semibold">Healing Story Creation</h4>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-6 p-4 bg-rose-50 dark:bg-rose-900/20 rounded-lg">
+                <p className="text-sm font-medium text-rose-700 dark:text-rose-300">
+                  <strong>Key output:</strong> Deep understanding of your emotional landscape and relational patterns
+                </p>
+              </div>
+            </div>
+
+            {/* Phase 2: Creating Transformation */}
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8">
+              <h3 className="text-2xl font-bold mb-4 text-purple-600">Phase 2: Creating Transformation (Steps 4-7)</h3>
+              <p className="text-slate-600 dark:text-slate-300 mb-6"><strong>What you do:</strong></p>
+              
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-purple-600/20 rounded-full flex items-center justify-center text-purple-600 font-bold">4</div>
+                  <div>
+                    <h4 className="font-semibold">Integration Practices</h4>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-purple-600/20 rounded-full flex items-center justify-center text-purple-600 font-bold">5</div>
+                  <div>
+                    <h4 className="font-semibold">Transformation Anchoring</h4>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3">
+                  <div className="w-8 h-8 bg-purple-600/20 rounded-full flex items-center justify-center text-purple-600 font-bold">+</div>
+                  <div>
+                    <h4 className="font-semibold">Shadow Integration & Freedom Compass Tracking</h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* The Healing Bridge Elements */}
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8">
+              <h3 className="text-2xl font-bold mb-4 text-blue-600">The Healing Bridge Elements</h3>
+              <p className="text-slate-600 dark:text-slate-300 mb-6">
+                Why healing often stagnates: there's a gap between "healing insight" and "integrated transformation." These elements create a bridge:
+              </p>
+              
+              <div className="space-y-6">
+                <div className="border-l-4 border-blue-600 pl-4">
+                  <h4 className="font-semibold text-blue-600 mb-2">Inner-Outer Integration</h4>
+                  <p className="text-slate-600 dark:text-slate-300">Bridge your inner work with relational transformation that feels authentic</p>
+                </div>
+                
+                <div className="border-l-4 border-blue-600 pl-4">
+                  <h4 className="font-semibold text-blue-600 mb-2">Relational Intelligence</h4>
+                  <p className="text-slate-600 dark:text-slate-300">Healing practices that preserve your emotional truth while creating safety</p>
+                </div>
+                
+                <div className="border-l-4 border-blue-600 pl-4">
+                  <h4 className="font-semibold text-blue-600 mb-2">Transformation Anchoring</h4>
+                  <p className="text-slate-600 dark:text-slate-300">Integration that helps you embody change, not just understand it intellectually</p>
+                </div>
+              </div>
+              
+              <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <p className="text-sm text-blue-700 dark:text-blue-300">
+                  The framework prevents the common pattern where healing work stays intellectual without relational integration, 
+                  or where surface-level changes don't address core patterns.
+                </p>
+              </div>
+            </div>
+
+            {/* Freedom Movement */}
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8">
+              <h3 className="text-2xl font-bold mb-4 text-green-600">Freedom Movement</h3>
+              <p className="text-slate-600 dark:text-slate-300">
+                This framework tracks your movement through <strong>Love→Magic→Calm→Open</strong>, ensuring healing creates 
+                expanding freedom rather than spiritual bypassing or emotional overwhelm.
+              </p>
+            </div>
+
+            {/* Complementary Transformation */}
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8">
+              <h3 className="text-2xl font-bold mb-4 text-orange-600">Complementary Transformation</h3>
+              <p className="text-slate-600 dark:text-slate-300 mb-6">
+                The Product Development Framework transforms how you create in the world. The Calm Magic Framework transforms 
+                how you relate to yourself and others. Together, they bridge both your creative vision and personal evolution.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button 
+                  variant="outline" 
+                  className="border-orange-600 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950 flex items-center gap-2"
+                  onClick={() => window.open('/', '_blank')}
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  Explore Product Framework
+                </Button>
+                <Button 
+                  onClick={handleStartJourney}
+                  className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 flex items-center gap-2"
+                >
+                  <ArrowRight className="w-4 h-4" />
+                  Begin Healing Journey
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
