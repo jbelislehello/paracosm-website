@@ -78,19 +78,19 @@ const ProductDevelopmentAssistant: React.FC<ProductDevelopmentAssistantProps> = 
             <Tabs defaultValue="overview" className="w-full">
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="process">Process</TabsTrigger>
-                <TabsTrigger value="bridge">Bridge</TabsTrigger>
+                <TabsTrigger value="innovation">Innovation</TabsTrigger>
+                <TabsTrigger value="quality">Quality</TabsTrigger>
               </TabsList>
 
               <TabsContent value="overview" className="space-y-4">
                 <OverviewTab onStartJourney={onStartJourney} />
               </TabsContent>
 
-              <TabsContent value="process" className="space-y-3">
+              <TabsContent value="innovation" className="space-y-3">
                 <ProcessTab />
               </TabsContent>
 
-              <TabsContent value="bridge" className="space-y-3">
+              <TabsContent value="quality" className="space-y-3">
                 <BridgeTab />
               </TabsContent>
             </Tabs>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -49,7 +48,7 @@ const InnovationJournal = () => {
   }, [toast]);
 
   const handleStartJourney = () => {
-    setActiveTab('process');
+    setActiveTab('innovation');
     setCurrentStep(1);
   };
 
@@ -141,13 +140,13 @@ const InnovationJournal = () => {
             <BarChart3 className="w-4 h-4" />
             Overview
           </TabsTrigger>
-          <TabsTrigger value="process" className="flex items-center gap-2">
+          <TabsTrigger value="innovation" className="flex items-center gap-2">
             <Workflow className="w-4 h-4" />
-            7-Step Process
+            Calm Innovation
           </TabsTrigger>
-          <TabsTrigger value="bridge" className="flex items-center gap-2">
+          <TabsTrigger value="quality" className="flex items-center gap-2">
             <Lightbulb className="w-4 h-4" />
-            Bridge Elements
+            Quality
           </TabsTrigger>
           <TabsTrigger value="docs" className="flex items-center gap-2">
             <BookOpen className="w-4 h-4" />
@@ -159,7 +158,7 @@ const InnovationJournal = () => {
           <OverviewTab onStartJourney={handleStartJourney} />
         </TabsContent>
 
-        <TabsContent value="process" className="space-y-6">
+        <TabsContent value="innovation" className="space-y-6">
           <ProcessTab />
           
           {/* Interactive Process Flow */}
@@ -231,7 +230,7 @@ const InnovationJournal = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="bridge">
+        <TabsContent value="quality">
           <BridgeTab />
         </TabsContent>
 

@@ -48,7 +48,7 @@ const EnhancedInnovationJournal = () => {
   }, [toast]);
 
   const handleStartJourney = () => {
-    setActiveTab('process');
+    setActiveTab('innovation');
     setCurrentStep(1);
   };
 
@@ -186,13 +186,13 @@ const EnhancedInnovationJournal = () => {
             <BarChart3 className="w-4 h-4" />
             Overview
           </TabsTrigger>
-          <TabsTrigger value="process" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">
+          <TabsTrigger value="innovation" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">
             <Workflow className="w-4 h-4" />
-            7-Step Process
+            Calm Innovation
           </TabsTrigger>
-          <TabsTrigger value="bridge" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">
+          <TabsTrigger value="quality" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">
             <Lightbulb className="w-4 h-4" />
-            Bridge Elements
+            Quality
           </TabsTrigger>
           <TabsTrigger value="docs" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">
             <BookOpen className="w-4 h-4" />
@@ -206,7 +206,7 @@ const EnhancedInnovationJournal = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="process" className="space-y-6">
+        <TabsContent value="innovation" className="space-y-6">
           <div className="transform transition-all duration-500">
             <ProcessTab />
           </div>
@@ -280,7 +280,7 @@ const EnhancedInnovationJournal = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="bridge">
+        <TabsContent value="quality">
           <div className="transform transition-all duration-500 hover:scale-[1.005]">
             <BridgeTab />
           </div>
