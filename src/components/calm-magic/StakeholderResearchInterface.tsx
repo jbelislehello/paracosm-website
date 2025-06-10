@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Search, Building, Lightbulb, Plus, ArrowRight } from 'lucide-react';
+import { Users, Search, Building, Lightbulb, Plus, ArrowRight, Heart } from 'lucide-react';
 
 interface ResearchContext {
-  type: 'user_research' | 'organizational_analysis' | 'vision_exploration';
+  type: 'healing_assessment' | 'relationship_dynamics' | 'healing_vision';
   name: string;
   description: string;
   icon: string;
@@ -28,57 +28,57 @@ const StakeholderResearchInterface: React.FC<StakeholderResearchInterfaceProps> 
   onCompleteResearch
 }) => {
   const [researchData, setResearchData] = useState({
-    stakeholders: '',
-    pain_points: '',
-    current_workflow: '',
-    frustrations: '',
+    relationships: '',
+    emotional_patterns: '',
+    current_dynamics: '',
+    healing_blocks: '',
     opportunities: '',
-    constraints: ''
+    support_needs: ''
   });
 
-  const researchContexts: ResearchContext[] = [
+  const healingContexts: ResearchContext[] = [
     {
-      type: 'user_research',
-      name: 'User Research Context',
-      description: 'Study how people actually work and what frustrates them in their daily tasks',
-      icon: '👥',
-      color: '#2563eb',
-      prompts: [
-        'Who are the primary users affected by this problem?',
-        'What specific tasks do they struggle with?',
-        'What workarounds have they created?',
-        'What would make their day significantly better?'
-      ]
-    },
-    {
-      type: 'organizational_analysis',
-      name: 'Organizational Analysis',
-      description: 'Understand system dynamics, processes, and structural constraints',
-      icon: '🏢',
-      color: '#7c3aed',
-      prompts: [
-        'What organizational processes are involved?',
-        'Where do bottlenecks typically occur?',
-        'What systems need to integrate or communicate?',
-        'What compliance or governance requirements exist?'
-      ]
-    },
-    {
-      type: 'vision_exploration',
-      name: 'Vision Exploration',
-      description: 'Imagine future scenarios and breakthrough possibilities',
-      icon: '🚀',
+      type: 'healing_assessment',
+      name: 'Healing Assessment Context',
+      description: 'Explore your emotional patterns and what blocks healing in your relationships',
+      icon: '💜',
       color: '#db2777',
       prompts: [
-        'What would the ideal future state look like?',
-        'What new capabilities could be unlocked?',
-        'How might this transform the industry?',
-        'What story would users tell about this solution?'
+        'What emotional patterns keep repeating in your relationships?',
+        'What healing do you most need in your connections with others?',
+        'What triggers cause the most emotional reactivity for you?',
+        'What would feeling truly safe in relationships look like?'
+      ]
+    },
+    {
+      type: 'relationship_dynamics',
+      name: 'Relationship Dynamics Analysis',
+      description: 'Understand the dynamics, triggers, and communication patterns in your relationships',
+      icon: '🤝',
+      color: '#7c3aed',
+      prompts: [
+        'What relationship dynamics cause the most stress or conflict?',
+        'Where do you feel disconnected or misunderstood?',
+        'What communication patterns need healing or transformation?',
+        'What support structures could strengthen your relationships?'
+      ]
+    },
+    {
+      type: 'healing_vision',
+      name: 'Healing Vision Exploration',
+      description: 'Imagine transformed relationships and breakthrough emotional possibilities',
+      icon: '✨',
+      color: '#2563eb',
+      prompts: [
+        'What would your ideal healed relationships look like?',
+        'What new ways of being could emerge from this healing?',
+        'How might this transformation ripple out to your community?',
+        'What story would you tell about your healing journey?'
       ]
     }
   ];
 
-  const currentContext = researchContexts.find(ctx => ctx.type === selectedContext);
+  const currentContext = healingContexts.find(ctx => ctx.type === selectedContext);
 
   const handleSave = () => {
     onCompleteResearch({
@@ -91,14 +91,14 @@ const StakeholderResearchInterface: React.FC<StakeholderResearchInterfaceProps> 
     return (
       <div className="space-y-6">
         <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold">Step 1: Stakeholder Research</h2>
+          <h2 className="text-2xl font-bold">Step 1: Healing Assessment & Emotional Mapping</h2>
           <p className="text-slate-600 dark:text-slate-300">
-            Choose your research context to begin understanding the problem space
+            Choose your healing context to begin understanding your emotional and relational landscape
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {researchContexts.map((context) => (
+          {healingContexts.map((context) => (
             <Card 
               key={context.type}
               className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-105"
@@ -150,8 +150,8 @@ const StakeholderResearchInterface: React.FC<StakeholderResearchInterfaceProps> 
 
       <Tabs defaultValue="research" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="research">Research & Analysis</TabsTrigger>
-          <TabsTrigger value="synthesis">Problem Synthesis</TabsTrigger>
+          <TabsTrigger value="research">Healing Exploration</TabsTrigger>
+          <TabsTrigger value="synthesis">Healing Synthesis</TabsTrigger>
         </TabsList>
 
         <TabsContent value="research" className="space-y-4">
@@ -159,15 +159,15 @@ const StakeholderResearchInterface: React.FC<StakeholderResearchInterfaceProps> 
             <Card>
               <CardHeader>
                 <CardTitle className="text-sm flex items-center gap-2">
-                  <Users className="w-4 h-4" />
-                  Stakeholder Mapping
+                  <Heart className="w-4 h-4" />
+                  Relationship Mapping
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <Textarea
-                  placeholder="Who are the key stakeholders? What are their roles, needs, and influence levels?"
-                  value={researchData.stakeholders}
-                  onChange={(e) => setResearchData({...researchData, stakeholders: e.target.value})}
+                  placeholder="Who are the key people in your life? What are their roles, needs, and how do they affect your emotional well-being?"
+                  value={researchData.relationships}
+                  onChange={(e) => setResearchData({...researchData, relationships: e.target.value})}
                   rows={4}
                 />
               </CardContent>
@@ -177,14 +177,14 @@ const StakeholderResearchInterface: React.FC<StakeholderResearchInterfaceProps> 
               <CardHeader>
                 <CardTitle className="text-sm flex items-center gap-2">
                   <Search className="w-4 h-4" />
-                  Current Workflow Analysis
+                  Current Relationship Dynamics
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <Textarea
-                  placeholder="How do people currently handle this process? What steps are involved?"
-                  value={researchData.current_workflow}
-                  onChange={(e) => setResearchData({...researchData, current_workflow: e.target.value})}
+                  placeholder="How do you currently navigate relationships? What patterns show up repeatedly?"
+                  value={researchData.current_dynamics}
+                  onChange={(e) => setResearchData({...researchData, current_dynamics: e.target.value})}
                   rows={4}
                 />
               </CardContent>
@@ -193,14 +193,14 @@ const StakeholderResearchInterface: React.FC<StakeholderResearchInterfaceProps> 
             <Card>
               <CardHeader>
                 <CardTitle className="text-sm flex items-center gap-2">
-                  ⚠️ Pain Points & Frustrations
+                  💔 Emotional Patterns & Healing Blocks
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <Textarea
-                  placeholder="What specific problems do people face? What causes delays, errors, or frustration?"
-                  value={researchData.pain_points}
-                  onChange={(e) => setResearchData({...researchData, pain_points: e.target.value})}
+                  placeholder="What emotional patterns keep repeating? What blocks you from deeper connection and healing?"
+                  value={researchData.emotional_patterns}
+                  onChange={(e) => setResearchData({...researchData, emotional_patterns: e.target.value})}
                   rows={4}
                 />
               </CardContent>
@@ -209,32 +209,32 @@ const StakeholderResearchInterface: React.FC<StakeholderResearchInterfaceProps> 
             <Card>
               <CardHeader>
                 <CardTitle className="text-sm flex items-center gap-2">
-                  🔒 Constraints & Limitations
+                  🛡️ Support Needs & Boundaries
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <Textarea
-                  placeholder="What technical, regulatory, or business constraints must be considered?"
-                  value={researchData.constraints}
-                  onChange={(e) => setResearchData({...researchData, constraints: e.target.value})}
+                  placeholder="What support do you need for healing? What boundaries would create more safety in relationships?"
+                  value={researchData.support_needs}
+                  onChange={(e) => setResearchData({...researchData, support_needs: e.target.value})}
                   rows={4}
                 />
               </CardContent>
             </Card>
           </div>
 
-          <Card className="bg-blue-50 border-blue-200">
+          <Card className="bg-pink-50 border-pink-200">
             <CardHeader>
-              <CardTitle className="text-sm text-blue-800">Guided Research Questions</CardTitle>
+              <CardTitle className="text-sm text-pink-800">Guided Healing Questions</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {currentContext?.prompts.map((prompt, idx) => (
                   <div key={idx} className="flex items-start gap-2">
-                    <div className="w-5 h-5 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center mt-0.5">
+                    <div className="w-5 h-5 rounded-full bg-pink-600 text-white text-xs flex items-center justify-center mt-0.5">
                       {idx + 1}
                     </div>
-                    <p className="text-sm text-blue-700">{prompt}</p>
+                    <p className="text-sm text-pink-700">{prompt}</p>
                   </div>
                 ))}
               </div>
@@ -247,12 +247,12 @@ const StakeholderResearchInterface: React.FC<StakeholderResearchInterfaceProps> 
             <CardHeader>
               <CardTitle className="text-sm flex items-center gap-2">
                 <Lightbulb className="w-4 h-4" />
-                Opportunity Identification
+                Healing Opportunity Identification
               </CardTitle>
             </CardHeader>
             <CardContent>
               <Textarea
-                placeholder="Based on your research, what opportunities for improvement have emerged? What would make the biggest impact?"
+                placeholder="Based on your exploration, what opportunities for healing and transformation have emerged? What would create the most meaningful shift in your relationships?"
                 value={researchData.opportunities}
                 onChange={(e) => setResearchData({...researchData, opportunities: e.target.value})}
                 rows={6}
@@ -262,33 +262,33 @@ const StakeholderResearchInterface: React.FC<StakeholderResearchInterfaceProps> 
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm">Research Summary</CardTitle>
+              <CardTitle className="text-sm">Healing Assessment Summary</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                 <div>
-                  <div className="text-2xl font-bold text-blue-600">
-                    {researchData.stakeholders.split('\n').filter(line => line.trim()).length}
+                  <div className="text-2xl font-bold text-pink-600">
+                    {researchData.relationships.split('\n').filter(line => line.trim()).length}
                   </div>
-                  <div className="text-xs text-slate-600">Stakeholder Groups</div>
+                  <div className="text-xs text-slate-600">Key Relationships</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-red-600">
-                    {researchData.pain_points.split('\n').filter(line => line.trim()).length}
+                    {researchData.emotional_patterns.split('\n').filter(line => line.trim()).length}
                   </div>
-                  <div className="text-xs text-slate-600">Pain Points</div>
+                  <div className="text-xs text-slate-600">Patterns to Heal</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-green-600">
                     {researchData.opportunities.split('\n').filter(line => line.trim()).length}
                   </div>
-                  <div className="text-xs text-slate-600">Opportunities</div>
+                  <div className="text-xs text-slate-600">Healing Opportunities</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-purple-600">
-                    {researchData.constraints.split('\n').filter(line => line.trim()).length}
+                    {researchData.support_needs.split('\n').filter(line => line.trim()).length}
                   </div>
-                  <div className="text-xs text-slate-600">Constraints</div>
+                  <div className="text-xs text-slate-600">Support Needs</div>
                 </div>
               </div>
             </CardContent>
@@ -299,7 +299,7 @@ const StakeholderResearchInterface: React.FC<StakeholderResearchInterfaceProps> 
             className="w-full"
             size="lg"
           >
-            Complete Stakeholder Research
+            Complete Healing Assessment
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         </TabsContent>

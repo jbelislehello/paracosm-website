@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -35,7 +36,7 @@ const InnovationJournal = () => {
       if (!user) {
         toast({
           title: "Demo Mode",
-          description: "You're experiencing the Product Development Framework in demo mode. Sign in to save your progress.",
+          description: "You're experiencing the Healing Framework in demo mode. Sign in to save your healing journey progress.",
         });
       }
       setUser(user);
@@ -68,8 +69,8 @@ const InnovationJournal = () => {
     setCurrentStep(4);
     
     toast({
-      title: "Phase 1 Complete!",
-      description: "Understanding the Problem phase is done. Ready to move to Making It Real.",
+      title: "Awareness Phase Complete!",
+      description: "Understanding the Healing phase is done. Ready to move to Creating Transformation.",
     });
   };
 
@@ -85,38 +86,38 @@ const InnovationJournal = () => {
     setCurrentStep(step);
   };
 
-  const researchContexts = [
+  const healingContexts = [
     {
-      type: 'user_research',
-      name: 'User Research Context',
-      description: 'Study how people actually work and what frustrates them in their daily tasks',
-      icon: '👥',
-      color: '#2563eb',
-      prompts: [
-        'Who are the primary users affected by this problem?',
-        'What specific tasks do they struggle with?'
-      ]
-    },
-    {
-      type: 'organizational_analysis',
-      name: 'Organizational Analysis',
-      description: 'Understand system dynamics, processes, and structural constraints',
-      icon: '🏢',
-      color: '#7c3aed',
-      prompts: [
-        'What organizational processes are involved?',
-        'Where do bottlenecks typically occur?'
-      ]
-    },
-    {
-      type: 'vision_exploration',
-      name: 'Vision Exploration',
-      description: 'Imagine future scenarios and breakthrough possibilities',
-      icon: '🚀',
+      type: 'healing_assessment',
+      name: 'Healing Assessment Context',
+      description: 'Explore your emotional patterns and what blocks healing in your relationships',
+      icon: '💜',
       color: '#db2777',
       prompts: [
-        'What would the ideal future state look like?',
-        'What new capabilities could be unlocked?'
+        'What emotional patterns keep repeating in your relationships?',
+        'What healing do you most need in your connections with others?'
+      ]
+    },
+    {
+      type: 'relationship_dynamics',
+      name: 'Relationship Dynamics Analysis',
+      description: 'Understand the dynamics, triggers, and communication patterns in your relationships',
+      icon: '🤝',
+      color: '#7c3aed',
+      prompts: [
+        'What relationship dynamics cause the most stress or conflict?',
+        'Where do you feel disconnected or misunderstood?'
+      ]
+    },
+    {
+      type: 'healing_vision',
+      name: 'Healing Vision Exploration',
+      description: 'Imagine transformed relationships and breakthrough emotional possibilities',
+      icon: '✨',
+      color: '#2563eb',
+      prompts: [
+        'What would your ideal healed relationships look like?',
+        'What new ways of being could emerge from this healing?'
       ]
     }
   ];
@@ -148,13 +149,13 @@ const InnovationJournal = () => {
       default:
         return (
           <div className="text-center space-y-4">
-            <h2 className="text-2xl font-bold">Phase 1 Complete!</h2>
+            <h2 className="text-2xl font-bold">Awareness Phase Complete!</h2>
             <p className="text-slate-600">
               You've successfully completed the Understanding phase. Next steps would involve 
-              technical requirements extraction, systems intelligence documentation, and handover preparation.
+              creating healing practices, designing transformation rituals, and preparing for deep healing work.
             </p>
             <Button onClick={() => setCurrentStep(1)}>
-              Start New Project
+              Start New Healing Journey
             </Button>
           </div>
         );
@@ -171,7 +172,7 @@ const InnovationJournal = () => {
           </TabsTrigger>
           <TabsTrigger value="process" className="flex items-center gap-2">
             <Workflow className="w-4 h-4" />
-            Interactive Process
+            Healing Journey
           </TabsTrigger>
           <TabsTrigger value="quality" className="flex items-center gap-2">
             <BarChart3 className="w-4 h-4" />
@@ -186,14 +187,14 @@ const InnovationJournal = () => {
         <TabsContent value="framework" className="space-y-6">
           <div className="space-y-6">
             <div className="text-center space-y-2">
-              <h2 className="text-2xl font-bold">Step 1: Stakeholder Research</h2>
+              <h2 className="text-2xl font-bold">Step 1: Healing Assessment & Emotional Mapping</h2>
               <p className="text-slate-600 dark:text-slate-300">
-                Choose your research context to begin understanding the problem space
+                Choose your healing context to begin understanding your emotional and relational landscape
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {researchContexts.map((context) => (
+              {healingContexts.map((context) => (
                 <Card 
                   key={context.type}
                   className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-105"
@@ -257,24 +258,24 @@ const InnovationJournal = () => {
               {(stakeholderData || problemAnalysis || prototypeData) && (
                 <Card>
                   <CardContent className="p-4">
-                    <h3 className="font-semibold mb-3">Progress Summary</h3>
+                    <h3 className="font-semibold mb-3">Healing Progress</h3>
                     <div className="space-y-3 text-sm">
                       {stakeholderData && (
                         <div className="flex items-center gap-2">
                           <Users className="w-4 h-4 text-blue-600" />
-                          <span>Research Context: {stakeholderData.context?.replace('_', ' ')}</span>
+                          <span>Context: {stakeholderData.context?.replace('_', ' ')}</span>
                         </div>
                       )}
                       {problemAnalysis && (
                         <div className="flex items-center gap-2">
                           <Search className="w-4 h-4 text-purple-600" />
-                          <span>Problem Analysis: {Math.round((problemAnalysis.impact_level + problemAnalysis.urgency_level + problemAnalysis.feasibility_level + problemAnalysis.stakeholder_alignment + problemAnalysis.resource_availability) / 5)}% opportunity</span>
+                          <span>Pattern Analysis: {Math.round((problemAnalysis.impact_level + problemAnalysis.urgency_level + problemAnalysis.feasibility_level + problemAnalysis.stakeholder_alignment + problemAnalysis.resource_availability) / 5)}% healing opportunity</span>
                         </div>
                       )}
                       {prototypeData && (
                         <div className="flex items-center gap-2">
                           <Lightbulb className="w-4 h-4 text-green-600" />
-                          <span>Prototype: "{prototypeData.title}"</span>
+                          <span>Healing Vision: "{prototypeData.title}"</span>
                         </div>
                       )}
                     </div>
@@ -289,8 +290,8 @@ const InnovationJournal = () => {
               <CardContent className="p-6 text-center">
                 <h3 className="text-lg font-semibold mb-2">Demo Mode</h3>
                 <p className="text-sm text-slate-600 dark:text-slate-300">
-                  You're experiencing the Product Development Framework in demo mode. 
-                  Sign in to save your progress and access team collaboration features.
+                  You're experiencing the Healing Framework in demo mode. 
+                  Sign in to save your progress and access community healing features.
                 </p>
               </CardContent>
             </Card>

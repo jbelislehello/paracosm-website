@@ -2,11 +2,11 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle, Circle, Users, Search, Lightbulb, FileText, Code, Handshake, Play } from 'lucide-react';
+import { CheckCircle, Circle, Users, Search, Lightbulb, FileText, Code, Handshake, Play, Heart, Sparkles } from 'lucide-react';
 
 interface Step {
   id: number;
-  phase: 'understanding' | 'implementation';
+  phase: 'awareness' | 'transformation';
   title: string;
   description: string;
   icon: React.ElementType;
@@ -26,78 +26,78 @@ const ProductDevelopmentSteps: React.FC<ProductDevelopmentStepsProps> = ({
   const steps: Step[] = [
     {
       id: 1,
-      phase: 'understanding',
-      title: 'Stakeholder Research',
-      description: 'Study how people actually work and what frustrates them',
-      icon: Users,
-      output: 'Pain point analysis & user journey maps'
+      phase: 'awareness',
+      title: 'Healing Assessment & Emotional Mapping',
+      description: 'Explore emotional patterns and what blocks healing in your relationships',
+      icon: Heart,
+      output: 'Emotional landscape map & relationship pattern analysis'
     },
     {
       id: 2,
-      phase: 'understanding',
-      title: 'Problem Analysis',
-      description: 'Talk to stakeholders about their real needs and constraints',
+      phase: 'awareness',
+      title: 'Relationship Pattern Analysis',
+      description: 'Understand the dynamics, triggers, and communication patterns in your relationships',
       icon: Search,
-      output: 'Validated problem statements & opportunity matrix'
+      output: 'Validated healing needs & relationship dynamics matrix'
     },
     {
       id: 3,
-      phase: 'understanding',
-      title: 'Diegetic Prototype',
-      description: 'Build a working demo that tells a story about how things could work better',
+      phase: 'awareness',
+      title: 'Healing Visualization & Practice Design',
+      description: 'Create a living vision of healed relationships and design practices to get there',
       icon: Lightbulb,
-      output: 'Interactive prototype that demonstrates the vision in action'
+      output: 'Interactive healing vision that demonstrates transformation in action'
     },
     {
       id: 4,
-      phase: 'implementation',
-      title: 'Technical Requirements',
-      description: 'Turn the demo into clear technical specifications',
+      phase: 'transformation',
+      title: 'Healing Practice Framework',
+      description: 'Turn your healing vision into clear, actionable healing practices',
       icon: FileText,
-      output: 'Detailed technical specs with preserved context'
+      output: 'Detailed healing practices with preserved emotional context'
     },
     {
       id: 5,
-      phase: 'implementation',
-      title: 'Systems Intelligence',
-      description: 'Document exactly what needs to be built and how it should work',
-      icon: Code,
-      output: 'Implementation roadmap with architectural decisions'
+      phase: 'transformation',
+      title: 'Transformation Intelligence',
+      description: 'Document exactly what needs to shift and how healing will unfold',
+      icon: Sparkles,
+      output: 'Healing roadmap with relational transformation milestones'
     },
     {
       id: 6,
-      phase: 'implementation',
-      title: 'Handover Ritual',
-      description: 'Transfer everything to engineers with complete context intact',
+      phase: 'transformation',
+      title: 'Community Integration Ritual',
+      description: 'Share your healing journey with community support and accountability',
       icon: Handshake,
-      output: 'Context-preserving handoff documentation'
+      output: 'Community-supported healing practice with shared accountability'
     },
     {
       id: 7,
-      phase: 'implementation',
-      title: 'Development Tracking',
-      description: 'Monitor development to ensure vision alignment',
+      phase: 'transformation',
+      title: 'Healing Progress Tracking',
+      description: 'Monitor emotional shifts to ensure relationship transformation stays on track',
       icon: Play,
-      output: 'Vision-aligned working product'
+      output: 'Emotionally-aligned, healed relationships'
     }
   ];
 
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
-        <h2 className="text-2xl font-bold">Product Development Framework</h2>
+        <h2 className="text-2xl font-bold">Relational Healing Framework</h2>
         <p className="text-slate-600 dark:text-slate-300">
-          Bridge the gap from "good idea" to "working product"
+          Bridge the gap from "I need healing" to "transformed relationships"
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Phase 1: Understanding the Problem */}
+        {/* Phase 1: Building Awareness */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Search className="w-5 h-5 text-blue-600" />
-              Phase 1: Understanding the Problem
+              <Heart className="w-5 h-5 text-pink-600" />
+              Phase 1: Building Awareness
             </CardTitle>
             <Badge variant="outline">Steps 1-3</Badge>
           </CardHeader>
@@ -113,7 +113,7 @@ const ProductDevelopmentSteps: React.FC<ProductDevelopmentStepsProps> = ({
                     isCompleted 
                       ? 'bg-green-100 text-green-600' 
                       : isCurrent
-                      ? 'bg-blue-100 text-blue-600'
+                      ? 'bg-pink-100 text-pink-600'
                       : 'bg-slate-100 text-slate-400'
                   }`}>
                     {isCompleted ? (
@@ -124,7 +124,7 @@ const ProductDevelopmentSteps: React.FC<ProductDevelopmentStepsProps> = ({
                   </div>
                   
                   <div className="flex-1">
-                    <h4 className={`font-medium text-sm ${isCurrent ? 'text-blue-600' : ''}`}>
+                    <h4 className={`font-medium text-sm ${isCurrent ? 'text-pink-600' : ''}`}>
                       {step.id}. {step.title}
                     </h4>
                     <p className="text-xs text-slate-600 mb-1">{step.description}</p>
@@ -136,12 +136,12 @@ const ProductDevelopmentSteps: React.FC<ProductDevelopmentStepsProps> = ({
           </CardContent>
         </Card>
 
-        {/* Phase 2: Making It Real */}
+        {/* Phase 2: Creating Transformation */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Code className="w-5 h-5 text-purple-600" />
-              Phase 2: Making It Real
+              <Sparkles className="w-5 h-5 text-purple-600" />
+              Phase 2: Creating Transformation
             </CardTitle>
             <Badge variant="outline">Steps 4-7</Badge>
           </CardHeader>
@@ -181,26 +181,26 @@ const ProductDevelopmentSteps: React.FC<ProductDevelopmentStepsProps> = ({
         </Card>
       </div>
 
-      <Card className="bg-amber-50 border-amber-200">
+      <Card className="bg-rose-50 border-rose-200">
         <CardContent className="p-4">
-          <h3 className="font-semibold text-amber-800 mb-2">Why This Framework Prevents Project Failure</h3>
+          <h3 className="font-semibold text-rose-800 mb-2">Why This Framework Prevents Healing Stagnation</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div>
-              <h4 className="font-medium text-amber-700">Diegetic Prototype</h4>
-              <p className="text-amber-600">A demo that feels real and tells a complete story</p>
+              <h4 className="font-medium text-rose-700">Healing Visualization</h4>
+              <p className="text-rose-600">A vision that feels real and tells a complete story of transformation</p>
             </div>
             <div>
-              <h4 className="font-medium text-amber-700">Systems Intelligence</h4>
-              <p className="text-amber-600">Technical specs that preserve the original vision</p>
+              <h4 className="font-medium text-rose-700">Transformation Intelligence</h4>
+              <p className="text-rose-600">Healing practices that preserve the original emotional vision</p>
             </div>
             <div>
-              <h4 className="font-medium text-amber-700">Handover Ritual</h4>
-              <p className="text-amber-600">Engineers understand not just what to build, but why</p>
+              <h4 className="font-medium text-rose-700">Community Integration</h4>
+              <p className="text-rose-600">Healers understand not just what to heal, but why it matters deeply</p>
             </div>
           </div>
-          <p className="text-xs text-amber-600 mt-3 italic">
-            Most projects fail because there's a gap between "good idea" and "working product." 
-            This process creates a bridge that prevents building something technically correct but practically useless.
+          <p className="text-xs text-rose-600 mt-3 italic">
+            Most healing attempts fail because there's a gap between "I need healing" and "transformed relationships." 
+            This process creates a bridge that prevents surface-level changes that don't create lasting relational transformation.
           </p>
         </CardContent>
       </Card>
