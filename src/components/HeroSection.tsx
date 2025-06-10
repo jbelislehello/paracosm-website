@@ -48,7 +48,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         
         // Visual feedback
         expandingCircles.push(new ExpandingCircle(clickX, clickY, '#10b981', 200));
-        keyPhrases.push(new KeyPhrase(clickX, clickY - 50, 'NEW GARDEN CREATED', '#10b981'));
+        keyPhrases.push(new KeyPhrase(clickX, clickY - 50, 'NEW AGENT CREATED', '#10b981'));
       }
     };
 
@@ -70,11 +70,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
     window.addEventListener('resize', resize);
     resize();
     
-    // Garden and force definitions
+    // Agent gardens and force definitions
     const gardens = [
       { 
         key: 'intelligence', 
-        name: 'INTELLIGENCE', 
+        name: 'COGNITIVE AGENTS', 
         color: '#2563eb', 
         icon: '🧠',
         x: window.innerWidth * 0.25,
@@ -93,7 +93,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       },
       { 
         key: 'systems', 
-        name: 'SYSTEMS', 
+        name: 'ORCHESTRATION', 
         color: '#7c3aed', 
         icon: '⚙️',
         x: window.innerWidth * 0.75,
@@ -112,7 +112,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       },
       { 
         key: 'prototypes', 
-        name: 'PROTOTYPES', 
+        name: 'BEHAVIORAL MODELS', 
         color: '#db2777', 
         icon: '🌱',
         x: window.innerWidth * 0.5,
@@ -132,22 +132,22 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
     ];
 
     const forces = [
-      { key: 'love', name: 'LOVE', color: '#ef4444' },
-      { key: 'magic', name: 'MAGIC', color: '#8b5cf6' },
-      { key: 'calm', name: 'CALM', color: '#06b6d4' },
-      { key: 'open', name: 'OPEN', color: '#10b981' },
-      { key: 'free', name: 'FREE', color: '#f59e0b' }
+      { key: 'love', name: 'EMPATHY', color: '#ef4444' },
+      { key: 'magic', name: 'EMERGENCE', color: '#8b5cf6' },
+      { key: 'calm', name: 'STABILITY', color: '#06b6d4' },
+      { key: 'open', name: 'TRANSPARENCY', color: '#10b981' },
+      { key: 'free', name: 'AUTONOMY', color: '#f59e0b' }
     ];
 
     const newGardenColors = ['#14b8a6', '#f97316', '#84cc16', '#06b6d4', '#8b5cf6'];
-    const newGardenIcons = ['✨', '🔮', '⭐', '💫', '🌟'];
+    const newGardenIcons = ['🤖', '🔮', '⭐', '💫', '🌟'];
     let gardenCounter = 0;
 
     const createNewGarden = (x: number, y: number) => {
       const colorIndex = gardenCounter % newGardenColors.length;
       const newGarden = {
-        key: `garden_${Date.now()}`,
-        name: `GARDEN ${gardenCounter + 1}`,
+        key: `agent_${Date.now()}`,
+        name: `AGENT ${gardenCounter + 1}`,
         color: newGardenColors[colorIndex],
         icon: newGardenIcons[colorIndex],
         x: x,
@@ -169,6 +169,43 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
       constellationPatterns.push(new ConstellationPattern(newGarden));
       gardenCounter++;
     };
+
+    // Agent-specific phrase libraries
+    const gardenPhrases = {
+      intelligence: [
+        'AGENT REASONING ACTIVE',
+        'NEURAL PATTERNS FORMING',
+        'COGNITIVE LOOPS ENGAGED',
+        'LEARNING ALGORITHMS ACTIVE',
+        'DECISION TREES GROWING',
+        'INTELLIGENCE EMERGING'
+      ],
+      systems: [
+        'ORCHESTRATION LAYER ACTIVE',
+        'AGENT COORDINATION ONLINE',
+        'WORKFLOW AUTOMATION ACTIVE',
+        'SYSTEM INTEGRATION FLOWING',
+        'AGENT MESH FORMING',
+        'COORDINATION PROTOCOLS ACTIVE'
+      ],
+      prototypes: [
+        'BEHAVIORAL MODELS EVOLVING',
+        'AGENT PERSONAS FORMING',
+        'INTERACTION PATTERNS EMERGING',
+        'USER EXPERIENCE ADAPTING',
+        'BEHAVIOR TREES GROWING',
+        'AGENT PERSONALITIES EMERGING'
+      ]
+    };
+
+    const multiGardenPhrases = [
+      'AGENTIC ECOSYSTEM ONLINE',
+      'COLLECTIVE INTELLIGENCE ACTIVE',
+      'SWARM BEHAVIOR EMERGING',
+      'AGENT NETWORK RESONATING',
+      'ECOSYSTEM HARMONY ACHIEVED',
+      'MULTI-AGENT SYNERGY'
+    ];
 
     // Arrays for different effect systems
     const forceNodes: ForceNode[] = [];
@@ -287,43 +324,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         ctx.globalAlpha = 1;
       }
     }
-
-    // Garden-specific phrase libraries
-    const gardenPhrases = {
-      intelligence: [
-        'NEURAL PATHWAYS FORMING',
-        'PATTERNS EMERGING',
-        'INSIGHTS CRYSTALLIZING',
-        'KNOWLEDGE SYNTHESIZING',
-        'CONNECTIONS DISCOVERED',
-        'ANALYSIS DEEPENING'
-      ],
-      systems: [
-        'ARCHITECTURE ALIGNING',
-        'STRUCTURES HARMONIZING',
-        'FEEDBACK LOOPS ACTIVE',
-        'SYSTEMS INTEGRATING',
-        'PROCESSES OPTIMIZING',
-        'FLOWS SYNCHRONIZING'
-      ],
-      prototypes: [
-        'IDEAS MATERIALIZING',
-        'CONCEPTS BLOOMING',
-        'VISIONS MANIFESTING',
-        'FUTURES EMERGING',
-        'PROTOTYPES EVOLVING',
-        'POSSIBILITIES EXPANDING'
-      ]
-    };
-
-    const multiGardenPhrases = [
-      'EMERGENCE BEGINS',
-      'SYNERGY ACTIVATED',
-      'COLLECTIVE INTELLIGENCE',
-      'UNIFIED FIELD ACTIVE',
-      'HARMONIC RESONANCE',
-      'COHERENT EVOLUTION'
-    ];
 
     class Spark {
       x: number;
@@ -755,7 +755,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         // Trigger expanding circles based on garden state and activity
         if (garden.state === 'active' && currentTime - garden.lastExpansionTime > 2000) {
           expandingCircles.push(new ExpandingCircle(garden.x, garden.y, garden.color, 150));
-          const phrases = gardenPhrases[garden.key as keyof typeof gardenPhrases] || ['ACTIVITY DETECTED', 'ENERGY FLOWING', 'CONNECTIONS FORMING'];
+          const phrases = gardenPhrases[garden.key as keyof typeof gardenPhrases] || ['AGENT ACTIVITY', 'NETWORK FORMING', 'CONNECTIONS ACTIVE'];
           const phrase = phrases[Math.floor(Math.random() * phrases.length)];
           keyPhrases.push(new KeyPhrase(garden.x, garden.y - 100, phrase, garden.color));
           garden.lastExpansionTime = currentTime;
@@ -809,7 +809,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
               sparks.push(new Spark(midX, midY, garden2.color));
               expandingCircles.push(new ExpandingCircle(midX, midY, garden1.color, 300));
               
-              // Multi-garden phrases
+              // Multi-agent phrases
               if (activeGardens >= 2) {
                 const phrase = multiGardenPhrases[Math.floor(Math.random() * multiGardenPhrases.length)];
                 keyPhrases.push(new KeyPhrase(midX, midY - 50, phrase, '#ffffff'));
@@ -938,7 +938,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
               ctx.fill();
             }
           } else if (garden.key === 'systems') {
-            // Gear pattern
+            // Orchestration pattern
             ctx.strokeStyle = garden.color;
             ctx.lineWidth = 2;
             ctx.save();
@@ -953,7 +953,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
             }
             ctx.restore();
           } else if (garden.key === 'prototypes') {
-            // Growing pattern
+            // Behavioral modeling pattern
             for (let i = 0; i < 5; i++) {
               const size = (Math.sin(time + i) + 1) * 2;
               ctx.fillStyle = garden.color;
@@ -967,7 +967,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
               ctx.fill();
             }
           } else {
-            // Generic pattern for new gardens
+            // Generic agent pattern for new agents
             for (let i = 0; i < 4; i++) {
               const angle = time + (i * Math.PI / 2);
               const x = garden.x + Math.cos(angle) * (garden.currentRadius * 0.25);
@@ -1036,7 +1036,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
   
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
-      {/* White background canvas with garden dynamics */}
+      {/* White background canvas with agent dynamics */}
       <canvas 
         ref={canvasRef} 
         className="absolute inset-0 w-full h-full pointer-events-auto cursor-crosshair"
@@ -1053,13 +1053,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
         <div className="max-w-4xl mx-auto text-center">
           {/* Main headline with backdrop protection */}
           <div className="backdrop-blur-sm bg-white/10 dark:bg-slate-900/10 rounded-2xl p-8 border border-white/20 relative z-20">
-            {/* Product Framework CTA Button - Top Left Corner */}
+            {/* Agentic Framework CTA Button - Top Left Corner */}
             <Button 
               onClick={onDiscoverFramework}
               className="absolute -top-2 -left-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300 text-white px-4 py-2 text-sm font-semibold shadow-lg hover:shadow-xl flex items-center gap-2 z-30 rounded-lg"
             >
               <Sparkles className="w-4 h-4" />
-              <span className="hidden sm:inline">Product Framework</span>
+              <span className="hidden sm:inline">Agentic Framework</span>
               <span className="sm:hidden">Framework</span>
             </Button>
             
