@@ -1,272 +1,130 @@
 
-import React, { useEffect, useRef, useState, useCallback } from 'react';
-
-interface Totem {
-  id: number;
-  x: number;
-  y: number;
-  targetX: number;
-  targetY: number;
-  type: 'love' | 'magic' | 'calm' | 'open';
-  congruent: boolean;
-  inLight: boolean;
-  connected: boolean;
-  energy: number;
-}
+import React, { useEffect, useRef, useState } from 'react';
 
 interface Circle {
   x: number;
   y: number;
   radius: number;
-  force: string;
-  congruent: boolean;
-  inLight: boolean;
-  totems: Totem[];
-}
-
-interface Anthem {
-  id: number;
-  x: number;
-  y: number;
-  active: boolean;
+  color: string;
+  dx: number;
+  dy: number;
   energy: number;
-  noems: Poem[];
 }
 
-interface Poem {
-  id: number;
+interface Totem {
   x: number;
   y: number;
-  text: string;
-  alpha: number;
-  vortexRadius: number;
+  size: number;
+  energy: number;
+  type: string;
 }
 
-const MomentumManifestation: React.FC = () => {
+const MomentumManifestation = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number>();
+  const [userInfluence, setUserInfluence] = useState(50);
   const [circles, setCircles] = useState<Circle[]>([]);
   const [totems, setTotems] = useState<Totem[]>([]);
-  const [anthems, setAnthems] = useState<Anthem[]>([]);
-  const [poems, setPoems] = useState<Poem[]>([]);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [userInfluence, setUserInfluence] = useState(0);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  const initializeCanvas = useCallback(() => {
+  // Initialize circles and totems
+  useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // Set canvas size
-    canvas.width = canvas.offsetWidth * window.devicePixelRatio;
-    canvas.height = canvas.offsetHeight * window.devicePixelRatio;
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-
-    // Initialize concentric circles
-    const newCircles: Circle[] = [
+    const width = canvas.offsetWidth;
+    const height = canvas.offsetHeight;
+    
+    // Initialize circles
+    const initialCircles: Circle[] = [
       {
-        x: canvas.offsetWidth * 0.3,
-        y: canvas.offsetHeight * 0.4,
-        radius: 80,
-        force: 'love',
-        congruent: true,
-        inLight: true,
-        totems: []
+        x: width * 0.2,
+        y: height * 0.3,
+        radius: 30,
+        color: 'rgba(219, 39, 119, 0.3)',
+        dx: 1,
+        dy: 0.5,
+        energy: 60
       },
       {
-        x: canvas.offsetWidth * 0.7,
-        y: canvas.offsetHeight * 0.3,
-        radius: 100,
-        force: 'magic',
-        congruent: false,
-        inLight: false,
-        totems: []
+        x: width * 0.8,
+        y: height * 0.7,
+        radius: 25,
+        color: 'rgba(124, 58, 237, 0.3)',
+        dx: -0.5,
+        dy: -1,
+        energy: 80
       },
       {
-        x: canvas.offsetWidth * 0.5,
-        y: canvas.offsetHeight * 0.7,
-        radius: 90,
-        force: 'calm',
-        congruent: true,
-        inLight: true,
-        totems: []
-      },
-      {
-        x: canvas.offsetWidth * 0.2,
-        y: canvas.offsetHeight * 0.8,
-        radius: 70,
-        force: 'open',
-        congruent: false,
-        inLight: true,
-        totems: []
+        x: width * 0.5,
+        y: height * 0.5,
+        radius: 35,
+        color: 'rgba(59, 130, 246, 0.3)',
+        dx: 0.8,
+        dy: 0.3,
+        energy: 70
       }
     ];
 
-    setCircles(newCircles);
-
     // Initialize totems
-    const newTotems: Totem[] = [];
-    for (let i = 0; i < 20; i++) {
-      newTotems.push({
-        id: i,
-        x: Math.random() * canvas.offsetWidth,
-        y: Math.random() * canvas.offsetHeight,
-        targetX: Math.random() * canvas.offsetWidth,
-        targetY: Math.random() * canvas.offsetHeight,
-        type: ['love', 'magic', 'calm', 'open'][Math.floor(Math.random() * 4)] as any,
-        congruent: Math.random() > 0.5,
-        inLight: Math.random() > 0.3,
-        connected: false,
-        energy: Math.random() * 100
-      });
-    }
+    const initialTotems: Totem[] = [
+      {
+        x: width * 0.1,
+        y: height * 0.2,
+        size: 8,
+        energy: 40,
+        type: 'love'
+      },
+      {
+        x: width * 0.9,
+        y: height * 0.8,
+        size: 10,
+        energy: 60,
+        type: 'magic'
+      },
+      {
+        x: width * 0.3,
+        y: height * 0.9,
+        size: 6,
+        energy: 30,
+        type: 'calm'
+      },
+      {
+        x: width * 0.7,
+        y: height * 0.1,
+        size: 12,
+        energy: 80,
+        type: 'open'
+      }
+    ];
 
-    setTotems(newTotems);
+    setCircles(initialCircles);
+    setTotems(initialTotems);
+    setIsInitialized(true);
   }, []);
 
-  const drawCircle = (ctx: CanvasRenderingContext2D, circle: Circle) => {
-    const { x, y, radius, congruent, inLight } = circle;
-    
-    // Determine colors based on state
-    const baseColor = congruent ? (inLight ? '#4ade80' : '#22c55e') : (inLight ? '#f59e0b' : '#d97706');
-    const shadowColor = inLight ? 'rgba(255, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0.5)';
-    
-    // Draw main circle
-    ctx.beginPath();
-    ctx.arc(x, y, radius, 0, Math.PI * 2);
-    ctx.strokeStyle = baseColor;
-    ctx.lineWidth = inLight ? 3 : 1.5;
-    ctx.shadowColor = shadowColor;
-    ctx.shadowBlur = inLight ? 20 : 10;
-    ctx.stroke();
-    
-    // Draw inner rings for depth
-    for (let i = 1; i <= 3; i++) {
-      ctx.beginPath();
-      ctx.arc(x, y, radius - (i * 15), 0, Math.PI * 2);
-      ctx.strokeStyle = baseColor;
-      ctx.globalAlpha = 0.3 - (i * 0.1);
-      ctx.stroke();
-    }
-    
-    ctx.globalAlpha = 1;
-    ctx.shadowBlur = 0;
-  };
+  // Animation loop
+  useEffect(() => {
+    if (!isInitialized || circles.length === 0 || totems.length === 0) return;
 
-  const drawTotem = (ctx: CanvasRenderingContext2D, totem: Totem) => {
-    const { x, y, type, congruent, inLight, energy } = totem;
-    
-    const colors = {
-      love: inLight ? '#ef4444' : '#dc2626',
-      magic: inLight ? '#8b5cf6' : '#7c3aed',
-      calm: inLight ? '#06b6d4' : '#0891b2',
-      open: inLight ? '#f59e0b' : '#d97706'
-    };
-    
-    const size = congruent ? 6 + (energy / 20) : 4 + (energy / 30);
-    
-    ctx.beginPath();
-    ctx.arc(x, y, size, 0, Math.PI * 2);
-    ctx.fillStyle = colors[type];
-    ctx.shadowColor = inLight ? colors[type] : 'rgba(0, 0, 0, 0.5)';
-    ctx.shadowBlur = inLight ? 15 : 8;
-    ctx.fill();
-    
-    // Draw energy aura if highly energetic
-    if (energy > 70) {
-      ctx.beginPath();
-      ctx.arc(x, y, size + 4, 0, Math.PI * 2);
-      ctx.strokeStyle = colors[type];
-      ctx.globalAlpha = 0.3;
-      ctx.lineWidth = 2;
-      ctx.stroke();
-      ctx.globalAlpha = 1;
-    }
-    
-    ctx.shadowBlur = 0;
-  };
-
-  const drawConnections = (ctx: CanvasRenderingContext2D) => {
-    totems.forEach((totem1, i) => {
-      totems.slice(i + 1).forEach(totem2 => {
-        const distance = Math.sqrt(
-          Math.pow(totem1.x - totem2.x, 2) + Math.pow(totem1.y - totem2.y, 2)
-        );
-        
-        if (distance < 100 && totem1.energy > 50 && totem2.energy > 50) {
-          ctx.beginPath();
-          ctx.moveTo(totem1.x, totem1.y);
-          ctx.lineTo(totem2.x, totem2.y);
-          ctx.strokeStyle = 'rgba(147, 197, 253, 0.4)';
-          ctx.lineWidth = 1;
-          ctx.stroke();
-        }
-      });
-    });
-  };
-
-  const drawAnthems = (ctx: CanvasRenderingContext2D) => {
-    anthems.forEach(anthem => {
-      if (anthem.active) {
-        ctx.beginPath();
-        ctx.arc(anthem.x, anthem.y, 20, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(167, 139, 250, ${anthem.energy / 100})`;
-        ctx.fill();
-        
-        // Pulsing effect
-        const pulse = Math.sin(Date.now() * 0.01) * 5;
-        ctx.beginPath();
-        ctx.arc(anthem.x, anthem.y, 25 + pulse, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(167, 139, 250, 0.3)';
-        ctx.lineWidth = 2;
-        ctx.stroke();
-      }
-    });
-  };
-
-  const drawPoems = (ctx: CanvasRenderingContext2D) => {
-    poems.forEach(poem => {
-      ctx.save();
-      ctx.globalAlpha = poem.alpha;
-      ctx.fillStyle = '#e879f9';
-      ctx.font = '12px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(poem.text, poem.x, poem.y);
-      
-      // Vortex effect around poem
-      const vortexRadius = poem.vortexRadius;
-      for (let i = 0; i < 8; i++) {
-        const angle = (i / 8) * Math.PI * 2 + Date.now() * 0.001;
-        const vx = poem.x + Math.cos(angle) * vortexRadius;
-        const vy = poem.y + Math.sin(angle) * vortexRadius;
-        
-        ctx.beginPath();
-        ctx.arc(vx, vy, 2, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(232, 121, 249, 0.5)';
-        ctx.fill();
-      }
-      
-      ctx.restore();
-    });
-  };
-
-  const updateAnimation = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
 
-    // Safety check: only update totem positions if we have circles
-    if (circles.length > 0) {
+    const updateAnimation = () => {
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+
       // Update totem positions (attraction to circles)
       setTotems(prevTotems => 
         prevTotems.map(totem => {
+          if (circles.length === 0) return totem;
+          
           let closestCircle = circles[0];
           let minDistance = Infinity;
           
@@ -279,11 +137,6 @@ const MomentumManifestation: React.FC = () => {
               closestCircle = circle;
             }
           });
-          
-          // Safety check: ensure closestCircle exists before accessing properties
-          if (!closestCircle) {
-            return totem;
-          }
           
           // Apply attraction force
           const attractionForce = 0.02;
@@ -298,90 +151,100 @@ const MomentumManifestation: React.FC = () => {
           };
         })
       );
-    }
 
-    // Update user influence based on mouse position
-    const mouseInfluence = Math.sin(Date.now() * 0.003) * 0.5 + 0.5;
-    setUserInfluence(mouseInfluence * 100);
+      // Update user influence based on mouse position
+      const mouseInfluence = Math.sin(Date.now() * 0.003) * 0.5 + 0.5;
+      setUserInfluence(30 + mouseInfluence * 40);
 
-    // Draw everything
-    circles.forEach(circle => drawCircle(ctx, circle));
-    drawConnections(ctx);
-    totems.forEach(totem => drawTotem(ctx, totem));
-    drawAnthems(ctx);
-    drawPoems(ctx);
-
-    animationRef.current = requestAnimationFrame(updateAnimation);
-  }, [circles, totems, anthems, poems, userInfluence]);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const rect = canvas.getBoundingClientRect();
-    setMousePosition({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    });
-
-    // Influence nearby circles to become more congruent
-    setCircles(prevCircles =>
-      prevCircles.map(circle => {
-        const distance = Math.sqrt(
-          Math.pow(mousePosition.x - circle.x, 2) + Math.pow(mousePosition.y - circle.y, 2)
-        );
-        
-        if (distance < 150) {
+      // Update circles
+      setCircles(prevCircles => 
+        prevCircles.map(circle => {
+          let newX = circle.x + circle.dx;
+          let newY = circle.y + circle.dy;
+          
+          // Bounce off edges
+          if (newX <= circle.radius || newX >= canvas.offsetWidth - circle.radius) {
+            circle.dx = -circle.dx;
+            newX = circle.x + circle.dx;
+          }
+          if (newY <= circle.radius || newY >= canvas.offsetHeight - circle.radius) {
+            circle.dy = -circle.dy;
+            newY = circle.y + circle.dy;
+          }
+          
           return {
             ...circle,
-            congruent: true,
-            inLight: true
+            x: newX,
+            y: newY,
+            energy: Math.min(100, circle.energy + (userInfluence * 0.05))
           };
-        }
-        return circle;
-      })
-    );
-  };
+        })
+      );
 
-  useEffect(() => {
-    initializeCanvas();
-    
-    const handleResize = () => {
-      initializeCanvas();
+      // Draw circles
+      circles.forEach(circle => {
+        ctx.beginPath();
+        ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2);
+        ctx.fillStyle = circle.color;
+        ctx.fill();
+        ctx.strokeStyle = circle.color.replace('0.3', '0.8');
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+
+      // Draw totems
+      totems.forEach(totem => {
+        ctx.beginPath();
+        ctx.arc(totem.x, totem.y, totem.size, 0, Math.PI * 2);
+        
+        const colors = {
+          love: 'rgba(219, 39, 119, 0.8)',
+          magic: 'rgba(124, 58, 237, 0.8)', 
+          calm: 'rgba(59, 130, 246, 0.8)',
+          open: 'rgba(34, 197, 94, 0.8)'
+        };
+        
+        ctx.fillStyle = colors[totem.type as keyof typeof colors] || 'rgba(100, 100, 100, 0.8)';
+        ctx.fill();
+        
+        // Energy glow effect
+        const glowRadius = totem.size + (totem.energy / 100) * 10;
+        const gradient = ctx.createRadialGradient(totem.x, totem.y, totem.size, totem.x, totem.y, glowRadius);
+        gradient.addColorStop(0, colors[totem.type as keyof typeof colors]?.replace('0.8', '0.1') || 'rgba(100, 100, 100, 0.1)');
+        gradient.addColorStop(1, 'transparent');
+        
+        ctx.beginPath();
+        ctx.arc(totem.x, totem.y, glowRadius, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
+        ctx.fill();
+      });
+
+      animationRef.current = requestAnimationFrame(updateAnimation);
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [initializeCanvas]);
+    updateAnimation();
 
-  useEffect(() => {
-    animationRef.current = requestAnimationFrame(updateAnimation);
-    
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [updateAnimation]);
+  }, [circles, totems, userInfluence, isInitialized]);
 
   return (
-    <div className="relative w-full h-96 bg-gradient-to-br from-slate-900 to-purple-900 rounded-2xl overflow-hidden">
+    <div className="relative w-full h-64 overflow-hidden rounded-lg bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900">
       <canvas
         ref={canvasRef}
-        className="w-full h-full cursor-crosshair"
-        onMouseMove={handleMouseMove}
+        className="absolute inset-0 w-full h-full"
         style={{ width: '100%', height: '100%' }}
       />
-      
-      <div className="absolute top-4 left-4 text-white/80 text-sm">
-        <p>Hover to influence momentum manifestations</p>
-        <p className="text-xs mt-1">
-          Light circles: In congruence | Dark circles: Shadow work
-        </p>
-      </div>
-      
-      <div className="absolute bottom-4 right-4 text-white/60 text-xs">
-        User Influence: {Math.round(userInfluence)}%
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-4 left-4 text-xs font-medium text-slate-600 dark:text-slate-300">
+          Emotional Momentum: {Math.round(userInfluence)}%
+        </div>
+        <div className="absolute bottom-4 right-4 text-xs text-slate-500 dark:text-slate-400">
+          Love → Magic → Calm → Open
+        </div>
       </div>
     </div>
   );
