@@ -7,11 +7,13 @@ import InnovationJournal from "@/components/InnovationJournal";
 import ContactSection from "@/components/ContactSection";
 import PartnerToolsSection from "@/components/PartnerToolsSection";
 import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
+import CalmMagicCompass from "@/components/calm-magic/CalmMagicCompass";
+import CoachingServices from "@/components/calm-magic/CoachingServices";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
-import { Heart, Users, Sparkles, Calendar, Palette, Music, BookOpen, MapPin } from "lucide-react";
+import { Heart, Users, Sparkles, Calendar, Palette, Music, BookOpen, MapPin, Clock, Video } from "lucide-react";
 
 const RelationalHealing = () => {
   const [isCalmMagicOpen, setIsCalmMagicOpen] = useState(false);
@@ -19,7 +21,7 @@ const RelationalHealing = () => {
 
   useEffect(() => {
     // Set page title
-    document.title = "Calm Magic - Relational Healing & Emotional Creativity Retreats";
+    document.title = "Calm Magic - Personal Coaching for Inner Life & Creative Relationships";
   }, []);
 
   const handleStartJourney = () => {
@@ -31,12 +33,12 @@ const RelationalHealing = () => {
     setIsCalmMagicOpen(true);
   };
 
-  const handleRetreatSignup = (e: React.FormEvent) => {
+  const handleCoachingConsultation = (e: React.FormEvent) => {
     e.preventDefault();
     
     toast({
-      title: "Retreat Interest Submitted",
-      description: "Thank you for your interest! We'll send you retreat details and early-bird pricing soon.",
+      title: "Coaching Consultation Requested",
+      description: "Thank you for your interest! I'll reach out within 24 hours to schedule your free discovery call.",
       duration: 5000,
     });
     
@@ -44,51 +46,45 @@ const RelationalHealing = () => {
     (e.target as HTMLFormElement).reset();
   };
 
-  const healingFeatures = [
+  const coachingApproaches = [
     {
-      title: "Relational Healing",
-      description: "Transform relationship patterns through guided emotional processing and conscious communication practices.",
+      title: "Inner Life Exploration",
+      description: "Deep personal coaching to explore your emotional landscape, patterns, and authentic self using the Calm Magic framework.",
       icon: Heart,
       color: "from-rose-500 to-pink-600"
     },
     {
-      title: "Emotional Creativity",
-      description: "Unlock creative expression as a pathway to healing, using art, movement, and storytelling for transformation.",
+      title: "Creative Relationship Design",
+      description: "Innovative approaches to building playful, meaningful connections through creative expression and conscious communication.",
       icon: Sparkles,
       color: "from-purple-500 to-indigo-600"
     },
     {
-      title: "Community Healing",
-      description: "Experience the power of collective healing in supportive group settings designed for deep connection.",
+      title: "Freedom Compass Navigation",
+      description: "Track your growth through the four forces (Love→Magic→Calm→Open) as your freedom arrow expands over time.",
       icon: Users,
       color: "from-blue-500 to-cyan-600"
     },
     {
-      title: "Quarterly Retreats",
-      description: "Join our seasonal emotional creativity retreats, scheduled every three months for ongoing healing support.",
+      title: "Congruence Coaching",
+      description: "Align your Connessor and Magnesor tendencies to create authentic, sustainable personal transformation.",
       icon: Calendar,
       color: "from-green-500 to-emerald-600"
     }
   ];
 
-  const upcomingEvents = [
+  const testimonials = [
     {
-      name: "DRIFT",
-      subtitle: "Spring Emotional Flow Retreat",
-      date: "March 21-23, 2025",
-      description: "A three-day immersive journey exploring emotional currents and creative expression through guided movement, art therapy, and relational healing circles.",
-      icon: Palette,
-      color: "from-green-400 to-emerald-500",
-      early_bird: "Early Bird: $450 (until Feb 15)"
+      name: "Sarah M.",
+      program: "Inner Life Exploration",
+      quote: "Working with the Calm Magic framework transformed how I understand my relationships. The freedom compass helped me see exactly where I was stuck and how to move forward.",
+      result: "Increased freedom score from 40% to 85% in 6 weeks"
     },
     {
-      name: "GL!TCH",
-      subtitle: "Summer Digital Detox & Healing",
-      date: "June 20-22, 2025",
-      description: "Disconnect from digital overwhelm and reconnect with authentic emotional expression through analog creativity, nature immersion, and intentional relationship building.",
-      icon: Music,
-      color: "from-orange-400 to-red-500",
-      early_bird: "Early Bird: $475 (until May 15)"
+      name: "David K.",
+      program: "Creative Relationship Design", 
+      quote: "The creative approaches opened up entirely new ways of connecting. My relationships became more playful and authentic than I ever thought possible.",
+      result: "Designed 3 new relationship rituals that brought lasting joy"
     }
   ];
 
@@ -104,17 +100,17 @@ const RelationalHealing = () => {
             <span className="font-bold text-lg">Calm Magic</span>
           </div>
           <nav className="hidden md:flex gap-6">
-            <a href="#healing" className="text-sm font-medium hover:text-purple-600 transition-colors">Healing</a>
+            <a href="#coaching" className="text-sm font-medium hover:text-purple-600 transition-colors">Coaching</a>
             <a href="#framework" className="text-sm font-medium hover:text-purple-600 transition-colors">Framework</a>
-            <a href="#retreats" className="text-sm font-medium hover:text-purple-600 transition-colors">Retreats</a>
-            <a href="#community" className="text-sm font-medium hover:text-purple-600 transition-colors">Community</a>
+            <a href="#compass" className="text-sm font-medium hover:text-purple-600 transition-colors">Freedom Compass</a>
+            <a href="#testimonials" className="text-sm font-medium hover:text-purple-600 transition-colors">Stories</a>
             <a href="#contact" className="text-sm font-medium hover:text-purple-600 transition-colors">Contact</a>
           </nav>
           <Button 
             onClick={handleDiscoverFramework}
             className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 transition-all duration-300"
           >
-            Start Healing
+            Book Discovery Call
           </Button>
         </div>
       </header>
@@ -130,12 +126,13 @@ const RelationalHealing = () => {
       <section className="min-h-screen flex items-center justify-center px-4 pt-20">
         <div className="container max-w-6xl mx-auto text-center">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-rose-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
-            Heal Relationships Through
+            Explore Your Inner Life &
             <br />
-            Emotional Creativity
+            Create Magical Relationships
           </h1>
           <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-8">
-            Transform your relationships and heal emotional wounds through our quarterly retreats that blend creativity, mindfulness, and the Calm Magic framework for deep relational healing.
+            One-on-one coaching using the Calm Magic framework to help you navigate your emotional landscape, 
+            develop innovative relationships, and track your freedom as you move through Love → Magic → Calm → Open.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
@@ -143,124 +140,151 @@ const RelationalHealing = () => {
               size="lg" 
               className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 transition-all duration-300"
             >
-              Discover Calm Magic Framework
+              Start Your Coaching Journey
             </Button>
             <Button 
               variant="outline" 
               size="lg"
               className="border-purple-600 text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-950"
+              onClick={() => document.getElementById('compass')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              Next Retreat: DRIFT - March 2025
+              See Freedom Compass Demo
             </Button>
           </div>
         </div>
       </section>
       
-      {/* Healing Features Section */}
-      <section id="healing" className="py-20 px-4">
+      {/* Coaching Approaches Section */}
+      <section id="coaching" className="py-20 px-4">
         <div className="container max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Pathways to Relational Healing</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Personalized Coaching Approaches</h2>
           <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
-            Navigate from emotional wounds to healed relationships using our holistic approach that integrates creativity, mindfulness, and proven healing methodologies.
+            Work one-on-one to explore your inner life and develop creative, innovative relationships 
+            using the unique Calm Magic framework that tracks your evolution through the four forces.
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {healingFeatures.map((feature, index) => (
+            {coachingApproaches.map((approach, index) => (
               <FeatureCard 
                 key={index}
-                title={feature.title} 
-                description={feature.description} 
-                icon={feature.icon}
-                color={feature.color}
+                title={approach.title} 
+                description={approach.description} 
+                icon={approach.icon}
+                color={approach.color}
               />
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Freedom Compass Demo */}
+      <section id="compass" className="py-20 px-4 bg-slate-100 dark:bg-slate-800/50">
+        <div className="container max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">The Freedom Compass</h2>
+          <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
+            Experience how your freedom grows as you move clockwise through the Calm Magic forces. 
+            Watch the arrow lengthen as your Connessor and Magnesor tendencies evolve, tracking both congruent and non-congruent states.
+          </p>
+          
+          <CalmMagicCompass />
+          
+          <div className="mt-12 text-center">
+            <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-6">
+              In our coaching sessions, we'll use this compass to track your real-time progress through the forces, 
+              helping you understand exactly where you are in your journey and how to expand your freedom further.
+            </p>
+            <Button 
+              onClick={handleDiscoverFramework}
+              className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600"
+            >
+              Experience This in Coaching
+            </Button>
+          </div>
+        </div>
+      </section>
+      
+      {/* Coaching Services */}
+      <section className="py-20 px-4">
+        <div className="container max-w-6xl mx-auto">
+          <CoachingServices />
         </div>
       </section>
       
       {/* Calm Magic Healing Framework */}
       <section id="framework" className="py-20 px-4">
         <div className="container max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">💫 Calm Magic Healing Framework</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">💫 Calm Magic Coaching Framework</h2>
           <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
-            A structured approach to relational healing that bridges emotional awareness with creative expression. Transform "we need to heal this" into "here's exactly how we heal together and why it creates lasting change."
+            A structured approach to personal transformation and relationship healing. Experience how we move from 
+            "I want to change" to "here's exactly how I'm growing and why it creates lasting freedom."
           </p>
           
           <InnovationJournal />
         </div>
       </section>
-      
-      {/* Upcoming Retreats Section */}
-      <section id="retreats" className="py-20 px-4 bg-slate-100 dark:bg-slate-800/50">
+
+      {/* Client Testimonials */}
+      <section id="testimonials" className="py-20 px-4 bg-slate-100 dark:bg-slate-800/50">
         <div className="container max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Seasonal Healing Retreats</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Client Transformation Stories</h2>
           <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
-            Join our quarterly emotional creativity retreats designed to provide ongoing support for your healing journey through the seasons of transformation.
+            Real stories from people who've used the Calm Magic framework to transform their inner lives and relationships.
           </p>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
-            {upcomingEvents.map((event, index) => (
-              <div key={index} className="bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden">
-                <div className={`h-32 bg-gradient-to-r ${event.color} flex items-center justify-center`}>
-                  <event.icon className="w-12 h-12 text-white" />
-                </div>
-                <div className="p-6">
-                  <h3 className="text-2xl font-bold mb-2">{event.name}</h3>
-                  <h4 className="text-lg text-purple-600 dark:text-purple-400 mb-2">{event.subtitle}</h4>
-                  <div className="flex items-center gap-2 mb-3">
-                    <Calendar className="w-4 h-4 text-slate-500" />
-                    <span className="text-sm font-medium">{event.date}</span>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <div key={index} className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
+                <div className="mb-4">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-12 h-12 bg-gradient-to-r from-rose-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                      {testimonial.name.charAt(0)}
+                    </div>
+                    <div>
+                      <h4 className="font-semibold">{testimonial.name}</h4>
+                      <p className="text-sm text-purple-600">{testimonial.program}</p>
+                    </div>
                   </div>
-                  <p className="text-slate-600 dark:text-slate-300 mb-4">{event.description}</p>
-                  <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg mb-4">
-                    <p className="text-sm font-medium text-green-700 dark:text-green-300">{event.early_bird}</p>
+                  <blockquote className="text-slate-600 dark:text-slate-300 italic mb-4">
+                    "{testimonial.quote}"
+                  </blockquote>
+                  <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
+                    <p className="text-sm font-medium text-green-700 dark:text-green-300">
+                      Result: {testimonial.result}
+                    </p>
                   </div>
-                  <Button 
-                    className="w-full bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 transition-all duration-300"
-                  >
-                    Reserve Your Spot
-                  </Button>
                 </div>
               </div>
             ))}
           </div>
-          
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-2 md:p-6 overflow-hidden">
-            <h3 className="text-2xl font-bold text-center mb-4">Visualize Your Healing Journey</h3>
-            <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-8">
-              See how emotional healing flows through our retreat experience from initial awareness to transformed relationships, with clear support at each phase of your healing process.
-            </p>
-            <NetworkVisualization />
-          </div>
         </div>
       </section>
       
-      {/* Healing Community & Resources Section */}
-      <section id="community" className="py-16 px-4">
+      {/* Community & Resources Section */}
+      <section className="py-16 px-4">
         <div className="container max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Healing Community & Resources</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Coaching Community & Resources</h2>
           <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
-            Connect with our ecosystem of healing practitioners, creative therapists, and supportive resources to enhance your emotional transformation journey.
+            Connect with our community of Calm Magic practitioners and access additional resources to support your coaching journey.
           </p>
           
           <PartnerToolsSection />
         </div>
       </section>
       
-      {/* Contact & Retreat Inquiry Section */}
+      {/* Contact & Coaching Consultation Section */}
       <section id="contact" className="py-20 px-4 bg-gradient-to-b from-slate-50 to-white dark:from-slate-800 dark:to-slate-900">
         <div className="container max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Ready to Begin Your Healing Journey?</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Ready to Begin Your Coaching Journey?</h2>
           <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
-            Join our community of healing seekers and reserve your spot in our next emotional creativity retreat. Start your transformation today.
+            Book a free discovery call to explore how Calm Magic coaching can help you develop your inner life and create innovative, joyful relationships.
           </p>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Left Column - Retreat Interest Form */}
+            {/* Left Column - Coaching Consultation Form */}
             <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
-              <h3 className="text-xl font-bold mb-6">Reserve Your Retreat Spot</h3>
+              <h3 className="text-xl font-bold mb-6">Book Your Free Discovery Call</h3>
               
-              <form onSubmit={handleRetreatSignup} className="space-y-6">
+              <form onSubmit={handleCoachingConsultation} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium mb-1">Full Name</label>
@@ -274,39 +298,39 @@ const RelationalHealing = () => {
                 </div>
                 
                 <div>
-                  <label htmlFor="retreat" className="block text-sm font-medium mb-1">Preferred Retreat</label>
-                  <select className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-600 focus:border-transparent" id="retreat" name="retreat" required>
-                    <option value="">Select a retreat</option>
-                    <option value="drift-march">DRIFT - March 21-23, 2025</option>
-                    <option value="glitch-june">GL!TCH - June 20-22, 2025</option>
-                    <option value="both">Both retreats</option>
-                    <option value="future">Future retreats</option>
+                  <label htmlFor="coaching-interest" className="block text-sm font-medium mb-1">What interests you most?</label>
+                  <select className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-purple-600 focus:border-transparent" id="coaching-interest" name="coaching-interest" required>
+                    <option value="">Select your focus area</option>
+                    <option value="inner-life">Inner Life Exploration</option>
+                    <option value="creative-relationships">Creative Relationship Design</option>
+                    <option value="calm-magic-intensive">Calm Magic Intensive</option>
+                    <option value="not-sure">Not sure yet - want to explore</option>
                   </select>
                 </div>
                 
                 <div>
-                  <label htmlFor="healing-goals" className="block text-sm font-medium mb-1">What are you hoping to heal or transform?</label>
-                  <Textarea id="healing-goals" name="healing-goals" rows={4} placeholder="Share what brought you here and what you're seeking to heal in your relationships..." />
+                  <label htmlFor="current-challenges" className="block text-sm font-medium mb-1">What are you hoping to explore or transform?</label>
+                  <Textarea id="current-challenges" name="current-challenges" rows={4} placeholder="Share what's bringing you to coaching and what you'd like to create in your life..." />
                 </div>
                 
                 <div>
-                  <label htmlFor="experience" className="block text-sm font-medium mb-1">Previous healing or retreat experience</label>
-                  <Textarea id="experience" name="experience" rows={3} placeholder="Tell us about any previous healing work, therapy, or retreat experiences..." />
+                  <label htmlFor="coaching-experience" className="block text-sm font-medium mb-1">Previous coaching or personal development experience</label>
+                  <Textarea id="coaching-experience" name="coaching-experience" rows={3} placeholder="Tell me about any previous coaching, therapy, or personal growth work you've done..." />
                 </div>
                 
                 <Button 
                   type="submit" 
                   className="w-full bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 transition-all duration-300"
                 >
-                  Submit Retreat Interest
+                  Request Discovery Call
                 </Button>
               </form>
             </div>
             
-            {/* Right Column - Healing Info */}
+            {/* Right Column - Coaching Info */}
             <div className="flex flex-col gap-8">
               <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
-                <h3 className="text-xl font-bold mb-6">Why Choose Calm Magic Retreats</h3>
+                <h3 className="text-xl font-bold mb-6">Why Choose Calm Magic Coaching</h3>
                 
                 <ul className="space-y-4">
                   <li className="flex items-start gap-3">
@@ -314,9 +338,9 @@ const RelationalHealing = () => {
                       <div className="w-2 h-2 rounded-full bg-rose-600"></div>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-sm">Holistic Healing Approach</h4>
+                      <h4 className="font-semibold text-sm">Unique Framework</h4>
                       <p className="text-sm text-slate-600 dark:text-slate-300">
-                        Integrate mind, body, and spirit through creative expression and conscious relationship practices.
+                        The only coaching approach that uses the four forces and freedom compass to track authentic growth.
                       </p>
                     </div>
                   </li>
@@ -326,9 +350,9 @@ const RelationalHealing = () => {
                       <div className="w-2 h-2 rounded-full bg-purple-600"></div>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-sm">Expert-Led Sessions</h4>
+                      <h4 className="font-semibold text-sm">Creative & Innovative</h4>
                       <p className="text-sm text-slate-600 dark:text-slate-300">
-                        Learn from certified trauma-informed therapists, creative arts practitioners, and relationship coaches.
+                        Move beyond traditional therapy with playful, creative approaches to relationship building.
                       </p>
                     </div>
                   </li>
@@ -338,9 +362,9 @@ const RelationalHealing = () => {
                       <div className="w-2 h-2 rounded-full bg-green-600"></div>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-sm">Small Group Intimacy</h4>
+                      <h4 className="font-semibold text-sm">Measurable Progress</h4>
                       <p className="text-sm text-slate-600 dark:text-slate-300">
-                        Limited to 12 participants for deep connection and personalized attention throughout your journey.
+                        Track your evolution through the compass and see your freedom expand week by week.
                       </p>
                     </div>
                   </li>
@@ -350,9 +374,9 @@ const RelationalHealing = () => {
                       <div className="w-2 h-2 rounded-full bg-orange-600"></div>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-sm">Ongoing Support</h4>
+                      <h4 className="font-semibold text-sm">Personal & Relational</h4>
                       <p className="text-sm text-slate-600 dark:text-slate-300">
-                        Access to integration sessions and community support for 90 days after each retreat.
+                        Work on yourself while simultaneously creating more beautiful relationships with others.
                       </p>
                     </div>
                   </li>
@@ -362,23 +386,22 @@ const RelationalHealing = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
                   <h4 className="font-semibold mb-2 flex items-center gap-2">
-                    <BookOpen className="w-4 h-4" />
-                    Email Us
+                    <Video className="w-4 h-4" />
+                    Virtual Sessions
                   </h4>
-                  <a href="mailto:healing@calmmagic.com" className="text-rose-600 hover:underline text-sm">
-                    healing@calmmagic.com
-                  </a>
+                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                    Online coaching via secure video platform
+                  </p>
                 </div>
                 
                 <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-6">
                   <h4 className="font-semibold mb-2 flex items-center gap-2">
-                    <MapPin className="w-4 h-4" />
-                    Retreat Location
+                    <Clock className="w-4 h-4" />
+                    Flexible Timing
                   </h4>
-                  <div className="text-slate-600 dark:text-slate-300 text-sm">
-                    <p>Mountain Sanctuary</p>
-                    <p>Blue Ridge, NC</p>
-                  </div>
+                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                    Sessions that work with your schedule and time zone
+                  </p>
                 </div>
               </div>
             </div>
@@ -398,27 +421,27 @@ const RelationalHealing = () => {
                 <span className="font-bold text-lg text-white">Calm Magic</span>
               </div>
               <p className="text-sm text-slate-400 mb-4">
-                Healing relationships and nurturing emotional creativity through structured frameworks for deep transformation and lasting connection.
+                Personal coaching using the Calm Magic framework to explore your inner life and create innovative, joyful relationships.
               </p>
             </div>
             
             <div>
-              <h3 className="font-semibold text-white mb-4">Healing Resources</h3>
+              <h3 className="font-semibold text-white mb-4">Coaching Services</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-sm hover:text-purple-600">Retreat Schedule</a></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Healing Practices</a></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Community Stories</a></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Integration Support</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Inner Life Exploration</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Creative Relationship Design</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Calm Magic Intensive</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Freedom Compass Tracking</a></li>
               </ul>
             </div>
             
             <div>
               <h3 className="font-semibold text-white mb-4">Connect</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-sm hover:text-purple-600">Join a Retreat</a></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Facilitator Training</a></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Healing Support</a></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Contact Us</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Book Discovery Call</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Coaching Community</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Resources</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Contact</a></li>
               </ul>
             </div>
           </div>
