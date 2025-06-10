@@ -501,5 +501,3 @@ const RelationalHealing = () => {
 };
 
 export default RelationalHealing;
-
-}
