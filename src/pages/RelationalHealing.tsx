@@ -1,9 +1,8 @@
-
 import { useEffect, useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
 import FeatureCard from "@/components/FeatureCard";
-import InnovationJournal from "@/components/InnovationJournal";
+import HealingJournal from "@/components/HealingJournal";
 import ContactSection from "@/components/ContactSection";
 import PartnerToolsSection from "@/components/PartnerToolsSection";
 import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
@@ -67,7 +66,7 @@ const RelationalHealing = () => {
       color: "from-rose-500 to-pink-600"
     },
     {
-      title: "Creative Relationship Design",
+      title: "Creative Relationship Design", 
       description: "Innovative approaches to building playful, meaningful connections through creative expression and conscious communication.",
       icon: Sparkles,
       color: "from-purple-500 to-indigo-600"
@@ -143,10 +142,18 @@ const RelationalHealing = () => {
             <br />
             Create Magical Relationships
           </h1>
-          <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-8">
+          <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-4">
             One-on-one coaching using the Calm Magic framework to help you navigate your emotional landscape, 
             develop innovative relationships, and track your freedom as you move through Love → Magic → Calm → Open.
           </p>
+          <div className="bg-gradient-to-r from-rose-100 to-purple-100 dark:from-rose-900/20 dark:to-purple-900/20 p-4 rounded-lg mb-8 max-w-2xl mx-auto">
+            <p className="text-base font-medium text-rose-800 dark:text-rose-200">
+              🎯 Designed specifically for <strong>Coaches, Community Builders, and Self-Discovery</strong>
+            </p>
+            <p className="text-sm text-rose-700 dark:text-rose-300 mt-1">
+              The Calm Magic Assistant is a specialized tool for those guiding others or exploring their own inner transformation.
+            </p>
+          </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               onClick={handleDiscoverFramework}
@@ -171,10 +178,16 @@ const RelationalHealing = () => {
       <section id="coaching" className="py-20 px-4">
         <div className="container max-w-6xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Personalized Coaching Approaches</h2>
-          <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
+          <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-8">
             Work one-on-one to explore your inner life and develop creative, innovative relationships 
             using the unique Calm Magic framework that tracks your evolution through the four forces.
           </p>
+          <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mb-16 max-w-3xl mx-auto text-center">
+            <p className="text-blue-800 dark:text-blue-200 font-medium">
+              Perfect for <strong>Coaches</strong> expanding their toolkit, <strong>Community Builders</strong> creating deeper connections, 
+              and individuals on a <strong>Self-Discovery</strong> journey.
+            </p>
+          </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {coachingApproaches.map((approach, index) => (
@@ -227,12 +240,19 @@ const RelationalHealing = () => {
       <section id="framework" className="py-20 px-4">
         <div className="container max-w-6xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">💫 Calm Magic Coaching Framework</h2>
-          <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
+          <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-8">
             A structured approach to personal transformation and relationship healing. Experience how we move from 
             "I want to change" to "here's exactly how I'm growing and why it creates lasting freedom."
           </p>
+          <div className="bg-amber-50 dark:bg-amber-900/20 p-4 rounded-lg mb-16 max-w-4xl mx-auto text-center">
+            <p className="text-amber-800 dark:text-amber-200 font-medium">
+              🧭 <strong>For Coaches:</strong> Add this framework to your practice. 
+              <strong> For Community Builders:</strong> Create deeper group connections. 
+              <strong> For Self-Discovery:</strong> Navigate your personal transformation journey.
+            </p>
+          </div>
           
-          <InnovationJournal />
+          <HealingJournal />
         </div>
       </section>
 
@@ -474,3 +494,5 @@ const RelationalHealing = () => {
 };
 
 export default RelationalHealing;
+
+</edits_to_apply>
