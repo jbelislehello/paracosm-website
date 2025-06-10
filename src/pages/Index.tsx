@@ -6,13 +6,13 @@ import FeatureCard from "@/components/FeatureCard";
 import EnhancedInnovationJournal from "@/components/EnhancedInnovationJournal";
 import ContactSection from "@/components/ContactSection";
 import PartnerToolsSection from "@/components/PartnerToolsSection";
-import ProductDevelopmentAssistant from "@/components/ProductDevelopmentAssistant";
+import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
 import { features } from "@/data/featureData";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from 'lucide-react';
 
 const Index = () => {
-  const [isProductAssistantOpen, setIsProductAssistantOpen] = useState(false);
+  const [isCalmMagicAssistantOpen, setIsCalmMagicAssistantOpen] = useState(false);
 
   useEffect(() => {
     // Set page title
@@ -20,12 +20,12 @@ const Index = () => {
   }, []);
 
   const handleStartJourney = () => {
-    // Open the Product Development assistant
-    setIsProductAssistantOpen(true);
+    // Open the Calm Magic assistant
+    setIsCalmMagicAssistantOpen(true);
   };
 
   const handleDiscoverFramework = () => {
-    setIsProductAssistantOpen(true);
+    setIsCalmMagicAssistantOpen(true);
   };
 
   return (
@@ -52,8 +52,8 @@ const Index = () => {
         </div>
       </header>
       
-      {/* Product Development Framework Assistant - Modal */}
-      <ProductDevelopmentAssistant onStartJourney={handleStartJourney} isOpen={isProductAssistantOpen} onOpenChange={setIsProductAssistantOpen} />
+      {/* Calm Magic Assistant - Draggable Window */}
+      <CalmMagicAssistant onStartJourney={handleStartJourney} isOpen={isCalmMagicAssistantOpen} onOpenChange={setIsCalmMagicAssistantOpen} />
       
       {/* Hero Section */}
       <HeroSection onDiscoverFramework={handleDiscoverFramework} />
