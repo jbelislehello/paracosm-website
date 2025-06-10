@@ -14,13 +14,14 @@ const RiverLandscape: React.FC<RiverLandscapeProps> = ({ emotionalState, onState
   const magicLevel = emotionalState.magic_level || 50;
 
   useEffect(() => {
-    // Initialize flow particles
+    // Initialize flow particles with safety checks
     const particles = Array.from({ length: Math.floor(magicLevel / 10) + 5 }, (_, i) => ({
       id: i,
       x: Math.random() * 400,
       y: 100 + Math.random() * 50,
       speed: 0.5 + (magicLevel / 100) * 2
-    }));
+    })).filter(particle => particle && typeof particle.x === 'number' && typeof particle.y === 'number');
+    
     setFlowParticles(particles);
 
     // Create emergence points based on magic level
@@ -29,7 +30,8 @@ const RiverLandscape: React.FC<RiverLandscapeProps> = ({ emotionalState, onState
         x: 100 + i * 120,
         y: 120 + Math.sin(i) * 30,
         intensity: magicLevel / 100
-      }));
+      })).filter(point => point && typeof point.x === 'number' && typeof point.y === 'number');
+      
       setEmergencePoints(points);
     }
   }, [magicLevel]);
@@ -38,10 +40,13 @@ const RiverLandscape: React.FC<RiverLandscapeProps> = ({ emotionalState, onState
     if (!isActive) return;
 
     const animateFlow = () => {
-      setFlowParticles(prev => prev.map(particle => ({
-        ...particle,
-        x: particle.x + particle.speed > 450 ? -50 : particle.x + particle.speed
-      })));
+      setFlowParticles(prev => prev
+        .filter(particle => particle && typeof particle.x === 'number' && typeof particle.speed === 'number')
+        .map(particle => ({
+          ...particle,
+          x: particle.x + particle.speed > 450 ? -50 : particle.x + particle.speed
+        }))
+      );
     };
 
     const interval = setInterval(animateFlow, 50);
@@ -53,8 +58,11 @@ const RiverLandscape: React.FC<RiverLandscapeProps> = ({ emotionalState, onState
     const newLevel = Math.min(100, magicLevel + 8);
     onStateChange({ ...emotionalState, magic_level: newLevel });
     
-    // Add new emergence point
-    setEmergencePoints(prev => [...prev.slice(-2), { x, y, intensity: newLevel / 100 }]);
+    // Add new emergence point with safety check
+    const newPoint = { x, y, intensity: newLevel / 100 };
+    if (typeof x === 'number' && typeof y === 'number') {
+      setEmergencePoints(prev => [...prev.slice(-2), newPoint]);
+    }
   };
 
   const handleFlowGesture = (direction: 'upstream' | 'downstream') => {
@@ -84,33 +92,39 @@ const RiverLandscape: React.FC<RiverLandscapeProps> = ({ emotionalState, onState
       />
 
       {/* Flow Particles (Strategic Intuition) */}
-      {flowParticles.map(particle => (
-        <div
-          key={particle.id}
-          className="absolute w-2 h-2 bg-blue-400 rounded-full opacity-70"
-          style={{
-            left: `${particle.x}px`,
-            top: `${particle.y}px`,
-            transition: 'all 0.05s linear'
-          }}
-        />
-      ))}
+      {flowParticles
+        .filter(particle => particle && typeof particle.x === 'number' && typeof particle.y === 'number')
+        .map(particle => (
+          <div
+            key={particle.id}
+            className="absolute w-2 h-2 bg-blue-400 rounded-full opacity-70"
+            style={{
+              left: `${particle.x}px`,
+              top: `${particle.y}px`,
+              transition: 'all 0.05s linear'
+            }}
+          />
+        ))
+      }
 
       {/* Emergence Points */}
-      {emergencePoints.map((point, index) => (
-        <div
-          key={index}
-          className="absolute animate-pulse"
-          style={{
-            left: `${point.x}px`,
-            top: `${point.y}px`,
-            width: `${20 + point.intensity * 30}px`,
-            height: `${20 + point.intensity * 30}px`,
-            background: `radial-gradient(circle, rgba(255, 255, 255, ${point.intensity * 0.8}) 0%, transparent 70%)`,
-            borderRadius: '50%'
-          }}
-        />
-      ))}
+      {emergencePoints
+        .filter(point => point && typeof point.x === 'number' && typeof point.y === 'number')
+        .map((point, index) => (
+          <div
+            key={index}
+            className="absolute animate-pulse"
+            style={{
+              left: `${point.x}px`,
+              top: `${point.y}px`,
+              width: `${20 + point.intensity * 30}px`,
+              height: `${20 + point.intensity * 30}px`,
+              background: `radial-gradient(circle, rgba(255, 255, 255, ${point.intensity * 0.8}) 0%, transparent 70%)`,
+              borderRadius: '50%'
+            }}
+          />
+        ))
+      }
 
       {/* Flow Direction Controls */}
       <div className="absolute bottom-4 left-4 flex gap-2">

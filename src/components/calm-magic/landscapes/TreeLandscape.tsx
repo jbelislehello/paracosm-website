@@ -24,6 +24,17 @@ const TreeLandscape: React.FC<TreeLandscapeProps> = ({ emotionalState, onStateCh
     onStateChange({ ...emotionalState, love_level: creativityBoost });
   };
 
+  // Generate leaves array with safety checks
+  const generateLeaves = () => {
+    const leafCount = Math.floor(loveLevel / 10) + 3;
+    return Array.from({ length: leafCount }, (_, index) => ({
+      id: index,
+      x: Math.sin(index * 0.5) * 60 - 15,
+      y: Math.cos(index * 0.3) * 40 + 20,
+      rotation: index * 45
+    })).filter(leaf => leaf && typeof leaf.x === 'number' && typeof leaf.y === 'number');
+  };
+
   return (
     <div className={`relative w-full h-96 overflow-hidden transition-all duration-1000 ${isActive ? 'opacity-100 scale-100' : 'opacity-50 scale-95'}`}>
       {/* Tree Trunk (Team Vitality) */}
@@ -75,18 +86,18 @@ const TreeLandscape: React.FC<TreeLandscapeProps> = ({ emotionalState, onStateCh
 
       {/* Tree Leaves (Creative Initiatives) */}
       <div className="absolute top-0 left-1/2 transform -translate-x-1/2">
-        {Array.from({ length: Math.floor(loveLevel / 10) + 3 }).map((_, index) => (
+        {generateLeaves().map((leaf, index) => (
           <div
-            key={index}
+            key={leaf.id}
             className="absolute cursor-pointer animate-pulse"
             style={{
               width: '30px',
               height: '20px',
               background: `hsl(${120 + (loveLevel / 100) * 40}, 70%, 50%)`,
               borderRadius: '50%',
-              left: `${Math.sin(index * 0.5) * 60 - 15}px`,
-              top: `${Math.cos(index * 0.3) * 40 + 20}px`,
-              transform: `rotate(${index * 45}deg)`,
+              left: `${leaf.x}px`,
+              top: `${leaf.y}px`,
+              transform: `rotate(${leaf.rotation}deg)`,
               transition: 'all 0.3s ease'
             }}
             onClick={(e) => handleLeafGesture(e.clientX, e.clientY)}
