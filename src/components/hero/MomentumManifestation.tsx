@@ -262,35 +262,43 @@ const MomentumManifestation: React.FC = () => {
     // Clear canvas
     ctx.clearRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
 
-    // Update totem positions (attraction to circles)
-    setTotems(prevTotems => 
-      prevTotems.map(totem => {
-        let closestCircle = circles[0];
-        let minDistance = Infinity;
-        
-        circles.forEach(circle => {
-          const distance = Math.sqrt(
-            Math.pow(totem.x - circle.x, 2) + Math.pow(totem.y - circle.y, 2)
-          );
-          if (distance < minDistance) {
-            minDistance = distance;
-            closestCircle = circle;
+    // Safety check: only update totem positions if we have circles
+    if (circles.length > 0) {
+      // Update totem positions (attraction to circles)
+      setTotems(prevTotems => 
+        prevTotems.map(totem => {
+          let closestCircle = circles[0];
+          let minDistance = Infinity;
+          
+          circles.forEach(circle => {
+            const distance = Math.sqrt(
+              Math.pow(totem.x - circle.x, 2) + Math.pow(totem.y - circle.y, 2)
+            );
+            if (distance < minDistance) {
+              minDistance = distance;
+              closestCircle = circle;
+            }
+          });
+          
+          // Safety check: ensure closestCircle exists before accessing properties
+          if (!closestCircle) {
+            return totem;
           }
-        });
-        
-        // Apply attraction force
-        const attractionForce = 0.02;
-        const dx = closestCircle.x - totem.x;
-        const dy = closestCircle.y - totem.y;
-        
-        return {
-          ...totem,
-          x: totem.x + dx * attractionForce,
-          y: totem.y + dy * attractionForce,
-          energy: Math.min(100, totem.energy + (userInfluence * 0.1))
-        };
-      })
-    );
+          
+          // Apply attraction force
+          const attractionForce = 0.02;
+          const dx = closestCircle.x - totem.x;
+          const dy = closestCircle.y - totem.y;
+          
+          return {
+            ...totem,
+            x: totem.x + dx * attractionForce,
+            y: totem.y + dy * attractionForce,
+            energy: Math.min(100, totem.energy + (userInfluence * 0.1))
+          };
+        })
+      );
+    }
 
     // Update user influence based on mouse position
     const mouseInfluence = Math.sin(Date.now() * 0.003) * 0.5 + 0.5;
