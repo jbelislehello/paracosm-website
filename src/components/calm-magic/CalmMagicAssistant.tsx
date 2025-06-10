@@ -2,10 +2,13 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Lightbulb, X, Minimize2, Maximize2, Brain, Network, TestTube, BarChart3, Move, MoreHorizontal } from 'lucide-react';
-import OOOGardenInterface from './OOOGardenInterface';
-import ExpansiveLeadershipLab from './ExpansiveLeadershipLab';
+import { X, Minimize2, Maximize2, Network, MoreHorizontal, ArrowLeft, ArrowRight } from 'lucide-react';
+import TreeLandscape from './landscapes/TreeLandscape';
+import RiverLandscape from './landscapes/RiverLandscape';
+import LakeLandscape from './landscapes/LakeLandscape';
+import ForestLandscape from './landscapes/ForestLandscape';
+import MountainLandscape from './landscapes/MountainLandscape';
+import SpiralNavigator from './navigation/SpiralNavigator';
 import CulturalUnitTests from './CulturalUnitTests';
 import LearningOrganizationDashboard from './LearningOrganizationDashboard';
 import OverviewTab from '@/components/product-development/OverviewTab';
@@ -28,7 +31,7 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
   
   // Window position and size state
   const [position, setPosition] = useState({ x: 100, y: 100 });
-  const [size, setSize] = useState({ width: 500, height: 600 });
+  const [size, setSize] = useState({ width: 600, height: 700 });
   
   // Drag state
   const [isDragging, setIsDragging] = useState(false);
@@ -39,7 +42,9 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
   const [resizeType, setResizeType] = useState<string>('');
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0 });
   
-  // OOO State Management
+  // Living Landscape Journey State
+  const [currentLandscape, setCurrentLandscape] = useState(0);
+  const [viewMode, setViewMode] = useState<'journey' | 'spiral' | 'tests' | 'learning' | 'overview'>('journey');
   const [emotionalState, setEmotionalState] = useState<Partial<EmotionalState>>({
     love_level: 50,
     magic_level: 50,
@@ -58,6 +63,31 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
       setInternalIsOpen(open);
     }
   };
+
+  // Landscape definitions for expressivity tool
+  const landscapes = [
+    { name: 'Tree', component: TreeLandscape, key: 'love', emoji: '🌳' },
+    { name: 'River', component: RiverLandscape, key: 'magic', emoji: '🌊' },
+    { name: 'Lake', component: LakeLandscape, key: 'calm', emoji: '🏞️' },
+    { name: 'Forest', component: ForestLandscape, key: 'open', emoji: '🌳' },
+    { name: 'Mountain', component: MountainLandscape, key: 'free', emoji: '⛰️' }
+  ];
+
+  const transformationStages = [
+    'Aliveness Anchoring',
+    'Spaciousness Opening', 
+    'Wholeness Reflecting',
+    'Poiesis Co-creating',
+    'Integration Transcending'
+  ];
+
+  const emotionalJourney = [
+    'Grounding in authentic values',
+    'Opening to flow and emergence',
+    'Finding center and coherence', 
+    'Engaging in creative collaboration',
+    'Achieving sovereign integration'
+  ];
 
   // Drag handlers
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
@@ -86,17 +116,17 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
       let newY = position.y;
       
       if (resizeType.includes('right')) {
-        newWidth = Math.max(400, Math.min(1000, resizeStart.width + deltaX));
+        newWidth = Math.max(500, Math.min(1200, resizeStart.width + deltaX));
       }
       if (resizeType.includes('left')) {
-        newWidth = Math.max(400, Math.min(1000, resizeStart.width - deltaX));
+        newWidth = Math.max(500, Math.min(1200, resizeStart.width - deltaX));
         newX = position.x + (resizeStart.width - newWidth);
       }
       if (resizeType.includes('bottom')) {
-        newHeight = Math.max(500, Math.min(800, resizeStart.height + deltaY));
+        newHeight = Math.max(600, Math.min(900, resizeStart.height + deltaY));
       }
       if (resizeType.includes('top')) {
-        newHeight = Math.max(500, Math.min(800, resizeStart.height - deltaY));
+        newHeight = Math.max(600, Math.min(900, resizeStart.height - deltaY));
         newY = position.y + (resizeStart.height - newHeight);
       }
       
@@ -138,12 +168,93 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
   const handleMaximize = () => {
     if (isMaximized) {
       setIsMaximized(false);
-      setSize({ width: 500, height: 600 });
+      setSize({ width: 600, height: 700 });
       setPosition({ x: 100, y: 100 });
     } else {
       setIsMaximized(true);
       setSize({ width: window.innerWidth - 40, height: window.innerHeight - 40 });
       setPosition({ x: 20, y: 20 });
+    }
+  };
+
+  const handleLandscapeNavigation = (direction: 'prev' | 'next') => {
+    if (direction === 'next' && currentLandscape < landscapes.length - 1) {
+      setCurrentLandscape(currentLandscape + 1);
+    } else if (direction === 'prev' && currentLandscape > 0) {
+      setCurrentLandscape(currentLandscape - 1);
+    }
+  };
+
+  const renderCurrentView = () => {
+    switch (viewMode) {
+      case 'journey':
+        const CurrentLandscapeComponent = landscapes[currentLandscape]?.component;
+        return (
+          <div className="space-y-4">
+            {/* Landscape Journey */}
+            <div className="relative">
+              {CurrentLandscapeComponent && (
+                <CurrentLandscapeComponent
+                  emotionalState={emotionalState}
+                  onStateChange={setEmotionalState}
+                  isActive={true}
+                />
+              )}
+              
+              {/* Navigation Controls */}
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
+                <Button
+                  onClick={() => handleLandscapeNavigation('prev')}
+                  disabled={currentLandscape === 0}
+                  size="sm"
+                  variant="outline"
+                >
+                  <ArrowLeft className="w-3 h-3" />
+                </Button>
+                <Badge variant="outline" className="px-3">
+                  {landscapes[currentLandscape]?.emoji} {landscapes[currentLandscape]?.name}
+                </Badge>
+                <Button
+                  onClick={() => handleLandscapeNavigation('next')}
+                  disabled={currentLandscape === landscapes.length - 1}
+                  size="sm"
+                  variant="outline"
+                >
+                  <ArrowRight className="w-3 h-3" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'spiral':
+        return (
+          <div className="space-y-4">
+            <SpiralNavigator
+              currentLandscape={currentLandscape}
+              onLandscapeChange={setCurrentLandscape}
+              transformationStages={transformationStages}
+              emotionalJourney={emotionalJourney}
+            />
+            <div className="text-center">
+              <Button onClick={() => setViewMode('journey')} variant="outline" size="sm">
+                Enter Landscape Journey
+              </Button>
+            </div>
+          </div>
+        );
+
+      case 'tests':
+        return <CulturalUnitTests />;
+
+      case 'learning':
+        return <LearningOrganizationDashboard />;
+
+      case 'overview':
+        return <OverviewTab onStartJourney={onStartJourney} />;
+
+      default:
+        return null;
     }
   };
 
@@ -177,7 +288,7 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
             {!isMinimized && (
               <CardTitle className="flex items-center gap-2 text-lg">
                 <Network className="w-5 h-5 text-purple-600" />
-                Object-Oriented Transformation Lab
+                Calm Magic: Expressivity Tool for Poiesis
               </CardTitle>
             )}
             <div className="flex gap-1">
@@ -208,63 +319,57 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
             </div>
           </div>
           {!isMinimized && (
-            <Badge variant="outline" className="w-fit">
-              Object-Oriented Ontology Interface
-            </Badge>
+            <div className="flex gap-2">
+              <Badge variant="outline">
+                Trajectories & Territories
+              </Badge>
+              <Badge variant="outline">
+                Natural Transformation
+              </Badge>
+            </div>
           )}
         </CardHeader>
 
         {!isMinimized && (
           <CardContent className="p-4 overflow-y-auto flex-1">
-            <Tabs defaultValue="gardens" className="w-full h-full flex flex-col">
-              <TabsList className="grid w-full grid-cols-5 mb-4">
-                <TabsTrigger value="gardens" className="flex items-center gap-1">
-                  <Brain className="w-3 h-3" />
-                  Gardens
-                </TabsTrigger>
-                <TabsTrigger value="compass" className="flex items-center gap-1">
-                  <Lightbulb className="w-3 h-3" />
-                  Compass
-                </TabsTrigger>
-                <TabsTrigger value="tests" className="flex items-center gap-1">
-                  <TestTube className="w-3 h-3" />
-                  Tests
-                </TabsTrigger>
-                <TabsTrigger value="learning" className="flex items-center gap-1">
-                  <BarChart3 className="w-3 h-3" />
-                  Learning
-                </TabsTrigger>
-                <TabsTrigger value="overview" className="flex items-center gap-1">
-                  <Move className="w-3 h-3" />
-                  Overview
-                </TabsTrigger>
-              </TabsList>
+            {/* View Mode Navigation */}
+            <div className="flex gap-2 mb-4 flex-wrap">
+              {[
+                { key: 'journey', label: '🌊 Journey', desc: 'Living Landscapes' },
+                { key: 'spiral', label: '🌀 Spiral', desc: 'Navigation' },
+                { key: 'tests', label: '🧪 Tests', desc: 'Cultural' },
+                { key: 'learning', label: '📊 Learning', desc: 'Organization' },
+                { key: 'overview', label: '🎯 Overview', desc: 'Framework' }
+              ].map(({ key, label, desc }) => (
+                <Button
+                  key={key}
+                  onClick={() => setViewMode(key as any)}
+                  variant={viewMode === key ? 'default' : 'outline'}
+                  size="sm"
+                  className="flex flex-col h-auto py-2"
+                >
+                  <div className="text-xs">{label}</div>
+                  <div className="text-xs opacity-70">{desc}</div>
+                </Button>
+              ))}
+            </div>
 
-              <div className="flex-1 overflow-y-auto">
-                <TabsContent value="gardens" className="space-y-4 mt-0">
-                  <OOOGardenInterface />
-                </TabsContent>
+            {/* Current View */}
+            <div className="flex-1">
+              {renderCurrentView()}
+            </div>
 
-                <TabsContent value="compass" className="space-y-4 mt-0">
-                  <ExpansiveLeadershipLab 
-                    emotionalState={emotionalState}
-                    onStateChange={setEmotionalState}
-                  />
-                </TabsContent>
-
-                <TabsContent value="tests" className="space-y-4 mt-0">
-                  <CulturalUnitTests />
-                </TabsContent>
-
-                <TabsContent value="learning" className="space-y-4 mt-0">
-                  <LearningOrganizationDashboard />
-                </TabsContent>
-
-                <TabsContent value="overview" className="space-y-4 mt-0">
-                  <OverviewTab onStartJourney={onStartJourney} />
-                </TabsContent>
+            {/* Poiesis Indicator */}
+            {Object.values(emotionalState).some(level => (level || 0) > 75) && (
+              <div className="mt-4 p-3 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950/30 dark:to-blue-950/30 rounded-lg border border-green-200 dark:border-green-800">
+                <div className="text-sm font-medium text-green-700 dark:text-green-300 mb-1">
+                  🌟 Poiesis Active
+                </div>
+                <div className="text-xs text-green-600 dark:text-green-400">
+                  Natural transformation emerging through expressivity
+                </div>
               </div>
-            </Tabs>
+            )}
           </CardContent>
         )}
 
@@ -314,3 +419,5 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
 };
 
 export default CalmMagicAssistant;
+
+</edits_to_apply>
