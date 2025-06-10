@@ -4,7 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Sparkles, X, Minimize2, Maximize2, Brain, Compass, BookOpen, ArrowRight, Users, Search, Lightbulb, FileText, Code, Handshake, Play, Settings, Target, Cog } from 'lucide-react';
+import { Sparkles, X, Minimize2, Maximize2, Target } from 'lucide-react';
+import OverviewTab from './product-development/OverviewTab';
+import ProcessTab from './product-development/ProcessTab';
+import BridgeTab from './product-development/BridgeTab';
 
 interface ProductDevelopmentAssistantProps {
   onStartJourney?: () => void;
@@ -28,66 +31,6 @@ const ProductDevelopmentAssistant: React.FC<ProductDevelopmentAssistantProps> = 
       setInternalIsOpen(open);
     }
   };
-
-  const productDevelopmentSteps = [
-    {
-      icon: <Users className="w-4 h-4" />,
-      name: 'Stakeholder Research',
-      phase: 'Understanding',
-      description: 'Understand who you\'re building for and why'
-    },
-    {
-      icon: <Search className="w-4 h-4" />,
-      name: 'Problem Analysis',
-      phase: 'Understanding',
-      description: 'Define the real problem worth solving'
-    },
-    {
-      icon: <Lightbulb className="w-4 h-4" />,
-      name: 'Diegetic Prototyping',
-      phase: 'Understanding',
-      description: 'Create interactive prototypes that demonstrate solutions'
-    },
-    {
-      icon: <FileText className="w-4 h-4" />,
-      name: 'Technical Requirements',
-      phase: 'Implementation',
-      description: 'Translate prototype insights into technical specifications'
-    },
-    {
-      icon: <Settings className="w-4 h-4" />,
-      name: 'Systems Intelligence',
-      phase: 'Implementation',
-      description: 'Design architecture that preserves user experience vision'
-    },
-    {
-      icon: <Handshake className="w-4 h-4" />,
-      name: 'Handover Ritual',
-      phase: 'Implementation',
-      description: 'Ensure developers understand the why behind requirements'
-    },
-    {
-      icon: <Code className="w-4 h-4" />,
-      name: 'Development',
-      phase: 'Implementation',
-      description: 'Build the solution with preserved intent'
-    }
-  ];
-
-  const bridgeElements = [
-    {
-      name: 'Diegetic Prototype',
-      description: 'Interactive prototypes that demonstrate user experience in context'
-    },
-    {
-      name: 'Systems Intelligence',
-      description: 'Technical specifications that preserve user experience vision'
-    },
-    {
-      name: 'Handover Ritual',
-      description: 'Ensure developers understand user motivations and experience goals'
-    }
-  ];
 
   if (!isOpen) {
     return null;
@@ -140,111 +83,15 @@ const ProductDevelopmentAssistant: React.FC<ProductDevelopmentAssistantProps> = 
               </TabsList>
 
               <TabsContent value="overview" className="space-y-4">
-                <div className="text-center space-y-3">
-                  <div className="text-2xl">🚀</div>
-                  <h3 className="font-semibold">Bridge Ideas to Products</h3>
-                  <p className="text-sm text-slate-600 dark:text-slate-300">
-                    A structured approach to bridge creative ideation with technical implementation. Transform "we should build something" into "here's exactly what to build and why it matters."
-                  </p>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Users className="w-4 h-4 text-blue-600" />
-                    <span>Understand stakeholders and their real needs</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Lightbulb className="w-4 h-4 text-purple-600" />
-                    <span>Create interactive prototypes that demonstrate solutions</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Code className="w-4 h-4 text-green-600" />
-                    <span>Preserve vision through technical implementation</span>
-                  </div>
-                </div>
-
-                <Button 
-                  onClick={onStartJourney} 
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600"
-                >
-                  Start Development Journey
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-
-                <div className="border-t pt-3 space-y-2">
-                  <h4 className="font-medium text-sm">Why Most Projects Fail</h4>
-                  <ul className="space-y-1 text-xs text-slate-600 dark:text-slate-300">
-                    <li>• Gap between "good idea" and "working product"</li>
-                    <li>• Vague requirements lead to technically correct but useless solutions</li>
-                    <li>• Developers don't understand user motivations</li>
-                    <li>• Original vision gets lost in technical implementation</li>
-                    <li>• No clear bridge between creative and technical phases</li>
-                  </ul>
-                </div>
+                <OverviewTab onStartJourney={onStartJourney} />
               </TabsContent>
 
               <TabsContent value="process" className="space-y-3">
-                <h3 className="font-semibold text-center">7-Step Development Process</h3>
-                
-                <div className="space-y-3">
-                  <div className="bg-blue-50 dark:bg-blue-950/30 p-3 rounded-lg">
-                    <h4 className="font-medium text-blue-800 dark:text-blue-200 text-sm mb-2">
-                      Phase 1: Understanding Context (Steps 1-3)
-                    </h4>
-                    {productDevelopmentSteps.slice(0, 3).map((step, index) => (
-                      <div key={index} className="flex items-center gap-2 text-xs text-blue-700 dark:text-blue-300 mb-1">
-                        {step.icon}
-                        <span>{index + 1}. {step.name}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="bg-purple-50 dark:bg-purple-950/30 p-3 rounded-lg">
-                    <h4 className="font-medium text-purple-800 dark:text-purple-200 text-sm mb-2">
-                      Phase 2: Creating Solutions (Steps 4-7)
-                    </h4>
-                    {productDevelopmentSteps.slice(3, 7).map((step, index) => (
-                      <div key={index} className="flex items-center gap-2 text-xs text-purple-700 dark:text-purple-300 mb-1">
-                        {step.icon}
-                        <span>{index + 4}. {step.name}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-green-50 dark:bg-green-950/30 p-3 rounded-lg">
-                  <h4 className="font-medium text-green-800 dark:text-green-200 text-sm">Outcome</h4>
-                  <p className="text-xs text-green-700 dark:text-green-300">
-                    Working products that solve real problems, with development teams 
-                    who understand not just what to build, but why it matters to users.
-                  </p>
-                </div>
+                <ProcessTab />
               </TabsContent>
 
               <TabsContent value="bridge" className="space-y-3">
-                <h3 className="font-semibold text-center">Bridge Elements</h3>
-                
-                {bridgeElements.map((element, index) => (
-                  <div key={index} className="p-3 rounded-lg border bg-slate-50 dark:bg-slate-800/50">
-                    <h4 className="font-medium text-sm text-slate-800 dark:text-slate-200">
-                      {element.name}
-                    </h4>
-                    <p className="text-xs text-slate-600 dark:text-slate-300 mt-1">
-                      {element.description}
-                    </p>
-                  </div>
-                ))}
-
-                <div className="bg-amber-50 dark:bg-amber-950/30 p-3 rounded-lg">
-                  <h4 className="font-medium text-amber-800 dark:text-amber-200 text-sm">
-                    Concept to Product
-                  </h4>
-                  <p className="text-xs text-amber-700 dark:text-amber-300">
-                    This framework ensures that innovative concepts successfully transition 
-                    into working products without losing their essential user value 
-                    and problem-solving power during development.
-                  </p>
-                </div>
+                <BridgeTab />
               </TabsContent>
             </Tabs>
           </CardContent>
