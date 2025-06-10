@@ -3,10 +3,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Lightbulb, X, Minimize2, Maximize2, Brain, Compass, BookOpen, ArrowRight, ChevronLeft, ChevronRight, Heart, Search, Users, Code, Handshake, Move, MoreHorizontal, BarChart3, Workflow } from 'lucide-react';
+import { Lightbulb, X, Minimize2, Maximize2, Brain, Network, TestTube, BarChart3, Move, MoreHorizontal } from 'lucide-react';
+import OOOGardenInterface from './OOOGardenInterface';
+import ExpansiveLeadershipLab from './ExpansiveLeadershipLab';
+import CulturalUnitTests from './CulturalUnitTests';
+import LearningOrganizationDashboard from './LearningOrganizationDashboard';
 import OverviewTab from '@/components/product-development/OverviewTab';
-import ProcessTab from '@/components/product-development/ProcessTab';
-import BridgeTab from '@/components/product-development/BridgeTab';
+import { EmotionalState } from '@/types/journal';
 
 interface CalmMagicAssistantProps {
   onStartJourney?: () => void;
@@ -25,7 +28,7 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
   
   // Window position and size state
   const [position, setPosition] = useState({ x: 100, y: 100 });
-  const [size, setSize] = useState({ width: 400, height: 400 });
+  const [size, setSize] = useState({ width: 500, height: 600 });
   
   // Drag state
   const [isDragging, setIsDragging] = useState(false);
@@ -35,6 +38,15 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
   const [isResizing, setIsResizing] = useState(false);
   const [resizeType, setResizeType] = useState<string>('');
   const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  
+  // OOO State Management
+  const [emotionalState, setEmotionalState] = useState<Partial<EmotionalState>>({
+    love_level: 50,
+    magic_level: 50,
+    calm_level: 50,
+    open_level: 50,
+    free_level: 50
+  });
   
   const windowRef = useRef<HTMLDivElement>(null);
   
@@ -74,17 +86,17 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
       let newY = position.y;
       
       if (resizeType.includes('right')) {
-        newWidth = Math.max(300, Math.min(800, resizeStart.width + deltaX));
+        newWidth = Math.max(400, Math.min(1000, resizeStart.width + deltaX));
       }
       if (resizeType.includes('left')) {
-        newWidth = Math.max(300, Math.min(800, resizeStart.width - deltaX));
+        newWidth = Math.max(400, Math.min(1000, resizeStart.width - deltaX));
         newX = position.x + (resizeStart.width - newWidth);
       }
       if (resizeType.includes('bottom')) {
-        newHeight = Math.max(300, Math.min(600, resizeStart.height + deltaY));
+        newHeight = Math.max(500, Math.min(800, resizeStart.height + deltaY));
       }
       if (resizeType.includes('top')) {
-        newHeight = Math.max(300, Math.min(600, resizeStart.height - deltaY));
+        newHeight = Math.max(500, Math.min(800, resizeStart.height - deltaY));
         newY = position.y + (resizeStart.height - newHeight);
       }
       
@@ -126,7 +138,7 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
   const handleMaximize = () => {
     if (isMaximized) {
       setIsMaximized(false);
-      setSize({ width: 400, height: 400 });
+      setSize({ width: 500, height: 600 });
       setPosition({ x: 100, y: 100 });
     } else {
       setIsMaximized(true);
@@ -155,17 +167,17 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
       style={windowStyle}
       className="select-none"
     >
-      <Card className="h-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-2 border-gradient-to-b from-blue-500 to-purple-500 shadow-2xl rounded-xl overflow-hidden flex flex-col">
+      <Card className="h-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-2 border-gradient-to-b from-purple-500 to-blue-500 shadow-2xl rounded-xl overflow-hidden flex flex-col">
         {/* Window Header */}
         <CardHeader 
-          className="pb-2 cursor-grab active:cursor-grabbing bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 border-b"
+          className="pb-2 cursor-grab active:cursor-grabbing bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 border-b"
           onMouseDown={handleMouseDown}
         >
           <div className="flex items-center justify-between">
             {!isMinimized && (
               <CardTitle className="flex items-center gap-2 text-lg">
-                <Lightbulb className="w-5 h-5 text-blue-600" />
-                Imagineering to Engineering
+                <Network className="w-5 h-5 text-purple-600" />
+                Object-Oriented Transformation Lab
               </CardTitle>
             )}
             <div className="flex gap-1">
@@ -173,7 +185,7 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
                 variant="ghost" 
                 size="sm" 
                 onClick={() => setIsMinimized(!isMinimized)} 
-                className="h-8 w-8 p-0 hover:bg-blue-100 dark:hover:bg-blue-900/30"
+                className="h-8 w-8 p-0 hover:bg-purple-100 dark:hover:bg-purple-900/30"
               >
                 {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
               </Button>
@@ -181,7 +193,7 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
                 variant="ghost" 
                 size="sm" 
                 onClick={handleMaximize} 
-                className="h-8 w-8 p-0 hover:bg-blue-100 dark:hover:bg-blue-900/30"
+                className="h-8 w-8 p-0 hover:bg-purple-100 dark:hover:bg-purple-900/30"
               >
                 <MoreHorizontal className="w-4 h-4" />
               </Button>
@@ -197,40 +209,59 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
           </div>
           {!isMinimized && (
             <Badge variant="outline" className="w-fit">
-              Product Development Framework
+              Object-Oriented Ontology Interface
             </Badge>
           )}
         </CardHeader>
 
         {!isMinimized && (
           <CardContent className="p-4 overflow-y-auto flex-1">
-            <Tabs defaultValue="overview" className="w-full h-full flex flex-col">
-              <TabsList className="grid w-full grid-cols-3 mb-4">
-                <TabsTrigger value="overview" className="flex items-center gap-2">
-                  <BarChart3 className="w-4 h-4" />
+            <Tabs defaultValue="gardens" className="w-full h-full flex flex-col">
+              <TabsList className="grid w-full grid-cols-5 mb-4">
+                <TabsTrigger value="gardens" className="flex items-center gap-1">
+                  <Brain className="w-3 h-3" />
+                  Gardens
+                </TabsTrigger>
+                <TabsTrigger value="compass" className="flex items-center gap-1">
+                  <Lightbulb className="w-3 h-3" />
+                  Compass
+                </TabsTrigger>
+                <TabsTrigger value="tests" className="flex items-center gap-1">
+                  <TestTube className="w-3 h-3" />
+                  Tests
+                </TabsTrigger>
+                <TabsTrigger value="learning" className="flex items-center gap-1">
+                  <BarChart3 className="w-3 h-3" />
+                  Learning
+                </TabsTrigger>
+                <TabsTrigger value="overview" className="flex items-center gap-1">
+                  <Move className="w-3 h-3" />
                   Overview
-                </TabsTrigger>
-                <TabsTrigger value="innovation" className="flex items-center gap-2">
-                  <Workflow className="w-4 h-4" />
-                  Innovation
-                </TabsTrigger>
-                <TabsTrigger value="quality" className="flex items-center gap-2">
-                  <Lightbulb className="w-4 h-4" />
-                  Quality
                 </TabsTrigger>
               </TabsList>
 
               <div className="flex-1 overflow-y-auto">
+                <TabsContent value="gardens" className="space-y-4 mt-0">
+                  <OOOGardenInterface />
+                </TabsContent>
+
+                <TabsContent value="compass" className="space-y-4 mt-0">
+                  <ExpansiveLeadershipLab 
+                    emotionalState={emotionalState}
+                    onStateChange={setEmotionalState}
+                  />
+                </TabsContent>
+
+                <TabsContent value="tests" className="space-y-4 mt-0">
+                  <CulturalUnitTests />
+                </TabsContent>
+
+                <TabsContent value="learning" className="space-y-4 mt-0">
+                  <LearningOrganizationDashboard />
+                </TabsContent>
+
                 <TabsContent value="overview" className="space-y-4 mt-0">
                   <OverviewTab onStartJourney={onStartJourney} />
-                </TabsContent>
-
-                <TabsContent value="innovation" className="space-y-3 mt-0">
-                  <ProcessTab />
-                </TabsContent>
-
-                <TabsContent value="quality" className="space-y-3 mt-0">
-                  <BridgeTab />
                 </TabsContent>
               </div>
             </Tabs>
