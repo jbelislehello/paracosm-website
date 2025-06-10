@@ -8,8 +8,10 @@ import WindowControls from './WindowControls';
 interface AssistantHeaderProps {
   isMinimized: boolean;
   isMaximized: boolean;
+  isFullScreen: boolean;
   onMinimize: () => void;
   onMaximize: () => void;
+  onFullScreen: () => void;
   onClose: () => void;
   onMouseDown: (e: React.MouseEvent) => void;
 }
@@ -17,15 +19,17 @@ interface AssistantHeaderProps {
 const AssistantHeader: React.FC<AssistantHeaderProps> = ({
   isMinimized,
   isMaximized,
+  isFullScreen,
   onMinimize,
   onMaximize,
+  onFullScreen,
   onClose,
   onMouseDown
 }) => {
   return (
     <CardHeader 
-      className="pb-2 cursor-grab active:cursor-grabbing bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 border-b"
-      onMouseDown={onMouseDown}
+      className={`pb-2 ${!isFullScreen ? 'cursor-grab active:cursor-grabbing' : ''} bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30 border-b`}
+      onMouseDown={!isFullScreen ? onMouseDown : undefined}
     >
       <div className="flex items-center justify-between">
         {!isMinimized && (
@@ -37,8 +41,10 @@ const AssistantHeader: React.FC<AssistantHeaderProps> = ({
         <WindowControls
           isMinimized={isMinimized}
           isMaximized={isMaximized}
+          isFullScreen={isFullScreen}
           onMinimize={onMinimize}
           onMaximize={onMaximize}
+          onFullScreen={onFullScreen}
           onClose={onClose}
         />
       </div>

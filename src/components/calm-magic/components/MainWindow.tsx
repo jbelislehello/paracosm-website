@@ -13,6 +13,7 @@ interface MainWindowProps {
   windowStyle: React.CSSProperties;
   isMinimized: boolean;
   isMaximized: boolean;
+  isFullScreen: boolean;
   viewMode: ViewMode;
   currentLandscape: number;
   emotionalState: Partial<EmotionalState>;
@@ -20,6 +21,7 @@ interface MainWindowProps {
   emotionalJourney: string[];
   onMinimize: () => void;
   onMaximize: () => void;
+  onFullScreen: () => void;
   onClose: () => void;
   onMouseDown: (e: React.MouseEvent) => void;
   onViewModeChange: (mode: ViewMode) => void;
@@ -33,6 +35,7 @@ const MainWindow: React.FC<MainWindowProps> = ({
   windowStyle,
   isMinimized,
   isMaximized,
+  isFullScreen,
   viewMode,
   currentLandscape,
   emotionalState,
@@ -40,6 +43,7 @@ const MainWindow: React.FC<MainWindowProps> = ({
   emotionalJourney,
   onMinimize,
   onMaximize,
+  onFullScreen,
   onClose,
   onMouseDown,
   onViewModeChange,
@@ -48,14 +52,20 @@ const MainWindow: React.FC<MainWindowProps> = ({
   onStartJourney,
   handleResizeStart
 }) => {
+  const cardClassName = isFullScreen 
+    ? "h-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-0 shadow-none rounded-none overflow-hidden flex flex-col"
+    : "h-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-2 border-gradient-to-b from-purple-500 to-blue-500 shadow-2xl rounded-xl overflow-hidden flex flex-col";
+
   return (
-    <div style={windowStyle} className="select-none">
-      <Card className="h-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-2 border-gradient-to-b from-purple-500 to-blue-500 shadow-2xl rounded-xl overflow-hidden flex flex-col">
+    <div style={windowStyle} className="select-none transition-all duration-300">
+      <Card className={cardClassName}>
         <AssistantHeader
           isMinimized={isMinimized}
           isMaximized={isMaximized}
+          isFullScreen={isFullScreen}
           onMinimize={onMinimize}
           onMaximize={onMaximize}
+          onFullScreen={onFullScreen}
           onClose={onClose}
           onMouseDown={onMouseDown}
         />
@@ -85,8 +95,8 @@ const MainWindow: React.FC<MainWindowProps> = ({
           </CardContent>
         )}
 
-        {/* Resize Handles */}
-        {!isMinimized && !isMaximized && (
+        {/* Resize Handles - Hidden in full screen */}
+        {!isMinimized && !isMaximized && !isFullScreen && (
           <>
             {/* Corner handles */}
             <div 

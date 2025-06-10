@@ -24,9 +24,11 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
     size,
     isDragging,
     isMaximized,
+    isFullScreen,
     handleMouseDown,
     handleResizeStart,
-    handleMaximize
+    handleMaximize,
+    handleFullScreen
   } = useWindowControls();
   
   // State management
@@ -75,7 +77,7 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
     top: position.y,
     width: size.width,
     height: size.height,
-    zIndex: 50,
+    zIndex: isFullScreen ? 100 : 50,
     cursor: isDragging ? 'grabbing' : 'default'
   };
 
@@ -85,6 +87,7 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
         windowStyle={windowStyle}
         isMinimized={isMinimized}
         isMaximized={isMaximized}
+        isFullScreen={isFullScreen}
         viewMode={viewMode}
         currentLandscape={currentLandscape}
         emotionalState={emotionalState}
@@ -92,6 +95,7 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
         emotionalJourney={emotionalJourney}
         onMinimize={() => setIsMinimized(!isMinimized)}
         onMaximize={handleMaximize}
+        onFullScreen={handleFullScreen}
         onClose={() => setIsOpen(false)}
         onMouseDown={handleMouseDown}
         onViewModeChange={setViewMode}
