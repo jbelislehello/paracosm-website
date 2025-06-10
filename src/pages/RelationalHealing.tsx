@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
@@ -14,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Heart, Users, Sparkles, Calendar, Palette, Music, BookOpen, MapPin, Clock, Video, ArrowRight, ExternalLink } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const RelationalHealing = () => {
   const [isCalmMagicOpen, setIsCalmMagicOpen] = useState(false);
@@ -622,7 +622,7 @@ const RelationalHealing = () => {
             <div className="flex space-x-4 mt-4 md:mt-0">
               <a href="#" className="text-slate-400 hover:text-white">Instagram</a>
               <a href="#" className="text-slate-400 hover:text-white">YouTube</a>
-              <a href="#" className="text-slate-400 hover:text-white">Community</a>
+              <Link to="/" className="text-slate-400 hover:text-white">Product Development</Link>
             </div>
           </div>
         </div>
@@ -632,3 +632,5 @@ const RelationalHealing = () => {
 };
 
 export default RelationalHealing;
+
+</edits_to_apply>
