@@ -8,6 +8,7 @@ import PartnerToolsSection from "@/components/PartnerToolsSection";
 import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
 import CalmMagicCompass from "@/components/calm-magic/CalmMagicCompass";
 import CoachingServices from "@/components/calm-magic/CoachingServices";
+import MomentumManifestation from "@/components/hero/MomentumManifestation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -134,7 +135,7 @@ const RelationalHealing = () => {
         onOpenChange={setIsCalmMagicOpen}
       />
       
-      {/* Hero Section */}
+      {/* Hero Section with Momentum Manifestation */}
       <section className="min-h-screen flex items-center justify-center px-4 pt-20">
         <div className="container max-w-6xl mx-auto text-center">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-rose-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
@@ -146,6 +147,12 @@ const RelationalHealing = () => {
             One-on-one coaching using the Calm Magic framework to help you navigate your emotional landscape, 
             develop innovative relationships, and track your freedom as you move through Love → Magic → Calm → Open.
           </p>
+          
+          {/* Momentum Manifestation Animation */}
+          <div className="mb-8">
+            <MomentumManifestation />
+          </div>
+          
           <div className="bg-gradient-to-r from-rose-100 to-purple-100 dark:from-rose-900/20 dark:to-purple-900/20 p-4 rounded-lg mb-8 max-w-2xl mx-auto">
             <p className="text-base font-medium text-rose-800 dark:text-rose-200">
               🎯 Designed specifically for <strong>Coaches, Community Builders, and Self-Discovery</strong>
@@ -494,3 +501,5 @@ const RelationalHealing = () => {
 };
 
 export default RelationalHealing;
+
+}

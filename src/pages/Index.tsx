@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
 import FeatureCard from "@/components/FeatureCard";
-import InnovationJournal from "@/components/InnovationJournal";
+import EnhancedInnovationJournal from "@/components/EnhancedInnovationJournal";
 import ContactSection from "@/components/ContactSection";
 import PartnerToolsSection from "@/components/PartnerToolsSection";
 import ProductDevelopmentAssistant from "@/components/ProductDevelopmentAssistant";
@@ -86,15 +86,20 @@ const Index = () => {
         </div>
       </section>
       
-      {/* Product Development Framework */}
+      {/* Enhanced Product Development Framework */}
       <section id="framework" className="py-20 px-4">
         <div className="container max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">🚀 Product Development Framework</h2>
-          <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
-            A structured approach that bridges creative ideation with technical implementation. Transform "we should build something" into "here's exactly what to build and why it matters."
-          </p>
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">
+              🚀 Next-Level Product Development
+            </h2>
+            <p className="text-slate-600 dark:text-slate-300 max-w-3xl mx-auto text-lg">
+              A revolutionary framework that bridges creative ideation with technical implementation. 
+              Transform "we should build something" into "here's exactly what to build and why it matters."
+            </p>
+          </div>
           
-          <InnovationJournal />
+          <EnhancedInnovationJournal />
         </div>
       </section>
       
