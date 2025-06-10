@@ -7,7 +7,9 @@ interface PoiesisIndicatorProps {
 }
 
 const PoiesisIndicator: React.FC<PoiesisIndicatorProps> = ({ emotionalState }) => {
-  const isPoiesisActive = Object.values(emotionalState).some(level => (level || 0) > 75);
+  const isPoiesisActive = Object.values(emotionalState).some(level => 
+    typeof level === 'number' && level > 75
+  );
 
   if (!isPoiesisActive) return null;
 

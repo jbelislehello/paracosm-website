@@ -105,7 +105,7 @@ const LakeLandscape: React.FC<LakeLandscapeProps> = ({ emotionalState, onStateCh
             width: `${ripple.radius * 2}px`,
             height: `${ripple.radius * 2 * 0.6}px`,
             opacity: ripple.opacity,
-            borderOpacity: ripple.opacity
+            borderColor: `rgba(147, 197, 253, ${ripple.opacity})`
           }}
         />
       ))}

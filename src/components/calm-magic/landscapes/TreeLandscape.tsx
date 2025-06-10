@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { EmotionalState } from '@/types/journal';
 
 interface TreeLandscapeProps {
@@ -78,7 +78,7 @@ const TreeLandscape: React.FC<TreeLandscapeProps> = ({ emotionalState, onStateCh
         {Array.from({ length: Math.floor(loveLevel / 10) + 3 }).map((_, index) => (
           <div
             key={index}
-            className="absolute cursor-pointer"
+            className="absolute cursor-pointer animate-pulse"
             style={{
               width: '30px',
               height: '20px',
@@ -87,8 +87,7 @@ const TreeLandscape: React.FC<TreeLandscapeProps> = ({ emotionalState, onStateCh
               left: `${Math.sin(index * 0.5) * 60 - 15}px`,
               top: `${Math.cos(index * 0.3) * 40 + 20}px`,
               transform: `rotate(${index * 45}deg)`,
-              transition: 'all 0.3s ease',
-              animation: `sway 3s ease-in-out infinite ${index * 0.2}s`
+              transition: 'all 0.3s ease'
             }}
             onClick={(e) => handleLeafGesture(e.clientX, e.clientY)}
             onMouseEnter={() => setHoveredElement(`leaf-${index}`)}
@@ -109,13 +108,6 @@ const TreeLandscape: React.FC<TreeLandscapeProps> = ({ emotionalState, onStateCh
           🌟 Poiesis Active
         </div>
       )}
-
-      <style jsx>{`
-        @keyframes sway {
-          0%, 100% { transform: translateX(0) rotate(var(--rotation)); }
-          50% { transform: translateX(5px) rotate(calc(var(--rotation) + 5deg)); }
-        }
-      `}</style>
     </div>
   );
 };

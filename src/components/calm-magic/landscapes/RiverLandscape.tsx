@@ -40,8 +40,7 @@ const RiverLandscape: React.FC<RiverLandscapeProps> = ({ emotionalState, onState
     const animateFlow = () => {
       setFlowParticles(prev => prev.map(particle => ({
         ...particle,
-        x: particle.x + particle.speed,
-        x: particle.x > 450 ? -50 : particle.x
+        x: particle.x + particle.speed > 450 ? -50 : particle.x + particle.speed
       })));
     };
 
@@ -101,15 +100,14 @@ const RiverLandscape: React.FC<RiverLandscapeProps> = ({ emotionalState, onState
       {emergencePoints.map((point, index) => (
         <div
           key={index}
-          className="absolute"
+          className="absolute animate-pulse"
           style={{
             left: `${point.x}px`,
             top: `${point.y}px`,
             width: `${20 + point.intensity * 30}px`,
             height: `${20 + point.intensity * 30}px`,
             background: `radial-gradient(circle, rgba(255, 255, 255, ${point.intensity * 0.8}) 0%, transparent 70%)`,
-            borderRadius: '50%',
-            animation: `ripple 2s ease-out infinite ${index * 0.5}s`
+            borderRadius: '50%'
           }}
         />
       ))}
@@ -141,13 +139,6 @@ const RiverLandscape: React.FC<RiverLandscapeProps> = ({ emotionalState, onState
           🌊 Flow State Active
         </div>
       )}
-
-      <style jsx>{`
-        @keyframes ripple {
-          0% { transform: scale(0.5); opacity: 1; }
-          100% { transform: scale(2); opacity: 0; }
-        }
-      `}</style>
     </div>
   );
 };
