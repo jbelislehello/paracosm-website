@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
@@ -104,28 +103,28 @@ const Index = () => {
                 <h3 className="text-xl font-bold">Calm Magic Assistant</h3>
               </div>
               <p className="text-slate-600 dark:text-slate-300 mb-4">
-                An interactive tool for teams to explore different development approaches through visual landscapes. 
-                Navigate between team dynamics, creative flow, balanced planning, collaborative space, and independent execution.
+                An integrated tool for personal and professional growth that develops your innovation leadership capacity
+                through interactive emotional landscapes. Navigate your journey from self-awareness to team transformation.
               </p>
               <div className="space-y-2 mb-4">
                 <div className="text-sm text-slate-500 dark:text-slate-400">
-                  • <strong>Team Dynamics:</strong> Explore how love and connection drive project success
+                  • <strong>Personal Development:</strong> Explore how authentic connection enhances creativity
                 </div>
                 <div className="text-sm text-slate-500 dark:text-slate-400">
-                  • <strong>Creative Flow:</strong> Discover how magic and innovation emerge in development
+                  • <strong>Professional Growth:</strong> Develop leadership competencies through interactive landscapes
                 </div>
                 <div className="text-sm text-slate-500 dark:text-slate-400">
-                  • <strong>Balanced Planning:</strong> Find calm and centered approaches to project management
+                  • <strong>Coherence Building:</strong> Align your inner development with external leadership capacity
                 </div>
                 <div className="text-sm text-slate-500 dark:text-slate-400">
-                  • <strong>Open Collaboration:</strong> Create inclusive spaces for all team members
+                  • <strong>Innovation Leadership:</strong> Cultivate the skills needed to lead creative teams
                 </div>
               </div>
               <Button 
                 onClick={handleDiscoverFramework}
                 className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600"
               >
-                Open Team Development Tool
+                Open Innovation Leadership Tool
               </Button>
             </div>
 

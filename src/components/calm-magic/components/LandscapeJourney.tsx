@@ -8,6 +8,10 @@ import RiverLandscape from '../landscapes/RiverLandscape';
 import LakeLandscape from '../landscapes/LakeLandscape';
 import ForestLandscape from '../landscapes/ForestLandscape';
 import MountainLandscape from '../landscapes/MountainLandscape';
+import ModeSwitcher from './ModeSwitcher';
+import CompetencyMapping from './CompetencyMapping';
+import CoherenceTracker from './CoherenceTracker';
+import { useMode } from '../context/ModeContext';
 import { EmotionalState } from '@/types/journal';
 
 interface LandscapeJourneyProps {
@@ -23,12 +27,49 @@ const LandscapeJourney: React.FC<LandscapeJourneyProps> = ({
   onLandscapeChange,
   onStateChange
 }) => {
+  const { mode } = useMode();
+  
   const landscapes = [
-    { name: 'Tree', component: TreeLandscape, key: 'love', emoji: '🌳' },
-    { name: 'River', component: RiverLandscape, key: 'magic', emoji: '🌊' },
-    { name: 'Lake', component: LakeLandscape, key: 'calm', emoji: '🏞️' },
-    { name: 'Forest', component: ForestLandscape, key: 'open', emoji: '🌳' },
-    { name: 'Mountain', component: MountainLandscape, key: 'free', emoji: '⛰️' }
+    { 
+      name: 'Tree', 
+      component: TreeLandscape, 
+      key: 'love',
+      emoji: '🌳',
+      personal: 'Love & Connection',
+      professional: 'Authentic Leadership' 
+    },
+    { 
+      name: 'River', 
+      component: RiverLandscape, 
+      key: 'magic', 
+      emoji: '🌊',
+      personal: 'Creative Flow',
+      professional: 'Intuitive Innovation'
+    },
+    { 
+      name: 'Lake', 
+      component: LakeLandscape, 
+      key: 'calm', 
+      emoji: '🏞️',
+      personal: 'Calm & Wholeness',
+      professional: 'Systems Thinking'
+    },
+    { 
+      name: 'Forest', 
+      component: ForestLandscape, 
+      key: 'open', 
+      emoji: '🌳',
+      personal: 'Openness & Play',
+      professional: 'Collaborative Co-Creation'
+    },
+    { 
+      name: 'Mountain', 
+      component: MountainLandscape, 
+      key: 'free', 
+      emoji: '⛰️',
+      personal: 'Freedom & Integration',
+      professional: 'Visionary Leadership'
+    }
   ];
 
   const handleLandscapeNavigation = (direction: 'prev' | 'next') => {
@@ -40,9 +81,25 @@ const LandscapeJourney: React.FC<LandscapeJourneyProps> = ({
   };
 
   const CurrentLandscapeComponent = landscapes[currentLandscape]?.component;
+  const currentLandscapeType = landscapes[currentLandscape]?.name.toLowerCase() as 
+    'tree' | 'river' | 'lake' | 'forest' | 'mountain';
 
   return (
     <div className="space-y-4">
+      {/* Mode Switcher */}
+      <ModeSwitcher />
+      
+      {/* Current Landscape Context */}
+      <div className="text-center mb-2">
+        <Badge variant="outline" className="mb-2 px-4">
+          {mode === 'personal' 
+            ? landscapes[currentLandscape]?.personal
+            : landscapes[currentLandscape]?.professional
+          }
+        </Badge>
+      </div>
+      
+      {/* Current Landscape */}
       <div className="relative">
         {CurrentLandscapeComponent && (
           <CurrentLandscapeComponent
@@ -75,6 +132,12 @@ const LandscapeJourney: React.FC<LandscapeJourneyProps> = ({
           </Button>
         </div>
       </div>
+      
+      {/* Professional Leadership Competency Mapping */}
+      <CompetencyMapping landscapeType={currentLandscapeType} />
+      
+      {/* Coherence Tracker */}
+      <CoherenceTracker emotionalState={emotionalState} />
     </div>
   );
 };
