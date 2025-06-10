@@ -44,7 +44,7 @@ const ProductDevelopmentAssistant: React.FC<ProductDevelopmentAssistantProps> = 
             {!isMinimized && (
               <CardTitle className="flex items-center gap-2 text-lg">
                 <Lightbulb className="w-5 h-5 text-blue-600" />
-                Product Development Framework
+                Imagineering to Engineering
               </CardTitle>
             )}
             <div className="flex gap-1">
@@ -68,7 +68,7 @@ const ProductDevelopmentAssistant: React.FC<ProductDevelopmentAssistantProps> = 
           </div>
           {!isMinimized && (
             <Badge variant="outline" className="w-fit">
-              Imagineering to Engineering Framework
+              Product Development Framework
             </Badge>
           )}
         </CardHeader>

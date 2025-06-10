@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Lightbulb, FileText, Code, ArrowRight, Zap, Brain, Compass } from 'lucide-react';
@@ -12,7 +11,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ onStartJourney }) => {
     <div className="space-y-4">
       <div className="text-center space-y-3">
         <div className="text-2xl">🚀✨</div>
-        <h3 className="font-semibold text-lg">Imagineering to Engineering: 7-Step Product Development Process</h3>
+        <h3 className="font-semibold text-lg">Imagineering to Engineering</h3>
         <p className="text-sm text-slate-600 dark:text-slate-300">
           A structured framework that bridges creative ideation with technical implementation. 
           Transform "wouldn't it be cool if..." into "here's the working solution that people actually use."

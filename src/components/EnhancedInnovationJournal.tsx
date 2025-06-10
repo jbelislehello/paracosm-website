@@ -144,7 +144,7 @@ const EnhancedInnovationJournal = () => {
             </div>
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-white to-slate-300 dark:from-slate-900 dark:to-slate-600 bg-clip-text text-transparent">
-                Product Development Framework
+                Imagineering to Engineering
               </h1>
               <p className="text-slate-300 dark:text-slate-600 text-lg">
                 Transform ideas into reality with structured precision
