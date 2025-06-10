@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 
-type ViewMode = 'journey' | 'spiral' | 'tests' | 'learning' | 'overview';
+type ViewMode = 'journey' | 'spiral' | 'tests' | 'learning' | 'overview' | 'tools';
 
 interface ViewModeNavigationProps {
   viewMode: ViewMode;
@@ -18,7 +18,8 @@ const ViewModeNavigation: React.FC<ViewModeNavigationProps> = ({
     { key: 'spiral' as const, label: '🌀 Spiral', desc: 'Navigation' },
     { key: 'tests' as const, label: '🧪 Tests', desc: 'Cultural' },
     { key: 'learning' as const, label: '📊 Learning', desc: 'Organization' },
-    { key: 'overview' as const, label: '🎯 Overview', desc: 'Framework' }
+    { key: 'overview' as const, label: '🎯 Overview', desc: 'Framework' },
+    { key: 'tools' as const, label: '🛠️ Tools', desc: 'Interactive' }
   ];
 
   return (

@@ -11,6 +11,7 @@ import WindowControls from './components/WindowControls';
 import ViewModeNavigation from './components/ViewModeNavigation';
 import LandscapeJourney from './components/LandscapeJourney';
 import PoiesisIndicator from './components/PoiesisIndicator';
+import InteractiveToolsPanel from './tools/InteractiveToolsPanel';
 import { useWindowControls } from './hooks/useWindowControls';
 import { ModeProvider } from './context/ModeContext';
 import { EmotionalState } from '@/types/journal';
@@ -41,7 +42,7 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
   
   // Living Landscape Journey State
   const [currentLandscape, setCurrentLandscape] = useState(0);
-  const [viewMode, setViewMode] = useState<'journey' | 'spiral' | 'tests' | 'learning' | 'overview'>('journey');
+  const [viewMode, setViewMode] = useState<'journey' | 'spiral' | 'tests' | 'learning' | 'overview' | 'tools'>('journey');
   const [emotionalState, setEmotionalState] = useState<Partial<EmotionalState>>({
     love_level: 50,
     magic_level: 50,
@@ -112,6 +113,14 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
 
       case 'overview':
         return <OverviewTab onStartJourney={onStartJourney} />;
+
+      case 'tools':
+        return (
+          <InteractiveToolsPanel
+            emotionalState={emotionalState}
+            onStateChange={setEmotionalState}
+          />
+        );
 
       default:
         return null;
