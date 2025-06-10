@@ -1,22 +1,17 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Lightbulb, FileText, Code, ArrowRight, Zap, Brain, Compass, Target, Cog, Users } from 'lucide-react';
-
 interface OverviewTabProps {
   onStartJourney?: () => void;
 }
-
-const OverviewTab: React.FC<OverviewTabProps> = ({ onStartJourney }) => {
-  return (
-    <div className="space-y-6">
+const OverviewTab: React.FC<OverviewTabProps> = ({
+  onStartJourney
+}) => {
+  return <div className="space-y-6">
       <div className="text-center space-y-3">
-        <div className="text-2xl">🚀✨</div>
-        <h3 className="font-semibold text-lg">Imagineering to Engineering</h3>
-        <p className="text-sm text-slate-600 dark:text-slate-300">
-          This is a <strong>product development framework</strong> that bridges creative ideation with technical implementation. 
-          Here's what it actually means:
-        </p>
+        
+        
+        
       </div>
 
       {/* Two-Phase Overview */}
@@ -124,10 +119,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ onStartJourney }) => {
         </div>
       </div>
 
-      <Button 
-        onClick={onStartJourney} 
-        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600"
-      >
+      <Button onClick={onStartJourney} className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600">
         Start Product Development Journey
         <ArrowRight className="w-4 h-4 ml-2" />
       </Button>
@@ -141,8 +133,6 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ onStartJourney }) => {
           <li>• <strong>Technical vs. Practical Mismatch:</strong> Working prototypes validate the approach first</li>
         </ul>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default OverviewTab;
