@@ -632,5 +632,3 @@ const RelationalHealing = () => {
 };
 
 export default RelationalHealing;
-
-</edits_to_apply>
