@@ -120,10 +120,7 @@ const EnhancedInnovationJournal = () => {
             <BarChart3 className="w-4 h-4" />
             Overview
           </TabsTrigger>
-          <TabsTrigger value="innovation" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">
-            <Workflow className="w-4 h-4" />
-            Calm Innovation
-          </TabsTrigger>
+          
           <TabsTrigger value="quality" className="flex items-center gap-2 data-[state=active]:bg-white dark:data-[state=active]:bg-slate-700">
             <Lightbulb className="w-4 h-4" />
             Quality

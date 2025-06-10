@@ -13,53 +13,7 @@ const ProcessTab: React.FC = () => {
       {/* The process diagram */}
       <CalmMagicProcessDiagram />
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-blue-50 dark:bg-blue-950/30 p-4 rounded-lg">
-          <h4 className="font-semibold text-blue-800 dark:text-blue-200 text-sm mb-3">
-            Phase 1: Imagineering (Understanding the Problem)
-          </h4>
-          <div className="space-y-2 text-xs text-blue-700 dark:text-blue-300">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-blue-600"></div>
-              <span><strong>Stakeholder Research:</strong> Discovery interviews and user journey mapping</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-purple-600"></div>
-              <span><strong>Problem Analysis:</strong> Market validation and opportunity assessment</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-green-600"></div>
-              <span><strong>Prototype Creation:</strong> Working demos that tell the solution story</span>
-            </div>
-          </div>
-          <p className="text-xs text-blue-800 dark:text-blue-200 mt-3 font-medium">
-            <strong>Key Output:</strong> Validated problem understanding with working prototype demonstration
-          </p>
-        </div>
-
-        <div className="bg-purple-50 dark:bg-purple-950/30 p-4 rounded-lg">
-          <h4 className="font-semibold text-purple-800 dark:text-purple-200 text-sm mb-3">
-            Phase 2: Engineering (Making It Real)
-          </h4>
-          <div className="space-y-2 text-xs text-purple-700 dark:text-purple-300">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-orange-600"></div>
-              <span><strong>Technical Requirements:</strong> Architecture planning and system design</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-red-600"></div>
-              <span><strong>Implementation Planning:</strong> Development roadmap with quality gates</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-slate-600"></div>
-              <span><strong>Development & QA:</strong> Build, test, and validate the working solution</span>
-            </div>
-          </div>
-          <p className="text-xs text-purple-800 dark:text-purple-200 mt-3 font-medium">
-            <strong>Key Output:</strong> Working product that solves the validated problem effectively
-          </p>
-        </div>
-      </div>
+      
 
       <Card>
         <CardContent className="p-4">
