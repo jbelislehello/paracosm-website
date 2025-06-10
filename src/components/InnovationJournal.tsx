@@ -4,6 +4,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft, BookOpen, BarChart3, Workflow, Users, Search, Lightbulb } from 'lucide-react';
+import OverviewTab from '@/components/product-development/OverviewTab';
+import ProcessTab from '@/components/product-development/ProcessTab';
+import BridgeTab from '@/components/product-development/BridgeTab';
 import ProductDevelopmentSteps from './calm-magic/ProductDevelopmentSteps';
 import StakeholderResearchInterface from './calm-magic/StakeholderResearchInterface';
 import ProblemAnalysisCanvas from './calm-magic/ProblemAnalysisCanvas';
@@ -45,6 +48,11 @@ const InnovationJournal = () => {
     checkAuth();
   }, [toast]);
 
+  const handleStartJourney = () => {
+    setActiveTab('process');
+    setCurrentStep(1);
+  };
+
   const handleContextSelect = (context: string) => {
     setSelectedContext(context);
     setCurrentStep(1);
@@ -84,42 +92,6 @@ const InnovationJournal = () => {
   const handleNavigateToStep = (step: number) => {
     setCurrentStep(step);
   };
-
-  const productDevelopmentContexts = [
-    {
-      type: 'stakeholder_research',
-      name: 'Stakeholder Research Context',
-      description: 'Study how people actually work and what frustrates them most',
-      icon: '👥',
-      color: '#2563eb',
-      prompts: [
-        'What problems do stakeholders face in their daily work?',
-        'What current solutions exist and where do they fall short?'
-      ]
-    },
-    {
-      type: 'user_discovery',
-      name: 'User Discovery Analysis',
-      description: 'Talk to stakeholders about their real needs and pain points',
-      icon: '🔍',
-      color: '#7c3aed',
-      prompts: [
-        'What are the most common user complaints or frustrations?',
-        'What workflows cause the most friction or delays?'
-      ]
-    },
-    {
-      type: 'vision_creation',
-      name: 'Vision & Prototype Planning',
-      description: 'Plan a working demo that tells a story about how things could work better',
-      icon: '💡',
-      color: '#059669',
-      prompts: [
-        'What would the ideal solution look like in action?',
-        'How could we demonstrate the vision through a working prototype?'
-      ]
-    }
-  ];
 
   const renderCurrentStep = () => {
     switch (currentStep) {
@@ -167,15 +139,15 @@ const InnovationJournal = () => {
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="framework" className="flex items-center gap-2">
             <BarChart3 className="w-4 h-4" />
-            Framework
+            Overview
           </TabsTrigger>
           <TabsTrigger value="process" className="flex items-center gap-2">
             <Workflow className="w-4 h-4" />
-            Product Journey
+            7-Step Process
           </TabsTrigger>
-          <TabsTrigger value="quality" className="flex items-center gap-2">
-            <BarChart3 className="w-4 h-4" />
-            Quality
+          <TabsTrigger value="bridge" className="flex items-center gap-2">
+            <Lightbulb className="w-4 h-4" />
+            Bridge Elements
           </TabsTrigger>
           <TabsTrigger value="docs" className="flex items-center gap-2">
             <BookOpen className="w-4 h-4" />
@@ -184,124 +156,83 @@ const InnovationJournal = () => {
         </TabsList>
 
         <TabsContent value="framework" className="space-y-6">
-          <div className="space-y-6">
-            <div className="text-center space-y-2">
-              <h2 className="text-2xl font-bold">Step 1: Stakeholder Research & User Discovery</h2>
-              <p className="text-slate-600 dark:text-slate-300">
-                Choose your research context to begin understanding how people work and what frustrates them
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {productDevelopmentContexts.map((context) => (
-                <Card 
-                  key={context.type}
-                  className="cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-105"
-                >
-                  <CardContent className="p-6 text-center">
-                    <div 
-                      className="w-16 h-16 mx-auto rounded-full flex items-center justify-center text-2xl mb-4"
-                      style={{ backgroundColor: `${context.color}20` }}
-                    >
-                      {context.icon}
-                    </div>
-                    <h3 className="text-lg font-semibold mb-2">{context.name}</h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">
-                      {context.description}
-                    </p>
-                    <div className="space-y-2">
-                      <div className="text-xs font-medium text-slate-500">Key Questions:</div>
-                      <ul className="text-xs text-slate-500 space-y-1">
-                        {context.prompts.map((prompt, idx) => (
-                          <li key={idx}>• {prompt}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-
-          <ProductDevelopmentSteps
-            currentStep={currentStep}
-            completedSteps={completedSteps}
-          />
+          <OverviewTab onStartJourney={handleStartJourney} />
         </TabsContent>
 
         <TabsContent value="process" className="space-y-6">
-          {/* Process Overview Diagram */}
-          <div className="mb-8">
-            <CalmMagicProcessDiagram />
-          </div>
-
-          {currentStep > 1 && (
-            <Button 
-              variant="ghost" 
-              onClick={handleBack}
-              className="mb-6 flex items-center gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Previous Step
-            </Button>
-          )}
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Main Process Area */}
-            <div className="lg:col-span-2">
-              {renderCurrentStep()}
+          <ProcessTab />
+          
+          {/* Interactive Process Flow */}
+          <div className="mt-8">
+            <div className="mb-8">
+              <CalmMagicProcessDiagram />
             </div>
 
-            {/* Progress Summary Sidebar */}
-            <div className="space-y-6">
-              {(stakeholderData || problemAnalysis || prototypeData) && (
-                <Card>
-                  <CardContent className="p-4">
-                    <h3 className="font-semibold mb-3">Product Progress</h3>
-                    <div className="space-y-3 text-sm">
-                      {stakeholderData && (
-                        <div className="flex items-center gap-2">
-                          <Users className="w-4 h-4 text-blue-600" />
-                          <span>Context: {stakeholderData.context?.replace('_', ' ')}</span>
-                        </div>
-                      )}
-                      {problemAnalysis && (
-                        <div className="flex items-center gap-2">
-                          <Search className="w-4 h-4 text-purple-600" />
-                          <span>Analysis: {Math.round((problemAnalysis.impact_level + problemAnalysis.urgency_level + problemAnalysis.feasibility_level + problemAnalysis.stakeholder_alignment + problemAnalysis.resource_availability) / 5)}% solution opportunity</span>
-                        </div>
-                      )}
-                      {prototypeData && (
-                        <div className="flex items-center gap-2">
-                          <Lightbulb className="w-4 h-4 text-green-600" />
-                          <span>Prototype Vision: "{prototypeData.title}"</span>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
-          </div>
+            {currentStep > 1 && (
+              <Button 
+                variant="ghost" 
+                onClick={handleBack}
+                className="mb-6 flex items-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Previous Step
+              </Button>
+            )}
 
-          {!user && (
-            <Card className="mt-8 max-w-2xl mx-auto">
-              <CardContent className="p-6 text-center">
-                <h3 className="text-lg font-semibold mb-2">Demo Mode</h3>
-                <p className="text-sm text-slate-600 dark:text-slate-300">
-                  You're experiencing the Product Development Framework in demo mode. 
-                  Sign in to save your progress and access team collaboration features.
-                </p>
-              </CardContent>
-            </Card>
-          )}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Main Process Area */}
+              <div className="lg:col-span-2">
+                {renderCurrentStep()}
+              </div>
+
+              {/* Progress Summary Sidebar */}
+              <div className="space-y-6">
+                {(stakeholderData || problemAnalysis || prototypeData) && (
+                  <Card>
+                    <CardContent className="p-4">
+                      <h3 className="font-semibold mb-3">Product Progress</h3>
+                      <div className="space-y-3 text-sm">
+                        {stakeholderData && (
+                          <div className="flex items-center gap-2">
+                            <Users className="w-4 h-4 text-blue-600" />
+                            <span>Context: {stakeholderData.context?.replace('_', ' ')}</span>
+                          </div>
+                        )}
+                        {problemAnalysis && (
+                          <div className="flex items-center gap-2">
+                            <Search className="w-4 h-4 text-purple-600" />
+                            <span>Analysis: {Math.round((problemAnalysis.impact_level + problemAnalysis.urgency_level + problemAnalysis.feasibility_level + problemAnalysis.stakeholder_alignment + problemAnalysis.resource_availability) / 5)}% solution opportunity</span>
+                          </div>
+                        )}
+                        {prototypeData && (
+                          <div className="flex items-center gap-2">
+                            <Lightbulb className="w-4 h-4 text-green-600" />
+                            <span>Prototype Vision: "{prototypeData.title}"</span>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </div>
+
+            {!user && (
+              <Card className="mt-8 max-w-2xl mx-auto">
+                <CardContent className="p-6 text-center">
+                  <h3 className="text-lg font-semibold mb-2">Demo Mode</h3>
+                  <p className="text-sm text-slate-600 dark:text-slate-300">
+                    You're experiencing the Product Development Framework in demo mode. 
+                    Sign in to save your progress and access team collaboration features.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </TabsContent>
 
-        <TabsContent value="quality">
-          <EngineeringQualityFramework
-            emotionalState={null}
-            journalEntry={null}
-          />
+        <TabsContent value="bridge">
+          <BridgeTab />
         </TabsContent>
 
         <TabsContent value="docs">
