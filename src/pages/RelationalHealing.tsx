@@ -36,6 +36,19 @@ const RelationalHealing = () => {
   const handleCoachingConsultation = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Create form data for submission
+    const formData = new FormData(e.target as HTMLFormElement);
+    const consultationData = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      interest: formData.get('coaching-interest'),
+      challenges: formData.get('current-challenges'),
+      experience: formData.get('coaching-experience'),
+      recipientEmail: 'jbelisle@helloarchitekt.com'
+    };
+    
+    console.log('Coaching consultation request:', consultationData);
+    
     toast({
       title: "Coaching Consultation Requested",
       description: "Thank you for your interest! I'll reach out within 24 hours to schedule your free discovery call.",

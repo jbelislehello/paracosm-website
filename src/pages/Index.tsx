@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
@@ -18,7 +19,7 @@ const Index = () => {
   }, []);
 
   const handleStartJourney = () => {
-    // Open the Calm Magic assistant
+    // Open the Product Development assistant
     setIsCalmMagicOpen(true);
   };
 

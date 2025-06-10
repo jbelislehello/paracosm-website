@@ -233,13 +233,14 @@ const CalmMagicCompass: React.FC = () => {
     momentum: 50
   });
 
-  // Define the quadrants with correct cardinal positions
+  // Define the quadrants with Love, Magic, Calm, Open integration
   const quadrants = [
     {
       name: 'sovereignty',
-      baseAngle: 0, // Top
+      baseAngle: 270, // Top
       color: '#10b981',
       label: 'Sovereignty',
+      spiritualForce: 'Open',
       description: 'Self-Determination & Freedom',
       subsections: [
         { name: 'Personal Autonomy', description: 'Individual self-governance' },
@@ -250,9 +251,10 @@ const CalmMagicCompass: React.FC = () => {
     },
     {
       name: 'memory',
-      baseAngle: 90, // Right
+      baseAngle: 0, // Right
       color: '#ec4899',
       label: 'Memory',
+      spiritualForce: 'Love',
       description: 'Connection & Continuity',
       subsections: [
         { name: 'Personal History', description: 'Integrating your past' },
@@ -263,9 +265,10 @@ const CalmMagicCompass: React.FC = () => {
     },
     {
       name: 'intimacy',
-      baseAngle: 180, // Bottom
+      baseAngle: 90, // Bottom
       color: '#06b6d4',
       label: 'Intimacy',
+      spiritualForce: 'Calm',
       description: 'Depth & Vulnerability',
       subsections: [
         { name: 'Self-Intimacy', description: 'Inner emotional awareness' },
@@ -276,9 +279,10 @@ const CalmMagicCompass: React.FC = () => {
     },
     {
       name: 'novelty',
-      baseAngle: 270, // Left
+      baseAngle: 180, // Left
       color: '#8b5cf6',
       label: 'Novelty',
+      spiritualForce: 'Magic',
       description: 'Innovation & Discovery',
       subsections: [
         { name: 'Fresh Perspectives', description: 'New ways of seeing' },
@@ -379,16 +383,48 @@ const CalmMagicCompass: React.FC = () => {
   const integrationLevel = (compassState.shadowIntegration + compassState.higherSelfAlignment) / 2;
   const agglutinationLevel = Math.max(0, compassState.connessorStrength - compassState.magnesorStrength);
 
+  // Generate smart narration text
+  const generateNarration = () => {
+    const quadrant = currentQuadrant.label;
+    const force = currentQuadrant.spiritualForce;
+    const subsection = currentSubsection.name;
+    
+    if (agglutinationLevel > 20) {
+      return `Experiencing agglutination in ${quadrant} (${force}) - relationship dynamics are creating resistance. Focus on ${subsection.toLowerCase()} to restore flow.`;
+    }
+    
+    if (compassState.momentum > 70) {
+      return `Strong momentum in ${quadrant} (${force}) - actively transforming through ${subsection.toLowerCase()}. Creative work in relationships is flourishing.`;
+    }
+    
+    if (compassState.shadowIntegration > 60) {
+      return `Deep shadow integration in ${quadrant} (${force}) - working with ${subsection.toLowerCase()} to heal relationship patterns and unlock innovation.`;
+    }
+    
+    return `Exploring ${quadrant} (${force}) through ${subsection.toLowerCase()} - developing innovative approaches to relationship transformation and creative collaboration.`;
+  };
+
   return (
     <Card className="w-full max-w-4xl mx-auto">
       <CardContent className="p-8">
         <div className="text-center mb-8">
           <h3 className="text-2xl font-bold mb-3">Calm Magic Relational Dynamic Map</h3>
           <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">
-            Integrating Shadow Self with Higher Self through Expansive Leadership
+            Navigate Love → Magic → Calm → Open through Cardinal Forces
           </p>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            Navigate the cardinal forces as your freedom expands through Connessor/Magnesor dynamics
+            Track freedom expansion as your Connessor/Magnesor dynamics evolve
+          </p>
+        </div>
+
+        {/* Smart Narration Display */}
+        <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg p-4 mb-6">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-2 h-2 bg-purple-600 rounded-full animate-pulse"></div>
+            <span className="text-sm font-medium text-purple-800 dark:text-purple-300">Journey Narration</span>
+          </div>
+          <p className="text-sm text-purple-700 dark:text-purple-200">
+            {generateNarration()}
           </p>
         </div>
 
@@ -432,7 +468,7 @@ const CalmMagicCompass: React.FC = () => {
               className="transition-all duration-1000"
             />
             
-            {/* Quadrant Divisions */}
+            {/* Quadrant Divisions with Love/Magic/Calm/Open */}
             {quadrants.map((quadrant, qIndex) => {
               const isActiveQuadrant = quadrant.name === compassState.currentQuadrant;
               
@@ -444,6 +480,18 @@ const CalmMagicCompass: React.FC = () => {
                     fill={quadrant.color}
                     className={`transition-all duration-500 ${isActiveQuadrant ? 'opacity-30' : 'opacity-15'}`}
                   />
+                  
+                  {/* Spiritual Force Label (Love/Magic/Calm/Open) */}
+                  <text
+                    x={192 + Math.cos((quadrant.baseAngle + 45 - 90) * Math.PI / 180) * 100}
+                    y={192 + Math.sin((quadrant.baseAngle + 45 - 90) * Math.PI / 180) * 100}
+                    textAnchor="middle"
+                    className={`text-lg font-bold transition-all duration-500 ${
+                      isActiveQuadrant ? 'fill-white' : 'fill-gray-600'
+                    }`}
+                  >
+                    {quadrant.spiritualForce}
+                  </text>
                   
                   {/* Quadrant Subsections */}
                   {quadrant.subsections.map((subsection, sIndex) => {
@@ -476,18 +524,6 @@ const CalmMagicCompass: React.FC = () => {
                       </g>
                     );
                   })}
-                  
-                  {/* Quadrant Label */}
-                  <text
-                    x={192 + Math.cos((quadrant.baseAngle + 45 - 90) * Math.PI / 180) * 145}
-                    y={192 + Math.sin((quadrant.baseAngle + 45 - 90) * Math.PI / 180) * 145}
-                    textAnchor="middle"
-                    className={`text-sm font-bold transition-all duration-500 ${
-                      isActiveQuadrant ? 'fill-white' : 'fill-gray-600'
-                    }`}
-                  >
-                    {quadrant.label}
-                  </text>
                 </g>
               );
             })}
@@ -544,6 +580,35 @@ const CalmMagicCompass: React.FC = () => {
               fill="url(#integrationGradient)"
             />
           </svg>
+
+          {/* Cardinal Direction Labels (Outside the Compass) */}
+          <div className="absolute top-2 left-1/2 transform -translate-x-1/2">
+            <div className="text-center">
+              <div className="text-lg font-bold text-green-600">Sovereignty</div>
+              <div className="text-xs text-slate-500">Self-Determination</div>
+            </div>
+          </div>
+          
+          <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+            <div className="text-center">
+              <div className="text-lg font-bold text-pink-600">Memory</div>
+              <div className="text-xs text-slate-500">Connection</div>
+            </div>
+          </div>
+          
+          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2">
+            <div className="text-center">
+              <div className="text-lg font-bold text-cyan-600">Intimacy</div>
+              <div className="text-xs text-slate-500">Vulnerability</div>
+            </div>
+          </div>
+          
+          <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
+            <div className="text-center">
+              <div className="text-lg font-bold text-purple-600">Novelty</div>
+              <div className="text-xs text-slate-500">Innovation</div>
+            </div>
+          </div>
 
           {/* Floating Settings Button */}
           <Button
