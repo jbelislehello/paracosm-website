@@ -46,6 +46,12 @@ const CompetencyMapping: React.FC<CompetencyMappingProps> = ({ landscapeType }) 
   
   const current = competencyMap[landscapeType];
   
+  // Add safety check - if no mapping exists, don't render
+  if (!current) {
+    console.warn(`No competency mapping found for landscape type: ${landscapeType}`);
+    return null;
+  }
+  
   const handleCompetencyFocus = () => {
     if (competencyFocus === current.competency) {
       setCompetencyFocus(null);

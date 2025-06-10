@@ -1,3 +1,4 @@
+
 import { EmotionalState } from '@/types/journal';
 import { ModeType } from '../context/ModeContext';
 
@@ -103,6 +104,13 @@ export const calculateResonance = (
   };
   
   const relevantEmotionKey = competencyMap[competencyFocus];
+  
+  // Add safety check for undefined competencyFocus
+  if (!relevantEmotionKey) {
+    console.warn(`No emotion mapping found for competency: ${competencyFocus}`);
+    return 50;
+  }
+  
   const relevantEmotionLevel = Number(emotionalState[relevantEmotionKey]) || 0;
   
   // Other emotions still contribute but less directly
