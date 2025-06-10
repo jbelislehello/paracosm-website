@@ -3,60 +3,60 @@ import { Users, Search, Lightbulb, FileText, Settings, Handshake, Code, Heart, B
 
 export const productDevelopmentSteps = [
   {
-    icon: Heart,
-    name: 'Healing Assessment & Emotional Mapping',
-    phase: 'Building Awareness',
-    description: 'Choose your healing context to begin understanding your emotional and relational landscape'
+    icon: Users,
+    name: 'Stakeholder Research & User Discovery',
+    phase: 'Imagineering',
+    description: 'Understand who you are building for and what problems they actually have'
   },
   {
-    icon: Brain,
-    name: 'Relationship Pattern Analysis',
-    phase: 'Building Awareness',
-    description: 'Understand the dynamics, triggers, and communication patterns in your relationships'
+    icon: Search,
+    name: 'Problem Analysis & Market Validation',
+    phase: 'Imagineering',
+    description: 'Validate that the problem is worth solving and understand the competitive landscape'
   },
   {
-    icon: Eye,
-    name: 'Healing Visualization & Practice Design',
-    phase: 'Building Awareness',
-    description: 'Create a living vision of healed relationships and design practices to get there'
+    icon: Lightbulb,
+    name: 'Diegetic Prototype & Vision Creation',
+    phase: 'Imagineering',
+    description: 'Create a living vision of the product that demonstrates value and user experience'
   },
   {
-    icon: Target,
-    name: 'Healing Practice Framework',
-    phase: 'Creating Transformation',
-    description: 'Turn your healing vision into clear, actionable healing practices'
+    icon: FileText,
+    name: 'Technical Requirements & Architecture',
+    phase: 'Engineering',
+    description: 'Turn your product vision into clear, actionable technical specifications'
   },
   {
-    icon: Compass,
-    name: 'Transformation Intelligence',
-    phase: 'Creating Transformation',
-    description: 'Document exactly what needs to shift and how healing will unfold'
+    icon: Settings,
+    name: 'Systems Intelligence & Implementation Plan',
+    phase: 'Engineering',
+    description: 'Document exactly what needs to be built and how systems will work together'
   },
   {
-    icon: Users2,
-    name: 'Community Integration Ritual',
-    phase: 'Creating Transformation',
-    description: 'Share your healing journey with community support and accountability'
+    icon: Handshake,
+    name: 'Handover Ritual & Team Alignment',
+    phase: 'Engineering',
+    description: 'Ensure development teams understand not just what to build, but why it matters'
   },
   {
-    icon: Sparkles,
-    name: 'Healing Progress Tracking',
-    phase: 'Creating Transformation',
-    description: 'Monitor emotional shifts to ensure relationship transformation stays on track'
+    icon: Code,
+    name: 'Development & Quality Assurance',
+    phase: 'Engineering',
+    description: 'Build and validate the product while maintaining the original vision'
   }
 ];
 
 export const bridgeElements = [
   {
-    name: 'Healing Visualization',
-    description: 'A vision that feels real and tells a complete story of transformation'
+    name: 'Diegetic Prototype',
+    description: 'A vision that feels real and tells a complete story of user value'
   },
   {
-    name: 'Transformation Intelligence',
-    description: 'Healing practices that preserve the original emotional vision'
+    name: 'Systems Intelligence',
+    description: 'Technical specifications that preserve the original product vision'
   },
   {
-    name: 'Community Integration',
-    description: 'Healers understand not just what to heal, but why it matters deeply'
+    name: 'Handover Ritual',
+    description: 'Developers understand not just what to build, but why it matters'
   }
 ];

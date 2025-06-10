@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Heart, Eye, Sparkles, ArrowRight } from 'lucide-react';
+import { Lightbulb, FileText, Code, ArrowRight } from 'lucide-react';
 
 interface OverviewTabProps {
   onStartJourney?: () => void;
@@ -11,44 +11,44 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ onStartJourney }) => {
   return (
     <div className="space-y-4">
       <div className="text-center space-y-3">
-        <div className="text-2xl">💜</div>
-        <h3 className="font-semibold">Bridge "I Need Healing" to "Transformed Relationships"</h3>
+        <div className="text-2xl">🚀</div>
+        <h3 className="font-semibold">Bridge Ideas to Products</h3>
         <p className="text-sm text-slate-600 dark:text-slate-300">
-          A structured approach that bridges emotional awareness with relational transformation. Transform "I need healing" into "here's exactly how to heal and why it matters."
+          A structured approach that bridges creative ideation with technical implementation. Transform "we should build something" into "here's exactly what to build and why it matters."
         </p>
       </div>
 
       <div className="space-y-3">
         <div className="flex items-center gap-2 text-sm">
-          <Heart className="w-4 h-4 text-pink-600" />
-          <span>Explore emotional patterns and relationship blocks</span>
+          <Lightbulb className="w-4 h-4 text-yellow-600" />
+          <span>Discover and validate real user problems</span>
         </div>
         <div className="flex items-center gap-2 text-sm">
-          <Eye className="w-4 h-4 text-purple-600" />
-          <span>Create living visions of healed relationships</span>
+          <FileText className="w-4 h-4 text-blue-600" />
+          <span>Create living prototypes that demonstrate value</span>
         </div>
         <div className="flex items-center gap-2 text-sm">
-          <Sparkles className="w-4 h-4 text-blue-600" />
-          <span>Track transformation through community support</span>
+          <Code className="w-4 h-4 text-green-600" />
+          <span>Build products with preserved vision and purpose</span>
         </div>
       </div>
 
       <Button 
         onClick={onStartJourney} 
-        className="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-purple-600 hover:to-pink-600"
+        className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600"
       >
-        Start Healing Journey
+        Start Product Journey
         <ArrowRight className="w-4 h-4 ml-2" />
       </Button>
 
       <div className="border-t pt-3 space-y-2">
-        <h4 className="font-medium text-sm">Why This Framework Prevents Healing Stagnation</h4>
+        <h4 className="font-medium text-sm">Why Most Projects Fail</h4>
         <ul className="space-y-1 text-xs text-slate-600 dark:text-slate-300">
-          <li>• Gap between "I need healing" and "transformed relationships"</li>
-          <li>• Surface-level changes that don't create lasting transformation</li>
-          <li>• Healers don't understand emotional motivations</li>
-          <li>• Original healing vision gets lost in practice</li>
-          <li>• No clear bridge between awareness and transformation</li>
+          <li>• Gap between "we should build something" and "exactly what to build"</li>
+          <li>• Features built without understanding real user needs</li>
+          <li>• Developers don't understand the why behind requirements</li>
+          <li>• Original product vision gets lost during implementation</li>
+          <li>• No clear bridge between creative ideas and technical execution</li>
         </ul>
       </div>
     </div>
