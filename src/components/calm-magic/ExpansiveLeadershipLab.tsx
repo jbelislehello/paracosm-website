@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 import { energeticAxes } from '@/data/gardens';
 import { EmotionalState } from '@/types/journal';
-import { Compass, Zap, Territory, Users, Brain } from 'lucide-react';
+import { Compass, Zap, MapPin, Users, Brain } from 'lucide-react';
 
 interface LeadershipTerritory {
   key: string;
@@ -194,7 +193,7 @@ const ExpansiveLeadershipLab: React.FC<ExpansiveLeadershipLabProps> = ({
 
                         <div>
                           <div className="flex items-center gap-1 mb-2">
-                            <Territory className="w-3 h-3 text-slate-400" />
+                            <MapPin className="w-3 h-3 text-slate-400" />
                             <div className="text-xs text-slate-600 dark:text-slate-400">Active Experiments</div>
                           </div>
                           <div className="space-y-1">
