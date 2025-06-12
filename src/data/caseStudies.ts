@@ -1,4 +1,3 @@
-
 export interface CaseStudy {
   id: string;
   title: string;
@@ -18,6 +17,21 @@ export interface CaseStudy {
 }
 
 export const caseStudies: CaseStudy[] = [
+  {
+    id: 'oaciq-elise',
+    title: 'Élise - Assistant virtuel OACIQ',
+    subtitle: 'Robot conversationnel pour le courtage immobilier québécois',
+    year: '2020',
+    category: 'educational-tech',
+    image: 'photo-1488590528505-98d2b5aba04b',
+    description: 'Développement d\'un assistant conversationnel intelligent pour accompagner les courtiers immobiliers et le public dans leurs démarches. Élise répond aux questions sur la réglementation, les processus d\'achat/vente, et guide les utilisateurs vers les bonnes ressources de l\'OACIQ.',
+    role: 'Concepteur UX et développeur de l\'expérience conversationnelle, appliquant la méthodologie Calm/CodeMagic pour créer une interaction bienveillante et professionnelle.',
+    methods: ['IA conversationnelle', 'Interface de chat intuitive', 'Base de connaissances spécialisée', 'Support bilingue français/anglais'],
+    results: 'Assistant virtuel accessible 24/7 capable de répondre aux questions réglementaires complexes, d\'orienter courtiers et consommateurs, et de simplifier l\'accès aux services de l\'OACIQ.',
+    impact: 'Amélioration significative de l\'accessibilité aux informations immobilières pour les professionnels et le public. Réduction du temps d\'attente pour obtenir des réponses aux questions courantes.',
+    technologies: ['Traitement du langage naturel', 'Base de connaissances IA', 'Interface conversationnelle', 'Support multilingue'],
+    relatedProjects: ['simulateur-genial', 'banff-residence']
+  },
   {
     id: 'wuxia-the-fox',
     title: 'Wuxia the Fox',
