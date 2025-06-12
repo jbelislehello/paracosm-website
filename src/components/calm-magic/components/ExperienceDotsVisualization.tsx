@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -52,35 +51,31 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
 
   const centerX = 300;
   const centerY = 250;
-  const rings = [80, 120, 160, 200]; // Concentric circle radii
+  const rings = [80, 110, 140]; // Three concentric circles like freedom compass
 
-  // Initialize the 4 Calm Magic forces on concentric circles
+  // Initialize the 4 Calm Magic forces on exactly 3 concentric circles
   useEffect(() => {
     const forceDots: CalmMagicDot[] = [];
     
-    // Define force positions (quadrants) and their appearances on different rings
+    // Define force positions at exact cardinal directions
     const forceConfigs = [
-      { force: 'sovereignty' as const, baseAngle: Math.PI / 4, label: 'Sovereignty', quadrant: 'upper-right' },
-      { force: 'memory' as const, baseAngle: 3 * Math.PI / 4, label: 'Memory', quadrant: 'upper-left' },
-      { force: 'intimacy' as const, baseAngle: 5 * Math.PI / 4, label: 'Intimacy', quadrant: 'lower-left' },
-      { force: 'novelty' as const, baseAngle: 7 * Math.PI / 4, label: 'Novelty', quadrant: 'lower-right' }
+      { force: 'sovereignty' as const, angle: 0, label: 'Sovereignty' }, // East/Right (0°)
+      { force: 'memory' as const, angle: Math.PI / 2, label: 'Memory' }, // South/Bottom (90°)
+      { force: 'intimacy' as const, angle: Math.PI, label: 'Intimacy' }, // West/Left (180°)
+      { force: 'novelty' as const, angle: 3 * Math.PI / 2, label: 'Novelty' } // North/Top (270°)
     ];
 
-    forceConfigs.forEach((config, forceIndex) => {
-      // Place each force on 2-3 rings with slight angle variations
-      [0, 1, 2].forEach((ringIndex) => {
-        const radius = rings[ringIndex];
-        const angleVariation = (ringIndex - 1) * 0.3; // Slight angle offset for variety
-        const angle = config.baseAngle + angleVariation;
-        
+    forceConfigs.forEach((config) => {
+      // Place each force on all 3 rings at exact cardinal directions
+      rings.forEach((radius, ringIndex) => {
         forceDots.push({
           id: `${config.force}-ring-${ringIndex}`,
-          x: centerX + Math.cos(angle) * radius,
-          y: centerY + Math.sin(angle) * radius,
+          x: centerX + Math.cos(config.angle) * radius,
+          y: centerY + Math.sin(config.angle) * radius,
           radius,
-          angle,
+          angle: config.angle,
           force: config.force,
-          label: `${config.label} (Ring ${ringIndex + 1})`,
+          label: `${config.label} (Level ${ringIndex + 1})`,
           energy: forceStrength[config.force],
           isActive: false,
           ring: ringIndex
@@ -342,8 +337,8 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
             height="500"
             className="mx-auto border rounded-lg bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20"
           >
-            {/* Background concentric circles */}
-            {rings.map(radius => (
+            {/* Background concentric circles - exactly 3 like freedom compass */}
+            {rings.map((radius, index) => (
               <circle
                 key={radius}
                 cx={centerX}
@@ -351,8 +346,8 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                 r={radius}
                 fill="none"
                 stroke="#e2e8f0"
-                strokeWidth="1"
-                opacity="0.4"
+                strokeWidth={index === 0 ? "2" : index === 1 ? "1.5" : "1"}
+                opacity={index === 0 ? "0.6" : index === 1 ? "0.5" : "0.4"}
               />
             ))}
 
@@ -394,32 +389,32 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
               );
             })}
 
-            {/* Calm Magic Force dots */}
+            {/* Calm Magic Force dots - perfectly aligned on cardinal directions */}
             {calmMagicDots.map(dot => (
               <g key={dot.id}>
                 <circle
                   cx={dot.x}
                   cy={dot.y}
-                  r={dot.isActive ? 14 : 10}
+                  r={dot.isActive ? 12 : 8}
                   fill={getForceColor(dot.force)}
-                  opacity={dot.isActive ? 1 : 0.8}
+                  opacity={dot.isActive ? 1 : 0.9}
                   className={dot.isActive ? "animate-pulse" : ""}
                 />
                 <circle
                   cx={dot.x}
                   cy={dot.y}
-                  r={dot.isActive ? 20 : 15}
+                  r={dot.isActive ? 18 : 12}
                   fill="none"
                   stroke={getForceColor(dot.force)}
                   strokeWidth="2"
-                  opacity={dot.isActive ? 0.6 : 0.3}
+                  opacity={dot.isActive ? 0.7 : 0.4}
                 />
                 {dot.isActive && (
                   <text
                     x={dot.x}
-                    y={dot.y - 28}
+                    y={dot.y - 25}
                     textAnchor="middle"
-                    fontSize="11"
+                    fontSize="10"
                     fill="#333"
                     className="font-medium"
                   >
@@ -434,20 +429,20 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
               <line
                 x1="0"
                 y1="0"
-                x2="220"
+                x2="160"
                 y2="0"
                 stroke="#ff6b6b"
-                strokeWidth="4"
+                strokeWidth="3"
                 opacity="0.9"
               />
               <polygon
-                points="220,0 210,-6 210,6"
+                points="160,0 150,-5 150,5"
                 fill="#ff6b6b"
               />
               <circle
                 cx="0"
                 cy="0"
-                r="10"
+                r="8"
                 fill="#ff6b6b"
               />
             </g>
@@ -455,20 +450,25 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
             {/* Center label */}
             <text
               x={centerX}
-              y={centerY + 4}
+              y={centerY + 3}
               textAnchor="middle"
-              fontSize="12"
+              fontSize="11"
               fill="#666"
               className="font-bold"
             >
               Freedom
             </text>
 
-            {/* Quadrant labels */}
-            <text x={380} y={100} fontSize="11" fill="#666" textAnchor="middle" className="font-medium">Sovereignty</text>
-            <text x={220} y={100} fontSize="11" fill="#666" textAnchor="middle" className="font-medium">Memory</text>
-            <text x={220} y={400} fontSize="11" fill="#666" textAnchor="middle" className="font-medium">Intimacy</text>
-            <text x={380} y={400} fontSize="11" fill="#666" textAnchor="middle" className="font-medium">Novelty</text>
+            {/* Cardinal direction labels for forces */}
+            <text x={centerX + 180} y={centerY + 5} fontSize="12" fill="#666" textAnchor="start" className="font-medium">Sovereignty</text>
+            <text x={centerX} y={centerY + 180} fontSize="12" fill="#666" textAnchor="middle" className="font-medium">Memory</text>
+            <text x={centerX - 180} y={centerY + 5} fontSize="12" fill="#666" textAnchor="end" className="font-medium">Intimacy</text>
+            <text x={centerX} y={centerY - 160} fontSize="12" fill="#666" textAnchor="middle" className="font-medium">Novelty</text>
+
+            {/* Ring level indicators */}
+            <text x={centerX + 85} y={centerY - 5} fontSize="9" fill="#999" textAnchor="middle">L1</text>
+            <text x={centerX + 115} y={centerY - 5} fontSize="9" fill="#999" textAnchor="middle">L2</text>
+            <text x={centerX + 145} y={centerY - 5} fontSize="9" fill="#999" textAnchor="middle">L3</text>
           </svg>
         </div>
 
@@ -507,14 +507,14 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
 
         {/* Instructions */}
         <div className="bg-purple-50 dark:bg-purple-950/30 rounded-lg p-3 text-sm">
-          <p className="font-medium text-purple-700 dark:text-purple-300 mb-1">Calm Magic Forces Explorer:</p>
+          <p className="font-medium text-purple-700 dark:text-purple-300 mb-1">Freedom Compass Explorer:</p>
           <ul className="text-purple-600 dark:text-purple-400 space-y-1 text-xs">
-            <li>• Start the freedom arrow to watch it move through your consciousness</li>
-            <li>• When it touches force dots, hear calm eery sounds and see connections emerge</li>
+            <li>• The 4 Calm Magic forces are aligned on 3 freedom levels (concentric circles)</li>
+            <li>• Start the arrow to watch it move through your consciousness compass</li>
+            <li>• When it touches force dots, hear calm sounds and see connection pathways emerge</li>
+            <li>• Each force appears at all 3 levels representing different depths of integration</li>
             <li>• Connessor pathways (Memory + Intimacy) create grounding and reflection</li>
             <li>• Magnesor pathways (Sovereignty + Novelty) create expansion and exploration</li>
-            <li>• Integration pathways bridge different forces for balanced growth</li>
-            <li>• Adjust force strengths to see how it affects connection patterns</li>
           </ul>
         </div>
       </CardContent>
