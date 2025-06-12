@@ -161,7 +161,7 @@ const CaseStudyDetail: React.FC<CaseStudyDetailProps> = ({ caseStudy, onBack }) 
                     <CardContent className="p-4">
                       <h4 className="font-medium mb-1">{relatedCase.title}</h4>
                       <p className="text-sm text-muted-foreground mb-2">{relatedCase.subtitle}</p>
-                      <Badge variant="outline" size="sm">
+                      <Badge variant="outline">
                         {categories[relatedCase.category].name}
                       </Badge>
                     </CardContent>
