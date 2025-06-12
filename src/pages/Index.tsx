@@ -44,6 +44,7 @@ const Index = () => {
             <a href="#features" className="text-sm font-medium hover:text-purple-600 transition-colors">Features</a>
             <a href="#framework" className="text-sm font-medium hover:text-purple-600 transition-colors">Framework</a>
             <a href="#showcase" className="text-sm font-medium hover:text-purple-600 transition-colors">Showcase</a>
+            <Link to="/case-studies" className="text-sm font-medium hover:text-purple-600 transition-colors">Case Studies</Link>
             <a href="#partners" className="text-sm font-medium hover:text-purple-600 transition-colors">Partners</a>
             <a href="#contact" className="text-sm font-medium hover:text-purple-600 transition-colors">Contact</a>
           </nav>
@@ -215,7 +216,7 @@ const Index = () => {
               <ul className="space-y-2">
                 <li><Link to="/calm-magic-assistant" className="text-sm hover:text-purple-600">Calm Magic Assistant</Link></li>
                 <li><a href="#" className="text-sm hover:text-purple-600">Implementation Examples</a></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Case Studies</a></li>
+                <li><Link to="/case-studies" className="text-sm hover:text-purple-600">Case Studies</Link></li>
                 <li><a href="#" className="text-sm hover:text-purple-600">Best Practices</a></li>
               </ul>
             </div>
