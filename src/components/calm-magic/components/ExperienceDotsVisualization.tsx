@@ -4,26 +4,26 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
-import { Play, Pause, RotateCcw, Plus } from 'lucide-react';
+import { Play, Pause, RotateCcw, Volume2, VolumeX } from 'lucide-react';
 
-interface ExperienceDot {
+interface CalmMagicDot {
   id: string;
   x: number;
   y: number;
   radius: number;
   angle: number;
-  type: 'creative' | 'healing' | 'learning' | 'relationship' | 'challenge';
+  force: 'sovereignty' | 'memory' | 'intimacy' | 'novelty';
   label: string;
   energy: number;
-  connections: string[];
   isActive: boolean;
+  ring: number; // which concentric ring it's on
 }
 
-interface Connection {
+interface ForceConnection {
   id: string;
   fromDot: string;
   toDot: string;
-  type: 'healing' | 'creative' | 'learning' | 'integration';
+  type: 'connessor' | 'magnesor' | 'integration' | 'balance';
   strength: number;
   isActive: boolean;
 }
@@ -35,84 +35,68 @@ interface ExperienceDotsVisualizationProps {
 const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = ({ mode }) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const animationRef = useRef<number>();
+  const audioContextRef = useRef<AudioContext | null>(null);
   
   const [arrowAngle, setArrowAngle] = useState(0);
   const [isRotating, setIsRotating] = useState(false);
   const [rotationSpeed, setRotationSpeed] = useState(1);
-  const [experienceDots, setExperienceDots] = useState<ExperienceDot[]>([]);
-  const [connections, setConnections] = useState<Connection[]>([]);
-  const [selectedDotType, setSelectedDotType] = useState<ExperienceDot['type']>('creative');
+  const [calmMagicDots, setCalmMagicDots] = useState<CalmMagicDot[]>([]);
+  const [connections, setConnections] = useState<ForceConnection[]>([]);
+  const [soundEnabled, setSoundEnabled] = useState(false);
+  const [forceStrength, setForceStrength] = useState({
+    sovereignty: 80,
+    memory: 70,
+    intimacy: 75,
+    novelty: 85
+  });
 
   const centerX = 300;
   const centerY = 250;
-  const maxRadius = 180;
+  const rings = [80, 120, 160, 200]; // Concentric circle radii
 
-  // Initialize default experience dots
+  // Initialize the 4 Calm Magic forces on concentric circles
   useEffect(() => {
-    const defaultDots: ExperienceDot[] = [
-      {
-        id: 'dot-1',
-        x: centerX + Math.cos(0) * 60,
-        y: centerY + Math.sin(0) * 60,
-        radius: 60,
-        angle: 0,
-        type: 'creative',
-        label: 'Artistic Expression',
-        energy: 80,
-        connections: [],
-        isActive: false
-      },
-      {
-        id: 'dot-2',
-        x: centerX + Math.cos(Math.PI / 2) * 100,
-        y: centerY + Math.sin(Math.PI / 2) * 100,
-        radius: 100,
-        angle: Math.PI / 2,
-        type: 'healing',
-        label: 'Inner Peace',
-        energy: 70,
-        connections: [],
-        isActive: false
-      },
-      {
-        id: 'dot-3',
-        x: centerX + Math.cos(Math.PI) * 140,
-        y: centerY + Math.sin(Math.PI) * 140,
-        radius: 140,
-        angle: Math.PI,
-        type: 'learning',
-        label: 'Knowledge Growth',
-        energy: 90,
-        connections: [],
-        isActive: false
-      },
-      {
-        id: 'dot-4',
-        x: centerX + Math.cos(3 * Math.PI / 2) * 80,
-        y: centerY + Math.sin(3 * Math.PI / 2) * 80,
-        radius: 80,
-        angle: 3 * Math.PI / 2,
-        type: 'relationship',
-        label: 'Deep Connection',
-        energy: 85,
-        connections: [],
-        isActive: false
-      },
-      {
-        id: 'dot-5',
-        x: centerX + Math.cos(Math.PI / 4) * 120,
-        y: centerY + Math.sin(Math.PI / 4) * 120,
-        radius: 120,
-        angle: Math.PI / 4,
-        type: 'challenge',
-        label: 'Overcome Fears',
-        energy: 60,
-        connections: [],
-        isActive: false
-      }
+    const forceDots: CalmMagicDot[] = [];
+    
+    // Define force positions (quadrants) and their appearances on different rings
+    const forceConfigs = [
+      { force: 'sovereignty' as const, baseAngle: Math.PI / 4, label: 'Sovereignty', quadrant: 'upper-right' },
+      { force: 'memory' as const, baseAngle: 3 * Math.PI / 4, label: 'Memory', quadrant: 'upper-left' },
+      { force: 'intimacy' as const, baseAngle: 5 * Math.PI / 4, label: 'Intimacy', quadrant: 'lower-left' },
+      { force: 'novelty' as const, baseAngle: 7 * Math.PI / 4, label: 'Novelty', quadrant: 'lower-right' }
     ];
-    setExperienceDots(defaultDots);
-  }, []);
+
+    forceConfigs.forEach((config, forceIndex) => {
+      // Place each force on 2-3 rings with slight angle variations
+      [0, 1, 2].forEach((ringIndex) => {
+        const radius = rings[ringIndex];
+        const angleVariation = (ringIndex - 1) * 0.3; // Slight angle offset for variety
+        const angle = config.baseAngle + angleVariation;
+        
+        forceDots.push({
+          id: `${config.force}-ring-${ringIndex}`,
+          x: centerX + Math.cos(angle) * radius,
+          y: centerY + Math.sin(angle) * radius,
+          radius,
+          angle,
+          force: config.force,
+          label: `${config.label} (Ring ${ringIndex + 1})`,
+          energy: forceStrength[config.force],
+          isActive: false,
+          ring: ringIndex
+        });
+      });
+    });
+
+    setCalmMagicDots(forceDots);
+  }, [forceStrength]);
+
+  // Initialize Web Audio API
+  useEffect(() => {
+    if (soundEnabled && !audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+  }, [soundEnabled]);
 
   // Arrow rotation animation
   useEffect(() => {
@@ -133,18 +117,48 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
     };
   }, [isRotating, rotationSpeed]);
 
-  // Check for arrow-dot collisions
-  useEffect(() => {
-    const arrowX = centerX + Math.cos(arrowAngle) * 200;
-    const arrowY = centerY + Math.sin(arrowAngle) * 200;
+  // Play calm eery sound for force collisions
+  const playForceSound = (force: CalmMagicDot['force']) => {
+    if (!soundEnabled || !audioContextRef.current) return;
 
-    setExperienceDots(prev => prev.map(dot => {
+    const audioContext = audioContextRef.current;
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    // Different frequencies for each force creating harmonious tones
+    const frequencies = {
+      sovereignty: 440, // A4 - higher, representing elevation
+      memory: 330,     // E4 - mid-high, representing reflection
+      intimacy: 261.63, // C4 - mid-low, representing grounding
+      novelty: 196     // G3 - lower, representing exploration
+    };
+
+    oscillator.frequency.setValueAtTime(frequencies[force], audioContext.currentTime);
+    oscillator.type = 'sine';
+    
+    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.1);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 1.5);
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 1.5);
+  };
+
+  // Check for arrow-dot collisions and create force connections
+  useEffect(() => {
+    const arrowX = centerX + Math.cos(arrowAngle) * 220;
+    const arrowY = centerY + Math.sin(arrowAngle) * 220;
+
+    setCalmMagicDots(prev => prev.map(dot => {
       const distance = Math.sqrt((dot.x - arrowX) ** 2 + (dot.y - arrowY) ** 2);
       const isNearArrow = distance < 25;
       
       if (isNearArrow && !dot.isActive) {
-        // Create connections when arrow hits dot
-        createConnections(dot.id);
+        playForceSound(dot.force);
+        createForceConnections(dot);
       }
       
       return {
@@ -152,26 +166,23 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
         isActive: isNearArrow
       };
     }));
-  }, [arrowAngle]);
+  }, [arrowAngle, soundEnabled]);
 
-  const createConnections = (dotId: string) => {
-    const sourceDot = experienceDots.find(d => d.id === dotId);
-    if (!sourceDot) return;
-
-    const newConnections: Connection[] = [];
+  const createForceConnections = (sourceDot: CalmMagicDot) => {
+    const newConnections: ForceConnection[] = [];
     
-    // Find compatible dots to connect to
-    experienceDots.forEach(targetDot => {
-      if (targetDot.id !== dotId) {
-        const compatibility = calculateCompatibility(sourceDot, targetDot);
-        if (compatibility > 0.5) {
-          const connectionType = determineConnectionType(sourceDot.type, targetDot.type);
+    calmMagicDots.forEach(targetDot => {
+      if (targetDot.id !== sourceDot.id) {
+        const connectionType = determineConnectionType(sourceDot.force, targetDot.force);
+        const strength = calculateForceCompatibility(sourceDot, targetDot);
+        
+        if (strength > 0.3) {
           newConnections.push({
-            id: `connection-${dotId}-${targetDot.id}`,
-            fromDot: dotId,
+            id: `connection-${sourceDot.id}-${targetDot.id}`,
+            fromDot: sourceDot.id,
             toDot: targetDot.id,
             type: connectionType,
-            strength: compatibility,
+            strength,
             isActive: true
           });
         }
@@ -179,83 +190,68 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
     });
 
     setConnections(prev => [
-      ...prev.filter(c => c.fromDot !== dotId),
+      ...prev.filter(c => c.fromDot !== sourceDot.id),
       ...newConnections
     ]);
 
-    // Auto-fade connections after 3 seconds
+    // Auto-fade connections after 4 seconds
     setTimeout(() => {
       setConnections(prev => prev.map(c => 
         newConnections.some(nc => nc.id === c.id) 
           ? { ...c, isActive: false }
           : c
       ));
-    }, 3000);
+    }, 4000);
   };
 
-  const calculateCompatibility = (dot1: ExperienceDot, dot2: ExperienceDot): number => {
-    const typeCompatibility = {
-      creative: { healing: 0.8, learning: 0.9, relationship: 0.7, challenge: 0.6 },
-      healing: { creative: 0.8, learning: 0.7, relationship: 0.9, challenge: 0.8 },
-      learning: { creative: 0.9, healing: 0.7, relationship: 0.6, challenge: 0.7 },
-      relationship: { creative: 0.7, healing: 0.9, learning: 0.6, challenge: 0.5 },
-      challenge: { creative: 0.6, healing: 0.8, learning: 0.7, relationship: 0.5 }
-    };
+  const determineConnectionType = (force1: CalmMagicDot['force'], force2: CalmMagicDot['force']): ForceConnection['type'] => {
+    const connessors = ['memory', 'intimacy'];
+    const magnesors = ['sovereignty', 'novelty'];
     
-    return typeCompatibility[dot1.type]?.[dot2.type] || 0.5;
-  };
-
-  const determineConnectionType = (type1: ExperienceDot['type'], type2: ExperienceDot['type']): Connection['type'] => {
-    if (type1 === 'healing' || type2 === 'healing') return 'healing';
-    if (type1 === 'creative' || type2 === 'creative') return 'creative';
-    if (type1 === 'learning' || type2 === 'learning') return 'learning';
-    return 'integration';
-  };
-
-  const addExperienceDot = (event: React.MouseEvent<SVGSVGElement>) => {
-    const rect = svgRef.current?.getBoundingClientRect();
-    if (!rect) return;
-
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    const distance = Math.sqrt((x - centerX) ** 2 + (y - centerY) ** 2);
-    
-    if (distance > 40 && distance < maxRadius) {
-      const angle = Math.atan2(y - centerY, x - centerX);
-      const newDot: ExperienceDot = {
-        id: `dot-${Date.now()}`,
-        x,
-        y,
-        radius: distance,
-        angle,
-        type: selectedDotType,
-        label: `New ${selectedDotType} experience`,
-        energy: 50,
-        connections: [],
-        isActive: false
-      };
-      
-      setExperienceDots(prev => [...prev, newDot]);
+    if (connessors.includes(force1) && connessors.includes(force2)) {
+      return 'connessor';
     }
+    if (magnesors.includes(force1) && magnesors.includes(force2)) {
+      return 'magnesor';
+    }
+    if ((connessors.includes(force1) && magnesors.includes(force2)) || 
+        (magnesors.includes(force1) && connessors.includes(force2))) {
+      return 'integration';
+    }
+    return 'balance';
   };
 
-  const getTypeColor = (type: ExperienceDot['type']) => {
-    const colors = {
-      creative: '#8b5cf6',
-      healing: '#10b981',
-      learning: '#3b82f6',
-      relationship: '#f59e0b',
-      challenge: '#ef4444'
+  const calculateForceCompatibility = (dot1: CalmMagicDot, dot2: CalmMagicDot): number => {
+    // Higher compatibility for same force type and complementary forces
+    const forceCompatibility = {
+      sovereignty: { sovereignty: 0.9, memory: 0.6, intimacy: 0.7, novelty: 0.8 },
+      memory: { sovereignty: 0.6, memory: 0.9, intimacy: 0.8, novelty: 0.5 },
+      intimacy: { sovereignty: 0.7, memory: 0.8, intimacy: 0.9, novelty: 0.6 },
+      novelty: { sovereignty: 0.8, memory: 0.5, intimacy: 0.6, novelty: 0.9 }
     };
-    return colors[type];
+    
+    const baseCompatibility = forceCompatibility[dot1.force][dot2.force];
+    const energyBalance = Math.min(dot1.energy, dot2.energy) / 100;
+    
+    return baseCompatibility * energyBalance;
   };
 
-  const getConnectionColor = (type: Connection['type']) => {
+  const getForceColor = (force: CalmMagicDot['force']) => {
     const colors = {
-      healing: '#10b981',
-      creative: '#8b5cf6',
-      learning: '#3b82f6',
-      integration: '#f59e0b'
+      sovereignty: '#fbbf24', // Gold/yellow
+      memory: '#3b82f6',      // Blue
+      intimacy: '#10b981',    // Green
+      novelty: '#8b5cf6'      // Purple
+    };
+    return colors[force];
+  };
+
+  const getConnectionColor = (type: ForceConnection['type']) => {
+    const colors = {
+      connessor: '#06b6d4',   // Cyan - Memory + Intimacy
+      magnesor: '#f59e0b',    // Amber - Sovereignty + Novelty
+      integration: '#ec4899', // Pink - Cross-connections
+      balance: '#84cc16'      // Lime - All forces balanced
     };
     return colors[type];
   };
@@ -264,13 +260,22 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <span>🌟 Experience Pathways Explorer</span>
-          <Badge variant="outline">{mode} Mode</Badge>
+          <span>🌟 Calm Magic Forces Explorer</span>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline">{mode} Mode</Badge>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setSoundEnabled(!soundEnabled)}
+            >
+              {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+            </Button>
+          </div>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Controls */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
           <Button
             variant={isRotating ? "default" : "outline"}
             size="sm"
@@ -289,27 +294,14 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
             Reset
           </Button>
 
-          <select
-            value={selectedDotType}
-            onChange={(e) => setSelectedDotType(e.target.value as ExperienceDot['type'])}
-            className="px-2 py-1 text-sm border rounded"
-          >
-            <option value="creative">Creative</option>
-            <option value="healing">Healing</option>
-            <option value="learning">Learning</option>
-            <option value="relationship">Relationship</option>
-            <option value="challenge">Challenge</option>
-          </select>
-
-          <div className="flex items-center gap-2">
-            <Plus className="w-4 h-4" />
-            <span className="text-xs">Click to add</span>
+          <div className="text-xs text-center self-center">
+            Sound: {soundEnabled ? 'ON' : 'OFF'}
           </div>
         </div>
 
         {/* Speed Control */}
         <div className="space-y-2">
-          <label className="text-sm font-medium">Arrow Speed</label>
+          <label className="text-sm font-medium">Freedom Arrow Speed</label>
           <Slider
             value={[rotationSpeed]}
             onValueChange={([value]) => setRotationSpeed(value)}
@@ -320,17 +312,38 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
           />
         </div>
 
+        {/* Force Strength Controls */}
+        <div className="grid grid-cols-2 gap-4">
+          {Object.entries(forceStrength).map(([force, strength]) => (
+            <div key={force} className="space-y-2">
+              <label className="text-sm font-medium capitalize flex items-center gap-2">
+                <div 
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: getForceColor(force as CalmMagicDot['force']) }}
+                />
+                {force}: {strength}%
+              </label>
+              <Slider
+                value={[strength]}
+                onValueChange={([value]) => setForceStrength(prev => ({ ...prev, [force]: value }))}
+                max={100}
+                step={1}
+                className="w-full"
+              />
+            </div>
+          ))}
+        </div>
+
         {/* Visualization */}
         <div className="relative">
           <svg
             ref={svgRef}
             width="600"
             height="500"
-            className="mx-auto border rounded-lg bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 cursor-crosshair"
-            onClick={addExperienceDot}
+            className="mx-auto border rounded-lg bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20"
           >
             {/* Background concentric circles */}
-            {[60, 100, 140, 180].map(radius => (
+            {rings.map(radius => (
               <circle
                 key={radius}
                 cx={centerX}
@@ -339,14 +352,14 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                 fill="none"
                 stroke="#e2e8f0"
                 strokeWidth="1"
-                opacity="0.3"
+                opacity="0.4"
               />
             ))}
 
-            {/* Connections */}
+            {/* Force connections */}
             {connections.filter(c => c.isActive).map(connection => {
-              const fromDot = experienceDots.find(d => d.id === connection.fromDot);
-              const toDot = experienceDots.find(d => d.id === connection.toDot);
+              const fromDot = calmMagicDots.find(d => d.id === connection.fromDot);
+              const toDot = calmMagicDots.find(d => d.id === connection.toDot);
               if (!fromDot || !toDot) return null;
 
               return (
@@ -357,52 +370,60 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                     x2={toDot.x}
                     y2={toDot.y}
                     stroke={getConnectionColor(connection.type)}
-                    strokeWidth={connection.strength * 4}
-                    opacity="0.7"
+                    strokeWidth={connection.strength * 5}
+                    opacity="0.8"
                     className="animate-pulse"
                   />
                   {/* Flow particles */}
                   <circle
-                    cx={fromDot.x + (toDot.x - fromDot.x) * 0.5}
-                    cy={fromDot.y + (toDot.y - fromDot.y) * 0.5}
+                    cx={fromDot.x + (toDot.x - fromDot.x) * 0.3}
+                    cy={fromDot.y + (toDot.y - fromDot.y) * 0.3}
+                    r="4"
+                    fill={getConnectionColor(connection.type)}
+                    className="animate-ping"
+                  />
+                  <circle
+                    cx={fromDot.x + (toDot.x - fromDot.x) * 0.7}
+                    cy={fromDot.y + (toDot.y - fromDot.y) * 0.7}
                     r="3"
                     fill={getConnectionColor(connection.type)}
                     className="animate-ping"
+                    style={{ animationDelay: '0.5s' }}
                   />
                 </g>
               );
             })}
 
-            {/* Experience dots */}
-            {experienceDots.map(dot => (
+            {/* Calm Magic Force dots */}
+            {calmMagicDots.map(dot => (
               <g key={dot.id}>
                 <circle
                   cx={dot.x}
                   cy={dot.y}
-                  r={dot.isActive ? 12 : 8}
-                  fill={getTypeColor(dot.type)}
-                  opacity={dot.isActive ? 1 : 0.7}
+                  r={dot.isActive ? 14 : 10}
+                  fill={getForceColor(dot.force)}
+                  opacity={dot.isActive ? 1 : 0.8}
                   className={dot.isActive ? "animate-pulse" : ""}
                 />
                 <circle
                   cx={dot.x}
                   cy={dot.y}
-                  r={dot.isActive ? 18 : 12}
+                  r={dot.isActive ? 20 : 15}
                   fill="none"
-                  stroke={getTypeColor(dot.type)}
+                  stroke={getForceColor(dot.force)}
                   strokeWidth="2"
-                  opacity={dot.isActive ? 0.5 : 0.3}
+                  opacity={dot.isActive ? 0.6 : 0.3}
                 />
                 {dot.isActive && (
                   <text
                     x={dot.x}
-                    y={dot.y - 25}
+                    y={dot.y - 28}
                     textAnchor="middle"
-                    fontSize="10"
+                    fontSize="11"
                     fill="#333"
                     className="font-medium"
                   >
-                    {dot.label}
+                    {dot.force.charAt(0).toUpperCase() + dot.force.slice(1)}
                   </text>
                 )}
               </g>
@@ -413,20 +434,20 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
               <line
                 x1="0"
                 y1="0"
-                x2="200"
+                x2="220"
                 y2="0"
                 stroke="#ff6b6b"
-                strokeWidth="3"
-                opacity="0.8"
+                strokeWidth="4"
+                opacity="0.9"
               />
               <polygon
-                points="200,0 190,-5 190,5"
+                points="220,0 210,-6 210,6"
                 fill="#ff6b6b"
               />
               <circle
                 cx="0"
                 cy="0"
-                r="8"
+                r="10"
                 fill="#ff6b6b"
               />
             </g>
@@ -436,37 +457,64 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
               x={centerX}
               y={centerY + 4}
               textAnchor="middle"
-              fontSize="10"
+              fontSize="12"
               fill="#666"
-              className="font-semibold"
+              className="font-bold"
             >
               Freedom
             </text>
+
+            {/* Quadrant labels */}
+            <text x={380} y={100} fontSize="11" fill="#666" textAnchor="middle" className="font-medium">Sovereignty</text>
+            <text x={220} y={100} fontSize="11" fill="#666" textAnchor="middle" className="font-medium">Memory</text>
+            <text x={220} y={400} fontSize="11" fill="#666" textAnchor="middle" className="font-medium">Intimacy</text>
+            <text x={380} y={400} fontSize="11" fill="#666" textAnchor="middle" className="font-medium">Novelty</text>
           </svg>
         </div>
 
-        {/* Legend */}
-        <div className="grid grid-cols-5 gap-2 text-xs">
-          {(['creative', 'healing', 'learning', 'relationship', 'challenge'] as const).map(type => (
-            <div key={type} className="flex items-center gap-1">
-              <div
-                className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: getTypeColor(type) }}
-              />
-              <span className="capitalize">{type}</span>
+        {/* Force Legend & Connection Types */}
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <h4 className="font-medium mb-2">Calm Magic Forces</h4>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              {(['sovereignty', 'memory', 'intimacy', 'novelty'] as const).map(force => (
+                <div key={force} className="flex items-center gap-2">
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: getForceColor(force) }}
+                  />
+                  <span className="capitalize">{force}</span>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+          
+          <div>
+            <h4 className="font-medium mb-2">Connection Pathways</h4>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              {(['connessor', 'magnesor', 'integration', 'balance'] as const).map(type => (
+                <div key={type} className="flex items-center gap-2">
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: getConnectionColor(type) }}
+                  />
+                  <span className="capitalize">{type}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Instructions */}
-        <div className="bg-blue-50 dark:bg-blue-950/30 rounded-lg p-3 text-sm">
-          <p className="font-medium text-blue-700 dark:text-blue-300 mb-1">How to use:</p>
-          <ul className="text-blue-600 dark:text-blue-400 space-y-1 text-xs">
-            <li>• Start the freedom arrow to watch it rotate around your experiences</li>
-            <li>• When the arrow touches experience dots, it reveals hidden connections</li>
-            <li>• Click anywhere on the circles to add new experience dots</li>
-            <li>• Different colors represent different types of life experiences</li>
-            <li>• Watch how creative, healing, and learning pathways emerge!</li>
+        <div className="bg-purple-50 dark:bg-purple-950/30 rounded-lg p-3 text-sm">
+          <p className="font-medium text-purple-700 dark:text-purple-300 mb-1">Calm Magic Forces Explorer:</p>
+          <ul className="text-purple-600 dark:text-purple-400 space-y-1 text-xs">
+            <li>• Start the freedom arrow to watch it move through your consciousness</li>
+            <li>• When it touches force dots, hear calm eery sounds and see connections emerge</li>
+            <li>• Connessor pathways (Memory + Intimacy) create grounding and reflection</li>
+            <li>• Magnesor pathways (Sovereignty + Novelty) create expansion and exploration</li>
+            <li>• Integration pathways bridge different forces for balanced growth</li>
+            <li>• Adjust force strengths to see how it affects connection patterns</li>
           </ul>
         </div>
       </CardContent>
