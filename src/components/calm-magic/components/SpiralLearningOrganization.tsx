@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import TorusEnergyField from './TorusEnergyField';
+import EnhancedTorusEnergyField from './EnhancedTorusEnergyField';
 import SpiralVsLoopComparator from './SpiralVsLoopComparator';
 import OrganizationalCoherenceTracker from './OrganizationalCoherenceTracker';
 import AIIntegrationPoints from './AIIntegrationPoints';
@@ -31,6 +31,7 @@ const SpiralLearningOrganization: React.FC = () => {
           <Badge variant="outline">Sacred Geometry</Badge>
           <Badge variant="outline">Collective Coherence</Badge>
           <Badge variant="outline">AI Integration</Badge>
+          <Badge variant="outline">Experience Pathways</Badge>
         </div>
       </div>
 
@@ -45,7 +46,7 @@ const SpiralLearningOrganization: React.FC = () => {
         </TabsList>
 
         <TabsContent value="torus" className="space-y-4">
-          <TorusEnergyField mode={mode} />
+          <EnhancedTorusEnergyField mode={mode} />
         </TabsContent>
 
         <TabsContent value="spiral" className="space-y-4">

@@ -7,6 +7,7 @@ import CalmMagicLensOverlay from './CalmMagicLensOverlay';
 import RitualizedJourneyMap from './RitualizedJourneyMap';
 import EmotiveCompassWidget from './EmotiveCompassWidget';
 import PulseToPatternVisualizer from './PulseToPatternVisualizer';
+import ExperienceDotsVisualization from '../components/ExperienceDotsVisualization';
 
 interface InteractiveToolsPanelProps {
   emotionalState: Partial<EmotionalState>;
@@ -20,12 +21,13 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
   return (
     <div className="w-full">
       <Tabs defaultValue="framework" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="framework">📊 Framework</TabsTrigger>
           <TabsTrigger value="lens">🔍 Lens</TabsTrigger>
           <TabsTrigger value="journey">🗺️ Journey</TabsTrigger>
           <TabsTrigger value="compass">🧭 Compass</TabsTrigger>
           <TabsTrigger value="visualizer">🌌 Visualizer</TabsTrigger>
+          <TabsTrigger value="pathways">✨ Pathways</TabsTrigger>
         </TabsList>
 
         <TabsContent value="framework" className="space-y-4">
@@ -52,6 +54,10 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
 
         <TabsContent value="visualizer" className="space-y-4">
           <PulseToPatternVisualizer />
+        </TabsContent>
+
+        <TabsContent value="pathways" className="space-y-4">
+          <ExperienceDotsVisualization mode="personal" />
         </TabsContent>
       </Tabs>
     </div>
