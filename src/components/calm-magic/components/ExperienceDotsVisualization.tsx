@@ -1,9 +1,12 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
-import { Play, Pause, RotateCcw, Volume2, VolumeX } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Play, Pause, RotateCcw, Volume2, VolumeX, Plus, Trash2, Target } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface CalmMagicDot {
   id: string;
@@ -15,7 +18,8 @@ interface CalmMagicDot {
   label: string;
   energy: number;
   isActive: boolean;
-  ring: number; // which concentric ring it's on
+  ring: number;
+  isUserAdded: boolean;
 }
 
 interface ForceConnection {
@@ -25,6 +29,7 @@ interface ForceConnection {
   type: 'connessor' | 'magnesor' | 'integration' | 'balance';
   strength: number;
   isActive: boolean;
+  isCrossRing: boolean;
 }
 
 interface ExperienceDotsVisualizationProps {
@@ -39,9 +44,13 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
   const [arrowAngle, setArrowAngle] = useState(0);
   const [isRotating, setIsRotating] = useState(false);
   const [rotationSpeed, setRotationSpeed] = useState(1);
+  const [arrowLength, setArrowLength] = useState(160);
   const [calmMagicDots, setCalmMagicDots] = useState<CalmMagicDot[]>([]);
   const [connections, setConnections] = useState<ForceConnection[]>([]);
   const [soundEnabled, setSoundEnabled] = useState(false);
+  const [selectedForce, setSelectedForce] = useState<CalmMagicDot['force']>('sovereignty');
+  const [placementMode, setPlacementMode] = useState(false);
+  const [hoveredRing, setHoveredRing] = useState<number | null>(null);
   const [forceStrength, setForceStrength] = useState({
     sovereignty: 80,
     memory: 70,
@@ -51,22 +60,20 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
 
   const centerX = 300;
   const centerY = 250;
-  const rings = [80, 110, 140]; // Three concentric circles like freedom compass
+  const rings = [80, 110, 140];
 
-  // Initialize the 4 Calm Magic forces on exactly 3 concentric circles
+  // Initialize the 4 default Calm Magic forces on cardinal directions
   useEffect(() => {
     const forceDots: CalmMagicDot[] = [];
     
-    // Define force positions at exact cardinal directions
     const forceConfigs = [
-      { force: 'sovereignty' as const, angle: 0, label: 'Sovereignty' }, // East/Right (0°)
-      { force: 'memory' as const, angle: Math.PI / 2, label: 'Memory' }, // South/Bottom (90°)
-      { force: 'intimacy' as const, angle: Math.PI, label: 'Intimacy' }, // West/Left (180°)
-      { force: 'novelty' as const, angle: 3 * Math.PI / 2, label: 'Novelty' } // North/Top (270°)
+      { force: 'sovereignty' as const, angle: 0, label: 'Sovereignty' },
+      { force: 'memory' as const, angle: Math.PI / 2, label: 'Memory' },
+      { force: 'intimacy' as const, angle: Math.PI, label: 'Intimacy' },
+      { force: 'novelty' as const, angle: 3 * Math.PI / 2, label: 'Novelty' }
     ];
 
     forceConfigs.forEach((config) => {
-      // Place each force on all 3 rings at exact cardinal directions
       rings.forEach((radius, ringIndex) => {
         forceDots.push({
           id: `${config.force}-ring-${ringIndex}`,
@@ -78,12 +85,16 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
           label: `${config.label} (Level ${ringIndex + 1})`,
           energy: forceStrength[config.force],
           isActive: false,
-          ring: ringIndex
+          ring: ringIndex,
+          isUserAdded: false
         });
       });
     });
 
-    setCalmMagicDots(forceDots);
+    setCalmMagicDots(prev => [
+      ...prev.filter(dot => dot.isUserAdded),
+      ...forceDots
+    ]);
   }, [forceStrength]);
 
   // Initialize Web Audio API
@@ -112,6 +123,61 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
     };
   }, [isRotating, rotationSpeed]);
 
+  // Handle SVG clicks for dot placement
+  const handleSVGClick = (event: React.MouseEvent<SVGSVGElement>) => {
+    if (!placementMode) return;
+
+    const svgRect = event.currentTarget.getBoundingClientRect();
+    const clickX = event.clientX - svgRect.left;
+    const clickY = event.clientY - svgRect.top;
+    
+    const dx = clickX - centerX;
+    const dy = clickY - centerY;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    
+    // Find which ring this click is closest to
+    let targetRing = -1;
+    let minDiff = Infinity;
+    
+    rings.forEach((radius, index) => {
+      const diff = Math.abs(distance - radius);
+      if (diff < minDiff && diff < 25) { // 25px tolerance
+        minDiff = diff;
+        targetRing = index;
+      }
+    });
+    
+    if (targetRing === -1) return;
+    
+    const angle = Math.atan2(dy, dx);
+    const targetRadius = rings[targetRing];
+    const x = centerX + Math.cos(angle) * targetRadius;
+    const y = centerY + Math.sin(angle) * targetRadius;
+    
+    const newDot: CalmMagicDot = {
+      id: `user-${Date.now()}-${Math.random()}`,
+      x,
+      y,
+      radius: targetRadius,
+      angle,
+      force: selectedForce,
+      label: `${selectedForce.charAt(0).toUpperCase() + selectedForce.slice(1)} (Custom)`,
+      energy: forceStrength[selectedForce],
+      isActive: false,
+      ring: targetRing,
+      isUserAdded: true
+    };
+    
+    setCalmMagicDots(prev => [...prev, newDot]);
+  };
+
+  // Handle ring hover
+  const handleRingHover = (ringIndex: number | null) => {
+    if (placementMode) {
+      setHoveredRing(ringIndex);
+    }
+  };
+
   // Play calm eery sound for force collisions
   const playForceSound = (force: CalmMagicDot['force']) => {
     if (!soundEnabled || !audioContextRef.current) return;
@@ -120,12 +186,11 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
     const oscillator = audioContext.createOscillator();
     const gainNode = audioContext.createGain();
 
-    // Different frequencies for each force creating harmonious tones
     const frequencies = {
-      sovereignty: 440, // A4 - higher, representing elevation
-      memory: 330,     // E4 - mid-high, representing reflection
-      intimacy: 261.63, // C4 - mid-low, representing grounding
-      novelty: 196     // G3 - lower, representing exploration
+      sovereignty: 440,
+      memory: 330,
+      intimacy: 261.63,
+      novelty: 196
     };
 
     oscillator.frequency.setValueAtTime(frequencies[force], audioContext.currentTime);
@@ -144,11 +209,11 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
 
   // Check for arrow-dot collisions and create force connections
   useEffect(() => {
-    const arrowX = centerX + Math.cos(arrowAngle) * 220;
-    const arrowY = centerY + Math.sin(arrowAngle) * 220;
+    const arrowTipX = centerX + Math.cos(arrowAngle) * arrowLength;
+    const arrowTipY = centerY + Math.sin(arrowAngle) * arrowLength;
 
     setCalmMagicDots(prev => prev.map(dot => {
-      const distance = Math.sqrt((dot.x - arrowX) ** 2 + (dot.y - arrowY) ** 2);
+      const distance = Math.sqrt((dot.x - arrowTipX) ** 2 + (dot.y - arrowTipY) ** 2);
       const isNearArrow = distance < 25;
       
       if (isNearArrow && !dot.isActive) {
@@ -161,7 +226,7 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
         isActive: isNearArrow
       };
     }));
-  }, [arrowAngle, soundEnabled]);
+  }, [arrowAngle, arrowLength, soundEnabled]);
 
   const createForceConnections = (sourceDot: CalmMagicDot) => {
     const newConnections: ForceConnection[] = [];
@@ -170,15 +235,22 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
       if (targetDot.id !== sourceDot.id) {
         const connectionType = determineConnectionType(sourceDot.force, targetDot.force);
         const strength = calculateForceCompatibility(sourceDot, targetDot);
+        const isCrossRing = sourceDot.ring !== targetDot.ring;
         
-        if (strength > 0.3) {
+        // Prioritize cross-ring connections and different forces
+        let adjustedStrength = strength;
+        if (isCrossRing) adjustedStrength += 0.3;
+        if (sourceDot.force !== targetDot.force) adjustedStrength += 0.2;
+        
+        if (adjustedStrength > 0.3) {
           newConnections.push({
             id: `connection-${sourceDot.id}-${targetDot.id}`,
             fromDot: sourceDot.id,
             toDot: targetDot.id,
             type: connectionType,
-            strength,
-            isActive: true
+            strength: Math.min(adjustedStrength, 1),
+            isActive: true,
+            isCrossRing
           });
         }
       }
@@ -189,7 +261,6 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
       ...newConnections
     ]);
 
-    // Auto-fade connections after 4 seconds
     setTimeout(() => {
       setConnections(prev => prev.map(c => 
         newConnections.some(nc => nc.id === c.id) 
@@ -217,7 +288,6 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
   };
 
   const calculateForceCompatibility = (dot1: CalmMagicDot, dot2: CalmMagicDot): number => {
-    // Higher compatibility for same force type and complementary forces
     const forceCompatibility = {
       sovereignty: { sovereignty: 0.9, memory: 0.6, intimacy: 0.7, novelty: 0.8 },
       memory: { sovereignty: 0.6, memory: 0.9, intimacy: 0.8, novelty: 0.5 },
@@ -233,292 +303,424 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
 
   const getForceColor = (force: CalmMagicDot['force']) => {
     const colors = {
-      sovereignty: '#fbbf24', // Gold/yellow
-      memory: '#3b82f6',      // Blue
-      intimacy: '#10b981',    // Green
-      novelty: '#8b5cf6'      // Purple
+      sovereignty: '#fbbf24',
+      memory: '#3b82f6',
+      intimacy: '#10b981',
+      novelty: '#8b5cf6'
     };
     return colors[force];
   };
 
   const getConnectionColor = (type: ForceConnection['type']) => {
     const colors = {
-      connessor: '#06b6d4',   // Cyan - Memory + Intimacy
-      magnesor: '#f59e0b',    // Amber - Sovereignty + Novelty
-      integration: '#ec4899', // Pink - Cross-connections
-      balance: '#84cc16'      // Lime - All forces balanced
+      connessor: '#06b6d4',
+      magnesor: '#f59e0b',
+      integration: '#ec4899',
+      balance: '#84cc16'
     };
     return colors[type];
   };
 
+  const deleteUserDot = (dotId: string) => {
+    setCalmMagicDots(prev => prev.filter(dot => dot.id !== dotId));
+    setConnections(prev => prev.filter(c => c.fromDot !== dotId && c.toDot !== dotId));
+  };
+
+  const clearAllUserDots = () => {
+    setCalmMagicDots(prev => prev.filter(dot => !dot.isUserAdded));
+    setConnections([]);
+  };
+
+  const resetToDefault = () => {
+    setCalmMagicDots(prev => prev.filter(dot => !dot.isUserAdded));
+    setConnections([]);
+    setArrowAngle(0);
+    setArrowLength(160);
+  };
+
+  const userDots = calmMagicDots.filter(dot => dot.isUserAdded);
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between">
-          <span>🌟 Calm Magic Forces Explorer</span>
-          <div className="flex items-center gap-2">
-            <Badge variant="outline">{mode} Mode</Badge>
+    <TooltipProvider>
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            <span>🌟 Interactive Calm Magic Forces Explorer</span>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline">{mode} Mode</Badge>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSoundEnabled(!soundEnabled)}
+              >
+                {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+              </Button>
+            </div>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Controls */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <Button
+              variant={isRotating ? "default" : "outline"}
+              size="sm"
+              onClick={() => setIsRotating(!isRotating)}
+            >
+              {isRotating ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+              {isRotating ? 'Pause' : 'Start'}
+            </Button>
+            
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setSoundEnabled(!soundEnabled)}
+              onClick={() => setArrowAngle(0)}
             >
-              {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+              <RotateCcw className="w-4 h-4" />
+              Reset
+            </Button>
+
+            <Button
+              variant={placementMode ? "default" : "outline"}
+              size="sm"
+              onClick={() => setPlacementMode(!placementMode)}
+            >
+              {placementMode ? <Target className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+              {placementMode ? 'Placing' : 'Add Dots'}
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={clearAllUserDots}
+              disabled={userDots.length === 0}
+            >
+              <Trash2 className="w-4 h-4" />
+              Clear Custom
             </Button>
           </div>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Controls */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-          <Button
-            variant={isRotating ? "default" : "outline"}
-            size="sm"
-            onClick={() => setIsRotating(!isRotating)}
-          >
-            {isRotating ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-            {isRotating ? 'Pause' : 'Start'} Arrow
-          </Button>
-          
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setArrowAngle(0)}
-          >
-            <RotateCcw className="w-4 h-4" />
-            Reset
-          </Button>
 
-          <div className="text-xs text-center self-center">
-            Sound: {soundEnabled ? 'ON' : 'OFF'}
-          </div>
-        </div>
+          {/* Placement Mode Controls */}
+          {placementMode && (
+            <div className="p-3 bg-purple-50 dark:bg-purple-950/30 rounded-lg">
+              <div className="flex items-center gap-4">
+                <span className="text-sm font-medium">Select Force:</span>
+                <Select value={selectedForce} onValueChange={(value: CalmMagicDot['force']) => setSelectedForce(value)}>
+                  <SelectTrigger className="w-32">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="sovereignty">Sovereignty</SelectItem>
+                    <SelectItem value="memory">Memory</SelectItem>
+                    <SelectItem value="intimacy">Intimacy</SelectItem>
+                    <SelectItem value="novelty">Novelty</SelectItem>
+                  </SelectContent>
+                </Select>
+                <span className="text-xs text-purple-600 dark:text-purple-400">
+                  Click on any concentric circle to place a {selectedForce} dot
+                </span>
+              </div>
+            </div>
+          )}
 
-        {/* Speed Control */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium">Freedom Arrow Speed</label>
-          <Slider
-            value={[rotationSpeed]}
-            onValueChange={([value]) => setRotationSpeed(value)}
-            min={0.1}
-            max={3}
-            step={0.1}
-            className="w-full"
-          />
-        </div>
-
-        {/* Force Strength Controls */}
-        <div className="grid grid-cols-2 gap-4">
-          {Object.entries(forceStrength).map(([force, strength]) => (
-            <div key={force} className="space-y-2">
-              <label className="text-sm font-medium capitalize flex items-center gap-2">
-                <div 
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: getForceColor(force as CalmMagicDot['force']) }}
-                />
-                {force}: {strength}%
-              </label>
+          {/* Speed and Arrow Length Controls */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Freedom Arrow Speed</label>
               <Slider
-                value={[strength]}
-                onValueChange={([value]) => setForceStrength(prev => ({ ...prev, [force]: value }))}
-                max={100}
-                step={1}
+                value={[rotationSpeed]}
+                onValueChange={([value]) => setRotationSpeed(value)}
+                min={0.1}
+                max={3}
+                step={0.1}
                 className="w-full"
               />
             </div>
-          ))}
-        </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Arrow Length (Reach): {arrowLength}px</label>
+              <Slider
+                value={[arrowLength]}
+                onValueChange={([value]) => setArrowLength(value)}
+                min={60}
+                max={200}
+                step={5}
+                className="w-full"
+              />
+            </div>
+          </div>
 
-        {/* Visualization */}
-        <div className="relative">
-          <svg
-            ref={svgRef}
-            width="600"
-            height="500"
-            className="mx-auto border rounded-lg bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20"
-          >
-            {/* Background concentric circles - exactly 3 like freedom compass */}
-            {rings.map((radius, index) => (
+          {/* Force Strength Controls */}
+          <div className="grid grid-cols-2 gap-4">
+            {Object.entries(forceStrength).map(([force, strength]) => (
+              <div key={force} className="space-y-2">
+                <label className="text-sm font-medium capitalize flex items-center gap-2">
+                  <div 
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: getForceColor(force as CalmMagicDot['force']) }}
+                  />
+                  {force}: {strength}%
+                </label>
+                <Slider
+                  value={[strength]}
+                  onValueChange={([value]) => setForceStrength(prev => ({ ...prev, [force]: value }))}
+                  max={100}
+                  step={1}
+                  className="w-full"
+                />
+              </div>
+            ))}
+          </div>
+
+          {/* User Dots Management */}
+          {userDots.length > 0 && (
+            <div className="space-y-2">
+              <h4 className="font-medium">Custom Dots ({userDots.length})</h4>
+              <div className="grid grid-cols-2 gap-2 max-h-24 overflow-y-auto">
+                {userDots.map(dot => (
+                  <div key={dot.id} className="flex items-center justify-between bg-gray-50 dark:bg-gray-800 p-2 rounded text-xs">
+                    <span className="flex items-center gap-1">
+                      <div
+                        className="w-2 h-2 rounded-full"
+                        style={{ backgroundColor: getForceColor(dot.force) }}
+                      />
+                      {dot.force} L{dot.ring + 1}
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => deleteUserDot(dot.id)}
+                      className="h-4 w-4 p-0"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Visualization */}
+          <div className="relative">
+            <svg
+              ref={svgRef}
+              width="600"
+              height="500"
+              className="mx-auto border rounded-lg bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 cursor-pointer"
+              onClick={handleSVGClick}
+            >
+              {/* Background concentric circles */}
+              {rings.map((radius, index) => (
+                <circle
+                  key={radius}
+                  cx={centerX}
+                  cy={centerY}
+                  r={radius}
+                  fill="none"
+                  stroke={hoveredRing === index ? "#8b5cf6" : "#e2e8f0"}
+                  strokeWidth={hoveredRing === index ? "3" : index === 0 ? "2" : index === 1 ? "1.5" : "1"}
+                  opacity={hoveredRing === index ? "0.8" : index === 0 ? "0.6" : index === 1 ? "0.5" : "0.4"}
+                  className={placementMode ? "hover:stroke-purple-400" : ""}
+                  onMouseEnter={() => handleRingHover(index)}
+                  onMouseLeave={() => handleRingHover(null)}
+                />
+              ))}
+
+              {/* Force connections */}
+              {connections.filter(c => c.isActive).map(connection => {
+                const fromDot = calmMagicDots.find(d => d.id === connection.fromDot);
+                const toDot = calmMagicDots.find(d => d.id === connection.toDot);
+                if (!fromDot || !toDot) return null;
+
+                return (
+                  <g key={connection.id}>
+                    <line
+                      x1={fromDot.x}
+                      y1={fromDot.y}
+                      x2={toDot.x}
+                      y2={toDot.y}
+                      stroke={getConnectionColor(connection.type)}
+                      strokeWidth={connection.isCrossRing ? connection.strength * 6 : connection.strength * 3}
+                      opacity={connection.isCrossRing ? "1" : "0.6"}
+                      strokeDasharray={connection.isCrossRing ? "none" : "5,5"}
+                      className="animate-pulse"
+                    />
+                    {/* Enhanced flow particles for cross-ring connections */}
+                    {connection.isCrossRing && (
+                      <>
+                        <circle
+                          cx={fromDot.x + (toDot.x - fromDot.x) * 0.2}
+                          cy={fromDot.y + (toDot.y - fromDot.y) * 0.2}
+                          r="5"
+                          fill={getConnectionColor(connection.type)}
+                          className="animate-ping"
+                        />
+                        <circle
+                          cx={fromDot.x + (toDot.x - fromDot.x) * 0.5}
+                          cy={fromDot.y + (toDot.y - fromDot.y) * 0.5}
+                          r="4"
+                          fill={getConnectionColor(connection.type)}
+                          className="animate-ping"
+                          style={{ animationDelay: '0.3s' }}
+                        />
+                        <circle
+                          cx={fromDot.x + (toDot.x - fromDot.x) * 0.8}
+                          cy={fromDot.y + (toDot.y - fromDot.y) * 0.8}
+                          r="3"
+                          fill={getConnectionColor(connection.type)}
+                          className="animate-ping"
+                          style={{ animationDelay: '0.6s' }}
+                        />
+                      </>
+                    )}
+                  </g>
+                );
+              })}
+
+              {/* Calm Magic Force dots */}
+              {calmMagicDots.map(dot => (
+                <g key={dot.id}>
+                  <circle
+                    cx={dot.x}
+                    cy={dot.y}
+                    r={dot.isActive ? 12 : dot.isUserAdded ? 10 : 8}
+                    fill={getForceColor(dot.force)}
+                    opacity={dot.isActive ? 1 : 0.9}
+                    stroke={dot.isUserAdded ? "#fff" : "none"}
+                    strokeWidth={dot.isUserAdded ? "2" : "0"}
+                    className={dot.isActive ? "animate-pulse" : ""}
+                  />
+                  <circle
+                    cx={dot.x}
+                    cy={dot.y}
+                    r={dot.isActive ? 18 : 12}
+                    fill="none"
+                    stroke={getForceColor(dot.force)}
+                    strokeWidth="2"
+                    opacity={dot.isActive ? 0.7 : 0.4}
+                  />
+                  {dot.isActive && (
+                    <text
+                      x={dot.x}
+                      y={dot.y - 25}
+                      textAnchor="middle"
+                      fontSize="10"
+                      fill="#333"
+                      className="font-medium"
+                    >
+                      {dot.force.charAt(0).toUpperCase() + dot.force.slice(1)}
+                      {dot.isUserAdded && " (Custom)"}
+                    </text>
+                  )}
+                </g>
+              ))}
+
+              {/* Freedom Arrow with variable length */}
+              <g transform={`translate(${centerX}, ${centerY}) rotate(${arrowAngle * 180 / Math.PI})`}>
+                <line
+                  x1="0"
+                  y1="0"
+                  x2={arrowLength}
+                  y2="0"
+                  stroke="#ff6b6b"
+                  strokeWidth="3"
+                  opacity="0.9"
+                />
+                <polygon
+                  points={`${arrowLength},0 ${arrowLength - 10},-5 ${arrowLength - 10},5`}
+                  fill="#ff6b6b"
+                />
+                <circle
+                  cx="0"
+                  cy="0"
+                  r="8"
+                  fill="#ff6b6b"
+                />
+              </g>
+
+              {/* Center label */}
+              <text
+                x={centerX}
+                y={centerY + 3}
+                textAnchor="middle"
+                fontSize="11"
+                fill="#666"
+                className="font-bold"
+              >
+                Freedom
+              </text>
+
+              {/* Cardinal direction labels for forces */}
+              <text x={centerX + 180} y={centerY + 5} fontSize="12" fill="#666" textAnchor="start" className="font-medium">Sovereignty</text>
+              <text x={centerX} y={centerY + 180} fontSize="12" fill="#666" textAnchor="middle" className="font-medium">Memory</text>
+              <text x={centerX - 180} y={centerY + 5} fontSize="12" fill="#666" textAnchor="end" className="font-medium">Intimacy</text>
+              <text x={centerX} y={centerY - 160} fontSize="12" fill="#666" textAnchor="middle" className="font-medium">Novelty</text>
+
+              {/* Ring level indicators */}
+              <text x={centerX + 85} y={centerY - 5} fontSize="9" fill="#999" textAnchor="middle">L1</text>
+              <text x={centerX + 115} y={centerY - 5} fontSize="9" fill="#999" textAnchor="middle">L2</text>
+              <text x={centerX + 145} y={centerY - 5} fontSize="9" fill="#999" textAnchor="middle">L3</text>
+              
+              {/* Arrow reach indicator */}
               <circle
-                key={radius}
                 cx={centerX}
                 cy={centerY}
-                r={radius}
+                r={arrowLength}
                 fill="none"
-                stroke="#e2e8f0"
-                strokeWidth={index === 0 ? "2" : index === 1 ? "1.5" : "1"}
-                opacity={index === 0 ? "0.6" : index === 1 ? "0.5" : "0.4"}
-              />
-            ))}
-
-            {/* Force connections */}
-            {connections.filter(c => c.isActive).map(connection => {
-              const fromDot = calmMagicDots.find(d => d.id === connection.fromDot);
-              const toDot = calmMagicDots.find(d => d.id === connection.toDot);
-              if (!fromDot || !toDot) return null;
-
-              return (
-                <g key={connection.id}>
-                  <line
-                    x1={fromDot.x}
-                    y1={fromDot.y}
-                    x2={toDot.x}
-                    y2={toDot.y}
-                    stroke={getConnectionColor(connection.type)}
-                    strokeWidth={connection.strength * 5}
-                    opacity="0.8"
-                    className="animate-pulse"
-                  />
-                  {/* Flow particles */}
-                  <circle
-                    cx={fromDot.x + (toDot.x - fromDot.x) * 0.3}
-                    cy={fromDot.y + (toDot.y - fromDot.y) * 0.3}
-                    r="4"
-                    fill={getConnectionColor(connection.type)}
-                    className="animate-ping"
-                  />
-                  <circle
-                    cx={fromDot.x + (toDot.x - fromDot.x) * 0.7}
-                    cy={fromDot.y + (toDot.y - fromDot.y) * 0.7}
-                    r="3"
-                    fill={getConnectionColor(connection.type)}
-                    className="animate-ping"
-                    style={{ animationDelay: '0.5s' }}
-                  />
-                </g>
-              );
-            })}
-
-            {/* Calm Magic Force dots - perfectly aligned on cardinal directions */}
-            {calmMagicDots.map(dot => (
-              <g key={dot.id}>
-                <circle
-                  cx={dot.x}
-                  cy={dot.y}
-                  r={dot.isActive ? 12 : 8}
-                  fill={getForceColor(dot.force)}
-                  opacity={dot.isActive ? 1 : 0.9}
-                  className={dot.isActive ? "animate-pulse" : ""}
-                />
-                <circle
-                  cx={dot.x}
-                  cy={dot.y}
-                  r={dot.isActive ? 18 : 12}
-                  fill="none"
-                  stroke={getForceColor(dot.force)}
-                  strokeWidth="2"
-                  opacity={dot.isActive ? 0.7 : 0.4}
-                />
-                {dot.isActive && (
-                  <text
-                    x={dot.x}
-                    y={dot.y - 25}
-                    textAnchor="middle"
-                    fontSize="10"
-                    fill="#333"
-                    className="font-medium"
-                  >
-                    {dot.force.charAt(0).toUpperCase() + dot.force.slice(1)}
-                  </text>
-                )}
-              </g>
-            ))}
-
-            {/* Freedom Arrow */}
-            <g transform={`translate(${centerX}, ${centerY}) rotate(${arrowAngle * 180 / Math.PI})`}>
-              <line
-                x1="0"
-                y1="0"
-                x2="160"
-                y2="0"
                 stroke="#ff6b6b"
-                strokeWidth="3"
-                opacity="0.9"
+                strokeWidth="1"
+                opacity="0.2"
+                strokeDasharray="3,3"
               />
-              <polygon
-                points="160,0 150,-5 150,5"
-                fill="#ff6b6b"
-              />
-              <circle
-                cx="0"
-                cy="0"
-                r="8"
-                fill="#ff6b6b"
-              />
-            </g>
+            </svg>
+          </div>
 
-            {/* Center label */}
-            <text
-              x={centerX}
-              y={centerY + 3}
-              textAnchor="middle"
-              fontSize="11"
-              fill="#666"
-              className="font-bold"
-            >
-              Freedom
-            </text>
-
-            {/* Cardinal direction labels for forces */}
-            <text x={centerX + 180} y={centerY + 5} fontSize="12" fill="#666" textAnchor="start" className="font-medium">Sovereignty</text>
-            <text x={centerX} y={centerY + 180} fontSize="12" fill="#666" textAnchor="middle" className="font-medium">Memory</text>
-            <text x={centerX - 180} y={centerY + 5} fontSize="12" fill="#666" textAnchor="end" className="font-medium">Intimacy</text>
-            <text x={centerX} y={centerY - 160} fontSize="12" fill="#666" textAnchor="middle" className="font-medium">Novelty</text>
-
-            {/* Ring level indicators */}
-            <text x={centerX + 85} y={centerY - 5} fontSize="9" fill="#999" textAnchor="middle">L1</text>
-            <text x={centerX + 115} y={centerY - 5} fontSize="9" fill="#999" textAnchor="middle">L2</text>
-            <text x={centerX + 145} y={centerY - 5} fontSize="9" fill="#999" textAnchor="middle">L3</text>
-          </svg>
-        </div>
-
-        {/* Force Legend & Connection Types */}
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <h4 className="font-medium mb-2">Calm Magic Forces</h4>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              {(['sovereignty', 'memory', 'intimacy', 'novelty'] as const).map(force => (
-                <div key={force} className="flex items-center gap-2">
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: getForceColor(force) }}
-                  />
-                  <span className="capitalize">{force}</span>
-                </div>
-              ))}
+          {/* Enhanced Legend & Connection Types */}
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <h4 className="font-medium mb-2">Calm Magic Forces</h4>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                {(['sovereignty', 'memory', 'intimacy', 'novelty'] as const).map(force => (
+                  <div key={force} className="flex items-center gap-2">
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: getForceColor(force) }}
+                    />
+                    <span className="capitalize">{force}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div>
+              <h4 className="font-medium mb-2">Connection Types</h4>
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                {(['connessor', 'magnesor', 'integration', 'balance'] as const).map(type => (
+                  <div key={type} className="flex items-center gap-2">
+                    <div
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: getConnectionColor(type) }}
+                    />
+                    <span className="capitalize">{type}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-          
-          <div>
-            <h4 className="font-medium mb-2">Connection Pathways</h4>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              {(['connessor', 'magnesor', 'integration', 'balance'] as const).map(type => (
-                <div key={type} className="flex items-center gap-2">
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: getConnectionColor(type) }}
-                  />
-                  <span className="capitalize">{type}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
 
-        {/* Instructions */}
-        <div className="bg-purple-50 dark:bg-purple-950/30 rounded-lg p-3 text-sm">
-          <p className="font-medium text-purple-700 dark:text-purple-300 mb-1">Freedom Compass Explorer:</p>
-          <ul className="text-purple-600 dark:text-purple-400 space-y-1 text-xs">
-            <li>• The 4 Calm Magic forces are aligned on 3 freedom levels (concentric circles)</li>
-            <li>• Start the arrow to watch it move through your consciousness compass</li>
-            <li>• When it touches force dots, hear calm sounds and see connection pathways emerge</li>
-            <li>• Each force appears at all 3 levels representing different depths of integration</li>
-            <li>• Connessor pathways (Memory + Intimacy) create grounding and reflection</li>
-            <li>• Magnesor pathways (Sovereignty + Novelty) create expansion and exploration</li>
-          </ul>
-        </div>
-      </CardContent>
-    </Card>
+          {/* Enhanced Instructions */}
+          <div className="bg-purple-50 dark:bg-purple-950/30 rounded-lg p-3 text-sm">
+            <p className="font-medium text-purple-700 dark:text-purple-300 mb-1">Interactive Freedom Compass:</p>
+            <ul className="text-purple-600 dark:text-purple-400 space-y-1 text-xs">
+              <li>• Click "Add Dots" to enter placement mode, then click on circles to add custom force dots</li>
+              <li>• Adjust arrow length to reach different freedom levels (inner/outer circles)</li>
+              <li>• Cross-ring connections (between different levels) are stronger and more prominent</li>
+              <li>• Custom dots have white borders to distinguish from default cardinal positions</li>
+              <li>• Watch how different force placements create unique connection pathways</li>
+              <li>• Experiment with different arrow lengths to explore specific freedom levels</li>
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
+    </TooltipProvider>
   );
 };
 
