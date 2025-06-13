@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
@@ -87,6 +86,33 @@ const RelationalHealing = () => {
     }
   ];
 
+  const personalServices = [
+    {
+      title: "Men's Development",
+      description: "Reconnect with masculine power, stop people-pleasing, integrate primal desires, master sexual energy, break free from porn addiction, and lead with unshakeable presence",
+      icon: Users,
+      color: "from-blue-500 to-cyan-600"
+    },
+    {
+      title: "Personal Transformation",
+      description: "Transform your life, shift mindsets, unlock confidence, and change direction with personalized coaching and support",
+      icon: Sparkles,
+      color: "from-purple-500 to-indigo-600"
+    },
+    {
+      title: "Relationship Coaching",
+      description: "Couples seeking rock-solid bonds, open relationships without jealousy, and anyone exploring healthy, deeply connected relationships",
+      icon: Heart,
+      color: "from-rose-500 to-pink-600"
+    },
+    {
+      title: "Healing & Integration",
+      description: "Deep healing work that bridges inner transformation with relational change, creating lasting freedom and authentic connection",
+      icon: Calendar,
+      color: "from-green-500 to-emerald-600"
+    }
+  ];
+
   const testimonials = [
     {
       name: "Sarah M.",
@@ -114,6 +140,7 @@ const RelationalHealing = () => {
             <span className="font-bold text-lg">Calm Magic</span>
           </div>
           <nav className="hidden md:flex gap-6">
+            <a href="#who-i-work-with" className="text-sm font-medium hover:text-purple-600 transition-colors">Who I Work With</a>
             <a href="#coaching" className="text-sm font-medium hover:text-purple-600 transition-colors">Coaching</a>
             <a href="#framework" className="text-sm font-medium hover:text-purple-600 transition-colors">Framework</a>
             <a href="#compass" className="text-sm font-medium hover:text-purple-600 transition-colors">Freedom Compass</a>
@@ -182,8 +209,51 @@ const RelationalHealing = () => {
         </div>
       </section>
       
+      {/* Who I Work With Section */}
+      <section id="who-i-work-with" className="py-20 px-4">
+        <div className="container max-w-6xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Who I Work With</h2>
+          <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
+            I work with individuals ready to explore their inner life and create transformative relationships. 
+            Whether you're seeking personal growth, relationship innovation, or deep healing, I'm here to support your journey.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {personalServices.map((service, index) => (
+              <Card key={index} className="border-l-4 border-l-rose-500 hover:shadow-md transition-shadow">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-3">
+                    <service.icon className="w-6 h-6 text-rose-600" />
+                    <CardTitle className="text-xl">{service.title}</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <CardDescription className="text-base">{service.description}</CardDescription>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          
+          <div className="mt-12 text-center">
+            <div className="bg-gradient-to-r from-rose-50 to-purple-50 dark:from-rose-950/30 dark:to-purple-950/30 rounded-xl p-8 border border-rose-200 dark:border-rose-800">
+              <h4 className="text-xl font-bold mb-4">Ready to Begin Your Transformation?</h4>
+              <p className="text-slate-600 dark:text-slate-300 mb-6 max-w-2xl mx-auto">
+                Whether you're exploring masculinity, seeking relationship innovation, or ready for deep personal transformation, 
+                let's discover how the Calm Magic framework can support your journey.
+              </p>
+              <Button 
+                onClick={handleDiscoverFramework}
+                className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600"
+              >
+                Book Free Discovery Call
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+      
       {/* Coaching Approaches Section */}
-      <section id="coaching" className="py-20 px-4">
+      <section id="coaching" className="py-20 px-4 bg-slate-100 dark:bg-slate-800/50">
         <div className="container max-w-6xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Personalized Coaching Approaches</h2>
           <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-8">
@@ -212,7 +282,7 @@ const RelationalHealing = () => {
       </section>
 
       {/* Freedom Compass Demo */}
-      <section id="compass" className="py-20 px-4 bg-slate-100 dark:bg-slate-800/50">
+      <section id="compass" className="py-20 px-4">
         <div className="container max-w-6xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">The Freedom Compass</h2>
           <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">

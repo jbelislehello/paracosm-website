@@ -39,7 +39,7 @@ const ContactSection = () => {
       <div className="container max-w-6xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Get In Touch</h2>
         <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
-          Whether you're an individual seeking personal transformation or an organization pursuing innovation, 
+          Whether you're a professional seeking strategic development or an organization pursuing digital innovation, 
           let's discuss how we can help bridge the gap between your vision and reality.
         </p>
         
@@ -70,12 +70,13 @@ const ContactSection = () => {
                   required
                 >
                   <option value="">Select an option</option>
-                  <option value="individual-coaching">Individual Coaching & Development</option>
-                  <option value="relationship-coaching">Relationship & Couples Coaching</option>
                   <option value="business-leadership">Business Leadership Development</option>
+                  <option value="professional-development">Professional Development & Growth</option>
                   <option value="ai-solutions">AI Solutions & Automation</option>
                   <option value="digital-transformation">Digital Transformation</option>
                   <option value="ai-governance">AI Governance & Compliance</option>
+                  <option value="smart-cities">Smart Cities & Urban Platforms</option>
+                  <option value="retail-innovation">Retail & Shopping Experience</option>
                   <option value="other">Other</option>
                 </select>
               </div>
@@ -136,12 +137,12 @@ const ContactSection = () => {
               <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Users className="w-5 h-5 text-blue-600" />
-                  <h4 className="font-bold text-blue-800 dark:text-blue-200">Individuals</h4>
+                  <h4 className="font-bold text-blue-800 dark:text-blue-200">Professionals</h4>
                 </div>
                 <ul className="space-y-1 text-xs text-blue-700 dark:text-blue-300">
-                  <li>• Personal development coaching</li>
-                  <li>• Leadership transformation</li>
-                  <li>• Relationship guidance</li>
+                  <li>• Strategic leadership development</li>
+                  <li>• Professional growth consulting</li>
+                  <li>• Team dynamics improvement</li>
                 </ul>
               </div>
               
