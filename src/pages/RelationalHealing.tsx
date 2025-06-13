@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
@@ -11,6 +12,7 @@ import MomentumManifestation from "@/components/hero/MomentumManifestation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Heart, Users, Sparkles, Calendar, Palette, Music, BookOpen, MapPin, Clock, Video, ArrowRight, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
