@@ -6,6 +6,7 @@ import FeatureCard from "@/components/FeatureCard";
 import EnhancedInnovationJournal from "@/components/EnhancedInnovationJournal";
 import ContactSection from "@/components/ContactSection";
 import PartnerToolsSection from "@/components/PartnerToolsSection";
+import WhoWeServeSection from "@/components/WhoWeServeSection";
 import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
 import { features } from "@/data/featureData";
 import { Button } from "@/components/ui/button";
@@ -41,6 +42,7 @@ const Index = () => {
             <span className="font-bold text-lg">Paracosm</span>
           </div>
           <nav className="hidden md:flex gap-6">
+            <a href="#who-we-serve" className="text-sm font-medium hover:text-purple-600 transition-colors">Who We Serve</a>
             <a href="#features" className="text-sm font-medium hover:text-purple-600 transition-colors">Features</a>
             <a href="#framework" className="text-sm font-medium hover:text-purple-600 transition-colors">Framework</a>
             <a href="#showcase" className="text-sm font-medium hover:text-purple-600 transition-colors">Showcase</a>
@@ -59,6 +61,9 @@ const Index = () => {
       
       {/* Hero Section */}
       <HeroSection onDiscoverFramework={handleDiscoverFramework} />
+      
+      {/* Who We Serve Section */}
+      <WhoWeServeSection />
       
       {/* Features Section */}
       <section id="features" className="py-20 px-4">

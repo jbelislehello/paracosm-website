@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
-import { Mail, MessageSquare, Phone } from 'lucide-react';
+import { Mail, MessageSquare, Phone, Users, Building2 } from 'lucide-react';
 
 const ContactSection = () => {
   const { toast } = useToast();
@@ -17,6 +17,7 @@ const ContactSection = () => {
     const contactData = {
       name: formData.get('name'),
       email: formData.get('email'),
+      clientType: formData.get('clientType'),
       message: formData.get('message'),
       recipientEmail: 'jbelisle@helloarchitekt.com'
     };
@@ -38,7 +39,8 @@ const ContactSection = () => {
       <div className="container max-w-6xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Get In Touch</h2>
         <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
-          Ready to transform your ideas into reality? Let's discuss how our framework can help your team bridge the gap between creative vision and technical implementation.
+          Whether you're an individual seeking personal transformation or an organization pursuing innovation, 
+          let's discuss how we can help bridge the gap between your vision and reality.
         </p>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -60,8 +62,27 @@ const ContactSection = () => {
               </div>
               
               <div>
+                <label htmlFor="clientType" className="block text-sm font-medium mb-1">I'm interested in...</label>
+                <select 
+                  id="clientType" 
+                  name="clientType" 
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
+                  required
+                >
+                  <option value="">Select an option</option>
+                  <option value="individual-coaching">Individual Coaching & Development</option>
+                  <option value="relationship-coaching">Relationship & Couples Coaching</option>
+                  <option value="business-leadership">Business Leadership Development</option>
+                  <option value="ai-solutions">AI Solutions & Automation</option>
+                  <option value="digital-transformation">Digital Transformation</option>
+                  <option value="ai-governance">AI Governance & Compliance</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              
+              <div>
                 <label htmlFor="message" className="block text-sm font-medium mb-1">Message</label>
-                <Textarea id="message" name="message" rows={6} placeholder="Tell us about your project or how we can help..." required />
+                <Textarea id="message" name="message" rows={6} placeholder="Tell us about your goals, challenges, or how we can help..." required />
               </div>
               
               <Button 
@@ -111,26 +132,30 @@ const ContactSection = () => {
               </div>
             </div>
             
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl p-6">
-              <h4 className="font-bold mb-3">What to Expect</h4>
-              <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                  Initial consultation to understand your needs
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
-                  Custom framework implementation plan
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-                  Ongoing support and guidance
-                </li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-orange-600 rounded-full"></div>
-                  Measurable results and progress tracking
-                </li>
-              </ul>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Users className="w-5 h-5 text-blue-600" />
+                  <h4 className="font-bold text-blue-800 dark:text-blue-200">Individuals</h4>
+                </div>
+                <ul className="space-y-1 text-xs text-blue-700 dark:text-blue-300">
+                  <li>• Personal development coaching</li>
+                  <li>• Leadership transformation</li>
+                  <li>• Relationship guidance</li>
+                </ul>
+              </div>
+              
+              <div className="bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Building2 className="w-5 h-5 text-purple-600" />
+                  <h4 className="font-bold text-purple-800 dark:text-purple-200">Organizations</h4>
+                </div>
+                <ul className="space-y-1 text-xs text-purple-700 dark:text-purple-300">
+                  <li>• AI solutions & automation</li>
+                  <li>• Digital transformation</li>
+                  <li>• Governance & compliance</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
