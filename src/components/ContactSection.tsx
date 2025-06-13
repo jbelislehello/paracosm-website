@@ -9,10 +9,38 @@ import { Mail, MessageSquare, Phone, Users, Building2 } from 'lucide-react';
 const ContactSection = () => {
   const { toast } = useToast();
 
+  const createMailtoLink = (formData: FormData) => {
+    const name = formData.get('name') as string;
+    const email = formData.get('email') as string;
+    const clientType = formData.get('clientType') as string;
+    const message = formData.get('message') as string;
+    
+    const subject = `Contact Form Submission from ${name}`;
+    const body = `
+Hello,
+
+You have received a new contact form submission:
+
+Name: ${name}
+Email: ${email}
+Interest: ${clientType}
+
+Message:
+${message}
+
+Best regards,
+Contact Form System
+    `.trim();
+    
+    const encodedSubject = encodeURIComponent(subject);
+    const encodedBody = encodeURIComponent(body);
+    
+    return `mailto:jbelisle@helloarchitekt.com?subject=${encodedSubject}&body=${encodedBody}`;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Create form data for submission
     const formData = new FormData(e.target as HTMLFormElement);
     const contactData = {
       name: formData.get('name'),
@@ -24,10 +52,14 @@ const ContactSection = () => {
     
     console.log('Contact form submission:', contactData);
     
+    // Create and trigger mailto link
+    const mailtoLink = createMailtoLink(formData);
+    window.location.href = mailtoLink;
+    
     toast({
-      title: "Message Sent",
-      description: "Thank you for your message! We'll get back to you soon.",
-      duration: 5000,
+      title: "Opening Email Client",
+      description: "Your email client should open with the message pre-filled. If it doesn't open, please email jbelisle@helloarchitekt.com directly.",
+      duration: 7000,
     });
     
     // Reset form

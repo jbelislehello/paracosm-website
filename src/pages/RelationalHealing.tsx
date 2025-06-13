@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
@@ -35,10 +34,46 @@ const RelationalHealing = () => {
     setIsCalmMagicOpen(true);
   };
 
+  const createCoachingMailtoLink = (formData: FormData) => {
+    const name = formData.get('name') as string;
+    const email = formData.get('email') as string;
+    const interest = formData.get('coaching-interest') as string;
+    const challenges = formData.get('current-challenges') as string;
+    const experience = formData.get('coaching-experience') as string;
+    
+    const subject = `Coaching Discovery Call Request from ${name}`;
+    const body = `
+Hello,
+
+I would like to request a free discovery call for Calm Magic coaching.
+
+Contact Information:
+Name: ${name}
+Email: ${email}
+
+Coaching Interest: ${interest}
+
+What I'm hoping to explore or transform:
+${challenges}
+
+Previous coaching/personal development experience:
+${experience}
+
+I look forward to hearing from you about scheduling our discovery call.
+
+Best regards,
+${name}
+    `.trim();
+    
+    const encodedSubject = encodeURIComponent(subject);
+    const encodedBody = encodeURIComponent(body);
+    
+    return `mailto:jbelisle@helloarchitekt.com?subject=${encodedSubject}&body=${encodedBody}`;
+  };
+
   const handleCoachingConsultation = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Create form data for submission
     const formData = new FormData(e.target as HTMLFormElement);
     const consultationData = {
       name: formData.get('name'),
@@ -51,10 +86,14 @@ const RelationalHealing = () => {
     
     console.log('Coaching consultation request:', consultationData);
     
+    // Create and trigger mailto link
+    const mailtoLink = createCoachingMailtoLink(formData);
+    window.location.href = mailtoLink;
+    
     toast({
-      title: "Coaching Consultation Requested",
-      description: "Thank you for your interest! I'll reach out within 24 hours to schedule your free discovery call.",
-      duration: 5000,
+      title: "Opening Email Client",
+      description: "Your email client should open with your discovery call request. If it doesn't open, please email jbelisle@helloarchitekt.com directly.",
+      duration: 7000,
     });
     
     // Reset form
@@ -566,8 +605,14 @@ const RelationalHealing = () => {
                   type="submit" 
                   className="w-full bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 transition-all duration-300"
                 >
-                  Request Discovery Call
+                  Send Discovery Call Request
                 </Button>
+                
+                <div className="text-center">
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    Or email directly: <a href="mailto:jbelisle@helloarchitekt.com" className="text-purple-600 hover:underline">jbelisle@helloarchitekt.com</a>
+                  </p>
+                </div>
               </form>
             </div>
             
