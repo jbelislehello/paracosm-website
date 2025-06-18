@@ -1,13 +1,66 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { Mail, MessageSquare, Phone, Users, Building2 } from 'lucide-react';
+import CaseStudyRecommendation from './CaseStudyRecommendation';
 
 const ContactSection = () => {
   const { toast } = useToast();
+  const [selectedClientType, setSelectedClientType] = useState('');
+
+  const getRelevantCaseStudies = (clientType: string) => {
+    switch (clientType) {
+      case 'ai-solutions':
+        return [
+          {
+            title: 'IA Conversationnelle',
+            description: 'Assistant virtuel pour le courtage immobilier québécois',
+            caseStudyId: 'oaciq-elise',
+            caseStudyTitle: 'Élise - Assistant virtuel OACIQ'
+          }
+        ];
+      case 'digital-transformation':
+        return [
+          {
+            title: 'Innovation Muséale',
+            description: 'Installation interactive au Musée de la civilisation',
+            caseStudyId: 'simulateur-genial',
+            caseStudyTitle: 'Simulateur Génial!'
+          }
+        ];
+      case 'smart-cities':
+        return [
+          {
+            title: 'Art Public Urbain',
+            description: 'Expérience narrative urbaine à Montréal',
+            caseStudyId: 'lachine-passages',
+            caseStudyTitle: 'Lachine Passages'
+          }
+        ];
+      case 'business-leadership':
+        return [
+          {
+            title: 'Méthodologie Créative',
+            description: 'Framework technopoétique pour le design transformationnel',
+            caseStudyId: 'codemagic-methodology',
+            caseStudyTitle: 'CodeMagic Methodology'
+          }
+        ];
+      case 'professional-development':
+        return [
+          {
+            title: 'Laboratoire d\'Innovation',
+            description: 'Résidence créative franco-canadienne au Banff Centre',
+            caseStudyId: 'banff-residence',
+            caseStudyTitle: 'Banff Emergence Lab'
+          }
+        ];
+      default:
+        return [];
+    }
+  };
 
   const createMailtoLink = (formData: FormData) => {
     const name = formData.get('name') as string;
@@ -64,7 +117,14 @@ Contact Form System
     
     // Reset form
     (e.target as HTMLFormElement).reset();
+    setSelectedClientType('');
   };
+
+  const handleClientTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedClientType(e.target.value);
+  };
+
+  const relevantCaseStudies = getRelevantCaseStudies(selectedClientType);
 
   return (
     <section id="contact" className="py-20 px-4 bg-gradient-to-b from-slate-50 to-white dark:from-slate-800 dark:to-slate-900">
@@ -98,6 +158,8 @@ Contact Form System
                 <select 
                   id="clientType" 
                   name="clientType" 
+                  value={selectedClientType}
+                  onChange={handleClientTypeChange}
                   className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
                   required
                 >
@@ -112,6 +174,22 @@ Contact Form System
                   <option value="other">Other</option>
                 </select>
               </div>
+              
+              {/* Case Study Recommendations */}
+              {relevantCaseStudies.length > 0 && (
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium text-slate-700 dark:text-slate-300">Related Work:</h4>
+                  {relevantCaseStudies.map((study, index) => (
+                    <CaseStudyRecommendation
+                      key={index}
+                      title={study.title}
+                      description={study.description}
+                      caseStudyId={study.caseStudyId}
+                      caseStudyTitle={study.caseStudyTitle}
+                    />
+                  ))}
+                </div>
+              )}
               
               <div>
                 <label htmlFor="message" className="block text-sm font-medium mb-1">Message</label>

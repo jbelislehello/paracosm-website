@@ -2,19 +2,22 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Building2, Target, Brain, Sparkles } from 'lucide-react';
+import { Users, Building2, Target, Brain, Sparkles, ExternalLink } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const WhoWeServeSection = () => {
   const professionalServices = [
     {
       title: "Business Leaders & Managers",
       description: "Elevate workplace connection and improve team dynamics through strategic development",
-      icon: Target
+      icon: Target,
+      caseStudy: { id: 'codemagic-methodology', title: 'CodeMagic Methodology' }
     },
     {
       title: "Therapists & Coaches",
       description: "Professional development, practice growth, and reconnecting with colleagues in your field",
-      icon: Users
+      icon: Users,
+      caseStudy: { id: 'banff-residence', title: 'Banff Emergence Lab' }
     }
   ];
 
@@ -22,22 +25,26 @@ const WhoWeServeSection = () => {
     {
       title: "AI Solutions & Automation",
       description: "Cut costs, automate workflows, reduce customer acquisition cost",
-      icon: Brain
+      icon: Brain,
+      caseStudy: { id: 'oaciq-elise', title: 'Élise - Assistant virtuel OACIQ' }
     },
     {
       title: "AI Governance & Compliance",
       description: "Responsible AI toolkits for enterprises and government institutions",
-      icon: Building2
+      icon: Building2,
+      caseStudy: null
     },
     {
       title: "Digital Transformation",
       description: "Data-driven strategies, AI innovation, platform modernization",
-      icon: Sparkles
+      icon: Sparkles,
+      caseStudy: { id: 'simulateur-genial', title: 'Simulateur Génial!' }
     },
     {
       title: "Smart Cities & Retail",
       description: "Urban digital platforms, personalized experiences, market intelligence",
-      icon: Target
+      icon: Target,
+      caseStudy: { id: 'lachine-passages', title: 'Lachine Passages' }
     }
   ];
 
@@ -77,7 +84,16 @@ const WhoWeServeSection = () => {
                     </div>
                   </CardHeader>
                   <CardContent className="pt-0">
-                    <CardDescription>{service.description}</CardDescription>
+                    <CardDescription className="mb-3">{service.description}</CardDescription>
+                    {service.caseStudy && (
+                      <Link 
+                        to={`/case-studies#${service.caseStudy.id}`} 
+                        className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
+                      >
+                        See related work: {service.caseStudy.title}
+                        <ExternalLink size={14} />
+                      </Link>
+                    )}
                   </CardContent>
                 </Card>
               ))}
@@ -114,7 +130,16 @@ const WhoWeServeSection = () => {
                     </div>
                   </CardHeader>
                   <CardContent className="pt-0">
-                    <CardDescription>{service.description}</CardDescription>
+                    <CardDescription className="mb-3">{service.description}</CardDescription>
+                    {service.caseStudy && (
+                      <Link 
+                        to={`/case-studies#${service.caseStudy.id}`} 
+                        className="inline-flex items-center gap-2 text-sm text-purple-600 hover:text-purple-700 font-medium"
+                      >
+                        See related work: {service.caseStudy.title}
+                        <ExternalLink size={14} />
+                      </Link>
+                    )}
                   </CardContent>
                 </Card>
               ))}
@@ -140,9 +165,11 @@ const WhoWeServeSection = () => {
               <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600">
                 Schedule Discovery Call
               </Button>
-              <Button variant="outline" className="border-purple-300 text-purple-600 hover:bg-purple-50">
-                View Case Studies
-              </Button>
+              <Link to="/case-studies">
+                <Button variant="outline" className="border-purple-300 text-purple-600 hover:bg-purple-50">
+                  View Case Studies
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
