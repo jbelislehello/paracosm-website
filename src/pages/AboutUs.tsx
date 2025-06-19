@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { ArrowRight, ExternalLink } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import SpiralTimeline from '@/components/SpiralTimeline';
 
 const AboutUs = () => {
   const timelineEvents = [
@@ -11,55 +10,73 @@ const AboutUs = () => {
       year: '1997-2003',
       title: 'Les Origines Numériques',
       description: 'Cofondateur d\'Inconet et StratSite, architecte de solutions web au Québec',
-      caseStudy: null
+      caseStudy: null,
+      color: '#3b82f6',
+      importance: 3
     },
     {
       year: '2004-2010',
       title: 'Transformation des Agences',
       description: 'Stratège UX chez Sid Lee, VDL2, Loft8, BlueSponge et Phéromone',
-      caseStudy: null
+      caseStudy: null,
+      color: '#6366f1',
+      importance: 4
     },
     {
       year: '2010-2015',
       title: 'Hello, Architekt! & Wuxia',
       description: 'Studio de narration prospective et livre interactif primé',
-      caseStudy: { id: 'wuxia-the-fox', title: 'Wuxia the Fox' }
+      caseStudy: { id: 'wuxia-the-fox', title: 'Wuxia the Fox' },
+      color: '#7c3aed',
+      importance: 5
     },
     {
       year: '2012-2017',
       title: 'Enseignement & Communauté',
       description: 'INIS, UXMTL, Emergence Lab au Banff Centre',
-      caseStudy: { id: 'banff-residence', title: 'Banff Emergence Lab' }
+      caseStudy: { id: 'banff-residence', title: 'Banff Emergence Lab' },
+      color: '#8b5cf6',
+      importance: 4
     },
     {
       year: '2014-2016',
       title: 'Innovation Muséale',
       description: 'Installations interactives et projets d\'art public',
-      caseStudy: { id: 'simulateur-genial', title: 'Simulateur Génial!' }
+      caseStudy: { id: 'simulateur-genial', title: 'Simulateur Génial!' },
+      color: '#a855f7',
+      importance: 4
     },
     {
       year: '2017-2019',
       title: 'Ensemble Ensemble',
       description: 'Art public critique et The Compassion Machine',
-      caseStudy: { id: 'machine-bienveillance', title: 'La Machine à bienveillance' }
+      caseStudy: { id: 'machine-bienveillance', title: 'La Machine à bienveillance' },
+      color: '#c084fc',
+      importance: 5
     },
     {
       year: '2019-2021',
       title: 'DesignOps & Narration Spéculative',
       description: 'Behaviour Interactive et The Greenhouse @ Deloitte',
-      caseStudy: null
+      caseStudy: null,
+      color: '#d8b4fe',
+      importance: 3
     },
     {
       year: '2021-2024',
       title: 'IA Éthique',
       description: 'Head of Design chez Prodago, gouvernance de l\'IA',
-      caseStudy: { id: 'oaciq-elise', title: 'Élise - Assistant virtuel OACIQ' }
+      caseStudy: { id: 'oaciq-elise', title: 'Élise - Assistant virtuel OACIQ' },
+      color: '#fbbf24',
+      importance: 5
     },
     {
       year: '2024-Present',
       title: 'Paracosm & Calm Magic',
       description: 'Laboratoire vivant et école de leadership somatique',
-      caseStudy: { id: 'codemagic-methodology', title: 'CodeMagic Methodology' }
+      caseStudy: { id: 'codemagic-methodology', title: 'CodeMagic Methodology' },
+      color: '#f59e0b',
+      importance: 5
     }
   ];
 
@@ -151,41 +168,18 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Timeline */}
+      {/* Interactive 3D Timeline */}
       <section className="py-16 px-4 bg-white dark:bg-slate-800/50">
         <div className="container max-w-6xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Parcours & Réalisations</h2>
-          
-          <div className="relative">
-            {/* Timeline line */}
-            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-600 to-purple-600 transform md:-translate-x-0.5"></div>
-            
-            <div className="space-y-8">
-              {timelineEvents.map((event, index) => (
-                <div key={index} className={`relative flex items-center ${index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
-                  {/* Timeline dot */}
-                  <div className="absolute left-4 md:left-1/2 w-3 h-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full transform -translate-x-1.5 md:-translate-x-1.5 z-10"></div>
-                  
-                  {/* Content */}
-                  <div className={`w-full md:w-1/2 ${index % 2 === 0 ? 'md:pr-8 md:text-right' : 'md:pl-8'} ml-12 md:ml-0`}>
-                    <Card className="hover:shadow-lg transition-shadow">
-                      <CardContent className="p-6">
-                        <div className="text-sm font-medium text-blue-600 mb-2">{event.year}</div>
-                        <h3 className="text-xl font-bold mb-3">{event.title}</h3>
-                        <p className="text-slate-600 dark:text-slate-300 mb-4">{event.description}</p>
-                        {event.caseStudy && (
-                          <Link to={`/case-studies#${event.caseStudy.id}`} className="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-medium">
-                            Voir le projet: {event.caseStudy.title}
-                            <ExternalLink size={16} />
-                          </Link>
-                        )}
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Parcours & Réalisations</h2>
+            <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
+              Explorez le voyage de Jonathan à travers une spirale interactive de projets et d'innovations. 
+              Chaque point représente une étape clé dans l'évolution de sa pratique.
+            </p>
           </div>
+          
+          <SpiralTimeline events={timelineEvents} />
         </div>
       </section>
 
