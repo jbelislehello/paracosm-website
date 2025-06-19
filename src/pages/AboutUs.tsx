@@ -1,8 +1,8 @@
+
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import SpiralTimeline from '@/components/SpiralTimeline';
 
 const AboutUs = () => {
   const timelineEvents = [
@@ -11,72 +11,63 @@ const AboutUs = () => {
       title: 'Les Origines Numériques',
       description: 'Cofondateur d\'Inconet et StratSite, architecte de solutions web au Québec',
       caseStudy: null,
-      color: '#3b82f6',
-      importance: 3
+      color: 'bg-blue-500'
     },
     {
       year: '2004-2010',
       title: 'Transformation des Agences',
       description: 'Stratège UX chez Sid Lee, VDL2, Loft8, BlueSponge et Phéromone',
       caseStudy: null,
-      color: '#6366f1',
-      importance: 4
+      color: 'bg-indigo-500'
     },
     {
       year: '2010-2015',
       title: 'Hello, Architekt! & Wuxia',
       description: 'Studio de narration prospective et livre interactif primé',
       caseStudy: { id: 'wuxia-the-fox', title: 'Wuxia the Fox' },
-      color: '#7c3aed',
-      importance: 5
+      color: 'bg-violet-500'
     },
     {
       year: '2012-2017',
       title: 'Enseignement & Communauté',
       description: 'INIS, UXMTL, Emergence Lab au Banff Centre',
       caseStudy: { id: 'banff-residence', title: 'Banff Emergence Lab' },
-      color: '#8b5cf6',
-      importance: 4
+      color: 'bg-purple-500'
     },
     {
       year: '2014-2016',
       title: 'Innovation Muséale',
       description: 'Installations interactives et projets d\'art public',
       caseStudy: { id: 'simulateur-genial', title: 'Simulateur Génial!' },
-      color: '#a855f7',
-      importance: 4
+      color: 'bg-fuchsia-500'
     },
     {
       year: '2017-2019',
       title: 'Ensemble Ensemble',
       description: 'Art public critique et The Compassion Machine',
       caseStudy: { id: 'machine-bienveillance', title: 'La Machine à bienveillance' },
-      color: '#c084fc',
-      importance: 5
+      color: 'bg-pink-500'
     },
     {
       year: '2019-2021',
       title: 'DesignOps & Narration Spéculative',
       description: 'Behaviour Interactive et The Greenhouse @ Deloitte',
       caseStudy: null,
-      color: '#d8b4fe',
-      importance: 3
+      color: 'bg-rose-500'
     },
     {
       year: '2021-2024',
       title: 'IA Éthique',
       description: 'Head of Design chez Prodago, gouvernance de l\'IA',
       caseStudy: { id: 'oaciq-elise', title: 'Élise - Assistant virtuel OACIQ' },
-      color: '#fbbf24',
-      importance: 5
+      color: 'bg-amber-500'
     },
     {
       year: '2024-Present',
       title: 'Paracosm & Calm Magic',
       description: 'Laboratoire vivant et école de leadership somatique',
       caseStudy: { id: 'codemagic-methodology', title: 'CodeMagic Methodology' },
-      color: '#f59e0b',
-      importance: 5
+      color: 'bg-orange-500'
     }
   ];
 
@@ -91,8 +82,15 @@ const AboutUs = () => {
             </div>
             <span className="font-bold text-lg">Paracosm</span>
           </Link>
-          <Link to="/">
-            <Button variant="outline">Retour à l'accueil</Button>
+          <nav className="hidden md:flex gap-6">
+            <Link to="/agentic-ux#ai-leadership" className="text-sm font-medium hover:text-purple-600 transition-colors">AI Leadership</Link>
+            <Link to="/calm-magic-assistant" className="text-sm font-medium hover:text-purple-600 transition-colors">Relational Innovation</Link>
+            <Link to="/case-studies" className="text-sm font-medium hover:text-purple-600 transition-colors">Case Studies</Link>
+          </nav>
+          <Link to="/agentic-ux">
+            <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300">
+              Explore AI Leadership
+            </Button>
           </Link>
         </div>
       </header>
@@ -168,18 +166,58 @@ const AboutUs = () => {
         </div>
       </section>
 
-      {/* Interactive 3D Timeline */}
+      {/* Simple Timeline */}
       <section className="py-16 px-4 bg-white dark:bg-slate-800/50">
         <div className="container max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Parcours & Réalisations</h2>
             <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-              Explorez le voyage de Jonathan à travers une spirale interactive de projets et d'innovations. 
-              Chaque point représente une étape clé dans l'évolution de sa pratique.
+              Un voyage de 25 ans à travers l'innovation, la narration et la transformation des organisations.
             </p>
           </div>
           
-          <SpiralTimeline events={timelineEvents} />
+          <div className="space-y-8">
+            {timelineEvents.map((event, index) => (
+              <div key={index} className="flex items-start gap-6 group">
+                {/* Timeline dot and line */}
+                <div className="flex flex-col items-center flex-shrink-0">
+                  <div className={`w-4 h-4 rounded-full ${event.color} group-hover:scale-110 transition-transform duration-200`}></div>
+                  {index < timelineEvents.length - 1 && (
+                    <div className="w-0.5 h-16 bg-gradient-to-b from-slate-300 to-transparent dark:from-slate-600 mt-2"></div>
+                  )}
+                </div>
+
+                {/* Event content */}
+                <div className="flex-1 pb-8">
+                  <div className="bg-white dark:bg-slate-800 rounded-lg p-6 shadow-lg border border-slate-200 dark:border-slate-700 group-hover:shadow-xl transition-shadow duration-200">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-sm font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
+                        {event.year}
+                      </span>
+                    </div>
+                    
+                    <h3 className="text-xl font-bold mb-3 text-slate-900 dark:text-slate-100">
+                      {event.title}
+                    </h3>
+                    
+                    <p className="text-slate-600 dark:text-slate-300 mb-4">
+                      {event.description}
+                    </p>
+                    
+                    {event.caseStudy && (
+                      <Link 
+                        to={`/case-studies#${event.caseStudy.id}`} 
+                        className="inline-flex items-center gap-2 text-sm text-purple-600 hover:text-purple-700 font-medium transition-colors"
+                      >
+                        Voir le projet: {event.caseStudy.title}
+                        <ExternalLink size={14} />
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -193,7 +231,7 @@ const AboutUs = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/#contact">
+            <Link to="/agentic-ux#contact">
               <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600">
                 Consultation Professionnelle
                 <ArrowRight className="ml-2 w-4 h-4" />
@@ -208,6 +246,54 @@ const AboutUs = () => {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="bg-slate-900 text-slate-300 py-12">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-md flex items-center justify-center">
+                  <span className="text-white font-bold">P</span>
+                </div>
+                <span className="font-bold text-lg text-white">Paracosm</span>
+              </div>
+              <p className="text-sm text-slate-400 mb-4">
+                Building the future of human-AI collaboration through intelligent agent ecosystems and innovative user experiences.
+              </p>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold text-white mb-4">Services</h3>
+              <ul className="space-y-2">
+                <li><Link to="/agentic-ux#ai-leadership" className="text-sm hover:text-purple-600">AI Leadership</Link></li>
+                <li><Link to="/calm-magic-assistant" className="text-sm hover:text-purple-600">Relational Innovation</Link></li>
+                <li><Link to="/" className="text-sm hover:text-purple-600">Leadership Coaching</Link></li>
+                <li><Link to="/case-studies" className="text-sm hover:text-purple-600">Case Studies</Link></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold text-white mb-4">Company</h3>
+              <ul className="space-y-2">
+                <li><Link to="/about-us" className="text-sm hover:text-purple-600">About Us</Link></li>
+                <li><Link to="/case-studies" className="text-sm hover:text-purple-600">Case Studies</Link></li>
+                <li><Link to="/agentic-ux#contact" className="text-sm hover:text-purple-600">Contact</Link></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Privacy</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-sm text-slate-400">© 2025 Paracosm. All rights reserved.</p>
+            <div className="flex space-x-4 mt-4 md:mt-0">
+              <a href="#" className="text-slate-400 hover:text-white">LinkedIn</a>
+              <a href="#" className="text-slate-400 hover:text-white">Twitter</a>
+              <a href="#" className="text-slate-400 hover:text-white">GitHub</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

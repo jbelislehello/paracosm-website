@@ -39,6 +39,7 @@ const Index = () => {
             <a href="#ai-leadership" className="text-sm font-medium hover:text-purple-600 transition-colors">AI Leadership</a>
             <Link to="/calm-magic-assistant" className="text-sm font-medium hover:text-purple-600 transition-colors">Relational Innovation</Link>
             <Link to="/case-studies" className="text-sm font-medium hover:text-purple-600 transition-colors">Case Studies</Link>
+            <Link to="/about-us" className="text-sm font-medium hover:text-purple-600 transition-colors">About</Link>
           </nav>
           <Link to="/">
             <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300">
