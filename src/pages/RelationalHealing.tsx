@@ -42,7 +42,7 @@ const RelationalHealing = () => {
             <a href="#coaching-services" className="text-sm font-medium hover:text-purple-600 transition-colors">Services</a>
           </nav>
           <Button onClick={handleStartJourney} className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600">
-            Open Calm Magic
+            {isCalmMagicOpen ? 'Framework Open' : 'Open Calm Magic'}
           </Button>
         </div>
       </header>

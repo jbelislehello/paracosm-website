@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
@@ -12,13 +13,15 @@ import { Link } from "react-router-dom";
 
 const Index = () => {
   const [showAgentDemo, setShowAgentDemo] = useState(false);
+  const [showFrameworkPanel, setShowFrameworkPanel] = useState(true); // Open framework panel by default
 
   useEffect(() => {
-    document.title = "Agentic UX - Build Your AI Ecosystem";
+    document.title = "Paracosm - Build Your AI Ecosystem";
   }, []);
 
   const handleDiscoverFramework = () => {
     setShowAgentDemo(true);
+    setShowFrameworkPanel(true);
   };
 
   return (
@@ -28,9 +31,9 @@ const Index = () => {
         <div className="container flex items-center justify-between py-4">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-md flex items-center justify-center">
-              <span className="text-white font-bold">A</span>
+              <span className="text-white font-bold">P</span>
             </div>
-            <span className="font-bold text-lg">Agentic UX</span>
+            <span className="font-bold text-lg">Paracosm</span>
           </div>
           <nav className="hidden md:flex gap-6">
             <a href="#framework" className="text-sm font-medium hover:text-purple-600 transition-colors">Framework</a>
@@ -50,7 +53,14 @@ const Index = () => {
         </div>
       </header>
       
-      {/* Hero Section - Agentic UX Focus */}
+      {/* Product Development Assistant - Framework Panel */}
+      <ProductDevelopmentAssistant 
+        onStartJourney={handleDiscoverFramework} 
+        isOpen={showFrameworkPanel} 
+        onOpenChange={setShowFrameworkPanel} 
+      />
+      
+      {/* Hero Section - Paracosm Focus */}
       <HeroSection onDiscoverFramework={handleDiscoverFramework} />
       
       {/* Imagineering to Engineering Framework */}
@@ -314,9 +324,9 @@ const Index = () => {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-md flex items-center justify-center">
-                  <span className="text-white font-bold">A</span>
+                  <span className="text-white font-bold">P</span>
                 </div>
-                <span className="font-bold text-lg text-white">Agentic UX</span>
+                <span className="font-bold text-lg text-white">Paracosm</span>
               </div>
               <p className="text-sm text-slate-400 mb-4">
                 Building the future of human-AI collaboration through intelligent agent ecosystems and innovative user experiences.
@@ -345,7 +355,7 @@ const Index = () => {
           </div>
           
           <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-slate-400">© 2025 Agentic UX. All rights reserved.</p>
+            <p className="text-sm text-slate-400">© 2025 Paracosm. All rights reserved.</p>
             <div className="flex space-x-4 mt-4 md:mt-0">
               <a href="#" className="text-slate-400 hover:text-white">LinkedIn</a>
               <a href="#" className="text-slate-400 hover:text-white">Twitter</a>
