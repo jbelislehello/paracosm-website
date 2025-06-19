@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -120,7 +119,9 @@ const CalmMagicLensOverlay: React.FC<CalmMagicLensOverlayProps> = ({
             <strong>Recommendation:</strong> {getSuggestion()}
           </div>
           <div className="flex gap-2">
-            <Button size="sm" variant="outline">Schedule Workshop</Button>
+            <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
+              <Button size="sm" variant="outline">Schedule Workshop</Button>
+            </a>
             <Button size="sm" variant="outline">AI Assistant Session</Button>
             <Button size="sm" variant="outline">Team Retreat</Button>
           </div>

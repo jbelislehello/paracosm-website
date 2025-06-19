@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -102,9 +101,11 @@ const CoachingApproachSection = () => {
             Whether you're an executive seeking courage, a technical leader building bridges, 
             or fostering a learning culture, personalized coaching can unlock your innovation potential.
           </p>
-          <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 px-8 py-3">
-            Schedule Your Discovery Session
-          </Button>
+          <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
+            <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 px-8 py-3">
+              Schedule Your Discovery Session
+            </Button>
+          </a>
         </div>
       </div>
     </section>

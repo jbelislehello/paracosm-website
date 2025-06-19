@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -100,9 +99,11 @@ const WhoWeServeSection = () => {
             </div>
 
             <div className="text-center lg:text-left">
-              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600">
-                Professional Consultation
-              </Button>
+              <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
+                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600">
+                  Schedule Discovery Call
+                </Button>
+              </a>
             </div>
           </div>
 
@@ -146,9 +147,11 @@ const WhoWeServeSection = () => {
             </div>
 
             <div className="text-center lg:text-left">
-              <Button className="bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-cyan-600 hover:to-purple-600">
-                Enterprise Consultation
-              </Button>
+              <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
+                <Button className="bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-cyan-600 hover:to-purple-600">
+                  Schedule Discovery Call
+                </Button>
+              </a>
             </div>
           </div>
         </div>
@@ -162,9 +165,11 @@ const WhoWeServeSection = () => {
               we're here to bridge the gap between vision and reality.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600">
-                Schedule Discovery Call
-              </Button>
+              <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
+                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600">
+                  Schedule Discovery Call
+                </Button>
+              </a>
               <Link to="/case-studies">
                 <Button variant="outline" className="border-purple-300 text-purple-600 hover:bg-purple-50">
                   View Case Studies
