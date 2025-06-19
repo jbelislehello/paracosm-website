@@ -1,45 +1,55 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Crown, Cog, Lightbulb } from 'lucide-react';
+import { Sprout, Dna, Bot } from 'lucide-react';
+import { Link } from "react-router-dom";
 
 const LeadershipRolesSection = () => {
-  const roles = [
+  const residenceLevels = [
     {
-      icon: Crown,
-      title: "Executive Courage & Emotional Leadership",
-      description: "Develop the existential courage and emotional intelligence needed to lead through uncertainty and complexity.",
+      icon: Sprout,
+      emoji: "🌱",
+      title: "Niveau 1 – Résidence de Leadership Intégral",
+      subtitle: "Cultiver la présence exécutive et la vision stratégique",
+      description: "Pour les dirigeant·es et équipes de direction en quête d'un alignement profond entre identité, décision et transformation. Cette résidence explore les dynamiques de pouvoir, de clarté et de courage à travers un accompagnement sur mesure.",
       details: [
-        "Navigate the existential challenges of leadership with authentic presence",
-        "Develop emotional intelligence that inspires rather than manages",
-        "Create psychological safety for innovation to emerge",
-        "Transform fear-based decision making into courage-driven vision"
+        "Développer la présence existentielle et l'intelligence émotionnelle nécessaires pour diriger dans l'incertitude",
+        "Créer la sécurité psychologique pour l'émergence de l'innovation",
+        "Transformer la prise de décision basée sur la peur en vision courageuse",
+        "Aligner l'identité personnelle avec la vision organisationnelle"
       ],
-      color: "from-amber-500 to-orange-600"
+      color: "from-green-500 to-emerald-600",
+      link: "/agentic-ux"
     },
     {
-      icon: Cog,
-      title: "Technical Co-Creation & Self-Reflection",
-      description: "Bridge executive vision with implementation reality through reflective technical leadership.",
+      icon: Dna,
+      emoji: "🧬",
+      title: "Niveau 2 – Résidence d'Intelligence Relationnelle et Culturelle",
+      subtitle: "Déployer une organisation apprenante et consciente",
+      description: "Une immersion dans les systèmes vivants de communication, de rituels collectifs et d'innovation sensible. On y installe les fondations d'une culture collaborative, expressive et durable. L'accent est mis sur la guérison, la symbolisation, et l'activation d'un climat fertile pour l'émergence de nouveaux récits organisationnels.",
       details: [
-        "Co-create solutions that honor both vision and technical constraints",
-        "Develop self-reflection practices that improve decision quality",
-        "Build systems thinking that sees beyond immediate problems",
-        "Foster collaborative relationships between business and technical teams"
+        "Installer des systèmes de communication vivants et conscients",
+        "Créer des rituels collectifs qui nourrissent l'innovation sensible",
+        "Développer une culture collaborative et expressive durable",
+        "Activer un climat fertile pour l'émergence de nouveaux récits"
       ],
-      color: "from-blue-500 to-purple-600"
+      color: "from-rose-500 to-purple-600",
+      link: "/calm-magic-assistant"
     },
     {
-      icon: Lightbulb,
-      title: "Learning-Oriented Employees",
-      description: "Transform performers into learners who create coherence between actions and executive vision.",
+      icon: Bot,
+      emoji: "🤖",
+      title: "Niveau 3 – Résidence Architecturale en IA et Systèmes Augmentés",
+      subtitle: "Prototyper, intégrer et gouverner des systèmes intelligents et éthiques",
+      description: "Pour les organisations prêtes à explorer l'implémentation concrète de l'intelligence artificielle, avec un focus sur l'alignement ontologique, les assistants cognitifs, les workflows augmentés et la gouvernance adaptative. Ici, l'AI devient un partenaire stratégique, somatique et opérationnel.",
       details: [
-        "Shift from performance metrics to learning and growth indicators",
-        "Create conditions where new ideas can flow freely upward",
-        "Develop intrinsic motivation that aligns with organizational purpose",
-        "Build capability for continuous adaptation and innovation"
+        "Implémenter l'intelligence artificielle avec alignement ontologique",
+        "Développer des assistants cognitifs et workflows augmentés",
+        "Établir une gouvernance adaptative pour les systèmes intelligents",
+        "Intégrer l'IA comme partenaire stratégique et opérationnel"
       ],
-      color: "from-green-500 to-teal-600"
+      color: "from-blue-500 to-purple-600",
+      link: "/agentic-ux"
     }
   ];
 
@@ -48,52 +58,71 @@ const LeadershipRolesSection = () => {
       <div className="container max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Three Essential Leadership Roles for Innovation
+            Nos Trois Niveaux de Résidence
           </h2>
           <p className="text-slate-600 dark:text-slate-300 max-w-3xl mx-auto text-lg">
-            True innovation requires alignment between three distinct leadership capacities. 
-            Traditional goal-setting often becomes a deterrent to innovation because it focuses on prediction rather than emergence.
+            Un accompagnement progressif et intégré qui cultive l'excellence du leadership à travers trois dimensions complémentaires : 
+            la présence exécutive, l'intelligence relationnelle, et la maîtrise technologique.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-          {roles.map((role, index) => (
-            <Card key={index} className="border-0 shadow-lg bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 hover:shadow-xl transition-all duration-300">
-              <CardHeader className="text-center pb-4">
-                <div className={`w-16 h-16 mx-auto rounded-full bg-gradient-to-r ${role.color} flex items-center justify-center mb-4`}>
-                  <role.icon className="w-8 h-8 text-white" />
-                </div>
-                <CardTitle className="text-xl font-bold text-slate-800 dark:text-slate-200">
-                  {role.title}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                  {role.description}
-                </p>
-                <ul className="space-y-2">
-                  {role.details.map((detail, detailIndex) => (
-                    <li key={detailIndex} className="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-400">
-                      <span className="w-1.5 h-1.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mt-2 flex-shrink-0"></span>
-                      {detail}
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
+          {residenceLevels.map((level, index) => (
+            <Link key={index} to={level.link} className="block group">
+              <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-slate-50 dark:from-slate-800 dark:to-slate-900 hover:shadow-xl transition-all duration-300 h-full group-hover:scale-105">
+                <CardHeader className="text-center pb-4">
+                  <div className={`w-16 h-16 mx-auto rounded-full bg-gradient-to-r ${level.color} flex items-center justify-center mb-4 relative`}>
+                    <level.icon className="w-6 h-6 text-white" />
+                    <span className="absolute -top-2 -right-2 text-2xl">{level.emoji}</span>
+                  </div>
+                  <CardTitle className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-2">
+                    {level.title}
+                  </CardTitle>
+                  <p className="text-sm font-medium text-purple-600 dark:text-purple-400">
+                    {level.subtitle}
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-sm">
+                    {level.description}
+                  </p>
+                  <ul className="space-y-2">
+                    {level.details.map((detail, detailIndex) => (
+                      <li key={detailIndex} className="flex items-start gap-2 text-xs text-slate-600 dark:text-slate-400">
+                        <span className="w-1.5 h-1.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full mt-1.5 flex-shrink-0"></span>
+                        {detail}
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
 
         <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-xl p-8 border border-blue-200 dark:border-blue-800">
-          <h3 className="text-2xl font-bold text-center mb-4">Why Traditional Goal-Setting Often Prevents Innovation</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-slate-700 dark:text-slate-300">
+          <h3 className="text-2xl font-bold text-center mb-4">Un Parcours Intégral de Transformation</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-slate-700 dark:text-slate-300">
             <div>
-              <h4 className="font-semibold mb-2">Goals Create Rigidity</h4>
-              <p className="text-sm">Fixed objectives prevent the adaptive thinking necessary for breakthrough innovations.</p>
+              <h4 className="font-semibold mb-2 flex items-center gap-2">
+                <span className="text-lg">🌱</span>
+                Fondations Personnelles
+              </h4>
+              <p className="text-sm">Développer la présence et la clarté nécessaires pour diriger avec authenticité et courage.</p>
             </div>
             <div>
-              <h4 className="font-semibold mb-2">Systems Enable Emergence</h4>
-              <p className="text-sm">Creating conditions and capabilities allows innovations to emerge organically from aligned leadership.</p>
+              <h4 className="font-semibold mb-2 flex items-center gap-2">
+                <span className="text-lg">🧬</span>
+                Écosystèmes Relationnels
+              </h4>
+              <p className="text-sm">Créer des cultures d'apprentissage qui favorisent l'innovation et la collaboration consciente.</p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-2 flex items-center gap-2">
+                <span className="text-lg">🤖</span>
+                Systèmes Augmentés
+              </h4>
+              <p className="text-sm">Intégrer l'intelligence artificielle comme partenaire stratégique pour l'innovation organisationnelle.</p>
             </div>
           </div>
         </div>
