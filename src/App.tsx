@@ -6,8 +6,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { PartnerToolsProvider } from "./context/PartnerToolsContext";
-import Index from "./pages/Index";
 import LandingPage from "./pages/LandingPage";
+import Index from "./pages/Index";
 import RelationalHealing from "./pages/RelationalHealing";
 import CaseStudies from "./pages/CaseStudies";
 import AboutUs from "./pages/AboutUs";
@@ -22,8 +22,8 @@ const App: React.FC = () => {
         <TooltipProvider>
           <PartnerToolsProvider>
             <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/landing-page" element={<LandingPage />} />
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/agentic-ux" element={<Index />} />
               <Route path="/calm-magic-assistant" element={<RelationalHealing />} />
               <Route path="/case-studies" element={<CaseStudies />} />
               <Route path="/about-us" element={<AboutUs />} />

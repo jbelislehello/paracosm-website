@@ -63,7 +63,7 @@ const LandingPage = () => {
               
               {/* Dual Pathway Navigation */}
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-                <Link to="/">
+                <Link to="/agentic-ux">
                   <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 flex items-center gap-2">
                     <Zap className="w-4 h-4" />
                     Executive & Technical Leadership
@@ -121,8 +121,8 @@ const LandingPage = () => {
             <div>
               <h3 className="font-semibold text-white mb-4">Services</h3>
               <ul className="space-y-2">
-                <li><Link to="/" className="text-sm hover:text-purple-600">Executive Leadership Coaching</Link></li>
-                <li><Link to="/" className="text-sm hover:text-purple-600">Technical Leadership Development</Link></li>
+                <li><Link to="/agentic-ux" className="text-sm hover:text-purple-600">Executive Leadership Coaching</Link></li>
+                <li><Link to="/agentic-ux" className="text-sm hover:text-purple-600">Technical Leadership Development</Link></li>
                 <li><Link to="/calm-magic-assistant" className="text-sm hover:text-purple-600">Relational Healing</Link></li>
                 <li><Link to="/case-studies" className="text-sm hover:text-purple-600">Case Studies</Link></li>
               </ul>

@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
@@ -38,12 +37,12 @@ const Index = () => {
             <a href="#agent-demo" className="text-sm font-medium hover:text-purple-600 transition-colors">Agent Demo</a>
             <a href="#visualization" className="text-sm font-medium hover:text-purple-600 transition-colors">Visualization</a>
             <a href="#partners" className="text-sm font-medium hover:text-purple-600 transition-colors">Partners</a>
-            <Link to="/landing-page" className="text-sm font-medium hover:text-purple-600 transition-colors">Leadership Coaching</Link>
+            <Link to="/" className="text-sm font-medium hover:text-purple-600 transition-colors">Leadership Coaching</Link>
             <Link to="/calm-magic-assistant" className="text-sm font-medium hover:text-purple-600 transition-colors">Relational Healing</Link>
             <Link to="/case-studies" className="text-sm font-medium hover:text-purple-600 transition-colors">Case Studies</Link>
             <a href="#contact" className="text-sm font-medium hover:text-purple-600 transition-colors">Contact</a>
           </nav>
-          <Link to="/landing-page">
+          <Link to="/">
             <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300">
               Explore Coaching
             </Button>
@@ -295,7 +294,7 @@ const Index = () => {
               <Sparkles className="w-4 h-4" />
               Try Agent Demo
             </Button>
-            <Link to="/landing-page">
+            <Link to="/">
               <Button variant="outline" className="flex items-center gap-2">
                 Explore Leadership Coaching
                 <ArrowRight className="w-4 h-4" />
@@ -329,7 +328,7 @@ const Index = () => {
               <ul className="space-y-2">
                 <li><a href="#" className="text-sm hover:text-purple-600">AI Agent Development</a></li>
                 <li><a href="#" className="text-sm hover:text-purple-600">Digital Transformation</a></li>
-                <li><Link to="/landing-page" className="text-sm hover:text-purple-600">Leadership Coaching</Link></li>
+                <li><Link to="/" className="text-sm hover:text-purple-600">Leadership Coaching</Link></li>
                 <li><Link to="/calm-magic-assistant" className="text-sm hover:text-purple-600">Relational Healing</Link></li>
               </ul>
             </div>
