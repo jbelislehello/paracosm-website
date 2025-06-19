@@ -34,6 +34,78 @@
     "product_development_framework": "Product Development Framework",
     "extensible_process": "Extensible Process"
   },
+  "about": {
+    "page_title": "About Us",
+    "subtitle": "Jonathan Bélisle & the Paracosm Spiral",
+    "intro_p1": "For over 25 years, Jonathan Bélisle has explored the boundaries between storytelling, experience design, and living technology. His journey begins in 1997, on the margins of experimental cinema and the nascent Internet. Early on, he co-founded Inconet and StratSite, where he became one of the first web solution architects in Quebec. At this time, he understood that every system, even digital, is a story in potential.",
+    "intro_p2": "From 2004 to 2010, he acted as UX strategist and information architect for agencies like Sid Lee, VDL2, Loft8, BlueSponge and Phéromone. He implemented human-centered practices there, focusing on meaning and depth of experience. These were years of cultural transformation of the agencies themselves, where he acted as an 'organizational storyteller'.",
+    "intro_p3": "In parallel, he founded Hello, Architekt!, a studio dedicated to prospective storytelling, accompanying creative mutations and pedagogy through design. He accompanies cities, museums, schools and companies to reconfigure their identity through embodied narratives. It was at this time that he imagined the Wuxia the Fox project: a series of interactive books that merge poetry, voice, and technology. The project was awarded, translated into several languages, and deployed in more than 1,500 schools.",
+    "intro_p4": "From 2012 to 2017, Jonathan taught interaction design at INIS, co-founded the UXMTL community, directed the Emergence Lab at the Banff Centre and collaborated with the Canadian Museum for Human Rights. He became a mentoring figure in Franco-Canadian creative ecosystems.",
+    "intro_p5": "In 2017, he co-founded Ensemble Ensemble, a collective of public and critical technology art. They notably created The Compassion Machine, a provocative installation that predicts your future acts of kindness. Between 2019 and 2021, he became DesignOps Director at Behaviour Interactive, then consultant in speculative storytelling at The Greenhouse @ Deloitte, where he guides leaders and strategists in mapping futures.",
+    "intro_p6": "Since 2021, he has been acting as Head of Design at Prodago, where he shapes ethical artificial intelligence governance systems that are sensitive to human experience.",
+    "intro_p7": "Today, he founded Paracosm — a living laboratory where speculative storytelling, somatic coaching, poetic ontologies, AI agents and prototyping retreats converge. This is also where Calm Magic was born, a school of leadership based on the body, breath and meaning.",
+    "conclusion": "Paracosm is a spiral. An interior and collective map to traverse uncertainty with grace. It's not a site. It's a field of living intelligence. You are invited to enter.",
+    "journey_title": "Journey & Achievements",
+    "journey_subtitle": "A 25-year journey through innovation, storytelling and organizational transformation.",
+    "timeline": {
+      "1997_2003": {
+        "title": "Digital Origins",
+        "description": "Co-founder of Inconet and StratSite, web solutions architect in Quebec"
+      },
+      "2004_2010": {
+        "title": "Agency Transformation",
+        "description": "UX strategist at Sid Lee, VDL2, Loft8, BlueSponge and Phéromone"
+      },
+      "2010_2015": {
+        "title": "Hello, Architekt! & Wuxia",
+        "description": "Prospective storytelling studio and award-winning interactive book"
+      },
+      "2012_2017": {
+        "title": "Teaching & Community",
+        "description": "INIS, UXMTL, Emergence Lab at Banff Centre"
+      },
+      "2014_2016": {
+        "title": "Museum Innovation",
+        "description": "Interactive installations and public art projects"
+      },
+      "2017_2019": {
+        "title": "Ensemble Ensemble",
+        "description": "Critical public art and The Compassion Machine"
+      },
+      "2019_2021": {
+        "title": "DesignOps & Speculative Storytelling",
+        "description": "Behaviour Interactive and The Greenhouse @ Deloitte"
+      },
+      "2021_2024": {
+        "title": "Ethical AI",
+        "description": "Head of Design at Prodago, AI governance"
+      },
+      "2024_present": {
+        "title": "Paracosm & Calm Magic",
+        "description": "Living laboratory and somatic leadership school"
+      }
+    },
+    "cta_title": "Ready to Explore Together?",
+    "cta_description": "Whether you are a professional seeking strategic development or an organization pursuing innovation, we are here to bridge the gap between vision and reality.",
+    "cta_professional": "Professional Consultation",
+    "cta_calm_magic": "Calm Magic Accompaniment"
+  },
+  "case_studies": {
+    "page_title": "Case Studies",
+    "subtitle": "Discover our transformation journeys and innovation projects",
+    "all_categories": "All Categories",
+    "filter_by_category": "Filter by Category",
+    "view_details": "View Details",
+    "back_to_studies": "Back to Studies",
+    "categories": {
+      "ai_leadership": "AI Leadership",
+      "relational_innovation": "Relational Innovation",
+      "organizational_transformation": "Organizational Transformation",
+      "creative_technology": "Creative Technology",
+      "public_art": "Public Art",
+      "interactive_design": "Interactive Design"
+    }
+  },
   "footer": {
     "paracosm_description": "Leadership coaching for innovation through alignment of executive courage, technical co-creation, and learning-oriented cultures.",
     "calm_magic_description": "Transform your inner life and relationships through personalized coaching and innovative tools for emotional awareness and creative connection.",
@@ -51,6 +123,8 @@
   },
   "page_titles": {
     "choose_coaching_path": "Paracosm - Choose Your Coaching Path",
-    "relational_intelligence": "Calm Magic Assistant - Relational Intelligence & Innovation"
+    "relational_intelligence": "Calm Magic Assistant - Relational Intelligence & Innovation",
+    "about_us": "About Us - Paracosm",
+    "case_studies": "Case Studies - Paracosm"
   }
 }
