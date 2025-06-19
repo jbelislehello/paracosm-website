@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
 import CoachingServices from "@/components/calm-magic/CoachingServices";
@@ -29,7 +28,6 @@ const RelationalHealing = () => {
             <Link to="/">
               <Button variant="ghost" size="sm" className="flex items-center gap-2">
                 <ArrowLeft className="w-4 h-4" />
-                {t("navigation.back_to_home")}
               </Button>
             </Link>
             <div className="flex items-center gap-2">
