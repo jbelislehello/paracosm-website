@@ -8,7 +8,7 @@ import PartnerToolsSection from "@/components/PartnerToolsSection";
 import AgentInteractionDemo from "@/components/AgentInteractionDemo";
 import ProductDevelopmentAssistant from "@/components/ProductDevelopmentAssistant";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, Sparkles, Bot, Brain, TrendingUp } from 'lucide-react';
 import { Link } from "react-router-dom";
 
 const Index = () => {
@@ -104,17 +104,20 @@ const Index = () => {
             <FeatureCard 
               title="Multi-Agent Orchestration"
               description="Coordinate multiple specialized AI agents to tackle complex, multi-faceted challenges"
-              icon="🤖"
+              icon={Bot}
+              color="from-blue-500 to-blue-600"
             />
             <FeatureCard 
               title="Emergent Intelligence"
               description="Watch as agent interactions create solutions beyond individual agent capabilities"
-              icon="🧠"
+              icon={Brain}
+              color="from-purple-500 to-purple-600"
             />
             <FeatureCard 
               title="Adaptive Learning"
               description="Agents continuously learn from interactions and improve their collaborative performance"
-              icon="📈"
+              icon={TrendingUp}
+              color="from-green-500 to-green-600"
             />
           </div>
         </div>
