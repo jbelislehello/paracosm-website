@@ -32,12 +32,9 @@ const LandingPage = () => {
             <span className="font-bold text-lg">Paracosm</span>
           </div>
           <nav className="hidden md:flex gap-6">
-            <a href="#leadership-roles" className="text-sm font-medium hover:text-purple-600 transition-colors">Residence Levels</a>
+            <a href="#leadership-roles" className="text-sm font-medium hover:text-purple-600 transition-colors">Residencies</a>
             <a href="#coaching-approach" className="text-sm font-medium hover:text-purple-600 transition-colors">Coaching Approach</a>
             <a href="#transformation" className="text-sm font-medium hover:text-purple-600 transition-colors">Transformation</a>
-            <Link to="/case-studies" className="text-sm font-medium hover:text-purple-600 transition-colors">Case Studies</Link>
-            <Link to="/about-us" className="text-sm font-medium hover:text-purple-600 transition-colors">About</Link>
-            <a href="#contact" className="text-sm font-medium hover:text-purple-600 transition-colors">Contact</a>
           </nav>
           <Button onClick={handleStartCoaching} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300">
             Start Your Journey

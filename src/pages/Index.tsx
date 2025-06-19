@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
@@ -38,8 +37,6 @@ const Index = () => {
           <nav className="hidden md:flex gap-6">
             <a href="#ai-leadership" className="text-sm font-medium hover:text-purple-600 transition-colors">AI Leadership</a>
             <Link to="/calm-magic-assistant" className="text-sm font-medium hover:text-purple-600 transition-colors">Relational Innovation</Link>
-            <Link to="/case-studies" className="text-sm font-medium hover:text-purple-600 transition-colors">Case Studies</Link>
-            <Link to="/about-us" className="text-sm font-medium hover:text-purple-600 transition-colors">About</Link>
           </nav>
           <Link to="/">
             <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300">
@@ -60,7 +57,7 @@ const Index = () => {
       <HeroSection onDiscoverFramework={handleDiscoverFramework} />
       
       {/* AI Leadership Section */}
-      <section id="ai-leadership" className="py-20 px-4 bg-gradient-to-r from-blue-50 via-purple-50 to-slate-50 dark:from-blue-950/20 dark:via-purple-950/20 dark:to-slate-950/20">
+      <section id="ai-leadership" className="py-20 px-4 bg-gradient-to-r from-blue-50 via-purple-50 to-slate-50 dark:from-blue-950/20 dark:via-purple-950/20">
         <div className="container max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600">

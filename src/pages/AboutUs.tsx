@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, ExternalLink } from 'lucide-react';
@@ -85,7 +84,6 @@ const AboutUs = () => {
           <nav className="hidden md:flex gap-6">
             <Link to="/agentic-ux#ai-leadership" className="text-sm font-medium hover:text-purple-600 transition-colors">AI Leadership</Link>
             <Link to="/calm-magic-assistant" className="text-sm font-medium hover:text-purple-600 transition-colors">Relational Innovation</Link>
-            <Link to="/case-studies" className="text-sm font-medium hover:text-purple-600 transition-colors">Case Studies</Link>
           </nav>
           <Link to="/agentic-ux">
             <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300">
