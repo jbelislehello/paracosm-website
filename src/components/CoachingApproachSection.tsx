@@ -1,0 +1,114 @@
+
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Users, Target, Zap, Heart } from 'lucide-react';
+
+const CoachingApproachSection = () => {
+  const approaches = [
+    {
+      icon: Users,
+      title: "One-on-One Intensive Coaching",
+      description: "Deep, personalized coaching sessions that address your specific leadership challenges and organizational context.",
+      focus: "Individual transformation that creates systemic change"
+    },
+    {
+      icon: Target,
+      title: "Systems-Thinking Development",
+      description: "Move beyond problem-solving to creating conditions where innovation naturally emerges.",
+      focus: "Building capabilities instead of achieving targets"
+    },
+    {
+      icon: Zap,
+      title: "Alignment Facilitation",
+      description: "Bridge the gaps between executive vision, technical implementation, and employee engagement.",
+      focus: "Creating coherence across all leadership levels"
+    },
+    {
+      icon: Heart,
+      title: "Embodied Leadership",
+      description: "Integrate somatic awareness and emotional intelligence into your leadership practice.",
+      focus: "Leading from authenticity rather than position"
+    }
+  ];
+
+  return (
+    <section id="coaching-approach" className="py-20 px-4 bg-slate-100 dark:bg-slate-800/50">
+      <div className="container max-w-6xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            A Coaching Approach That Creates Lasting Change
+          </h2>
+          <p className="text-slate-600 dark:text-slate-300 max-w-3xl mx-auto text-lg">
+            25 years of experience bridging creative vision with technical implementation, 
+            now focused on developing the leadership capabilities that make innovation inevitable.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+          {approaches.map((approach, index) => (
+            <Card key={index} className="bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-all duration-300">
+              <CardHeader className="pb-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                    <approach.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <CardTitle className="text-xl">{approach.title}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <p className="text-slate-600 dark:text-slate-300">
+                  {approach.description}
+                </p>
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 p-3 rounded-lg">
+                  <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
+                    Focus: {approach.focus}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* Coaching Philosophy */}
+        <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg">
+          <h3 className="text-2xl font-bold text-center mb-6">Coaching Philosophy</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+            <div>
+              <h4 className="font-semibold text-blue-600 dark:text-blue-400 mb-2">Emergence Over Control</h4>
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                Create conditions for innovation rather than trying to control outcomes
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-purple-600 dark:text-purple-400 mb-2">Coherence Over Compliance</h4>
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                Align actions with values and vision rather than following rigid processes
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-rose-600 dark:text-rose-400 mb-2">Learning Over Performing</h4>
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                Develop capabilities and understanding rather than just achieving metrics
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Call to Action */}
+        <div className="text-center mt-12">
+          <h3 className="text-xl font-bold mb-4">Ready to Transform Your Leadership?</h3>
+          <p className="text-slate-600 dark:text-slate-300 mb-6 max-w-2xl mx-auto">
+            Whether you're an executive seeking courage, a technical leader building bridges, 
+            or fostering a learning culture, personalized coaching can unlock your innovation potential.
+          </p>
+          <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 px-8 py-3">
+            Schedule Your Discovery Session
+          </Button>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default CoachingApproachSection;

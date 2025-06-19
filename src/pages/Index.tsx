@@ -3,26 +3,24 @@ import { useEffect, useState } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
 import FeatureCard from "@/components/FeatureCard";
-import EnhancedInnovationJournal from "@/components/EnhancedInnovationJournal";
 import ContactSection from "@/components/ContactSection";
 import PartnerToolsSection from "@/components/PartnerToolsSection";
-import WhoWeServeSection from "@/components/WhoWeServeSection";
 import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
-import { features } from "@/data/featureData";
+import LeadershipRolesSection from "@/components/LeadershipRolesSection";
+import CoachingApproachSection from "@/components/CoachingApproachSection";
+import TransformationJourney from "@/components/TransformationJourney";
 import { Button } from "@/components/ui/button";
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Heart, Zap } from 'lucide-react';
 import { Link } from "react-router-dom";
 
 const Index = () => {
   const [isCalmMagicAssistantOpen, setIsCalmMagicAssistantOpen] = useState(false);
 
   useEffect(() => {
-    // Set page title
-    document.title = "Paracosm - Product Development Framework";
+    document.title = "Jonathan Bélisle - Leadership Coaching for Innovation";
   }, []);
 
-  const handleStartJourney = () => {
-    // Open the Calm Magic assistant
+  const handleStartCoaching = () => {
     setIsCalmMagicAssistantOpen(true);
   };
 
@@ -37,153 +35,80 @@ const Index = () => {
         <div className="container flex items-center justify-between py-4">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-md flex items-center justify-center">
-              <span className="text-white font-bold">P</span>
+              <span className="text-white font-bold">J</span>
             </div>
-            <span className="font-bold text-lg">Paracosm</span>
+            <span className="font-bold text-lg">Jonathan Bélisle</span>
           </div>
           <nav className="hidden md:flex gap-6">
-            <a href="#who-we-serve" className="text-sm font-medium hover:text-purple-600 transition-colors">Who We Serve</a>
-            <a href="#features" className="text-sm font-medium hover:text-purple-600 transition-colors">Features</a>
-            <a href="#framework" className="text-sm font-medium hover:text-purple-600 transition-colors">Framework</a>
-            <a href="#showcase" className="text-sm font-medium hover:text-purple-600 transition-colors">Showcase</a>
+            <a href="#leadership-roles" className="text-sm font-medium hover:text-purple-600 transition-colors">Leadership Roles</a>
+            <a href="#coaching-approach" className="text-sm font-medium hover:text-purple-600 transition-colors">Coaching Approach</a>
+            <a href="#transformation" className="text-sm font-medium hover:text-purple-600 transition-colors">Transformation</a>
             <Link to="/case-studies" className="text-sm font-medium hover:text-purple-600 transition-colors">Case Studies</Link>
-            <a href="#partners" className="text-sm font-medium hover:text-purple-600 transition-colors">Partners</a>
+            <Link to="/about-us" className="text-sm font-medium hover:text-purple-600 transition-colors">About</Link>
             <a href="#contact" className="text-sm font-medium hover:text-purple-600 transition-colors">Contact</a>
           </nav>
-          <Button onClick={handleDiscoverFramework} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300">
-            Get Started
+          <Button onClick={handleStartCoaching} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300">
+            Start Your Journey
           </Button>
         </div>
       </header>
       
-      {/* Calm Magic Assistant - Draggable Window */}
-      <CalmMagicAssistant onStartJourney={handleStartJourney} isOpen={isCalmMagicAssistantOpen} onOpenChange={setIsCalmMagicAssistantOpen} />
+      {/* Calm Magic Assistant */}
+      <CalmMagicAssistant onStartJourney={handleStartCoaching} isOpen={isCalmMagicAssistantOpen} onOpenChange={setIsCalmMagicAssistantOpen} />
       
-      {/* Hero Section */}
-      <HeroSection onDiscoverFramework={handleDiscoverFramework} />
-      
-      {/* Who We Serve Section */}
-      <WhoWeServeSection />
-      
-      {/* Features Section */}
-      <section id="features" className="py-20 px-4">
-        <div className="container max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Bridge Ideas to Products</h2>
-          <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
-            Navigate from "good idea" to "working product" using our structured framework that prevents the common gap between creative vision and technical implementation.
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature, index) => (
-              <FeatureCard 
-                key={index} 
-                title={feature.title} 
-                description={feature.description} 
-                icon={feature.icon} 
-                color={feature.color} 
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-      
-      {/* Enhanced Product Development Framework */}
-      <section id="framework" className="py-20 px-4">
-        <div className="container max-w-6xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">
-              🚀 Imagineering to Engineering
-            </h2>
-            <p className="text-slate-600 dark:text-slate-300 max-w-3xl mx-auto text-lg mb-8">
-              This is a <strong>product development framework</strong> that bridges creative ideation with technical implementation. 
-              Here's what it actually means:
-            </p>
-          </div>
-
-          {/* Two Phase Overview */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-            {/* Calm Magic Assistant Info Panel */}
-            <div className="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-xl p-6 border border-blue-200 dark:border-blue-800">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-white" />
-                </div>
-                <h3 className="text-xl font-bold">Calm Magic Assistant</h3>
-              </div>
-              <p className="text-slate-600 dark:text-slate-300 mb-4">
-                An integrated tool for personal and professional growth that develops your innovation leadership capacity
-                through interactive emotional landscapes. Navigate your journey from self-awareness to team transformation.
+      {/* Hero Section - Leadership Coaching Focus */}
+      <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
+        <div className="container relative px-4 py-12 md:py-24" style={{ zIndex: 10 }}>
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="backdrop-blur-sm bg-white/10 dark:bg-slate-900/10 rounded-2xl p-8 border border-white/20 relative z-20">
+              <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-rose-600 animate-gradient-x mb-6">
+                Leadership Coaching for True Innovation
+              </h1>
+              <p className="text-xl md:text-2xl mb-8 text-gray-700 dark:text-gray-200">
+                Align three essential leadership roles to unlock your organization's innovation potential through one-on-one coaching
               </p>
-              <div className="space-y-2 mb-4">
-                <div className="text-sm text-slate-500 dark:text-slate-400">
-                  • <strong>Personal Development:</strong> Explore how authentic connection enhances creativity
-                </div>
-                <div className="text-sm text-slate-500 dark:text-slate-400">
-                  • <strong>Professional Growth:</strong> Develop leadership competencies through interactive landscapes
-                </div>
-                <div className="text-sm text-slate-500 dark:text-slate-400">
-                  • <strong>Coherence Building:</strong> Align your inner development with external leadership capacity
-                </div>
-                <div className="text-sm text-slate-500 dark:text-slate-400">
-                  • <strong>Innovation Leadership:</strong> Cultivate the skills needed to lead creative teams
-                </div>
+              
+              {/* Dual Pathway Navigation */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+                <Button 
+                  onClick={handleStartCoaching}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 flex items-center gap-2"
+                >
+                  <Zap className="w-4 h-4" />
+                  Executive & Technical Leadership
+                </Button>
+                <Link to="/calm-magic-assistant">
+                  <Button className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 flex items-center gap-2">
+                    <Heart className="w-4 h-4" />
+                    Relational & Emotional Healing
+                  </Button>
+                </Link>
               </div>
-              <Button 
-                onClick={handleDiscoverFramework}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600"
-              >
-                Open Innovation Leadership Tool
-              </Button>
-            </div>
-
-            {/* Framework Overview */}
-            <div className="bg-white dark:bg-slate-800 rounded-xl p-6 border border-slate-200 dark:border-slate-700">
-              <h3 className="text-xl font-bold mb-4">How It Works</h3>
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-blue-600/20 rounded-full flex items-center justify-center mt-1">
-                    <span className="text-xs font-bold text-blue-600">1</span>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold">Understand Phase</h4>
-                    <p className="text-sm text-slate-600 dark:text-slate-300">Research stakeholders, analyze problems, and prototype solutions</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-purple-600/20 rounded-full flex items-center justify-center mt-1">
-                    <span className="text-xs font-bold text-purple-600">2</span>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold">Create Phase</h4>
-                    <p className="text-sm text-slate-600 dark:text-slate-300">Build architecture, develop features, and ensure quality</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-green-600/20 rounded-full flex items-center justify-center mt-1">
-                    <span className="text-xs font-bold text-green-600">✓</span>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold">Ship Working Product</h4>
-                    <p className="text-sm text-slate-600 dark:text-slate-300">Deploy, launch, and scale with confidence</p>
-                  </div>
-                </div>
-              </div>
+              
+              <p className="text-sm text-slate-600 dark:text-slate-300">
+                Choose your pathway: Strategic innovation leadership or deep relational healing
+              </p>
             </div>
           </div>
-
-          {/* Why This Matters Section */}
-          
-          
-          <EnhancedInnovationJournal />
         </div>
       </section>
       
-      {/* Network Visualization */}
-      <section id="showcase" className="py-16 px-4 bg-slate-100 dark:bg-slate-800/50">
+      {/* Three Leadership Roles Section */}
+      <LeadershipRolesSection />
+      
+      {/* Coaching Approach */}
+      <CoachingApproachSection />
+      
+      {/* Transformation Journey */}
+      <TransformationJourney />
+      
+      {/* Network Visualization - Recontextualized */}
+      <section id="visualization" className="py-16 px-4 bg-slate-100 dark:bg-slate-800/50">
         <div className="container max-w-6xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Visualize Your Development Process</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Visualize Leadership Alignment</h2>
           <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
-            See how ideas flow through the framework from stakeholder research to working products, with clear visibility into each phase of the development process.
+            See how the three leadership roles interconnect to create conditions for true innovation, 
+            moving beyond traditional goal-setting to systemic transformation.
           </p>
           
           <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg p-2 md:p-6 overflow-hidden">
@@ -207,42 +132,42 @@ const Index = () => {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-md flex items-center justify-center">
-                  <span className="text-white font-bold">P</span>
+                  <span className="text-white font-bold">J</span>
                 </div>
-                <span className="font-bold text-lg text-white">Paracosm</span>
+                <span className="font-bold text-lg text-white">Jonathan Bélisle</span>
               </div>
               <p className="text-sm text-slate-400 mb-4">
-                Bridging the gap between creative vision and technical implementation through structured product development frameworks.
+                Leadership coaching for innovation through alignment of executive courage, technical co-creation, and learning-oriented cultures.
               </p>
             </div>
             
             <div>
-              <h3 className="font-semibold text-white mb-4">Resources</h3>
+              <h3 className="font-semibold text-white mb-4">Services</h3>
               <ul className="space-y-2">
-                <li><Link to="/calm-magic-assistant" className="text-sm hover:text-purple-600">Calm Magic Assistant</Link></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Implementation Examples</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Executive Leadership Coaching</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Technical Leadership Development</a></li>
+                <li><Link to="/calm-magic-assistant" className="text-sm hover:text-purple-600">Relational Healing</Link></li>
                 <li><Link to="/case-studies" className="text-sm hover:text-purple-600">Case Studies</Link></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Best Practices</a></li>
               </ul>
             </div>
             
             <div>
               <h3 className="font-semibold text-white mb-4">Company</h3>
               <ul className="space-y-2">
-                <li><Link to="/about-us" className="text-sm hover:text-purple-600">About Us</Link></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Careers</a></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Contact Us</a></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Legal</a></li>
+                <li><Link to="/about-us" className="text-sm hover:text-purple-600">About Jonathan</Link></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Methodology</a></li>
+                <li><a href="#contact" className="text-sm hover:text-purple-600">Contact</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Privacy</a></li>
               </ul>
             </div>
           </div>
           
           <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-slate-400">© 2025 Paracosm. All rights reserved.</p>
+            <p className="text-sm text-slate-400">© 2025 Jonathan Bélisle. All rights reserved.</p>
             <div className="flex space-x-4 mt-4 md:mt-0">
-              <a href="#" className="text-slate-400 hover:text-white">Twitter</a>
-              <a href="#" className="text-slate-400 hover:text-white">GitHub</a>
               <a href="#" className="text-slate-400 hover:text-white">LinkedIn</a>
+              <a href="#" className="text-slate-400 hover:text-white">Twitter</a>
+              <a href="#" className="text-slate-400 hover:text-white">Medium</a>
             </div>
           </div>
         </div>
