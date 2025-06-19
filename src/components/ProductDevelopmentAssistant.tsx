@@ -8,6 +8,7 @@ import { Lightbulb, X, Minimize2, Maximize2, Sparkles } from 'lucide-react';
 import OverviewTab from './product-development/OverviewTab';
 import ProcessTab from './product-development/ProcessTab';
 import BridgeTab from './product-development/BridgeTab';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ProductDevelopmentAssistantProps {
   onStartJourney?: () => void;
@@ -22,6 +23,7 @@ const ProductDevelopmentAssistant: React.FC<ProductDevelopmentAssistantProps> = 
 }) => {
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const { t } = useLanguage();
   
   const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
   const setIsOpen = (open: boolean) => {
@@ -44,7 +46,7 @@ const ProductDevelopmentAssistant: React.FC<ProductDevelopmentAssistantProps> = 
             {!isMinimized && (
               <CardTitle className="flex items-center gap-2 text-lg">
                 <Lightbulb className="w-5 h-5 text-blue-600" />
-                Imagineering to Engineering
+                {t("framework.imagineering_to_engineering")}
               </CardTitle>
             )}
             <div className="flex gap-1">
@@ -69,10 +71,10 @@ const ProductDevelopmentAssistant: React.FC<ProductDevelopmentAssistantProps> = 
           {!isMinimized && (
             <div className="flex items-center justify-between">
               <Badge variant="outline" className="w-fit">
-                Product Development Framework
+                {t("framework.product_development_framework")}
               </Badge>
               <div className="text-xs text-slate-500 dark:text-slate-400">
-                Extensible Process
+                {t("framework.extensible_process")}
               </div>
             </div>
           )}

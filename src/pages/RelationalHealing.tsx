@@ -2,16 +2,19 @@
 import { useEffect, useState } from "react";
 import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
 import CoachingServices from "@/components/calm-magic/CoachingServices";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { Button } from "@/components/ui/button";
 import { Heart, ArrowLeft } from 'lucide-react';
 import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const RelationalHealing = () => {
-  const [isCalmMagicOpen, setIsCalmMagicOpen] = useState(true); // Open by default
+  const [isCalmMagicOpen, setIsCalmMagicOpen] = useState(true);
+  const { t } = useLanguage();
 
   useEffect(() => {
-    document.title = "Calm Magic Assistant - Relational Intelligence & Innovation";
-  }, []);
+    document.title = t("page_titles.relational_intelligence");
+  }, [t]);
 
   const handleStartJourney = () => {
     setIsCalmMagicOpen(true);
@@ -26,7 +29,7 @@ const RelationalHealing = () => {
             <Link to="/">
               <Button variant="ghost" size="sm" className="flex items-center gap-2">
                 <ArrowLeft className="w-4 h-4" />
-                Back to Home
+                {t("navigation.back_to_home")}
               </Button>
             </Link>
             <div className="flex items-center gap-2">
@@ -37,12 +40,13 @@ const RelationalHealing = () => {
             </div>
           </div>
           <nav className="hidden md:flex gap-6">
-            <Link to="/case-studies" className="text-sm font-medium hover:text-purple-600 transition-colors">Case Studies</Link>
-            <Link to="/about-us" className="text-sm font-medium hover:text-purple-600 transition-colors">About</Link>
-            <a href="#coaching-services" className="text-sm font-medium hover:text-purple-600 transition-colors">Services</a>
+            <Link to="/case-studies" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.case_studies")}</Link>
+            <Link to="/about-us" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.about")}</Link>
+            <a href="#coaching-services" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.services")}</a>
+            <LanguageSwitcher />
           </nav>
           <Button onClick={handleStartJourney} className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600">
-            {isCalmMagicOpen ? 'Framework Open' : 'Open Calm Magic'}
+            {isCalmMagicOpen ? t("calm_magic.framework_open") : t("calm_magic.open_calm_magic")}
           </Button>
         </div>
       </header>
@@ -60,26 +64,26 @@ const RelationalHealing = () => {
           <div className="max-w-4xl mx-auto text-center">
             <div className="backdrop-blur-sm bg-white/10 dark:bg-slate-900/10 rounded-2xl p-8 border border-white/20">
               <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-rose-600 via-purple-600 to-pink-600 animate-gradient-x mb-6">
-                Calm Magic Framework
+                {t("calm_magic.title")}
               </h1>
               <p className="text-xl md:text-2xl mb-8 text-gray-700 dark:text-gray-200">
-                Transform your inner life and relationships through the four forces of personal freedom
+                {t("calm_magic.description")}
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
                 <Button onClick={handleStartJourney} className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 flex items-center gap-2">
                   <Heart className="w-4 h-4" />
-                  Explore Your Inner Landscape
+                  {t("hero.explore_inner_landscape")}
                 </Button>
                 <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
                   <Button variant="outline" className="flex items-center gap-2">
-                    Book Discovery Call
+                    {t("hero.book_discovery")}
                   </Button>
                 </a>
               </div>
               
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                Experience interactive tools for emotional awareness, creative relationship design, and personal transformation
+                {t("calm_magic.tools_description")}
               </p>
             </div>
           </div>
@@ -105,32 +109,32 @@ const RelationalHealing = () => {
                 <span className="font-bold text-lg text-white">Calm Magic</span>
               </div>
               <p className="text-sm text-slate-400 mb-4">
-                Transform your inner life and relationships through personalized coaching and innovative tools for emotional awareness and creative connection.
+                {t("footer.calm_magic_description")}
               </p>
             </div>
             
             <div>
-              <h3 className="font-semibold text-white mb-4">Services</h3>
+              <h3 className="font-semibold text-white mb-4">{t("footer.services_title")}</h3>
               <ul className="space-y-2">
-                <li><a href="#coaching-services" className="text-sm hover:text-purple-600">Individual Coaching</a></li>
-                <li><a href="#coaching-services" className="text-sm hover:text-purple-600">Relationship Design</a></li>
-                <li><a href="#coaching-services" className="text-sm hover:text-purple-600">Transformation Programs</a></li>
-                <li><Link to="/case-studies" className="text-sm hover:text-purple-600">Case Studies</Link></li>
+                <li><a href="#coaching-services" className="text-sm hover:text-purple-600">{t("footer.individual_coaching")}</a></li>
+                <li><a href="#coaching-services" className="text-sm hover:text-purple-600">{t("footer.relationship_design")}</a></li>
+                <li><a href="#coaching-services" className="text-sm hover:text-purple-600">{t("footer.transformation_programs")}</a></li>
+                <li><Link to="/case-studies" className="text-sm hover:text-purple-600">{t("navigation.case_studies")}</Link></li>
               </ul>
             </div>
             
             <div>
-              <h3 className="font-semibold text-white mb-4">Company</h3>
+              <h3 className="font-semibold text-white mb-4">{t("footer.company_title")}</h3>
               <ul className="space-y-2">
-                <li><Link to="/about-us" className="text-sm hover:text-purple-600">About Jonathan</Link></li>
-                <li><Link to="/" className="text-sm hover:text-purple-600">Leadership Coaching</Link></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Privacy</a></li>
+                <li><Link to="/about-us" className="text-sm hover:text-purple-600">{t("footer.about_jonathan")}</Link></li>
+                <li><Link to="/" className="text-sm hover:text-purple-600">{t("footer.leadership_coaching")}</Link></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">{t("footer.privacy")}</a></li>
               </ul>
             </div>
           </div>
           
           <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-slate-400">© 2025 Jonathan Bélisle. All rights reserved.</p>
+            <p className="text-sm text-slate-400">© 2025 Jonathan Bélisle. {t("footer.rights_reserved")}</p>
             <div className="flex space-x-4 mt-4 md:mt-0">
               <a href="#" className="text-slate-400 hover:text-white">LinkedIn</a>
               <a href="#" className="text-slate-400 hover:text-white">Twitter</a>

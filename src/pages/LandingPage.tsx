@@ -6,16 +6,19 @@ import TransformationJourney from "@/components/TransformationJourney";
 import ContactSection from "@/components/ContactSection";
 import PartnerToolsSection from "@/components/PartnerToolsSection";
 import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { Button } from "@/components/ui/button";
 import { Zap, Heart } from 'lucide-react';
 import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const LandingPage = () => {
   const [isCalmMagicAssistantOpen, setIsCalmMagicAssistantOpen] = useState(false);
+  const { t } = useLanguage();
 
   useEffect(() => {
-    document.title = "Paracosm - Choose Your Coaching Path";
-  }, []);
+    document.title = t("page_titles.choose_coaching_path");
+  }, [t]);
 
   const handleStartCoaching = () => {
     setIsCalmMagicAssistantOpen(true);
@@ -33,13 +36,16 @@ const LandingPage = () => {
             <span className="font-bold text-lg">Paracosm</span>
           </div>
           <nav className="hidden md:flex gap-6">
-            <a href="#leadership-roles" className="text-sm font-medium hover:text-purple-600 transition-colors">Residencies</a>
-            <a href="#coaching-approach" className="text-sm font-medium hover:text-purple-600 transition-colors">Coaching Approach</a>
-            <a href="#transformation" className="text-sm font-medium hover:text-purple-600 transition-colors">Transformation</a>
+            <a href="#leadership-roles" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.residencies")}</a>
+            <a href="#coaching-approach" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.coaching_approach")}</a>
+            <a href="#transformation" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.transformation")}</a>
           </nav>
-          <Button onClick={handleStartCoaching} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300">
-            Start Your Journey
-          </Button>
+          <div className="flex items-center gap-4">
+            <LanguageSwitcher />
+            <Button onClick={handleStartCoaching} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300">
+              {t("hero.start_journey")}
+            </Button>
+          </div>
         </div>
       </header>
       
@@ -52,10 +58,10 @@ const LandingPage = () => {
           <div className="max-w-4xl mx-auto text-center">
             <div className="backdrop-blur-sm bg-white/10 dark:bg-slate-900/10 rounded-2xl p-8 border border-white/20 relative z-20">
               <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-rose-600 animate-gradient-x mb-6">
-                Choose Your Coaching Path
+                {t("hero.choose_path")}
               </h1>
               <p className="text-xl md:text-2xl mb-8 text-gray-700 dark:text-gray-200">
-                Transform your leadership through specialized coaching that aligns with your unique challenges and goals
+                {t("hero.transform_leadership")}
               </p>
               
               {/* Dual Pathway Navigation */}
@@ -63,19 +69,19 @@ const LandingPage = () => {
                 <Link to="/agentic-ux">
                   <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 flex items-center gap-2">
                     <Zap className="w-4 h-4" />
-                    AI Systems & Leadership
+                    {t("hero.ai_systems_leadership")}
                   </Button>
                 </Link>
                 <Link to="/calm-magic-assistant">
                   <Button className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 flex items-center gap-2">
                     <Heart className="w-4 h-4" />
-                    Relational Intelligence & Innovation
+                    {t("hero.relational_intelligence")}
                   </Button>
                 </Link>
               </div>
               
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                Strategic AI innovation leadership or deep relational intelligence - choose your pathway to transformation
+                {t("hero.pathway_description")}
               </p>
             </div>
           </div>
@@ -111,33 +117,33 @@ const LandingPage = () => {
                 <span className="font-bold text-lg text-white">Paracosm</span>
               </div>
               <p className="text-sm text-slate-400 mb-4">
-                Leadership coaching for innovation through alignment of executive courage, technical co-creation, and learning-oriented cultures.
+                {t("footer.paracosm_description")}
               </p>
             </div>
             
             <div>
-              <h3 className="font-semibold text-white mb-4">Services</h3>
+              <h3 className="font-semibold text-white mb-4">{t("footer.services_title")}</h3>
               <ul className="space-y-2">
-                <li><Link to="/agentic-ux" className="text-sm hover:text-purple-600">AI Systems & Leadership</Link></li>
-                <li><Link to="/agentic-ux" className="text-sm hover:text-purple-600">Technical Leadership Development</Link></li>
-                <li><Link to="/calm-magic-assistant" className="text-sm hover:text-purple-600">Relational Intelligence & Innovation</Link></li>
-                <li><Link to="/case-studies" className="text-sm hover:text-purple-600">Case Studies</Link></li>
+                <li><Link to="/agentic-ux" className="text-sm hover:text-purple-600">{t("navigation.ai_leadership")}</Link></li>
+                <li><Link to="/agentic-ux" className="text-sm hover:text-purple-600">{t("footer.technical_leadership")}</Link></li>
+                <li><Link to="/calm-magic-assistant" className="text-sm hover:text-purple-600">{t("navigation.relational_innovation")}</Link></li>
+                <li><Link to="/case-studies" className="text-sm hover:text-purple-600">{t("navigation.case_studies")}</Link></li>
               </ul>
             </div>
             
             <div>
-              <h3 className="font-semibold text-white mb-4">Company</h3>
+              <h3 className="font-semibold text-white mb-4">{t("footer.company_title")}</h3>
               <ul className="space-y-2">
-                <li><Link to="/about-us" className="text-sm hover:text-purple-600">About Jonathan</Link></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Methodology</a></li>
-                <li><a href="#contact" className="text-sm hover:text-purple-600">Contact</a></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Privacy</a></li>
+                <li><Link to="/about-us" className="text-sm hover:text-purple-600">{t("footer.about_jonathan")}</Link></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">{t("footer.methodology")}</a></li>
+                <li><a href="#contact" className="text-sm hover:text-purple-600">{t("navigation.contact")}</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">{t("footer.privacy")}</a></li>
               </ul>
             </div>
           </div>
           
           <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-slate-400">© 2025 Paracosm. All rights reserved.</p>
+            <p className="text-sm text-slate-400">© 2025 Paracosm. {t("footer.rights_reserved")}</p>
             <div className="flex space-x-4 mt-4 md:mt-0">
               <a href="#" className="text-slate-400 hover:text-white">LinkedIn</a>
               <a href="#" className="text-slate-400 hover:text-white">Twitter</a>

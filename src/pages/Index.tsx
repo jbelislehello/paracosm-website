@@ -6,13 +6,16 @@ import ContactSection from "@/components/ContactSection";
 import PartnerToolsSection from "@/components/PartnerToolsSection";
 import AgentInteractionDemo from "@/components/AgentInteractionDemo";
 import ProductDevelopmentAssistant from "@/components/ProductDevelopmentAssistant";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Bot, Brain, TrendingUp, Target, Cog, Compass, Zap, Heart, Users } from 'lucide-react';
 import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Index = () => {
   const [showAgentDemo, setShowAgentDemo] = useState(false);
-  const [showFrameworkPanel, setShowFrameworkPanel] = useState(true); // Open framework panel by default
+  const [showFrameworkPanel, setShowFrameworkPanel] = useState(true);
+  const { t } = useLanguage();
 
   useEffect(() => {
     document.title = "Paracosm - AI Leadership & Innovation";
@@ -35,8 +38,9 @@ const Index = () => {
             <span className="font-bold text-lg">Paracosm</span>
           </div>
           <nav className="hidden md:flex gap-6">
-            <a href="#ai-leadership" className="text-sm font-medium hover:text-purple-600 transition-colors">AI Leadership</a>
-            <Link to="/calm-magic-assistant" className="text-sm font-medium hover:text-purple-600 transition-colors">Relational Innovation</Link>
+            <a href="#ai-leadership" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.ai_leadership")}</a>
+            <Link to="/calm-magic-assistant" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.relational_innovation")}</Link>
+            <LanguageSwitcher />
           </nav>
           <Link to="/">
             <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300">
@@ -72,7 +76,7 @@ const Index = () => {
           {/* Framework Overview */}
           <div className="mb-16">
             <h3 className="text-3xl md:text-4xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600">
-              From Imagineering to Engineering
+              {t("framework.imagineering_to_engineering")}
             </h3>
             <p className="text-xl text-slate-600 dark:text-slate-300 max-w-4xl mx-auto leading-relaxed text-center mb-12">
               Bridge the gap between creative vision and technical implementation with our comprehensive 
@@ -323,28 +327,28 @@ const Index = () => {
             </div>
             
             <div>
-              <h3 className="font-semibold text-white mb-4">Services</h3>
+              <h3 className="font-semibold text-white mb-4">{t("footer.services_title")}</h3>
               <ul className="space-y-2">
-                <li><a href="#ai-leadership" className="text-sm hover:text-purple-600">AI Leadership</a></li>
-                <li><Link to="/calm-magic-assistant" className="text-sm hover:text-purple-600">Relational Innovation</Link></li>
-                <li><Link to="/" className="text-sm hover:text-purple-600">Leadership Coaching</Link></li>
-                <li><Link to="/case-studies" className="text-sm hover:text-purple-600">Case Studies</Link></li>
+                <li><a href="#ai-leadership" className="text-sm hover:text-purple-600">{t("navigation.ai_leadership")}</a></li>
+                <li><Link to="/calm-magic-assistant" className="text-sm hover:text-purple-600">{t("navigation.relational_innovation")}</Link></li>
+                <li><Link to="/" className="text-sm hover:text-purple-600">{t("footer.leadership_coaching")}</Link></li>
+                <li><Link to="/case-studies" className="text-sm hover:text-purple-600">{t("navigation.case_studies")}</Link></li>
               </ul>
             </div>
             
             <div>
-              <h3 className="font-semibold text-white mb-4">Company</h3>
+              <h3 className="font-semibold text-white mb-4">{t("footer.company_title")}</h3>
               <ul className="space-y-2">
-                <li><Link to="/about-us" className="text-sm hover:text-purple-600">About Us</Link></li>
-                <li><Link to="/case-studies" className="text-sm hover:text-purple-600">Case Studies</Link></li>
-                <li><a href="#contact" className="text-sm hover:text-purple-600">Contact</a></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Privacy</a></li>
+                <li><Link to="/about-us" className="text-sm hover:text-purple-600">{t("footer.about_jonathan")}</Link></li>
+                <li><Link to="/case-studies" className="text-sm hover:text-purple-600">{t("navigation.case_studies")}</Link></li>
+                <li><a href="#contact" className="text-sm hover:text-purple-600">{t("navigation.contact")}</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">{t("footer.privacy")}</a></li>
               </ul>
             </div>
           </div>
           
           <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-slate-400">© 2025 Paracosm. All rights reserved.</p>
+            <p className="text-sm text-slate-400">© 2025 Paracosm. {t("footer.rights_reserved")}</p>
             <div className="flex space-x-4 mt-4 md:mt-0">
               <a href="#" className="text-slate-400 hover:text-white">LinkedIn</a>
               <a href="#" className="text-slate-400 hover:text-white">Twitter</a>

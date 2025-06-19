@@ -52,13 +52,14 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
 
   const t = (key: string): string => {
     const keys = key.split('.');
-    let value = translations;
+    let value: any = translations;
     
     for (const k of keys) {
       value = value?.[k];
     }
     
-    return value || key;
+    // Ensure we always return a string
+    return typeof value === 'string' ? value : key;
   };
 
   return (
