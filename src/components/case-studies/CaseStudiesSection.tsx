@@ -18,12 +18,12 @@ const CaseStudiesSection: React.FC = () => {
 
   const categories = [
     { id: 'all', label: t("case_studies.all_categories") },
-    { id: 'ai_leadership', label: t("case_studies.categories.ai_leadership") },
-    { id: 'relational_innovation', label: t("case_studies.categories.relational_innovation") },
-    { id: 'organizational_transformation', label: t("case_studies.categories.organizational_transformation") },
-    { id: 'creative_technology', label: t("case_studies.categories.creative_technology") },
-    { id: 'public_art', label: t("case_studies.categories.public_art") },
-    { id: 'interactive_design', label: t("case_studies.categories.interactive_design") }
+    { id: 'interactive-storytelling', label: t("case_studies.categories.interactive_storytelling") },
+    { id: 'spatial-installations', label: t("case_studies.categories.spatial_installations") },
+    { id: 'educational-tech', label: t("case_studies.categories.educational_tech") },
+    { id: 'public-art', label: t("case_studies.categories.public_art") },
+    { id: 'speaking', label: t("case_studies.categories.speaking") },
+    { id: 'methodology', label: t("case_studies.categories.methodology") }
   ];
 
   const filteredStudies = selectedCategory === 'all' 
@@ -49,7 +49,7 @@ const CaseStudiesSection: React.FC = () => {
           <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg">
             <div className="mb-6">
               <Badge variant="outline" className="mb-4">
-                {t(`case_studies.categories.${selectedStudyData.category}`)}
+                {t(`case_studies.categories.${selectedStudyData.category.replace('-', '_')}`)}
               </Badge>
               <h1 className="text-3xl font-bold mb-4">{selectedStudyData.title}</h1>
               <p className="text-lg text-slate-600 dark:text-slate-300">
@@ -60,7 +60,7 @@ const CaseStudiesSection: React.FC = () => {
             {selectedStudyData.image && (
               <div className="mb-8">
                 <img 
-                  src={selectedStudyData.image} 
+                  src={`https://images.unsplash.com/${selectedStudyData.image}?auto=format&fit=crop&w=800&q=80`}
                   alt={selectedStudyData.title}
                   className="w-full h-64 object-cover rounded-lg"
                 />
@@ -69,33 +69,58 @@ const CaseStudiesSection: React.FC = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
               <div>
-                <h2 className="text-xl font-semibold mb-4">Challenge</h2>
+                <h2 className="text-xl font-semibold mb-4">{t("case_studies.role")}</h2>
                 <p className="text-slate-600 dark:text-slate-300">
-                  {selectedStudyData.challenge}
+                  {selectedStudyData.role}
                 </p>
               </div>
               <div>
-                <h2 className="text-xl font-semibold mb-4">Solution</h2>
-                <p className="text-slate-600 dark:text-slate-300">
-                  {selectedStudyData.solution}
-                </p>
+                <h2 className="text-xl font-semibold mb-4">{t("case_studies.methods")}</h2>
+                <ul className="text-slate-600 dark:text-slate-300 list-disc list-inside">
+                  {selectedStudyData.methods.map((method, index) => (
+                    <li key={index}>{method}</li>
+                  ))}
+                </ul>
               </div>
             </div>
 
             <div className="mb-8">
-              <h2 className="text-xl font-semibold mb-4">Results</h2>
+              <h2 className="text-xl font-semibold mb-4">{t("case_studies.results")}</h2>
               <p className="text-slate-600 dark:text-slate-300">
                 {selectedStudyData.results}
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              {selectedStudyData.technologies.map((tech, index) => (
-                <Badge key={index} variant="secondary">
-                  {tech}
-                </Badge>
-              ))}
-            </div>
+            {selectedStudyData.impact && (
+              <div className="mb-8">
+                <h2 className="text-xl font-semibold mb-4">{t("case_studies.impact")}</h2>
+                <p className="text-slate-600 dark:text-slate-300">
+                  {selectedStudyData.impact}
+                </p>
+              </div>
+            )}
+
+            {selectedStudyData.awards && selectedStudyData.awards.length > 0 && (
+              <div className="mb-8">
+                <h2 className="text-xl font-semibold mb-4">{t("case_studies.awards")}</h2>
+                <ul className="text-slate-600 dark:text-slate-300 list-disc list-inside">
+                  {selectedStudyData.awards.map((award, index) => (
+                    <li key={index}>{award}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {selectedStudyData.technologies && selectedStudyData.technologies.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                <h2 className="text-xl font-semibold mb-4 w-full">{t("case_studies.technologies")}</h2>
+                {selectedStudyData.technologies.map((tech, index) => (
+                  <Badge key={index} variant="secondary">
+                    {tech}
+                  </Badge>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -135,7 +160,7 @@ const CaseStudiesSection: React.FC = () => {
               <CardHeader>
                 <div className="flex items-center justify-between mb-2">
                   <Badge variant="outline">
-                    {t(`case_studies.categories.${study.category}`)}
+                    {t(`case_studies.categories.${study.category.replace('-', '_')}`)}
                   </Badge>
                 </div>
                 <CardTitle className="group-hover:text-purple-600 transition-colors">
@@ -146,18 +171,20 @@ const CaseStudiesSection: React.FC = () => {
                 <p className="text-slate-600 dark:text-slate-300 mb-4 line-clamp-3">
                   {study.description}
                 </p>
-                <div className="flex flex-wrap gap-1 mb-4">
-                  {study.technologies.slice(0, 3).map((tech, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
-                      {tech}
-                    </Badge>
-                  ))}
-                  {study.technologies.length > 3 && (
-                    <Badge variant="secondary" className="text-xs">
-                      +{study.technologies.length - 3}
-                    </Badge>
-                  )}
-                </div>
+                {study.technologies && study.technologies.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mb-4">
+                    {study.technologies.slice(0, 3).map((tech, index) => (
+                      <Badge key={index} variant="secondary" className="text-xs">
+                        {tech}
+                      </Badge>
+                    ))}
+                    {study.technologies.length > 3 && (
+                      <Badge variant="secondary" className="text-xs">
+                        +{study.technologies.length - 3}
+                      </Badge>
+                    )}
+                  </div>
+                )}
                 <Button 
                   variant="outline" 
                   className="w-full group-hover:bg-purple-600 group-hover:text-white transition-colors"
