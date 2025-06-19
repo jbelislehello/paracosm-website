@@ -10,7 +10,7 @@ const RelationalHealing = () => {
   const [isCalmMagicOpen, setIsCalmMagicOpen] = useState(true); // Open by default
 
   useEffect(() => {
-    document.title = "Calm Magic Assistant - Relational & Emotional Healing";
+    document.title = "Calm Magic Assistant - Relational Intelligence & Innovation";
   }, []);
 
   const handleStartJourney = () => {

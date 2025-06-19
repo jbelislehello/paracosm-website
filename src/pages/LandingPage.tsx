@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import LeadershipRolesSection from "@/components/LeadershipRolesSection";
 import CoachingApproachSection from "@/components/CoachingApproachSection";
@@ -62,19 +63,19 @@ const LandingPage = () => {
                 <Link to="/agentic-ux">
                   <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 flex items-center gap-2">
                     <Zap className="w-4 h-4" />
-                    Executive & Technical Leadership
+                    AI Systems & Leadership
                   </Button>
                 </Link>
                 <Link to="/calm-magic-assistant">
                   <Button className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 flex items-center gap-2">
                     <Heart className="w-4 h-4" />
-                    Relational & Emotional Healing
+                    Relational Intelligence & Innovation
                   </Button>
                 </Link>
               </div>
               
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                Strategic innovation leadership or deep relational healing - choose your pathway to transformation
+                Strategic AI innovation leadership or deep relational intelligence - choose your pathway to transformation
               </p>
             </div>
           </div>
@@ -117,9 +118,9 @@ const LandingPage = () => {
             <div>
               <h3 className="font-semibold text-white mb-4">Services</h3>
               <ul className="space-y-2">
-                <li><Link to="/agentic-ux" className="text-sm hover:text-purple-600">Executive Leadership Coaching</Link></li>
+                <li><Link to="/agentic-ux" className="text-sm hover:text-purple-600">AI Systems & Leadership</Link></li>
                 <li><Link to="/agentic-ux" className="text-sm hover:text-purple-600">Technical Leadership Development</Link></li>
-                <li><Link to="/calm-magic-assistant" className="text-sm hover:text-purple-600">Relational Healing</Link></li>
+                <li><Link to="/calm-magic-assistant" className="text-sm hover:text-purple-600">Relational Intelligence & Innovation</Link></li>
                 <li><Link to="/case-studies" className="text-sm hover:text-purple-600">Case Studies</Link></li>
               </ul>
             </div>

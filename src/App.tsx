@@ -1,42 +1,39 @@
 
-import React from "react";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "@/components/ui/sonner";
 import { PartnerToolsProvider } from "./context/PartnerToolsContext";
-import LandingPage from "./pages/LandingPage";
+import { LanguageProvider } from "./contexts/LanguageContext";
 import Index from "./pages/Index";
+import LandingPage from "./pages/LandingPage";
 import RelationalHealing from "./pages/RelationalHealing";
 import CaseStudies from "./pages/CaseStudies";
 import AboutUs from "./pages/AboutUs";
 import NotFound from "./pages/NotFound";
+import "./App.css";
 
 const queryClient = new QueryClient();
 
-const App: React.FC = () => {
+function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <TooltipProvider>
-          <PartnerToolsProvider>
+      <LanguageProvider>
+        <PartnerToolsProvider>
+          <Router>
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/agentic-ux" element={<Index />} />
               <Route path="/calm-magic-assistant" element={<RelationalHealing />} />
               <Route path="/case-studies" element={<CaseStudies />} />
               <Route path="/about-us" element={<AboutUs />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Toaster />
-            <Sonner />
-          </PartnerToolsProvider>
-        </TooltipProvider>
-      </BrowserRouter>
+          </Router>
+        </PartnerToolsProvider>
+      </LanguageProvider>
     </QueryClientProvider>
   );
-};
+}
 
 export default App;

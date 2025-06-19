@@ -37,9 +37,9 @@ const ProductDevelopmentAssistant: React.FC<ProductDevelopmentAssistantProps> = 
   }
 
   return (
-    <div className={`fixed left-0 top-1/2 -translate-y-1/2 z-50 transition-all duration-300 ${isMinimized ? 'w-16' : 'w-80'}`}>
-      <Card className="h-[600px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-r-2 border-gradient-to-b from-blue-500 to-purple-500 shadow-2xl rounded-r-xl rounded-l-none">
-        <CardHeader className="pb-2">
+    <div className={`fixed left-0 top-1/2 -translate-y-1/2 z-50 transition-all duration-300 ${isMinimized ? 'w-16' : 'w-[430px]'}`}>
+      <Card className="h-[650px] bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-r-2 border-gradient-to-b from-blue-500 to-purple-500 shadow-2xl rounded-r-xl rounded-l-none">
+        <CardHeader className="pb-3 px-6">
           <div className="flex items-center justify-between">
             {!isMinimized && (
               <CardTitle className="flex items-center gap-2 text-lg">
@@ -67,41 +67,52 @@ const ProductDevelopmentAssistant: React.FC<ProductDevelopmentAssistantProps> = 
             </div>
           </div>
           {!isMinimized && (
-            <Badge variant="outline" className="w-fit">
-              Product Development Framework
-            </Badge>
+            <div className="flex items-center justify-between">
+              <Badge variant="outline" className="w-fit">
+                Product Development Framework
+              </Badge>
+              <div className="text-xs text-slate-500 dark:text-slate-400">
+                Extensible Process
+              </div>
+            </div>
           )}
         </CardHeader>
 
         {!isMinimized && (
-          <CardContent className="p-4 overflow-y-auto h-[520px]">
+          <CardContent className="px-6 pb-4 overflow-y-auto h-[570px]">
             <Tabs defaultValue="overview" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="innovation">Innovation</TabsTrigger>
-                <TabsTrigger value="quality">Quality</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-3 mb-6">
+                <TabsTrigger value="overview" className="text-sm">Overview</TabsTrigger>
+                <TabsTrigger value="innovation" className="text-sm">Innovation</TabsTrigger>
+                <TabsTrigger value="quality" className="text-sm">Quality</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="overview" className="space-y-4">
-                <OverviewTab onStartJourney={onStartJourney} />
+              <TabsContent value="overview" className="space-y-6 mt-0">
+                <div className="space-y-4">
+                  <OverviewTab onStartJourney={onStartJourney} />
+                </div>
               </TabsContent>
 
-              <TabsContent value="innovation" className="space-y-3">
-                <ProcessTab />
+              <TabsContent value="innovation" className="space-y-6 mt-0">
+                <div className="space-y-4">
+                  <ProcessTab />
+                </div>
               </TabsContent>
 
-              <TabsContent value="quality" className="space-y-3">
-                <BridgeTab />
+              <TabsContent value="quality" className="space-y-6 mt-0">
+                <div className="space-y-4">
+                  <BridgeTab />
+                </div>
               </TabsContent>
             </Tabs>
           </CardContent>
         )}
 
         {isMinimized && (
-          <CardContent className="p-2">
-            <div className="flex flex-col items-center gap-2">
+          <CardContent className="p-3">
+            <div className="flex flex-col items-center gap-3">
               <Sparkles className="w-6 h-6 text-blue-600" />
-              <div className="text-xs text-center text-slate-600 dark:text-slate-300 writing-mode-vertical">
+              <div className="text-xs text-center text-slate-600 dark:text-slate-300 writing-mode-vertical transform -rotate-90 origin-center">
                 Product Framework
               </div>
             </div>
