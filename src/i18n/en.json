@@ -20,7 +20,109 @@
     "pathway_description": "Strategic AI innovation leadership or deep relational intelligence - choose your pathway to transformation",
     "start_journey": "Start Your Journey",
     "explore_inner_landscape": "Explore Your Inner Landscape",
-    "book_discovery": "Book Discovery Call"
+    "book_discovery": "Book Discovery Call",
+    "build_agentic_ecosystem": "Build Your Agentic Ecosystem",
+    "design_deploy_manage": "Design, deploy, and manage interconnected AI agents that work together to solve complex problems"
+  },
+  "framework": {
+    "agentic_framework": "Agentic Framework",
+    "framework": "Framework",
+    "imagineering_to_engineering": "Imagineering to Engineering",
+    "product_development_framework": "Product Development Framework",
+    "extensible_process": "Extensible Process"
+  },
+  "leadership_roles": {
+    "section_title": "Our Three Residence Levels",
+    "section_description": "A progressive and integrated accompaniment that cultivates leadership excellence through three complementary dimensions: executive presence, relational intelligence, and technological mastery.",
+    "level_1": {
+      "title": "Level 1 – Integral Leadership Residence",
+      "subtitle": "Cultivating executive presence and strategic vision",
+      "description": "For leaders and management teams seeking deep alignment between identity, decision-making and transformation. This residence explores dynamics of power, clarity and courage through personalized accompaniment.",
+      "details": {
+        "0": "Develop existential presence and emotional intelligence necessary to lead in uncertainty",
+        "1": "Create psychological safety for innovation emergence",
+        "2": "Transform fear-based decision-making into courageous vision",
+        "3": "Align personal identity with organizational vision"
+      }
+    },
+    "level_2": {
+      "title": "Level 2 – Relational and Cultural Intelligence Residence",
+      "subtitle": "Deploying a learning and conscious organization",
+      "description": "An immersion in living systems of communication, collective rituals and sensitive innovation. We install foundations of a collaborative, expressive and sustainable culture. Focus is on healing, symbolization, and activating a fertile climate for emerging new organizational narratives.",
+      "details": {
+        "0": "Install living and conscious communication systems",
+        "1": "Create collective rituals that nourish sensitive innovation",
+        "2": "Develop sustainable collaborative and expressive culture",
+        "3": "Activate fertile climate for emerging new narratives"
+      }
+    },
+    "level_3": {
+      "title": "Level 3 – Architectural Residence in AI and Augmented Systems",
+      "subtitle": "Prototyping, integrating and governing intelligent and ethical systems",
+      "description": "For organizations ready to explore concrete implementation of artificial intelligence, with focus on ontological alignment, cognitive assistants, augmented workflows and adaptive governance. Here, AI becomes a strategic, somatic and operational partner.",
+      "details": {
+        "0": "Implement artificial intelligence with ontological alignment",
+        "1": "Develop cognitive assistants and augmented workflows",
+        "2": "Establish adaptive governance for intelligent systems",
+        "3": "Integrate AI as strategic and operational partner"
+      }
+    },
+    "integral_journey": {
+      "title": "An Integral Transformation Journey",
+      "foundations": "Personal Foundations",
+      "foundations_description": "Develop presence and clarity necessary to lead with authenticity and courage.",
+      "ecosystems": "Relational Ecosystems",
+      "ecosystems_description": "Create learning cultures that foster innovation and conscious collaboration.",
+      "systems": "Augmented Systems",
+      "systems_description": "Integrate artificial intelligence as strategic partner for organizational innovation."
+    }
+  },
+  "coaching_approach": {
+    "section_title": "A Coaching Approach That Creates Lasting Change",
+    "section_description": "25 years of experience bridging creative vision with technical implementation, now focused on developing the leadership capabilities that make innovation inevitable.",
+    "approaches": {
+      "individual": {
+        "title": "One-on-One Intensive Coaching",
+        "description": "Deep, personalized coaching sessions that address your specific leadership challenges and organizational context.",
+        "focus": "Individual transformation that creates systemic change"
+      },
+      "systems": {
+        "title": "Systems-Thinking Development",
+        "description": "Move beyond problem-solving to creating conditions where innovation naturally emerges.",
+        "focus": "Building capabilities instead of achieving targets"
+      },
+      "alignment": {
+        "title": "Alignment Facilitation",
+        "description": "Bridge the gaps between executive vision, technical implementation, and employee engagement.",
+        "focus": "Creating coherence across all leadership levels"
+      },
+      "embodied": {
+        "title": "Embodied Leadership",
+        "description": "Integrate somatic awareness and emotional intelligence into your leadership practice.",
+        "focus": "Leading from authenticity rather than position"
+      }
+    },
+    "focus_label": "Focus",
+    "philosophy": {
+      "title": "Coaching Philosophy",
+      "emergence": {
+        "title": "Emergence Over Control",
+        "description": "Create conditions for innovation rather than trying to control outcomes"
+      },
+      "coherence": {
+        "title": "Coherence Over Compliance",
+        "description": "Align actions with values and vision rather than following rigid processes"
+      },
+      "learning": {
+        "title": "Learning Over Performing",
+        "description": "Develop capabilities and understanding rather than just achieving metrics"
+      }
+    },
+    "cta": {
+      "title": "Ready to Transform Your Leadership?",
+      "description": "Whether you're an executive seeking courage, a technical leader building bridges, or fostering a learning culture, personalized coaching can unlock your innovation potential.",
+      "button": "Schedule Your Discovery Session"
+    }
   },
   "calm_magic": {
     "title": "Calm Magic Framework",
@@ -28,11 +130,6 @@
     "framework_open": "Framework Open",
     "open_calm_magic": "Open Calm Magic",
     "tools_description": "Experience interactive tools for emotional awareness, creative relationship design, and personal transformation"
-  },
-  "framework": {
-    "imagineering_to_engineering": "Imagineering to Engineering",
-    "product_development_framework": "Product Development Framework",
-    "extensible_process": "Extensible Process"
   },
   "about": {
     "page_title": "About Us",
@@ -97,13 +194,247 @@
     "filter_by_category": "Filter by Category",
     "view_details": "View Details",
     "back_to_studies": "Back to Studies",
+    "role": "Role",
+    "methods": "Methods",
+    "results": "Results",
+    "impact": "Impact",
+    "awards": "Awards",
+    "technologies": "Technologies",
     "categories": {
       "ai_leadership": "AI Leadership",
       "relational_innovation": "Relational Innovation",
       "organizational_transformation": "Organizational Transformation",
       "creative_technology": "Creative Technology",
       "public_art": "Public Art",
-      "interactive_design": "Interactive Design"
+      "interactive_design": "Interactive Design",
+      "interactive_storytelling": "Interactive Storytelling",
+      "spatial_installations": "Spatial Installations",
+      "educational_tech": "Educational Technology",
+      "speaking": "Speaking & Conferences",
+      "methodology": "Methodology & Framework"
+    },
+    "projects": {
+      "oaciq_elise": {
+        "title": "Élise - OACIQ Virtual Assistant",
+        "subtitle": "Conversational robot for Quebec real estate brokerage",
+        "description": "Development of an intelligent conversational assistant to accompany real estate brokers and the public in their procedures. Élise answers questions about regulations, buying/selling processes, and guides users to the right OACIQ resources.",
+        "role": "UX designer and conversational experience developer, applying the Calm Magic methodology to create a benevolent and professional interaction.",
+        "methods": {
+          "0": "Conversational AI",
+          "1": "Intuitive chat interface",
+          "2": "Specialized knowledge base",
+          "3": "Bilingual French/English support"
+        },
+        "results": "24/7 accessible virtual assistant capable of answering complex regulatory questions, guiding brokers and consumers, and simplifying access to OACIQ services.",
+        "impact": "Significant improvement in accessibility to real estate information for professionals and the public. Reduced waiting time to get answers to common questions.",
+        "technologies": {
+          "0": "Natural Language Processing",
+          "1": "AI Knowledge Base",
+          "2": "Conversational Interface",
+          "3": "Multilingual Support"
+        }
+      },
+      "wuxia_the_fox": {
+        "title": "Wuxia the Fox",
+        "subtitle": "Interactive Children's Book & AR Platform",
+        "description": "Transmedia educational project launched in Quebec, co-produced with SAGA and public broadcaster TFO. The work takes the form of an illustrated tale associated with an interactive iPad application, combining traditional mythology and modern technologies.",
+        "role": "Creator and director of the project, developing augmented narration that mobilizes oral reading and voice recognition.",
+        "methods": {
+          "0": "Calm Magic methodology",
+          "1": "Multisensory interactivity",
+          "2": "Voice recognition technology",
+          "3": "Augmented reality"
+        },
+        "results": "A 200-page illustrated book with physical modules (masks, wooden blocks to scan) and an iPad app in augmented reality. The device camera recognizes images and symbols from the book to trigger complementary audiovisual animations.",
+        "impact": "Funded via successful Kickstarter campaign and published in French and English. Won special mention at Grand Prix Numix 2015 for innovation.",
+        "awards": {
+          "0": "Grand Prix Numix 2015 - Special Mention"
+        },
+        "technologies": {
+          "0": "iPad AR",
+          "1": "Voice Recognition",
+          "2": "Computer Vision",
+          "3": "Audio Synthesis"
+        }
+      },
+      "io_theatre": {
+        "title": "Io Theatre",
+        "subtitle": "Intelligent Stage Space Prototype",
+        "description": "Prototype of intelligent scenic space funded by the Canada Media Fund, allowing synchronization of narrative content with sensors and physical objects in real time.",
+        "role": "Creative director and developer of the first 'Experience Design Management System' platform.",
+        "methods": {
+          "0": "IoT integration",
+          "1": "Real-time synchronization",
+          "2": "Physical computing",
+          "3": "Sensor networks"
+        },
+        "results": "Users become directors of their wandering, with set elements and media reacting to their presence.",
+        "impact": "First platform for real-time narrative experience management, laying groundwork for future spatial installations.",
+        "technologies": {
+          "0": "IoT Sensors",
+          "1": "Real-time Sync",
+          "2": "Physical Computing"
+        }
+      },
+      "simulateur_genial": {
+        "title": "Simulateur Génial!",
+        "subtitle": "Interactive Science Installation",
+        "description": "Playful installation at the Musée de la civilisation in Quebec City, recreating the universe of the scientific television show Génial! in a museum context.",
+        "role": "Interactive designer and technical director for IoT implementation.",
+        "methods": {
+          "0": "Connected objects",
+          "1": "Scientific experimentation",
+          "2": "Museum integration",
+          "3": "Collective play"
+        },
+        "results": "Young participants trigger spectacular natural phenomena using connected objects, reproducing the show's experiments.",
+        "impact": "Won Prix Gémeaux 2016 (best derivative digital production) for its ingenuity. Increased youth engagement at the museum.",
+        "awards": {
+          "0": "Prix Gémeaux 2016 - Best Derivative Digital Production"
+        },
+        "technologies": {
+          "0": "IoT",
+          "1": "Interactive Exhibits",
+          "2": "Museum Tech"
+        }
+      },
+      "naissance_du_monde": {
+        "title": "La Naissance du monde",
+        "subtitle": "Interactive Oral Storytelling",
+        "description": "Interactive tale presented as part of Loto-Québec events. The public was invited to read aloud a physical grimoire to trigger, through voice, a projected animation telling an Amerindian creation legend.",
+        "role": "Creator and director, adapting voice recognition for offline and noisy environments.",
+        "methods": {
+          "0": "Offline voice recognition",
+          "1": "Projection mapping",
+          "2": "Oral tradition revival",
+          "3": "Collective storytelling"
+        },
+        "results": "Thousands of participants engaged in summer events at Old Port, Lafontaine Park, etc.",
+        "impact": "Won Grand Prix Créa 2016 (online advertising category) and Prix Boomerang 2015 for interactive experience.",
+        "awards": {
+          "0": "Grand Prix Créa 2016",
+          "1": "Prix Boomerang 2015"
+        },
+        "technologies": {
+          "0": "Voice Recognition",
+          "1": "Projection Mapping",
+          "2": "Offline Processing"
+        }
+      },
+      "lachine_passages": {
+        "title": "Lachine Passages",
+        "subtitle": "Urban Narrative Experience",
+        "description": "Experimental route in Montreal's Innovation Quarter, combining urban design and interactive storytelling. Installations along the Lachine Canal projected local stories when visitors lingered.",
+        "role": "Creative advisor for integrating narrative dimension into urban development.",
+        "methods": {
+          "0": "Geolocation",
+          "1": "Motion sensors",
+          "2": "Urban storytelling",
+          "3": "Heritage integration"
+        },
+        "results": "Audio stations and motion sensors triggering sound stories as visitors pass, creating poetic link between industrial past and technological future.",
+        "impact": "Pilot experience mixing urbanism and storytelling, serving as showcase for Innovation Quarter.",
+        "technologies": {
+          "0": "Geolocation",
+          "1": "Motion Sensors",
+          "2": "Urban Computing"
+        }
+      },
+      "machine_bienveillance": {
+        "title": "La Machine à bienveillance",
+        "subtitle": "Interactive Public Art Installation",
+        "description": "Interactive public art piece deployed in Montreal (Saint-Laurent station) as part of KM³ for the city's 375th anniversary. A giant futuristic camera that measures the 'disposition to kindness' of passersby.",
+        "role": "Co-designer (UX scriptwriter and interactive director) with Ensemble Ensemble collective.",
+        "methods": {
+          "0": "Facial recognition",
+          "1": "Algorithmic scoring",
+          "2": "Public visualization",
+          "3": "Positive feedback loops"
+        },
+        "results": "Large eye-catching urban art installation that scans volunteers and displays a real-time collective kindness index.",
+        "impact": "Successful subversion of surveillance technology for celebrating altruism, creating social reflection on empathy and trust.",
+        "technologies": {
+          "0": "Computer Vision",
+          "1": "Facial Recognition",
+          "2": "Public Displays"
+        }
+      },
+      "banff_residence": {
+        "title": "Banff Emergence Lab",
+        "subtitle": "Creative Direction & Innovation Residency",
+        "description": "Director of the first edition of the Banff Emergence Lab, a Franco-Canadian interactive writing laboratory bringing together traditional authors and digital professionals.",
+        "role": "Expedition director, orchestrating intensive workshop reuniting Canadian and European creators.",
+        "methods": {
+          "0": "Design fiction",
+          "1": "Participatory storytelling",
+          "2": "Rapid prototyping",
+          "3": "Interdisciplinary collaboration"
+        },
+        "results": "Several innovative concepts born (interactive web-series sketches, hybrid installations) and lasting network between creators.",
+        "impact": "Created sustainable bridge between traditional and digital creators, spreading new interactive writing practices internationally.",
+        "technologies": {
+          "0": "Workshop Design",
+          "1": "Prototyping",
+          "2": "Creative Methodology"
+        }
+      },
+      "tedx_montreal": {
+        "title": "TEDx Montréal",
+        "subtitle": "Transmedia Reading: Let's read with all 5 senses!",
+        "description": "TEDx talk addressing multisensory transmedia reading, demonstrating how reading with voice, gestures and all senses can reinvent the children's book experience.",
+        "role": "Keynote speaker, demonstrating Wuxia technology and vision for conscious technology use.",
+        "methods": {
+          "0": "Live demonstration",
+          "1": "Educational advocacy",
+          "2": "Technology criticism",
+          "3": "Family engagement"
+        },
+        "results": "Influential talk sensitizing public to dangers of passive technology and proposing creative, conscious screen use in family rituals.",
+        "impact": "Significant impact raising awareness about digital addiction in children and promoting active, creative technology use.",
+        "technologies": {
+          "0": "Public Speaking",
+          "1": "Live Demo",
+          "2": "Educational Outreach"
+        }
+      },
+      "sxsw_talk": {
+        "title": "SXSW Interactive",
+        "subtitle": "Storytelling Engines for Smart Environments",
+        "description": "Conference panel at South by Southwest where Jonathan presented his vision of narrative engines for connected environments, discussing how IoT can awaken the 'relational poetry' of the physical world.",
+        "role": "Panelist and thought leader on smart cities and narrative computing.",
+        "methods": {
+          "0": "Thought leadership",
+          "1": "Smart city vision",
+          "2": "IoT storytelling",
+          "3": "Future scenarios"
+        },
+        "results": "Reinforced Jonathan's international reputation in creative smart cities domain.",
+        "impact": "Positioned physical world as narrative platform, influencing discourse on human-centered smart environments.",
+        "technologies": {
+          "0": "Smart Cities",
+          "1": "IoT",
+          "2": "Narrative Computing"
+        }
+      },
+      "calm_magic_methodology": {
+        "title": "Calm Magic Methodology",
+        "subtitle": "Technopoetic Design Framework",
+        "description": "Original conceptual framework developed by Jonathan Bélisle to fuse poetry, experience design, and systems thinking in projects. A 'technopoetic' approach aimed at creating transformational digital experiences.",
+        "role": "Creator and evangelist of the methodology, applying it across all Paracosm projects.",
+        "methods": {
+          "0": "Poetic approach",
+          "1": "Relational systems",
+          "2": "Transformational UX",
+          "3": "Holistic design"
+        },
+        "results": "Comprehensive methodology implemented across all major projects, distinguishing Paracosm's approach in the interactive media landscape.",
+        "impact": "Influenced design thinking in Quebec's creative technology sector, providing framework for human-centered innovation.",
+        "technologies": {
+          "0": "Design Methodology",
+          "1": "Systems Thinking",
+          "2": "UX Strategy"
+        }
+      }
     }
   },
   "footer": {

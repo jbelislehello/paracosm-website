@@ -51,9 +51,9 @@ const CaseStudiesSection: React.FC = () => {
               <Badge variant="outline" className="mb-4">
                 {t(`case_studies.categories.${selectedStudyData.category.replace('-', '_')}`)}
               </Badge>
-              <h1 className="text-3xl font-bold mb-4">{selectedStudyData.title}</h1>
+              <h1 className="text-3xl font-bold mb-4">{t(selectedStudyData.title)}</h1>
               <p className="text-lg text-slate-600 dark:text-slate-300">
-                {selectedStudyData.description}
+                {t(selectedStudyData.description)}
               </p>
             </div>
 
@@ -61,7 +61,7 @@ const CaseStudiesSection: React.FC = () => {
               <div className="mb-8">
                 <img 
                   src={`https://images.unsplash.com/${selectedStudyData.image}?auto=format&fit=crop&w=800&q=80`}
-                  alt={selectedStudyData.title}
+                  alt={t(selectedStudyData.title)}
                   className="w-full h-64 object-cover rounded-lg"
                 />
               </div>
@@ -71,14 +71,14 @@ const CaseStudiesSection: React.FC = () => {
               <div>
                 <h2 className="text-xl font-semibold mb-4">{t("case_studies.role")}</h2>
                 <p className="text-slate-600 dark:text-slate-300">
-                  {selectedStudyData.role}
+                  {t(selectedStudyData.role)}
                 </p>
               </div>
               <div>
                 <h2 className="text-xl font-semibold mb-4">{t("case_studies.methods")}</h2>
                 <ul className="text-slate-600 dark:text-slate-300 list-disc list-inside">
                   {selectedStudyData.methods.map((method, index) => (
-                    <li key={index}>{method}</li>
+                    <li key={index}>{t(method)}</li>
                   ))}
                 </ul>
               </div>
@@ -87,7 +87,7 @@ const CaseStudiesSection: React.FC = () => {
             <div className="mb-8">
               <h2 className="text-xl font-semibold mb-4">{t("case_studies.results")}</h2>
               <p className="text-slate-600 dark:text-slate-300">
-                {selectedStudyData.results}
+                {t(selectedStudyData.results)}
               </p>
             </div>
 
@@ -95,7 +95,7 @@ const CaseStudiesSection: React.FC = () => {
               <div className="mb-8">
                 <h2 className="text-xl font-semibold mb-4">{t("case_studies.impact")}</h2>
                 <p className="text-slate-600 dark:text-slate-300">
-                  {selectedStudyData.impact}
+                  {t(selectedStudyData.impact)}
                 </p>
               </div>
             )}
@@ -105,7 +105,7 @@ const CaseStudiesSection: React.FC = () => {
                 <h2 className="text-xl font-semibold mb-4">{t("case_studies.awards")}</h2>
                 <ul className="text-slate-600 dark:text-slate-300 list-disc list-inside">
                   {selectedStudyData.awards.map((award, index) => (
-                    <li key={index}>{award}</li>
+                    <li key={index}>{t(award)}</li>
                   ))}
                 </ul>
               </div>
@@ -116,7 +116,7 @@ const CaseStudiesSection: React.FC = () => {
                 <h2 className="text-xl font-semibold mb-4 w-full">{t("case_studies.technologies")}</h2>
                 {selectedStudyData.technologies.map((tech, index) => (
                   <Badge key={index} variant="secondary">
-                    {tech}
+                    {t(tech)}
                   </Badge>
                 ))}
               </div>
@@ -164,18 +164,18 @@ const CaseStudiesSection: React.FC = () => {
                   </Badge>
                 </div>
                 <CardTitle className="group-hover:text-purple-600 transition-colors">
-                  {study.title}
+                  {t(study.title)}
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-slate-600 dark:text-slate-300 mb-4 line-clamp-3">
-                  {study.description}
+                  {t(study.description)}
                 </p>
                 {study.technologies && study.technologies.length > 0 && (
                   <div className="flex flex-wrap gap-1 mb-4">
                     {study.technologies.slice(0, 3).map((tech, index) => (
                       <Badge key={index} variant="secondary" className="text-xs">
-                        {tech}
+                        {t(tech)}
                       </Badge>
                     ))}
                     {study.technologies.length > 3 && (

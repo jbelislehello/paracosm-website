@@ -1,33 +1,37 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Users, Target, Zap, Heart } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const CoachingApproachSection = () => {
+  const { t } = useLanguage();
+
   const approaches = [
     {
       icon: Users,
-      title: "One-on-One Intensive Coaching",
-      description: "Deep, personalized coaching sessions that address your specific leadership challenges and organizational context.",
-      focus: "Individual transformation that creates systemic change"
+      title: t("coaching_approach.approaches.individual.title"),
+      description: t("coaching_approach.approaches.individual.description"),
+      focus: t("coaching_approach.approaches.individual.focus")
     },
     {
       icon: Target,
-      title: "Systems-Thinking Development",
-      description: "Move beyond problem-solving to creating conditions where innovation naturally emerges.",
-      focus: "Building capabilities instead of achieving targets"
+      title: t("coaching_approach.approaches.systems.title"),
+      description: t("coaching_approach.approaches.systems.description"),
+      focus: t("coaching_approach.approaches.systems.focus")
     },
     {
       icon: Zap,
-      title: "Alignment Facilitation",
-      description: "Bridge the gaps between executive vision, technical implementation, and employee engagement.",
-      focus: "Creating coherence across all leadership levels"
+      title: t("coaching_approach.approaches.alignment.title"),
+      description: t("coaching_approach.approaches.alignment.description"),
+      focus: t("coaching_approach.approaches.alignment.focus")
     },
     {
       icon: Heart,
-      title: "Embodied Leadership",
-      description: "Integrate somatic awareness and emotional intelligence into your leadership practice.",
-      focus: "Leading from authenticity rather than position"
+      title: t("coaching_approach.approaches.embodied.title"),
+      description: t("coaching_approach.approaches.embodied.description"),
+      focus: t("coaching_approach.approaches.embodied.focus")
     }
   ];
 
@@ -36,11 +40,10 @@ const CoachingApproachSection = () => {
       <div className="container max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            A Coaching Approach That Creates Lasting Change
+            {t("coaching_approach.section_title")}
           </h2>
           <p className="text-slate-600 dark:text-slate-300 max-w-3xl mx-auto text-lg">
-            25 years of experience bridging creative vision with technical implementation, 
-            now focused on developing the leadership capabilities that make innovation inevitable.
+            {t("coaching_approach.section_description")}
           </p>
         </div>
 
@@ -61,7 +64,7 @@ const CoachingApproachSection = () => {
                 </p>
                 <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 p-3 rounded-lg">
                   <p className="text-sm font-medium text-blue-700 dark:text-blue-300">
-                    Focus: {approach.focus}
+                    {t("coaching_approach.focus_label")}: {approach.focus}
                   </p>
                 </div>
               </CardContent>
@@ -71,24 +74,24 @@ const CoachingApproachSection = () => {
 
         {/* Coaching Philosophy */}
         <div className="bg-white dark:bg-slate-800 rounded-xl p-8 shadow-lg">
-          <h3 className="text-2xl font-bold text-center mb-6">Coaching Philosophy</h3>
+          <h3 className="text-2xl font-bold text-center mb-6">{t("coaching_approach.philosophy.title")}</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
             <div>
-              <h4 className="font-semibold text-blue-600 dark:text-blue-400 mb-2">Emergence Over Control</h4>
+              <h4 className="font-semibold text-blue-600 dark:text-blue-400 mb-2">{t("coaching_approach.philosophy.emergence.title")}</h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                Create conditions for innovation rather than trying to control outcomes
+                {t("coaching_approach.philosophy.emergence.description")}
               </p>
             </div>
             <div>
-              <h4 className="font-semibold text-purple-600 dark:text-purple-400 mb-2">Coherence Over Compliance</h4>
+              <h4 className="font-semibold text-purple-600 dark:text-purple-400 mb-2">{t("coaching_approach.philosophy.coherence.title")}</h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                Align actions with values and vision rather than following rigid processes
+                {t("coaching_approach.philosophy.coherence.description")}
               </p>
             </div>
             <div>
-              <h4 className="font-semibold text-rose-600 dark:text-rose-400 mb-2">Learning Over Performing</h4>
+              <h4 className="font-semibold text-rose-600 dark:text-rose-400 mb-2">{t("coaching_approach.philosophy.learning.title")}</h4>
               <p className="text-sm text-slate-600 dark:text-slate-300">
-                Develop capabilities and understanding rather than just achieving metrics
+                {t("coaching_approach.philosophy.learning.description")}
               </p>
             </div>
           </div>
@@ -96,14 +99,13 @@ const CoachingApproachSection = () => {
 
         {/* Call to Action */}
         <div className="text-center mt-12">
-          <h3 className="text-xl font-bold mb-4">Ready to Transform Your Leadership?</h3>
+          <h3 className="text-xl font-bold mb-4">{t("coaching_approach.cta.title")}</h3>
           <p className="text-slate-600 dark:text-slate-300 mb-6 max-w-2xl mx-auto">
-            Whether you're an executive seeking courage, a technical leader building bridges, 
-            or fostering a learning culture, personalized coaching can unlock your innovation potential.
+            {t("coaching_approach.cta.description")}
           </p>
           <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
             <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 px-8 py-3">
-              Schedule Your Discovery Session
+              {t("coaching_approach.cta.button")}
             </Button>
           </a>
         </div>

@@ -20,7 +20,109 @@
     "pathway_description": "Leadership stratégique en innovation IA ou intelligence relationnelle profonde - choisissez votre parcours de transformation",
     "start_journey": "Commencez Votre Parcours",
     "explore_inner_landscape": "Explorez Votre Paysage Intérieur",
-    "book_discovery": "Réserver un Appel Découverte"
+    "book_discovery": "Réserver un Appel Découverte",
+    "build_agentic_ecosystem": "Construisez Votre Écosystème Agentique",
+    "design_deploy_manage": "Concevez, déployez et gérez des agents IA interconnectés qui travaillent ensemble pour résoudre des problèmes complexes"
+  },
+  "framework": {
+    "agentic_framework": "Cadre Agentique",
+    "framework": "Cadre",
+    "imagineering_to_engineering": "De l'Imagination à l'Ingénierie",
+    "product_development_framework": "Cadre de Développement de Produit",
+    "extensible_process": "Processus Extensible"
+  },
+  "leadership_roles": {
+    "section_title": "Nos Trois Niveaux de Résidence",
+    "section_description": "Un accompagnement progressif et intégré qui cultive l'excellence du leadership à travers trois dimensions complémentaires : la présence exécutive, l'intelligence relationnelle, et la maîtrise technologique.",
+    "level_1": {
+      "title": "Niveau 1 – Résidence de Leadership Intégral",
+      "subtitle": "Cultiver la présence exécutive et la vision stratégique",
+      "description": "Pour les dirigeant·es et équipes de direction en quête d'un alignement profond entre identité, décision et transformation. Cette résidence explore les dynamiques de pouvoir, de clarté et de courage à travers un accompagnement sur mesure.",
+      "details": {
+        "0": "Développer la présence existentielle et l'intelligence émotionnelle nécessaires pour diriger dans l'incertitude",
+        "1": "Créer la sécurité psychologique pour l'émergence de l'innovation",
+        "2": "Transformer la prise de décision basée sur la peur en vision courageuse",
+        "3": "Aligner l'identité personnelle avec la vision organisationnelle"
+      }
+    },
+    "level_2": {
+      "title": "Niveau 2 – Résidence d'Intelligence Relationnelle et Culturelle",
+      "subtitle": "Déployer une organisation apprenante et consciente",
+      "description": "Une immersion dans les systèmes vivants de communication, de rituels collectifs et d'innovation sensible. On y installe les fondations d'une culture collaborative, expressive et durable. L'accent est mis sur la guérison, la symbolisation, et l'activation d'un climat fertile pour l'émergence de nouveaux récits organisationnels.",
+      "details": {
+        "0": "Installer des systèmes de communication vivants et conscients",
+        "1": "Créer des rituels collectifs qui nourrissent l'innovation sensible",
+        "2": "Développer une culture collaborative et expressive durable",
+        "3": "Activer un climat fertile pour l'émergence de nouveaux récits"
+      }
+    },
+    "level_3": {
+      "title": "Niveau 3 – Résidence Architecturale en IA et Systèmes Augmentés",
+      "subtitle": "Prototyper, intégrer et gouverner des systèmes intelligents et éthiques",
+      "description": "Pour les organisations prêtes à explorer l'implémentation concrète de l'intelligence artificielle, avec un focus sur l'alignement ontologique, les assistants cognitifs, les workflows augmentés et la gouvernance adaptative. Ici, l'AI devient un partenaire stratégique, somatique et opérationnel.",
+      "details": {
+        "0": "Implémenter l'intelligence artificielle avec alignement ontologique",
+        "1": "Développer des assistants cognitifs et workflows augmentés",
+        "2": "Établir une gouvernance adaptative pour les systèmes intelligents",
+        "3": "Intégrer l'IA comme partenaire stratégique et opérationnel"
+      }
+    },
+    "integral_journey": {
+      "title": "Un Parcours Intégral de Transformation",
+      "foundations": "Fondations Personnelles",
+      "foundations_description": "Développer la présence et la clarté nécessaires pour diriger avec authenticité et courage.",
+      "ecosystems": "Écosystèmes Relationnels",
+      "ecosystems_description": "Créer des cultures d'apprentissage qui favorisent l'innovation et la collaboration consciente.",
+      "systems": "Systèmes Augmentés",
+      "systems_description": "Intégrer l'intelligence artificielle comme partenaire stratégique pour l'innovation organisationnelle."
+    }
+  },
+  "coaching_approach": {
+    "section_title": "Une Approche de Coaching qui Crée un Changement Durable",
+    "section_description": "25 ans d'expérience à faire le pont entre vision créative et implémentation technique, maintenant focalisé sur le développement des capacités de leadership qui rendent l'innovation inévitable.",
+    "approaches": {
+      "individual": {
+        "title": "Coaching Intensif Individuel",
+        "description": "Sessions de coaching approfondies et personnalisées qui s'attaquent à vos défis spécifiques de leadership et contexte organisationnel.",
+        "focus": "Transformation individuelle qui crée un changement systémique"
+      },
+      "systems": {
+        "title": "Développement de la Pensée Systémique",
+        "description": "Aller au-delà de la résolution de problèmes pour créer des conditions où l'innovation émerge naturellement.",
+        "focus": "Construire des capacités plutôt qu'atteindre des cibles"
+      },
+      "alignment": {
+        "title": "Facilitation d'Alignement",
+        "description": "Combler les écarts entre vision exécutive, implémentation technique et engagement des employés.",
+        "focus": "Créer la cohérence à travers tous les niveaux de leadership"
+      },
+      "embodied": {
+        "title": "Leadership Incarné",
+        "description": "Intégrer la conscience somatique et l'intelligence émotionnelle dans votre pratique de leadership.",
+        "focus": "Diriger à partir de l'authenticité plutôt que de la position"
+      }
+    },
+    "focus_label": "Focus",
+    "philosophy": {
+      "title": "Philosophie de Coaching",
+      "emergence": {
+        "title": "Émergence Plutôt que Contrôle",
+        "description": "Créer des conditions pour l'innovation plutôt qu'essayer de contrôler les résultats"
+      },
+      "coherence": {
+        "title": "Cohérence Plutôt que Conformité",
+        "description": "Aligner les actions avec les valeurs et la vision plutôt que suivre des processus rigides"
+      },
+      "learning": {
+        "title": "Apprentissage Plutôt que Performance",
+        "description": "Développer les capacités et la compréhension plutôt que simplement atteindre des métriques"
+      }
+    },
+    "cta": {
+      "title": "Prêt à Transformer Votre Leadership?",
+      "description": "Que vous soyez un dirigeant en quête de courage, un leader technique construisant des ponts, ou favorisant une culture d'apprentissage, le coaching personnalisé peut débloquer votre potentiel d'innovation.",
+      "button": "Planifiez Votre Session Découverte"
+    }
   },
   "calm_magic": {
     "title": "Cadre Calm Magic",
@@ -28,11 +130,6 @@
     "framework_open": "Cadre Ouvert",
     "open_calm_magic": "Ouvrir Calm Magic",
     "tools_description": "Découvrez des outils interactifs pour la conscience émotionnelle, la conception de relations créatives et la transformation personnelle"
-  },
-  "framework": {
-    "imagineering_to_engineering": "De l'Imagination à l'Ingénierie",
-    "product_development_framework": "Cadre de Développement de Produit",
-    "extensible_process": "Processus Extensible"
   },
   "about": {
     "page_title": "À Propos de Nous",
@@ -97,13 +194,247 @@
     "filter_by_category": "Filtrer par Catégorie",
     "view_details": "Voir les Détails",
     "back_to_studies": "Retour aux Études",
+    "role": "Rôle",
+    "methods": "Méthodes",
+    "results": "Résultats",
+    "impact": "Impact",
+    "awards": "Prix",
+    "technologies": "Technologies",
     "categories": {
       "ai_leadership": "Leadership IA",
       "relational_innovation": "Innovation Relationnelle",
       "organizational_transformation": "Transformation Organisationnelle",
       "creative_technology": "Technologie Créative",
       "public_art": "Art Public",
-      "interactive_design": "Design Interactif"
+      "interactive_design": "Design Interactif",
+      "interactive_storytelling": "Narration Interactive",
+      "spatial_installations": "Installations Spatiales",
+      "educational_tech": "Technologie Éducative",
+      "speaking": "Conférences & Présentation",
+      "methodology": "Méthodologie & Cadre"
+    },
+    "projects": {
+      "oaciq_elise": {
+        "title": "Élise - Assistant virtuel OACIQ",
+        "subtitle": "Robot conversationnel pour le courtage immobilier québécois",
+        "description": "Développement d'un assistant conversationnel intelligent pour accompagner les courtiers immobiliers et le public dans leurs démarches. Élise répond aux questions sur la réglementation, les processus d'achat/vente, et guide les utilisateurs vers les bonnes ressources de l'OACIQ.",
+        "role": "Concepteur UX et développeur de l'expérience conversationnelle, appliquant la méthodologie Calm Magic pour créer une interaction bienveillante et professionnelle.",
+        "methods": {
+          "0": "IA conversationnelle",
+          "1": "Interface de chat intuitive",
+          "2": "Base de connaissances spécialisée",
+          "3": "Support bilingue français/anglais"
+        },
+        "results": "Assistant virtuel accessible 24/7 capable de répondre aux questions réglementaires complexes, d'orienter courtiers et consommateurs, et de simplifier l'accès aux services de l'OACIQ.",
+        "impact": "Amélioration significative de l'accessibilité aux informations immobilières pour les professionnels et le public. Réduction du temps d'attente pour obtenir des réponses aux questions courantes.",
+        "technologies": {
+          "0": "Traitement du langage naturel",
+          "1": "Base de connaissances IA",
+          "2": "Interface conversationnelle",
+          "3": "Support multilingue"
+        }
+      },
+      "wuxia_the_fox": {
+        "title": "Wuxia le renard",
+        "subtitle": "Livre Interactif pour Enfants & Plateforme RA",
+        "description": "Projet éducatif transmédia lancé au Québec, coproduit avec SAGA et le diffuseur public TFO. L'œuvre prend la forme d'un conte illustré associé à une application iPad interactive, alliant mythologie traditionnelle et technologies modernes.",
+        "role": "Créateur et directeur du projet, développant une narration augmentée qui mobilise la lecture orale et la reconnaissance vocale.",
+        "methods": {
+          "0": "Méthodologie Calm Magic",
+          "1": "Interactivité multisensorielle",
+          "2": "Technologie de reconnaissance vocale",
+          "3": "Réalité augmentée"
+        },
+        "results": "Un livre illustré de 200 pages avec modules physiques (masques, blocs de bois à scanner) et une app iPad en réalité augmentée. La caméra de l'appareil reconnaît images et symboles du livre pour déclencher des animations audiovisuelles complémentaires.",
+        "impact": "Financé via campagne Kickstarter réussie et publié en français et anglais. A remporté une mention spéciale au Grand Prix Numix 2015 pour l'innovation.",
+        "awards": {
+          "0": "Grand Prix Numix 2015 - Mention Spéciale"
+        },
+        "technologies": {
+          "0": "RA iPad",
+          "1": "Reconnaissance Vocale",
+          "2": "Vision par Ordinateur",
+          "3": "Synthèse Audio"
+        }
+      },
+      "io_theatre": {
+        "title": "Théâtre Io",
+        "subtitle": "Prototype d'Espace Scénique Intelligent",
+        "description": "Prototype d'espace scénique intelligent financé par le Fonds des médias du Canada, permettant la synchronisation de contenus narratifs avec capteurs et objets physiques en temps réel.",
+        "role": "Directeur créatif et développeur de la première plateforme 'Experience Design Management System'.",
+        "methods": {
+          "0": "Intégration IoT",
+          "1": "Synchronisation temps réel",
+          "2": "Informatique physique",
+          "3": "Réseaux de capteurs"
+        },
+        "results": "Les utilisateurs deviennent directeurs de leur déambulation, avec éléments de décor et médias réagissant à leur présence.",
+        "impact": "Première plateforme de gestion d'expérience narrative en temps réel, posant les bases pour les futures installations spatiales.",
+        "technologies": {
+          "0": "Capteurs IoT",
+          "1": "Synchronisation Temps Réel",
+          "2": "Informatique Physique"
+        }
+      },
+      "simulateur_genial": {
+        "title": "Simulateur Génial!",
+        "subtitle": "Installation Interactive Scientifique",
+        "description": "Installation ludique au Musée de la civilisation de Québec, recréant l'univers de l'émission scientifique télévisée Génial! dans un contexte muséal.",
+        "role": "Designer interactif et directeur technique pour l'implémentation IoT.",
+        "methods": {
+          "0": "Objets connectés",
+          "1": "Expérimentation scientifique",
+          "2": "Intégration muséale",
+          "3": "Jeu collectif"
+        },
+        "results": "Jeunes participants déclenchent des phénomènes naturels spectaculaires en utilisant objets connectés, reproduisant les expériences de l'émission.",
+        "impact": "A remporté le Prix Gémeaux 2016 (meilleure production numérique dérivée) pour son ingéniosité. Augmentation de l'engagement jeunesse au musée.",
+        "awards": {
+          "0": "Prix Gémeaux 2016 - Meilleure Production Numérique Dérivée"
+        },
+        "technologies": {
+          "0": "IoT",
+          "1": "Expositions Interactives",
+          "2": "Tech Muséale"
+        }
+      },
+      "naissance_du_monde": {
+        "title": "La Naissance du monde",
+        "subtitle": "Narration Orale Interactive",
+        "description": "Conte interactif présenté dans le cadre d'événements Loto-Québec. Le public était invité à lire à voix haute un grimoire physique pour déclencher, par la voix, une animation projetée racontant une légende amérindienne de création.",
+        "role": "Créateur et réalisateur, adaptant la reconnaissance vocale pour environnements hors ligne et bruyants.",
+        "methods": {
+          "0": "Reconnaissance vocale hors ligne",
+          "1": "Projection mapping",
+          "2": "Renouveau tradition orale",
+          "3": "Narration collective"
+        },
+        "results": "Milliers de participants engagés lors d'événements estivaux au Vieux-Port, Parc Lafontaine, etc.",
+        "impact": "A remporté le Grand Prix Créa 2016 (catégorie publicité en ligne) et Prix Boomerang 2015 pour l'expérience interactive.",
+        "awards": {
+          "0": "Grand Prix Créa 2016",
+          "1": "Prix Boomerang 2015"
+        },
+        "technologies": {
+          "0": "Reconnaissance Vocale",
+          "1": "Projection Mapping",
+          "2": "Traitement Hors Ligne"
+        }
+      },
+      "lachine_passages": {
+        "title": "Passages Lachine",
+        "subtitle": "Expérience Narrative Urbaine",
+        "description": "Parcours expérimental dans le Quartier de l'innovation de Montréal, alliant design urbain et narration interactive. Installations le long du canal Lachine projetaient histoires locales quand visiteurs s'attardaient.",
+        "role": "Conseiller créatif pour intégrer dimension narrative au développement urbain.",
+        "methods": {
+          "0": "Géolocalisation",
+          "1": "Capteurs de mouvement",
+          "2": "Narration urbaine",
+          "3": "Intégration patrimoniale"
+        },
+        "results": "Stations audio et capteurs de mouvement déclenchant histoires sonores au passage des visiteurs, créant lien poétique entre passé industriel et futur technologique.",
+        "impact": "Expérience pilote mixant urbanisme et narration, servant de vitrine pour le Quartier de l'innovation.",
+        "technologies": {
+          "0": "Géolocalisation",
+          "1": "Capteurs de Mouvement",
+          "2": "Informatique Urbaine"
+        }
+      },
+      "machine_bienveillance": {
+        "title": "La Machine à bienveillance",
+        "subtitle": "Installation d'Art Public Interactive",
+        "description": "Œuvre d'art public interactive déployée à Montréal (station Saint-Laurent) dans le cadre de KM³ pour le 375e anniversaire de la ville. Une caméra futuriste géante qui mesure la 'disposition à la bienveillance' des passants.",
+        "role": "Co-concepteur (scénariste UX et directeur interactif) avec le collectif Ensemble Ensemble.",
+        "methods": {
+          "0": "Reconnaissance faciale",
+          "1": "Scoring algorithmique",
+          "2": "Visualisation publique",
+          "3": "Boucles de rétroaction positive"
+        },
+        "results": "Grande installation d'art urbain accrocheur qui scanne les volontaires et affiche un indice collectif de bienveillance en temps réel.",
+        "impact": "Détournement réussi de technologie de surveillance pour célébrer l'altruisme, créant réflexion sociale sur empathie et confiance.",
+        "technologies": {
+          "0": "Vision par Ordinateur",
+          "1": "Reconnaissance Faciale",
+          "2": "Affichages Publics"
+        }
+      },
+      "banff_residence": {
+        "title": "Lab d'Émergence Banff",
+        "subtitle": "Direction Créative & Résidence d'Innovation",
+        "description": "Directeur de la première édition du Lab d'Émergence Banff, laboratoire d'écriture interactive franco-canadien réunissant auteurs traditionnels et professionnels du numérique.",
+        "role": "Directeur d'expédition, orchestrant atelier intensif réunissant créateurs canadiens et européens.",
+        "methods": {
+          "0": "Design fiction",
+          "1": "Narration participative",
+          "2": "Prototypage rapide",
+          "3": "Collaboration interdisciplinaire"
+        },
+        "results": "Plusieurs concepts innovants nés (esquisses de webséries interactives, installations hybrides) et réseau durable entre créateurs.",
+        "impact": "Créé pont durable entre créateurs traditionnels et numériques, diffusant nouvelles pratiques d'écriture interactive internationalement.",
+        "technologies": {
+          "0": "Design d'Atelier",
+          "1": "Prototypage",
+          "2": "Méthodologie Créative"
+        }
+      },
+      "tedx_montreal": {
+        "title": "TEDx Montréal",
+        "subtitle": "Lecture Transmédia : Lisons avec nos 5 sens!",
+        "description": "Conférence TEDx traitant de lecture transmédia multisensorielle, démontrant comment lire avec voix, gestes et tous les sens peut réinventer l'expérience du livre pour enfants.",
+        "role": "Conférencier principal, démontrant technologie Wuxia et vision pour usage conscient de la technologie.",
+        "methods": {
+          "0": "Démonstration en direct",
+          "1": "Plaidoyer éducatif",
+          "2": "Critique technologique",
+          "3": "Engagement familial"
+        },
+        "results": "Conférence influente sensibilisant public aux dangers de technologie passive et proposant usage créatif et conscient des écrans dans rituels familiaux.",
+        "impact": "Impact significatif sensibilisant à l'addiction numérique chez enfants et promouvant usage actif et créatif de la technologie.",
+        "technologies": {
+          "0": "Prise de Parole Publique",
+          "1": "Démo en Direct",
+          "2": "Sensibilisation Éducative"
+        }
+      },
+      "sxsw_talk": {
+        "title": "SXSW Interactive",
+        "subtitle": "Moteurs de Narration pour Environnements Intelligents",
+        "description": "Panel de conférence à South by Southwest où Jonathan a présenté sa vision des moteurs narratifs pour environnements connectés, discutant comment l'IoT peut éveiller la 'poésie relationnelle' du monde physique.",
+        "role": "Panéliste et leader d'opinion sur villes intelligentes et informatique narrative.",
+        "methods": {
+          "0": "Leadership d'opinion",
+          "1": "Vision ville intelligente",
+          "2": "Narration IoT",
+          "3": "Scénarios futurs"
+        },
+        "results": "Renforcé réputation internationale de Jonathan dans domaine villes intelligentes créatives.",
+        "impact": "Positionné monde physique comme plateforme narrative, influençant discours sur environnements intelligents centrés humain.",
+        "technologies": {
+          "0": "Villes Intelligentes",
+          "1": "IoT",
+          "2": "Informatique Narrative"
+        }
+      },
+      "calm_magic_methodology": {
+        "title": "Méthodologie Calm Magic",
+        "subtitle": "Cadre de Design Technopoétique",
+        "description": "Cadre conceptuel original développé par Jonathan Bélisle pour fusionner poésie, design d'expérience et pensée systémique dans les projets. Une approche 'technopoétique' visant à créer des expériences numériques transformationnelles.",
+        "role": "Créateur et évangéliste de la méthodologie, l'appliquant à travers tous les projets Paracosm.",
+        "methods": {
+          "0": "Approche poétique",
+          "1": "Systèmes relationnels",
+          "2": "UX transformationnelle",
+          "3": "Design holistique"
+        },
+        "results": "Méthodologie complète implémentée à travers tous les projets majeurs, distinguant l'approche de Paracosm dans le paysage des médias interactifs.",
+        "impact": "Influencé pensée design dans secteur technologie créative québécois, fournissant cadre pour innovation centrée humain.",
+        "technologies": {
+          "0": "Méthodologie Design",
+          "1": "Pensée Systémique",
+          "2": "Stratégie UX"
+        }
+      }
     }
   },
   "footer": {
