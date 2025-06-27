@@ -1,10 +1,12 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import AssistantHeader from './AssistantHeader';
+import EnhancedAssistantHeader from './EnhancedAssistantHeader';
 import ViewModeNavigation from './ViewModeNavigation';
 import ViewRenderer from './ViewRenderer';
 import PoiesisIndicator from './PoiesisIndicator';
+import SettingsPanel from './SettingsPanel';
+import ContextualGuide from './ContextualGuide';
 import { EmotionalState } from '@/types/journal';
 
 type ViewMode = 'journey' | 'spiral' | 'tests' | 'learning' | 'overview' | 'tools';
@@ -19,6 +21,9 @@ interface MainWindowProps {
   emotionalState: Partial<EmotionalState>;
   transformationStages: string[];
   emotionalJourney: string[];
+  preferences: any;
+  showSettings: boolean;
+  isFirstTime: boolean;
   onMinimize: () => void;
   onMaximize: () => void;
   onFullScreen: () => void;
@@ -28,6 +33,9 @@ interface MainWindowProps {
   onLandscapeChange: (landscape: number) => void;
   onStateChange: (state: Partial<EmotionalState>) => void;
   onStartJourney?: () => void;
+  onOpenSettings: () => void;
+  onCloseSettings: () => void;
+  onFirstTimeComplete: () => void;
   handleResizeStart: (e: React.MouseEvent, direction: string) => void;
 }
 
@@ -41,6 +49,9 @@ const MainWindow: React.FC<MainWindowProps> = ({
   emotionalState,
   transformationStages,
   emotionalJourney,
+  preferences,
+  showSettings,
+  isFirstTime,
   onMinimize,
   onMaximize,
   onFullScreen,
@@ -50,16 +61,23 @@ const MainWindow: React.FC<MainWindowProps> = ({
   onLandscapeChange,
   onStateChange,
   onStartJourney,
+  onOpenSettings,
+  onCloseSettings,
+  onFirstTimeComplete,
   handleResizeStart
 }) => {
   const cardClassName = isFullScreen 
     ? "h-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-0 shadow-none rounded-none overflow-hidden flex flex-col"
     : "h-full bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-2 border-gradient-to-b from-purple-500 to-blue-500 shadow-2xl rounded-xl overflow-hidden flex flex-col";
 
+  const animationClass = preferences?.interfaceSettings?.animationsEnabled 
+    ? "transition-all duration-300" 
+    : "";
+
   return (
-    <div style={windowStyle} className="select-none transition-all duration-300">
+    <div style={windowStyle} className={`select-none ${animationClass}`}>
       <Card className={cardClassName}>
-        <AssistantHeader
+        <EnhancedAssistantHeader
           isMinimized={isMinimized}
           isMaximized={isMaximized}
           isFullScreen={isFullScreen}
@@ -68,10 +86,13 @@ const MainWindow: React.FC<MainWindowProps> = ({
           onFullScreen={onFullScreen}
           onClose={onClose}
           onMouseDown={onMouseDown}
+          emotionalState={emotionalState}
+          currentViewMode={viewMode}
+          onOpenSettings={onOpenSettings}
         />
 
         {!isMinimized && (
-          <CardContent className="p-4 overflow-y-auto flex-1">
+          <CardContent className={`p-4 overflow-y-auto flex-1 ${preferences?.interfaceSettings?.compactMode ? 'p-2' : 'p-4'}`}>
             <ViewModeNavigation
               viewMode={viewMode}
               onViewModeChange={onViewModeChange}
@@ -94,6 +115,18 @@ const MainWindow: React.FC<MainWindowProps> = ({
             <PoiesisIndicator emotionalState={emotionalState} />
           </CardContent>
         )}
+
+        {/* Settings Panel Overlay */}
+        {showSettings && (
+          <SettingsPanel onClose={onCloseSettings} />
+        )}
+
+        {/* Contextual Guide */}
+        <ContextualGuide
+          viewMode={viewMode}
+          isFirstTime={isFirstTime}
+          onGuideComplete={onFirstTimeComplete}
+        />
 
         {/* Resize Handles - Hidden in full screen */}
         {!isMinimized && !isMaximized && !isFullScreen && (
