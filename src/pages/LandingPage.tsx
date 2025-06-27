@@ -5,27 +5,49 @@ import TransformationJourney from "@/components/TransformationJourney";
 import ContactSection from "@/components/ContactSection";
 import PartnerToolsSection from "@/components/PartnerToolsSection";
 import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
+import RetreatAnnouncementPopup from "@/components/RetreatAnnouncementPopup";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { Button } from "@/components/ui/button";
 import { Zap, Heart } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
-import ParacosmRetreatSection from "@/components/ParacosmRetreatSection";
 
 const LandingPage = () => {
   const [isCalmMagicAssistantOpen, setIsCalmMagicAssistantOpen] = useState(false);
+  const [isRetreatAnnouncementOpen, setIsRetreatAnnouncementOpen] = useState(false);
   const { t } = useLanguage();
 
   useEffect(() => {
     document.title = t("page_titles.choose_coaching_path");
+    
+    // Show retreat announcement popup once per session
+    const hasSeenRetreatAnnouncement = sessionStorage.getItem('hasSeenRetreatAnnouncement');
+    if (!hasSeenRetreatAnnouncement) {
+      // Delay showing the popup to let the page load
+      const timer = setTimeout(() => {
+        setIsRetreatAnnouncementOpen(true);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
   }, [t]);
 
   const handleStartCoaching = () => {
     setIsCalmMagicAssistantOpen(true);
   };
 
+  const handleCloseRetreatAnnouncement = () => {
+    setIsRetreatAnnouncementOpen(false);
+    sessionStorage.setItem('hasSeenRetreatAnnouncement', 'true');
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+      {/* Retreat Announcement Popup */}
+      <RetreatAnnouncementPopup 
+        isOpen={isRetreatAnnouncementOpen} 
+        onClose={handleCloseRetreatAnnouncement} 
+      />
+      
       {/* Navigation */}
       <header className="fixed w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
         <div className="container flex items-center justify-between py-4">
@@ -90,9 +112,6 @@ const LandingPage = () => {
       
       {/* Three Residence Levels Section */}
       <LeadershipRolesSection />
-      
-      {/* Paracosm Retreat Section */}
-      <ParacosmRetreatSection />
       
       {/* Coaching Approach */}
       <CoachingApproachSection />

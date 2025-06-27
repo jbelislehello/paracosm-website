@@ -1,47 +1,67 @@
 
 {
-  "section_title": "Our Three Residence Levels",
-  "section_description": "A progressive and integrated accompaniment that cultivates leadership excellence through three complementary dimensions: executive presence, relational intelligence, and technological mastery.",
-  "level_1": {
-    "title": "Level 1 – Integral Leadership Residence",
-    "subtitle": "Cultivating executive presence and strategic vision",
-    "description": "For leaders and management teams seeking deep alignment between identity, decision-making and transformation. This residence explores dynamics of power, clarity and courage through personalized accompaniment.",
-    "details": {
-      "0": "Develop existential presence and emotional intelligence necessary to lead in uncertainty",
-      "1": "Create psychological safety for innovation emergence",
-      "2": "Transform fear-based decision-making into courageous vision",
-      "3": "Align personal identity with organizational vision"
+  "section_title": "Three Residence Levels",
+  "section_description": "Choose your depth of engagement based on your leadership journey and transformation goals",
+  "roles": {
+    "executive_courage": {
+      "title": "Executive Courage",
+      "subtitle": "C-Suite & Senior Leadership",
+      "description": "For executives who need to make bold decisions in uncertain times. Develop the courage to lead through complexity while maintaining authentic relationships.",
+      "focus": "Strategic vision, stakeholder alignment, decision-making under uncertainty",
+      "format": "Monthly 1:1 intensive sessions + quarterly leadership retreats",
+      "outcomes": [
+        "Clear strategic vision aligned with personal values",
+        "Enhanced stakeholder communication and influence",
+        "Resilient decision-making frameworks",
+        "Authentic leadership presence"
+      ]
+    },
+    "technical_bridge": {
+      "title": "Technical Co-Creation",
+      "subtitle": "Engineering & Product Leadership",
+      "description": "Bridge the gap between technical excellence and human-centered innovation. Learn to translate vision into executable strategy.",
+      "focus": "Technical leadership, cross-functional collaboration, innovation frameworks",
+      "format": "Bi-weekly coaching + hands-on project workshops",
+      "outcomes": [
+        "Improved technical communication skills",
+        "Effective cross-functional team leadership",
+        "Innovation process frameworks",
+        "Mentorship and team development capabilities"
+      ]
+    },
+    "learning_culture": {
+      "title": "Learning-Oriented Culture",
+      "subtitle": "Organizational Development",
+      "description": "Create environments where continuous learning and adaptation become natural. Foster psychological safety and creative collaboration.",
+      "focus": "Culture design, team dynamics, organizational learning systems",
+      "format": "Team workshops + ongoing culture assessment",
+      "outcomes": [
+        "High-trust team environments",
+        "Effective feedback and learning systems",
+        "Innovation-friendly organizational structures",
+        "Sustainable change management practices"
+      ]
+    },
+    "paracosm_retreat": {
+      "title": "Paracosm Executive Retreat",
+      "subtitle": "3-Day Transformational Experience",
+      "description": "An immersive retreat blending storytelling, ritual, and mathematical creativity to spark innovation and deep reflection for senior executives.",
+      "focus": "Personal transformation, creative leadership, systems thinking through embodied practices",
+      "format": "3-day intensive retreat with follow-up integration sessions",
+      "outcomes": [
+        "Renewed sense of purpose and vision",
+        "Creative problem-solving frameworks",
+        "Deep community connections with peer leaders",
+        "Integration of analytical and intuitive leadership approaches"
+      ]
     }
   },
-  "level_2": {
-    "title": "Level 2 – Relational and Cultural Intelligence Residence",
-    "subtitle": "Deploying a learning and conscious organization",
-    "description": "An immersion in living systems of communication, collective rituals and sensitive innovation. We install foundations of a collaborative, expressive and sustainable culture. Focus is on healing, symbolization, and activating a fertile climate for emerging new organizational narratives.",
-    "details": {
-      "0": "Install living and conscious communication systems",
-      "1": "Create collective rituals that nourish sensitive innovation",
-      "2": "Develop sustainable collaborative and expressive culture",
-      "3": "Activate fertile climate for emerging new narratives"
-    }
-  },
-  "level_3": {
-    "title": "Level 3 – Architectural Residence in AI and Augmented Systems",
-    "subtitle": "Prototyping, integrating and governing intelligent and ethical systems",
-    "description": "For organizations ready to explore concrete implementation of artificial intelligence, with focus on ontological alignment, cognitive assistants, augmented workflows and adaptive governance. Here, AI becomes a strategic, somatic and operational partner.",
-    "details": {
-      "0": "Implement artificial intelligence with ontological alignment",
-      "1": "Develop cognitive assistants and augmented workflows",
-      "2": "Establish adaptive governance for intelligent systems",
-      "3": "Integrate AI as strategic and operational partner"
-    }
-  },
-  "integral_journey": {
-    "title": "An Integral Transformation Journey",
-    "foundations": "Personal Foundations",
-    "foundations_description": "Develop presence and clarity necessary to lead with authenticity and courage.",
-    "ecosystems": "Relational Ecosystems",
-    "ecosystems_description": "Create learning cultures that foster innovation and conscious collaboration.",
-    "systems": "Augmented Systems",
-    "systems_description": "Integrate artificial intelligence as strategic partner for organizational innovation."
+  "focus_label": "Focus Areas",
+  "format_label": "Format",
+  "outcomes_label": "Key Outcomes",
+  "cta": {
+    "title": "Ready to Begin Your Leadership Journey?",
+    "description": "Each residence level is designed to meet you where you are and support your unique path to transformational leadership.",
+    "button": "Schedule Discovery Conversation"
   }
 }

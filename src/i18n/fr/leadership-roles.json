@@ -1,47 +1,67 @@
 
 {
-  "section_title": "Nos Trois Niveaux de Résidence",
-  "section_description": "Un accompagnement progressif et intégré qui cultive l'excellence du leadership à travers trois dimensions complémentaires : la présence exécutive, l'intelligence relationnelle, et la maîtrise technologique.",
-  "level_1": {
-    "title": "Niveau 1 – Résidence de Leadership Intégral",
-    "subtitle": "Cultiver la présence exécutive et la vision stratégique",
-    "description": "Pour les dirigeant·es et équipes de direction en quête d'un alignement profond entre identité, décision et transformation. Cette résidence explore les dynamiques de pouvoir, de clarté et de courage à travers un accompagnement sur mesure.",
-    "details": {
-      "0": "Développer la présence existentielle et l'intelligence émotionnelle nécessaires pour diriger dans l'incertitude",
-      "1": "Créer la sécurité psychologique pour l'émergence de l'innovation",
-      "2": "Transformer la prise de décision basée sur la peur en vision courageuse",
-      "3": "Aligner l'identité personnelle avec la vision organisationnelle"
+  "section_title": "Trois Niveaux de Résidence",
+  "section_description": "Choisissez votre niveau d'engagement selon votre parcours de leadership et vos objectifs de transformation",
+  "roles": {
+    "executive_courage": {
+      "title": "Courage Exécutif",
+      "subtitle": "Direction Générale et Leadership Senior",
+      "description": "Pour les dirigeants qui doivent prendre des décisions audacieuses en période d'incertitude. Développez le courage de diriger dans la complexité tout en maintenant des relations authentiques.",
+      "focus": "Vision stratégique, alignement des parties prenantes, prise de décision sous incertitude",
+      "format": "Sessions intensives 1:1 mensuelles + retraites de leadership trimestrielles",
+      "outcomes": [
+        "Vision stratégique claire alignée sur les valeurs personnelles",
+        "Communication et influence améliorées avec les parties prenantes",
+        "Cadres de prise de décision résilients",
+        "Présence de leadership authentique"
+      ]
+    },
+    "technical_bridge": {
+      "title": "Co-Création Technique",
+      "subtitle": "Leadership Ingénierie & Produit",
+      "description": "Comblez le fossé entre excellence technique et innovation centrée sur l'humain. Apprenez à traduire la vision en stratégie exécutable.",
+      "focus": "Leadership technique, collaboration inter-fonctionnelle, cadres d'innovation",
+      "format": "Coaching bi-hebdomadaire + ateliers pratiques de projet",
+      "outcomes": [
+        "Compétences de communication technique améliorées",
+        "Leadership efficace d'équipes inter-fonctionnelles",
+        "Cadres de processus d'innovation",
+        "Capacités de mentorat et développement d'équipe"
+      ]
+    },
+    "learning_culture": {
+      "title": "Culture Orientée Apprentissage",
+      "subtitle": "Développement Organisationnel",
+      "description": "Créez des environnements où l'apprentissage continu et l'adaptation deviennent naturels. Favorisez la sécurité psychologique et la collaboration créative.",
+      "focus": "Conception de culture, dynamiques d'équipe, systèmes d'apprentissage organisationnel",
+      "format": "Ateliers d'équipe + évaluation continue de la culture",
+      "outcomes": [
+        "Environnements d'équipe de haute confiance",
+        "Systèmes efficaces de feedback et d'apprentissage",
+        "Structures organisationnelles favorables à l'innovation",
+        "Pratiques durables de gestion du changement"
+      ]
+    },
+    "paracosm_retreat": {
+      "title": "Retraite Exécutive Paracosm",
+      "subtitle": "Expérience Transformationnelle de 3 Jours",
+      "description": "Une retraite immersive alliant narration, rituels et créativité mathématique pour stimuler l'innovation et la réflexion profonde chez les dirigeants.",
+      "focus": "Transformation personnelle, leadership créatif, pensée systémique par des pratiques incarnées",
+      "format": "Retraite intensive de 3 jours avec sessions d'intégration de suivi",
+      "outcomes": [
+        "Sentiment renouvelé de purpose et de vision",
+        "Cadres de résolution créative de problèmes",
+        "Connexions communautaires profondes avec des leaders pairs",
+        "Intégration d'approches de leadership analytiques et intuitives"
+      ]
     }
   },
-  "level_2": {
-    "title": "Niveau 2 – Résidence d'Intelligence Relationnelle et Culturelle",
-    "subtitle": "Déployer une organisation apprenante et consciente",
-    "description": "Une immersion dans les systèmes vivants de communication, de rituels collectifs et d'innovation sensible. On y installe les fondations d'une culture collaborative, expressive et durable. L'accent est mis sur la guérison, la symbolisation, et l'activation d'un climat fertile pour l'émergence de nouveaux récits organisationnels.",
-    "details": {
-      "0": "Installer des systèmes de communication vivants et conscients",
-      "1": "Créer des rituels collectifs qui nourrissent l'innovation sensible",
-      "2": "Développer une culture collaborative et expressive durable",
-      "3": "Activer un climat fertile pour l'émergence de nouveaux récits"
-    }
-  },
-  "level_3": {
-    "title": "Niveau 3 – Résidence Architecturale en IA et Systèmes Augmentés",
-    "subtitle": "Prototyper, intégrer et gouverner des systèmes intelligents et éthiques",
-    "description": "Pour les organisations prêtes à explorer l'implémentation concrète de l'intelligence artificielle, avec un focus sur l'alignement ontologique, les assistants cognitifs, les workflows augmentés et la gouvernance adaptative. Ici, l'AI devient un partenaire stratégique, somatique et opérationnel.",
-    "details": {
-      "0": "Implémenter l'intelligence artificielle avec alignement ontologique",
-      "1": "Développer des assistants cognitifs et workflows augmentés",
-      "2": "Établir une gouvernance adaptative pour les systèmes intelligents",
-      "3": "Intégrer l'IA comme partenaire stratégique et opérationnel"
-    }
-  },
-  "integral_journey": {
-    "title": "Un Parcours Intégral de Transformation",
-    "foundations": "Fondations Personnelles",
-    "foundations_description": "Développer la présence et la clarté nécessaires pour diriger avec authenticité et courage.",
-    "ecosystems": "Écosystèmes Relationnels",
-    "ecosystems_description": "Créer des cultures d'apprentissage qui favorisent l'innovation et la collaboration consciente.",
-    "systems": "Systèmes Augmentés",
-    "systems_description": "Intégrer l'intelligence artificielle comme partenaire stratégique pour l'innovation organisationnelle."
+  "focus_label": "Domaines de Focus",
+  "format_label": "Format",
+  "outcomes_label": "Résultats Clés",
+  "cta": {
+    "title": "Prêt à Commencer Votre Parcours de Leadership?",
+    "description": "Chaque niveau de résidence est conçu pour vous rencontrer là où vous êtes et soutenir votre parcours unique vers un leadership transformationnel.",
+    "button": "Planifier une Conversation Découverte"
   }
 }
