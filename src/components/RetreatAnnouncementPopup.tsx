@@ -38,6 +38,9 @@ const RetreatAnnouncementPopup: React.FC<RetreatAnnouncementPopupProps> = ({ isO
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0">
+        <DialogHeader className="sr-only">
+          <DialogTitle>{t("retreat.section_title")}</DialogTitle>
+        </DialogHeader>
         <div className="relative bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/30 dark:to-blue-950/30">
           {/* Close button */}
           <button
@@ -133,4 +136,4 @@ const RetreatAnnouncementPopup: React.FC<RetreatAnnouncementPopupProps> = ({ isO
   );
 };
 
-export default RetreatAnnouncementPopup;
+export default RetreetAnnouncementPopup;
