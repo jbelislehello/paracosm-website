@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import LeadershipRolesSection from "@/components/LeadershipRolesSection";
 import CoachingApproachSection from "@/components/CoachingApproachSection";
@@ -48,11 +47,6 @@ const LandingPage = () => {
     setIsRetreatAnnouncementOpen(true);
   };
 
-  const handleResetRetreatPopup = () => {
-    localStorage.removeItem('lastRetreatAnnouncementShown');
-    console.log('Popup retreat réinitialisé - rechargez la page pour le voir à nouveau');
-  };
-
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       {/* Retreat Announcement Popup */}
@@ -77,15 +71,9 @@ const LandingPage = () => {
           </nav>
           <div className="flex items-center gap-4">
             <LanguageSwitcher />
-            {/* Test buttons for development */}
-            <div className="flex gap-2">
-              <Button onClick={handleShowRetreatPopup} variant="outline" size="sm">
-                Test Popup
-              </Button>
-              <Button onClick={handleResetRetreatPopup} variant="outline" size="sm">
-                Reset
-              </Button>
-            </div>
+            <Button onClick={handleShowRetreatPopup} variant="outline" size="sm">
+              Retraite
+            </Button>
             <Button onClick={handleStartCoaching} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300">
               {t("hero.start_journey")}
             </Button>
