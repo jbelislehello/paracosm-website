@@ -1,0 +1,38 @@
+
+{
+  "framework": {
+    "agentic_framework": "Agentic Framework",
+    "framework": "Framework",
+    "imagineering_to_engineering": "Imagineering to Engineering",
+    "product_development_framework": "Product Development Framework",
+    "extensible_process": "Extensible Process"
+  },
+  "calm_magic": {
+    "title": "Calm Magic Framework",
+    "description": "Transform your inner life and relationships through the four forces of personal freedom",
+    "framework_open": "Framework Open",
+    "open_calm_magic": "Open Calm Magic",
+    "tools_description": "Experience interactive tools for emotional awareness, creative relationship design, and personal transformation"
+  },
+  "footer": {
+    "paracosm_description": "Leadership coaching for innovation through alignment of executive courage, technical co-creation, and learning-oriented cultures.",
+    "calm_magic_description": "Transform your inner life and relationships through personalized coaching and innovative tools for emotional awareness and creative connection.",
+    "services_title": "Services",
+    "technical_leadership": "Technical Leadership Development",
+    "individual_coaching": "Individual Coaching",
+    "relationship_design": "Relationship Design",
+    "transformation_programs": "Transformation Programs",
+    "company_title": "Company",
+    "about_jonathan": "About Jonathan",
+    "methodology": "Methodology",
+    "privacy": "Privacy",
+    "leadership_coaching": "Leadership Coaching",
+    "rights_reserved": "All rights reserved"
+  },
+  "page_titles": {
+    "choose_coaching_path": "Paracosm - Choose Your Coaching Path",
+    "relational_intelligence": "Calm Magic Assistant - Relational Intelligence & Innovation",
+    "about_us": "About Us - Paracosm",
+    "case_studies": "Case Studies - Paracosm"
+  }
+}

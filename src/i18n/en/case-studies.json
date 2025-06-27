@@ -1,0 +1,92 @@
+
+{
+  "page_title": "Case Studies",
+  "subtitle": "Discover our transformation journeys and innovation projects",
+  "all_categories": "All Categories",
+  "filter_by_category": "Filter by Category",
+  "view_details": "View Details",
+  "back_to_studies": "Back to Studies",
+  "role": "Role",
+  "methods": "Methods",
+  "results": "Results",
+  "impact": "Impact",
+  "awards": "Awards",
+  "technologies": "Technologies",
+  "categories": {
+    "ai_leadership": "AI Leadership",
+    "relational_innovation": "Relational Innovation",
+    "organizational_transformation": "Organizational Transformation",
+    "creative_technology": "Creative Technology",
+    "public_art": "Public Art",
+    "interactive_design": "Interactive Design",
+    "interactive_storytelling": "Interactive Storytelling",
+    "spatial_installations": "Spatial Installations",
+    "educational_tech": "Educational Technology",
+    "speaking": "Speaking & Conferences",
+    "methodology": "Methodology & Framework"
+  },
+  "projects": {
+    "oaciq_elise": {
+      "title": "Élise - OACIQ Virtual Assistant",
+      "subtitle": "Conversational robot for Quebec real estate brokerage",
+      "description": "Development of an intelligent conversational assistant to accompany real estate brokers and the public in their procedures. Élise answers questions about regulations, buying/selling processes, and guides users to the right OACIQ resources.",
+      "role": "UX designer and conversational experience developer, applying the Calm Magic methodology to create a benevolent and professional interaction.",
+      "methods": {
+        "0": "Conversational AI",
+        "1": "Intuitive chat interface",
+        "2": "Specialized knowledge base",
+        "3": "Bilingual French/English support"
+      },
+      "results": "24/7 accessible virtual assistant capable of answering complex regulatory questions, guiding brokers and consumers, and simplifying access to OACIQ services.",
+      "impact": "Significant improvement in accessibility to real estate information for professionals and the public. Reduced waiting time to get answers to common questions.",
+      "technologies": {
+        "0": "Natural Language Processing",
+        "1": "AI Knowledge Base",
+        "2": "Conversational Interface",
+        "3": "Multilingual Support"
+      }
+    },
+    "wuxia_the_fox": {
+      "title": "Wuxia the Fox",
+      "subtitle": "Interactive Children's Book & AR Platform",
+      "description": "Transmedia educational project launched in Quebec, co-produced with SAGA and public broadcaster TFO. The work takes the form of an illustrated tale associated with an interactive iPad application, combining traditional mythology and modern technologies.",
+      "role": "Creator and director of the project, developing augmented narration that mobilizes oral reading and voice recognition.",
+      "methods": {
+        "0": "Calm Magic methodology",
+        "1": "Multisensory interactivity",
+        "2": "Voice recognition technology",
+        "3": "Augmented reality"
+      },
+      "results": "A 200-page illustrated book with physical modules (masks, wooden blocks to scan) and an iPad app in augmented reality. The device camera recognizes images and symbols from the book to trigger complementary audiovisual animations.",
+      "impact": "Funded via successful Kickstarter campaign and published in French and English. Won special mention at Grand Prix Numix 2015 for innovation.",
+      "awards": {
+        "0": "Grand Prix Numix 2015 - Special Mention"
+      },
+      "technologies": {
+        "0": "iPad AR",
+        "1": "Voice Recognition",
+        "2": "Computer Vision",
+        "3": "Audio Synthesis"
+      }
+    },
+    "calm_magic_methodology": {
+      "title": "Calm Magic Methodology",
+      "subtitle": "Technopoetic Design Framework",
+      "description": "Original conceptual framework developed by Jonathan Bélisle to fuse poetry, experience design, and systems thinking in projects. A 'technopoetic' approach aimed at creating transformational digital experiences.",
+      "role": "Creator and evangelist of the methodology, applying it across all Paracosm projects.",
+      "methods": {
+        "0": "Poetic approach",
+        "1": "Relational systems",
+        "2": "Transformational UX",
+        "3": "Holistic design"
+      },
+      "results": "Comprehensive methodology implemented across all major projects, distinguishing Paracosm's approach in the interactive media landscape.",
+      "impact": "Influenced design thinking in Quebec's creative technology sector, providing framework for human-centered innovation.",
+      "technologies": {
+        "0": "Design Methodology",
+        "1": "Systems Thinking",
+        "2": "UX Strategy"
+      }
+    }
+  }
+}

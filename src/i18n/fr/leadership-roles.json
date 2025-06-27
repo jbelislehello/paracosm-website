@@ -1,0 +1,47 @@
+
+{
+  "section_title": "Nos Trois Niveaux de Résidence",
+  "section_description": "Un accompagnement progressif et intégré qui cultive l'excellence du leadership à travers trois dimensions complémentaires : la présence exécutive, l'intelligence relationnelle, et la maîtrise technologique.",
+  "level_1": {
+    "title": "Niveau 1 – Résidence de Leadership Intégral",
+    "subtitle": "Cultiver la présence exécutive et la vision stratégique",
+    "description": "Pour les dirigeant·es et équipes de direction en quête d'un alignement profond entre identité, décision et transformation. Cette résidence explore les dynamiques de pouvoir, de clarté et de courage à travers un accompagnement sur mesure.",
+    "details": {
+      "0": "Développer la présence existentielle et l'intelligence émotionnelle nécessaires pour diriger dans l'incertitude",
+      "1": "Créer la sécurité psychologique pour l'émergence de l'innovation",
+      "2": "Transformer la prise de décision basée sur la peur en vision courageuse",
+      "3": "Aligner l'identité personnelle avec la vision organisationnelle"
+    }
+  },
+  "level_2": {
+    "title": "Niveau 2 – Résidence d'Intelligence Relationnelle et Culturelle",
+    "subtitle": "Déployer une organisation apprenante et consciente",
+    "description": "Une immersion dans les systèmes vivants de communication, de rituels collectifs et d'innovation sensible. On y installe les fondations d'une culture collaborative, expressive et durable. L'accent est mis sur la guérison, la symbolisation, et l'activation d'un climat fertile pour l'émergence de nouveaux récits organisationnels.",
+    "details": {
+      "0": "Installer des systèmes de communication vivants et conscients",
+      "1": "Créer des rituels collectifs qui nourrissent l'innovation sensible",
+      "2": "Développer une culture collaborative et expressive durable",
+      "3": "Activer un climat fertile pour l'émergence de nouveaux récits"
+    }
+  },
+  "level_3": {
+    "title": "Niveau 3 – Résidence Architecturale en IA et Systèmes Augmentés",
+    "subtitle": "Prototyper, intégrer et gouverner des systèmes intelligents et éthiques",
+    "description": "Pour les organisations prêtes à explorer l'implémentation concrète de l'intelligence artificielle, avec un focus sur l'alignement ontologique, les assistants cognitifs, les workflows augmentés et la gouvernance adaptative. Ici, l'AI devient un partenaire stratégique, somatique et opérationnel.",
+    "details": {
+      "0": "Implémenter l'intelligence artificielle avec alignement ontologique",
+      "1": "Développer des assistants cognitifs et workflows augmentés",
+      "2": "Établir une gouvernance adaptative pour les systèmes intelligents",
+      "3": "Intégrer l'IA comme partenaire stratégique et opérationnel"
+    }
+  },
+  "integral_journey": {
+    "title": "Un Parcours Intégral de Transformation",
+    "foundations": "Fondations Personnelles",
+    "foundations_description": "Développer la présence et la clarté nécessaires pour diriger avec authenticité et courage.",
+    "ecosystems": "Écosystèmes Relationnels",
+    "ecosystems_description": "Créer des cultures d'apprentissage qui favorisent l'innovation et la collaboration consciente.",
+    "systems": "Systèmes Augmentés",
+    "systems_description": "Intégrer l'intelligence artificielle comme partenaire stratégique pour l'innovation organisationnelle."
+  }
+}

@@ -1,0 +1,38 @@
+
+{
+  "framework": {
+    "agentic_framework": "Cadre Agentique",
+    "framework": "Cadre",
+    "imagineering_to_engineering": "De l'Imagination à l'Ingénierie",
+    "product_development_framework": "Cadre de Développement de Produit",
+    "extensible_process": "Processus Extensible"
+  },
+  "calm_magic": {
+    "title": "Cadre Calm Magic",
+    "description": "Transformez votre vie intérieure et vos relations grâce aux quatre forces de la liberté personnelle",
+    "framework_open": "Cadre Ouvert",
+    "open_calm_magic": "Ouvrir Calm Magic",
+    "tools_description": "Découvrez des outils interactifs pour la conscience émotionnelle, la conception de relations créatives et la transformation personnelle"
+  },
+  "footer": {
+    "paracosm_description": "Coaching de leadership pour l'innovation à travers l'alignement du courage exécutif, de la co-création technique et des cultures orientées apprentissage.",
+    "calm_magic_description": "Transformez votre vie intérieure et vos relations grâce à un coaching personnalisé et des outils innovants pour la conscience émotionnelle et la connexion créative.",
+    "services_title": "Services",
+    "technical_leadership": "Développement du Leadership Technique",
+    "individual_coaching": "Coaching Individuel",
+    "relationship_design": "Conception de Relations",
+    "transformation_programs": "Programmes de Transformation",
+    "company_title": "Entreprise",
+    "about_jonathan": "À Propos de Jonathan",
+    "methodology": "Méthodologie",
+    "privacy": "Confidentialité",
+    "leadership_coaching": "Coaching de Leadership",
+    "rights_reserved": "Tous droits réservés"
+  },
+  "page_titles": {
+    "choose_coaching_path": "Paracosm - Choisissez Votre Parcours de Coaching",
+    "relational_intelligence": "Assistant Calm Magic - Intelligence Relationnelle & Innovation",
+    "about_us": "À Propos de Nous - Paracosm",
+    "case_studies": "Études de Cas - Paracosm"
+  }
+}

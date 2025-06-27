@@ -1,0 +1,48 @@
+
+{
+  "section_title": "A Coaching Approach That Creates Lasting Change",
+  "section_description": "25 years of experience bridging creative vision with technical implementation, now focused on developing the leadership capabilities that make innovation inevitable.",
+  "approaches": {
+    "individual": {
+      "title": "One-on-One Intensive Coaching",
+      "description": "Deep, personalized coaching sessions that address your specific leadership challenges and organizational context.",
+      "focus": "Individual transformation that creates systemic change"
+    },
+    "systems": {
+      "title": "Systems-Thinking Development",
+      "description": "Move beyond problem-solving to creating conditions where innovation naturally emerges.",
+      "focus": "Building capabilities instead of achieving targets"
+    },
+    "alignment": {
+      "title": "Alignment Facilitation",
+      "description": "Bridge the gaps between executive vision, technical implementation, and employee engagement.",
+      "focus": "Creating coherence across all leadership levels"
+    },
+    "embodied": {
+      "title": "Embodied Leadership",
+      "description": "Integrate somatic awareness and emotional intelligence into your leadership practice.",
+      "focus": "Leading from authenticity rather than position"
+    }
+  },
+  "focus_label": "Focus",
+  "philosophy": {
+    "title": "Coaching Philosophy",
+    "emergence": {
+      "title": "Emergence Over Control",
+      "description": "Create conditions for innovation rather than trying to control outcomes"
+    },
+    "coherence": {
+      "title": "Coherence Over Compliance",
+      "description": "Align actions with values and vision rather than following rigid processes"
+    },
+    "learning": {
+      "title": "Learning Over Performing",
+      "description": "Develop capabilities and understanding rather than just achieving metrics"
+    }
+  },
+  "cta": {
+    "title": "Ready to Transform Your Leadership?",
+    "description": "Whether you're an executive seeking courage, a technical leader building bridges, or fostering a learning culture, personalized coaching can unlock your innovation potential.",
+    "button": "Schedule Your Discovery Session"
+  }
+}

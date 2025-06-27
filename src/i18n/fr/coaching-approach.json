@@ -1,0 +1,48 @@
+
+{
+  "section_title": "Une Approche de Coaching qui Crée un Changement Durable",
+  "section_description": "25 ans d'expérience à faire le pont entre vision créative et implémentation technique, maintenant focalisé sur le développement des capacités de leadership qui rendent l'innovation inévitable.",
+  "approaches": {
+    "individual": {
+      "title": "Coaching Intensif Individuel",
+      "description": "Sessions de coaching approfondies et personnalisées qui s'attaquent à vos défis spécifiques de leadership et contexte organisationnel.",
+      "focus": "Transformation individuelle qui crée un changement systémique"
+    },
+    "systems": {
+      "title": "Développement de la Pensée Systémique",
+      "description": "Aller au-delà de la résolution de problèmes pour créer des conditions où l'innovation émerge naturellement.",
+      "focus": "Construire des capacités plutôt qu'atteindre des cibles"
+    },
+    "alignment": {
+      "title": "Facilitation d'Alignement",
+      "description": "Combler les écarts entre vision exécutive, implémentation technique et engagement des employés.",
+      "focus": "Créer la cohérence à travers tous les niveaux de leadership"
+    },
+    "embodied": {
+      "title": "Leadership Incarné",
+      "description": "Intégrer la conscience somatique et l'intelligence émotionnelle dans votre pratique de leadership.",
+      "focus": "Diriger à partir de l'authenticité plutôt que de la position"
+    }
+  },
+  "focus_label": "Focus",
+  "philosophy": {
+    "title": "Philosophie de Coaching",
+    "emergence": {
+      "title": "Émergence Plutôt que Contrôle",
+      "description": "Créer des conditions pour l'innovation plutôt qu'essayer de contrôler les résultats"
+    },
+    "coherence": {
+      "title": "Cohérence Plutôt que Conformité",
+      "description": "Aligner les actions avec les valeurs et la vision plutôt que suivre des processus rigides"
+    },
+    "learning": {
+      "title": "Apprentissage Plutôt que Performance",
+      "description": "Développer les capacités et la compréhension plutôt que simplement atteindre des métriques"
+    }
+  },
+  "cta": {
+    "title": "Prêt à Transformer Votre Leadership?",
+    "description": "Que vous soyez un dirigeant en quête de courage, un leader technique construisant des ponts, ou favorisant une culture d'apprentissage, le coaching personnalisé peut débloquer votre potentiel d'innovation.",
+    "button": "Planifiez Votre Session Découverte"
+  }
+}

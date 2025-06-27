@@ -1,0 +1,47 @@
+
+{
+  "section_title": "Our Three Residence Levels",
+  "section_description": "A progressive and integrated accompaniment that cultivates leadership excellence through three complementary dimensions: executive presence, relational intelligence, and technological mastery.",
+  "level_1": {
+    "title": "Level 1 – Integral Leadership Residence",
+    "subtitle": "Cultivating executive presence and strategic vision",
+    "description": "For leaders and management teams seeking deep alignment between identity, decision-making and transformation. This residence explores dynamics of power, clarity and courage through personalized accompaniment.",
+    "details": {
+      "0": "Develop existential presence and emotional intelligence necessary to lead in uncertainty",
+      "1": "Create psychological safety for innovation emergence",
+      "2": "Transform fear-based decision-making into courageous vision",
+      "3": "Align personal identity with organizational vision"
+    }
+  },
+  "level_2": {
+    "title": "Level 2 – Relational and Cultural Intelligence Residence",
+    "subtitle": "Deploying a learning and conscious organization",
+    "description": "An immersion in living systems of communication, collective rituals and sensitive innovation. We install foundations of a collaborative, expressive and sustainable culture. Focus is on healing, symbolization, and activating a fertile climate for emerging new organizational narratives.",
+    "details": {
+      "0": "Install living and conscious communication systems",
+      "1": "Create collective rituals that nourish sensitive innovation",
+      "2": "Develop sustainable collaborative and expressive culture",
+      "3": "Activate fertile climate for emerging new narratives"
+    }
+  },
+  "level_3": {
+    "title": "Level 3 – Architectural Residence in AI and Augmented Systems",
+    "subtitle": "Prototyping, integrating and governing intelligent and ethical systems",
+    "description": "For organizations ready to explore concrete implementation of artificial intelligence, with focus on ontological alignment, cognitive assistants, augmented workflows and adaptive governance. Here, AI becomes a strategic, somatic and operational partner.",
+    "details": {
+      "0": "Implement artificial intelligence with ontological alignment",
+      "1": "Develop cognitive assistants and augmented workflows",
+      "2": "Establish adaptive governance for intelligent systems",
+      "3": "Integrate AI as strategic and operational partner"
+    }
+  },
+  "integral_journey": {
+    "title": "An Integral Transformation Journey",
+    "foundations": "Personal Foundations",
+    "foundations_description": "Develop presence and clarity necessary to lead with authenticity and courage.",
+    "ecosystems": "Relational Ecosystems",
+    "ecosystems_description": "Create learning cultures that foster innovation and conscious collaboration.",
+    "systems": "Augmented Systems",
+    "systems_description": "Integrate artificial intelligence as strategic partner for organizational innovation."
+  }
+}

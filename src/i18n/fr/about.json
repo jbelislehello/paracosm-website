@@ -1,0 +1,57 @@
+
+{
+  "page_title": "À Propos de Nous",
+  "subtitle": "Jonathan Bélisle & la Spirale de Paracosm",
+  "intro_p1": "Depuis plus de 25 ans, Jonathan Bélisle explore les lisières entre narration, design d'expérience et technologie vivante. Son parcours commence en 1997, dans les marges du cinéma expérimental et de l'Internet naissant. Très tôt, il cofonde Inconet et StratSite, où il devient l'un des premiers architectes de solutions web au Québec. À cette époque, il comprend que chaque système, même numérique, est un récit en puissance.",
+  "intro_p2": "De 2004 à 2010, il agit en stratège UX et architecte d'information pour des agences comme Sid Lee, VDL2, Loft8, BlueSponge et Phéromone. Il y implante des pratiques centrées sur l'humain, le sens, et la profondeur de l'expérience. Ce sont des années de transformation culturelle des agences elles-mêmes, où il agit en tant que « conteur organisationnel ».",
+  "intro_p3": "En parallèle, il fonde Hello, Architekt!, un studio dédié à la narration prospective, à l'accompagnement des mutations créatives et à la pédagogie par le design. Il y accompagne villes, musées, écoles et entreprises à reconfigurer leur identité à travers des récits incarnés. C'est à cette époque qu'il imagine le projet Wuxia le renard : une série de livres interactifs qui fusionnent poésie, voix, et technologie. Le projet sera primé, traduit en plusieurs langues, et déployé dans plus de 1 500 écoles.",
+  "intro_p4": "De 2012 à 2017, Jonathan enseigne le design d'interaction à l'INIS, cofonde la communauté UXMTL, dirige l'Emergence Lab au Banff Centre et collabore avec le Musée canadien des droits de la personne. Il devient une figure mentorale dans les écosystèmes créatifs franco-canadiens.",
+  "intro_p5": "En 2017, il cofonde Ensemble Ensemble, un collectif d'art public et critique technologique. Ils créent notamment The Compassion Machine, une installation provocante qui prédit vos futurs gestes de bonté. Entre 2019 et 2021, il devient DesignOps Director chez Behaviour Interactive, puis consultant en narration spéculative chez The Greenhouse @ Deloitte, où il guide dirigeants et stratèges dans la cartographie des futurs.",
+  "intro_p6": "Depuis 2021, il agit comme Head of Design chez Prodago, où il façonne des systèmes de gouvernance de l'intelligence artificielle éthiques et sensibles à l'expérience humaine.",
+  "intro_p7": "Aujourd'hui, il fonde Paracosm — un laboratoire vivant où convergent narration spéculative, coaching somatique, ontologies poétiques, agents IA et retraite de prototypage. C'est aussi là que naît Calm Magic, une école de leadership basé sur le corps, le souffle et le sens.",
+  "conclusion": "Paracosm est une spirale. Une carte intérieure et collective pour traverser l'incertitude avec grâce. Ce n'est pas un site. C'est un champ d'intelligence vivante. Tu es invité à entrer.",
+  "journey_title": "Parcours & Réalisations",
+  "journey_subtitle": "Un voyage de 25 ans à travers l'innovation, la narration et la transformation des organisations.",
+  "timeline": {
+    "1997_2003": {
+      "title": "Les Origines Numériques",
+      "description": "Cofondateur d'Inconet et StratSite, architecte de solutions web au Québec"
+    },
+    "2004_2010": {
+      "title": "Transformation des Agences",
+      "description": "Stratège UX chez Sid Lee, VDL2, Loft8, BlueSponge et Phéromone"
+    },
+    "2010_2015": {
+      "title": "Hello, Architekt! & Wuxia",
+      "description": "Studio de narration prospective et livre interactif primé"
+    },
+    "2012_2017": {
+      "title": "Enseignement & Communauté",
+      "description": "INIS, UXMTL, Emergence Lab au Banff Centre"
+    },
+    "2014_2016": {
+      "title": "Innovation Muséale",
+      "description": "Installations interactives et projets d'art public"
+    },
+    "2017_2019": {
+      "title": "Ensemble Ensemble",
+      "description": "Art public critique et The Compassion Machine"
+    },
+    "2019_2021": {
+      "title": "DesignOps & Narration Spéculative",
+      "description": "Behaviour Interactive et The Greenhouse @ Deloitte"
+    },
+    "2021_2024": {
+      "title": "IA Éthique",
+      "description": "Head of Design chez Prodago, gouvernance de l'IA"
+    },
+    "2024_present": {
+      "title": "Paracosm & Calm Magic",
+      "description": "Laboratoire vivant et école de leadership somatique"
+    }
+  },
+  "cta_title": "Prêt à Explorer Ensemble?",
+  "cta_description": "Que vous soyez un professionnel en quête de développement stratégique ou une organisation poursuivant l'innovation, nous sommes là pour combler l'écart entre vision et réalité.",
+  "cta_professional": "Consultation Professionnelle",
+  "cta_calm_magic": "Accompagnement Calm Magic"
+}

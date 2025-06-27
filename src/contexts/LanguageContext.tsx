@@ -36,11 +36,33 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   }, []);
 
   useEffect(() => {
-    // Load translations when language changes
+    // Load all translation modules when language changes
     const loadTranslations = async () => {
       try {
-        const response = await import(`../i18n/${language}.json`);
-        setTranslations(response.default);
+        const modules = [
+          'navigation',
+          'hero', 
+          'leadership-roles',
+          'coaching-approach',
+          'retreat',
+          'common',
+          'about',
+          'case-studies'
+        ];
+
+        const loadedTranslations: Record<string, any> = {};
+
+        for (const module of modules) {
+          try {
+            const response = await import(`../i18n/${language}/${module}.json`);
+            // Merge module content directly into the main translations object
+            Object.assign(loadedTranslations, response.default);
+          } catch (error) {
+            console.warn(`Failed to load translation module: ${module}`, error);
+          }
+        }
+
+        setTranslations(loadedTranslations);
       } catch (error) {
         console.error('Failed to load translations:', error);
       }

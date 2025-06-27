@@ -1,0 +1,92 @@
+
+{
+  "page_title": "Études de Cas",
+  "subtitle": "Découvrez nos parcours de transformation et projets d'innovation",
+  "all_categories": "Toutes les Catégories",
+  "filter_by_category": "Filtrer par Catégorie",
+  "view_details": "Voir les Détails",
+  "back_to_studies": "Retour aux Études",
+  "role": "Rôle",
+  "methods": "Méthodes",
+  "results": "Résultats",
+  "impact": "Impact",
+  "awards": "Prix",
+  "technologies": "Technologies",
+  "categories": {
+    "ai_leadership": "Leadership IA",
+    "relational_innovation": "Innovation Relationnelle",
+    "organizational_transformation": "Transformation Organisationnelle",
+    "creative_technology": "Technologie Créative",
+    "public_art": "Art Public",
+    "interactive_design": "Design Interactif",
+    "interactive_storytelling": "Narration Interactive",
+    "spatial_installations": "Installations Spatiales",
+    "educational_tech": "Technologie Éducative",
+    "speaking": "Conférences & Présentation",
+    "methodology": "Méthodologie & Cadre"
+  },
+  "projects": {
+    "oaciq_elise": {
+      "title": "Élise - Assistant virtuel OACIQ",
+      "subtitle": "Robot conversationnel pour le courtage immobilier québécois",
+      "description": "Développement d'un assistant conversationnel intelligent pour accompagner les courtiers immobiliers et le public dans leurs démarches. Élise répond aux questions sur la réglementation, les processus d'achat/vente, et guide les utilisateurs vers les bonnes ressources de l'OACIQ.",
+      "role": "Concepteur UX et développeur de l'expérience conversationnelle, appliquant la méthodologie Calm Magic pour créer une interaction bienveillante et professionnelle.",
+      "methods": {
+        "0": "IA conversationnelle",
+        "1": "Interface de chat intuitive",
+        "2": "Base de connaissances spécialisée",
+        "3": "Support bilingue français/anglais"
+      },
+      "results": "Assistant virtuel accessible 24/7 capable de répondre aux questions réglementaires complexes, d'orienter courtiers et consommateurs, et de simplifier l'accès aux services de l'OACIQ.",
+      "impact": "Amélioration significative de l'accessibilité aux informations immobilières pour les professionnels et le public. Réduction du temps d'attente pour obtenir des réponses aux questions courantes.",
+      "technologies": {
+        "0": "Traitement du langage naturel",
+        "1": "Base de connaissances IA",
+        "2": "Interface conversationnelle",
+        "3": "Support multilingue"
+      }
+    },
+    "wuxia_the_fox": {
+      "title": "Wuxia le renard",
+      "subtitle": "Livre Interactif pour Enfants & Plateforme RA",
+      "description": "Projet éducatif transmédia lancé au Québec, coproduit avec SAGA et le diffuseur public TFO. L'œuvre prend la forme d'un conte illustré associé à une application iPad interactive, alliant mythologie traditionnelle et technologies modernes.",
+      "role": "Créateur et directeur du projet, développant une narration augmentée qui mobilise la lecture orale et la reconnaissance vocale.",
+      "methods": {
+        "0": "Méthodologie Calm Magic",
+        "1": "Interactivité multisensorielle",
+        "2": "Technologie de reconnaissance vocale",
+        "3": "Réalité augmentée"
+      },
+      "results": "Un livre illustré de 200 pages avec modules physiques (masques, blocs de bois à scanner) et une app iPad en réalité augmentée. La caméra de l'appareil reconnaît images et symboles du livre pour déclencher des animations audiovisuelles complémentaires.",
+      "impact": "Financé via campagne Kickstarter réussie et publié en français et anglais. A remporté une mention spéciale au Grand Prix Numix 2015 pour l'innovation.",
+      "awards": {
+        "0": "Grand Prix Numix 2015 - Mention Spéciale"
+      },
+      "technologies": {
+        "0": "RA iPad",
+        "1": "Reconnaissance Vocale",
+        "2": "Vision par Ordinateur",
+        "3": "Synthèse Audio"
+      }
+    },
+    "calm_magic_methodology": {
+      "title": "Méthodologie Calm Magic",
+      "subtitle": "Cadre de Design Technopoétique",
+      "description": "Cadre conceptuel original développé par Jonathan Bélisle pour fusionner poésie, design d'expérience et pensée systémique dans les projets. Une approche 'technopoétique' visant à créer des expériences numériques transformationnelles.",
+      "role": "Créateur et évangéliste de la méthodologie, l'appliquant à travers tous les projets Paracosm.",
+      "methods": {
+        "0": "Approche poétique",
+        "1": "Systèmes relationnels",
+        "2": "UX transformationnelle",
+        "3": "Design holistique"
+      },
+      "results": "Méthodologie complète implémentée à travers tous les projets majeurs, distinguant l'approche de Paracosm dans le paysage des médias interactifs.",
+      "impact": "Influencé pensée design dans secteur technologie créative québécois, fournissant cadre pour innovation centrée humain.",
+      "technologies": {
+        "0": "Méthodologie Design",
+        "1": "Pensée Systémique",
+        "2": "Stratégie UX"
+      }
+    }
+  }
+}
