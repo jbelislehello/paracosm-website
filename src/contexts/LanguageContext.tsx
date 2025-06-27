@@ -47,7 +47,8 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
           'retreat',
           'common',
           'about',
-          'case-studies'
+          'case-studies',
+          'client-assessment'
         ];
 
         const loadedTranslations: Record<string, any> = {};

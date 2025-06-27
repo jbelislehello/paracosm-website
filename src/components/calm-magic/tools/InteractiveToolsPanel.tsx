@@ -8,6 +8,8 @@ import RitualizedJourneyMap from './RitualizedJourneyMap';
 import EmotiveCompassWidget from './EmotiveCompassWidget';
 import PulseToPatternVisualizer from './PulseToPatternVisualizer';
 import ExperienceDotsVisualization from '../components/ExperienceDotsVisualization';
+import ClientNeedsAssessment from './ClientNeedsAssessment';
+import ClientRecommendations from './ClientRecommendations';
 
 interface InteractiveToolsPanelProps {
   emotionalState: Partial<EmotionalState>;
@@ -18,10 +20,36 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
   emotionalState,
   onStateChange
 }) => {
+  const [recommendations, setRecommendations] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState('assessment');
+
+  const handleRecommendationsReady = (recs: any) => {
+    setRecommendations(recs);
+    setActiveTab('recommendations');
+  };
+
+  const handleStartJourney = (toolName: string) => {
+    // Map tool names to tab values
+    const toolTabMap: { [key: string]: string } = {
+      'CalmMagicCompass': 'compass',
+      'EmotionalStagesFramework': 'framework',
+      'RitualizedJourneyMap': 'journey',
+      'PulseToPatternVisualizer': 'visualizer',
+      'EmotiveCompassWidget': 'compass',
+      'LearningOrganizationDashboard': 'pathways',
+      'CulturalUnitTests': 'lens'
+    };
+
+    const targetTab = toolTabMap[toolName] || 'framework';
+    setActiveTab(targetTab);
+  };
+
   return (
     <div className="w-full">
-      <Tabs defaultValue="framework" className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-8">
+          <TabsTrigger value="assessment">🎯 Évaluation</TabsTrigger>
+          <TabsTrigger value="recommendations" disabled={!recommendations}>📋 Recommandations</TabsTrigger>
           <TabsTrigger value="framework">📊 Framework</TabsTrigger>
           <TabsTrigger value="lens">🔍 Lens</TabsTrigger>
           <TabsTrigger value="journey">🗺️ Journey</TabsTrigger>
@@ -29,6 +57,23 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
           <TabsTrigger value="visualizer">🌌 Visualizer</TabsTrigger>
           <TabsTrigger value="pathways">✨ Pathways</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="assessment" className="space-y-4">
+          <ClientNeedsAssessment
+            emotionalState={emotionalState}
+            onStateChange={onStateChange}
+            onRecommendationsReady={handleRecommendationsReady}
+          />
+        </TabsContent>
+
+        <TabsContent value="recommendations" className="space-y-4">
+          {recommendations && (
+            <ClientRecommendations
+              recommendations={recommendations}
+              onStartJourney={handleStartJourney}
+            />
+          )}
+        </TabsContent>
 
         <TabsContent value="framework" className="space-y-4">
           <EmotionalStagesFramework

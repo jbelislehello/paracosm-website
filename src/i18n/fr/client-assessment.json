@@ -1,0 +1,129 @@
+
+{
+  "title": "Évaluation des Besoins Clients Calm Magic",
+  "subtitle": "Identifiez votre profil énergétique et recevez des recommandations personnalisées",
+  "steps": {
+    "emotional_state": {
+      "title": "État Émotionnel Actuel",
+      "subtitle": "Évaluez votre position sur les 5 axes spirituels",
+      "description": "Positionnez-vous sur chaque axe pour créer votre profil énergétique personnel"
+    },
+    "garden_selection": {
+      "title": "Navigation des Jardins",
+      "subtitle": "Identifiez votre jardin de transformation prioritaire",
+      "description": "Dans quel jardin votre défi principal se situe-t-il ?"
+    },
+    "relational_dynamics": {
+      "title": "Dynamiques Relationnelles",
+      "subtitle": "Explorez vos patterns Connessor/Magnesor",
+      "description": "Explorez votre équilibre Connessor/Magnesor"
+    },
+    "transformation_context": {
+      "title": "Contexte de Transformation",
+      "subtitle": "Précisez vos objectifs et contraintes"
+    },
+    "recommendations": {
+      "title": "Recommandations Personnalisées",
+      "subtitle": "Découvrez votre parcours Calm Magic optimal"
+    }
+  },
+  "axes": {
+    "love": {
+      "question": "Où en êtes-vous avec votre énergie et votre passion ?",
+      "low": "Énergie faible, manque de motivation",
+      "high": "Énergie élevée, passion débordante"
+    },
+    "magic": {
+      "question": "Comment percevez-vous les possibilités créatives ?",
+      "low": "Peu d'ouverture aux possibilités",
+      "high": "Grande ouverture créative"
+    },
+    "calm": {
+      "question": "Quel est votre niveau de stabilité et d'intégration ?",
+      "low": "Instabilité, dispersion",
+      "high": "Grande stabilité intérieure"
+    },
+    "open": {
+      "question": "Quelle est votre disposition au changement ?",
+      "low": "Résistance au changement",
+      "high": "Ouverture totale au changement"
+    },
+    "free": {
+      "question": "Comment vous sentez-vous par rapport à votre liberté de transformation ?",
+      "low": "Contraintes importantes",
+      "high": "Liberté totale de transformation"
+    }
+  },
+  "gardens": {
+    "intelligence": {
+      "question": "Cherchez-vous à améliorer les flux d'information et de connaissance ?",
+      "description": "Optimisation des processus cognitifs et informationnels"
+    },
+    "systems": {
+      "question": "Voulez-vous transformer les structures et processus organisationnels ?",
+      "description": "Évolution des systèmes et gouvernance"
+    },
+    "prototypes": {
+      "question": "Souhaitez-vous créer des scénarios futurs tangibles ?",
+      "description": "Innovation par l'imagination et l'incarnation"
+    }
+  },
+  "dynamics": {
+    "connessor_description": "Tendance à privilégier la connexion, la mémoire collective et l'intimité",
+    "magnesor_description": "Tendance à privilégier l'innovation, la nouveauté et la souveraineté",
+    "transformation_readiness": "Niveau de préparation à la transformation",
+    "not_ready": "Pas prêt",
+    "totally_ready": "Totalement prêt"
+  },
+  "context": {
+    "urgency_level": "Niveau d'urgence de votre défi",
+    "low_urgency": "Faible urgence",
+    "high_urgency": "Urgence critique",
+    "available_time": "Temps disponible pour la transformation",
+    "time_minimal": "1-2h par semaine (accompagnement minimal)",
+    "time_moderate": "3-5h par semaine (engagement modéré)",
+    "time_intensive": "6h+ par semaine (transformation intensive)",
+    "learning_style": "Style d'apprentissage préféré",
+    "style_visual": "Visuel - Schémas, cartes, visualisations",
+    "style_kinesthetic": "Kinesthésique - Pratique, expérimentation",
+    "style_analytical": "Analytique - Données, frameworks, logique"
+  },
+  "recommendations": {
+    "your_profile": "Votre Profil Calm Magic",
+    "dominant_axis": "Axe Dominant",
+    "priority_garden": "Jardin Prioritaire",
+    "relational_type": "Type Relationnel",
+    "vitality_score": "Score Vitalité",
+    "stability_score": "Score Stabilité",
+    "integration_level": "Niveau Intégration",
+    "transformation_path": "Parcours de Transformation Recommandé",
+    "suggested_timeframe": "Timeframe suggéré",
+    "recommended_tools": "Outils Calm Magic Recommandés",
+    "tools_description": "Outils sélectionnés spécifiquement pour votre profil et vos objectifs",
+    "next_steps": "Prochaines Étapes",
+    "priority": "Priorité"
+  },
+  "tools": {
+    "CalmMagicCompass": "Boussole Calm Magic",
+    "EmotionalStagesFramework": "Cadre des Étapes Émotionnelles",
+    "RitualizedJourneyMap": "Carte de Voyage Ritualisé",
+    "PulseToPatternVisualizer": "Visualiseur Pouls-Pattern",
+    "LearningOrganizationDashboard": "Tableau de Bord Organisation Apprenante",
+    "CulturalUnitTests": "Tests Unitaires Culturels",
+    "EmotiveCompassWidget": "Widget Boussole Émotive"
+  },
+  "paths": {
+    "sovereignty": "Parcours Souveraineté - Focus sur l'autonomie créative",
+    "memory": "Parcours Mémoire - Intégration des liens historiques",
+    "intimacy": "Parcours Intimité - Approfondissement relationnel",
+    "novelty": "Parcours Nouveauté - Innovation et découverte"
+  },
+  "buttons": {
+    "previous": "Précédent",
+    "next": "Suivant",
+    "generate_recommendations": "Générer les Recommandations",
+    "start_tool": "Démarrer",
+    "start_journey": "Commencer le Parcours"
+  },
+  "progress": "Progression de l'évaluation"
+}

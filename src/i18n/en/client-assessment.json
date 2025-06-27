@@ -1,0 +1,129 @@
+
+{
+  "title": "Calm Magic Client Needs Assessment",
+  "subtitle": "Identify your energetic profile and receive personalized recommendations",
+  "steps": {
+    "emotional_state": {
+      "title": "Current Emotional State",
+      "subtitle": "Assess your position on the 5 spiritual axes",
+      "description": "Position yourself on each axis to create your personal energetic profile"
+    },
+    "garden_selection": {
+      "title": "Garden Navigation",
+      "subtitle": "Identify your priority transformation garden",
+      "description": "In which garden is your main challenge located?"
+    },
+    "relational_dynamics": {
+      "title": "Relational Dynamics",
+      "subtitle": "Explore your Connessor/Magnesor patterns",
+      "description": "Explore your Connessor/Magnesor balance"
+    },
+    "transformation_context": {
+      "title": "Transformation Context",
+      "subtitle": "Specify your objectives and constraints"
+    },
+    "recommendations": {
+      "title": "Personalized Recommendations",
+      "subtitle": "Discover your optimal Calm Magic journey"
+    }
+  },
+  "axes": {
+    "love": {
+      "question": "Where are you with your energy and passion?",
+      "low": "Low energy, lack of motivation",
+      "high": "High energy, overflowing passion"
+    },
+    "magic": {
+      "question": "How do you perceive creative possibilities?",
+      "low": "Little openness to possibilities",
+      "high": "Great creative openness"
+    },
+    "calm": {
+      "question": "What is your level of stability and integration?",
+      "low": "Instability, dispersion",
+      "high": "Great inner stability"
+    },
+    "open": {
+      "question": "What is your disposition to change?",
+      "low": "Resistance to change",
+      "high": "Total openness to change"
+    },
+    "free": {
+      "question": "How do you feel about your freedom of transformation?",
+      "low": "Significant constraints",
+      "high": "Total freedom of transformation"
+    }
+  },
+  "gardens": {
+    "intelligence": {
+      "question": "Are you looking to improve information and knowledge flows?",
+      "description": "Optimization of cognitive and informational processes"
+    },
+    "systems": {
+      "question": "Do you want to transform organizational structures and processes?",
+      "description": "Evolution of systems and governance"
+    },
+    "prototypes": {
+      "question": "Do you wish to create tangible future scenarios?",
+      "description": "Innovation through imagination and embodiment"
+    }
+  },
+  "dynamics": {
+    "connessor_description": "Tendency to favor connection, collective memory and intimacy",
+    "magnesor_description": "Tendency to favor innovation, novelty and sovereignty",
+    "transformation_readiness": "Level of readiness for transformation",
+    "not_ready": "Not ready",
+    "totally_ready": "Totally ready"
+  },
+  "context": {
+    "urgency_level": "Urgency level of your challenge",
+    "low_urgency": "Low urgency",
+    "high_urgency": "Critical urgency",
+    "available_time": "Time available for transformation",
+    "time_minimal": "1-2h per week (minimal support)",
+    "time_moderate": "3-5h per week (moderate engagement)",
+    "time_intensive": "6h+ per week (intensive transformation)",
+    "learning_style": "Preferred learning style",
+    "style_visual": "Visual - Diagrams, maps, visualizations",
+    "style_kinesthetic": "Kinesthetic - Practice, experimentation",
+    "style_analytical": "Analytical - Data, frameworks, logic"
+  },
+  "recommendations": {
+    "your_profile": "Your Calm Magic Profile",
+    "dominant_axis": "Dominant Axis",
+    "priority_garden": "Priority Garden",
+    "relational_type": "Relational Type",
+    "vitality_score": "Vitality Score",
+    "stability_score": "Stability Score",
+    "integration_level": "Integration Level",
+    "transformation_path": "Recommended Transformation Path",
+    "suggested_timeframe": "Suggested timeframe",
+    "recommended_tools": "Recommended Calm Magic Tools",
+    "tools_description": "Tools selected specifically for your profile and objectives",
+    "next_steps": "Next Steps",
+    "priority": "Priority"
+  },
+  "tools": {
+    "CalmMagicCompass": "Calm Magic Compass",
+    "EmotionalStagesFramework": "Emotional Stages Framework",
+    "RitualizedJourneyMap": "Ritualized Journey Map",
+    "PulseToPatternVisualizer": "Pulse to Pattern Visualizer",
+    "LearningOrganizationDashboard": "Learning Organization Dashboard",
+    "CulturalUnitTests": "Cultural Unit Tests",
+    "EmotiveCompassWidget": "Emotive Compass Widget"
+  },
+  "paths": {
+    "sovereignty": "Sovereignty Path - Focus on creative autonomy",
+    "memory": "Memory Path - Integration of historical links",
+    "intimacy": "Intimacy Path - Relational deepening",
+    "novelty": "Novelty Path - Innovation and discovery"
+  },
+  "buttons": {
+    "previous": "Previous",
+    "next": "Next",
+    "generate_recommendations": "Generate Recommendations",
+    "start_tool": "Start",
+    "start_journey": "Start Journey"
+  },
+  "progress": "Assessment progress"
+}
