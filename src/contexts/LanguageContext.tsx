@@ -55,11 +55,16 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
         for (const module of modules) {
           try {
             const response = await import(`../i18n/${language}/${module}.json`);
-            // Merge module content directly into the main translations object
-            Object.assign(loadedTranslations, response.default);
+            // Store each module under its own key to preserve structure
+            loadedTranslations[module.replace('-', '_')] = response.default;
           } catch (error) {
             console.warn(`Failed to load translation module: ${module}`, error);
           }
+        }
+
+        // Also merge common module content directly for backward compatibility
+        if (loadedTranslations.common) {
+          Object.assign(loadedTranslations, loadedTranslations.common);
         }
 
         setTranslations(loadedTranslations);
