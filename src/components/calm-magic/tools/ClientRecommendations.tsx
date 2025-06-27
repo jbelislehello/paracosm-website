@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -10,7 +9,7 @@ import {
   Users, 
   Brain, 
   Cog, 
-  Seedling, 
+  Sprout, 
   Heart,
   TrendingUp,
   CheckCircle
@@ -66,7 +65,7 @@ const ClientRecommendations: React.FC<ClientRecommendationsProps> = ({
     const icons: { [key: string]: React.ReactNode } = {
       intelligence: <Brain className="w-5 h-5" />,
       systems: <Cog className="w-5 h-5" />,
-      prototypes: <Seedling className="w-5 h-5" />
+      prototypes: <Sprout className="w-5 h-5" />
     };
     return icons[garden] || <Target className="w-5 h-5" />;
   };

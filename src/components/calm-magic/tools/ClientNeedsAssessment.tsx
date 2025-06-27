@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,7 +8,7 @@ import { Progress } from '@/components/ui/progress';
 import { energeticAxes, gardens } from '@/data/gardens';
 import { EmotionalState } from '@/types/journal';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Brain, Cog, Seedling, Heart, Users, Lightbulb, Shield, Zap, Target } from 'lucide-react';
+import { Brain, Cog, Sprout, Heart, Users, Lightbulb, Shield, Zap, Target } from 'lucide-react';
 
 interface AssessmentStep {
   id: string;
@@ -236,7 +235,7 @@ const ClientNeedsAssessment: React.FC<ClientNeedsAssessmentProps> = ({
           <Card className="w-full">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Seedling className="w-5 h-5 text-green-500" />
+                <Sprout className="w-5 h-5 text-green-500" />
                 Sélection du Jardin Prioritaire
               </CardTitle>
               <p className="text-sm text-slate-600">
