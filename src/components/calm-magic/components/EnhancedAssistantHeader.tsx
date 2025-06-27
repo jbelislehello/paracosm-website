@@ -40,7 +40,7 @@ const EnhancedAssistantHeader: React.FC<EnhancedAssistantHeaderProps> = ({
     if (!emotionalState) return 'balanced';
     const emotions = Object.entries(emotionalState);
     const dominant = emotions.reduce((prev, current) => 
-      (current[1] as number) > (prev[1] as number) ? current : prev
+      (typeof current[1] === 'number' && typeof prev[1] === 'number' && current[1] > prev[1]) ? current : prev
     );
     return dominant[0].replace('_level', '');
   };
@@ -59,8 +59,13 @@ const EnhancedAssistantHeader: React.FC<EnhancedAssistantHeaderProps> = ({
 
   const getVitalityLevel = () => {
     if (!emotionalState) return 0;
-    const total = Object.values(emotionalState).reduce((sum: number, val) => sum + (val as number), 0);
-    return Math.round(total / Object.keys(emotionalState).length);
+    const values = Object.values(emotionalState);
+    const numericValues = values.filter((val): val is number => typeof val === 'number');
+    
+    if (numericValues.length === 0) return 0;
+    
+    const total = numericValues.reduce((sum, val) => sum + val, 0);
+    return Math.round(total / numericValues.length);
   };
 
   const dominantEmotion = getDominantEmotion();
