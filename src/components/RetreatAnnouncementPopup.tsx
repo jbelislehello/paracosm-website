@@ -136,4 +136,4 @@ const RetreatAnnouncementPopup: React.FC<RetreatAnnouncementPopupProps> = ({ isO
   );
 };
 
-export default RetreetAnnouncementPopup;
+export default RetreatAnnouncementPopup;
