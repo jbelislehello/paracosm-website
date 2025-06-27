@@ -1,4 +1,3 @@
-
 {
   "navigation": {
     "residencies": "Résidences",
@@ -457,5 +456,75 @@
     "relational_intelligence": "Assistant Calm Magic - Intelligence Relationnelle & Innovation",
     "about_us": "À Propos de Nous - Paracosm",
     "case_studies": "Études de Cas - Paracosm"
+  },
+  "retreat": {
+    "section_title": "Retraite Exécutive Paracosm de 3 Jours",
+    "section_description": "Une retraite intégrée alliant narration immersive, rituels et pratiques de leadership avec créativité mathématique pour stimuler l'innovation et la réflexion profonde pour dirigeants.",
+    "highlights": {
+      "immersive_storytelling": "Narration Immersive",
+      "immersive_storytelling_desc": "Ancrez-vous dans l'histoire personnelle et communautaire à travers mythes, rituels et pratiques narratives.",
+      "mathematical_creativity": "Créativité Mathématique",
+      "mathematical_creativity_desc": "Explorez des concepts abstraits via topologie, analyse et algèbre pour débloquer la résolution créative de problèmes.",
+      "calm_magic_framework": "Cadre Calm Magic",
+      "calm_magic_framework_desc": "Intégrez les pratiques de design somatique et narratif pour un développement transformationnel du leadership."
+    },
+    "day_1": {
+      "title": "Folklore & Vie Intérieure",
+      "subtitle": "Topologie - Forme & Dimension",
+      "description": "Focus sur la vie intérieure et le folklore utilisant narration et mythe pour ancrer les participants dans l'histoire personnelle et communautaire à travers la pensée topologique.",
+      "activities": {
+        "0": "Méditation à l'aube et marche de labyrinthe",
+        "1": "Cercle de feu et rituels de chant communautaire",
+        "2": "Cartographie de vie et ateliers d'art symbolique",
+        "3": "Partage d'histoire orale et construction d'empathie"
+      }
+    },
+    "day_2": {
+      "title": "Agentique & Nouvelles Intelligences",
+      "subtitle": "Analyse - Infini & Continuum",
+      "description": "Explorer l'agence et les intelligences émergentes, liant créativité humaine et IA à travers les concepts mathématiques d'analyse et de possibilité infinie.",
+      "activities": {
+        "0": "Démonstrations interactives d'IA et d'algorithmes agentiques",
+        "1": "Cadres éthiques et dialogues de coévolution",
+        "2": "Cartographie de problèmes abstraits sur espaces continus",
+        "3": "Exercices de jeu de rôle de collaboration humain-IA"
+      }
+    },
+    "day_3": {
+      "title": "Leadership Créatif & Gouvernance",
+      "subtitle": "Algèbre - Structure & Systèmes",
+      "description": "Focus sur leadership créatif et gouvernance, intégrant idées algébriques de structure et systèmes dans modèles organisationnels et économiques.",
+      "activities": {
+        "0": "Ateliers de modèles organisationnels alternatifs",
+        "1": "Jeux de simulation d'économie collaborative",
+        "2": "Leadership climatique et cartographie communautaire",
+        "3": "Pratique de gouvernance en conseil et cercle"
+      }
+    },
+    "activities_label": "Activités Clés",
+    "audience": {
+      "title": "Qui Devrait Participer",
+      "description": "Conçu pour professionnels seniors et dirigeants cherchant développement transformationnel du leadership par pratiques innovantes.",
+      "points": {
+        "0": "Dirigeants C-suite et leaders seniors",
+        "1": "Directeurs d'innovation et penseurs stratégiques",
+        "2": "Entrepreneurs construisant organisations conscientes"
+      }
+    },
+    "outcomes": {
+      "title": "Résultats de la Retraite",
+      "description": "À la fin de trois jours, participants auront nouveaux récits, pratiques et vision stratégique à appliquer dans leurs rôles de leadership.",
+      "points": {
+        "0": "Sentiment communautaire vécu par rituel et narration",
+        "1": "Cadres créatifs pour résolution de problèmes complexes",
+        "2": "Vision stratégique alliant plans et optimisme tenace"
+      }
+    },
+    "cta": {
+      "title": "Prêt à Transformer Votre Leadership?",
+      "description": "Places limitées disponibles. Cette expérience premium est conçue pour leaders prêts à entrer dans nouveau paradigme de leadership conscient et créatif.",
+      "book_consultation": "Réserver Appel Consultation",
+      "download_program": "Télécharger Détails du Programme"
+    }
   }
 }

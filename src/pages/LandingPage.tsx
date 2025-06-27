@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import LeadershipRolesSection from "@/components/LeadershipRolesSection";
 import CoachingApproachSection from "@/components/CoachingApproachSection";
@@ -11,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Zap, Heart } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import ParacosmRetreatSection from "@/components/ParacosmRetreatSection";
 
 const LandingPage = () => {
   const [isCalmMagicAssistantOpen, setIsCalmMagicAssistantOpen] = useState(false);
@@ -90,6 +90,9 @@ const LandingPage = () => {
       
       {/* Three Residence Levels Section */}
       <LeadershipRolesSection />
+      
+      {/* Paracosm Retreat Section */}
+      <ParacosmRetreatSection />
       
       {/* Coaching Approach */}
       <CoachingApproachSection />

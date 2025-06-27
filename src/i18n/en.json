@@ -1,4 +1,3 @@
-
 {
   "navigation": {
     "residencies": "Residencies",
@@ -457,5 +456,75 @@
     "relational_intelligence": "Calm Magic Assistant - Relational Intelligence & Innovation",
     "about_us": "About Us - Paracosm",
     "case_studies": "Case Studies - Paracosm"
+  },
+  "retreat": {
+    "section_title": "3-Day Paracosm Executive Retreat",
+    "section_description": "An integrated retreat blending immersive storytelling, ritual, and leadership practices with mathematical creativity to spark innovation and deep reflection for senior executives.",
+    "highlights": {
+      "immersive_storytelling": "Immersive Storytelling",
+      "immersive_storytelling_desc": "Ground yourself in personal and communal history through myth, ritual, and narrative practices.",
+      "mathematical_creativity": "Mathematical Creativity",
+      "mathematical_creativity_desc": "Explore abstract concepts through topology, analysis, and algebra to unlock creative problem-solving.",
+      "calm_magic_framework": "Calm Magic Framework",
+      "calm_magic_framework_desc": "Integrate somatic and narrative design practices for transformational leadership development."
+    },
+    "day_1": {
+      "title": "Folklore & Inner Life",
+      "subtitle": "Topology - Shape & Dimension",
+      "description": "Focus on inner life and folklore using storytelling and myth to ground participants in personal and communal history through the lens of topological thinking.",
+      "activities": {
+        "0": "Sunrise meditation and labyrinth walk",
+        "1": "Fire circle and communal song rituals",
+        "2": "Life mapping and symbolic art workshops",
+        "3": "Oral history sharing and empathy building"
+      }
+    },
+    "day_2": {
+      "title": "Agentic & New Intelligences",
+      "subtitle": "Analysis - Infinity & Continuum",
+      "description": "Explore agency and emerging intelligences, linking human creativity with AI through the mathematical concepts of analysis and infinite possibility.",
+      "activities": {
+        "0": "Interactive AI and agentic algorithm demonstrations",
+        "1": "Ethical frameworks and co-evolution dialogues",
+        "2": "Abstract problem mapping on continuous spaces",
+        "3": "Human-AI collaboration role-playing exercises"
+      }
+    },
+    "day_3": {
+      "title": "Creative Leadership & Governance",
+      "subtitle": "Algebra - Structure & Systems",
+      "description": "Focus on creative leadership and governance, integrating algebraic ideas of structure and systems into organizational and economic models.",
+      "activities": {
+        "0": "Alternative organizational model workshops",
+        "1": "Collaborative economics simulation games",
+        "2": "Climate leadership and community mapping",
+        "3": "Council and circle governance practice"
+      }
+    },
+    "activities_label": "Key Activities",
+    "audience": {
+      "title": "Who Should Attend",
+      "description": "Designed for senior professionals and executives seeking transformative leadership development through innovative practices.",
+      "points": {
+        "0": "C-suite executives and senior leaders",
+        "1": "Innovation directors and strategic thinkers",
+        "2": "Entrepreneurs building conscious organizations"
+      }
+    },
+    "outcomes": {
+      "title": "Retreat Outcomes",
+      "description": "By the end of three days, participants will have new narratives, practices, and strategic vision to apply in their leadership roles.",
+      "points": {
+        "0": "Felt sense of community through ritual and storytelling",
+        "1": "Creative frameworks for complex problem-solving",
+        "2": "Strategic vision blending plans with stubborn optimism"
+      }
+    },
+    "cta": {
+      "title": "Ready to Transform Your Leadership?",
+      "description": "Limited spaces available. This premium experience is designed for leaders ready to step into a new paradigm of conscious, creative leadership.",
+      "book_consultation": "Book Consultation Call",
+      "download_program": "Download Program Details"
+    }
   }
 }
