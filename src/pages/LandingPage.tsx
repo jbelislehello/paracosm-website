@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import LeadershipRolesSection from "@/components/LeadershipRolesSection";
 import CoachingApproachSection from "@/components/CoachingApproachSection";
@@ -20,9 +21,12 @@ const LandingPage = () => {
   useEffect(() => {
     document.title = t("page_titles.choose_coaching_path");
     
-    // Show retreat announcement popup once per session
-    const hasSeenRetreatAnnouncement = sessionStorage.getItem('hasSeenRetreatAnnouncement');
-    if (!hasSeenRetreatAnnouncement) {
+    // Show retreat announcement popup - for testing, show every 5 minutes instead of once per session
+    const lastShown = localStorage.getItem('lastRetreatAnnouncementShown');
+    const now = Date.now();
+    const fiveMinutes = 5 * 60 * 1000; // 5 minutes in milliseconds
+    
+    if (!lastShown || (now - parseInt(lastShown) > fiveMinutes)) {
       // Delay showing the popup to let the page load
       const timer = setTimeout(() => {
         setIsRetreatAnnouncementOpen(true);
@@ -37,7 +41,16 @@ const LandingPage = () => {
 
   const handleCloseRetreatAnnouncement = () => {
     setIsRetreatAnnouncementOpen(false);
-    sessionStorage.setItem('hasSeenRetreatAnnouncement', 'true');
+    localStorage.setItem('lastRetreatAnnouncementShown', Date.now().toString());
+  };
+
+  const handleShowRetreatPopup = () => {
+    setIsRetreatAnnouncementOpen(true);
+  };
+
+  const handleResetRetreatPopup = () => {
+    localStorage.removeItem('lastRetreatAnnouncementShown');
+    console.log('Popup retreat réinitialisé - rechargez la page pour le voir à nouveau');
   };
 
   return (
@@ -64,6 +77,15 @@ const LandingPage = () => {
           </nav>
           <div className="flex items-center gap-4">
             <LanguageSwitcher />
+            {/* Test buttons for development */}
+            <div className="flex gap-2">
+              <Button onClick={handleShowRetreatPopup} variant="outline" size="sm">
+                Test Popup
+              </Button>
+              <Button onClick={handleResetRetreatPopup} variant="outline" size="sm">
+                Reset
+              </Button>
+            </div>
             <Button onClick={handleStartCoaching} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300">
               {t("hero.start_journey")}
             </Button>
