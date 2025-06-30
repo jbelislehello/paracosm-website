@@ -34,28 +34,28 @@ const ContextualGuide: React.FC<ContextualGuideProps> = ({
       tools: [
         {
           id: 'tools-intro',
-          title: 'Bienvenue dans les Outils Calm Magic',
-          content: 'Ici vous pouvez explorer différents outils pour analyser et développer votre intelligence émotionnelle.',
-          actionText: 'Commencer l\'évaluation',
+          title: 'Welcome to Calm Magic Tools',
+          content: 'Explore different tools to analyze and develop your emotional intelligence and creative expression.',
+          actionText: 'Start Assessment',
         },
         {
           id: 'tools-assessment',
-          title: 'Évaluation des Besoins',
-          content: 'Commencez par l\'évaluation pour recevoir des recommandations personnalisées.',
+          title: 'Needs Assessment',
+          content: 'Begin with the assessment to receive personalized recommendations tailored to your journey.',
         }
       ],
       journey: [
         {
           id: 'journey-intro',
-          title: 'Voyage dans les Paysages Émotionnels',
-          content: 'Explorez différents paysages qui représentent vos états émotionnels et votre croissance personnelle.',
+          title: 'Emotional Landscape Journey',
+          content: 'Navigate through different emotional landscapes representing your personal growth and transformation.',
         }
       ],
       spiral: [
         {
           id: 'spiral-intro',
-          title: 'Navigation Spirale',
-          content: 'Découvrez votre parcours de transformation à travers une navigation en spirale intuitive.',
+          title: 'Spiral Navigation',
+          content: 'Discover your transformation journey through an intuitive spiral navigation system.',
         }
       ]
     };
@@ -113,7 +113,7 @@ const ContextualGuide: React.FC<ContextualGuideProps> = ({
               <div className="flex items-center justify-between mb-2">
                 <Badge variant="outline" className="text-xs">
                   <BookOpen className="w-3 h-3 mr-1" />
-                  Guide Contexte
+                  Contextual Guide
                 </Badge>
                 <Button
                   variant="ghost"
@@ -152,10 +152,10 @@ const ContextualGuide: React.FC<ContextualGuideProps> = ({
               <Button onClick={handleNext} size="sm">
                 {currentStep < steps.length - 1 ? (
                   <>
-                    Suivant <ChevronRight className="w-4 h-4 ml-1" />
+                    Next <ChevronRight className="w-4 h-4 ml-1" />
                   </>
                 ) : (
-                  'Terminer'
+                  'Complete'
                 )}
               </Button>
             </div>

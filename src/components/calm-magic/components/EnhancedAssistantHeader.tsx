@@ -37,8 +37,10 @@ const EnhancedAssistantHeader: React.FC<EnhancedAssistantHeaderProps> = ({
   const { preferences } = useUserPreferences();
 
   const getDominantEmotion = () => {
-    if (!emotionalState) return 'balanced';
-    const emotions = Object.entries(emotionalState);
+    if (!emotionalState || Object.keys(emotionalState).length === 0) return 'balanced';
+    const emotions = Object.entries(emotionalState).filter(([_, value]) => typeof value === 'number');
+    if (emotions.length === 0) return 'balanced';
+    
     const dominant = emotions.reduce((prev, current) => 
       (typeof current[1] === 'number' && typeof prev[1] === 'number' && current[1] > prev[1]) ? current : prev
     );
@@ -92,22 +94,22 @@ const EnhancedAssistantHeader: React.FC<EnhancedAssistantHeaderProps> = ({
             <div className="flex flex-wrap gap-2">
               <Badge className={getEmotionalColor(dominantEmotion)}>
                 <Heart className="w-3 h-3 mr-1" />
-                {dominantEmotion.charAt(0).toUpperCase() + dominantEmotion.slice(1)} Dominant
+                {dominantEmotion.charAt(0).toUpperCase() + dominantEmotion.slice(1)} State
               </Badge>
               
               <Badge variant="outline" className="animate-pulse">
                 <Brain className="w-3 h-3 mr-1" />
-                Vitalité: {vitalityLevel}%
+                Vitality: {vitalityLevel}%
               </Badge>
               
               {preferences.emotionalProfile.primaryGarden && (
                 <Badge variant="secondary">
-                  Jardin: {preferences.emotionalProfile.primaryGarden}
+                  Garden: {preferences.emotionalProfile.primaryGarden}
                 </Badge>
               )}
               
               <Badge variant="outline" className="text-xs">
-                Mode: {currentViewMode?.charAt(0).toUpperCase() + currentViewMode?.slice(1)}
+                Mode: {currentViewMode ? currentViewMode.charAt(0).toUpperCase() + currentViewMode.slice(1) : 'Active'}
               </Badge>
             </div>
           </div>
