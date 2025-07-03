@@ -1,10 +1,10 @@
-
 import { useEffect, useState } from "react";
 import LeadershipRolesSection from "@/components/LeadershipRolesSection";
 import CoachingApproachSection from "@/components/CoachingApproachSection";
 import TransformationJourney from "@/components/TransformationJourney";
 import ContactSection from "@/components/ContactSection";
 import PartnerToolsSection from "@/components/PartnerToolsSection";
+import ParacosmEventsSection from "@/components/ParacosmEventsSection";
 import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
 import RetreatAnnouncementPopup from "@/components/RetreatAnnouncementPopup";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -80,6 +80,11 @@ const LandingPage = () => {
     element?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const scrollToEvents = () => {
+    const element = document.getElementById('events');
+    element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   const scrollToRetreats = () => {
     const element = document.getElementById('partners');
     element?.scrollIntoView({ behavior: 'smooth' });
@@ -95,28 +100,33 @@ const LandingPage = () => {
       
       {/* Navigation */}
       <header className="fixed w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
-        <div className="container flex items-center justify-between py-4 px-4">
+        <div className="container flex items-center justify-between py-3 px-4">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-md flex items-center justify-center">
               <span className="text-white font-bold">P</span>
             </div>
             <span className="font-bold text-lg">Paracosm</span>
           </div>
-          <nav className="hidden md:flex gap-6">
-            <a href="#leadership-roles" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.residencies")}</a>
-            <Link to="/agentic-ux" className="text-sm font-medium hover:text-purple-600 transition-colors">Agentic Ecosystems</Link>
-            <button onClick={scrollToRetreats} className="text-sm font-medium hover:text-purple-600 transition-colors">Retreats</button>
-            <a href="#coaching-approach" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.coaching_approach")}</a>
-            <a href="#transformation" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.transformation")}</a>
+          
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex gap-4 xl:gap-6">
+            <a href="#leadership-roles" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.residencies")}</a>
+            <Link to="/agentic-ux" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Agentic Ecosystems</Link>
+            <button onClick={scrollToEvents} className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Events</button>
+            <button onClick={scrollToRetreats} className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Retreats</button>
+            <a href="#coaching-approach" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.coaching_approach")}</a>
+            <a href="#transformation" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.transformation")}</a>
           </nav>
-          <div className="flex items-center gap-2 sm:gap-4">
+          
+          {/* Mobile & Desktop Actions */}
+          <div className="flex items-center gap-1 sm:gap-2 md:gap-4">
             <LanguageSwitcher />
-            <Button onClick={handleShowRetreatPopup} variant="outline" size="sm" className="hidden sm:inline-flex">
+            <Button onClick={handleShowRetreatPopup} variant="outline" size="sm" className="hidden md:inline-flex text-xs">
               Retreat
             </Button>
             <Button onClick={handleStartCoaching} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300" size="sm">
-              <span className="hidden sm:inline">{t("hero.start_journey")}</span>
-              <span className="sm:hidden">Start</span>
+              <span className="hidden lg:inline text-sm">{t("hero.start_journey")}</span>
+              <span className="lg:hidden text-xs">Start</span>
             </Button>
           </div>
         </div>
@@ -126,34 +136,34 @@ const LandingPage = () => {
       <CalmMagicAssistant onStartJourney={handleStartCoaching} isOpen={isCalmMagicAssistantOpen} onOpenChange={setIsCalmMagicAssistantOpen} />
       
       {/* Hero Section - Choose Your Path */}
-      <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
-        <div className="container relative px-4 py-12 md:py-24" style={{ zIndex: 10 }}>
+      <section className="relative min-h-screen flex items-center justify-center pt-16 px-4 overflow-hidden">
+        <div className="container relative py-8 sm:py-12 md:py-24" style={{ zIndex: 10 }}>
           <div className="max-w-4xl mx-auto text-center">
-            <div className="backdrop-blur-sm bg-white/10 dark:bg-slate-900/10 rounded-2xl p-6 sm:p-8 border border-white/20 relative z-20">
-              <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-rose-600 animate-gradient-x mb-6">
+            <div className="backdrop-blur-sm bg-white/10 dark:bg-slate-900/10 rounded-2xl p-4 sm:p-6 md:p-8 border border-white/20 relative z-20">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-rose-600 animate-gradient-x mb-4 sm:mb-6">
                 {t("hero.choose_path")}
               </h1>
-              <p className="text-lg sm:text-xl md:text-2xl mb-8 text-gray-700 dark:text-gray-200">
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 text-gray-700 dark:text-gray-200 px-2">
                 {t("hero.transform_leadership")}
               </p>
               
               {/* Dual Pathway Navigation */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-6">
-                <Link to="/agentic-ux" className="w-full sm:w-auto">
-                  <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 flex items-center justify-center gap-2 text-sm sm:text-base">
-                    <Zap className="w-4 h-4" />
-                    <span className="text-center">{t("hero.ai_systems_leadership")}</span>
+              <div className="flex flex-col gap-3 sm:gap-4 justify-center mb-4 sm:mb-6">
+                <Link to="/agentic-ux" className="w-full">
+                  <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 flex items-center justify-center gap-2 text-sm sm:text-base py-3 sm:py-4">
+                    <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="text-center leading-tight">{t("hero.ai_systems_leadership")}</span>
                   </Button>
                 </Link>
-                <Link to="/calm-magic-assistant" className="w-full sm:w-auto">
-                  <Button className="w-full bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 flex items-center justify-center gap-2 text-sm sm:text-base">
-                    <Heart className="w-4 h-4" />
-                    <span className="text-center">{t("hero.relational_intelligence")}</span>
+                <Link to="/calm-magic-assistant" className="w-full">
+                  <Button className="w-full bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 flex items-center justify-center gap-2 text-sm sm:text-base py-3 sm:py-4">
+                    <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
+                    <span className="text-center leading-tight">{t("hero.relational_intelligence")}</span>
                   </Button>
                 </Link>
               </div>
               
-              <p className="text-sm text-slate-600 dark:text-slate-300 mb-6">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-4 sm:mb-6 px-2">
                 {t("hero.pathway_description")}
               </p>
 
@@ -166,7 +176,7 @@ const LandingPage = () => {
                   onClick={scrollToMore}
                   className="animate-bounce text-slate-600 hover:text-purple-600"
                 >
-                  <ChevronDown className="w-5 h-5" />
+                  <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5" />
                 </Button>
               </div>
             </div>
@@ -176,6 +186,9 @@ const LandingPage = () => {
       
       {/* Three Residence Levels Section */}
       <LeadershipRolesSection />
+      
+      {/* Paracosm Events Section */}
+      <ParacosmEventsSection />
       
       {/* Coaching Approach */}
       <CoachingApproachSection />
@@ -221,6 +234,7 @@ const LandingPage = () => {
               <h3 className="font-semibold text-white mb-4">{t("footer.company_title")}</h3>
               <ul className="space-y-2">
                 <li><Link to="/about-us" className="text-sm hover:text-purple-600">{t("footer.about_jonathan")}</Link></li>
+                <li><a href="#events" className="text-sm hover:text-purple-600">Events</a></li>
                 <li><a href="#" className="text-sm hover:text-purple-600">{t("footer.methodology")}</a></li>
                 <li><a href="#contact" className="text-sm hover:text-purple-600">{t("navigation.contact")}</a></li>
                 <li><a href="#" className="text-sm hover:text-purple-600">{t("footer.privacy")}</a></li>
