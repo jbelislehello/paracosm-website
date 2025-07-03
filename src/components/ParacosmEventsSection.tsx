@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -21,8 +20,8 @@ const ParacosmEventsSection = () => {
       color: "from-purple-500 to-pink-500"
     },
     {
-      name: "Nest",
-      description: "A regenerative leadership retreat focused on building sustainable organizational ecosystems.",
+      name: "AI Symposium: Philosophy & Inner Work",
+      description: "Exploring the intersection of artificial intelligence with philosophy, inner work, films and storytelling, science and the unknown.",
       date: "Coming Soon",
       location: "Vancouver, BC", 
       color: "from-green-500 to-emerald-500"
