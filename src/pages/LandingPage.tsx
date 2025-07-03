@@ -80,6 +80,11 @@ const LandingPage = () => {
     element?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const scrollToRetreats = () => {
+    const element = document.getElementById('partners');
+    element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       {/* Retreat Announcement Popup */}
@@ -99,6 +104,8 @@ const LandingPage = () => {
           </div>
           <nav className="hidden md:flex gap-6">
             <a href="#leadership-roles" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.residencies")}</a>
+            <Link to="/agentic-ux" className="text-sm font-medium hover:text-purple-600 transition-colors">Agentic Ecosystems</Link>
+            <button onClick={scrollToRetreats} className="text-sm font-medium hover:text-purple-600 transition-colors">Retreats</button>
             <a href="#coaching-approach" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.coaching_approach")}</a>
             <a href="#transformation" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.transformation")}</a>
           </nav>
