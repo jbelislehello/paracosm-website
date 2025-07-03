@@ -48,8 +48,8 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
     <div className="w-full">
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-8">
-          <TabsTrigger value="assessment">🎯 Évaluation</TabsTrigger>
-          <TabsTrigger value="recommendations" disabled={!recommendations}>📋 Recommandations</TabsTrigger>
+          <TabsTrigger value="assessment">🎯 Assessment</TabsTrigger>
+          <TabsTrigger value="recommendations" disabled={!recommendations}>📋 Recommendations</TabsTrigger>
           <TabsTrigger value="framework">📊 Framework</TabsTrigger>
           <TabsTrigger value="lens">🔍 Lens</TabsTrigger>
           <TabsTrigger value="journey">🗺️ Journey</TabsTrigger>
