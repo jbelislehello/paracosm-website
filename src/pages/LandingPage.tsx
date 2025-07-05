@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import LeadershipRolesSection from "@/components/LeadershipRolesSection";
 import CoachingApproachSection from "@/components/CoachingApproachSection";
@@ -110,10 +111,10 @@ const LandingPage = () => {
           
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex gap-4 xl:gap-6">
-            <a href="#residencies" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Residencies</a>
+            <a href="#leadership-roles" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Residencies</a>
             <Link to="/agentic-ux" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Agentic Ecosystems</Link>
-            <button onClick={scrollToEvents} className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Events</button>
-            <button onClick={scrollToRetreats} className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Retreats</button>
+            <a href="#events" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Events</a>
+            <a href="#partners" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Retreats</a>
             <a href="#coaching-approach" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Approach</a>
             <a href="#transformation" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Transformation</a>
           </nav>
@@ -198,18 +199,24 @@ const LandingPage = () => {
       </section>
       
       {/* Three Residence Levels Section */}
-      <section id="residencies">
+      <section id="leadership-roles">
         <LeadershipRolesSection />
       </section>
       
       {/* Paracosm Events Section */}
-      <ParacosmEventsSection />
+      <section id="events">
+        <ParacosmEventsSection />
+      </section>
       
       {/* Coaching Approach */}
-      <CoachingApproachSection />
+      <section id="coaching-approach">
+        <CoachingApproachSection />
+      </section>
       
       {/* Transformation Journey */}
-      <TransformationJourney />
+      <section id="transformation">
+        <TransformationJourney />
+      </section>
       
       {/* Partner Tools Section */}
       <section id="partners">
@@ -217,7 +224,9 @@ const LandingPage = () => {
       </section>
       
       {/* Contact Section */}
-      <ContactSection />
+      <section id="contact">
+        <ContactSection />
+      </section>
       
       {/* Footer */}
       <footer className="bg-slate-900 text-slate-300 py-12">
@@ -250,7 +259,7 @@ const LandingPage = () => {
               <ul className="space-y-2">
                 <li><Link to="/about-us" className="text-sm hover:text-purple-600">About Jonathan</Link></li>
                 <li><a href="#events" className="text-sm hover:text-purple-600">Events</a></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Methodology</a></li>
+                <li><a href="#coaching-approach" className="text-sm hover:text-purple-600">Methodology</a></li>
                 <li><a href="#contact" className="text-sm hover:text-purple-600">Contact</a></li>
                 <li><a href="#" className="text-sm hover:text-purple-600">Privacy</a></li>
               </ul>
