@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import LeadershipRolesSection from "@/components/LeadershipRolesSection";
 import CoachingApproachSection from "@/components/CoachingApproachSection";
@@ -9,7 +10,7 @@ import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
 import RetreatAnnouncementPopup from "@/components/RetreatAnnouncementPopup";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { Button } from "@/components/ui/button";
-import { Zap, Heart, ChevronDown } from 'lucide-react';
+import { Zap, Heart, ChevronDown, Film, Music, Palette } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -135,16 +136,29 @@ const LandingPage = () => {
       {/* Calm Magic Assistant */}
       <CalmMagicAssistant onStartJourney={handleStartCoaching} isOpen={isCalmMagicAssistantOpen} onOpenChange={setIsCalmMagicAssistantOpen} />
       
-      {/* Hero Section - Choose Your Path */}
+      {/* Hero Section - Visionary Storytelling */}
       <section className="relative min-h-screen flex items-center justify-center pt-16 px-4 overflow-hidden">
         <div className="container relative py-8 sm:py-12 md:py-24" style={{ zIndex: 10 }}>
           <div className="max-w-4xl mx-auto text-center">
             <div className="backdrop-blur-sm bg-white/10 dark:bg-slate-900/10 rounded-2xl p-4 sm:p-6 md:p-8 border border-white/20 relative z-20">
+              {/* Visionary Identity */}
+              <div className="flex items-center justify-center gap-2 mb-4 sm:mb-6">
+                <Film className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
+                <Music className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                <Palette className="w-5 h-5 sm:w-6 sm:h-6 text-rose-600" />
+              </div>
+              
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-rose-600 animate-gradient-x mb-4 sm:mb-6">
-                {t("hero.choose_path")}
+                Visionary Storyteller & Experience Architect
               </h1>
-              <p className="text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 text-gray-700 dark:text-gray-200 px-2">
-                {t("hero.transform_leadership")}
+              
+              <p className="text-base sm:text-lg md:text-xl mb-4 sm:mb-6 text-gray-700 dark:text-gray-200 px-2 font-medium">
+                Creating diegetic prototypes and interactive multimodal stories to prepare minds to feel the future while helping bodies stay present
+              </p>
+              
+              <p className="text-sm sm:text-base md:text-lg mb-6 sm:mb-8 text-gray-600 dark:text-gray-300 px-2">
+                Through films, stories, music, events, performances, and software, I create artefacts required for emergence. 
+                As an experience architecture and transformational design consultancy, we enable new ways of seeing, thinking, learning, and doing.
               </p>
               
               {/* Dual Pathway Navigation */}
@@ -152,24 +166,24 @@ const LandingPage = () => {
                 <Link to="/agentic-ux" className="w-full">
                   <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 flex items-center justify-center gap-2 text-sm sm:text-base py-3 sm:py-4">
                     <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span className="text-center leading-tight">{t("hero.ai_systems_leadership")}</span>
+                    <span className="text-center leading-tight">AI Systems & Technical Leadership</span>
                   </Button>
                 </Link>
                 <Link to="/calm-magic-assistant" className="w-full">
                   <Button className="w-full bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 flex items-center justify-center gap-2 text-sm sm:text-base py-3 sm:py-4">
                     <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span className="text-center leading-tight">{t("hero.relational_intelligence")}</span>
+                    <span className="text-center leading-tight">Relational Intelligence & Inner Work</span>
                   </Button>
                 </Link>
               </div>
               
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-4 sm:mb-6 px-2">
-                {t("hero.pathway_description")}
+                Choose your pathway for transformational leadership through specialized coaching that bridges creative vision with technical implementation
               </p>
 
               {/* Scroll indicator */}
               <div className="flex flex-col items-center gap-2">
-                <p className="text-xs text-slate-500 dark:text-slate-400">Learn more about our approach</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Discover our immersive experiences</p>
                 <Button 
                   variant="ghost" 
                   size="sm" 
@@ -216,7 +230,7 @@ const LandingPage = () => {
                 <span className="font-bold text-lg text-white">Paracosm</span>
               </div>
               <p className="text-sm text-slate-400 mb-4">
-                {t("footer.paracosm_description")}
+                Visionary storytelling and experience architecture that creates artefacts for emergence, enabling new ways of seeing, thinking, learning, and doing through transformational leadership coaching.
               </p>
             </div>
             
