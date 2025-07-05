@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import LeadershipRolesSection from "@/components/LeadershipRolesSection";
 import CoachingApproachSection from "@/components/CoachingApproachSection";
@@ -111,12 +110,12 @@ const LandingPage = () => {
           
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex gap-4 xl:gap-6">
-            <a href="#leadership-roles" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.residencies")}</a>
+            <a href="#residencies" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Residencies</a>
             <Link to="/agentic-ux" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Agentic Ecosystems</Link>
             <button onClick={scrollToEvents} className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Events</button>
             <button onClick={scrollToRetreats} className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Retreats</button>
-            <a href="#coaching-approach" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.coaching_approach")}</a>
-            <a href="#transformation" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.transformation")}</a>
+            <a href="#coaching-approach" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Approach</a>
+            <a href="#transformation" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Transformation</a>
           </nav>
           
           {/* Mobile & Desktop Actions */}
@@ -126,7 +125,7 @@ const LandingPage = () => {
               Retreat
             </Button>
             <Button onClick={handleStartCoaching} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300" size="sm">
-              <span className="hidden lg:inline text-sm">{t("hero.start_journey")}</span>
+              <span className="hidden lg:inline text-sm">Start Journey</span>
               <span className="lg:hidden text-xs">Start</span>
             </Button>
           </div>
@@ -199,7 +198,9 @@ const LandingPage = () => {
       </section>
       
       {/* Three Residence Levels Section */}
-      <LeadershipRolesSection />
+      <section id="residencies">
+        <LeadershipRolesSection />
+      </section>
       
       {/* Paracosm Events Section */}
       <ParacosmEventsSection />
@@ -235,29 +236,29 @@ const LandingPage = () => {
             </div>
             
             <div>
-              <h3 className="font-semibold text-white mb-4">{t("footer.services_title")}</h3>
+              <h3 className="font-semibold text-white mb-4">Services</h3>
               <ul className="space-y-2">
-                <li><Link to="/agentic-ux" className="text-sm hover:text-purple-600">{t("navigation.ai_leadership")}</Link></li>
-                <li><Link to="/agentic-ux" className="text-sm hover:text-purple-600">{t("footer.technical_leadership")}</Link></li>
-                <li><Link to="/calm-magic-assistant" className="text-sm hover:text-purple-600">{t("navigation.relational_innovation")}</Link></li>
-                <li><Link to="/case-studies" className="text-sm hover:text-purple-600">{t("navigation.case_studies")}</Link></li>
+                <li><Link to="/agentic-ux" className="text-sm hover:text-purple-600">AI Leadership</Link></li>
+                <li><Link to="/agentic-ux" className="text-sm hover:text-purple-600">Technical Leadership</Link></li>
+                <li><Link to="/calm-magic-assistant" className="text-sm hover:text-purple-600">Relational Innovation</Link></li>
+                <li><Link to="/case-studies" className="text-sm hover:text-purple-600">Case Studies</Link></li>
               </ul>
             </div>
             
             <div>
-              <h3 className="font-semibold text-white mb-4">{t("footer.company_title")}</h3>
+              <h3 className="font-semibold text-white mb-4">Company</h3>
               <ul className="space-y-2">
-                <li><Link to="/about-us" className="text-sm hover:text-purple-600">{t("footer.about_jonathan")}</Link></li>
+                <li><Link to="/about-us" className="text-sm hover:text-purple-600">About Jonathan</Link></li>
                 <li><a href="#events" className="text-sm hover:text-purple-600">Events</a></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">{t("footer.methodology")}</a></li>
-                <li><a href="#contact" className="text-sm hover:text-purple-600">{t("navigation.contact")}</a></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">{t("footer.privacy")}</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Methodology</a></li>
+                <li><a href="#contact" className="text-sm hover:text-purple-600">Contact</a></li>
+                <li><a href="#" className="text-sm hover:text-purple-600">Privacy</a></li>
               </ul>
             </div>
           </div>
           
           <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-slate-400">© 2025 Paracosm. {t("footer.rights_reserved")}</p>
+            <p className="text-sm text-slate-400">© 2025 Paracosm. All rights reserved.</p>
             <div className="flex space-x-4 mt-4 md:mt-0">
               <a href="#" className="text-slate-400 hover:text-white">LinkedIn</a>
               <a href="#" className="text-slate-400 hover:text-white">Twitter</a>
