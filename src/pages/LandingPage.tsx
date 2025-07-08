@@ -10,7 +10,7 @@ import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
 import RetreatAnnouncementPopup from "@/components/RetreatAnnouncementPopup";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { Button } from "@/components/ui/button";
-import { Zap, Heart, ChevronDown, Film, Music, Palette } from 'lucide-react';
+import { Zap, Heart, ChevronDown, Users } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -111,22 +111,23 @@ const LandingPage = () => {
           
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex gap-4 xl:gap-6">
-            <a href="#leadership-roles" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Residencies</a>
-            <Link to="/agentic-ux" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Agentic Ecosystems</Link>
+            <a href="#leadership-roles" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Services</a>
+            <Link to="/agentic-ux" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">AI Leadership</Link>
+            <Link to="/calm-magic-assistant" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Team Coaching</Link>
             <a href="#events" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Events</a>
-            <a href="#partners" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Retreats</a>
-            <a href="#coaching-approach" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Approach</a>
-            <a href="#transformation" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Transformation</a>
+            <a href="#contact" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Contact</a>
           </nav>
           
           {/* Mobile & Desktop Actions */}
           <div className="flex items-center gap-1 sm:gap-2 md:gap-4">
             <LanguageSwitcher />
-            <Button onClick={handleShowRetreatPopup} variant="outline" size="sm" className="hidden md:inline-flex text-xs">
-              Retreat
-            </Button>
+            <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
+              <Button variant="outline" size="sm" className="hidden md:inline-flex text-xs">
+                Book Call
+              </Button>
+            </a>
             <Button onClick={handleStartCoaching} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300" size="sm">
-              <span className="hidden lg:inline text-sm">Start Journey</span>
+              <span className="hidden lg:inline text-sm">Get Started</span>
               <span className="lg:hidden text-xs">Start</span>
             </Button>
           </div>
@@ -136,54 +137,61 @@ const LandingPage = () => {
       {/* Calm Magic Assistant */}
       <CalmMagicAssistant onStartJourney={handleStartCoaching} isOpen={isCalmMagicAssistantOpen} onOpenChange={setIsCalmMagicAssistantOpen} />
       
-      {/* Hero Section - Visionary Storytelling */}
+      {/* Hero Section - Clear Value Proposition */}
       <section className="relative min-h-screen flex items-center justify-center pt-16 px-4 overflow-hidden">
         <div className="container relative py-8 sm:py-12 md:py-24" style={{ zIndex: 10 }}>
           <div className="max-w-4xl mx-auto text-center">
             <div className="backdrop-blur-sm bg-white/10 dark:bg-slate-900/10 rounded-2xl p-4 sm:p-6 md:p-8 border border-white/20 relative z-20">
-              {/* Visionary Identity */}
+              {/* Clear Value Proposition */}
               <div className="flex items-center justify-center gap-2 mb-4 sm:mb-6">
-                <Film className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
-                <Music className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
-                <Palette className="w-5 h-5 sm:w-6 sm:h-6 text-rose-600" />
+                <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-rose-600" />
+                <Users className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
               </div>
               
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-rose-600 animate-gradient-x mb-4 sm:mb-6">
-                Visionary Storyteller & Experience Architect
+                Transformational Leadership Coaching
               </h1>
               
               <p className="text-base sm:text-lg md:text-xl mb-4 sm:mb-6 text-gray-700 dark:text-gray-200 px-2 font-medium">
-                Creating diegetic prototypes and interactive multimodal stories to prepare minds to feel the future while helping bodies stay present
+                Bridge the gap between vision and execution through specialized coaching that aligns technical innovation with human intelligence
               </p>
               
               <p className="text-sm sm:text-base md:text-lg mb-6 sm:mb-8 text-gray-600 dark:text-gray-300 px-2">
-                Through films, stories, music, events, performances, and software, I create artefacts required for emergence. 
-                As an experience architecture and transformational design consultancy, we enable new ways of seeing, thinking, learning, and doing.
+                We help leaders and organizations create breakthrough innovations by developing the specific capabilities needed for each stage of transformation: visionary leadership, technical excellence, and learning-oriented culture.
               </p>
               
-              {/* Dual Pathway Navigation */}
+              {/* Clear Service Pathways */}
               <div className="flex flex-col gap-3 sm:gap-4 justify-center mb-4 sm:mb-6">
                 <Link to="/agentic-ux" className="w-full">
                   <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 flex items-center justify-center gap-2 text-sm sm:text-base py-3 sm:py-4">
                     <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span className="text-center leading-tight">AI Systems & Technical Leadership</span>
+                    <span className="text-center leading-tight">AI Leadership & Technical Strategy</span>
                   </Button>
                 </Link>
                 <Link to="/calm-magic-assistant" className="w-full">
                   <Button className="w-full bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 flex items-center justify-center gap-2 text-sm sm:text-base py-3 sm:py-4">
                     <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span className="text-center leading-tight">Relational Intelligence & Inner Work</span>
+                    <span className="text-center leading-tight">Relational Intelligence & Team Coaching</span>
                   </Button>
                 </Link>
               </div>
               
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-4 sm:mb-6 px-2">
-                Choose your pathway for transformational leadership through specialized coaching that bridges creative vision with technical implementation
+                Choose your pathway to transformational leadership through proven methodologies that create lasting change
               </p>
 
-              {/* Scroll indicator */}
+              {/* Lead Generation CTA */}
               <div className="flex flex-col items-center gap-2">
-                <p className="text-xs text-slate-500 dark:text-slate-400">Discover our immersive experiences</p>
+                <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="text-slate-600 hover:text-purple-600 bg-white/70 hover:bg-white/90"
+                  >
+                    Book Free Discovery Call
+                  </Button>
+                </a>
                 <Button 
                   variant="ghost" 
                   size="sm" 
@@ -240,16 +248,21 @@ const LandingPage = () => {
                 <span className="font-bold text-lg text-white">Paracosm</span>
               </div>
               <p className="text-sm text-slate-400 mb-4">
-                Visionary storytelling and experience architecture that creates artefacts for emergence, enabling new ways of seeing, thinking, learning, and doing through transformational leadership coaching.
+                Transformational leadership coaching that bridges vision and execution through proven methodologies for AI leadership and team development.
               </p>
+              <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
+                <Button variant="outline" size="sm" className="text-white border-white hover:bg-white hover:text-slate-900">
+                  Book Discovery Call
+                </Button>
+              </a>
             </div>
             
             <div>
               <h3 className="font-semibold text-white mb-4">Services</h3>
               <ul className="space-y-2">
-                <li><Link to="/agentic-ux" className="text-sm hover:text-purple-600">AI Leadership</Link></li>
-                <li><Link to="/agentic-ux" className="text-sm hover:text-purple-600">Technical Leadership</Link></li>
-                <li><Link to="/calm-magic-assistant" className="text-sm hover:text-purple-600">Relational Innovation</Link></li>
+                <li><Link to="/agentic-ux" className="text-sm hover:text-purple-600">AI Leadership & Strategy</Link></li>
+                <li><Link to="/calm-magic-assistant" className="text-sm hover:text-purple-600">Team Coaching & Culture</Link></li>
+                <li><a href="#leadership-roles" className="text-sm hover:text-purple-600">Executive Development</a></li>
                 <li><Link to="/case-studies" className="text-sm hover:text-purple-600">Case Studies</Link></li>
               </ul>
             </div>
@@ -258,10 +271,9 @@ const LandingPage = () => {
               <h3 className="font-semibold text-white mb-4">Company</h3>
               <ul className="space-y-2">
                 <li><Link to="/about-us" className="text-sm hover:text-purple-600">About Jonathan</Link></li>
-                <li><a href="#events" className="text-sm hover:text-purple-600">Events</a></li>
-                <li><a href="#coaching-approach" className="text-sm hover:text-purple-600">Methodology</a></li>
-                <li><a href="#contact" className="text-sm hover:text-purple-600">Contact</a></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">Privacy</a></li>
+                <li><a href="#events" className="text-sm hover:text-purple-600">Upcoming Events</a></li>
+                <li><a href="#coaching-approach" className="text-sm hover:text-purple-600">Our Methodology</a></li>
+                <li><a href="#contact" className="text-sm hover:text-purple-600">Contact Us</a></li>
               </ul>
             </div>
           </div>

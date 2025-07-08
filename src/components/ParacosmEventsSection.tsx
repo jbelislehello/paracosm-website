@@ -6,25 +6,28 @@ import { Calendar, MapPin, Users, ExternalLink } from 'lucide-react';
 const ParacosmEventsSection = () => {
   const events = [
     {
-      name: "Drift avec Marc Kandalaft",
-      description: "An immersive journey exploring creative leadership through collaborative storytelling and artistic expression.",
-      date: "Coming Soon",
-      location: "Montreal, QC",
-      color: "from-blue-500 to-cyan-500"
-    },
-    {
-      name: "Gl!tch",
-      description: "A digital transformation workshop bridging human creativity with technological innovation.",
-      date: "Coming Soon", 
+      name: "AI Leadership Intensive",
+      description: "A hands-on workshop for executives and technical leaders to build frameworks for AI governance and strategic implementation.",
+      date: "Spring 2025",
       location: "Toronto, ON",
-      color: "from-purple-500 to-pink-500"
+      color: "from-blue-500 to-cyan-500",
+      cta: "Join Waitlist"
     },
     {
-      name: "AI Symposium: Philosophy & Inner Work",
-      description: "Exploring the intersection of artificial intelligence with philosophy, inner work, films and storytelling, science and the unknown.",
-      date: "Coming Soon",
+      name: "Transformation Design Lab",
+      description: "Learn to create diegetic prototypes and bridge the gap between vision and implementation through our proven methodology.",
+      date: "Summer 2025", 
+      location: "Montreal, QC",
+      color: "from-purple-500 to-pink-500",
+      cta: "Early Access"
+    },
+    {
+      name: "Relational Intelligence Summit",
+      description: "Advanced coaching techniques for creating coherent, learning-oriented cultures that drive innovation and engagement.",
+      date: "Fall 2025",
       location: "Vancouver, BC", 
-      color: "from-green-500 to-emerald-500"
+      color: "from-green-500 to-emerald-500",
+      cta: "Get Notified"
     }
   ];
 
@@ -33,10 +36,10 @@ const ParacosmEventsSection = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600">
-            Paracosm Events 2025
+            Upcoming Learning Events
           </h2>
           <p className="text-lg text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
-            Join us for transformative experiences that blend creativity, technology, and leadership development across Canada.
+            Join exclusive workshops and intensives designed to accelerate your transformation journey through hands-on learning and expert guidance.
           </p>
         </div>
 
@@ -67,27 +70,48 @@ const ParacosmEventsSection = () => {
                   </div>
                 </div>
 
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="w-full group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-blue-600 group-hover:text-white group-hover:border-transparent transition-all duration-300"
-                >
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                  Learn More
-                </Button>
+                <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-blue-600 group-hover:text-white group-hover:border-transparent transition-all duration-300"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    {event.cta}
+                  </Button>
+                </a>
               </CardContent>
             </Card>
           ))}
         </div>
 
         <div className="text-center mt-12">
-          <Button 
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 px-8 py-3"
-            size="lg"
-          >
-            <Calendar className="w-5 h-5 mr-2" />
-            Subscribe for Event Updates
-          </Button>
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-xl p-8 mb-6">
+            <h3 className="text-xl font-bold mb-4">Ready to Transform Your Leadership?</h3>
+            <p className="text-slate-600 dark:text-slate-300 mb-6 max-w-2xl mx-auto">
+              Don't wait for the next event. Start your transformation journey today with a personalized discovery call to explore how our proven methodologies can accelerate your success.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
+                <Button 
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 px-8 py-3"
+                  size="lg"
+                >
+                  <Calendar className="w-5 h-5 mr-2" />
+                  Book Your Free Discovery Call
+                </Button>
+              </a>
+              <a href="#contact">
+                <Button 
+                  variant="outline"
+                  size="lg"
+                  className="px-8 py-3"
+                >
+                  Learn More About Our Services
+                </Button>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>

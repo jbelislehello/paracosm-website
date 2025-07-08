@@ -12,49 +12,31 @@ const ContactSection = () => {
 
   const getRelevantCaseStudies = (clientType: string) => {
     switch (clientType) {
-      case 'ai-solutions':
+      case 'ai-leadership':
         return [
           {
-            title: 'IA Conversationnelle',
-            description: 'Assistant virtuel pour le courtage immobilier québécois',
-            caseStudyId: 'oaciq-elise',
-            caseStudyTitle: 'Élise - Assistant virtuel OACIQ'
+            title: 'AI Leadership Framework',
+            description: 'Strategic framework for AI governance and implementation',
+            caseStudyId: 'ai-framework',
+            caseStudyTitle: 'AI Leadership Excellence'
           }
         ];
-      case 'digital-transformation':
+      case 'team-coaching':
         return [
           {
-            title: 'Innovation Muséale',
-            description: 'Installation interactive au Musée de la civilisation',
-            caseStudyId: 'simulateur-genial',
-            caseStudyTitle: 'Simulateur Génial!'
+            title: 'Team Transformation',
+            description: 'Building learning-oriented cultures for innovation',
+            caseStudyId: 'team-transformation',
+            caseStudyTitle: 'Relational Intelligence in Action'
           }
         ];
-      case 'smart-cities':
+      case 'executive-coaching':
         return [
           {
-            title: 'Art Public Urbain',
-            description: 'Expérience narrative urbaine à Montréal',
-            caseStudyId: 'lachine-passages',
-            caseStudyTitle: 'Lachine Passages'
-          }
-        ];
-      case 'business-leadership':
-        return [
-          {
-            title: 'Méthodologie Créative',
-            description: 'Framework technopoétique pour le design transformationnel',
-            caseStudyId: 'codemagic-methodology',
-            caseStudyTitle: 'CodeMagic Methodology'
-          }
-        ];
-      case 'professional-development':
-        return [
-          {
-            title: 'Laboratoire d\'Innovation',
-            description: 'Résidence créative franco-canadienne au Banff Centre',
-            caseStudyId: 'banff-residence',
-            caseStudyTitle: 'Banff Emergence Lab'
+            title: 'Executive Development',
+            description: 'Transformational leadership coaching for executives',
+            caseStudyId: 'executive-coaching',
+            caseStudyTitle: 'Executive Transformation Program'
           }
         ];
       default:
@@ -129,10 +111,10 @@ Contact Form System
   return (
     <section id="contact" className="py-20 px-4 bg-gradient-to-b from-slate-50 to-white dark:from-slate-800 dark:to-slate-900">
       <div className="container max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Get In Touch</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Ready to Transform Your Leadership?</h2>
         <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
-          Whether you're a professional seeking strategic development or an organization pursuing digital innovation, 
-          let's discuss how we can help bridge the gap between your vision and reality.
+          Whether you're an executive seeking strategic development or a team looking to accelerate innovation, 
+          let's discuss how our proven methodologies can create breakthrough results for your organization.
         </p>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -163,14 +145,12 @@ Contact Form System
                   className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-md bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100"
                   required
                 >
-                  <option value="">Select an option</option>
-                  <option value="business-leadership">Business Leadership Development</option>
-                  <option value="professional-development">Professional Development & Growth</option>
-                  <option value="ai-solutions">AI Solutions & Automation</option>
-                  <option value="digital-transformation">Digital Transformation</option>
-                  <option value="ai-governance">AI Governance & Compliance</option>
-                  <option value="smart-cities">Smart Cities & Urban Platforms</option>
-                  <option value="retail-innovation">Retail & Shopping Experience</option>
+                  <option value="">Select your focus area</option>
+                  <option value="ai-leadership">AI Leadership & Strategic Implementation</option>
+                  <option value="team-coaching">Team Coaching & Culture Transformation</option>
+                  <option value="executive-coaching">Executive Development & Leadership</option>
+                  <option value="organizational-transformation">Organizational Transformation</option>
+                  <option value="innovation-frameworks">Innovation Frameworks & Methodologies</option>
                   <option value="other">Other</option>
                 </select>
               </div>
@@ -213,11 +193,14 @@ Contact Form System
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                    <Mail className="w-6 h-6 text-blue-600" />
+                    <Phone className="w-6 h-6 text-blue-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-1">Email</h4>
-                    <p className="text-slate-600 dark:text-slate-300">jbelisle@helloarchitekt.com</p>
+                    <h4 className="font-semibold mb-1">Free Discovery Call</h4>
+                    <p className="text-slate-600 dark:text-slate-300">30-minute consultation to explore your needs</p>
+                    <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 font-medium text-sm">
+                      Book Now →
+                    </a>
                   </div>
                 </div>
                 
@@ -233,11 +216,11 @@ Contact Form System
                 
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
-                    <Phone className="w-6 h-6 text-green-600" />
+                    <Mail className="w-6 h-6 text-green-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-1">Consultation</h4>
-                    <p className="text-slate-600 dark:text-slate-300">Free 30-minute discovery calls available</p>
+                    <h4 className="font-semibold mb-1">Direct Contact</h4>
+                    <p className="text-slate-600 dark:text-slate-300">jbelisle@helloarchitekt.com</p>
                   </div>
                 </div>
               </div>
@@ -247,24 +230,24 @@ Contact Form System
               <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Users className="w-5 h-5 text-blue-600" />
-                  <h4 className="font-bold text-blue-800 dark:text-blue-200">Professionals</h4>
+                  <h4 className="font-bold text-blue-800 dark:text-blue-200">Individual Leaders</h4>
                 </div>
                 <ul className="space-y-1 text-xs text-blue-700 dark:text-blue-300">
-                  <li>• Strategic leadership development</li>
-                  <li>• Professional growth consulting</li>
-                  <li>• Team dynamics improvement</li>
+                  <li>• Executive coaching & development</li>
+                  <li>• AI leadership strategy</li>
+                  <li>• Personal transformation</li>
                 </ul>
               </div>
               
               <div className="bg-gradient-to-r from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <Building2 className="w-5 h-5 text-purple-600" />
-                  <h4 className="font-bold text-purple-800 dark:text-purple-200">Organizations</h4>
+                  <h4 className="font-bold text-purple-800 dark:text-purple-200">Teams & Organizations</h4>
                 </div>
                 <ul className="space-y-1 text-xs text-purple-700 dark:text-purple-300">
-                  <li>• AI solutions & automation</li>
-                  <li>• Digital transformation</li>
-                  <li>• Governance & compliance</li>
+                  <li>• Team coaching & culture change</li>
+                  <li>• Innovation frameworks</li>
+                  <li>• Organizational transformation</li>
                 </ul>
               </div>
             </div>
