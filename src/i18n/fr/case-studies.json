@@ -87,6 +87,143 @@
         "1": "Pensée Systémique",
         "2": "Stratégie UX"
       }
+    },
+    "io_theatre": {
+      "title": "IO Théâtre",
+      "subtitle": "Performance Spatiale Interactive",
+      "description": "Expérience théâtrale immersive combinant performance live et technologie interactive. Créé un environnement où les spectateurs peuvent influencer le récit par leur présence et leurs mouvements.",
+      "role": "Concepteur d'expérience interactive et directeur technique, créant des environnements réactifs qui relient les mondes physique et numérique.",
+      "methods": {
+        "0": "Informatique spatiale",
+        "1": "Suivi de mouvement",
+        "2": "Environnements réactifs",
+        "3": "Design d'interaction audience"
+      },
+      "results": "Production théâtrale interactive réussie qui a engagé les audiences de nouvelles manières, créant des expériences mémorables et transformatrices.",
+      "impact": "Repoussé les limites du théâtre traditionnel, démontrant de nouvelles possibilités d'engagement du public dans les arts du spectacle.",
+      "technologies": {
+        "0": "Capteurs de Mouvement",
+        "1": "Projection Mapping",
+        "2": "Audio Interactif"
+      }
+    },
+    "simulateur_genial": {
+      "title": "Simulateur Génial",
+      "subtitle": "Plateforme de Simulation Éducative",
+      "description": "Simulateur d'apprentissage interactif conçu pour enseigner des concepts complexes par la gamification. Développé pour les institutions éducatives pour améliorer l'engagement et la compréhension des étudiants.",
+      "role": "Concepteur UX principal et technologue éducatif, appliquant les principes des sciences de l'apprentissage pour créer des expériences éducatives efficaces.",
+      "methods": {
+        "0": "Design de jeu éducatif",
+        "1": "Analyses d'apprentissage",
+        "2": "Systèmes d'apprentissage adaptatifs",
+        "3": "Optimisation d'engagement utilisateur"
+      },
+      "results": "Plateforme éducative déployée avec succès utilisée par des milliers d'étudiants, améliorant les résultats d'apprentissage et l'engagement.",
+      "impact": "Amélioration des expériences éducatives pour les étudiants et fourni aux enseignants des outils puissants pour l'instruction.",
+      "technologies": {
+        "0": "Moteur Unity",
+        "1": "Système de Gestion d'Apprentissage",
+        "2": "Tableau de Bord Analytique",
+        "3": "IA Adaptative"
+      }
+    },
+    "naissance_du_monde": {
+      "title": "Naissance du Monde",
+      "subtitle": "Installation d'Art Public",
+      "description": "Installation d'art public à grande échelle explorant les thèmes de la création et de la transformation. Combine techniques artistiques traditionnelles avec technologie moderne pour créer une expérience publique immersive.",
+      "role": "Artiste principal et coordinateur technique, reliant vision artistique avec implémentation technique.",
+      "methods": {
+        "0": "Design d'art public",
+        "1": "Engagement communautaire",
+        "2": "Intégration environnementale",
+        "3": "Installation d'art technique"
+      },
+      "results": "Installation d'art public réussie devenue un point de repère, engageant des milliers de visiteurs et créant un impact culturel durable.",
+      "impact": "Transformé l'espace public en destination culturelle interactive, favorisant l'engagement communautaire et l'appréciation artistique.",
+      "technologies": {
+        "0": "Systèmes LED",
+        "1": "Capteurs Météo",
+        "2": "Contrôles Interactifs"
+      }
+    },
+    "lachine_passages": {
+      "title": "Lachine Passages",
+      "subtitle": "Installation Interactive Historique",
+      "description": "Installation interactive célébrant l'histoire de Lachine, Québec. Créé des expériences immersives qui donnent vie aux récits historiques grâce à la technologie moderne.",
+      "role": "Directeur créatif et concepteur d'expérience, traduisant la recherche historique en expériences interactives engageantes.",
+      "methods": {
+        "0": "Recherche historique",
+        "1": "Design narratif",
+        "2": "Narration interactive",
+        "3": "Préservation culturelle"
+      },
+      "results": "Installation historique engageante qui a éduqué les visiteurs sur le patrimoine local tout en offrant des expériences interactives mémorables.",
+      "impact": "Préservé et célébré l'histoire locale, créant de nouvelles connexions entre communauté et patrimoine.",
+      "technologies": {
+        "0": "Interfaces Tactiles",
+        "1": "Narration Audio",
+        "2": "Archives Historiques"
+      }
+    },
+    "machine_bienveillance": {
+      "title": "Machine Bienveillance",
+      "subtitle": "Installation d'Art sur l'Éthique IA",
+      "description": "Installation artistique provocante explorant la relation entre intelligence artificielle et bienveillance humaine. Invité les visiteurs à réfléchir sur le rôle de la technologie dans la société.",
+      "role": "Artiste conceptuel et concepteur d'interaction IA, créant dialogue significatif entre humains et intelligence artificielle.",
+      "methods": {
+        "0": "Design d'interaction IA",
+        "1": "Exploration technologie éthique",
+        "2": "Enquête philosophique",
+        "3": "Engagement public"
+      },
+      "results": "Installation artistique acclamée qui a suscité des conversations importantes sur l'éthique de l'IA et les relations humain-machine.",
+      "impact": "Contribué au discours public sur l'éthique de l'IA et démontré le rôle de l'art dans l'exploration de questions technologiques complexes.",
+      "awards": {
+        "0": "Prix Arts Numériques 2018"
+      },
+      "technologies": {
+        "0": "Apprentissage Automatique",
+        "1": "Traitement Langage Naturel",
+        "2": "Affichages Interactifs"
+      }
+    },
+    "banff_residence": {
+      "title": "Résidence Créative Banff",
+      "subtitle": "Laboratoire d'Innovation Montagnard",
+      "description": "Résidence d'artiste au Centre Banff axée sur l'exploration de l'intersection entre nature, technologie et pratique créative. Développé nouvelles méthodologies pour travail technologie créative.",
+      "role": "Artiste résident et chercheur, explorant nouvelles frontières en technologie créative et design inspiré par la nature.",
+      "methods": {
+        "0": "Design inspiré nature",
+        "1": "Recherche technologie créative",
+        "2": "Collaboration interdisciplinaire",
+        "3": "Détection environnementale"
+      },
+      "results": "Recherche révolutionnaire en intégration nature-technologie, menant à nouvelles méthodologies créatives et pratiques artistiques.",
+      "impact": "Avancé compréhension de comment environnements naturels peuvent inspirer et informer pratiques technologie créative.",
+      "technologies": {
+        "0": "Capteurs Environnementaux",
+        "1": "Surveillance Biométrique",
+        "2": "Visualisation Données"
+      }
+    },
+    "tedx_montreal": {
+      "title": "TEDx Montréal",
+      "subtitle": "Technologie et Connexion Humaine",
+      "description": "Présentation principale au TEDx Montréal explorant l'avenir des relations humain-technologie. Partagé perspectives sur création de connexions plus significatives à l'ère numérique.",
+      "role": "Conférencier principal et leader d'opinion, partageant vision pour technologie humanisée et expériences numériques significatives.",
+      "methods": {
+        "0": "Prise de parole publique",
+        "1": "Leadership d'opinion",
+        "2": "Articulation de vision",
+        "3": "Engagement communautaire"
+      },
+      "results": "Présentation inspirante qui a atteint des milliers de spectateurs et influencé la réflexion sur le rôle de la technologie dans la connexion humaine.",
+      "impact": "Contribué à conversations importantes sur l'avenir des relations humain-technologie et bien-être numérique.",
+      "technologies": {
+        "0": "Technologie Présentation",
+        "1": "Narration Numérique",
+        "2": "Engagement Audience"
+      }
     }
   }
 }

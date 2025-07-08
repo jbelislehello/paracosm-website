@@ -87,6 +87,143 @@
         "1": "Systems Thinking",
         "2": "UX Strategy"
       }
+    },
+    "io_theatre": {
+      "title": "IO Theatre",
+      "subtitle": "Interactive Spatial Performance",
+      "description": "Immersive theatrical experience combining live performance with interactive technology. Created an environment where audience members could influence the narrative through their presence and movements.",
+      "role": "Interactive experience designer and technical director, creating responsive environments that bridge physical and digital realms.",
+      "methods": {
+        "0": "Spatial computing",
+        "1": "Motion tracking",
+        "2": "Responsive environments",
+        "3": "Audience interaction design"
+      },
+      "results": "Successful interactive theatre production that engaged audiences in new ways, creating memorable and transformative experiences.",
+      "impact": "Pushed boundaries of traditional theatre, demonstrating new possibilities for audience engagement in performing arts.",
+      "technologies": {
+        "0": "Motion Sensors",
+        "1": "Projection Mapping",
+        "2": "Interactive Audio"
+      }
+    },
+    "simulateur_genial": {
+      "title": "Simulateur Génial",
+      "subtitle": "Educational Simulation Platform",
+      "description": "Interactive learning simulator designed to teach complex concepts through gamification. Developed for educational institutions to enhance student engagement and understanding.",
+      "role": "Lead UX designer and educational technologist, applying learning science principles to create effective educational experiences.",
+      "methods": {
+        "0": "Educational game design",
+        "1": "Learning analytics",
+        "2": "Adaptive learning systems",
+        "3": "User engagement optimization"
+      },
+      "results": "Successfully deployed educational platform used by thousands of students, improving learning outcomes and engagement.",
+      "impact": "Enhanced educational experiences for students and provided teachers with powerful tools for instruction.",
+      "technologies": {
+        "0": "Unity Engine",
+        "1": "Learning Management System",
+        "2": "Analytics Dashboard",
+        "3": "Adaptive AI"
+      }
+    },
+    "naissance_du_monde": {
+      "title": "Naissance du Monde",
+      "subtitle": "Public Art Installation",
+      "description": "Large-scale public art installation exploring themes of creation and transformation. Combined traditional artistic techniques with modern technology to create an immersive public experience.",
+      "role": "Lead artist and technical coordinator, bridging artistic vision with technical implementation.",
+      "methods": {
+        "0": "Public art design",
+        "1": "Community engagement",
+        "2": "Environmental integration",
+        "3": "Technical art installation"
+      },
+      "results": "Successful public art installation that became a landmark, engaging thousands of visitors and creating lasting cultural impact.",
+      "impact": "Transformed public space into interactive cultural destination, fostering community engagement and artistic appreciation.",
+      "technologies": {
+        "0": "LED Systems",
+        "1": "Weather Sensors",
+        "2": "Interactive Controls"
+      }
+    },
+    "lachine_passages": {
+      "title": "Lachine Passages",
+      "subtitle": "Historical Interactive Installation",
+      "description": "Interactive installation celebrating the history of Lachine, Quebec. Created immersive experiences that brought historical narratives to life through modern technology.",
+      "role": "Creative director and experience designer, translating historical research into engaging interactive experiences.",
+      "methods": {
+        "0": "Historical research",
+        "1": "Narrative design",
+        "2": "Interactive storytelling",
+        "3": "Cultural preservation"
+      },
+      "results": "Engaging historical installation that educated visitors about local heritage while providing memorable interactive experiences.",
+      "impact": "Preserved and celebrated local history, creating new connections between community and heritage.",
+      "technologies": {
+        "0": "Touch Interfaces",
+        "1": "Audio Narration",
+        "2": "Historical Archives"
+      }
+    },
+    "machine_bienveillance": {
+      "title": "Machine Bienveillance",
+      "subtitle": "AI Ethics Art Installation",
+      "description": "Thought-provoking art installation exploring the relationship between artificial intelligence and human kindness. Invited visitors to reflect on technology's role in society.",
+      "role": "Conceptual artist and AI interaction designer, creating meaningful dialogue between humans and artificial intelligence.",
+      "methods": {
+        "0": "AI interaction design",
+        "1": "Ethical technology exploration",
+        "2": "Philosophical inquiry",
+        "3": "Public engagement"
+      },
+      "results": "Acclaimed art installation that sparked important conversations about AI ethics and human-machine relationships.",
+      "impact": "Contributed to public discourse on AI ethics and demonstrated art's role in exploring complex technological questions.",
+      "awards": {
+        "0": "Digital Arts Award 2018"
+      },
+      "technologies": {
+        "0": "Machine Learning",
+        "1": "Natural Language Processing",
+        "2": "Interactive Displays"
+      }
+    },
+    "banff_residence": {
+      "title": "Banff Creative Residence",
+      "subtitle": "Mountain Innovation Lab",
+      "description": "Artist residency at Banff Centre focused on exploring the intersection of nature, technology, and creative practice. Developed new methodologies for creative technology work.",
+      "role": "Resident artist and researcher, exploring new frontiers in creative technology and nature-inspired design.",
+      "methods": {
+        "0": "Nature-inspired design",
+        "1": "Creative technology research",
+        "2": "Interdisciplinary collaboration",
+        "3": "Environmental sensing"
+      },
+      "results": "Groundbreaking research in nature-technology integration, leading to new creative methodologies and artistic practices.",
+      "impact": "Advanced understanding of how natural environments can inspire and inform creative technology practices.",
+      "technologies": {
+        "0": "Environmental Sensors",
+        "1": "Biometric Monitoring",
+        "2": "Data Visualization"
+      }
+    },
+    "tedx_montreal": {
+      "title": "TEDx Montreal",
+      "subtitle": "Technology and Human Connection",
+      "description": "Keynote presentation at TEDx Montreal exploring the future of human-technology relationships. Shared insights on creating more meaningful connections in the digital age.",
+      "role": "Keynote speaker and thought leader, sharing vision for humanized technology and meaningful digital experiences.",
+      "methods": {
+        "0": "Public speaking",
+        "1": "Thought leadership",
+        "2": "Vision articulation",
+        "3": "Community engagement"
+      },
+      "results": "Inspiring talk that reached thousands of viewers and influenced thinking about technology's role in human connection.",
+      "impact": "Contributed to important conversations about the future of human-technology relationships and digital wellness.",
+      "technologies": {
+        "0": "Presentation Technology",
+        "1": "Digital Storytelling",
+        "2": "Audience Engagement"
+      }
     }
   }
 }

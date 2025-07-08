@@ -4,7 +4,7 @@ export interface CaseStudy {
   title: string;
   subtitle: string;
   year: string;
-  category: 'interactive-storytelling' | 'educational-tech' | 'methodology';
+  category: 'interactive-storytelling' | 'educational-tech' | 'methodology' | 'spatial-installations' | 'public-art' | 'creative-technology' | 'speaking';
   image: string;
   description: string;
   role: string;
@@ -63,6 +63,112 @@ export const caseStudies: CaseStudy[] = [
     impact: 'case_studies.projects.calm_magic_methodology.impact',
     technologies: ['case_studies.projects.calm_magic_methodology.technologies.0', 'case_studies.projects.calm_magic_methodology.technologies.1', 'case_studies.projects.calm_magic_methodology.technologies.2'],
     relatedProjects: ['wuxia-the-fox', 'oaciq-elise']
+  },
+  {
+    id: 'io-theatre',
+    title: 'case_studies.projects.io_theatre.title',
+    subtitle: 'case_studies.projects.io_theatre.subtitle',
+    year: '2018',
+    category: 'spatial-installations',
+    image: 'photo-1516715094483-75da06c182fe',
+    description: 'case_studies.projects.io_theatre.description',
+    role: 'case_studies.projects.io_theatre.role',
+    methods: ['case_studies.projects.io_theatre.methods.0', 'case_studies.projects.io_theatre.methods.1', 'case_studies.projects.io_theatre.methods.2', 'case_studies.projects.io_theatre.methods.3'],
+    results: 'case_studies.projects.io_theatre.results',
+    impact: 'case_studies.projects.io_theatre.impact',
+    technologies: ['case_studies.projects.io_theatre.technologies.0', 'case_studies.projects.io_theatre.technologies.1', 'case_studies.projects.io_theatre.technologies.2'],
+    relatedProjects: ['lachine-passages', 'machine-bienveillance']
+  },
+  {
+    id: 'simulateur-genial',
+    title: 'case_studies.projects.simulateur_genial.title',
+    subtitle: 'case_studies.projects.simulateur_genial.subtitle',
+    year: '2019',
+    category: 'educational-tech',
+    image: 'photo-1517077304055-6e89abbf09b0',
+    description: 'case_studies.projects.simulateur_genial.description',
+    role: 'case_studies.projects.simulateur_genial.role',
+    methods: ['case_studies.projects.simulateur_genial.methods.0', 'case_studies.projects.simulateur_genial.methods.1', 'case_studies.projects.simulateur_genial.methods.2', 'case_studies.projects.simulateur_genial.methods.3'],
+    results: 'case_studies.projects.simulateur_genial.results',
+    impact: 'case_studies.projects.simulateur_genial.impact',
+    technologies: ['case_studies.projects.simulateur_genial.technologies.0', 'case_studies.projects.simulateur_genial.technologies.1', 'case_studies.projects.simulateur_genial.technologies.2', 'case_studies.projects.simulateur_genial.technologies.3'],
+    relatedProjects: ['oaciq-elise', 'banff-residence']
+  },
+  {
+    id: 'naissance-du-monde',
+    title: 'case_studies.projects.naissance_du_monde.title',
+    subtitle: 'case_studies.projects.naissance_du_monde.subtitle',
+    year: '2016',
+    category: 'public-art',
+    image: 'photo-1506905925346-21bda4d32df4',
+    description: 'case_studies.projects.naissance_du_monde.description',
+    role: 'case_studies.projects.naissance_du_monde.role',
+    methods: ['case_studies.projects.naissance_du_monde.methods.0', 'case_studies.projects.naissance_du_monde.methods.1', 'case_studies.projects.naissance_du_monde.methods.2', 'case_studies.projects.naissance_du_monde.methods.3'],
+    results: 'case_studies.projects.naissance_du_monde.results',
+    impact: 'case_studies.projects.naissance_du_monde.impact',
+    technologies: ['case_studies.projects.naissance_du_monde.technologies.0', 'case_studies.projects.naissance_du_monde.technologies.1', 'case_studies.projects.naissance_du_monde.technologies.2'],
+    relatedProjects: ['machine-bienveillance', 'io-theatre']
+  },
+  {
+    id: 'lachine-passages',
+    title: 'case_studies.projects.lachine_passages.title',
+    subtitle: 'case_studies.projects.lachine_passages.subtitle',
+    year: '2017',
+    category: 'spatial-installations',
+    image: 'photo-1558618666-fcd25c85cd64',
+    description: 'case_studies.projects.lachine_passages.description',
+    role: 'case_studies.projects.lachine_passages.role',
+    methods: ['case_studies.projects.lachine_passages.methods.0', 'case_studies.projects.lachine_passages.methods.1', 'case_studies.projects.lachine_passages.methods.2', 'case_studies.projects.lachine_passages.methods.3'],
+    results: 'case_studies.projects.lachine_passages.results',
+    impact: 'case_studies.projects.lachine_passages.impact',
+    technologies: ['case_studies.projects.lachine_passages.technologies.0', 'case_studies.projects.lachine_passages.technologies.1', 'case_studies.projects.lachine_passages.technologies.2'],
+    relatedProjects: ['io-theatre', 'naissance-du-monde']
+  },
+  {
+    id: 'machine-bienveillance',
+    title: 'case_studies.projects.machine_bienveillance.title',
+    subtitle: 'case_studies.projects.machine_bienveillance.subtitle',
+    year: '2018',
+    category: 'public-art',
+    image: 'photo-1518709268805-4e9042af2ac5',
+    description: 'case_studies.projects.machine_bienveillance.description',
+    role: 'case_studies.projects.machine_bienveillance.role',
+    methods: ['case_studies.projects.machine_bienveillance.methods.0', 'case_studies.projects.machine_bienveillance.methods.1', 'case_studies.projects.machine_bienveillance.methods.2', 'case_studies.projects.machine_bienveillance.methods.3'],
+    results: 'case_studies.projects.machine_bienveillance.results',
+    impact: 'case_studies.projects.machine_bienveillance.impact',
+    awards: ['case_studies.projects.machine_bienveillance.awards.0'],
+    technologies: ['case_studies.projects.machine_bienveillance.technologies.0', 'case_studies.projects.machine_bienveillance.technologies.1', 'case_studies.projects.machine_bienveillance.technologies.2'],
+    relatedProjects: ['naissance-du-monde', 'io-theatre']
+  },
+  {
+    id: 'banff-residence',
+    title: 'case_studies.projects.banff_residence.title',
+    subtitle: 'case_studies.projects.banff_residence.subtitle',
+    year: '2019',
+    category: 'creative-technology',
+    image: 'photo-1506905925346-21bda4d32df4',
+    description: 'case_studies.projects.banff_residence.description',
+    role: 'case_studies.projects.banff_residence.role',
+    methods: ['case_studies.projects.banff_residence.methods.0', 'case_studies.projects.banff_residence.methods.1', 'case_studies.projects.banff_residence.methods.2', 'case_studies.projects.banff_residence.methods.3'],
+    results: 'case_studies.projects.banff_residence.results',
+    impact: 'case_studies.projects.banff_residence.impact',
+    technologies: ['case_studies.projects.banff_residence.technologies.0', 'case_studies.projects.banff_residence.technologies.1', 'case_studies.projects.banff_residence.technologies.2'],
+    relatedProjects: ['simulateur-genial', 'tedx-montreal']
+  },
+  {
+    id: 'tedx-montreal',
+    title: 'case_studies.projects.tedx_montreal.title',
+    subtitle: 'case_studies.projects.tedx_montreal.subtitle',
+    year: '2021',
+    category: 'speaking',
+    image: 'photo-1475721027785-f74eccf877e2',
+    description: 'case_studies.projects.tedx_montreal.description',
+    role: 'case_studies.projects.tedx_montreal.role',
+    methods: ['case_studies.projects.tedx_montreal.methods.0', 'case_studies.projects.tedx_montreal.methods.1', 'case_studies.projects.tedx_montreal.methods.2', 'case_studies.projects.tedx_montreal.methods.3'],
+    results: 'case_studies.projects.tedx_montreal.results',
+    impact: 'case_studies.projects.tedx_montreal.impact',
+    technologies: ['case_studies.projects.tedx_montreal.technologies.0', 'case_studies.projects.tedx_montreal.technologies.1', 'case_studies.projects.tedx_montreal.technologies.2'],
+    relatedProjects: ['banff-residence', 'calm-magic-methodology']
   }
 ];
 
@@ -81,5 +187,25 @@ export const categories = {
     name: 'Methodology & Framework',
     color: 'from-pink-500 to-pink-700',
     icon: '🧠'
+  },
+  'spatial-installations': {
+    name: 'Spatial Installations',
+    color: 'from-purple-500 to-purple-700',
+    icon: '🏛️'
+  },
+  'public-art': {
+    name: 'Public Art',
+    color: 'from-orange-500 to-orange-700',
+    icon: '🎨'
+  },
+  'creative-technology': {
+    name: 'Creative Technology',
+    color: 'from-cyan-500 to-cyan-700',
+    icon: '⚡'
+  },
+  'speaking': {
+    name: 'Speaking & Conferences',
+    color: 'from-red-500 to-red-700',
+    icon: '🎤'
   }
 };
