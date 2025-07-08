@@ -19,10 +19,7 @@ const CaseStudiesSection: React.FC = () => {
   const categories = [
     { id: 'all', label: t("case_studies.all_categories") },
     { id: 'interactive-storytelling', label: t("case_studies.categories.interactive_storytelling") },
-    { id: 'spatial-installations', label: t("case_studies.categories.spatial_installations") },
     { id: 'educational-tech', label: t("case_studies.categories.educational_tech") },
-    { id: 'public-art', label: t("case_studies.categories.public_art") },
-    { id: 'speaking', label: t("case_studies.categories.speaking") },
     { id: 'methodology', label: t("case_studies.categories.methodology") }
   ];
 
