@@ -6,7 +6,7 @@ import { Calendar, MapPin, Users, ExternalLink } from 'lucide-react';
 const ParacosmEventsSection = () => {
   const events = [
     {
-      name: "AI Leadership Intensive",
+      name: "AI Symposium - Brome Misisquoi",
       description: "A hands-on workshop for executives and technical leaders to build frameworks for AI governance and strategic implementation.",
       date: "Autumn 2025",
       location: "Toronto, ON",
