@@ -9,7 +9,7 @@ const ParacosmEventsSection = () => {
       name: "AI Symposium - Brome Misisquoi",
       description: "A hands-on workshop for executives and technical leaders to build frameworks for AI governance and strategic implementation.",
       date: "Autumn 2025",
-      location: "Toronto, ON",
+      location: "Lac Brome, QC",
       color: "from-blue-500 to-cyan-500",
       cta: "Join Waitlist"
     },
