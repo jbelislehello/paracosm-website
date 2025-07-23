@@ -24,7 +24,7 @@ const ParacosmEventsSection = () => {
     {
       name: "Relational Intelligence Summit",
       description: "Advanced coaching techniques for creating coherent, learning-oriented cultures that drive innovation and engagement.",
-      date: "Fall 2025",
+      date: "Autumn 2025",
       location: "Vancouver, BC", 
       color: "from-green-500 to-emerald-500",
       cta: "Get Notified"
