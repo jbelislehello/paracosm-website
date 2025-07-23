@@ -8,7 +8,7 @@ const ParacosmEventsSection = () => {
     {
       name: "AI Leadership Intensive",
       description: "A hands-on workshop for executives and technical leaders to build frameworks for AI governance and strategic implementation.",
-      date: "Spring 2025",
+      date: "Autumn 2025",
       location: "Toronto, ON",
       color: "from-blue-500 to-cyan-500",
       cta: "Join Waitlist"
