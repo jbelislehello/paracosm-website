@@ -6,21 +6,18 @@ import { Button } from "@/components/ui/button";
 import { Heart, ArrowLeft } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
-
 const RelationalHealing = () => {
   const [isCalmMagicOpen, setIsCalmMagicOpen] = useState(true);
-  const { t } = useLanguage();
-
+  const {
+    t
+  } = useLanguage();
   useEffect(() => {
     document.title = t("page_titles.relational_intelligence");
   }, [t]);
-
   const handleStartJourney = () => {
     setIsCalmMagicOpen(true);
   };
-
-  return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-rose-50 to-purple-50 dark:from-rose-950/20 dark:to-purple-950/20">
+  return <div className="flex flex-col min-h-screen bg-gradient-to-b from-rose-50 to-purple-50 dark:from-rose-950/20 dark:to-purple-950/20">
       {/* Navigation */}
       <header className="fixed w-full z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
         <div className="container flex items-center justify-between py-4">
@@ -50,17 +47,13 @@ const RelationalHealing = () => {
       </header>
 
       {/* Calm Magic Assistant - Opens automatically */}
-      <CalmMagicAssistant 
-        onStartJourney={handleStartJourney} 
-        isOpen={isCalmMagicOpen} 
-        onOpenChange={setIsCalmMagicOpen} 
-      />
+      <CalmMagicAssistant onStartJourney={handleStartJourney} isOpen={isCalmMagicOpen} onOpenChange={setIsCalmMagicOpen} />
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
         <div className="container relative px-4 py-6 md:py-12">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="backdrop-blur-sm bg-white/10 dark:bg-slate-900/10 rounded-2xl px-8 py-3 border border-white/20">
+            <div className="backdrop-blur-sm bg-white/10 dark:bg-slate-900/10 rounded-2xl px-8 border border-white/20 py-0">
               <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-rose-600 via-purple-600 to-pink-600 animate-gradient-x mb-6">
                 {t("calm_magic.title")}
               </h1>
@@ -141,8 +134,6 @@ const RelationalHealing = () => {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default RelationalHealing;
