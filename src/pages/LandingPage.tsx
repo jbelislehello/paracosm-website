@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from "react";
-import LeadershipRolesSection from "@/components/LeadershipRolesSection";
+
 import CoachingApproachSection from "@/components/CoachingApproachSection";
 import TransformationJourney from "@/components/TransformationJourney";
 import ContactSection from "@/components/ContactSection";
@@ -206,10 +206,6 @@ const LandingPage = () => {
         </div>
       </section>
       
-      {/* Three Residence Levels Section */}
-      <section id="leadership-roles">
-        <LeadershipRolesSection />
-      </section>
       
       {/* Paracosm Events Section */}
       <section id="events">
