@@ -22,7 +22,7 @@ const ParacosmEventsSection = () => {
       cta: "Early Access"
     },
     {
-      name: "Relational Intelligence Summit",
+      name: "GL!TCH - Relational Intelligence Summit",
       description: "Advanced coaching techniques for creating coherent, learning-oriented cultures that drive innovation and engagement.",
       date: "Autumn 2026",
       location: "Madeira, Portugal", 
