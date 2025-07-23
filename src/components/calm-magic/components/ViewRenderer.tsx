@@ -47,7 +47,7 @@ const ViewRenderer: React.FC<ViewRendererProps> = ({
 
     case 'spiral':
       return (
-        <div className="space-y-4">
+        <div className="space-y-2">
           <SpiralNavigator
             currentLandscape={currentLandscape}
             onLandscapeChange={onLandscapeChange}

@@ -75,7 +75,7 @@ const EnhancedAssistantHeader: React.FC<EnhancedAssistantHeaderProps> = ({
 
   return (
     <CardHeader 
-      className={`pb-3 ${!isFullScreen ? 'cursor-grab active:cursor-grabbing' : ''} bg-gradient-to-r from-purple-50 via-blue-50 to-rose-50 dark:from-purple-950/30 dark:via-blue-950/30 dark:to-rose-950/30 border-b transition-all duration-300`}
+      className={`pb-2 ${!isFullScreen ? 'cursor-grab active:cursor-grabbing' : ''} bg-gradient-to-r from-purple-50 via-blue-50 to-rose-50 dark:from-purple-950/30 dark:via-blue-950/30 dark:to-rose-950/30 border-b transition-all duration-300`}
       onMouseDown={!isFullScreen ? onMouseDown : undefined}
     >
       <div className="flex items-center justify-between">

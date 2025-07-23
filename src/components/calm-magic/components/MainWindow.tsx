@@ -92,7 +92,7 @@ const MainWindow: React.FC<MainWindowProps> = ({
         />
 
         {!isMinimized && (
-          <CardContent className={`p-4 overflow-y-auto flex-1 ${preferences?.interfaceSettings?.compactMode ? 'p-2' : 'p-4'}`}>
+          <CardContent className={`p-2 overflow-y-auto flex-1 ${preferences?.interfaceSettings?.compactMode ? 'p-1' : 'p-2'}`}>
             <ViewModeNavigation
               viewMode={viewMode}
               onViewModeChange={onViewModeChange}

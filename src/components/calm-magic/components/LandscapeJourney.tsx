@@ -85,13 +85,13 @@ const LandscapeJourney: React.FC<LandscapeJourneyProps> = ({
     'tree' | 'river' | 'lake' | 'forest' | 'mountain';
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       {/* Mode Switcher */}
       <ModeSwitcher />
       
       {/* Current Landscape Context */}
-      <div className="text-center mb-2">
-        <Badge variant="outline" className="mb-2 px-4">
+      <div className="text-center mb-1">
+        <Badge variant="outline" className="mb-1 px-4">
           {mode === 'personal' 
             ? landscapes[currentLandscape]?.personal
             : landscapes[currentLandscape]?.professional
