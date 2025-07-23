@@ -51,9 +51,9 @@ const RelationalHealing = () => {
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
-        <div className="container relative px-4 py-6 md:py-12">
+        <div className="container relative md:py-12 py-[41px] px-[14px]">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="backdrop-blur-sm bg-white/10 dark:bg-slate-900/10 rounded-2xl px-8 border border-white/20 py-0">
+            <div className="backdrop-blur-sm bg-white/10 dark:bg-slate-900/10 rounded-2xl px-8 border border-white/20 py-[28px]">
               <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-rose-600 via-purple-600 to-pink-600 animate-gradient-x mb-6">
                 {t("calm_magic.title")}
               </h1>
