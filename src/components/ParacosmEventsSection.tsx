@@ -16,7 +16,7 @@ const ParacosmEventsSection = () => {
     {
       name: "Transformation Design Lab",
       description: "Learn to create diegetic prototypes and bridge the gap between vision and implementation through our proven methodology.",
-      date: "Summer 2025", 
+      date: "Summer 2026", 
       location: "Montreal, QC",
       color: "from-purple-500 to-pink-500",
       cta: "Early Access"
