@@ -91,6 +91,10 @@ const EnhancedAssistantHeader: React.FC<EnhancedAssistantHeaderProps> = ({
               </span>
             </CardTitle>
             
+            <p className="text-xs text-muted-foreground mb-2 opacity-75">
+              This is a simulation preview of the emotional and vitality metrics that Calm Magic will track throughout your coaching journey
+            </p>
+            
             <div className="flex flex-wrap gap-2">
               <Badge className={getEmotionalColor(dominantEmotion)}>
                 <Heart className="w-3 h-3 mr-1" />
