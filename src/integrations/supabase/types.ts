@@ -7,10 +7,10 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.3 (519615d)"
+    PostgrestVersion: "13.0.5"
   }
   public: {
     Tables: {
@@ -181,6 +181,60 @@ export type Database = {
         }
         Relationships: []
       }
+      revenue_opportunities: {
+        Row: {
+          amount_max: number | null
+          amount_min: number
+          client_name: string | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          next_action: string | null
+          next_action_date: string | null
+          notes: string | null
+          probability: string
+          proposal_deadline: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_max?: number | null
+          amount_min?: number
+          client_name?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          next_action?: string | null
+          next_action_date?: string | null
+          notes?: string | null
+          probability?: string
+          proposal_deadline?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_max?: number | null
+          amount_min?: number
+          client_name?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          next_action?: string | null
+          next_action_date?: string | null
+          notes?: string | null
+          probability?: string
+          proposal_deadline?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       tasks: {
         Row: {
           category: string
@@ -255,14 +309,93 @@ export type Database = {
           },
         ]
       }
+      urgent_priorities: {
+        Row: {
+          category: string
+          consequences: string | null
+          created_at: string
+          description: string | null
+          due_date: string | null
+          estimated_cost: number | null
+          id: string
+          priority_level: string
+          related_debt_id: string | null
+          related_task_id: string | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          consequences?: string | null
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          estimated_cost?: number | null
+          id?: string
+          priority_level?: string
+          related_debt_id?: string | null
+          related_task_id?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          consequences?: string | null
+          created_at?: string
+          description?: string | null
+          due_date?: string | null
+          estimated_cost?: number | null
+          id?: string
+          priority_level?: string
+          related_debt_id?: string | null
+          related_task_id?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
+      app_role: "admin" | "moderator" | "user"
       energetic_axis: "love" | "magic" | "calm" | "open" | "free"
       garden_type: "intelligence" | "systems" | "prototypes"
     }
@@ -392,6 +525,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "moderator", "user"],
       energetic_axis: ["love", "magic", "calm", "open", "free"],
       garden_type: ["intelligence", "systems", "prototypes"],
     },
