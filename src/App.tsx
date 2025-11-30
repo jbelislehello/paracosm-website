@@ -11,6 +11,10 @@ import RelationalHealing from "./pages/RelationalHealing";
 import CaseStudies from "./pages/CaseStudies";
 import AboutUs from "./pages/AboutUs";
 import NotFound from "./pages/NotFound";
+import GlitchCompass from "./pages/GlitchCompass";
+import GlitchAuth from "./pages/GlitchAuth";
+import GlitchEvents from "./pages/GlitchEvents";
+import GlitchInsights from "./pages/GlitchInsights";
 import "./App.css";
 
 const queryClient = new QueryClient();
@@ -28,6 +32,10 @@ function App() {
               <Route path="/calm-magic-assistant" element={<RelationalHealing />} />
               <Route path="/case-studies" element={<CaseStudies />} />
               <Route path="/about-us" element={<AboutUs />} />
+              <Route path="/glitch-compass" element={<GlitchCompass />} />
+              <Route path="/glitch-compass/events" element={<GlitchEvents />} />
+              <Route path="/glitch-compass/insights" element={<GlitchInsights />} />
+              <Route path="/auth" element={<GlitchAuth />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Toaster />
