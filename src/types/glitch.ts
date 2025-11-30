@@ -68,3 +68,52 @@ export interface TeamMembership {
   role: TeamRole;
   created_at?: string;
 }
+
+export type PrdStatus = 'draft' | 'in_review' | 'active' | 'archived';
+
+export interface Prd {
+  id: string;
+  team_id?: string | null;
+  owner_id: string;
+  title: string;
+  status: PrdStatus;
+  
+  // Dominant patterns
+  main_dimension?: APAspect | null;
+  main_quadrant?: Quadrant | null;
+  main_senge_focus?: SengeDiscipline | null;
+  main_board?: Board | null;
+  main_oscillation?: OscillationState | null;
+  
+  // LAYER 1 – LOVE (Signals)
+  love_summary?: string | null;
+  love_key_events_overview?: string | null;
+  
+  // LAYER 2 – MAGIC (Patterns & Hypotheses)
+  magic_patterns?: string | null;
+  magic_hypotheses?: string | null;
+  
+  // LAYER 3 – CALM (Requirements & Constraints)
+  calm_requirements?: string | null;
+  calm_constraints?: string | null;
+  calm_impacted_actors?: string | null;
+  
+  // LAYER 4 – OPEN (Experiments & Prototypes)
+  open_experiments?: string | null;
+  open_flows_or_scenarios?: string | null;
+  
+  // LAYER 5 – FREE (Learning & Integration)
+  free_success_criteria?: string | null;
+  free_learning_questions?: string | null;
+  free_integration_plan?: string | null;
+  
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface PrdLink {
+  id: string;
+  prd_id: string;
+  event_id: string;
+  created_at?: string;
+}
