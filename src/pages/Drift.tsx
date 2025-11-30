@@ -59,7 +59,7 @@ const Drift = () => {
       if (error) throw error;
 
       toast.success('PRD created successfully');
-      navigate(`/prds/${data.prd.id}`);
+      navigate(`/glitch-compass/prds/${data.prd.id}`);
     } catch (error) {
       console.error('Error creating PRD:', error);
       toast.error('Failed to create PRD');

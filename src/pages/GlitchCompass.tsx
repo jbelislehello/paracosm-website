@@ -178,7 +178,7 @@ const GlitchCompass = () => {
             </div>
           </Card>
 
-          <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/drift')}>
+          <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/glitch-compass/drift')}>
             <div className="space-y-2">
               <Sparkles className="h-8 w-8 text-primary" />
               <h3 className="font-semibold text-lg">Drift → PRD</h3>

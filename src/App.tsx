@@ -37,8 +37,8 @@ function App() {
               <Route path="/glitch-compass" element={<GlitchCompass />} />
               <Route path="/glitch-compass/events" element={<GlitchEvents />} />
               <Route path="/glitch-compass/insights" element={<GlitchInsights />} />
-              <Route path="/drift" element={<Drift />} />
-              <Route path="/prds/:id" element={<PrdEditor />} />
+              <Route path="/glitch-compass/drift" element={<Drift />} />
+              <Route path="/glitch-compass/prds/:id" element={<PrdEditor />} />
               <Route path="/auth" element={<GlitchAuth />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
