@@ -245,6 +245,150 @@ export type Database = {
           },
         ]
       }
+      prd_links: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          prd_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          prd_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          prd_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prd_links_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prd_links_prd_id_fkey"
+            columns: ["prd_id"]
+            isOneToOne: false
+            referencedRelation: "prds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prds: {
+        Row: {
+          calm_constraints: string | null
+          calm_impacted_actors: string | null
+          calm_requirements: string | null
+          created_at: string
+          free_integration_plan: string | null
+          free_learning_questions: string | null
+          free_success_criteria: string | null
+          id: string
+          love_key_events_overview: string | null
+          love_summary: string | null
+          magic_hypotheses: string | null
+          magic_patterns: string | null
+          main_board: Database["public"]["Enums"]["board"] | null
+          main_dimension: Database["public"]["Enums"]["ap_aspect"] | null
+          main_oscillation:
+            | Database["public"]["Enums"]["oscillation_state"]
+            | null
+          main_quadrant: Database["public"]["Enums"]["quadrant"] | null
+          main_senge_focus:
+            | Database["public"]["Enums"]["senge_discipline"]
+            | null
+          open_experiments: string | null
+          open_flows_or_scenarios: string | null
+          owner_id: string
+          status: string
+          team_id: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          calm_constraints?: string | null
+          calm_impacted_actors?: string | null
+          calm_requirements?: string | null
+          created_at?: string
+          free_integration_plan?: string | null
+          free_learning_questions?: string | null
+          free_success_criteria?: string | null
+          id?: string
+          love_key_events_overview?: string | null
+          love_summary?: string | null
+          magic_hypotheses?: string | null
+          magic_patterns?: string | null
+          main_board?: Database["public"]["Enums"]["board"] | null
+          main_dimension?: Database["public"]["Enums"]["ap_aspect"] | null
+          main_oscillation?:
+            | Database["public"]["Enums"]["oscillation_state"]
+            | null
+          main_quadrant?: Database["public"]["Enums"]["quadrant"] | null
+          main_senge_focus?:
+            | Database["public"]["Enums"]["senge_discipline"]
+            | null
+          open_experiments?: string | null
+          open_flows_or_scenarios?: string | null
+          owner_id: string
+          status?: string
+          team_id?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          calm_constraints?: string | null
+          calm_impacted_actors?: string | null
+          calm_requirements?: string | null
+          created_at?: string
+          free_integration_plan?: string | null
+          free_learning_questions?: string | null
+          free_success_criteria?: string | null
+          id?: string
+          love_key_events_overview?: string | null
+          love_summary?: string | null
+          magic_hypotheses?: string | null
+          magic_patterns?: string | null
+          main_board?: Database["public"]["Enums"]["board"] | null
+          main_dimension?: Database["public"]["Enums"]["ap_aspect"] | null
+          main_oscillation?:
+            | Database["public"]["Enums"]["oscillation_state"]
+            | null
+          main_quadrant?: Database["public"]["Enums"]["quadrant"] | null
+          main_senge_focus?:
+            | Database["public"]["Enums"]["senge_discipline"]
+            | null
+          open_experiments?: string | null
+          open_flows_or_scenarios?: string | null
+          owner_id?: string
+          status?: string
+          team_id?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prds_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prds_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null

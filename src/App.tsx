@@ -15,6 +15,8 @@ import GlitchCompass from "./pages/GlitchCompass";
 import GlitchAuth from "./pages/GlitchAuth";
 import GlitchEvents from "./pages/GlitchEvents";
 import GlitchInsights from "./pages/GlitchInsights";
+import Drift from "./pages/Drift";
+import PrdEditor from "./pages/PrdEditor";
 import "./App.css";
 
 const queryClient = new QueryClient();
@@ -35,6 +37,8 @@ function App() {
               <Route path="/glitch-compass" element={<GlitchCompass />} />
               <Route path="/glitch-compass/events" element={<GlitchEvents />} />
               <Route path="/glitch-compass/insights" element={<GlitchInsights />} />
+              <Route path="/drift" element={<Drift />} />
+              <Route path="/prds/:id" element={<PrdEditor />} />
               <Route path="/auth" element={<GlitchAuth />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

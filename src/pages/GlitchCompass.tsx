@@ -178,11 +178,11 @@ const GlitchCompass = () => {
             </div>
           </Card>
 
-          <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer opacity-50">
+          <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/drift')}>
             <div className="space-y-2">
               <Sparkles className="h-8 w-8 text-primary" />
-              <h3 className="font-semibold text-lg">Team Mode</h3>
-              <p className="text-sm text-muted-foreground">Coming soon</p>
+              <h3 className="font-semibold text-lg">Drift → PRD</h3>
+              <p className="text-sm text-muted-foreground">Create a 5-layer PRD from glitches</p>
             </div>
           </Card>
         </div>
