@@ -104,6 +104,97 @@ export type Database = {
         }
         Relationships: []
       }
+      events: {
+        Row: {
+          adversity_level: Database["public"]["Enums"]["adversity_level"]
+          ap_aspect: Database["public"]["Enums"]["ap_aspect"]
+          created_at: string
+          curiosity_level: Database["public"]["Enums"]["curiosity_level"]
+          description: string
+          id: string
+          next_step: string | null
+          oscillation_state: Database["public"]["Enums"]["oscillation_state"]
+          positionality: Database["public"]["Enums"]["positionality"]
+          process_state: Database["public"]["Enums"]["process_state"]
+          quadrant: Database["public"]["Enums"]["quadrant"]
+          reflection: string | null
+          senge_focus: Database["public"]["Enums"]["senge_discipline"]
+          team_id: string | null
+          tile_id: number
+          timestamp: string
+          title: string
+          updated_at: string
+          user_id: string
+          wu_wei_mode: Database["public"]["Enums"]["wu_wei_mode"]
+        }
+        Insert: {
+          adversity_level: Database["public"]["Enums"]["adversity_level"]
+          ap_aspect: Database["public"]["Enums"]["ap_aspect"]
+          created_at?: string
+          curiosity_level: Database["public"]["Enums"]["curiosity_level"]
+          description: string
+          id?: string
+          next_step?: string | null
+          oscillation_state: Database["public"]["Enums"]["oscillation_state"]
+          positionality: Database["public"]["Enums"]["positionality"]
+          process_state: Database["public"]["Enums"]["process_state"]
+          quadrant: Database["public"]["Enums"]["quadrant"]
+          reflection?: string | null
+          senge_focus: Database["public"]["Enums"]["senge_discipline"]
+          team_id?: string | null
+          tile_id: number
+          timestamp?: string
+          title: string
+          updated_at?: string
+          user_id: string
+          wu_wei_mode: Database["public"]["Enums"]["wu_wei_mode"]
+        }
+        Update: {
+          adversity_level?: Database["public"]["Enums"]["adversity_level"]
+          ap_aspect?: Database["public"]["Enums"]["ap_aspect"]
+          created_at?: string
+          curiosity_level?: Database["public"]["Enums"]["curiosity_level"]
+          description?: string
+          id?: string
+          next_step?: string | null
+          oscillation_state?: Database["public"]["Enums"]["oscillation_state"]
+          positionality?: Database["public"]["Enums"]["positionality"]
+          process_state?: Database["public"]["Enums"]["process_state"]
+          quadrant?: Database["public"]["Enums"]["quadrant"]
+          reflection?: string | null
+          senge_focus?: Database["public"]["Enums"]["senge_discipline"]
+          team_id?: string | null
+          tile_id?: number
+          timestamp?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          wu_wei_mode?: Database["public"]["Enums"]["wu_wei_mode"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "events_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_tile_id_fkey"
+            columns: ["tile_id"]
+            isOneToOne: false
+            referencedRelation: "tiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       journal_entries: {
         Row: {
           content: string
@@ -160,6 +251,8 @@ export type Database = {
           created_at: string
           full_name: string | null
           id: string
+          mode: Database["public"]["Enums"]["user_mode"] | null
+          time_zone: string | null
           updated_at: string
           username: string | null
         }
@@ -168,6 +261,8 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id: string
+          mode?: Database["public"]["Enums"]["user_mode"] | null
+          time_zone?: string | null
           updated_at?: string
           username?: string | null
         }
@@ -176,6 +271,8 @@ export type Database = {
           created_at?: string
           full_name?: string | null
           id?: string
+          mode?: Database["public"]["Enums"]["user_mode"] | null
+          time_zone?: string | null
           updated_at?: string
           username?: string | null
         }
@@ -309,6 +406,131 @@ export type Database = {
           },
         ]
       }
+      team_memberships: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["team_role"]
+          team_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["team_role"]
+          team_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["team_role"]
+          team_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_memberships_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "team_memberships_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teams: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          owner_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          owner_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          owner_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teams_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tiles: {
+        Row: {
+          board: Database["public"]["Enums"]["board"]
+          calm_magic_phase: Database["public"]["Enums"]["board"]
+          col: number | null
+          created_at: string
+          default_process_state: Database["public"]["Enums"]["process_state"]
+          hexagram: number | null
+          id: number
+          mindfulness_focus: Json | null
+          row: number | null
+          senge_discipline: Database["public"]["Enums"]["senge_discipline"]
+          short_prompt: string
+          tzolkin_index: number
+          updated_at: string
+          vl_path_index: number | null
+          wu_wei_intensity: Database["public"]["Enums"]["wu_wei_intensity"]
+        }
+        Insert: {
+          board: Database["public"]["Enums"]["board"]
+          calm_magic_phase: Database["public"]["Enums"]["board"]
+          col?: number | null
+          created_at?: string
+          default_process_state: Database["public"]["Enums"]["process_state"]
+          hexagram?: number | null
+          id: number
+          mindfulness_focus?: Json | null
+          row?: number | null
+          senge_discipline: Database["public"]["Enums"]["senge_discipline"]
+          short_prompt: string
+          tzolkin_index: number
+          updated_at?: string
+          vl_path_index?: number | null
+          wu_wei_intensity?: Database["public"]["Enums"]["wu_wei_intensity"]
+        }
+        Update: {
+          board?: Database["public"]["Enums"]["board"]
+          calm_magic_phase?: Database["public"]["Enums"]["board"]
+          col?: number | null
+          created_at?: string
+          default_process_state?: Database["public"]["Enums"]["process_state"]
+          hexagram?: number | null
+          id?: number
+          mindfulness_focus?: Json | null
+          row?: number | null
+          senge_discipline?: Database["public"]["Enums"]["senge_discipline"]
+          short_prompt?: string
+          tzolkin_index?: number
+          updated_at?: string
+          vl_path_index?: number | null
+          wu_wei_intensity?: Database["public"]["Enums"]["wu_wei_intensity"]
+        }
+        Relationships: []
+      }
       urgent_priorities: {
         Row: {
           category: string
@@ -395,9 +617,27 @@ export type Database = {
       }
     }
     Enums: {
+      adversity_level: "A1" | "A2" | "A3"
+      ap_aspect: "F" | "E" | "L" | "V"
       app_role: "admin" | "moderator" | "user"
+      board: "LOVE" | "MAGIC" | "CALM" | "OPEN" | "FREE"
+      curiosity_level: "C1" | "C2" | "C3"
       energetic_axis: "love" | "magic" | "calm" | "open" | "free"
       garden_type: "intelligence" | "systems" | "prototypes"
+      oscillation_state: "shadow" | "mixed" | "higher_self"
+      positionality: "P1" | "P2" | "P3" | "P4" | "P5"
+      process_state: "GLITCH" | "DRIFT" | "TUNE" | "FREE"
+      quadrant: "SN" | "IN" | "IM" | "SM"
+      senge_discipline:
+        | "PersonalMastery"
+        | "MentalModels"
+        | "SharedVision"
+        | "TeamLearning"
+        | "SystemsThinking"
+      team_role: "owner" | "member"
+      user_mode: "solo" | "team"
+      wu_wei_intensity: "LOW" | "MEDIUM" | "HIGH"
+      wu_wei_mode: "ALLOW_FIRST" | "MINIMAL_INTERVENTION" | "NO_FORCE"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -525,9 +765,28 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      adversity_level: ["A1", "A2", "A3"],
+      ap_aspect: ["F", "E", "L", "V"],
       app_role: ["admin", "moderator", "user"],
+      board: ["LOVE", "MAGIC", "CALM", "OPEN", "FREE"],
+      curiosity_level: ["C1", "C2", "C3"],
       energetic_axis: ["love", "magic", "calm", "open", "free"],
       garden_type: ["intelligence", "systems", "prototypes"],
+      oscillation_state: ["shadow", "mixed", "higher_self"],
+      positionality: ["P1", "P2", "P3", "P4", "P5"],
+      process_state: ["GLITCH", "DRIFT", "TUNE", "FREE"],
+      quadrant: ["SN", "IN", "IM", "SM"],
+      senge_discipline: [
+        "PersonalMastery",
+        "MentalModels",
+        "SharedVision",
+        "TeamLearning",
+        "SystemsThinking",
+      ],
+      team_role: ["owner", "member"],
+      user_mode: ["solo", "team"],
+      wu_wei_intensity: ["LOW", "MEDIUM", "HIGH"],
+      wu_wei_mode: ["ALLOW_FIRST", "MINIMAL_INTERVENTION", "NO_FORCE"],
     },
   },
 } as const
