@@ -186,6 +186,33 @@ const GlitchLog = () => {
           </div>
         </div>
 
+        {/* Calm Magic Framework Overview */}
+        <Card className="p-6 bg-gradient-to-r from-primary/5 to-purple-500/5">
+          <h2 className="text-xl font-semibold mb-3">5-Phase Calm Magic Framework</h2>
+          <div className="grid grid-cols-5 gap-2 text-center text-sm">
+            <div className="p-3 rounded bg-rose-500/20 border border-rose-500">
+              <div className="font-semibold">LOVE</div>
+              <div className="text-xs text-muted-foreground mt-1">Desire • Signals</div>
+            </div>
+            <div className="p-3 rounded bg-purple-500/20 border border-purple-500">
+              <div className="font-semibold">MAGIC</div>
+              <div className="text-xs text-muted-foreground mt-1">Intention • Story</div>
+            </div>
+            <div className="p-3 rounded bg-blue-500/20 border border-blue-500">
+              <div className="font-semibold">CALM</div>
+              <div className="text-xs text-muted-foreground mt-1">Rules • Structure</div>
+            </div>
+            <div className="p-3 rounded bg-green-500/20 border border-green-500">
+              <div className="font-semibold">OPEN</div>
+              <div className="text-xs text-muted-foreground mt-1">Operations • Flow</div>
+            </div>
+            <div className="p-3 rounded bg-amber-500/20 border border-amber-500">
+              <div className="font-semibold">FREE</div>
+              <div className="text-xs text-muted-foreground mt-1">Learning • Wisdom</div>
+            </div>
+          </div>
+        </Card>
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Tile Boards */}
           <div className="lg:col-span-2 space-y-8">
@@ -194,6 +221,44 @@ const GlitchLog = () => {
 
           {/* Process State Flow & Selected Tile Info */}
           <div className="space-y-6">
+            {/* Mindfulness Lens Words */}
+            <Card className="p-6 space-y-3">
+              <h3 className="font-semibold text-lg">Mindfulness Lens Words</h3>
+              <p className="text-xs text-muted-foreground">
+                Each tile carries specific mindfulness attitudes that shape how you engage with the tension
+              </p>
+              <div className="space-y-2 text-xs">
+                <div className="flex items-start gap-2">
+                  <Badge variant="secondary" className="text-[10px]">non-judging</Badge>
+                  <span className="text-muted-foreground">Notice without labeling good/bad</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Badge variant="secondary" className="text-[10px]">beginner-mind</Badge>
+                  <span className="text-muted-foreground">Approach with fresh eyes</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Badge variant="secondary" className="text-[10px]">trust</Badge>
+                  <span className="text-muted-foreground">Trust the process & yourself</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Badge variant="secondary" className="text-[10px]">acceptance</Badge>
+                  <span className="text-muted-foreground">See what is, as it is</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Badge variant="secondary" className="text-[10px]">letting-go</Badge>
+                  <span className="text-muted-foreground">Release attachment to outcome</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Badge variant="secondary" className="text-[10px]">patience</Badge>
+                  <span className="text-muted-foreground">Allow things to unfold</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Badge variant="secondary" className="text-[10px]">non-striving</Badge>
+                  <span className="text-muted-foreground">Be with what is, not forcing</span>
+                </div>
+              </div>
+            </Card>
+
             {/* Process State Flow Diagram */}
             <Card className="p-6 space-y-4">
               <h3 className="font-semibold text-lg">Process State Flow</h3>
@@ -246,20 +311,53 @@ const GlitchLog = () => {
                   </Badge>
                 </div>
                 
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <div>
-                    <p className="text-sm text-muted-foreground">Prompt</p>
-                    <p className="text-sm italic">"{selectedTile.short_prompt}"</p>
+                    <p className="text-xs text-muted-foreground uppercase tracking-wide">Reflection Prompt</p>
+                    <p className="text-sm italic font-medium mt-1">"{selectedTile.short_prompt}"</p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 pt-2 border-t">
+                    <div>
+                      <p className="text-xs text-muted-foreground">Board</p>
+                      <p className="text-sm font-medium">{selectedTile.board}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-muted-foreground">Phase</p>
+                      <p className="text-sm font-medium">{selectedTile.calm_magic_phase}</p>
+                    </div>
                   </div>
                   
                   <div>
-                    <p className="text-sm text-muted-foreground">Board</p>
-                    <p className="text-sm font-medium">{selectedTile.board}</p>
-                  </div>
-                  
-                  <div>
-                    <p className="text-sm text-muted-foreground">Senge Discipline</p>
+                    <p className="text-xs text-muted-foreground">Senge Discipline</p>
                     <p className="text-sm font-medium">{selectedTile.senge_discipline.replace(/([A-Z])/g, ' $1').trim()}</p>
+                  </div>
+
+                  <div>
+                    <p className="text-xs text-muted-foreground">Mindfulness Lens Words</p>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {Array.isArray(selectedTile.mindfulness_focus) && selectedTile.mindfulness_focus.map((lens: string, idx: number) => (
+                        <Badge key={idx} variant="secondary" className="text-xs">
+                          {lens}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="text-xs text-muted-foreground">Wu Wei Intensity</p>
+                    <p className="text-sm font-medium">{selectedTile.wu_wei_intensity}</p>
+                  </div>
+
+                  <div className="pt-2 border-t">
+                    <p className="text-xs text-muted-foreground">Position</p>
+                    <p className="text-sm">
+                      {selectedTile.row && selectedTile.col ? (
+                        <>Velocity: {selectedTile.row}/8 • Longevity: {selectedTile.col}/8</>
+                      ) : (
+                        'FREE tile (no grid position)'
+                      )}
+                    </p>
                   </div>
                 </div>
 
