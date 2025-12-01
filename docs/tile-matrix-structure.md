@@ -13,9 +13,9 @@ Contains the **MAG** foundation of MAGIC:
 
 ### Stage 2: LENS (Rows 4-6)
 Contains the upper consciousness layers:
-- **Row 4: L** - Landscape
-- **Row 5: E** - Energy (contains Intuitions and Norms)
-- **Row 6: S** - Synergies (contains Compasses)
+- **Row 4: L** - Landscape (contains Intuitions)
+- **Row 5: E** - Energy (contains Compasses)
+- **Row 6: S** - Synergies
 
 ### Stage 3: MAPS (Rows 7-8)
 The methodology and architecture layer:
@@ -27,8 +27,8 @@ The 5 letters of MAGIC are embedded within rows 1-6:
 - M (Mindsets) → Row 1
 - A (Agilities) → Row 2
 - G (Goals) → Row 3
-- I (Intuitions) → contained within E (Energy) at Row 5
-- C (Compasses) → contained within S (Synergies) at Row 6
+- I (Intuitions) → contained within L (Landscape) at Row 4
+- C (Compasses) → contained within E (Energy) at Row 5
 
 ## Horizontal Structure (8 Columns)
 
