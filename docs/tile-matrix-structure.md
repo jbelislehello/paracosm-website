@@ -11,42 +11,48 @@ Contains the **MAG** foundation of MAGIC:
 - **Row 2: A** - Agilities  
 - **Row 3: G** - Goals (synthesis of Mindsets + Agilities)
 
-### Stage 2: LENS (Rows 4-8)
+### Stage 2: LENS (Rows 4-6)
 Contains the upper consciousness layers:
 - **Row 4: L** - Landscape
 - **Row 5: E** - Energy (contains Intuitions and Norms)
-- **Rows 6-8: S** - Synergies (contains Compasses, covers 3 tiles upward reaching sovereignty)
+- **Row 6: S** - Synergies (contains Compasses)
+
+### Stage 3: MAPS (Rows 7-8)
+The methodology and architecture layer:
+- **Row 7: M** - Methodology (from MAPS)
+- **Row 8: A** - Architecture (from MAPS)
 
 #### MAGIC Integration
-The 5 letters of MAGIC are embedded within the 8-row structure:
+The 5 letters of MAGIC are embedded within rows 1-6:
 - M (Mindsets) → Row 1
 - A (Agilities) → Row 2
 - G (Goals) → Row 3
 - I (Intuitions) → contained within E (Energy) at Row 5
-- C (Compasses) → contained within S (Synergies) at Rows 6-8
+- C (Compasses) → contained within S (Synergies) at Row 6
 
 ## Horizontal Structure (8 Columns)
 
-### CHORDS Foundation (6 defined columns)
-- **C** - Chances (taken)
-- **H** - Heart
-- **O** - Observer/Ontological
-- **R** - Reversal/Renewal
-- **D** - Design
-- **S** - Seeds
+### CHORDS Foundation (Columns 1-6)
+- **Column 1: C** - Chances (taken)
+- **Column 2: H** - Heart
+- **Column 3: O** - Observer/Ontological
+- **Column 4: R** - Reversal/Renewal
+- **Column 5: D** - Design
+- **Column 6: S** - Seeds
 
-### Undefined Columns
-- **Column 7** - TBD
-- **Column 8** - TBD
+### MAPS Integration (Columns 7-8)
+The protocols and systems layer:
+- **Column 7: P** - Protocols (from MAPS)
+- **Column 8: S** - Systems (from MAPS)
 
-## Hidden Layer: MAPS
-The MAPS layer is not visible in the primary tile structure. It represents the **tools** used at different work levels:
-- **M** - Methodology
-- **A** - Architecture
-- **P** - Protocols
-- **S** - Systems
+## Complete MAPS Distribution
+MAPS appears at the **boundaries** of the matrix:
+- **M** (Methodology) → Row 7 (vertical)
+- **A** (Architecture) → Row 8 (vertical)
+- **P** (Protocols) → Column 7 (horizontal)
+- **S** (Systems) → Column 8 (horizontal)
 
-MAPS operates as a meta-layer for performing work across the tile matrix.
+This creates a frame where MAPS tools emerge at the edges, providing methodological and architectural structure vertically, and protocols and systems horizontally.
 
 ## Boards
 Each 8×8 board represents a phase of the Calm Magic Framework:
@@ -57,12 +63,15 @@ Each 8×8 board represents a phase of the Calm Magic Framework:
 - **FREE** - 4 tiles for production and sovereignty
 
 ## Stage Philosophy
-- **AGENDAS**: Foundation setting (what we bring, what we build, where we aim)
-- **LENS**: Consciousness expansion (perspective, energy, integration, synergies)
-- **Velocity → Sovereignty**: Movement from Rows 6-8 (Synergies) represents the final ascent to sovereign integration
+- **AGENDAS (Rows 1-3)**: Foundation setting (mindsets, agilities, goals)
+- **LENS (Rows 4-6)**: Consciousness expansion (landscape, energy, synergies)
+- **MAPS (Rows 7-8 + Cols 7-8)**: Boundary tools for execution (methodology, architecture, protocols, systems)
+- **CHORDS (Cols 1-6)**: Horizontal dimensions of experience (chances, heart, observer, reversal, design, seeds)
 
-## Notes
-- The vertical structure prioritizes consciousness expansion from grounded agendas to sovereign synergies
-- The E (Energy) row serves as a bridge containing both Intuitions and Norms
-- The S (Synergies) covers 3 rows to emphasize the complexity and depth of sovereign integration
-- CHORDS remains partially undefined to allow for emergent horizontal dimensions
+## Integration Insights
+- MAPS forms a **boundary frame** around the core matrix
+- Vertical MAPS (M, A) provides methodological and architectural structure
+- Horizontal MAPS (P, S) provides protocols and systems implementation
+- The intersection of Row 7-8 with Column 7-8 creates four **corner tiles** where all MAPS dimensions converge
+- MAGIC lives within AGENDAS + LENS (rows 1-6)
+- Sovereignty is reached at Row 6 (Synergies), then MAPS provides the execution framework above and beyond
