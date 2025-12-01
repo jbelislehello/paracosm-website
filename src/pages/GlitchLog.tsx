@@ -87,27 +87,78 @@ const GlitchLog = () => {
           <div className={`w-3 h-3 rounded-full ${getBoardColor(board).split(' ')[0].replace('/20', '')}`} />
           {board}
         </h3>
-        <div className="grid grid-cols-8 gap-1 max-w-2xl">
-          {grid.map((row, rowIdx) => 
-            row.map((tile, colIdx) => (
-              <div
-                key={`${rowIdx}-${colIdx}`}
-                onClick={() => tile && setSelectedTile(tile)}
-                className={`
-                  aspect-square border-2 rounded flex items-center justify-center text-xs p-1 cursor-pointer transition-all
-                  ${tile ? getBoardColor(board) : 'bg-muted/30 border-muted'}
-                  ${selectedTile?.id === tile?.id ? 'ring-2 ring-primary scale-105' : ''}
-                  ${tile ? 'hover:scale-110 hover:shadow-md' : ''}
-                `}
-              >
-                {tile && (
-                  <div className="text-center">
-                    <div className="font-mono text-[10px]">{tile.id}</div>
+        
+        <div className="flex gap-4 max-w-2xl">
+          {/* Y-axis: Velocity */}
+          <div className="flex flex-col justify-between py-2 text-xs text-muted-foreground">
+            <div className="flex items-center gap-1">
+              <ArrowUp className="h-3 w-3" />
+              <span className="writing-mode-vertical transform rotate-180">Velocity</span>
+            </div>
+            <div className="text-center text-[10px] space-y-1">
+              <div>8</div>
+              <div>7</div>
+              <div>6</div>
+              <div>5</div>
+              <div>4</div>
+              <div>3</div>
+              <div>2</div>
+              <div>1</div>
+            </div>
+          </div>
+
+          {/* Grid */}
+          <div className="flex-1">
+            <div className="grid grid-cols-8 gap-1">
+              {grid.map((row, rowIdx) => 
+                row.map((tile, colIdx) => (
+                  <div
+                    key={`${rowIdx}-${colIdx}`}
+                    onClick={() => tile && setSelectedTile(tile)}
+                    className={`
+                      aspect-square border-2 rounded flex items-center justify-center text-xs p-1 cursor-pointer transition-all
+                      ${tile ? getBoardColor(board) : 'bg-muted/30 border-muted'}
+                      ${selectedTile?.id === tile?.id ? 'ring-2 ring-primary scale-105' : ''}
+                      ${tile ? 'hover:scale-110 hover:shadow-md' : ''}
+                    `}
+                  >
+                    {tile && (
+                      <div className="text-center">
+                        <div className="font-mono text-[10px]">{tile.id}</div>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            ))
-          )}
+                ))
+              )}
+            </div>
+            
+            {/* X-axis: Longevity */}
+            <div className="flex justify-between text-xs text-muted-foreground mt-2 px-1">
+              <div className="text-center text-[10px]">1</div>
+              <div className="text-center text-[10px]">2</div>
+              <div className="text-center text-[10px]">3</div>
+              <div className="text-center text-[10px]">4</div>
+              <div className="text-center text-[10px]">5</div>
+              <div className="text-center text-[10px]">6</div>
+              <div className="text-center text-[10px]">7</div>
+              <div className="text-center text-[10px]">8</div>
+            </div>
+            <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground mt-1">
+              <span>Longevity</span>
+              <ArrowRight className="h-3 w-3" />
+            </div>
+          </div>
+        </div>
+
+        <div className="text-xs text-muted-foreground space-y-1 max-w-2xl">
+          <p className="flex items-center gap-2">
+            <ArrowUp className="h-3 w-3" />
+            <span><strong>Higher velocity:</strong> More immediate, novel goals & faster systems</span>
+          </p>
+          <p className="flex items-center gap-2">
+            <ArrowRight className="h-3 w-3" />
+            <span><strong>Higher longevity:</strong> More memory, sustained patterns & long-term tolerance</span>
+          </p>
         </div>
       </div>
     );
