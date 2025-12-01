@@ -36,23 +36,45 @@ const GlitchAuth = () => {
           email,
           password,
         });
-        if (error) throw error;
+        if (error) {
+          if (error.message.includes('Invalid login credentials')) {
+            toast.error('Invalid email or password. Please try again or sign up for a new account.');
+          } else {
+            toast.error(error.message);
+          }
+          throw error;
+        }
         toast.success('Welcome back!');
         navigate('/glitch-compass');
       } else {
         const redirectUrl = `${window.location.origin}/glitch-compass`;
-        const { error } = await supabase.auth.signUp({
+        const { error, data } = await supabase.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo: redirectUrl
           }
         });
-        if (error) throw error;
-        toast.success('Account created! Please check your email to confirm.');
+        if (error) {
+          if (error.message.includes('User already registered')) {
+            toast.error('This email is already registered. Please sign in instead.');
+            setIsLogin(true);
+          } else {
+            toast.error(error.message);
+          }
+          throw error;
+        }
+        
+        // Check if email confirmation is disabled (instant login)
+        if (data.session) {
+          toast.success('Account created successfully!');
+          navigate('/glitch-compass');
+        } else {
+          toast.success('Account created! Please check your email to confirm your account.');
+        }
       }
     } catch (error: any) {
-      toast.error(error.message);
+      console.error('Auth error:', error);
     } finally {
       setLoading(false);
     }
