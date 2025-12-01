@@ -152,7 +152,7 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
         <div className="pt-4 border-t space-y-2">
           <h4 className="font-medium text-primary">MAGIC Integration</h4>
           <p className="text-sm text-muted-foreground">
-            M (row 1), A (row 2), G (row 3), I (within E at row 5), C (within S at row 6)
+            M (row 1), A (row 2), G (row 3), I (within L at row 4), C (within E at row 5)
           </p>
         </div>
       </Card>
