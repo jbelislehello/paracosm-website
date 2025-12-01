@@ -78,6 +78,14 @@ serve(async (req) => {
     const mainBoard = computeDominantTileField('board');
     const mainOscillation = computeDominant('oscillation_state');
 
+    // Compute prototype stage based on most frequent process_state
+    const mostFrequentState = computeDominant('process_state');
+    let prototypeStage = 'B_DIEGETIC';
+    if (mostFrequentState === 'GLITCH') prototypeStage = 'A_POIETIC';
+    else if (mostFrequentState === 'DRIFT') prototypeStage = 'B_DIEGETIC';
+    else if (mostFrequentState === 'TUNE') prototypeStage = 'C_OPERATIONAL';
+    else if (mostFrequentState === 'FREE') prototypeStage = 'D_MVP';
+
     // Use OpenAI to generate intelligent summaries
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     if (!openAIApiKey) {
@@ -88,9 +96,24 @@ serve(async (req) => {
       `Event: ${e.title}\nDescription: ${e.description}\nF/E/L/V: ${e.ap_aspect}, Positionality: ${e.positionality}, Quadrant: ${e.quadrant}, Oscillation: ${e.oscillation_state}`
     ).join('\n\n');
 
-    const systemPrompt = `You are an expert at synthesizing complex relational and organizational tensions into structured Product Requirements Documents. You work with the Calm Magic framework (LOVE→MAGIC→CALM→OPEN→FREE) and understand F/E/L/V dimensions (Feeling, Emotion, Logic, Values), positionality (P1-P5: self, pair, team, org, environment), quadrants (SN, IN, IM, SM), and Senge's learning disciplines.`;
+    const systemPrompt = `You are an expert at synthesizing complex relational and organizational tensions into structured Product Requirements Documents. You work with the Calm Magic framework (LOVE→MAGIC→CALM→OPEN→FREE) and understand F/E/L/V dimensions (Feeling, Emotion, Logic, Values), positionality (P1-P5: self, pair, team, org, environment), quadrants (SN, IN, IM, SM), and Senge's learning disciplines.
+
+You also understand the 4 prototype stages in the A–D quadrant:
+- A (Poietic) → GL!TCH/LOVE → "Is this worth existing?"
+- B (Diegetic) → DRIFT/MAGIC → Story & PRD backbone
+- C (Operational) → TUNE/CALM+OPEN → Ontology, rules, workflow
+- D (MVP) → FREE → Production reality & learning`;
+
+    const stageContext = {
+      'A_POIETIC': 'This is a Poietic prototype (GL!TCH/LOVE/desire) - focus on whether this idea is worth existing.',
+      'B_DIEGETIC': 'This is a Diegetic prototype (DRIFT/MAGIC/intention) - focus on story and PRD backbone.',
+      'C_OPERATIONAL': 'This is an Operational prototype (TUNE/CALM+OPEN) - focus on ontology, rules, and workflow.',
+      'D_MVP': 'This is an MVP/Production Ready App (FREE/learning) - focus on production reality and learning cycles.'
+    }[prototypeStage];
 
     const prompt = `Based on these glitch events, generate a structured PRD with these sections:
+
+${stageContext}
 
 EVENTS:
 ${eventsContext}
@@ -101,22 +124,34 @@ DOMINANT PATTERNS:
 - Main Senge Focus: ${mainSengeFocus}
 - Main Board: ${mainBoard}
 - Main Oscillation: ${mainOscillation}
+- Prototype Stage: ${prototypeStage}
 
 Generate:
-1. LOVE_SUMMARY: A 2-3 paragraph narrative summarizing the raw tensions and human experiences
-2. LOVE_KEY_EVENTS: Bullet list of 3-5 most representative events with their F/E/L/V and positionality
-3. MAGIC_PATTERNS: 2-3 paragraphs describing recurring patterns across dimensions, quadrants, and oscillation states
-4. MAGIC_HYPOTHESES: 3-4 hypotheses about why these patterns are occurring
-5. CALM_REQUIREMENTS: List of 5-7 requirements derived from the patterns
-6. CALM_CONSTRAINTS: List of 3-5 constraints, risks, or non-negotiables
-7. CALM_IMPACTED_ACTORS: Describe who is affected using human language (self, pairs, teams, organization, environment)
-8. OPEN_EXPERIMENTS: 5-7 small wu-wei-style experiments to try
-9. OPEN_FLOWS: 2-3 high-level flows or scenarios these experiments address
-10. FREE_SUCCESS_CRITERIA: How we'll know it worked (behavioral signals, oscillation shifts)
-11. FREE_LEARNING_QUESTIONS: 3-5 questions we want answered
-12. FREE_INTEGRATION_PLAN: How to log future glitches back into the system
+1. LOVE Layer (Signals - A quadrant / GL!TCH):
+   - love_signals_summary: Synthesized narrative of tensions & incoherences (2-3 paragraphs)
+   - love_decision_to_exist: 2-3 sentences on "Is this worth existing?" given these tensions
 
-Return as JSON with these exact keys: love_summary, love_key_events_overview, magic_patterns, magic_hypotheses, calm_requirements, calm_constraints, calm_impacted_actors, open_experiments, open_flows_or_scenarios, free_success_criteria, free_learning_questions, free_integration_plan`;
+2. MAGIC Layer (Story & PRD backbone - B quadrant / DRIFT):
+   - magic_storyworld: Short diegetic story tying glitches into a narrative
+   - magic_prd_outline: Bullet list of potential features/flows from recurring patterns
+   - magic_hypotheses: List of "We believe that..." hypotheses using F/E/L/V, quadrant, senge_focus
+
+3. CALM Layer (Rules - C quadrant / TUNE):
+   - calm_requirements: Requirements inferred from constraints, risks, positionality
+   - calm_risks_and_limits: Explicit risks / non-negotiables from adversity_level & oscillation_state
+
+4. OPEN Layer (Operations - C quadrant / TUNE):
+   - open_ontology_and_graph: Description of entities, relationships, edges suggested by glitches
+   - open_real_workflow: Real-life workflow the app/system must support
+   - open_adjustment_plan: How we will tune the prototype to match reality
+
+5. FREE Layer (Production & Learning - D quadrant / MVP):
+   - free_first_poem_description: Description of the first POEM in production
+   - free_totem_anthem: How this POEM becomes a ritual/totem in the org
+   - free_success_criteria: What successful behavior/stories/metrics look like
+   - free_next_cycle_hooks: How learnings will flow back into Glitch Compass
+
+Return as JSON with these exact keys. Keep the emotional and relational richness of the events.`;
 
     const aiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -152,6 +187,7 @@ Return as JSON with these exact keys: love_summary, love_key_events_overview, ma
         team_id: teamId || null,
         title: `PRD from ${filteredEvents.length} glitches - ${new Date().toLocaleDateString()}`,
         status: 'draft',
+        prototype_stage: prototypeStage,
         main_dimension: mainDimension,
         main_quadrant: mainQuadrant,
         main_senge_focus: mainSengeFocus,
