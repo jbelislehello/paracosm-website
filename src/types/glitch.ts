@@ -70,6 +70,7 @@ export interface TeamMembership {
 }
 
 export type PrdStatus = 'draft' | 'in_review' | 'active' | 'archived';
+export type PrototypeStage = 'A_POIETIC' | 'B_DIEGETIC' | 'C_OPERATIONAL' | 'D_MVP';
 
 export interface Prd {
   id: string;
@@ -77,6 +78,7 @@ export interface Prd {
   owner_id: string;
   title: string;
   status: PrdStatus;
+  prototype_stage: PrototypeStage;
   
   // Dominant patterns
   main_dimension?: APAspect | null;
@@ -86,26 +88,28 @@ export interface Prd {
   main_oscillation?: OscillationState | null;
   
   // LAYER 1 – LOVE (Signals)
-  love_summary?: string | null;
-  love_key_events_overview?: string | null;
+  love_signals_summary?: string | null;
+  love_decision_to_exist?: string | null;
   
-  // LAYER 2 – MAGIC (Patterns & Hypotheses)
-  magic_patterns?: string | null;
+  // LAYER 2 – MAGIC (Story & PRD backbone)
+  magic_storyworld?: string | null;
+  magic_prd_outline?: string | null;
   magic_hypotheses?: string | null;
   
   // LAYER 3 – CALM (Requirements & Constraints)
   calm_requirements?: string | null;
-  calm_constraints?: string | null;
-  calm_impacted_actors?: string | null;
+  calm_risks_and_limits?: string | null;
   
-  // LAYER 4 – OPEN (Experiments & Prototypes)
-  open_experiments?: string | null;
-  open_flows_or_scenarios?: string | null;
+  // LAYER 4 – OPEN (Ontology & Workflow)
+  open_ontology_and_graph?: string | null;
+  open_real_workflow?: string | null;
+  open_adjustment_plan?: string | null;
   
-  // LAYER 5 – FREE (Learning & Integration)
+  // LAYER 5 – FREE (Production & Learning)
+  free_first_poem_description?: string | null;
+  free_totem_anthem?: string | null;
   free_success_criteria?: string | null;
-  free_learning_questions?: string | null;
-  free_integration_plan?: string | null;
+  free_next_cycle_hooks?: string | null;
   
   created_at?: string;
   updated_at?: string;

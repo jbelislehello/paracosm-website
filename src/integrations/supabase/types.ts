@@ -283,18 +283,20 @@ export type Database = {
       }
       prds: {
         Row: {
-          calm_constraints: string | null
-          calm_impacted_actors: string | null
           calm_requirements: string | null
+          calm_risks_and_limits: string | null
           created_at: string
-          free_integration_plan: string | null
-          free_learning_questions: string | null
+          free_first_poem_description: string | null
+          free_next_cycle_hooks: string | null
           free_success_criteria: string | null
+          free_totem_anthem: string | null
           id: string
-          love_key_events_overview: string | null
-          love_summary: string | null
+          love_decision_to_exist: string | null
+          love_signals_summary: string | null
           magic_hypotheses: string | null
           magic_patterns: string | null
+          magic_prd_outline: string | null
+          magic_storyworld: string | null
           main_board: Database["public"]["Enums"]["board"] | null
           main_dimension: Database["public"]["Enums"]["ap_aspect"] | null
           main_oscillation:
@@ -304,27 +306,31 @@ export type Database = {
           main_senge_focus:
             | Database["public"]["Enums"]["senge_discipline"]
             | null
-          open_experiments: string | null
-          open_flows_or_scenarios: string | null
+          open_adjustment_plan: string | null
+          open_ontology_and_graph: string | null
+          open_real_workflow: string | null
           owner_id: string
+          prototype_stage: string
           status: string
           team_id: string | null
           title: string
           updated_at: string
         }
         Insert: {
-          calm_constraints?: string | null
-          calm_impacted_actors?: string | null
           calm_requirements?: string | null
+          calm_risks_and_limits?: string | null
           created_at?: string
-          free_integration_plan?: string | null
-          free_learning_questions?: string | null
+          free_first_poem_description?: string | null
+          free_next_cycle_hooks?: string | null
           free_success_criteria?: string | null
+          free_totem_anthem?: string | null
           id?: string
-          love_key_events_overview?: string | null
-          love_summary?: string | null
+          love_decision_to_exist?: string | null
+          love_signals_summary?: string | null
           magic_hypotheses?: string | null
           magic_patterns?: string | null
+          magic_prd_outline?: string | null
+          magic_storyworld?: string | null
           main_board?: Database["public"]["Enums"]["board"] | null
           main_dimension?: Database["public"]["Enums"]["ap_aspect"] | null
           main_oscillation?:
@@ -334,27 +340,31 @@ export type Database = {
           main_senge_focus?:
             | Database["public"]["Enums"]["senge_discipline"]
             | null
-          open_experiments?: string | null
-          open_flows_or_scenarios?: string | null
+          open_adjustment_plan?: string | null
+          open_ontology_and_graph?: string | null
+          open_real_workflow?: string | null
           owner_id: string
+          prototype_stage?: string
           status?: string
           team_id?: string | null
           title: string
           updated_at?: string
         }
         Update: {
-          calm_constraints?: string | null
-          calm_impacted_actors?: string | null
           calm_requirements?: string | null
+          calm_risks_and_limits?: string | null
           created_at?: string
-          free_integration_plan?: string | null
-          free_learning_questions?: string | null
+          free_first_poem_description?: string | null
+          free_next_cycle_hooks?: string | null
           free_success_criteria?: string | null
+          free_totem_anthem?: string | null
           id?: string
-          love_key_events_overview?: string | null
-          love_summary?: string | null
+          love_decision_to_exist?: string | null
+          love_signals_summary?: string | null
           magic_hypotheses?: string | null
           magic_patterns?: string | null
+          magic_prd_outline?: string | null
+          magic_storyworld?: string | null
           main_board?: Database["public"]["Enums"]["board"] | null
           main_dimension?: Database["public"]["Enums"]["ap_aspect"] | null
           main_oscillation?:
@@ -364,9 +374,11 @@ export type Database = {
           main_senge_focus?:
             | Database["public"]["Enums"]["senge_discipline"]
             | null
-          open_experiments?: string | null
-          open_flows_or_scenarios?: string | null
+          open_adjustment_plan?: string | null
+          open_ontology_and_graph?: string | null
+          open_real_workflow?: string | null
           owner_id?: string
+          prototype_stage?: string
           status?: string
           team_id?: string | null
           title?: string
