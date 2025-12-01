@@ -15,6 +15,7 @@ import GlitchCompass from "./pages/GlitchCompass";
 import GlitchAuth from "./pages/GlitchAuth";
 import GlitchEvents from "./pages/GlitchEvents";
 import GlitchInsights from "./pages/GlitchInsights";
+import GlitchLog from "./pages/GlitchLog";
 import Drift from "./pages/Drift";
 import PrdEditor from "./pages/PrdEditor";
 import "./App.css";
@@ -35,6 +36,7 @@ function App() {
               <Route path="/case-studies" element={<CaseStudies />} />
               <Route path="/about-us" element={<AboutUs />} />
               <Route path="/glitch-compass" element={<GlitchCompass />} />
+              <Route path="/glitch-compass/log" element={<GlitchLog />} />
               <Route path="/glitch-compass/events" element={<GlitchEvents />} />
               <Route path="/glitch-compass/insights" element={<GlitchInsights />} />
               <Route path="/glitch-compass/drift" element={<Drift />} />
