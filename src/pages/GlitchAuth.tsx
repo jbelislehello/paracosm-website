@@ -17,7 +17,7 @@ const GlitchAuth = () => {
 
   const handleDemoLogin = async () => {
     const demoEmail = 'demouser@glitchcompass.com';
-    const demoPassword = 'Passwd123';
+    const demoPassword = 'P4r4c0$m2025';
     
     setLoading(true);
     try {
