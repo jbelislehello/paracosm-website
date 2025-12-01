@@ -10,7 +10,8 @@ import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
 import RetreatAnnouncementPopup from "@/components/RetreatAnnouncementPopup";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { Button } from "@/components/ui/button";
-import { Zap, Heart, ChevronDown, Users } from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Zap, Heart, ChevronDown, Users, Menu, Grid3x3, Sparkles } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -18,6 +19,7 @@ const LandingPage = () => {
   const [isCalmMagicAssistantOpen, setIsCalmMagicAssistantOpen] = useState(false);
   const [isRetreatAnnouncementOpen, setIsRetreatAnnouncementOpen] = useState(false);
   const [hasUserEngaged, setHasUserEngaged] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { t } = useLanguage();
 
   useEffect(() => {
@@ -120,8 +122,31 @@ const LandingPage = () => {
             <a href="#contact" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Contact</a>
           </nav>
           
+          {/* Mobile Menu */}
+          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+            <SheetTrigger asChild className="lg:hidden">
+              <Button variant="ghost" size="sm">
+                <Menu className="h-5 w-5" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+              <nav className="flex flex-col gap-4 mt-8">
+                <a href="#leadership-roles" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Services</a>
+                <Link to="/agentic-ux" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">AI Leadership</Link>
+                <Link to="/calm-magic-assistant" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Team Coaching</Link>
+                <Link to="/drift" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Drift</Link>
+                <Link to="/glitch-compass" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors flex items-center gap-2">
+                  <Grid3x3 className="h-4 w-4" />
+                  Glitch Compass
+                </Link>
+                <a href="#events" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Events</a>
+                <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Contact</a>
+              </nav>
+            </SheetContent>
+          </Sheet>
+
           {/* Mobile & Desktop Actions */}
-          <div className="flex items-center gap-1 sm:gap-2 md:gap-4">
+          <div className="hidden lg:flex items-center gap-1 sm:gap-2 md:gap-4">
             <LanguageSwitcher />
             <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
               <Button variant="outline" size="sm" className="hidden md:inline-flex text-xs">
@@ -208,6 +233,76 @@ const LandingPage = () => {
         </div>
       </section>
       
+      {/* Glitch Compass Feature Section */}
+      <section className="py-16 px-4 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900/30 rounded-full">
+                <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                <span className="text-sm font-medium text-purple-600 dark:text-purple-400">New Tool</span>
+              </div>
+              <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+                GL!TCH Compass
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                Turn "something feels off" moments into gentle next steps. Map tensions, frictions, and conflicts onto a 260-tile matrix and receive wu-wei micro-action suggestions.
+              </p>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <Grid3x3 className="w-5 h-5 text-purple-600 mt-1" />
+                  <div>
+                    <h3 className="font-semibold">8×8 Tile Matrix Framework</h3>
+                    <p className="text-sm text-muted-foreground">AGENDAS → LENS → MAPS progression with MAGIC integration</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Users className="w-5 h-5 text-purple-600 mt-1" />
+                  <div>
+                    <h3 className="font-semibold">Solo & Team Modes</h3>
+                    <p className="text-sm text-muted-foreground">Track patterns individually or collaborate with your team</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Sparkles className="w-5 h-5 text-purple-600 mt-1" />
+                  <div>
+                    <h3 className="font-semibold">5-Layer PRD Engine</h3>
+                    <p className="text-sm text-muted-foreground">Transform glitches into actionable product requirements</p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link to="/glitch-compass">
+                  <Button className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-indigo-600 hover:to-purple-600 text-white">
+                    <Grid3x3 className="mr-2 h-4 w-4" />
+                    Explore Glitch Compass
+                  </Button>
+                </Link>
+                <Link to="/auth">
+                  <Button variant="outline">
+                    Get Started Free
+                  </Button>
+                </Link>
+              </div>
+            </div>
+            <div className="relative">
+              <div className="bg-gradient-to-br from-purple-500/10 to-indigo-500/10 rounded-2xl p-8 border-2 border-purple-200 dark:border-purple-800">
+                <div className="grid grid-cols-8 gap-1">
+                  {Array.from({ length: 64 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="aspect-square bg-gradient-to-br from-purple-400 to-indigo-400 rounded opacity-60 hover:opacity-100 transition-opacity"
+                      style={{
+                        animationDelay: `${i * 0.02}s`,
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       
       {/* Paracosm Events Section */}
       <section id="events">
