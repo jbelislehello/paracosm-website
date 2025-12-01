@@ -15,7 +15,7 @@ Contains the **MAG** foundation of MAGIC:
 Contains the upper consciousness layers:
 - **Row 4: L** - Landscape (contains Intuitions)
 - **Row 5: E** - Energy (contains Compasses)
-- **Row 6: S** - Synergies
+- **Row 6: S** - Synergies (moving above fully deployed MAGIC)
 
 ### Stage 3: MAPS (Rows 7-8)
 The methodology and architecture layer:
@@ -23,12 +23,14 @@ The methodology and architecture layer:
 - **Row 8: A** - Architecture (from MAPS)
 
 #### MAGIC Integration
-The 5 letters of MAGIC are embedded within rows 1-6:
+The 5 letters of MAGIC are fully deployed across rows 1-5:
 - M (Mindsets) → Row 1
 - A (Agilities) → Row 2
 - G (Goals) → Row 3
 - I (Intuitions) → contained within L (Landscape) at Row 4
 - C (Compasses) → contained within E (Energy) at Row 5
+
+**Row 6 (Synergies)** is where we move above the fully deployed MAGIC, preparing for the MAPS tools layer.
 
 ## Horizontal Structure (8 Columns)
 
@@ -65,6 +67,8 @@ Each 8×8 board represents a phase of the Calm Magic Framework:
 ## Stage Philosophy
 - **AGENDAS (Rows 1-3)**: Foundation setting (mindsets, agilities, goals)
 - **LENS (Rows 4-6)**: Consciousness expansion (landscape, energy, synergies)
+  - Rows 4-5 complete MAGIC deployment (I within L, C within E)
+  - Row 6 moves above fully deployed MAGIC into Synergies
 - **MAPS (Rows 7-8 + Cols 7-8)**: Boundary tools for execution (methodology, architecture, protocols, systems)
 - **CHORDS (Cols 1-6)**: Horizontal dimensions of experience (chances, heart, observer, reversal, design, seeds)
 
@@ -73,5 +77,6 @@ Each 8×8 board represents a phase of the Calm Magic Framework:
 - Vertical MAPS (M, A) provides methodological and architectural structure
 - Horizontal MAPS (P, S) provides protocols and systems implementation
 - The intersection of Row 7-8 with Column 7-8 creates four **corner tiles** where all MAPS dimensions converge
-- MAGIC lives within AGENDAS + LENS (rows 1-6)
-- Sovereignty is reached at Row 6 (Synergies), then MAPS provides the execution framework above and beyond
+- **MAGIC is fully deployed across rows 1-5** (M/A/G/L with I/E with C)
+- **Row 6 (Synergies)** marks the transition above MAGIC into integrated action
+- **Rows 7-8 (Methodology, Architecture)** provide the MAPS execution framework for working with the fully integrated system
