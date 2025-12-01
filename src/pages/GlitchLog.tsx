@@ -89,21 +89,47 @@ const GlitchLog = () => {
         </h3>
         
         <div className="flex gap-4 max-w-2xl">
-          {/* Y-axis: Velocity */}
-          <div className="flex flex-col justify-between py-2 text-xs text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <ArrowUp className="h-3 w-3" />
-              <span className="writing-mode-vertical transform rotate-180">Velocity</span>
+          {/* Y-axis: Velocity with Acronym Letters */}
+          <div className="flex flex-col justify-between py-2 text-xs">
+            <div className="flex items-center gap-2 mb-2">
+              <ArrowUp className="h-3 w-3 text-muted-foreground" />
+              <span className="font-semibold text-muted-foreground">Velocity</span>
             </div>
-            <div className="text-center text-[10px] space-y-1">
-              <div>8</div>
-              <div>7</div>
-              <div>6</div>
-              <div>5</div>
-              <div>4</div>
-              <div>3</div>
-              <div>2</div>
-              <div>1</div>
+            
+            {/* Acronym mapping for rows (reading from top to bottom) */}
+            <div className="flex-1 flex flex-col justify-between text-[10px] space-y-0.5">
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-primary font-bold">S</span>
+                <span className="text-muted-foreground">8</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-purple-600 font-bold">L</span>
+                <span className="text-muted-foreground">7</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-purple-600 font-bold">E</span>
+                <span className="text-muted-foreground">6</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-purple-600 font-bold">N</span>
+                <span className="text-muted-foreground">5</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-purple-600 font-bold">S</span>
+                <span className="text-muted-foreground">4</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-rose-600 font-bold">A</span>
+                <span className="text-muted-foreground">3</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-rose-600 font-bold">G</span>
+                <span className="text-muted-foreground">2</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-rose-600 font-bold">A</span>
+                <span className="text-muted-foreground">1</span>
+              </div>
             </div>
           </div>
 
@@ -150,15 +176,34 @@ const GlitchLog = () => {
           </div>
         </div>
 
-        <div className="text-xs text-muted-foreground space-y-1 max-w-2xl">
-          <p className="flex items-center gap-2">
-            <ArrowUp className="h-3 w-3" />
-            <span><strong>Higher velocity:</strong> More immediate, novel goals & faster systems</span>
-          </p>
-          <p className="flex items-center gap-2">
-            <ArrowRight className="h-3 w-3" />
-            <span><strong>Higher longevity:</strong> More memory, sustained patterns & long-term tolerance</span>
-          </p>
+        <div className="text-xs text-muted-foreground space-y-2 max-w-2xl">
+          <div className="space-y-1">
+            <p className="font-semibold">Velocity Axis Acronyms:</p>
+            <div className="pl-3 space-y-0.5">
+              <p className="flex items-center gap-2">
+                <span className="font-mono font-bold text-rose-600">A-G-A</span>
+                <span>(Rows 1-3): <strong>AGENDA</strong> - Initial framing & setup</span>
+              </p>
+              <p className="flex items-center gap-2">
+                <span className="font-mono font-bold text-purple-600">L-E-N-S</span>
+                <span>(Rows 4-7): <strong>LENS</strong> - Perspective & insight building</span>
+              </p>
+              <p className="flex items-center gap-2">
+                <span className="font-mono font-bold text-primary">S</span>
+                <span>(Row 8): <strong>SYSTEM</strong> - Wholeness & integration</span>
+              </p>
+            </div>
+          </div>
+          <div className="pt-2 border-t space-y-1">
+            <p className="flex items-center gap-2">
+              <ArrowUp className="h-3 w-3" />
+              <span><strong>Higher velocity:</strong> More immediate, novel goals & faster systems</span>
+            </p>
+            <p className="flex items-center gap-2">
+              <ArrowRight className="h-3 w-3" />
+              <span><strong>Higher longevity:</strong> More memory, sustained patterns & long-term tolerance</span>
+            </p>
+          </div>
         </div>
       </div>
     );
@@ -187,28 +232,46 @@ const GlitchLog = () => {
         </div>
 
         {/* Calm Magic Framework Overview */}
-        <Card className="p-6 bg-gradient-to-r from-primary/5 to-purple-500/5">
-          <h2 className="text-xl font-semibold mb-3">5-Phase Calm Magic Framework</h2>
-          <div className="grid grid-cols-5 gap-2 text-center text-sm">
-            <div className="p-3 rounded bg-rose-500/20 border border-rose-500">
-              <div className="font-semibold">LOVE</div>
-              <div className="text-xs text-muted-foreground mt-1">Desire • Signals</div>
+        <Card className="p-6 bg-gradient-to-r from-primary/5 to-purple-500/5 space-y-4">
+          <div>
+            <h2 className="text-xl font-semibold mb-3">5-Phase Calm Magic Framework</h2>
+            <div className="grid grid-cols-5 gap-2 text-center text-sm">
+              <div className="p-3 rounded bg-rose-500/20 border border-rose-500">
+                <div className="font-semibold">LOVE</div>
+                <div className="text-xs text-muted-foreground mt-1">Desire • Signals</div>
+              </div>
+              <div className="p-3 rounded bg-purple-500/20 border border-purple-500">
+                <div className="font-semibold">MAGIC</div>
+                <div className="text-xs text-muted-foreground mt-1">Intention • Story</div>
+              </div>
+              <div className="p-3 rounded bg-blue-500/20 border border-blue-500">
+                <div className="font-semibold">CALM</div>
+                <div className="text-xs text-muted-foreground mt-1">Rules • Structure</div>
+              </div>
+              <div className="p-3 rounded bg-green-500/20 border border-green-500">
+                <div className="font-semibold">OPEN</div>
+                <div className="text-xs text-muted-foreground mt-1">Operations • Flow</div>
+              </div>
+              <div className="p-3 rounded bg-amber-500/20 border border-amber-500">
+                <div className="font-semibold">FREE</div>
+                <div className="text-xs text-muted-foreground mt-1">Learning • Wisdom</div>
+              </div>
             </div>
-            <div className="p-3 rounded bg-purple-500/20 border border-purple-500">
-              <div className="font-semibold">MAGIC</div>
-              <div className="text-xs text-muted-foreground mt-1">Intention • Story</div>
-            </div>
-            <div className="p-3 rounded bg-blue-500/20 border border-blue-500">
-              <div className="font-semibold">CALM</div>
-              <div className="text-xs text-muted-foreground mt-1">Rules • Structure</div>
-            </div>
-            <div className="p-3 rounded bg-green-500/20 border border-green-500">
-              <div className="font-semibold">OPEN</div>
-              <div className="text-xs text-muted-foreground mt-1">Operations • Flow</div>
-            </div>
-            <div className="p-3 rounded bg-amber-500/20 border border-amber-500">
-              <div className="font-semibold">FREE</div>
-              <div className="text-xs text-muted-foreground mt-1">Learning • Wisdom</div>
+          </div>
+
+          <div className="text-xs space-y-2 pt-2 border-t">
+            <div>
+              <p className="font-semibold mb-1">Board Acronyms:</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <p className="font-mono font-bold text-blue-600">CALM</p>
+                  <p className="text-muted-foreground">Coherence, Alignment, Learning, Mastery</p>
+                </div>
+                <div>
+                  <p className="font-mono font-bold text-purple-600">MAGIC</p>
+                  <p className="text-muted-foreground">Meaning, Adaptation, Growth, Innovation, Creativity</p>
+                </div>
+              </div>
             </div>
           </div>
         </Card>
