@@ -138,6 +138,7 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
             <div className="space-y-1 text-muted-foreground">
               <p><strong>AGENDAS (1-3):</strong> M/A/G → Mindsets, Agilities, Goals</p>
               <p><strong>LENS (4-6):</strong> L/E/S → Landscape, Energy, Synergies</p>
+              <p className="text-xs italic pl-4">↳ MAGIC fully deployed by row 5, then Synergies (row 6) moves above</p>
               <p><strong>MAPS (7-8):</strong> M/A → Methodology, Architecture</p>
             </div>
           </div>
@@ -150,10 +151,12 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
           </div>
         </div>
         <div className="pt-4 border-t space-y-2">
-          <h4 className="font-medium text-primary">MAGIC Integration</h4>
-          <p className="text-sm text-muted-foreground">
-            M (row 1), A (row 2), G (row 3), I (within L at row 4), C (within E at row 5)
-          </p>
+          <h4 className="font-medium text-primary">MAGIC Integration & Progression</h4>
+          <div className="text-sm text-muted-foreground space-y-1">
+            <p><strong>MAGIC deployed (rows 1-5):</strong> M (row 1), A (row 2), G (row 3), I (within L at row 4), C (within E at row 5)</p>
+            <p><strong>Above MAGIC (row 6):</strong> Synergies - integration and sovereignty</p>
+            <p><strong>MAPS tools (rows 7-8):</strong> Methodology, Architecture for execution</p>
+          </div>
         </div>
       </Card>
     </div>
