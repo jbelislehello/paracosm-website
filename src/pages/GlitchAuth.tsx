@@ -15,6 +15,52 @@ const GlitchAuth = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const handleDemoLogin = async () => {
+    const demoEmail = 'demouser@glitchcompass.com';
+    const demoPassword = 'Passwd123';
+    
+    setLoading(true);
+    try {
+      // Try to sign in first
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: demoEmail,
+        password: demoPassword,
+      });
+
+      if (signInError) {
+        // If sign in fails, try to sign up
+        const redirectUrl = `${window.location.origin}/glitch-compass`;
+        const { error: signUpError, data } = await supabase.auth.signUp({
+          email: demoEmail,
+          password: demoPassword,
+          options: {
+            emailRedirectTo: redirectUrl
+          }
+        });
+
+        if (signUpError) {
+          toast.error('Demo account setup failed: ' + signUpError.message);
+          return;
+        }
+
+        if (data.session) {
+          toast.success('Demo account created and logged in!');
+          navigate('/glitch-compass');
+        } else {
+          toast.success('Demo account created! Please check email to confirm.');
+        }
+      } else {
+        toast.success('Logged in as demo user!');
+        navigate('/glitch-compass');
+      }
+    } catch (error: any) {
+      toast.error('Demo login failed');
+      console.error('Demo login error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     checkUser();
   }, []);
@@ -123,6 +169,24 @@ const GlitchAuth = () => {
             {loading ? 'Loading...' : isLogin ? 'Sign In' : 'Sign Up'}
           </Button>
         </form>
+
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-card px-2 text-muted-foreground">Or</span>
+          </div>
+        </div>
+
+        <Button 
+          variant="outline" 
+          className="w-full" 
+          onClick={handleDemoLogin}
+          disabled={loading}
+        >
+          Try Demo Account
+        </Button>
 
         <div className="text-center">
           <button
