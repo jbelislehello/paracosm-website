@@ -4,14 +4,16 @@ import { useNavigate } from 'react-router-dom';
 import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Sparkles, Calendar, TrendingUp } from 'lucide-react';
+import { Sparkles, Calendar, TrendingUp, Grid3x3 } from 'lucide-react';
 import { toast } from 'sonner';
+import TileMatrix from '@/components/TileMatrix';
 
 const GlitchCompass = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [todayTile, setTodayTile] = useState<Tile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showMatrix, setShowMatrix] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -186,6 +188,38 @@ const GlitchCompass = () => {
             </div>
           </Card>
         </div>
+
+        {/* Matrix Toggle */}
+        <Card className="p-6 space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <h3 className="font-semibold text-lg flex items-center gap-2">
+                <Grid3x3 className="h-5 w-5" />
+                Tile Matrix Structure
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                Explore the 8×8 matrix with MAPS boundary frame
+              </p>
+            </div>
+            <Button 
+              variant={showMatrix ? "default" : "outline"}
+              onClick={() => setShowMatrix(!showMatrix)}
+            >
+              {showMatrix ? 'Hide Matrix' : 'Show Matrix'}
+            </Button>
+          </div>
+
+          {showMatrix && (
+            <div className="pt-6 border-t">
+              <TileMatrix 
+                board={todayTile?.board as any || 'LOVE'}
+                onTileClick={(row, col) => {
+                  toast.info(`Clicked tile at Row ${row + 1}, Column ${col + 1}`);
+                }}
+              />
+            </div>
+          )}
+        </Card>
 
         {/* Welcome Message */}
         <Card className="p-6 bg-muted/50">
