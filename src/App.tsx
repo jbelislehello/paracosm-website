@@ -18,6 +18,7 @@ import GlitchInsights from "./pages/GlitchInsights";
 import GlitchLog from "./pages/GlitchLog";
 import Drift from "./pages/Drift";
 import PrdEditor from "./pages/PrdEditor";
+import CalmMagicVisualization from "./pages/CalmMagicVisualization";
 import "./App.css";
 
 const queryClient = new QueryClient();
@@ -42,6 +43,7 @@ function App() {
               <Route path="/glitch-compass/drift" element={<Drift />} />
               <Route path="/glitch-compass/prds/:id" element={<PrdEditor />} />
               <Route path="/auth" element={<GlitchAuth />} />
+              <Route path="/calm-magic-visualization" element={<CalmMagicVisualization />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Toaster />
