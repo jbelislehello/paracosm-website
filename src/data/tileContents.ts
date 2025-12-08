@@ -518,66 +518,66 @@ export const TILE_CONTENTS: TileContent[] = [
   // ROW 8 – PROTOCOLS & ARCHITECTURES (OPEN/FREE)
   {
     id: 57, row: 8, col: 1, rowKey: 'protocols', colKey: 'C',
-    name: 'Prototype chances',
-    glitchQuestion: 'What is the smallest thing I could build that still feels exciting?',
-    tuneQuestion: 'What is the smallest prototype that still feels risky/exciting?',
-    deliverable: 'One "version 0.1" description (scope, timebox, user).',
+    name: 'Chances as protocol',
+    glitchQuestion: 'How do we make experiments repeatable instead of one-off?',
+    tuneQuestion: 'How do we encode "safe chances" into a repeatable way of working?',
+    deliverable: 'Write a "try-it" protocol: a short step-by-step that says when and how experiments are allowed (scope, timebox, who\'s informed, when to review).',
     phase: 'OPEN'
   },
   {
     id: 58, row: 8, col: 2, rowKey: 'protocols', colKey: 'H',
-    name: 'Felt prototype',
-    glitchQuestion: 'How should this prototype feel from the inside?',
-    tuneQuestion: 'How should this prototype feel from the inside?',
-    deliverable: 'Mood / tone board or a paragraph about the emotional texture.',
+    name: 'Care in the protocol',
+    glitchQuestion: 'Where do our protocols forget the humans involved?',
+    tuneQuestion: 'How do our protocols and architectures show care for humans?',
+    deliverable: 'Draft a care/consent protocol: check-in script, escalation when someone is overwhelmed, and aftercare steps. Attach it to the flow or system where it applies.',
     phase: 'OPEN'
   },
   {
     id: 59, row: 8, col: 3, rowKey: 'protocols', colKey: 'O',
-    name: 'Model in code',
-    glitchQuestion: 'What core concepts must the architecture respect?',
-    tuneQuestion: 'What ontology must the architecture respect?',
-    deliverable: 'A first pass at core entities / concepts (for prompts, DB, or flows).',
+    name: 'Ontological protocol',
+    glitchQuestion: 'What are we failing to name that the system needs to see?',
+    tuneQuestion: 'What must be named and structured so the system "sees" reality the way we do?',
+    deliverable: 'Sketch a concept model: core entities, their relationships, and a protocol for how new data/objects are created, tagged, and updated (perfect for DB schema + prompt design).',
     phase: 'OPEN'
   },
   {
     id: 60, row: 8, col: 4, rowKey: 'protocols', colKey: 'R',
-    name: 'Kill-switch & pivots',
-    glitchQuestion: 'Under what conditions should we stop or pivot?',
-    tuneQuestion: 'Under what conditions do we pivot or sunset this artifact?',
-    deliverable: 'List of pivot/sunset criteria.',
+    name: 'Reversals protocol',
+    glitchQuestion: 'How would we safely change direction if we needed to?',
+    tuneQuestion: 'How do we safely change direction or shut something down?',
+    deliverable: 'Define a pivot/sunset protocol: when you review, what signals trigger change, who decides, and where in the architecture the switch sits (feature flags, config, versioning, etc.).',
     phase: 'OPEN'
   },
   {
     id: 61, row: 8, col: 5, rowKey: 'protocols', colKey: 'D',
-    name: 'Interaction blueprint',
-    glitchQuestion: 'What is the core loop the user experiences?',
-    tuneQuestion: 'What is the core interaction loop?',
-    deliverable: 'A simple loop diagram (user → system → feedback).',
+    name: 'Interaction patterns',
+    glitchQuestion: 'What is the core loop this architecture must support?',
+    tuneQuestion: 'What is the canonical interaction flow this architecture must support?',
+    deliverable: 'Create an interaction blueprint: one diagram that shows user → system → feedback loops, and annotate where each step lives in the architecture (service, agent, UI, database, etc.).',
     phase: 'OPEN'
   },
   {
     id: 62, row: 8, col: 6, rowKey: 'protocols', colKey: 'S',
-    name: 'Living prototype',
-    glitchQuestion: "What's the smallest artifact that proves this seed is real?",
-    tuneQuestion: 'What is the minimal living artifact that proves this seed is real?',
-    deliverable: 'A V0.1 seed spec: audience, format (conversation, canvas, bot, workshop, feature…), success signal for this first grow cycle.',
+    name: 'Seed architectures',
+    glitchQuestion: 'What is the simplest proof that this can work?',
+    tuneQuestion: 'What is the simplest protocol + architecture pair that proves this can work?',
+    deliverable: 'A V0.1 pilot kit: one simple protocol people can follow (checklist / script), one minimal architecture sketch (notion table, airtable, supabase schema, gumloop flow, etc.).',
     phase: 'OPEN'
   },
   {
     id: 63, row: 8, col: 7, rowKey: 'protocols', colKey: 'M',
-    name: 'Operational method',
-    glitchQuestion: 'How do we actually run and maintain this?',
-    tuneQuestion: 'What is the runbook for using / maintaining this?',
-    deliverable: 'Outline of a basic runbook: inputs, steps, outputs.',
+    name: 'Standard operating ways',
+    glitchQuestion: 'What should become our default way of building things like this?',
+    tuneQuestion: 'What becomes our default way of designing and deploying things like this?',
+    deliverable: 'Outline a method protocol (SOP) and a reference architecture: "Whenever we build X, we follow these steps and this general pattern of services/agents/stacks."',
     phase: 'OPEN'
   },
   {
     id: 64, row: 8, col: 8, rowKey: 'protocols', colKey: 'Σ',
-    name: 'Living system',
-    glitchQuestion: 'How does this become a self-improving system over time?',
-    tuneQuestion: 'How does this become a self-improving system over time?',
-    deliverable: 'Notes on metrics, feedback loops, and learning mechanisms (agents, logs, rituals).',
+    name: 'Living governed stacks',
+    glitchQuestion: 'How does this keep running, learning, and staying ethical without constant intervention?',
+    tuneQuestion: 'How does the whole thing keep running, learning, and staying within ethical bounds?',
+    deliverable: 'Design a governed system diagram: monitoring & logging, feedback channels, guardrails (policies in code + human review), and how updates propagate through the architecture.',
     phase: 'OPEN'
   }
 ];
