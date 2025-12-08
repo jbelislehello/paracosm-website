@@ -3,24 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Zap, Waves, Music, Play, Grid3X3 } from 'lucide-react';
+import { ArrowLeft, Zap, Play, Grid3X3 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useExpansionJournal } from '@/hooks/useExpansionJournal';
 import { CycleTracker } from '@/components/journal/CycleTracker';
 import { TzolkinIntegrator } from '@/components/journal/TzolkinIntegrator';
-import { PolenCollector } from '@/components/journal/PolenCollector';
-import { DriftWorkspace } from '@/components/journal/DriftWorkspace';
-import { TuneWorkshop } from '@/components/journal/TuneWorkshop';
+import { TileWorkflow, TileWorkflowData } from '@/components/journal/TileWorkflow';
 import { WindowOfToleranceOverlay } from '@/components/journal/WindowOfToleranceOverlay';
-import { 
-  JournalPhase, 
-  getChordsPosition, 
-  getAgendasLevel, 
-  generateContextualQuestion,
-  CHORDS_LABELS,
-  AGENDAS_LABELS 
-} from '@/types/journal-expansion';
+import { JournalPhase } from '@/types/journal-expansion';
+import { getTileContent, COLUMN_LABELS, ROW_LABELS, getColKey, getRowKey } from '@/data/tileContents';
 
 const CalmMagicJournal = () => {
   const navigate = useNavigate();
@@ -29,12 +20,14 @@ const CalmMagicJournal = () => {
     loading,
     startNewCycle,
     visitTile,
-    updatePhase
+    updatePhase,
+    savePolenEntry
   } = useExpansionJournal();
 
   const [user, setUser] = useState<any>(null);
   const [selectedTile, setSelectedTile] = useState<{ row: number; col: number; id: number } | null>(null);
-  const [activeTab, setActiveTab] = useState<JournalPhase>('glitch');
+  
+  const selectedTileContent = selectedTile ? getTileContent(selectedTile.id) : null;
 
   useEffect(() => {
     checkAuth();
@@ -59,9 +52,13 @@ const CalmMagicJournal = () => {
     visitTile(tileId);
   };
 
-  const handlePhaseChange = (phase: JournalPhase) => {
-    setActiveTab(phase);
-    updatePhase(phase);
+  const handleTileWorkflowComplete = async (data: TileWorkflowData) => {
+    // Save the glitch response as a polen entry
+    await savePolenEntry({
+      content: `GL!TCH: ${data.glitchResponse}\n\nDRIFT OPTIONS:\n${data.driftOptions.map((o, i) => `${i + 1}. ${o}`).join('\n')}\n\nSELECTED: Option ${data.selectedDrift + 1}\n\nTUNE DELIVERABLE:\n${data.tuneDeliverable}`,
+      fragment_type: 'text',
+      tile_id: data.tileId
+    });
   };
 
   const renderTileMatrix = () => {
@@ -156,7 +153,7 @@ const CalmMagicJournal = () => {
                 tilesVisited={currentCycle.tiles_visited?.length || 0}
                 phase={currentCycle.phase as JournalPhase}
                 integratorsUnlocked={currentCycle.integrator_tiles_unlocked}
-                onPhaseClick={handlePhaseChange}
+                onPhaseClick={(phase) => updatePhase(phase)}
               />
 
               {/* Tile Matrix */}
@@ -185,66 +182,24 @@ const CalmMagicJournal = () => {
               )}
             </div>
 
-            {/* Center Column: Contextual Question & Phase Workspace */}
+            {/* Center Column: Tile Workflow */}
             <div className="lg:col-span-2 space-y-4">
-              {/* Contextual Question */}
-              {selectedTile && (
-                <Card className="bg-gradient-to-r from-primary/10 to-transparent border-primary/30">
-                  <CardContent className="py-4">
-                    <div className="flex items-start gap-3">
-                      <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center text-lg font-bold">
-                        {selectedTile.id}
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex gap-2 mb-2">
-                          <Badge variant="outline">
-                            {CHORDS_LABELS[getChordsPosition(selectedTile.col)]}
-                          </Badge>
-                          <Badge variant="outline">
-                            {AGENDAS_LABELS[getAgendasLevel(selectedTile.row)]}
-                          </Badge>
-                        </div>
-                        <p className="text-sm italic text-foreground/90">
-                          "{generateContextualQuestion(
-                            getChordsPosition(selectedTile.col),
-                            getAgendasLevel(selectedTile.row)
-                          )}"
-                        </p>
-                      </div>
-                    </div>
+              {selectedTileContent ? (
+                <TileWorkflow 
+                  tile={selectedTileContent} 
+                  onComplete={handleTileWorkflowComplete}
+                />
+              ) : (
+                <Card className="bg-muted/30">
+                  <CardContent className="py-12 text-center">
+                    <Grid3X3 className="h-12 w-12 mx-auto text-muted-foreground/50 mb-4" />
+                    <h3 className="text-lg font-medium mb-2">Select a Tile</h3>
+                    <p className="text-sm text-muted-foreground">
+                      Click on any tile in the 64-tile board to begin the GL!TCH → DRIFT → TUNE workflow.
+                    </p>
                   </CardContent>
                 </Card>
               )}
-
-              {/* Phase Workspaces */}
-              <Tabs value={activeTab} onValueChange={(v) => handlePhaseChange(v as JournalPhase)}>
-                <TabsList className="w-full grid grid-cols-3">
-                  <TabsTrigger value="glitch" className="flex items-center gap-2">
-                    <Zap className="h-4 w-4" />
-                    GL!TCH
-                  </TabsTrigger>
-                  <TabsTrigger value="drift" className="flex items-center gap-2">
-                    <Waves className="h-4 w-4" />
-                    DRIFT
-                  </TabsTrigger>
-                  <TabsTrigger value="tune" className="flex items-center gap-2">
-                    <Music className="h-4 w-4" />
-                    TUNE
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="glitch" className="mt-4">
-                  <PolenCollector selectedTileId={selectedTile?.id} />
-                </TabsContent>
-
-                <TabsContent value="drift" className="mt-4">
-                  <DriftWorkspace />
-                </TabsContent>
-
-                <TabsContent value="tune" className="mt-4">
-                  <TuneWorkshop />
-                </TabsContent>
-              </Tabs>
             </div>
           </div>
         ) : (
