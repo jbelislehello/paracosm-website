@@ -96,10 +96,10 @@ export const TILE_CONTENTS: TileContent[] = [
   },
   {
     id: 6, row: 1, col: 6, rowKey: 'mindsets', colKey: 'S',
-    name: 'Strategic stance',
-    glitchQuestion: 'What game am I playing without realizing it?',
-    tuneQuestion: 'What game am I actually playing here?',
-    deliverable: '1–2 lines that name the real game (e.g. "learn X, not maximize Y").',
+    name: 'Gardener mindset',
+    glitchQuestion: 'What am I trying to force instead of nurture?',
+    tuneQuestion: 'What tiny thing am I willing to plant without knowing the outcome?',
+    deliverable: 'One seed sentence: "For the next 30 days, I treat X as a seed, not a finished product."',
     phase: 'LOVE'
   },
   {
@@ -162,10 +162,10 @@ export const TILE_CONTENTS: TileContent[] = [
   },
   {
     id: 14, row: 2, col: 6, rowKey: 'agilities', colKey: 'S',
-    name: 'Strategic agility',
-    glitchQuestion: 'What one action could unlock multiple possibilities?',
-    tuneQuestion: 'What single move changes many future options?',
-    deliverable: '1 leverage move (email, meeting, decision) you commit to.',
+    name: 'Seeding agility',
+    glitchQuestion: 'What quick seed could I sow in the next hour?',
+    tuneQuestion: "What's the smallest experiment I can sow in under 60 minutes?",
+    deliverable: 'A concrete micro-seed scheduled in time (e.g. 1 email, 1 landing page, 1 prototype vignette, 1 new conversation).',
     phase: 'MAGIC'
   },
   {
@@ -228,10 +228,10 @@ export const TILE_CONTENTS: TileContent[] = [
   },
   {
     id: 22, row: 3, col: 6, rowKey: 'goals', colKey: 'S',
-    name: 'Strategic aim',
-    glitchQuestion: 'What signal will tell me the strategy is working?',
-    tuneQuestion: 'What measurable signal tells us the strategy works?',
-    deliverable: '1–3 key indicators you will track.',
+    name: 'Seed-harvest goal',
+    glitchQuestion: 'What could actually grow from this if I let it?',
+    tuneQuestion: "If this seed actually grows, what will exist that doesn't exist today?",
+    deliverable: 'A seed-goal framed as harvest: "If this seed succeeds, in 3 months we have ___."',
     phase: 'MAGIC'
   },
   {
@@ -294,10 +294,10 @@ export const TILE_CONTENTS: TileContent[] = [
   },
   {
     id: 30, row: 4, col: 6, rowKey: 'landscape', colKey: 'S',
-    name: 'Strategic terrain',
-    glitchQuestion: 'Where could a small push create big change?',
-    tuneQuestion: 'Where are the chokepoints and leverage points?',
-    deliverable: 'Mark 2–3 leverage spots on your map.',
+    name: 'Fertile ground',
+    glitchQuestion: 'Where am I planting in rocky soil when fertile ground is nearby?',
+    tuneQuestion: 'In this environment, where do seeds have the best chance to take root?',
+    deliverable: "A map of 3–5 fertile spots (people, contexts, channels) where you'll drop first versions.",
     phase: 'CALM'
   },
   {
@@ -360,10 +360,10 @@ export const TILE_CONTENTS: TileContent[] = [
   },
   {
     id: 38, row: 5, col: 6, rowKey: 'energy', colKey: 'S',
-    name: 'Strategic pacing',
-    glitchQuestion: 'Is this pace sustainable for the long haul?',
-    tuneQuestion: 'What cadence makes this sustainable?',
-    deliverable: 'Pick a rhythm (weekly, bi-weekly rituals, review loops).',
+    name: 'Seedable energy',
+    glitchQuestion: 'Am I trying to grow too many seeds at once?',
+    tuneQuestion: 'How many seeds can we realistically care for right now?',
+    deliverable: 'A cap: "We run at most N seeds in parallel," plus a short note on which ones get sunlight first.',
     phase: 'CALM'
   },
   {
@@ -426,10 +426,10 @@ export const TILE_CONTENTS: TileContent[] = [
   },
   {
     id: 46, row: 6, col: 6, rowKey: 'norms', colKey: 'S',
-    name: 'Governance pattern',
-    glitchQuestion: 'Who decides what, and is that clear to everyone?',
-    tuneQuestion: 'Who decides what when, and how transparent is it?',
-    deliverable: 'A simple decision / escalation pattern.',
+    name: 'Ethical seeding',
+    glitchQuestion: "Am I planting seeds that respect people's time and boundaries?",
+    tuneQuestion: "What makes a seed respectful of people's time, data, and emotions?",
+    deliverable: '3 seed norms: opt-out is easy, expectations are clear, no dark patterns, etc.',
     phase: 'CALM'
   },
   {
@@ -492,10 +492,10 @@ export const TILE_CONTENTS: TileContent[] = [
   },
   {
     id: 54, row: 7, col: 6, rowKey: 'synergies', colKey: 'S',
-    name: 'Network strategy',
-    glitchQuestion: 'What roles are missing in our network?',
-    tuneQuestion: 'What roles do we need in the network?',
-    deliverable: 'Simple map of roles/nodes and flows between them.',
+    name: 'Cross-pollination',
+    glitchQuestion: 'Is this seed growing in isolation when it could be part of a network?',
+    tuneQuestion: 'Which other seeds, people, or projects can this one naturally cross-pollinate with?',
+    deliverable: "A mini cross-pollination plan: who/what this seed will touch and how you'll invite collaboration.",
     phase: 'CALM'
   },
   {
@@ -558,10 +558,10 @@ export const TILE_CONTENTS: TileContent[] = [
   },
   {
     id: 62, row: 8, col: 6, rowKey: 'protocols', colKey: 'S',
-    name: 'System strategy',
-    glitchQuestion: 'How does this prototype fit in the larger ecosystem?',
-    tuneQuestion: 'How does this prototype nest in the larger ecosystem & roadmap?',
-    deliverable: '1–2 sentences placing it on the Gl!tch → Drift → Tune timeline.',
+    name: 'Living prototype',
+    glitchQuestion: "What's the smallest artifact that proves this seed is real?",
+    tuneQuestion: 'What is the minimal living artifact that proves this seed is real?',
+    deliverable: 'A V0.1 seed spec: audience, format (conversation, canvas, bot, workshop, feature…), success signal for this first grow cycle.',
     phase: 'OPEN'
   },
   {
