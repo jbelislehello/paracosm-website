@@ -119,69 +119,69 @@ export const TILE_CONTENTS: TileContent[] = [
     phase: 'LOVE'
   },
 
-  // ROW 2 – AGILITIES (MAGIC)
+  // ROW 2 – AGILITIES (MAGIC: how you move inside the field)
   {
     id: 9, row: 2, col: 1, rowKey: 'agilities', colKey: 'C',
-    name: 'Micro-bets',
+    name: 'Chance-taking agility',
     glitchQuestion: 'What small experiment am I avoiding?',
     tuneQuestion: 'What is the smallest safe chance I can take this week?',
-    deliverable: 'One concrete experiment scheduled in time.',
+    deliverable: '1 concrete experiment scheduled in time.',
     phase: 'MAGIC'
   },
   {
     id: 10, row: 2, col: 2, rowKey: 'agilities', colKey: 'H',
-    name: 'Heart in motion',
-    glitchQuestion: 'Who needs to feel my care through action, not just words?',
-    tuneQuestion: 'What action would clearly communicate care?',
-    deliverable: 'One gesture (message, check-in, thank-you) you actually send.',
+    name: 'Heart-led agility',
+    glitchQuestion: 'Who needs to feel my care through action right now?',
+    tuneQuestion: 'What move would clearly communicate care right now?',
+    deliverable: '1 caring gesture you actually make.',
     phase: 'MAGIC'
   },
   {
     id: 11, row: 2, col: 3, rowKey: 'agilities', colKey: 'O',
-    name: 'Embodied observation',
+    name: 'Observational agility',
     glitchQuestion: 'What am I assuming instead of actually observing?',
-    tuneQuestion: 'What can I do that gives me more signal about how things really are?',
-    deliverable: 'One deliberate observation action (interview, shadowing, listening ritual).',
+    tuneQuestion: 'What can I do that gives me better signal about reality?',
+    deliverable: '1 deliberate observation move (interview, shadowing, listening ritual).',
     phase: 'MAGIC'
   },
   {
     id: 12, row: 2, col: 4, rowKey: 'agilities', colKey: 'R',
-    name: 'Try the opposite',
+    name: 'Reversal agility',
     glitchQuestion: 'What habitual response am I stuck in?',
-    tuneQuestion: 'What\'s the opposite of my usual move here?',
-    deliverable: 'One inversion experiment (do less, do slower, ask instead of tell, etc.).',
+    tuneQuestion: "What's the opposite of my default move here?",
+    deliverable: '1 inversion experiment you try once.',
     phase: 'MAGIC'
   },
   {
     id: 13, row: 2, col: 5, rowKey: 'agilities', colKey: 'D',
-    name: 'Design sprints',
+    name: 'Design agility',
     glitchQuestion: 'What micro-experience could use a quick redesign?',
-    tuneQuestion: 'What small piece of the experience can I redesign now?',
-    deliverable: '1 quick sketch / wireframe / storyboard of a changed micro-flow.',
+    tuneQuestion: 'What tiny part of the experience can I quickly redesign?',
+    deliverable: '1 sketch / micro-flow you alter.',
     phase: 'MAGIC'
   },
   {
     id: 14, row: 2, col: 6, rowKey: 'agilities', colKey: 'S',
-    name: 'Strategic move',
+    name: 'Strategic agility',
     glitchQuestion: 'What one action could unlock multiple possibilities?',
-    tuneQuestion: 'What one move changes many future options?',
-    deliverable: 'One leverage action (email, meeting, decision) you commit to.',
+    tuneQuestion: 'What single move changes many future options?',
+    deliverable: '1 leverage move (email, meeting, decision) you commit to.',
     phase: 'MAGIC'
   },
   {
     id: 15, row: 2, col: 7, rowKey: 'agilities', colKey: 'M',
-    name: 'Practice loop',
-    glitchQuestion: 'What am I doing once that should become a habit?',
-    tuneQuestion: 'What tiny action could become a repeatable ritual?',
-    deliverable: 'Define a 5–10-minute ritual with when/where/how.',
+    name: 'Practice agility',
+    glitchQuestion: 'What small repeated action would change everything?',
+    tuneQuestion: 'What small move, repeated, would change the game?',
+    deliverable: 'Define a 5–10 min repeated micro-practice.',
     phase: 'MAGIC'
   },
   {
     id: 16, row: 2, col: 8, rowKey: 'agilities', colKey: 'Σ',
-    name: 'System trigger',
-    glitchQuestion: 'What repetitive task am I still doing manually?',
-    tuneQuestion: 'What action could be automated or templated?',
-    deliverable: 'A checklist, template, or automation idea written out.',
+    name: 'Systemic agility',
+    glitchQuestion: 'What agility am I still doing manually that could be encoded?',
+    tuneQuestion: 'What agility can I encode into tools / templates / automations?',
+    deliverable: 'A checklist, prompt, or automation idea that bakes the agility into the system.',
     phase: 'MAGIC'
   },
 
