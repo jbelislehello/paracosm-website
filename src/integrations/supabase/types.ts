@@ -195,6 +195,81 @@ export type Database = {
           },
         ]
       }
+      journal_cycles: {
+        Row: {
+          board: Database["public"]["Enums"]["board"]
+          completed_at: string | null
+          created_at: string
+          current_distance: number
+          current_tile_id: number | null
+          current_zone: Database["public"]["Enums"]["tolerance_zone"]
+          cycle_number: number
+          id: string
+          inner_radius: number
+          integrator_tiles_unlocked: number
+          phase: Database["public"]["Enums"]["journal_phase"]
+          started_at: string
+          stretch_radius: number
+          team_id: string | null
+          tiles_visited: number[] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          board: Database["public"]["Enums"]["board"]
+          completed_at?: string | null
+          created_at?: string
+          current_distance?: number
+          current_tile_id?: number | null
+          current_zone?: Database["public"]["Enums"]["tolerance_zone"]
+          cycle_number: number
+          id?: string
+          inner_radius?: number
+          integrator_tiles_unlocked?: number
+          phase?: Database["public"]["Enums"]["journal_phase"]
+          started_at?: string
+          stretch_radius?: number
+          team_id?: string | null
+          tiles_visited?: number[] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          board?: Database["public"]["Enums"]["board"]
+          completed_at?: string | null
+          created_at?: string
+          current_distance?: number
+          current_tile_id?: number | null
+          current_zone?: Database["public"]["Enums"]["tolerance_zone"]
+          cycle_number?: number
+          id?: string
+          inner_radius?: number
+          integrator_tiles_unlocked?: number
+          phase?: Database["public"]["Enums"]["journal_phase"]
+          started_at?: string
+          stretch_radius?: number
+          team_id?: string | null
+          tiles_visited?: number[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journal_cycles_current_tile_id_fkey"
+            columns: ["current_tile_id"]
+            isOneToOne: false
+            referencedRelation: "tiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "journal_cycles_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       journal_entries: {
         Row: {
           content: string
@@ -241,6 +316,186 @@ export type Database = {
             columns: ["emotional_state_id"]
             isOneToOne: false
             referencedRelation: "emotional_states"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      noems: {
+        Row: {
+          connected_polen_ids: string[] | null
+          connections: string[] | null
+          created_at: string
+          cycle_id: string | null
+          id: string
+          insight: string
+          maturity: Database["public"]["Enums"]["noem_maturity"]
+          title: string
+          topology_x: number | null
+          topology_y: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          connected_polen_ids?: string[] | null
+          connections?: string[] | null
+          created_at?: string
+          cycle_id?: string | null
+          id?: string
+          insight: string
+          maturity?: Database["public"]["Enums"]["noem_maturity"]
+          title: string
+          topology_x?: number | null
+          topology_y?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          connected_polen_ids?: string[] | null
+          connections?: string[] | null
+          created_at?: string
+          cycle_id?: string | null
+          id?: string
+          insight?: string
+          maturity?: Database["public"]["Enums"]["noem_maturity"]
+          title?: string
+          topology_x?: number | null
+          topology_y?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "noems_cycle_id_fkey"
+            columns: ["cycle_id"]
+            isOneToOne: false
+            referencedRelation: "journal_cycles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      poems: {
+        Row: {
+          connected_noem_ids: string[] | null
+          created_at: string
+          cycle_id: string | null
+          id: string
+          market_fit: string | null
+          narrative: string
+          poem_type: Database["public"]["Enums"]["poem_type"]
+          prd_id: string | null
+          tech_stack_hints: string[] | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          connected_noem_ids?: string[] | null
+          created_at?: string
+          cycle_id?: string | null
+          id?: string
+          market_fit?: string | null
+          narrative: string
+          poem_type?: Database["public"]["Enums"]["poem_type"]
+          prd_id?: string | null
+          tech_stack_hints?: string[] | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          connected_noem_ids?: string[] | null
+          created_at?: string
+          cycle_id?: string | null
+          id?: string
+          market_fit?: string | null
+          narrative?: string
+          poem_type?: Database["public"]["Enums"]["poem_type"]
+          prd_id?: string | null
+          tech_stack_hints?: string[] | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "poems_cycle_id_fkey"
+            columns: ["cycle_id"]
+            isOneToOne: false
+            referencedRelation: "journal_cycles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "poems_prd_id_fkey"
+            columns: ["prd_id"]
+            isOneToOne: false
+            referencedRelation: "prds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      polen_entries: {
+        Row: {
+          content: string
+          created_at: string
+          cycle_id: string | null
+          event_id: string | null
+          fragment_type: Database["public"]["Enums"]["fragment_type"]
+          hexagram_number: number | null
+          id: string
+          source_reference: string | null
+          tags: string[] | null
+          tile_id: number | null
+          tzolkin_kin: number | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          cycle_id?: string | null
+          event_id?: string | null
+          fragment_type?: Database["public"]["Enums"]["fragment_type"]
+          hexagram_number?: number | null
+          id?: string
+          source_reference?: string | null
+          tags?: string[] | null
+          tile_id?: number | null
+          tzolkin_kin?: number | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          cycle_id?: string | null
+          event_id?: string | null
+          fragment_type?: Database["public"]["Enums"]["fragment_type"]
+          hexagram_number?: number | null
+          id?: string
+          source_reference?: string | null
+          tags?: string[] | null
+          tile_id?: number | null
+          tzolkin_kin?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "polen_entries_cycle_id_fkey"
+            columns: ["cycle_id"]
+            isOneToOne: false
+            referencedRelation: "journal_cycles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "polen_entries_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "polen_entries_tile_id_fkey"
+            columns: ["tile_id"]
+            isOneToOne: false
+            referencedRelation: "tiles"
             referencedColumns: ["id"]
           },
         ]
@@ -687,6 +942,54 @@ export type Database = {
         }
         Relationships: []
       }
+      tolerance_expansion_events: {
+        Row: {
+          created_at: string
+          cycle_id: string
+          id: string
+          new_inner: number
+          previous_inner: number
+          reflection: string | null
+          trigger_tile_id: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          cycle_id: string
+          id?: string
+          new_inner: number
+          previous_inner: number
+          reflection?: string | null
+          trigger_tile_id?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          cycle_id?: string
+          id?: string
+          new_inner?: number
+          previous_inner?: number
+          reflection?: string | null
+          trigger_tile_id?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tolerance_expansion_events_cycle_id_fkey"
+            columns: ["cycle_id"]
+            isOneToOne: false
+            referencedRelation: "journal_cycles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tolerance_expansion_events_trigger_tile_id_fkey"
+            columns: ["trigger_tile_id"]
+            isOneToOne: false
+            referencedRelation: "tiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       urgent_priorities: {
         Row: {
           category: string
@@ -779,8 +1082,18 @@ export type Database = {
       board: "LOVE" | "MAGIC" | "CALM" | "OPEN" | "FREE"
       curiosity_level: "C1" | "C2" | "C3"
       energetic_axis: "love" | "magic" | "calm" | "open" | "free"
+      fragment_type:
+        | "text"
+        | "quote"
+        | "image"
+        | "voice"
+        | "screenshot"
+        | "link"
       garden_type: "intelligence" | "systems" | "prototypes"
+      journal_phase: "glitch" | "drift" | "tune"
+      noem_maturity: "seed" | "growing" | "ripe"
       oscillation_state: "shadow" | "mixed" | "higher_self"
+      poem_type: "story" | "metaphor" | "anthem" | "manifold"
       positionality: "P1" | "P2" | "P3" | "P4" | "P5"
       process_state: "GLITCH" | "DRIFT" | "TUNE" | "FREE"
       quadrant: "SN" | "IN" | "IM" | "SM"
@@ -791,6 +1104,7 @@ export type Database = {
         | "TeamLearning"
         | "SystemsThinking"
       team_role: "owner" | "member"
+      tolerance_zone: "inner" | "stretch" | "outer"
       user_mode: "solo" | "team"
       wu_wei_intensity: "LOW" | "MEDIUM" | "HIGH"
       wu_wei_mode: "ALLOW_FIRST" | "MINIMAL_INTERVENTION" | "NO_FORCE"
@@ -927,8 +1241,12 @@ export const Constants = {
       board: ["LOVE", "MAGIC", "CALM", "OPEN", "FREE"],
       curiosity_level: ["C1", "C2", "C3"],
       energetic_axis: ["love", "magic", "calm", "open", "free"],
+      fragment_type: ["text", "quote", "image", "voice", "screenshot", "link"],
       garden_type: ["intelligence", "systems", "prototypes"],
+      journal_phase: ["glitch", "drift", "tune"],
+      noem_maturity: ["seed", "growing", "ripe"],
       oscillation_state: ["shadow", "mixed", "higher_self"],
+      poem_type: ["story", "metaphor", "anthem", "manifold"],
       positionality: ["P1", "P2", "P3", "P4", "P5"],
       process_state: ["GLITCH", "DRIFT", "TUNE", "FREE"],
       quadrant: ["SN", "IN", "IM", "SM"],
@@ -940,6 +1258,7 @@ export const Constants = {
         "SystemsThinking",
       ],
       team_role: ["owner", "member"],
+      tolerance_zone: ["inner", "stretch", "outer"],
       user_mode: ["solo", "team"],
       wu_wei_intensity: ["LOW", "MEDIUM", "HIGH"],
       wu_wei_mode: ["ALLOW_FIRST", "MINIMAL_INTERVENTION", "NO_FORCE"],
