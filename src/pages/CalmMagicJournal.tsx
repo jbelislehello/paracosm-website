@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Zap, Play, Grid3X3 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useExpansionJournal } from '@/hooks/useExpansionJournal';
@@ -10,13 +9,19 @@ import { CycleTracker } from '@/components/journal/CycleTracker';
 import { TzolkinIntegrator } from '@/components/journal/TzolkinIntegrator';
 import { TileWorkflow, TileWorkflowData } from '@/components/journal/TileWorkflow';
 import { WindowOfToleranceOverlay } from '@/components/journal/WindowOfToleranceOverlay';
-import { JournalPhase } from '@/types/journal-expansion';
+import { CompassNavigator } from '@/components/journal/CompassNavigator';
+import { JourneyModeSelector } from '@/components/journal/JourneyModeSelector';
+import { SpiralQuadrantVisualizer } from '@/components/journal/SpiralQuadrantVisualizer';
+import { FeminineSafePRD } from '@/components/journal/FeminineSafePRD';
+import { TorusRelationnel } from '@/components/journal/TorusRelationnel';
+import { JournalPhase, CompassType, JourneyMode, TorusPhase, CycleNumber } from '@/types/journal-expansion';
 import { getTileContent, COLUMN_LABELS, ROW_LABELS, getColKey, getRowKey } from '@/data/tileContents';
 
 const CalmMagicJournal = () => {
   const navigate = useNavigate();
   const {
     currentCycle,
+    noems,
     loading,
     startNewCycle,
     visitTile,
@@ -26,6 +31,9 @@ const CalmMagicJournal = () => {
 
   const [user, setUser] = useState<any>(null);
   const [selectedTile, setSelectedTile] = useState<{ row: number; col: number; id: number } | null>(null);
+  const [journeyMode, setJourneyMode] = useState<JourneyMode>('relational');
+  const [activeCompass, setActiveCompass] = useState<CompassType>('narrative');
+  const [torusPhase, setTorusPhase] = useState<TorusPhase>('approche');
   
   const selectedTileContent = selectedTile ? getTileContent(selectedTile.id) : null;
 
@@ -53,7 +61,6 @@ const CalmMagicJournal = () => {
   };
 
   const handleTileWorkflowComplete = async (data: TileWorkflowData) => {
-    // Save the glitch response as a polen entry
     await savePolenEntry({
       content: `GL!TCH: ${data.glitchResponse}\n\nDRIFT OPTIONS:\n${data.driftOptions.map((o, i) => `${i + 1}. ${o}`).join('\n')}\n\nSELECTED: Option ${data.selectedDrift + 1}\n\nTUNE DELIVERABLE:\n${data.tuneDeliverable}`,
       fragment_type: 'text',
@@ -102,8 +109,7 @@ const CalmMagicJournal = () => {
           {rows}
         </div>
         <WindowOfToleranceOverlay
-          innerRadius={currentCycle?.inner_radius || 1.5}
-          stretchRadius={currentCycle?.stretch_radius || 2.5}
+          cycleNumber={(currentCycle?.cycle_number || 1) as CycleNumber}
           currentTile={selectedTile || undefined}
         />
       </div>
@@ -144,8 +150,35 @@ const CalmMagicJournal = () => {
 
         {/* Main Content */}
         {currentCycle ? (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left Column: Matrix & Cycle */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            {/* Left Column: Controls & Tools */}
+            <div className="space-y-4">
+              {/* Journey Mode Selector */}
+              <JourneyModeSelector
+                mode={journeyMode}
+                onModeChange={setJourneyMode}
+              />
+
+              {/* Compass Navigator */}
+              <CompassNavigator
+                activeCompass={activeCompass}
+                journeyMode={journeyMode}
+                onCompassChange={setActiveCompass}
+              />
+
+              {/* Torus Relationnel */}
+              <TorusRelationnel
+                currentPhase={torusPhase}
+                onPhaseChange={setTorusPhase}
+              />
+
+              {/* Spiral Quadrants */}
+              <SpiralQuadrantVisualizer
+                entries={noems}
+              />
+            </div>
+
+            {/* Center Column: Matrix & Cycle */}
             <div className="space-y-4">
               {/* Cycle Tracker */}
               <CycleTracker
@@ -161,7 +194,7 @@ const CalmMagicJournal = () => {
                 <CardHeader className="pb-3">
                   <CardTitle className="text-sm flex items-center gap-2">
                     <Grid3X3 className="h-4 w-4" />
-                    64-Tile Board
+                    64-Tile Board (Cycle {currentCycle.cycle_number}/4)
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -182,13 +215,17 @@ const CalmMagicJournal = () => {
               )}
             </div>
 
-            {/* Center Column: Tile Workflow */}
+            {/* Right Column: Tile Workflow */}
             <div className="lg:col-span-2 space-y-4">
               {selectedTileContent ? (
-                <TileWorkflow 
-                  tile={selectedTileContent} 
-                  onComplete={handleTileWorkflowComplete}
-                />
+                <>
+                  <TileWorkflow 
+                    tile={selectedTileContent} 
+                    onComplete={handleTileWorkflowComplete}
+                  />
+                  {/* Feminine-Safe PRD Panel */}
+                  <FeminineSafePRD showThreats={true} />
+                </>
               ) : (
                 <Card className="bg-muted/30">
                   <CardContent className="py-12 text-center">
@@ -216,6 +253,15 @@ const CalmMagicJournal = () => {
                   expanding your window of tolerance and crystallizing insights into action.
                 </p>
               </div>
+
+              {/* Journey Mode Selection */}
+              <div className="max-w-xs mx-auto">
+                <JourneyModeSelector
+                  mode={journeyMode}
+                  onModeChange={setJourneyMode}
+                />
+              </div>
+
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Button onClick={handleStartCycle} size="lg" disabled={loading}>
                   <Play className="h-5 w-5 mr-2" />

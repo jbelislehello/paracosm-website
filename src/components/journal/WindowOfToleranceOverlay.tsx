@@ -1,23 +1,17 @@
 import React from 'react';
 import { 
-  getToleranceZone, 
-  getChordsPosition, 
-  getAgendasLevel,
-  CHORDS_LABELS,
-  AGENDAS_LABELS,
-  ToleranceZone 
+  getCycleExpansionZone, 
+  CycleNumber 
 } from '@/types/journal-expansion';
 
 interface WindowOfToleranceOverlayProps {
-  innerRadius?: number;
-  stretchRadius?: number;
+  cycleNumber?: CycleNumber;
   currentTile?: { row: number; col: number };
-  onZoneChange?: (zone: ToleranceZone) => void;
+  onZoneChange?: (zone: 'safe' | 'stretch' | 'edge' | 'unexplored') => void;
 }
 
 export const WindowOfToleranceOverlay: React.FC<WindowOfToleranceOverlayProps> = ({
-  innerRadius = 1.5,
-  stretchRadius = 2.5,
+  cycleNumber = 1,
   currentTile,
   onZoneChange
 }) => {
@@ -25,13 +19,12 @@ export const WindowOfToleranceOverlay: React.FC<WindowOfToleranceOverlayProps> =
   const cellSize = 100 / gridSize;
   const center = 50; // Center of the grid (50%)
 
-  // Calculate ring sizes based on radii
-  const innerSize = (innerRadius * 2) * cellSize;
-  const stretchSize = (stretchRadius * 2) * cellSize;
-
+  // Calculate ring sizes based on cycle number (each cycle expands)
+  const cycles: CycleNumber[] = [1, 2, 3, 4];
+  
   const currentZone = currentTile 
-    ? getToleranceZone(currentTile.row, currentTile.col)
-    : 'inner';
+    ? getCycleExpansionZone(currentTile.row, currentTile.col, cycleNumber)
+    : 'safe';
 
   React.useEffect(() => {
     if (currentTile && onZoneChange) {
@@ -39,19 +32,35 @@ export const WindowOfToleranceOverlay: React.FC<WindowOfToleranceOverlayProps> =
     }
   }, [currentTile, currentZone, onZoneChange]);
 
-  const getZoneColor = (zone: ToleranceZone) => {
-    switch (zone) {
-      case 'inner': return 'rgba(34, 197, 94, 0.15)'; // green
-      case 'stretch': return 'rgba(234, 179, 8, 0.12)'; // yellow
-      case 'outer': return 'rgba(239, 68, 68, 0.1)'; // red
+  const getZoneColor = (cycle: CycleNumber, isCurrentCycle: boolean) => {
+    if (cycle > cycleNumber) return 'rgba(100, 100, 100, 0.05)'; // Unexplored
+    
+    const baseOpacity = isCurrentCycle ? 0.2 : 0.1;
+    switch (cycle) {
+      case 1: return `rgba(34, 197, 94, ${baseOpacity})`; // green - innermost
+      case 2: return `rgba(59, 130, 246, ${baseOpacity})`; // blue
+      case 3: return `rgba(234, 179, 8, ${baseOpacity})`; // yellow
+      case 4: return `rgba(168, 85, 247, ${baseOpacity})`; // purple - outermost
     }
   };
 
-  const getZoneBorderColor = (zone: ToleranceZone) => {
-    switch (zone) {
-      case 'inner': return 'rgba(34, 197, 94, 0.6)';
-      case 'stretch': return 'rgba(234, 179, 8, 0.5)';
-      case 'outer': return 'rgba(239, 68, 68, 0.4)';
+  const getZoneBorderColor = (cycle: CycleNumber) => {
+    if (cycle > cycleNumber) return 'rgba(100, 100, 100, 0.2)';
+    
+    switch (cycle) {
+      case 1: return 'rgba(34, 197, 94, 0.6)';
+      case 2: return 'rgba(59, 130, 246, 0.5)';
+      case 3: return 'rgba(234, 179, 8, 0.5)';
+      case 4: return 'rgba(168, 85, 247, 0.4)';
+    }
+  };
+
+  const getCycleLabel = (cycle: CycleNumber) => {
+    switch (cycle) {
+      case 1: return 'C1';
+      case 2: return 'C2';
+      case 3: return 'C3';
+      case 4: return 'C4';
     }
   };
 
@@ -61,47 +70,46 @@ export const WindowOfToleranceOverlay: React.FC<WindowOfToleranceOverlayProps> =
       viewBox="0 0 100 100"
       preserveAspectRatio="none"
     >
-      {/* Outer zone (full grid - implied) */}
-      <rect
-        x="0"
-        y="0"
-        width="100"
-        height="100"
-        fill={getZoneColor('outer')}
-        stroke={getZoneBorderColor('outer')}
-        strokeWidth="0.3"
-        strokeDasharray="2,2"
-      />
+      {/* Draw cycles from outer to inner (4 to 1) */}
+      {[...cycles].reverse().map((cycle) => {
+        const size = cycle * cellSize * 2;
+        const isCurrentCycle = cycle === cycleNumber;
+        const isUnlocked = cycle <= cycleNumber;
 
-      {/* Stretch zone ring */}
-      <rect
-        x={center - stretchSize / 2}
-        y={center - stretchSize / 2}
-        width={stretchSize}
-        height={stretchSize}
-        fill={getZoneColor('stretch')}
-        stroke={getZoneBorderColor('stretch')}
-        strokeWidth="0.4"
-        rx="1"
-      />
-
-      {/* Inner zone (safe center) */}
-      <rect
-        x={center - innerSize / 2}
-        y={center - innerSize / 2}
-        width={innerSize}
-        height={innerSize}
-        fill={getZoneColor('inner')}
-        stroke={getZoneBorderColor('inner')}
-        strokeWidth="0.5"
-        rx="0.5"
-      />
+        return (
+          <g key={cycle}>
+            <rect
+              x={center - size / 2}
+              y={center - size / 2}
+              width={size}
+              height={size}
+              fill={getZoneColor(cycle, isCurrentCycle)}
+              stroke={getZoneBorderColor(cycle)}
+              strokeWidth={isCurrentCycle ? 0.5 : 0.3}
+              strokeDasharray={isUnlocked ? 'none' : '2,2'}
+              rx="1"
+            />
+            
+            {/* Cycle label in corner */}
+            <text
+              x={center - size / 2 + 2}
+              y={center - size / 2 + 3}
+              fontSize="2.5"
+              fill={getZoneBorderColor(cycle)}
+              opacity={isCurrentCycle ? 1 : 0.6}
+              fontWeight={isCurrentCycle ? 'bold' : 'normal'}
+            >
+              {getCycleLabel(cycle)}
+            </text>
+          </g>
+        );
+      })}
 
       {/* Diagonal fan lines from corners */}
-      <line x1="0" y1="0" x2={center} y2={center} stroke="rgba(139, 92, 246, 0.2)" strokeWidth="0.2" />
-      <line x1="100" y1="0" x2={center} y2={center} stroke="rgba(139, 92, 246, 0.2)" strokeWidth="0.2" />
-      <line x1="0" y1="100" x2={center} y2={center} stroke="rgba(139, 92, 246, 0.2)" strokeWidth="0.2" />
-      <line x1="100" y1="100" x2={center} y2={center} stroke="rgba(139, 92, 246, 0.2)" strokeWidth="0.2" />
+      <line x1="0" y1="0" x2={center} y2={center} stroke="rgba(139, 92, 246, 0.15)" strokeWidth="0.2" />
+      <line x1="100" y1="0" x2={center} y2={center} stroke="rgba(139, 92, 246, 0.15)" strokeWidth="0.2" />
+      <line x1="0" y1="100" x2={center} y2={center} stroke="rgba(139, 92, 246, 0.15)" strokeWidth="0.2" />
+      <line x1="100" y1="100" x2={center} y2={center} stroke="rgba(139, 92, 246, 0.15)" strokeWidth="0.2" />
 
       {/* Current position indicator */}
       {currentTile && (
@@ -110,22 +118,42 @@ export const WindowOfToleranceOverlay: React.FC<WindowOfToleranceOverlayProps> =
           cy={(currentTile.row - 0.5) * cellSize}
           r="1.5"
           fill="white"
-          stroke={getZoneBorderColor(currentZone)}
+          stroke={
+            currentZone === 'safe' ? 'rgba(34, 197, 94, 0.8)' :
+            currentZone === 'stretch' ? 'rgba(234, 179, 8, 0.8)' :
+            currentZone === 'edge' ? 'rgba(239, 68, 68, 0.8)' :
+            'rgba(100, 100, 100, 0.5)'
+          }
           strokeWidth="0.5"
           className="animate-pulse"
         />
       )}
 
-      {/* Zone labels */}
-      <text x={center} y={center - 2} textAnchor="middle" fontSize="2" fill="rgba(34, 197, 94, 0.8)" fontWeight="bold">
-        SAFE
-      </text>
-      <text x={center} y={center - stretchSize/2 + 3} textAnchor="middle" fontSize="1.8" fill="rgba(234, 179, 8, 0.7)">
-        STRETCH
-      </text>
-      <text x="5" y="5" textAnchor="start" fontSize="1.5" fill="rgba(239, 68, 68, 0.6)">
-        EDGE
-      </text>
+      {/* Center marker */}
+      <circle
+        cx={center}
+        cy={center}
+        r="1"
+        fill="rgba(139, 92, 246, 0.5)"
+      />
+
+      {/* Zone state label */}
+      {currentTile && (
+        <text
+          x="5"
+          y="97"
+          fontSize="2"
+          fill={
+            currentZone === 'safe' ? 'rgba(34, 197, 94, 0.8)' :
+            currentZone === 'stretch' ? 'rgba(234, 179, 8, 0.8)' :
+            currentZone === 'edge' ? 'rgba(239, 68, 68, 0.8)' :
+            'rgba(100, 100, 100, 0.6)'
+          }
+          fontWeight="bold"
+        >
+          {currentZone.toUpperCase()}
+        </text>
+      )}
     </svg>
   );
 };
