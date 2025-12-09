@@ -1,16 +1,14 @@
-import { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import { Compass, Map, Calendar, Music } from 'lucide-react';
+import { Compass, Map, Calendar } from 'lucide-react';
 
 interface MasterLensEvaluatorProps {
   lens: LensEvaluation;
   maps: MapsEvaluation;
   agendas: AgendasEvaluation;
-  chords: ChordsEvaluation;
-  onUpdate: (type: 'lens' | 'maps' | 'agendas' | 'chords', data: any) => void;
+  onUpdate: (type: 'lens' | 'maps' | 'agendas', data: any) => void;
   readOnly?: boolean;
 }
 
@@ -71,20 +69,11 @@ const AGENDAS_ITEMS = [
   { key: 'secrets', label: 'Secrets', desc: 'Hidden wisdom' },
 ];
 
-const CHORDS_ITEMS = [
-  { key: 'chances', label: 'Chances', desc: 'Opportunities to explore' },
-  { key: 'heart', label: 'Heart', desc: 'Heart-centeredness' },
-  { key: 'observer', label: 'Observer', desc: 'Consciousness perspective' },
-  { key: 'reversal', label: 'Reversal', desc: 'Renewal through inversion' },
-  { key: 'design', label: 'Design', desc: 'Intentional shaping' },
-  { key: 'seeds', label: 'Seeds', desc: 'Early manifestations' },
-];
 
 const MasterLensEvaluator = ({ 
   lens, 
   maps, 
   agendas, 
-  chords, 
   onUpdate,
   readOnly = false 
 }: MasterLensEvaluatorProps) => {
@@ -96,7 +85,7 @@ const MasterLensEvaluator = ({
       </div>
 
       <Tabs defaultValue="lens" className="w-full">
-        <TabsList className="grid w-full grid-cols-4 h-auto">
+        <TabsList className="grid w-full grid-cols-3 h-auto">
           <TabsTrigger value="lens" className="text-xs py-1.5">
             <Compass className="w-3 h-3 mr-1" />
             LENS
@@ -108,10 +97,6 @@ const MasterLensEvaluator = ({
           <TabsTrigger value="agendas" className="text-xs py-1.5">
             <Calendar className="w-3 h-3 mr-1" />
             AGENDAS
-          </TabsTrigger>
-          <TabsTrigger value="chords" className="text-xs py-1.5">
-            <Music className="w-3 h-3 mr-1" />
-            CHORDS
           </TabsTrigger>
         </TabsList>
 
@@ -178,26 +163,6 @@ const MasterLensEvaluator = ({
           ))}
         </TabsContent>
 
-        <TabsContent value="chords" className="mt-4 space-y-3">
-          <p className="text-xs text-muted-foreground mb-2">
-            Qualify through: Chances, Heart, Observer, Reversal, Design, Seeds
-          </p>
-          {CHORDS_ITEMS.map(item => (
-            <div key={item.key} className="space-y-1">
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className="text-xs">{item.label}</Badge>
-                <span className="text-xs text-muted-foreground">{item.desc}</span>
-              </div>
-              <Textarea
-                value={chords[item.key as keyof ChordsEvaluation] || ''}
-                onChange={(e) => onUpdate('chords', { ...chords, [item.key]: e.target.value })}
-                placeholder={`Explore ${item.label.toLowerCase()}...`}
-                className="min-h-[60px] text-sm"
-                disabled={readOnly}
-              />
-            </div>
-          ))}
-        </TabsContent>
       </Tabs>
     </Card>
   );
