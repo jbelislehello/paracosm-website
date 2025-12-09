@@ -14,6 +14,7 @@ interface TileWorkflowProps {
   tile: TileContent;
   compass?: CompassType;
   journeyMode?: JourneyMode;
+  cycleId?: string;
   onComplete?: (data: TileWorkflowData) => void;
 }
 
@@ -31,6 +32,7 @@ export const TileWorkflow: React.FC<TileWorkflowProps> = ({
   tile, 
   compass = 'narrative',
   journeyMode = 'relational',
+  cycleId,
   onComplete 
 }) => {
   const [step, setStep] = useState<WorkflowStep>('glitch');
@@ -39,10 +41,11 @@ export const TileWorkflow: React.FC<TileWorkflowProps> = ({
   const [selectedDrift, setSelectedDrift] = useState<number | null>(null);
   const [tuneDeliverable, setTuneDeliverable] = useState('');
 
-  const { prompt, isLoading, generatePrompt } = useCompassPrompt({
+  const { prompt, isLoading, isSaving, isSaved, generatePrompt, savePromptAsPolen } = useCompassPrompt({
     compass,
     journeyMode,
     tile,
+    cycleId,
   });
 
   const compassName = COMPASS_CONTENT[compass]?.name || 'Compass';
@@ -168,7 +171,10 @@ export const TileWorkflow: React.FC<TileWorkflowProps> = ({
             <AICompassPrompt
               prompt={prompt}
               isLoading={isLoading}
+              isSaving={isSaving}
+              isSaved={isSaved}
               onGenerate={() => generatePrompt('glitch')}
+              onSave={savePromptAsPolen}
               compassName={compassName}
             />
 
@@ -208,7 +214,10 @@ export const TileWorkflow: React.FC<TileWorkflowProps> = ({
             <AICompassPrompt
               prompt={prompt}
               isLoading={isLoading}
+              isSaving={isSaving}
+              isSaved={isSaved}
               onGenerate={() => generatePrompt('drift', glitchResponse)}
+              onSave={savePromptAsPolen}
               compassName={compassName}
             />
 
@@ -276,7 +285,10 @@ export const TileWorkflow: React.FC<TileWorkflowProps> = ({
             <AICompassPrompt
               prompt={prompt}
               isLoading={isLoading}
+              isSaving={isSaving}
+              isSaved={isSaved}
               onGenerate={() => generatePrompt('tune', glitchResponse)}
+              onSave={savePromptAsPolen}
               compassName={compassName}
             />
 
