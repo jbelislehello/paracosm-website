@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge';
-import { Check, Sparkles, Heart, Wand2, Mountain, DoorOpen, Bird } from 'lucide-react';
+import { Check, Sparkles, Sprout, BookOpen, Shapes, Flag, Rocket } from 'lucide-react';
 
-export type PrdLayer = 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
+export type PrdLayer = 'POLLEN' | 'POEM' | 'TOTEM' | 'ANTHEM' | 'EXECUTION';
 
 interface PrdStageProgressProps {
   currentLayer: PrdLayer;
@@ -13,58 +13,64 @@ const LAYERS: {
   name: string;
   purpose: string;
   breath: string;
+  phase: string;
   question: string;
   icon: React.ElementType;
   color: string;
   bgColor: string;
 }[] = [
   {
-    id: 'FREE',
-    name: 'Neurogenesis',
-    purpose: 'Integrate & elevate',
-    breath: 'expand',
-    question: 'What awareness arrives? What has been realized?',
-    icon: Bird,
-    color: 'from-amber-500 to-orange-500',
+    id: 'POLLEN',
+    name: 'Signals & Context',
+    purpose: 'Gather raw tensions & stakes',
+    breath: 'gather',
+    phase: 'Gl!tch',
+    question: 'What is really happening in the field, and why does it matter now?',
+    icon: Sprout,
+    color: 'from-amber-500 to-yellow-500',
     bgColor: 'bg-amber-500/10'
   },
   {
-    id: 'OPEN',
-    name: 'Poiesis',
-    purpose: 'Allow creative transformation',
-    breath: 'dissolve',
-    question: 'What wants to be born that wasn\'t visible?',
-    icon: DoorOpen,
-    color: 'from-emerald-500 to-teal-500',
-    bgColor: 'bg-emerald-500/10'
-  },
-  {
-    id: 'CALM',
-    name: 'Wholeness',
-    purpose: 'Bridge intuition & structure',
-    breath: 'hold exhale',
-    question: 'How does this form a coherent whole?',
-    icon: Mountain,
-    color: 'from-blue-500 to-cyan-500',
-    bgColor: 'bg-blue-500/10'
-  },
-  {
-    id: 'MAGIC',
-    name: 'Spaciousness',
-    purpose: 'Expand cognitive playfield',
-    breath: 'widen ribs',
-    question: 'What new spaces, patterns, constellations emerge?',
-    icon: Wand2,
+    id: 'POEM',
+    name: 'Narrative & Meaning',
+    purpose: 'Expand the story space',
+    breath: 'expand',
+    phase: 'Drift',
+    question: 'What story are we actually telling by solving this?',
+    icon: BookOpen,
     color: 'from-purple-500 to-violet-500',
     bgColor: 'bg-purple-500/10'
   },
   {
-    id: 'LOVE',
-    name: 'Aliveness',
-    purpose: 'Detect vital charge',
-    breath: 'inhale',
-    question: 'Does this have life, resonance, velocity, elasticity?',
-    icon: Heart,
+    id: 'TOTEM',
+    name: 'Form & Interfaces',
+    purpose: 'Structure what people will touch',
+    breath: 'structure',
+    phase: 'Tune',
+    question: 'What are we actually building that people will touch, see, or feel?',
+    icon: Shapes,
+    color: 'from-blue-500 to-cyan-500',
+    bgColor: 'bg-blue-500/10'
+  },
+  {
+    id: 'ANTHEM',
+    name: 'Alignment & Impact',
+    purpose: 'Align on purpose & guardrails',
+    breath: 'align',
+    phase: 'Tune',
+    question: 'Why is this worth our time, and how will we know it\'s working?',
+    icon: Flag,
+    color: 'from-emerald-500 to-teal-500',
+    bgColor: 'bg-emerald-500/10'
+  },
+  {
+    id: 'EXECUTION',
+    name: 'Roadmap & Operations',
+    purpose: 'Launch and learn',
+    breath: 'launch',
+    phase: 'FREE → LOVE',
+    question: 'How do we bring this to life over time with real constraints?',
+    icon: Rocket,
     color: 'from-rose-500 to-pink-500',
     bgColor: 'bg-rose-500/10'
   }
@@ -72,13 +78,13 @@ const LAYERS: {
 
 const PrdStageProgress = ({ currentLayer, completedLayers }: PrdStageProgressProps) => {
   const currentIndex = LAYERS.findIndex(l => l.id === currentLayer);
-  const CurrentIcon = LAYERS[currentIndex]?.icon || Heart;
+  const CurrentIcon = LAYERS[currentIndex]?.icon || Sprout;
 
   return (
     <div className="w-full space-y-4">
-      {/* Breath Cycle Indicator */}
+      {/* Phase Indicator */}
       <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-        <span className="font-medium">Breath Cycle:</span>
+        <span className="font-medium">Phase:</span>
         {LAYERS.map((layer, i) => (
           <span 
             key={layer.id}
@@ -90,7 +96,7 @@ const PrdStageProgress = ({ currentLayer, completedLayers }: PrdStageProgressPro
                   : 'opacity-50'
             }`}
           >
-            {layer.breath}
+            {layer.phase}
           </span>
         ))}
       </div>
@@ -100,7 +106,7 @@ const PrdStageProgress = ({ currentLayer, completedLayers }: PrdStageProgressPro
         {/* Connection Line */}
         <div className="absolute top-6 left-6 right-6 h-1 bg-muted rounded-full" />
         <div 
-          className="absolute top-6 left-6 h-1 bg-gradient-to-r from-rose-500 via-purple-500 via-blue-500 via-emerald-500 to-amber-500 rounded-full transition-all duration-500"
+          className="absolute top-6 left-6 h-1 bg-gradient-to-r from-amber-500 via-purple-500 via-blue-500 via-emerald-500 to-rose-500 rounded-full transition-all duration-500"
           style={{ width: `${(currentIndex / (LAYERS.length - 1)) * (100 - 6)}%` }}
         />
 
@@ -155,7 +161,7 @@ const PrdStageProgress = ({ currentLayer, completedLayers }: PrdStageProgressPro
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Badge variant="outline" className="bg-white/20 text-white border-white/30 text-xs">
-                  {LAYERS[currentIndex].breath}
+                  {LAYERS[currentIndex].phase}
                 </Badge>
                 <Badge variant="outline" className="bg-white/20 text-white border-white/30 text-xs">
                   {LAYERS[currentIndex].purpose}
@@ -172,24 +178,24 @@ const PrdStageProgress = ({ currentLayer, completedLayers }: PrdStageProgressPro
       {/* Legend Strip */}
       <div className="flex flex-wrap gap-3 text-[10px] text-muted-foreground pt-2 border-t">
         <div className="flex items-center gap-1">
-          <div className="w-2 h-2 rounded-full bg-rose-500" />
-          <span>LOVE = Longevity, Oscillations, Velocity, Elasticity</span>
+          <div className="w-2 h-2 rounded-full bg-amber-500" />
+          <span>POLLEN = Raw tensions, constraints, emotional climate</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 rounded-full bg-purple-500" />
-          <span>MAGIC = Mindsets, Agilities, Goals, Intuitions, Compasses</span>
+          <span>POEM = User journeys, hypotheses, thematic anchors</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 rounded-full bg-blue-500" />
-          <span>CALM = LENS + MAPS + AGENDAS</span>
+          <span>TOTEM = Core flows, ontology, system boundaries</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 rounded-full bg-emerald-500" />
-          <span>OPEN = Emergence + Prototype + Ontology</span>
+          <span>ANTHEM = Success metrics, guardrails, strategic alignment</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-2 h-2 rounded-full bg-amber-500" />
-          <span>FREE = Flourish, Release, Expand, Elevate</span>
+          <div className="w-2 h-2 rounded-full bg-rose-500" />
+          <span>EXECUTION = Milestones, responsibilities, learning cadence</span>
         </div>
       </div>
     </div>

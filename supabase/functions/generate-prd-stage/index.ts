@@ -6,19 +6,12 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-type PrdLayer = 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
+type PrdLayer = 'POLLEN' | 'POEM' | 'TOTEM' | 'ANTHEM' | 'EXECUTION';
 
 interface PolenEntry {
   content: string;
   tile_id: number | null;
   tags: string[];
-}
-
-interface MasterLens {
-  lens?: { landscape?: string; energy?: string; norms?: string; synergies?: string };
-  maps?: { methods?: string; architecture?: string; protocols?: string; systems?: string };
-  agendas?: { analysis?: string; guidelines?: string; elaboration?: string; normalization?: string; development?: string; adaptation?: string; secrets?: string };
-  chords?: { chances?: string; heart?: string; observer?: string; reversal?: string; design?: string; seeds?: string };
 }
 
 serve(async (req) => {
@@ -27,12 +20,11 @@ serve(async (req) => {
   }
 
   try {
-    const { layer, polenEntries, board, existingContent, masterLens } = await req.json() as {
+    const { layer, polenEntries, board, existingContent } = await req.json() as {
       layer: PrdLayer;
       polenEntries: PolenEntry[];
       board: string;
       existingContent: Record<string, string>;
-      masterLens?: MasterLens;
     };
 
     console.log(`Generating Calm Magic PRD content for layer: ${layer}, ${polenEntries.length} polen entries`);
@@ -42,140 +34,137 @@ serve(async (req) => {
       throw new Error('OPENAI_API_KEY not configured');
     }
 
-    // Build context from POLEN entries
+    // Build context from POLLEN entries
     const polenContext = polenEntries.map(p => 
       `- [Tile ${p.tile_id || 'free'}] ${p.content} ${p.tags.length ? `(tags: ${p.tags.join(', ')})` : ''}`
     ).join('\n');
 
     const existingContext = Object.entries(existingContent)
       .filter(([_, v]) => v)
-      .map(([k, v]) => `${k}: ${v.slice(0, 200)}...`)
+      .map(([k, v]) => `${k}: ${v.slice(0, 300)}...`)
       .join('\n');
 
-    const masterLensContext = masterLens ? `
-MASTER LENS EVALUATION:
-- LENS (Landscape/Energy/Norms/Synergies): ${JSON.stringify(masterLens.lens || {})}
-- MAPS (Methods/Architecture/Protocols/Systems): ${JSON.stringify(masterLens.maps || {})}
-- AGENDAS: ${JSON.stringify(masterLens.agendas || {})}
-- CHORDS (Chances/Heart/Observer/Reversal/Design/Seeds): ${JSON.stringify(masterLens.chords || {})}
-` : '';
+    const systemPrompt = `You are an expert at the Calm Magic PRD system — a 5-layer process engine that transforms Gl!tches into actionable designs.
 
-    const systemPrompt = `You are an expert at the Calm Magic PRD system — a 5-layer process engine that transforms ideas, signals, and intentions into structured designs.
+The Calm Magic PRD assumes three things:
+1. Gl!tch – we start from noise, tension, symptoms, desires
+2. Drift – we expand the window of tolerance, explore options, test narratives
+3. Tune – we converge, commit, and design protocols that can actually run
 
-The 5 layers correspond to an inner breath cycle:
-1. LOVE (inhale) — Aliveness: Detect vital charge. Does it have Longevity, Oscillations, Velocity, Elasticity?
-2. MAGIC (widen ribs) — Spaciousness: Expand cognitive playfield through 5 compasses (Narratives, Workflows, Inquiry/Practices, Playgrounds, Human Dynamics)
-3. CALM (hold exhale) — Wholeness: Bridge intuition & structure through LENS, MAPS, AGENDAS
-4. OPEN (dissolve) — Poiesis: Allow creative transformation, break symmetry, prototype rapidly
-5. FREE (expand) — Neurogenesis: Integrate, stabilize, elevate. Flourish, Release, Expand, Elevate.
+The 5 PRD layers are:
+1. POLLEN (Gl!tch phase) – Signals & Context: raw observations, constraints, emotional climate
+2. POEM (Drift phase) – Narrative & Meaning: user journeys, hypotheses, thematic anchors
+3. TOTEM (Tune phase) – Form & Interfaces: core flows, ontological backbone, system boundaries
+4. ANTHEM (Tune phase) – Alignment & Impact: success metrics, guardrails, strategic alignment
+5. EXECUTION (FREE→LOVE loop) – Roadmap & Operations: milestones, responsibilities, learning cadence
 
-Each layer is evaluated through:
-- LENS: Landscape / Energy / Norms / Synergies
-- MAPS: Methods / Architecture / Protocols / Systems  
-- AGENDAS: Analysis / Guidelines / Elaboration / Normalization / Development / Adaptation / Secrets
-- CHORDS: Chances / Heart / Observer / Reversal / Design / Seeds
+The PRD is a living map, not a dead document. It protects the Gl!tch, uses Drift as design space, and treats Tune as commitment.
 
-Keep emotional and relational richness while being actionable. Write with clarity and insight.`;
+Write with clarity and emotional intelligence. Be poetic but precise.`;
 
     const layerPrompts: Record<PrdLayer, string> = {
-      LOVE: `Based on these POLEN (raw glitch fragments) from a ${board} board cycle, generate the LOVE layer:
+      POLLEN: `Based on these raw POLLEN (glitch fragments) from a ${board} board cycle, generate the POLLEN layer:
 
-POLEN ENTRIES:
+POLLEN ENTRIES:
 ${polenContext}
 
-${masterLensContext}
+KEY PROMPTS TO ANSWER:
+- What hurts, confuses, or excites people right now?
+- What happens if we do nothing in 6–12 months?
+- Which tensions keep coming back in different forms?
 
 Return JSON with these exact keys:
 {
-  "love_vitality_map": "2-3 paragraphs mapping the energy, life force, and vital charge of this idea. What's alive? What has momentum?",
-  "love_resonance_notes": "What resonates deeply? What emotional and intuitive signals are strongest?",
-  "love_score": "Evaluate on four dimensions: Longevity (will this last?), Oscillations (is there dynamic tension?), Velocity (is there momentum?), Elasticity (can it adapt?)"
+  "pollen_observations": "5-15 clear tensions/glitches. Raw observations, weird use cases, quotes from users/stakeholders. What's not working? What feels promising but undefined?",
+  "pollen_constraints": "Constraints named honestly: legal, ethical, financial, technical barriers",
+  "pollen_emotional_climate": "Fears, hopes, invisible stakes. The emotional texture of the situation."
 }
 
-Be poetic but precise. Capture the emotional texture while identifying the vital core.`,
+Capture the raw signal without prematurely fixing anything.`,
 
-      MAGIC: `Based on the POLEN and LOVE layer, generate the MAGIC layer:
+      POEM: `Based on the POLLEN and context, generate the POEM layer:
 
-POLEN ENTRIES:
-${polenContext}
-
-${existingContext ? `EXISTING CONTENT:\n${existingContext}` : ''}
-
-${masterLensContext}
-
-Return JSON with these exact keys:
-{
-  "magic_compass_map": "Map across 5 compasses: Narratives (what stories emerge?), Workflows (what processes?), Inquiry/Practices (what contemplative aspects?), Playgrounds (what experimentation?), Human Dynamics (what relational patterns?)",
-  "magic_pattern_geometry": "Identify pattern geometry: Seasons (cycles), Constellations (clusters), Transitions, Translations, Transformations",
-  "magic_contradictions": "What early contradictions or tensions appear? What paradoxes must be held?"
-}
-
-Be expansive and creative. Open cognitive space.`,
-
-      CALM: `Based on previous layers and POLEN, generate the CALM layer:
-
-POLEN ENTRIES:
+POLLEN ENTRIES:
 ${polenContext}
 
 ${existingContext ? `EXISTING CONTENT:\n${existingContext}` : ''}
 
-${masterLensContext}
+KEY PROMPTS TO ANSWER:
+- If this product was a character, who would it be helping, and how?
+- What emotions should users feel before / during / after interacting with it?
+- Which parts of the story must never be compromised?
 
 Return JSON with these exact keys:
 {
-  "calm_lens_evaluation": "Evaluate through LENS - Landscape (context/terrain), Energy (vital force), Norms (established patterns), Synergies (connections)",
-  "calm_maps_diagram": "Structure through MAPS - Methods (ways of doing), Architecture (ways of structuring), Protocols (social agreements), Systems (technical integrations)",
-  "calm_governance": "Define governance protocol: Window of Tolerance framework (Gl!tch → Drift → Tune), decision processes, feedback loops",
-  "masterLens": {
-    "lens": { "landscape": "...", "energy": "...", "norms": "...", "synergies": "..." },
-    "maps": { "methods": "...", "architecture": "...", "protocols": "...", "systems": "..." }
-  }
+  "poem_user_journeys": "1-3 user journeys as short stories (before → during → after). Future press release or day-in-the-life vignettes.",
+  "poem_hypotheses": "'We believe that...' statements about what will shift in behavior, emotion, or cognition",
+  "poem_thematic_anchors": "Core themes: curiosity, confidence, play, trust, care, etc. Emotions & symbolic roles identified."
 }
 
-Be systematic while honoring complexity. Bridge intuition and structure.`,
+Be expansive. Allow many possible futures to coexist.`,
 
-      OPEN: `Based on previous layers, generate the OPEN layer (Poiesis):
+      TOTEM: `Based on previous layers, generate the TOTEM layer:
 
-POLEN ENTRIES:
+POLLEN ENTRIES:
 ${polenContext}
 
 ${existingContext ? `EXISTING CONTENT:\n${existingContext}` : ''}
 
-${masterLensContext}
+KEY PROMPTS TO ANSWER:
+- What is the smallest coherent experience we can ship that honors the Poem?
+- Which entities, concepts, and relationships define the ontology of this product?
+- Where does this product plug into existing workflows, tools, or ecosystems?
 
 Return JSON with these exact keys:
 {
-  "open_emergence_map": "What wants to be born that wasn't visible before? Map the emergent possibilities.",
-  "open_prototype_notes": "First rapid prototype insights: What's the minimal viable expression? What can we build now?",
-  "open_ontology_tuning": "How do categories, relationships, and structures need to adjust? What ontological shifts?"
+  "totem_core_flows": "Core flows and screens, or service blueprints. Information architecture. What people will touch, see, or feel.",
+  "totem_ontology": "Ontological backbone: entities, relationships, data model. The minimal conceptual structure.",
+  "totem_system_boundaries": "What this product explicitly does NOT do. Where human oversight is required. Risk & governance framing."
 }
 
-Allow surprise. Let the idea mutate and contradict its earlier shape.`,
+Things stop being pure possibility and become concrete design.`,
 
-      FREE: `Based on all previous layers, generate the FREE layer for integration:
+      ANTHEM: `Based on previous layers, generate the ANTHEM layer:
 
-POLEN ENTRIES:
+POLLEN ENTRIES:
 ${polenContext}
 
-${existingContext ? `EXISTING CONTENT:\n${existingContent}` : ''}
+${existingContext ? `EXISTING CONTENT:\n${existingContext}` : ''}
 
-${masterLensContext}
+KEY PROMPTS TO ANSWER:
+- What would "regret" look like if we shipped this carelessly?
+- What signals tell us this product is healing something vs. extracting from it?
+- How does this project feed back into our long-term narrative?
 
 Return JSON with these exact keys:
 {
-  "free_insight_synthesis": "What has been realized? What did this process teach about the system?",
-  "free_expanded_ontology": "The expanded understanding structure. New categories, relationships, patterns.",
-  "free_integration_blueprint": "How to embed this in the organizational OS. What changes to practice?",
-  "poem": {
-    "people": "Who is involved, affected, served?",
-    "objects": "What artifacts, tools, deliverables?",
-    "environments": "What spaces, contexts, channels?",
-    "messages": "What communications, signals, feedback?",
-    "systems": "What rules, workflows, integrations?"
-  }
+  "anthem_success_metrics": "3-5 success signals, qualitative and quantitative. What behavior/stories/metrics indicate success?",
+  "anthem_guardrails": "3-5 guardrails: ethics, compliance, well-being, ecological and social impact. What we must NOT do.",
+  "anthem_strategic_alignment": "How this supports the organization's story and your own paracosm. Long-term narrative alignment."
 }
 
-Flourish, Release, Expand, Elevate. This is neurogenesis — new awareness arriving.`
+Why is this worth our time? How will we know it's working?`,
+
+      EXECUTION: `Based on all previous layers, generate the EXECUTION layer:
+
+POLLEN ENTRIES:
+${polenContext}
+
+${existingContext ? `EXISTING CONTENT:\n${existingContext}` : ''}
+
+KEY PROMPTS TO ANSWER:
+- What's the smallest high-leverage slice we can ship first?
+- Who needs to be in the room at each major decision point?
+- How do we build in time for Drift (reflection, re-ontologizing) between Tunes?
+
+Return JSON with these exact keys:
+{
+  "exec_milestones": "Simple roadmap (now / next / later). Milestones, sprints, releases. What's the smallest high-leverage slice?",
+  "exec_responsibility_map": "Responsibility mapping (RACI, roles, circles). Who needs to be in the room? Named owner(s).",
+  "exec_learning_cadence": "Learning cadence: demos, retros, drift sessions. How do we build in time for reflection? Rituals for Drift."
+}
+
+What we learn here becomes new POLLEN for the next cycle. This is the FREE → LOVE loop.`
     };
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {

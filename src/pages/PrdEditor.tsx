@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Loader2, Save } from 'lucide-react';
+import { ArrowLeft, Loader2, Save, Sprout, BookOpen, Shapes, Flag, Rocket } from 'lucide-react';
 import { toast } from 'sonner';
 
 const PrdEditor = () => {
@@ -166,7 +166,7 @@ const PrdEditor = () => {
                   {getStageLabel(prd.prototype_stage)}
                 </Badge>
               </div>
-              <p className="text-muted-foreground">5-Layer Product Requirements Document</p>
+              <p className="text-muted-foreground">Calm Magic PRD — Gl!tch → Drift → Tune</p>
             </div>
           </div>
           <Button onClick={savePrd} disabled={saving}>
@@ -219,55 +219,61 @@ const PrdEditor = () => {
         {/* PRD Layers */}
         <Card className="p-6">
           <Accordion type="single" collapsible className="space-y-4">
-            {/* LAYER 1 - LOVE */}
-            <AccordionItem value="love">
+            {/* LAYER 1 - POLLEN */}
+            <AccordionItem value="pollen">
               <AccordionTrigger className="text-xl font-semibold">
-                LAYER 1 — LOVE (Signals)
+                <div className="flex items-center gap-2">
+                  <Sprout className="w-5 h-5 text-amber-500" />
+                  POLLEN — Signals & Context (Gl!tch)
+                </div>
               </AccordionTrigger>
               <AccordionContent className="space-y-4 pt-4">
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Signals Summary</label>
+                  <label className="text-sm font-medium mb-2 block">Raw Observations & Glitches</label>
                   <Textarea
                     value={prd.love_signals_summary || ''}
                     onChange={(e) => updateField('love_signals_summary', e.target.value)}
-                    placeholder="Synthesized narrative of tensions & incoherences..."
+                    placeholder="Tensions, complaints, weird use cases, quotes from users/stakeholders..."
                     rows={6}
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Decision to Exist</label>
+                  <label className="text-sm font-medium mb-2 block">Constraints & Emotional Climate</label>
                   <Textarea
                     value={prd.love_decision_to_exist || ''}
                     onChange={(e) => updateField('love_decision_to_exist', e.target.value)}
-                    placeholder="Is this worth existing? Given these tensions, here is why this idea/product/prototype might be worth existing (or not)..."
+                    placeholder="Legal, ethical, financial, technical constraints. Fears, hopes, invisible stakes..."
                     rows={4}
                   />
                 </div>
               </AccordionContent>
             </AccordionItem>
 
-            {/* LAYER 2 - MAGIC */}
-            <AccordionItem value="magic">
+            {/* LAYER 2 - POEM */}
+            <AccordionItem value="poem">
               <AccordionTrigger className="text-xl font-semibold">
-                LAYER 2 — MAGIC (Story & PRD Backbone)
+                <div className="flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-purple-500" />
+                  POEM — Narrative & Meaning (Drift)
+                </div>
               </AccordionTrigger>
               <AccordionContent className="space-y-4 pt-4">
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Storyworld</label>
+                  <label className="text-sm font-medium mb-2 block">User Journeys</label>
                   <Textarea
                     value={prd.magic_storyworld || ''}
                     onChange={(e) => updateField('magic_storyworld', e.target.value)}
-                    placeholder="Short diegetic story tying glitches into a narrative. In this world, users experience..."
+                    placeholder="Short stories: before → during → after. Day-in-the-life vignettes..."
                     rows={6}
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-2 block">PRD Outline</label>
+                  <label className="text-sm font-medium mb-2 block">Thematic Anchors</label>
                   <Textarea
                     value={prd.magic_prd_outline || ''}
                     onChange={(e) => updateField('magic_prd_outline', e.target.value)}
-                    placeholder="Bullet-like list of potential features/flows derived from recurring patterns..."
-                    rows={6}
+                    placeholder="Core themes: curiosity, confidence, play, trust, care..."
+                    rows={4}
                   />
                 </div>
                 <div>
@@ -275,107 +281,116 @@ const PrdEditor = () => {
                   <Textarea
                     value={prd.magic_hypotheses || ''}
                     onChange={(e) => updateField('magic_hypotheses', e.target.value)}
-                    placeholder="List of 'We believe that...' hypotheses using F/E/L/V, quadrant, senge_focus..."
+                    placeholder="'We believe that...' statements about behavior/emotion/cognition shifts..."
                     rows={6}
                   />
                 </div>
               </AccordionContent>
             </AccordionItem>
 
-            {/* LAYER 3 - CALM */}
-            <AccordionItem value="calm">
+            {/* LAYER 3 - TOTEM */}
+            <AccordionItem value="totem">
               <AccordionTrigger className="text-xl font-semibold">
-                LAYER 3 — CALM (Rules & Requirements)
+                <div className="flex items-center gap-2">
+                  <Shapes className="w-5 h-5 text-blue-500" />
+                  TOTEM — Form & Interfaces (Tune)
+                </div>
               </AccordionTrigger>
               <AccordionContent className="space-y-4 pt-4">
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Requirements</label>
+                  <label className="text-sm font-medium mb-2 block">Core Flows & Screens</label>
                   <Textarea
                     value={prd.calm_requirements || ''}
                     onChange={(e) => updateField('calm_requirements', e.target.value)}
-                    placeholder="Requirements inferred from constraints, risks, positionality (e.g. compliance/governance, safety, UX rules)..."
+                    placeholder="Service blueprints, information architecture, what people touch/see/feel..."
                     rows={6}
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Risks and Limits</label>
+                  <label className="text-sm font-medium mb-2 block">Ontology & Boundaries</label>
                   <Textarea
                     value={prd.calm_risks_and_limits || ''}
                     onChange={(e) => updateField('calm_risks_and_limits', e.target.value)}
-                    placeholder="Explicit risks / non-negotiables from adversity_level & oscillation_state..."
+                    placeholder="Ontological backbone (entities, relationships). System boundaries (what this does NOT do)..."
                     rows={6}
                   />
                 </div>
               </AccordionContent>
             </AccordionItem>
 
-            {/* LAYER 4 - OPEN */}
-            <AccordionItem value="open">
+            {/* LAYER 4 - ANTHEM */}
+            <AccordionItem value="anthem">
               <AccordionTrigger className="text-xl font-semibold">
-                LAYER 4 — OPEN (Ontology & Workflow)
+                <div className="flex items-center gap-2">
+                  <Flag className="w-5 h-5 text-emerald-500" />
+                  ANTHEM — Alignment & Impact (Tune)
+                </div>
               </AccordionTrigger>
               <AccordionContent className="space-y-4 pt-4">
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Ontology and Graph</label>
+                  <label className="text-sm font-medium mb-2 block">Strategic Alignment</label>
                   <Textarea
                     value={prd.open_ontology_and_graph || ''}
                     onChange={(e) => updateField('open_ontology_and_graph', e.target.value)}
-                    placeholder="Description of entities, relationships, edges suggested by glitches..."
-                    rows={6}
+                    placeholder="How this supports the organization's story and your paracosm..."
+                    rows={4}
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Real Workflow</label>
+                  <label className="text-sm font-medium mb-2 block">Success Metrics</label>
                   <Textarea
                     value={prd.open_real_workflow || ''}
                     onChange={(e) => updateField('open_real_workflow', e.target.value)}
-                    placeholder="Real-life workflow the app/system must support..."
+                    placeholder="3-5 success signals, qualitative and quantitative..."
                     rows={6}
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Adjustment Plan</label>
+                  <label className="text-sm font-medium mb-2 block">Guardrails</label>
                   <Textarea
                     value={prd.open_adjustment_plan || ''}
                     onChange={(e) => updateField('open_adjustment_plan', e.target.value)}
-                    placeholder="How we will tune the prototype to match reality..."
+                    placeholder="Ethics, compliance, well-being, ecological and social impact..."
                     rows={4}
                   />
                 </div>
               </AccordionContent>
             </AccordionItem>
 
-            {/* LAYER 5 - FREE */}
-            <AccordionItem value="free">
+            {/* LAYER 5 - EXECUTION */}
+            <AccordionItem value="execution">
               <AccordionTrigger className="text-xl font-semibold">
-                LAYER 5 — FREE (Production & Learning)
+                <div className="flex items-center gap-2">
+                  <Rocket className="w-5 h-5 text-rose-500" />
+                  EXECUTION — Roadmap & Operations (FREE → LOVE)
+                </div>
               </AccordionTrigger>
               <AccordionContent className="space-y-4 pt-4">
                 <div>
-                  <label className="text-sm font-medium mb-2 block">First POEM Description</label>
+                  <label className="text-sm font-medium mb-2 block">Milestones & Releases</label>
                   <Textarea
                     value={prd.free_first_poem_description || ''}
                     onChange={(e) => updateField('free_first_poem_description', e.target.value)}
-                    placeholder="Description of the first POEM in production..."
+                    placeholder="Now / Next / Later roadmap. What's the smallest high-leverage slice?"
                     rows={6}
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Totem Anthem</label>
+                  <label className="text-sm font-medium mb-2 block">Responsibility Map</label>
                   <Textarea
                     value={prd.free_totem_anthem || ''}
                     onChange={(e) => updateField('free_totem_anthem', e.target.value)}
-                    placeholder="How this POEM becomes a ritual/totem in the org..."
-                    rows={6}
+                    placeholder="RACI, roles, circles. Who needs to be in the room?"
+                    rows={4}
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium mb-2 block">Success Criteria</label>
+                  <label className="text-sm font-medium mb-2 block">Learning Cadence</label>
                   <Textarea
                     value={prd.free_success_criteria || ''}
                     onChange={(e) => updateField('free_success_criteria', e.target.value)}
-                    placeholder="What successful behavior/stories/metrics look like..."
-                    rows={6}
+                    placeholder="Demos, retros, drift sessions. Time for reflection..."
+                    rows={4}
                   />
                 </div>
                 <div>
@@ -383,8 +398,8 @@ const PrdEditor = () => {
                   <Textarea
                     value={prd.free_next_cycle_hooks || ''}
                     onChange={(e) => updateField('free_next_cycle_hooks', e.target.value)}
-                    placeholder="How learnings will flow back into Glitch Compass (new glitches, new cycles)..."
-                    rows={6}
+                    placeholder="How learnings flow back into POLLEN (new glitches, new cycles)..."
+                    rows={4}
                   />
                 </div>
               </AccordionContent>

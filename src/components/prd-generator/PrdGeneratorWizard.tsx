@@ -6,14 +6,10 @@ import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Loader2, Sparkles, ArrowRight, ArrowLeft, Check, Edit3, Save, FileText, Heart, Wand2, Mountain, DoorOpen, Bird } from 'lucide-react';
+import { Loader2, Sparkles, ArrowRight, ArrowLeft, Check, Edit3, FileText, Sprout, BookOpen, Shapes, Flag, Rocket, CheckCircle2, Circle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import PrdStageProgress, { PrdLayer } from './PrdStageProgress';
-import MasterLensEvaluator, { LensEvaluation, MapsEvaluation, AgendasEvaluation, ChordsEvaluation } from './MasterLensEvaluator';
-import PoemStructureBuilder, { PoemStructure } from './PoemStructureBuilder';
-import LoveScoreAxes, { LoveScore } from './LoveScoreAxes';
-import ChordsQualifier from './ChordsQualifier';
 
 interface PolenEntry {
   id: string;
@@ -33,62 +29,92 @@ interface PrdGeneratorWizardProps {
 }
 
 interface GeneratedContent {
-  // LOVE Layer
-  love_vitality_map?: string;
-  love_resonance_notes?: string;
-  love_score?: string;
-  // MAGIC Layer
-  magic_compass_map?: string;
-  magic_pattern_geometry?: string;
-  magic_contradictions?: string;
-  // CALM Layer
-  calm_lens_evaluation?: string;
-  calm_maps_diagram?: string;
-  calm_governance?: string;
-  // OPEN Layer
-  open_emergence_map?: string;
-  open_prototype_notes?: string;
-  open_ontology_tuning?: string;
-  // FREE Layer
-  free_insight_synthesis?: string;
-  free_expanded_ontology?: string;
-  free_integration_blueprint?: string;
+  // POLLEN Layer
+  pollen_observations?: string;
+  pollen_constraints?: string;
+  pollen_emotional_climate?: string;
+  // POEM Layer
+  poem_user_journeys?: string;
+  poem_hypotheses?: string;
+  poem_thematic_anchors?: string;
+  // TOTEM Layer
+  totem_core_flows?: string;
+  totem_ontology?: string;
+  totem_system_boundaries?: string;
+  // ANTHEM Layer
+  anthem_success_metrics?: string;
+  anthem_guardrails?: string;
+  anthem_strategic_alignment?: string;
+  // EXECUTION Layer
+  exec_milestones?: string;
+  exec_responsibility_map?: string;
+  exec_learning_cadence?: string;
 }
 
 const LAYER_FIELDS: Record<PrdLayer, (keyof GeneratedContent)[]> = {
-  LOVE: ['love_vitality_map', 'love_resonance_notes', 'love_score'],
-  MAGIC: ['magic_compass_map', 'magic_pattern_geometry', 'magic_contradictions'],
-  CALM: ['calm_lens_evaluation', 'calm_maps_diagram', 'calm_governance'],
-  OPEN: ['open_emergence_map', 'open_prototype_notes', 'open_ontology_tuning'],
-  FREE: ['free_insight_synthesis', 'free_expanded_ontology', 'free_integration_blueprint']
+  POLLEN: ['pollen_observations', 'pollen_constraints', 'pollen_emotional_climate'],
+  POEM: ['poem_user_journeys', 'poem_hypotheses', 'poem_thematic_anchors'],
+  TOTEM: ['totem_core_flows', 'totem_ontology', 'totem_system_boundaries'],
+  ANTHEM: ['anthem_success_metrics', 'anthem_guardrails', 'anthem_strategic_alignment'],
+  EXECUTION: ['exec_milestones', 'exec_responsibility_map', 'exec_learning_cadence']
 };
 
 const FIELD_LABELS: Record<string, { label: string; description: string }> = {
-  love_vitality_map: { label: 'Vitality Map', description: 'The energy and life force of this idea' },
-  love_resonance_notes: { label: 'Resonance Notes', description: 'What resonates deeply' },
-  love_score: { label: 'LOVE Score', description: 'Longevity, Oscillations, Velocity, Elasticity' },
-  magic_compass_map: { label: '5-Compass Map', description: 'Narratives, Workflows, Inquiry, Playground, Human Dynamics' },
-  magic_pattern_geometry: { label: 'Pattern Geometry', description: 'Seasons, Constellations, Transitions' },
-  magic_contradictions: { label: 'Early Contradictions', description: 'Tensions and paradoxes to hold' },
-  calm_lens_evaluation: { label: 'LENS Evaluation', description: 'Landscape, Energy, Norms, Synergies' },
-  calm_maps_diagram: { label: 'MAPS Diagram', description: 'Methods, Architecture, Protocols, Systems' },
-  calm_governance: { label: 'Governance Protocol', description: 'Window of Tolerance framework' },
-  open_emergence_map: { label: 'Emergence Map', description: 'What wants to be born' },
-  open_prototype_notes: { label: 'Prototype Notes', description: 'First rapid prototype insights' },
-  open_ontology_tuning: { label: 'Ontological Tuning', description: 'Adjusting categories and relationships' },
-  free_insight_synthesis: { label: 'Insight Synthesis', description: 'What has been realized' },
-  free_expanded_ontology: { label: 'Expanded Ontology', description: 'New understanding structure' },
-  free_integration_blueprint: { label: 'Integration Blueprint', description: 'How to embed in the OS' }
+  // POLLEN
+  pollen_observations: { label: 'Raw Observations & Glitches', description: 'Tensions, complaints, weird use cases, quotes from users/stakeholders' },
+  pollen_constraints: { label: 'Constraints', description: 'Legal, ethical, financial, technical constraints' },
+  pollen_emotional_climate: { label: 'Emotional Climate', description: 'Fears, hopes, invisible stakes, what hurts/excites people now' },
+  // POEM
+  poem_user_journeys: { label: 'User Journeys', description: 'Short stories: before → during → after interactions' },
+  poem_hypotheses: { label: 'Hypotheses', description: '"We believe that..." statements about behavior/emotion/cognition shifts' },
+  poem_thematic_anchors: { label: 'Thematic Anchors', description: 'Core themes: curiosity, confidence, play, trust, etc.' },
+  // TOTEM
+  totem_core_flows: { label: 'Core Flows & Screens', description: 'Service blueprints, information architecture, what people touch/see/feel' },
+  totem_ontology: { label: 'Ontological Backbone', description: 'Entities, concepts, relationships that define this product' },
+  totem_system_boundaries: { label: 'System Boundaries', description: 'What this product explicitly does NOT do' },
+  // ANTHEM
+  anthem_success_metrics: { label: 'Success Metrics', description: 'Qualitative and quantitative signals of success' },
+  anthem_guardrails: { label: 'Guardrails', description: 'Ethics, compliance, well-being, ecological and social impact' },
+  anthem_strategic_alignment: { label: 'Strategic Alignment', description: 'How this supports the organization\'s story and your paracosm' },
+  // EXECUTION
+  exec_milestones: { label: 'Milestones & Releases', description: 'Now / Next / Later roadmap, sprints, releases' },
+  exec_responsibility_map: { label: 'Responsibility Map', description: 'RACI, roles, circles, who needs to be in the room' },
+  exec_learning_cadence: { label: 'Learning Cadence', description: 'Demos, retros, drift sessions, time for reflection' }
 };
 
-const LAYERS: PrdLayer[] = ['FREE', 'OPEN', 'CALM', 'MAGIC', 'LOVE'];
+// Checklist requirements per layer
+const LAYER_CHECKLIST: Record<PrdLayer, { label: string; check: (content: GeneratedContent) => boolean }[]> = {
+  POLLEN: [
+    { label: '5–15 tensions/glitches captured', check: (c) => (c.pollen_observations?.length || 0) > 100 },
+    { label: 'Constraints & stakes named', check: (c) => !!(c.pollen_constraints && c.pollen_emotional_climate) }
+  ],
+  POEM: [
+    { label: '1–3 narrative arcs described', check: (c) => (c.poem_user_journeys?.length || 0) > 100 },
+    { label: 'Emotions & symbolic roles identified', check: (c) => !!(c.poem_thematic_anchors) }
+  ],
+  TOTEM: [
+    { label: 'Minimal ontology defined', check: (c) => (c.totem_ontology?.length || 0) > 50 },
+    { label: 'Smallest coherent experience defined', check: (c) => (c.totem_core_flows?.length || 0) > 50 }
+  ],
+  ANTHEM: [
+    { label: '3–5 success signals defined', check: (c) => (c.anthem_success_metrics?.length || 0) > 50 },
+    { label: '3–5 guardrails defined', check: (c) => (c.anthem_guardrails?.length || 0) > 50 },
+    { label: 'Strategic alignment articulated', check: (c) => (c.anthem_strategic_alignment?.length || 0) > 50 }
+  ],
+  EXECUTION: [
+    { label: 'Simple roadmap (now/next/later)', check: (c) => (c.exec_milestones?.length || 0) > 50 },
+    { label: 'Named owner(s) and rituals', check: (c) => !!(c.exec_responsibility_map && c.exec_learning_cadence) }
+  ]
+};
+
+const LAYERS: PrdLayer[] = ['POLLEN', 'POEM', 'TOTEM', 'ANTHEM', 'EXECUTION'];
 
 const LAYER_ICONS: Record<PrdLayer, React.ElementType> = {
-  LOVE: Heart,
-  MAGIC: Wand2,
-  CALM: Mountain,
-  OPEN: DoorOpen,
-  FREE: Bird
+  POLLEN: Sprout,
+  POEM: BookOpen,
+  TOTEM: Shapes,
+  ANTHEM: Flag,
+  EXECUTION: Rocket
 };
 
 const PrdGeneratorWizard = ({
@@ -99,29 +125,13 @@ const PrdGeneratorWizard = ({
   board,
   onPrdCreated
 }: PrdGeneratorWizardProps) => {
-  const [currentLayer, setCurrentLayer] = useState<PrdLayer>('FREE');
+  const [currentLayer, setCurrentLayer] = useState<PrdLayer>('POLLEN');
   const [completedLayers, setCompletedLayers] = useState<PrdLayer[]>([]);
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [title, setTitle] = useState(`Calm Magic PRD — ${board} Cycle — ${new Date().toLocaleDateString()}`);
   const [content, setContent] = useState<GeneratedContent>({});
   const [editingField, setEditingField] = useState<string | null>(null);
-  
-  // Master Lens Evaluations
-  const [lens, setLens] = useState<LensEvaluation>({ landscape: '', energy: '', norms: '', synergies: '' });
-  const [maps, setMaps] = useState<MapsEvaluation>({ methods: '', architecture: '', protocols: '', systems: '' });
-  const [agendas, setAgendas] = useState<AgendasEvaluation>({ analysis: '', guidelines: '', elaboration: '', normalization: '', development: '', adaptation: '', secrets: '' });
-  const [chords, setChords] = useState<ChordsEvaluation>({ chances: '', heart: '', observer: '', reversal: '', design: '', seeds: '' });
-  
-  // POEM Structure
-  const [poem, setPoem] = useState<PoemStructure>({ people: '', objects: '', environments: '', messages: '', systems: '' });
-  
-  // LOVE Score
-  const [loveScore, setLoveScore] = useState<LoveScore>({ longevity: 50, oscillations: 50, velocity: 50, elasticity: 50 });
-  
-  // TOTEM & ANTHEM
-  const [totem, setTotem] = useState('');
-  const [anthem, setAnthem] = useState('');
   
   const { toast } = useToast();
 
@@ -142,27 +152,13 @@ const PrdGeneratorWizard = ({
             tags: p.tags
           })),
           board,
-          existingContent: content,
-          masterLens: { lens, maps, agendas, chords }
+          existingContent: content
         }
       });
 
       if (error) throw error;
 
       setContent(prev => ({ ...prev, ...data.content }));
-      
-      // Auto-fill master lens if provided
-      if (data.masterLens) {
-        if (data.masterLens.lens) setLens(prev => ({ ...prev, ...data.masterLens.lens }));
-        if (data.masterLens.maps) setMaps(prev => ({ ...prev, ...data.masterLens.maps }));
-        if (data.masterLens.agendas) setAgendas(prev => ({ ...prev, ...data.masterLens.agendas }));
-        if (data.masterLens.chords) setChords(prev => ({ ...prev, ...data.masterLens.chords }));
-      }
-      
-      // Auto-fill POEM if on FREE layer
-      if (currentLayer === 'FREE' && data.poem) {
-        setPoem(prev => ({ ...prev, ...data.poem }));
-      }
       
       toast({
         title: 'Content generated',
@@ -214,32 +210,32 @@ const PrdGeneratorWizard = ({
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      // Map new layer fields to existing PRD columns
+      // Map new layer fields to existing PRD database columns
       const prdData = {
         owner_id: user.id,
         title,
         status: 'draft',
-        prototype_stage: 'D_MVP',
+        prototype_stage: 'B_DIEGETIC',
         main_board: board as any,
-        // LOVE layer
-        love_signals_summary: content.love_vitality_map,
-        love_decision_to_exist: content.love_resonance_notes,
-        // MAGIC layer
-        magic_storyworld: content.magic_compass_map,
-        magic_prd_outline: content.magic_pattern_geometry,
-        magic_hypotheses: content.magic_contradictions,
-        // CALM layer
-        calm_requirements: content.calm_lens_evaluation,
-        calm_risks_and_limits: content.calm_governance,
-        // OPEN layer
-        open_ontology_and_graph: content.open_emergence_map,
-        open_real_workflow: content.open_prototype_notes,
-        open_adjustment_plan: content.open_ontology_tuning,
-        // FREE layer
-        free_first_poem_description: JSON.stringify(poem),
-        free_totem_anthem: `TOTEM: ${totem}\n\nANTHEM: ${anthem}`,
-        free_success_criteria: content.free_insight_synthesis,
-        free_next_cycle_hooks: content.free_integration_blueprint
+        // POLLEN → LOVE columns
+        love_signals_summary: content.pollen_observations,
+        love_decision_to_exist: `Constraints: ${content.pollen_constraints || ''}\n\nEmotional Climate: ${content.pollen_emotional_climate || ''}`,
+        // POEM → MAGIC columns
+        magic_storyworld: content.poem_user_journeys,
+        magic_prd_outline: content.poem_thematic_anchors,
+        magic_hypotheses: content.poem_hypotheses,
+        // TOTEM → CALM columns
+        calm_requirements: content.totem_core_flows,
+        calm_risks_and_limits: `Ontology: ${content.totem_ontology || ''}\n\nBoundaries: ${content.totem_system_boundaries || ''}`,
+        // ANTHEM → OPEN columns
+        open_ontology_and_graph: content.anthem_strategic_alignment,
+        open_real_workflow: content.anthem_success_metrics,
+        open_adjustment_plan: content.anthem_guardrails,
+        // EXECUTION → FREE columns
+        free_first_poem_description: content.exec_milestones,
+        free_totem_anthem: content.exec_responsibility_map,
+        free_success_criteria: content.exec_learning_cadence,
+        free_next_cycle_hooks: 'Learnings flow back into POLLEN for the next cycle.'
       };
 
       const { data: prd, error } = await supabase
@@ -273,14 +269,8 @@ const PrdGeneratorWizard = ({
     setContent(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleMasterLensUpdate = (type: 'lens' | 'maps' | 'agendas' | 'chords', data: any) => {
-    switch (type) {
-      case 'lens': setLens(data); break;
-      case 'maps': setMaps(data); break;
-      case 'agendas': setAgendas(data); break;
-      case 'chords': setChords(data); break;
-    }
-  };
+  const checklistItems = LAYER_CHECKLIST[currentLayer];
+  const checklistComplete = checklistItems.every(item => item.check(content));
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -346,12 +336,12 @@ const PrdGeneratorWizard = ({
         {/* Content Area */}
         <ScrollArea className="flex-1 py-4">
           <div className="space-y-4">
-            {/* POLEN Preview (for LOVE layer) */}
-            {currentLayer === 'LOVE' && !layerHasContent() && (
-              <Card className="p-4 bg-rose-500/10 border-rose-500/30">
+            {/* POLLEN Preview (for POLLEN layer) */}
+            {currentLayer === 'POLLEN' && !layerHasContent() && (
+              <Card className="p-4 bg-amber-500/10 border-amber-500/30">
                 <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
                   <FileText className="w-4 h-4" />
-                  POLEN from your cycle ({polenEntries.length} entries)
+                  Raw POLLEN from your cycle ({polenEntries.length} entries)
                 </h4>
                 <div className="space-y-2 max-h-32 overflow-y-auto">
                   {polenEntries.slice(0, 5).map(polen => (
@@ -413,77 +403,32 @@ const PrdGeneratorWizard = ({
               );
             })}
 
-            {/* LOVE Score Axes (for LOVE layer) */}
-            {currentLayer === 'LOVE' && (
-              <LoveScoreAxes
-                score={loveScore}
-                onUpdate={setLoveScore}
-              />
-            )}
-
-            {/* Master Lens Evaluator (for CALM layer) */}
-            {currentLayer === 'CALM' && (
-              <MasterLensEvaluator
-                lens={lens}
-                maps={maps}
-                agendas={agendas}
-                onUpdate={handleMasterLensUpdate}
-              />
-            )}
-
-            {/* POEM Structure Builder (for FREE layer) */}
-            {currentLayer === 'FREE' && (
-              <>
-                <PoemStructureBuilder
-                  poem={poem}
-                  onUpdate={setPoem}
-                />
-                
-                {/* TOTEM & ANTHEM */}
-                <Card className="p-4 bg-gradient-to-br from-purple-500/5 to-indigo-500/5 border-purple-500/20">
-                  <h4 className="font-semibold text-sm mb-4">TOTEM & ANTHEM</h4>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="outline" className="bg-purple-500/10">TOTEM</Badge>
-                        <span className="text-xs text-muted-foreground">How does this become a ritual reference?</span>
-                      </div>
-                      <Textarea
-                        value={totem}
-                        onChange={(e) => setTotem(e.target.value)}
-                        placeholder="Describe how this system becomes a reference point, a repeatable ritual..."
-                        className="min-h-[80px]"
-                      />
+            {/* Checklist */}
+            <Card className="p-4 border-dashed">
+              <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4" />
+                {currentLayer} Checklist
+              </h4>
+              <div className="space-y-2">
+                {checklistItems.map((item, idx) => {
+                  const isChecked = item.check(content);
+                  return (
+                    <div key={idx} className="flex items-center gap-2 text-sm">
+                      {isChecked ? (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                      ) : (
+                        <Circle className="w-4 h-4 text-muted-foreground" />
+                      )}
+                      <span className={isChecked ? 'text-foreground' : 'text-muted-foreground'}>
+                        {item.label}
+                      </span>
                     </div>
-                    
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="outline" className="bg-indigo-500/10">ANTHEM</Badge>
-                        <span className="text-xs text-muted-foreground">How does this become culture?</span>
-                      </div>
-                      <Textarea
-                        value={anthem}
-                        onChange={(e) => setAnthem(e.target.value)}
-                        placeholder="Describe how this system becomes cultural practice, collective resonance..."
-                        className="min-h-[80px]"
-                      />
-                    </div>
-                  </div>
-                </Card>
-              </>
-            )}
-
+                  );
+                })}
+              </div>
+            </Card>
           </div>
         </ScrollArea>
-
-        {/* CHORDS Qualifier (fixed at bottom) */}
-        <div className="flex-shrink-0 border-t pt-4">
-          <ChordsQualifier
-            chords={chords}
-            onUpdate={setChords}
-          />
-        </div>
 
         {/* Actions */}
         <div className="flex-shrink-0 flex items-center justify-between pt-4 border-t">
@@ -492,44 +437,39 @@ const PrdGeneratorWizard = ({
             onClick={handleBack}
             disabled={isFirstLayer}
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
 
-          <div className="flex gap-2">
+          <div className="flex items-center gap-2">
             <Button
-              variant="outline"
               onClick={generateLayerContent}
               disabled={generating}
+              variant="outline"
             >
               {generating ? (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
-                <Sparkles className="w-4 h-4 mr-2" />
+                <Sparkles className="mr-2 h-4 w-4" />
               )}
-              {generating ? 'Generating...' : 'Generate with AI'}
+              Generate {currentLayer}
             </Button>
 
-            {isLastLayer ? (
+            {isLastLayer && completedLayers.length === LAYERS.length - 1 ? (
               <Button
                 onClick={handleSavePrd}
                 disabled={saving || !layerHasContent()}
-                className="bg-gradient-to-r from-amber-500 to-orange-500 text-white"
               >
-                {saving ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <Save className="w-4 h-4 mr-2" />
-                )}
-                Save Calm Magic PRD
+                {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Save PRD
               </Button>
             ) : (
               <Button
                 onClick={handleNext}
                 disabled={!layerHasContent()}
               >
-                Next Layer
-                <ArrowRight className="w-4 h-4 ml-2" />
+                Next
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             )}
           </div>
