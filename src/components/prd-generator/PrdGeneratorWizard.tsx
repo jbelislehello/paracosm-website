@@ -298,27 +298,33 @@ const PrdGeneratorWizard = ({
                 const isCompleted = completedLayers.includes(layer);
                 const isCurrent = layer === currentLayer;
                 const LayerIcon = LAYER_ICONS[layer];
+                const canNavigate = isCompleted || isCurrent || idx <= completedLayers.length;
                 
                 return (
-                  <div
+                  <button
                     key={layer}
+                    onClick={() => canNavigate && setCurrentLayer(layer)}
+                    disabled={!canNavigate}
                     className={`
                       flex items-center justify-center w-7 h-7 rounded-full transition-all
                       ${isCompleted 
-                        ? 'bg-emerald-500 text-white' 
+                        ? 'bg-emerald-500 text-white hover:bg-emerald-600' 
                         : isCurrent 
                           ? 'bg-primary text-primary-foreground ring-2 ring-primary/30' 
-                          : 'bg-muted text-muted-foreground'
+                          : canNavigate
+                            ? 'bg-muted text-muted-foreground hover:bg-muted/80'
+                            : 'bg-muted/50 text-muted-foreground/50 cursor-not-allowed'
                       }
+                      ${canNavigate && !isCurrent ? 'cursor-pointer' : ''}
                     `}
-                    title={layer}
+                    title={`${layer}${!canNavigate ? ' (complete previous layers first)' : ''}`}
                   >
                     {isCompleted ? (
                       <Check className="w-3.5 h-3.5" />
                     ) : (
                       <LayerIcon className="w-3.5 h-3.5" />
                     )}
-                  </div>
+                  </button>
                 );
               })}
             </div>
