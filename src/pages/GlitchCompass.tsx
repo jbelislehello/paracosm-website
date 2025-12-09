@@ -9,7 +9,7 @@ import { Sparkles, Calendar, TrendingUp, Grid3x3, PanelRightClose, PanelRightOpe
 import { toast } from 'sonner';
 import TileMatrix from '@/components/TileMatrix';
 import TileDetailPanel from '@/components/TileDetailPanel';
-import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
+
 import { useTileMatrixPersistence } from '@/hooks/useTileMatrixPersistence';
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
@@ -156,49 +156,35 @@ const GlitchCompass = () => {
       </div>
 
       {/* Main Content: Split Layout */}
-      <div className="flex-1 min-h-0">
-        <ResizablePanelGroup direction="horizontal" className="h-full">
-          {/* Left Panel: Tile Matrix */}
-          <ResizablePanel 
-            defaultSize={selectedTile ? 65 : 100} 
-            minSize={50}
-            className="p-4 overflow-auto"
-          >
-            <div className="max-w-[1200px] mx-auto">
-              <TileMatrix 
-                board={todayTile?.board as any || 'LOVE'}
-                selectedTile={selectedTile}
-                activeCompass={activeCompass}
-                onTileClick={handleTileClick}
-                onCompassChange={setActiveCompass}
-                hideDetailPanel
-              />
-            </div>
-          </ResizablePanel>
+      <div className="flex-1 min-h-0 flex">
+        {/* Left Panel: Tile Matrix - Always visible, scrollable */}
+        <div className={`${selectedTile ? 'flex-1' : 'w-full'} p-4 overflow-auto transition-all duration-300`}>
+          <div className="w-fit mx-auto">
+            <TileMatrix 
+              board={todayTile?.board as any || 'LOVE'}
+              selectedTile={selectedTile}
+              activeCompass={activeCompass}
+              onTileClick={handleTileClick}
+              onCompassChange={setActiveCompass}
+              hideDetailPanel
+            />
+          </div>
+        </div>
 
-          {/* Resizable Handle & Right Panel: Tile Detail */}
-          {selectedTile && (
-            <>
-              <ResizableHandle withHandle className="bg-border/50 hover:bg-primary/20 transition-colors" />
-              <ResizablePanel 
-                defaultSize={35} 
-                minSize={25}
-                maxSize={50}
-                className="border-l border-border/50"
-              >
-                <TileDetailPanel
-                  selectedTile={selectedTile}
-                  activeCompass={activeCompass}
-                  board={todayTile?.board || 'LOVE'}
-                  isAuthenticated={isAuthenticated}
-                  saving={saving}
-                  onClose={() => setSelectedTile(null)}
-                  onSavePolen={handleSavePolen}
-                />
-              </ResizablePanel>
-            </>
-          )}
-        </ResizablePanelGroup>
+        {/* Right Panel: Tile Detail - Slides in when tile selected */}
+        {selectedTile && (
+          <div className="w-[400px] max-w-[40vw] shrink-0 border-l border-border/50 animate-in slide-in-from-right duration-300">
+            <TileDetailPanel
+              selectedTile={selectedTile}
+              activeCompass={activeCompass}
+              board={todayTile?.board || 'LOVE'}
+              isAuthenticated={isAuthenticated}
+              saving={saving}
+              onClose={() => setSelectedTile(null)}
+              onSavePolen={handleSavePolen}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
