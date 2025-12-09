@@ -8,6 +8,7 @@ interface MinimalistTileMatrixProps {
   board?: BoardType;
   selectedTile?: { row: number; col: number } | null;
   visitedTiles?: Set<string>;
+  journeyPath?: Array<{ row: number; col: number }>;
   onTileClick?: (row: number, col: number) => void;
   cycleNumber?: CycleNumber;
   showToleranceOverlay?: boolean;
@@ -72,6 +73,7 @@ const MinimalistTileMatrix = ({
   board = 'LOVE',
   selectedTile,
   visitedTiles = new Set(),
+  journeyPath = [],
   onTileClick,
   cycleNumber = 1,
   showToleranceOverlay = true,
@@ -117,6 +119,9 @@ const MinimalistTileMatrix = ({
   // Calculate actual row index (flip for visual display)
   const getActualRow = (visualRow: number) => 7 - visualRow;
 
+  // Calculate visual row from actual row
+  const getVisualRow = (actualRow: number) => 7 - actualRow;
+
   const handleTileClick = (visualRow: number, col: number) => {
     const actualRow = getActualRow(visualRow);
     onTileClick?.(actualRow, col);
@@ -130,6 +135,46 @@ const MinimalistTileMatrix = ({
   const isVisited = (visualRow: number, col: number) => {
     const actualRow = getActualRow(visualRow);
     return visitedTiles.has(`${actualRow}-${col}`);
+  };
+
+  // Get the step number for a visited tile
+  const getStepNumber = (visualRow: number, col: number) => {
+    const actualRow = getActualRow(visualRow);
+    const index = journeyPath.findIndex(t => t.row === actualRow && t.col === col);
+    return index >= 0 ? index + 1 : null;
+  };
+
+  // Generate journey path lines
+  const generateJourneyPathLines = () => {
+    if (journeyPath.length < 2) return null;
+    
+    return journeyPath.map((tile, idx) => {
+      if (idx === 0) return null;
+      const prev = journeyPath[idx - 1];
+      
+      // Convert actual rows to visual positions
+      const prevVisualRow = getVisualRow(prev.row);
+      const currVisualRow = getVisualRow(tile.row);
+      
+      const x1 = prev.col * (TILE_SIZE + GAP) + TILE_SIZE / 2;
+      const y1 = prevVisualRow * (TILE_SIZE + GAP) + TILE_SIZE / 2;
+      const x2 = tile.col * (TILE_SIZE + GAP) + TILE_SIZE / 2;
+      const y2 = currVisualRow * (TILE_SIZE + GAP) + TILE_SIZE / 2;
+      
+      return (
+        <line
+          key={`path-${idx}`}
+          x1={x1}
+          y1={y1}
+          x2={x2}
+          y2={y2}
+          stroke={colors.primary}
+          strokeWidth="3"
+          strokeLinecap="round"
+          opacity="0.7"
+        />
+      );
+    });
   };
 
   // Generate diagonal lines with dots at intersections
@@ -307,7 +352,7 @@ const MinimalistTileMatrix = ({
           </div>
         )}
 
-        {/* SVG Overlay for diagonals and concentric rectangles */}
+        {/* SVG Overlay for diagonals, concentric rectangles, and journey path */}
         <svg 
           className="absolute inset-4 pointer-events-none"
           width={TOTAL_SIZE}
@@ -316,6 +361,9 @@ const MinimalistTileMatrix = ({
         >
           {/* Diagonal lines */}
           {diagonalLines}
+          
+          {/* Journey path lines - drawn above diagonals */}
+          {generateJourneyPathLines()}
           
           {/* Dots at intersections */}
           {tileDots}
@@ -335,6 +383,7 @@ const MinimalistTileMatrix = ({
             Array.from({ length: GRID_SIZE }).map((_, col) => {
               const selected = isSelected(visualRow, col);
               const visited = isVisited(visualRow, col);
+              const stepNumber = getStepNumber(visualRow, col);
               const rowInfo = rowLabels[visualRow];
               const colInfo = colLabels[col];
 
@@ -348,7 +397,7 @@ const MinimalistTileMatrix = ({
                     ${selected 
                       ? 'border-solid ring-2 ring-offset-1' 
                       : visited
-                        ? 'border-foreground/40 bg-foreground/5'
+                        ? 'border-solid border-foreground/50 bg-foreground/10'
                         : 'border-muted-foreground/30 hover:border-foreground/50 hover:bg-muted/30'
                     }
                   `}
@@ -359,6 +408,9 @@ const MinimalistTileMatrix = ({
                       borderColor: colors.border,
                       backgroundColor: colors.bg,
                       boxShadow: `0 0 0 2px ${colors.ring}`,
+                    } : visited ? {
+                      borderColor: colors.border,
+                      backgroundColor: colors.bg,
                     } : {})
                   }}
                   title={`${rowInfo.letter} × ${colInfo.letter}: ${rowInfo.name} × ${colInfo.name}`}
@@ -366,17 +418,19 @@ const MinimalistTileMatrix = ({
                   {/* Tile label */}
                   <span 
                     className="text-[10px] font-medium"
-                    style={{ color: selected ? colors.text : undefined }}
+                    style={{ color: selected || visited ? colors.text : undefined }}
                   >
                     {rowInfo.letter}{colInfo.letter}
                   </span>
                   
-                  {/* Visited indicator */}
-                  {visited && !selected && (
+                  {/* Step number badge for visited tiles */}
+                  {stepNumber && (
                     <div 
-                      className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full"
+                      className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold text-white"
                       style={{ backgroundColor: colors.primary }}
-                    />
+                    >
+                      {stepNumber}
+                    </div>
                   )}
                 </button>
               );
