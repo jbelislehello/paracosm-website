@@ -1,114 +1,145 @@
 import { Badge } from '@/components/ui/badge';
-import { Check, Circle, Sparkles } from 'lucide-react';
+import { Check, Sparkles, Heart, Wand2, Mountain, DoorOpen, Bird } from 'lucide-react';
 
-export type PrdStage = 'A_POIETIC' | 'B_DIEGETIC' | 'C_OPERATIONAL' | 'D_MVP';
+export type PrdLayer = 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
 
 interface PrdStageProgressProps {
-  currentStage: PrdStage;
-  completedStages: PrdStage[];
+  currentLayer: PrdLayer;
+  completedLayers: PrdLayer[];
 }
 
-const STAGES: {
-  id: PrdStage;
-  letter: string;
+const LAYERS: {
+  id: PrdLayer;
   name: string;
-  phase: string;
-  dynamics: string;
-  calmMagic: string;
-  description: string;
+  purpose: string;
+  breath: string;
+  question: string;
+  icon: React.ElementType;
   color: string;
+  bgColor: string;
 }[] = [
   {
-    id: 'A_POIETIC',
-    letter: 'A',
-    name: 'Poietic Prototype',
-    phase: 'GL!TCH + POLEN',
-    dynamics: 'GL!TCH',
-    calmMagic: 'LOVE',
-    description: 'Decide if it\'s worth existing',
-    color: 'from-rose-500 to-pink-500'
+    id: 'LOVE',
+    name: 'Aliveness',
+    purpose: 'Detect vital charge',
+    breath: 'inhale',
+    question: 'Does this have life, resonance, velocity, elasticity?',
+    icon: Heart,
+    color: 'from-rose-500 to-pink-500',
+    bgColor: 'bg-rose-500/10'
   },
   {
-    id: 'B_DIEGETIC',
-    letter: 'B',
-    name: 'Diegetic Prototype',
-    phase: 'POLEN → pré-POEM',
-    dynamics: 'DRIFT',
-    calmMagic: 'MAGIC',
-    description: 'Story + PRD + Foundational Prompt',
-    color: 'from-purple-500 to-indigo-500'
+    id: 'MAGIC',
+    name: 'Spaciousness',
+    purpose: 'Expand cognitive playfield',
+    breath: 'widen ribs',
+    question: 'What new spaces, patterns, constellations emerge?',
+    icon: Wand2,
+    color: 'from-purple-500 to-violet-500',
+    bgColor: 'bg-purple-500/10'
   },
   {
-    id: 'C_OPERATIONAL',
-    letter: 'C',
-    name: 'Operational Prototype',
-    phase: 'vers POEM',
-    dynamics: 'TUNE',
-    calmMagic: 'CALM/OPEN',
-    description: 'Ontology + Knowledge Graph + Workflow',
-    color: 'from-blue-500 to-cyan-500'
+    id: 'CALM',
+    name: 'Wholeness',
+    purpose: 'Bridge intuition & structure',
+    breath: 'hold exhale',
+    question: 'How does this form a coherent whole?',
+    icon: Mountain,
+    color: 'from-blue-500 to-cyan-500',
+    bgColor: 'bg-blue-500/10'
   },
   {
-    id: 'D_MVP',
-    letter: 'D',
-    name: 'MVP - Production Ready',
-    phase: 'POEM → TOTEM → ANTHEM',
-    dynamics: 'FREE',
-    calmMagic: 'FREE',
-    description: 'First POEM in production',
-    color: 'from-amber-500 to-orange-500'
+    id: 'OPEN',
+    name: 'Poiesis',
+    purpose: 'Allow creative transformation',
+    breath: 'dissolve',
+    question: 'What wants to be born that wasn\'t visible?',
+    icon: DoorOpen,
+    color: 'from-emerald-500 to-teal-500',
+    bgColor: 'bg-emerald-500/10'
+  },
+  {
+    id: 'FREE',
+    name: 'Neurogenesis',
+    purpose: 'Integrate & elevate',
+    breath: 'expand',
+    question: 'What awareness arrives? What has been realized?',
+    icon: Bird,
+    color: 'from-amber-500 to-orange-500',
+    bgColor: 'bg-amber-500/10'
   }
 ];
 
-const PrdStageProgress = ({ currentStage, completedStages }: PrdStageProgressProps) => {
-  const currentIndex = STAGES.findIndex(s => s.id === currentStage);
+const PrdStageProgress = ({ currentLayer, completedLayers }: PrdStageProgressProps) => {
+  const currentIndex = LAYERS.findIndex(l => l.id === currentLayer);
+  const CurrentIcon = LAYERS[currentIndex]?.icon || Heart;
 
   return (
     <div className="w-full space-y-4">
+      {/* Breath Cycle Indicator */}
+      <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+        <span className="font-medium">Breath Cycle:</span>
+        {LAYERS.map((layer, i) => (
+          <span 
+            key={layer.id}
+            className={`px-2 py-0.5 rounded-full transition-all ${
+              i === currentIndex 
+                ? `bg-gradient-to-r ${layer.color} text-white` 
+                : i < currentIndex 
+                  ? 'bg-muted text-muted-foreground' 
+                  : 'opacity-50'
+            }`}
+          >
+            {layer.breath}
+          </span>
+        ))}
+      </div>
+
       {/* Main Progress Bar */}
       <div className="relative">
         {/* Connection Line */}
-        <div className="absolute top-6 left-8 right-8 h-1 bg-muted rounded-full" />
+        <div className="absolute top-6 left-6 right-6 h-1 bg-muted rounded-full" />
         <div 
-          className="absolute top-6 left-8 h-1 bg-gradient-to-r from-rose-500 via-purple-500 to-cyan-500 rounded-full transition-all duration-500"
-          style={{ width: `${(currentIndex / (STAGES.length - 1)) * (100 - 8)}%` }}
+          className="absolute top-6 left-6 h-1 bg-gradient-to-r from-rose-500 via-purple-500 via-blue-500 via-emerald-500 to-amber-500 rounded-full transition-all duration-500"
+          style={{ width: `${(currentIndex / (LAYERS.length - 1)) * (100 - 6)}%` }}
         />
 
-        {/* Stage Circles */}
+        {/* Layer Circles */}
         <div className="flex justify-between relative">
-          {STAGES.map((stage, index) => {
-            const isCompleted = completedStages.includes(stage.id);
-            const isCurrent = stage.id === currentStage;
+          {LAYERS.map((layer, index) => {
+            const isCompleted = completedLayers.includes(layer.id);
+            const isCurrent = layer.id === currentLayer;
             const isPending = index > currentIndex;
+            const Icon = layer.icon;
 
             return (
-              <div key={stage.id} className="flex flex-col items-center">
+              <div key={layer.id} className="flex flex-col items-center">
                 {/* Circle */}
                 <div
-                  className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300 ${
+                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
                     isCompleted
-                      ? 'bg-gradient-to-r ' + stage.color + ' text-white shadow-lg'
+                      ? 'bg-gradient-to-r ' + layer.color + ' text-white shadow-lg'
                       : isCurrent
-                        ? 'bg-gradient-to-r ' + stage.color + ' text-white shadow-lg animate-pulse ring-4 ring-white/30'
+                        ? 'bg-gradient-to-r ' + layer.color + ' text-white shadow-lg animate-pulse ring-4 ring-white/30'
                         : 'bg-muted text-muted-foreground border-2 border-dashed border-muted-foreground/30'
                   }`}
                 >
                   {isCompleted ? (
-                    <Check className="w-6 h-6" />
+                    <Check className="w-5 h-5" />
                   ) : isCurrent ? (
                     <Sparkles className="w-5 h-5" />
                   ) : (
-                    stage.letter
+                    <Icon className="w-5 h-5" />
                   )}
                 </div>
 
                 {/* Label */}
                 <div className={`mt-3 text-center transition-opacity ${isPending ? 'opacity-50' : ''}`}>
                   <div className={`text-sm font-bold ${isCurrent ? 'text-primary' : ''}`}>
-                    {stage.name}
+                    {layer.id}
                   </div>
-                  <div className="text-[10px] text-muted-foreground max-w-[100px]">
-                    {stage.description}
+                  <div className="text-[10px] text-muted-foreground">
+                    {layer.name}
                   </div>
                 </div>
               </div>
@@ -117,46 +148,48 @@ const PrdStageProgress = ({ currentStage, completedStages }: PrdStageProgressPro
         </div>
       </div>
 
-      {/* Current Stage Details */}
-      {currentStage && (
-        <div className={`mt-6 p-4 rounded-xl bg-gradient-to-r ${STAGES[currentIndex].color} text-white`}>
+      {/* Current Layer Details */}
+      {currentLayer && (
+        <div className={`mt-6 p-4 rounded-xl bg-gradient-to-r ${LAYERS[currentIndex].color} text-white`}>
           <div className="flex items-center justify-between">
-            <div>
+            <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="bg-white/20 text-white border-white/30">
-                  {STAGES[currentIndex].dynamics}
+                <Badge variant="outline" className="bg-white/20 text-white border-white/30 text-xs">
+                  {LAYERS[currentIndex].breath}
                 </Badge>
-                <Badge variant="outline" className="bg-white/20 text-white border-white/30">
-                  {STAGES[currentIndex].calmMagic}
+                <Badge variant="outline" className="bg-white/20 text-white border-white/30 text-xs">
+                  {LAYERS[currentIndex].purpose}
                 </Badge>
               </div>
-              <h3 className="text-lg font-bold mt-2">{STAGES[currentIndex].name}</h3>
-              <p className="text-sm opacity-90">{STAGES[currentIndex].phase}</p>
+              <h3 className="text-lg font-bold">{LAYERS[currentIndex].id} — {LAYERS[currentIndex].name}</h3>
+              <p className="text-sm opacity-90 italic">"{LAYERS[currentIndex].question}"</p>
             </div>
-            <div className="text-4xl font-black opacity-30">
-              {STAGES[currentIndex].letter}
-            </div>
+            <CurrentIcon className="w-12 h-12 opacity-30" />
           </div>
         </div>
       )}
 
       {/* Legend Strip */}
-      <div className="flex flex-wrap gap-4 text-[10px] text-muted-foreground pt-2 border-t">
+      <div className="flex flex-wrap gap-3 text-[10px] text-muted-foreground pt-2 border-t">
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 rounded-full bg-rose-500" />
-          <span>GL!TCH = tension fondatrice</span>
+          <span>LOVE = Longevity, Oscillations, Velocity, Elasticity</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 rounded-full bg-purple-500" />
-          <span>DRIFT = dérive expérimentale</span>
+          <span>MAGIC = Mindsets, Agilities, Goals, Intuitions, Compasses</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 rounded-full bg-blue-500" />
-          <span>TUNE = accordage continu</span>
+          <span>CALM = LENS + MAPS + AGENDAS</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <div className="w-2 h-2 rounded-full bg-emerald-500" />
+          <span>OPEN = Emergence + Prototype + Ontology</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-2 h-2 rounded-full bg-amber-500" />
-          <span>FREE = apprentissage</span>
+          <span>FREE = Flourish, Release, Expand, Elevate</span>
         </div>
       </div>
     </div>
