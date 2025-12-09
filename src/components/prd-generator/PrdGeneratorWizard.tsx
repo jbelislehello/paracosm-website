@@ -81,7 +81,7 @@ const FIELD_LABELS: Record<string, { label: string; description: string }> = {
   free_integration_blueprint: { label: 'Integration Blueprint', description: 'How to embed in the OS' }
 };
 
-const LAYERS: PrdLayer[] = ['LOVE', 'MAGIC', 'CALM', 'OPEN', 'FREE'];
+const LAYERS: PrdLayer[] = ['FREE', 'OPEN', 'CALM', 'MAGIC', 'LOVE'];
 
 const LAYER_ICONS: Record<PrdLayer, React.ElementType> = {
   LOVE: Heart,
@@ -99,7 +99,7 @@ const PrdGeneratorWizard = ({
   board,
   onPrdCreated
 }: PrdGeneratorWizardProps) => {
-  const [currentLayer, setCurrentLayer] = useState<PrdLayer>('LOVE');
+  const [currentLayer, setCurrentLayer] = useState<PrdLayer>('FREE');
   const [completedLayers, setCompletedLayers] = useState<PrdLayer[]>([]);
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);

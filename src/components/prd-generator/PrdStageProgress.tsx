@@ -19,34 +19,14 @@ const LAYERS: {
   bgColor: string;
 }[] = [
   {
-    id: 'LOVE',
-    name: 'Aliveness',
-    purpose: 'Detect vital charge',
-    breath: 'inhale',
-    question: 'Does this have life, resonance, velocity, elasticity?',
-    icon: Heart,
-    color: 'from-rose-500 to-pink-500',
-    bgColor: 'bg-rose-500/10'
-  },
-  {
-    id: 'MAGIC',
-    name: 'Spaciousness',
-    purpose: 'Expand cognitive playfield',
-    breath: 'widen ribs',
-    question: 'What new spaces, patterns, constellations emerge?',
-    icon: Wand2,
-    color: 'from-purple-500 to-violet-500',
-    bgColor: 'bg-purple-500/10'
-  },
-  {
-    id: 'CALM',
-    name: 'Wholeness',
-    purpose: 'Bridge intuition & structure',
-    breath: 'hold exhale',
-    question: 'How does this form a coherent whole?',
-    icon: Mountain,
-    color: 'from-blue-500 to-cyan-500',
-    bgColor: 'bg-blue-500/10'
+    id: 'FREE',
+    name: 'Neurogenesis',
+    purpose: 'Integrate & elevate',
+    breath: 'expand',
+    question: 'What awareness arrives? What has been realized?',
+    icon: Bird,
+    color: 'from-amber-500 to-orange-500',
+    bgColor: 'bg-amber-500/10'
   },
   {
     id: 'OPEN',
@@ -59,14 +39,34 @@ const LAYERS: {
     bgColor: 'bg-emerald-500/10'
   },
   {
-    id: 'FREE',
-    name: 'Neurogenesis',
-    purpose: 'Integrate & elevate',
-    breath: 'expand',
-    question: 'What awareness arrives? What has been realized?',
-    icon: Bird,
-    color: 'from-amber-500 to-orange-500',
-    bgColor: 'bg-amber-500/10'
+    id: 'CALM',
+    name: 'Wholeness',
+    purpose: 'Bridge intuition & structure',
+    breath: 'hold exhale',
+    question: 'How does this form a coherent whole?',
+    icon: Mountain,
+    color: 'from-blue-500 to-cyan-500',
+    bgColor: 'bg-blue-500/10'
+  },
+  {
+    id: 'MAGIC',
+    name: 'Spaciousness',
+    purpose: 'Expand cognitive playfield',
+    breath: 'widen ribs',
+    question: 'What new spaces, patterns, constellations emerge?',
+    icon: Wand2,
+    color: 'from-purple-500 to-violet-500',
+    bgColor: 'bg-purple-500/10'
+  },
+  {
+    id: 'LOVE',
+    name: 'Aliveness',
+    purpose: 'Detect vital charge',
+    breath: 'inhale',
+    question: 'Does this have life, resonance, velocity, elasticity?',
+    icon: Heart,
+    color: 'from-rose-500 to-pink-500',
+    bgColor: 'bg-rose-500/10'
   }
 ];
 
