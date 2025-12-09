@@ -4,11 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Calendar, TrendingUp, Grid3x3 } from 'lucide-react';
+import { Sparkles, Calendar, TrendingUp, Library } from 'lucide-react';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 import MinimalistTileMatrix from '@/components/MinimalistTileMatrix';
 import TileDetailPanel from '@/components/TileDetailPanel';
+import PolenBrowserPanel from '@/components/PolenBrowserPanel';
 import { useTileMatrixPersistence } from '@/hooks/useTileMatrixPersistence';
+import { CycleNumber } from '@/types/journal-expansion';
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
 
@@ -19,6 +22,9 @@ const GlitchCompass = () => {
   const [loading, setLoading] = useState(true);
   const [selectedTile, setSelectedTile] = useState<{ row: number; col: number } | null>(null);
   const [activeCompass, setActiveCompass] = useState<CompassType | null>(null);
+  const [currentCycleNumber, setCurrentCycleNumber] = useState<CycleNumber>(1);
+  const [showPolenBrowser, setShowPolenBrowser] = useState(false);
+  const [currentZone, setCurrentZone] = useState<'safe' | 'stretch' | 'edge' | 'unexplored'>('safe');
 
   const {
     isAuthenticated,
@@ -137,6 +143,26 @@ const GlitchCompass = () => {
 
           {/* Quick Actions */}
           <div className="flex items-center gap-2">
+            <Badge 
+              variant="outline" 
+              className={cn(
+                "text-xs",
+                currentZone === 'safe' && "border-green-500/50 text-green-600",
+                currentZone === 'stretch' && "border-yellow-500/50 text-yellow-600",
+                currentZone === 'edge' && "border-red-500/50 text-red-600",
+                currentZone === 'unexplored' && "border-muted-foreground/50 text-muted-foreground"
+              )}
+            >
+              C{currentCycleNumber} · {currentZone}
+            </Badge>
+            <Button 
+              variant={showPolenBrowser ? "default" : "ghost"} 
+              size="sm" 
+              onClick={() => setShowPolenBrowser(!showPolenBrowser)}
+            >
+              <Library className="w-4 h-4 mr-1" />
+              Polen
+            </Button>
             <Button variant="ghost" size="sm" onClick={() => navigate('/glitch-compass/events')}>
               <Calendar className="w-4 h-4 mr-1" />
               Journal
@@ -156,15 +182,31 @@ const GlitchCompass = () => {
       {/* Main Content: Split Layout */}
       <div className="flex-1 min-h-0 flex">
         {/* Left Panel: Tile Matrix - Always visible, scrollable */}
-        <div className={`${selectedTile ? 'flex-1' : 'w-full'} p-8 overflow-auto transition-all duration-300 flex items-center justify-center`}>
+        <div className={`${selectedTile || showPolenBrowser ? 'flex-1' : 'w-full'} p-8 overflow-auto transition-all duration-300 flex items-center justify-center`}>
           <div className="pl-32">
             <MinimalistTileMatrix 
               board={todayTile?.board || 'LOVE'}
               selectedTile={selectedTile}
               onTileClick={handleTileClick}
+              cycleNumber={currentCycleNumber}
+              showToleranceOverlay={true}
+              onZoneChange={setCurrentZone}
             />
           </div>
         </div>
+
+        {/* Polen Browser Panel */}
+        {showPolenBrowser && !selectedTile && (
+          <div className="w-[400px] max-w-[40vw] shrink-0 border-l border-border/50 animate-in slide-in-from-right duration-300">
+            <PolenBrowserPanel 
+              onClose={() => setShowPolenBrowser(false)}
+              onTileClick={(row, col) => {
+                setSelectedTile({ row, col });
+                setShowPolenBrowser(false);
+              }}
+            />
+          </div>
+        )}
 
         {/* Right Panel: Tile Detail - Slides in when tile selected */}
         {selectedTile && (

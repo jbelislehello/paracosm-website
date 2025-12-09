@@ -1,4 +1,6 @@
 import { ArrowUp, ArrowRight } from 'lucide-react';
+import { WindowOfToleranceOverlay } from '@/components/journal/WindowOfToleranceOverlay';
+import { CycleNumber } from '@/types/journal-expansion';
 
 type BoardType = 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
 
@@ -7,6 +9,9 @@ interface MinimalistTileMatrixProps {
   selectedTile?: { row: number; col: number } | null;
   visitedTiles?: Set<string>;
   onTileClick?: (row: number, col: number) => void;
+  cycleNumber?: CycleNumber;
+  showToleranceOverlay?: boolean;
+  onZoneChange?: (zone: 'safe' | 'stretch' | 'edge' | 'unexplored') => void;
 }
 
 // Board color system using HSL values
@@ -67,7 +72,10 @@ const MinimalistTileMatrix = ({
   board = 'LOVE',
   selectedTile,
   visitedTiles = new Set(),
-  onTileClick 
+  onTileClick,
+  cycleNumber = 1,
+  showToleranceOverlay = true,
+  onZoneChange
 }: MinimalistTileMatrixProps) => {
   const colors = getBoardColors(board);
   // Column labels - bottom axis (CHORDS + MAPS)
@@ -282,6 +290,20 @@ const MinimalistTileMatrix = ({
 
       {/* Main Grid Container */}
       <div className="relative bg-background border border-border/50 rounded-lg p-4">
+        {/* Window of Tolerance Overlay */}
+        {showToleranceOverlay && (
+          <div 
+            className="absolute inset-4 pointer-events-none z-5"
+            style={{ width: TOTAL_SIZE, height: TOTAL_SIZE }}
+          >
+            <WindowOfToleranceOverlay
+              cycleNumber={cycleNumber}
+              currentTile={selectedTile || undefined}
+              onZoneChange={onZoneChange}
+            />
+          </div>
+        )}
+
         {/* SVG Overlay for diagonals and concentric rectangles */}
         <svg 
           className="absolute inset-4 pointer-events-none"
@@ -289,9 +311,6 @@ const MinimalistTileMatrix = ({
           height={TOTAL_SIZE}
           viewBox={`0 0 ${TOTAL_SIZE} ${TOTAL_SIZE}`}
         >
-          {/* Concentric rectangles */}
-          {generateConcentricRects()}
-          
           {/* Diagonal lines */}
           {diagonalLines}
           
