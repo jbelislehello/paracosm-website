@@ -3,13 +3,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Calendar, TrendingUp, Grid3x3, PanelRightClose, PanelRightOpen } from 'lucide-react';
+import { Sparkles, Calendar, TrendingUp, Grid3x3 } from 'lucide-react';
 import { toast } from 'sonner';
-import TileMatrix from '@/components/TileMatrix';
+import MinimalistTileMatrix from '@/components/MinimalistTileMatrix';
 import TileDetailPanel from '@/components/TileDetailPanel';
-
 import { useTileMatrixPersistence } from '@/hooks/useTileMatrixPersistence';
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
@@ -158,15 +156,11 @@ const GlitchCompass = () => {
       {/* Main Content: Split Layout */}
       <div className="flex-1 min-h-0 flex">
         {/* Left Panel: Tile Matrix - Always visible, scrollable */}
-        <div className={`${selectedTile ? 'flex-1' : 'w-full'} p-4 overflow-auto transition-all duration-300`}>
-          <div className="w-fit mx-auto">
-            <TileMatrix 
-              board={todayTile?.board as any || 'LOVE'}
+        <div className={`${selectedTile ? 'flex-1' : 'w-full'} p-8 overflow-auto transition-all duration-300 flex items-center justify-center`}>
+          <div className="pl-32">
+            <MinimalistTileMatrix 
               selectedTile={selectedTile}
-              activeCompass={activeCompass}
               onTileClick={handleTileClick}
-              onCompassChange={setActiveCompass}
-              hideDetailPanel
             />
           </div>
         </div>
