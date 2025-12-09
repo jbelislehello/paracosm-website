@@ -1,9 +1,11 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useState } from 'react';
-import { ArrowUp, ArrowRight, ArrowDown, BookOpen, Workflow, Sparkles, Gamepad2, Users } from 'lucide-react';
+import { ArrowUp, ArrowRight, ArrowDown, BookOpen, Workflow, Sparkles, Gamepad2, Users, Circle, Target } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
+type TolerancePass = 1 | 2 | 3 | 4;
 
 const COMPASSES: { id: CompassType; name: string; description: string; icon: React.ElementType; color: string }[] = [
   { id: 'narrative', name: 'Narrative', description: 'Story & diegetic framing', icon: BookOpen, color: 'from-rose-500 to-pink-500' },
@@ -11,6 +13,13 @@ const COMPASSES: { id: CompassType; name: string; description: string; icon: Rea
   { id: 'inquiry', name: 'Inquiry & Practices', description: 'Contemplative & ritual', icon: Sparkles, color: 'from-amber-500 to-orange-500' },
   { id: 'playground', name: 'Playground', description: 'Experimentation & play', icon: Gamepad2, color: 'from-green-500 to-emerald-500' },
   { id: 'human-dynamics', name: 'Human Dynamics', description: 'Relational & systemic', icon: Users, color: 'from-purple-500 to-indigo-500' },
+];
+
+const TOLERANCE_PASSES: { pass: TolerancePass; name: string; zone: string; description: string; color: string; tiles: number }[] = [
+  { pass: 1, name: 'Inner', zone: 'Safe', description: 'Core 4×4 center tiles', color: 'bg-green-500', tiles: 16 },
+  { pass: 2, name: 'Stretch', zone: 'Growth', description: 'Expanding to 6×6 ring', color: 'bg-blue-500', tiles: 20 },
+  { pass: 3, name: 'Edge', zone: 'Challenge', description: 'Approaching 8×8 boundary', color: 'bg-amber-500', tiles: 16 },
+  { pass: 4, name: 'Full Board', zone: 'Integration', description: 'Complete 8×8 + integrators', color: 'bg-purple-500', tiles: 12 },
 ];
 
 interface TileMatrixProps {
@@ -21,6 +30,9 @@ interface TileMatrixProps {
 const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
   const [selectedTile, setSelectedTile] = useState<{ row: number; col: number } | null>(null);
   const [activeCompass, setActiveCompass] = useState<CompassType | null>(null);
+  const [currentPass, setCurrentPass] = useState<TolerancePass>(1);
+  const [visitedTiles, setVisitedTiles] = useState<Set<string>>(new Set());
+  const [showToleranceView, setShowToleranceView] = useState(false);
   
   // Corrected row labels: MAGIC integration (M/A/G/I/C) + N/S/P+A
   const rowLabels = [
@@ -75,9 +87,49 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
     return null;
   };
 
+  // Determine which tolerance zone a tile belongs to
+  const getTileTolerancePass = (row: number, col: number): TolerancePass => {
+    // Inner 4×4 (rows 2-5, cols 2-5) = Pass 1
+    if (row >= 2 && row <= 5 && col >= 2 && col <= 5) return 1;
+    // 6×6 ring (rows 1-6, cols 1-6 minus inner) = Pass 2
+    if (row >= 1 && row <= 6 && col >= 1 && col <= 6) return 2;
+    // Edge ring (remaining non-corner) = Pass 3
+    const isCorner = (row === 0 || row === 7) && (col === 0 || col === 7);
+    if (!isCorner) return 3;
+    // Corners (integrators) = Pass 4
+    return 4;
+  };
+
+  const isTileAccessible = (row: number, col: number): boolean => {
+    const tilePass = getTileTolerancePass(row, col);
+    return tilePass <= currentPass;
+  };
+
   const handleTileClick = (row: number, col: number) => {
+    if (!isTileAccessible(row, col) && showToleranceView) return;
     setSelectedTile({ row, col });
+    const tileKey = `${row}-${col}`;
+    setVisitedTiles(prev => new Set([...prev, tileKey]));
     onTileClick?.(row, col);
+  };
+
+  // Progress calculation
+  const getTilesInPass = (pass: TolerancePass): string[] => {
+    const tiles: string[] = [];
+    for (let r = 0; r < 8; r++) {
+      for (let c = 0; c < 8; c++) {
+        if (getTileTolerancePass(r, c) === pass) {
+          tiles.push(`${r}-${c}`);
+        }
+      }
+    }
+    return tiles;
+  };
+
+  const getPassProgress = (pass: TolerancePass) => {
+    const tilesInPass = getTilesInPass(pass);
+    const visited = tilesInPass.filter(t => visitedTiles.has(t)).length;
+    return { visited, total: tilesInPass.length, percent: tilesInPass.length > 0 ? (visited / tilesInPass.length) * 100 : 0 };
   };
 
   // GL!TCH→DRIFT→TUNE movement pattern from selected tile
@@ -219,7 +271,131 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
           {board} Board
         </div>
         <p className="text-muted-foreground text-sm">8×8 Tile Matrix • MAGIC Integration • Click a tile to see movement pattern</p>
+        <button
+          onClick={() => setShowToleranceView(!showToleranceView)}
+          className={`mt-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+            showToleranceView
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-muted hover:bg-muted/80'
+          }`}
+        >
+          <Target className="w-4 h-4 inline mr-2" />
+          {showToleranceView ? 'Hide' : 'Show'} Window of Tolerance
+        </button>
       </div>
+
+      {/* Window of Tolerance Expansion Visualization */}
+      {showToleranceView && (
+        <Card className="p-6 border-2 border-primary/30 bg-gradient-to-br from-background to-primary/5">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-bold text-lg flex items-center gap-2">
+              <Target className="w-5 h-5 text-primary" />
+              Window of Tolerance Expansion
+            </h3>
+            <Badge variant="outline" className="text-primary">
+              Cycle: 4 passes × 64 tiles = 256 + 4 integrators
+            </Badge>
+          </div>
+
+          {/* Pass Selector */}
+          <div className="flex gap-2 mb-6">
+            {TOLERANCE_PASSES.map((passInfo) => (
+              <button
+                key={passInfo.pass}
+                onClick={() => setCurrentPass(passInfo.pass)}
+                className={`flex-1 p-3 rounded-lg border-2 transition-all ${
+                  currentPass === passInfo.pass
+                    ? `${passInfo.color} text-white border-transparent`
+                    : currentPass >= passInfo.pass
+                      ? 'bg-muted border-border'
+                      : 'bg-muted/50 border-dashed border-border/50 opacity-50'
+                }`}
+              >
+                <div className="text-xs font-bold">Pass {passInfo.pass}</div>
+                <div className="text-[10px]">{passInfo.name}</div>
+              </button>
+            ))}
+          </div>
+
+          {/* Concentric Rectangle Visualization */}
+          <div className="flex justify-center mb-6">
+            <div className="relative w-64 h-64">
+              {/* Pass 4 - Full Board (outermost) */}
+              <div className={`absolute inset-0 rounded-lg border-4 transition-all ${
+                currentPass >= 4 ? 'border-purple-500 bg-purple-500/10' : 'border-dashed border-muted-foreground/30'
+              }`}>
+                <span className="absolute -top-3 left-2 text-[10px] bg-background px-1 text-purple-500">Pass 4: Full</span>
+              </div>
+              {/* Pass 3 - Edge */}
+              <div className={`absolute inset-4 rounded-lg border-4 transition-all ${
+                currentPass >= 3 ? 'border-amber-500 bg-amber-500/10' : 'border-dashed border-muted-foreground/30'
+              }`}>
+                <span className="absolute -top-3 left-2 text-[10px] bg-background px-1 text-amber-500">Pass 3: Edge</span>
+              </div>
+              {/* Pass 2 - Stretch */}
+              <div className={`absolute inset-10 rounded-lg border-4 transition-all ${
+                currentPass >= 2 ? 'border-blue-500 bg-blue-500/10' : 'border-dashed border-muted-foreground/30'
+              }`}>
+                <span className="absolute -top-3 left-2 text-[10px] bg-background px-1 text-blue-500">Pass 2: Stretch</span>
+              </div>
+              {/* Pass 1 - Inner (innermost) */}
+              <div className={`absolute inset-16 rounded-lg border-4 transition-all ${
+                currentPass >= 1 ? 'border-green-500 bg-green-500/20' : 'border-dashed border-muted-foreground/30'
+              }`}>
+                <span className="absolute -top-3 left-0 text-[10px] bg-background px-1 text-green-500">Pass 1: Inner</span>
+                <div className="flex items-center justify-center h-full">
+                  <Circle className="w-6 h-6 text-green-500" />
+                </div>
+              </div>
+              {/* Corner integrators */}
+              {currentPass >= 4 && (
+                <>
+                  <div className="absolute -top-1 -left-1 w-4 h-4 rounded-full bg-purple-500 animate-pulse" />
+                  <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-purple-500 animate-pulse" />
+                  <div className="absolute -bottom-1 -left-1 w-4 h-4 rounded-full bg-purple-500 animate-pulse" />
+                  <div className="absolute -bottom-1 -right-1 w-4 h-4 rounded-full bg-purple-500 animate-pulse" />
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Progress Tracking */}
+          <div className="space-y-3">
+            <h4 className="font-medium text-sm">Progress by Pass</h4>
+            {TOLERANCE_PASSES.map((passInfo) => {
+              const progress = getPassProgress(passInfo.pass);
+              return (
+                <div key={passInfo.pass} className="space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className={currentPass >= passInfo.pass ? '' : 'opacity-50'}>
+                      <span className={`inline-block w-3 h-3 rounded-full ${passInfo.color} mr-2`} />
+                      {passInfo.name}: {passInfo.description}
+                    </span>
+                    <span className="text-muted-foreground">
+                      {progress.visited}/{progress.total} tiles
+                    </span>
+                  </div>
+                  <Progress 
+                    value={progress.percent} 
+                    className={`h-2 ${currentPass >= passInfo.pass ? '' : 'opacity-30'}`}
+                  />
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Total Progress */}
+          <div className="mt-4 pt-4 border-t">
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-medium">Total Expansion Progress</span>
+              <Badge className="bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 text-white">
+                {visitedTiles.size}/64 tiles visited
+              </Badge>
+            </div>
+            <Progress value={(visitedTiles.size / 64) * 100} className="h-3 mt-2" />
+          </div>
+        </Card>
+      )}
 
       {/* 5 Compasses Selector */}
       <Card className="p-4 bg-gradient-to-r from-background to-muted/20">
@@ -334,19 +510,39 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
                       const crossConnection = hasCrossConnection(rowIdx, colIdx);
                       const isSelected = selectedTile?.row === rowIdx && selectedTile?.col === colIdx;
                       const movement = isMovementTile(rowIdx, colIdx);
+                      const tilePass = getTileTolerancePass(rowIdx, colIdx);
+                      const isAccessible = isTileAccessible(rowIdx, colIdx);
+                      const isVisited = visitedTiles.has(`${rowIdx}-${colIdx}`);
+                      
+                      // Tolerance zone colors
+                      const getToleranceColor = (pass: TolerancePass) => {
+                        switch (pass) {
+                          case 1: return 'border-green-500';
+                          case 2: return 'border-blue-500';
+                          case 3: return 'border-amber-500';
+                          case 4: return 'border-purple-500';
+                        }
+                      };
                       
                       return (
                         <button
                           key={`tile-${rowIdx}-${colIdx}`}
                           onClick={() => handleTileClick(rowIdx, colIdx)}
-                          className={`w-16 h-16 border-2 rounded transition-all hover:scale-105 hover:shadow-lg relative ${
+                          disabled={showToleranceView && !isAccessible}
+                          className={`w-16 h-16 border-2 rounded transition-all relative ${
+                            showToleranceView && !isAccessible
+                              ? 'opacity-30 cursor-not-allowed border-dashed'
+                              : 'hover:scale-105 hover:shadow-lg'
+                          } ${
                             isSelected
                               ? 'ring-2 ring-primary ring-offset-2 bg-primary/20 border-primary'
-                              : crossConnection
-                                ? 'bg-gradient-to-br from-yellow-500/30 to-orange-500/30 border-yellow-500/50'
-                                : isMaps
-                                  ? 'bg-gradient-to-br from-purple-500/20 to-indigo-500/20 border-purple-500/40 hover:border-purple-500'
-                                  : `bg-gradient-to-br ${getBoardColor(board)}/10 border-primary/20 hover:border-primary`
+                              : showToleranceView
+                                ? `${getToleranceColor(tilePass)} ${isVisited ? 'bg-primary/20' : 'bg-muted/30'}`
+                                : crossConnection
+                                  ? 'bg-gradient-to-br from-yellow-500/30 to-orange-500/30 border-yellow-500/50'
+                                  : isMaps
+                                    ? 'bg-gradient-to-br from-purple-500/20 to-indigo-500/20 border-purple-500/40 hover:border-purple-500'
+                                    : `bg-gradient-to-br ${getBoardColor(board)}/10 border-primary/20 hover:border-primary`
                           } ${movement ? 'ring-2 ring-offset-1' : ''} ${
                             movement === 'glitch' ? 'ring-red-500' :
                             movement === 'drift' ? 'ring-blue-500' :
@@ -356,7 +552,12 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
                           <div className="text-xs text-muted-foreground">
                             {rowInfo.letter}{colLabels[colIdx].letter}
                           </div>
-                          {crossConnection && (
+                          {showToleranceView && isVisited && (
+                            <div className="absolute top-0.5 right-0.5">
+                              <div className="w-2 h-2 rounded-full bg-primary" />
+                            </div>
+                          )}
+                          {crossConnection && !showToleranceView && (
                             <div className="absolute inset-0 flex items-center justify-center">
                               <span className="text-[8px] text-yellow-600 font-bold">↔</span>
                             </div>
