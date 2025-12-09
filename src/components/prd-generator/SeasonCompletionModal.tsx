@@ -2,9 +2,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { PartyPopper, Sparkles, ArrowRight, Heart, Mountain, Leaf, Sun, FileText } from 'lucide-react';
+import { PartyPopper, Sparkles, ArrowRight, Flower2, BookOpen, Mountain, Music, Sun, FileText } from 'lucide-react';
 
-type Season = 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN';
+type Season = 'POLLEN' | 'POEM' | 'TOTEM' | 'ANTHEM';
 
 interface SeasonCompletionModalProps {
   isOpen: boolean;
@@ -19,45 +19,40 @@ interface SeasonCompletionModalProps {
 
 const SEASON_CONFIG: Record<Season, {
   label: string;
-  prdLayer: string;
-  prdDescription: string;
-  icon: typeof Heart;
+  description: string;
+  icon: typeof Flower2;
   color: string;
   gradient: string;
   nextSeason: Season | 'FREE';
 }> = {
-  LOVE: {
-    label: 'LOVE',
-    prdLayer: 'POLLEN',
-    prdDescription: 'Signals & Context - raw observations, glitches, tensions, and emotional climate',
-    icon: Heart,
+  POLLEN: {
+    label: 'POLLEN',
+    description: 'Signals & Context - raw observations, glitches, tensions, and emotional climate',
+    icon: Flower2,
     color: 'text-rose-500',
     gradient: 'from-rose-500 to-pink-500',
-    nextSeason: 'MAGIC',
+    nextSeason: 'POEM',
   },
-  MAGIC: {
-    label: 'MAGIC',
-    prdLayer: 'POEM',
-    prdDescription: 'Narrative & Meaning - user journeys, hypotheses, and thematic anchors',
-    icon: Sparkles,
+  POEM: {
+    label: 'POEM',
+    description: 'Narrative & Meaning - user journeys, hypotheses, and thematic anchors',
+    icon: BookOpen,
     color: 'text-purple-500',
     gradient: 'from-purple-500 to-indigo-500',
-    nextSeason: 'CALM',
+    nextSeason: 'TOTEM',
   },
-  CALM: {
-    label: 'CALM',
-    prdLayer: 'TOTEM',
-    prdDescription: 'Form & Interfaces - core flows, ontology, and system boundaries',
+  TOTEM: {
+    label: 'TOTEM',
+    description: 'Form & Interfaces - core flows, ontology, and system boundaries',
     icon: Mountain,
     color: 'text-blue-500',
     gradient: 'from-blue-500 to-cyan-500',
-    nextSeason: 'OPEN',
+    nextSeason: 'ANTHEM',
   },
-  OPEN: {
-    label: 'OPEN',
-    prdLayer: 'ANTHEM',
-    prdDescription: 'Alignment & Impact - success metrics, guardrails, and strategic alignment',
-    icon: Leaf,
+  ANTHEM: {
+    label: 'ANTHEM',
+    description: 'Alignment & Impact - success metrics, guardrails, and strategic alignment',
+    icon: Music,
     color: 'text-emerald-500',
     gradient: 'from-emerald-500 to-green-500',
     nextSeason: 'FREE',
@@ -76,7 +71,7 @@ const SeasonCompletionModal = ({
 }: SeasonCompletionModalProps) => {
   const config = SEASON_CONFIG[season];
   const Icon = config.icon;
-  const isLastSeason = season === 'OPEN';
+  const isLastSeason = season === 'ANTHEM';
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -104,7 +99,7 @@ const SeasonCompletionModal = ({
                 <h3 className="text-xl font-bold">{config.label} Season Completed</h3>
               </div>
               <p className="text-sm opacity-90 mt-1">
-                Your collected entries will form the {config.prdLayer} layer of your PRD
+                Your collected entries form the {config.label} layer of your PRD
               </p>
             </div>
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
@@ -131,9 +126,9 @@ const SeasonCompletionModal = ({
                 <FileText className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1">
-                <h4 className="font-bold">{config.prdLayer} Layer</h4>
+                <h4 className="font-bold">{config.label} Layer</h4>
                 <p className="text-sm text-muted-foreground mt-1">
-                  {config.prdDescription}
+                  {config.description}
                 </p>
               </div>
             </div>
@@ -156,7 +151,7 @@ const SeasonCompletionModal = ({
               className="flex-1"
               disabled={isGenerating}
             >
-              {isGenerating ? 'Generating...' : `Generate ${config.prdLayer}`}
+              {isGenerating ? 'Generating...' : `Generate ${config.label}`}
             </Button>
             <Button 
               onClick={onContinue} 

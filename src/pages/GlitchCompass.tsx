@@ -16,14 +16,31 @@ import SeasonProgressBar from '@/components/prd-generator/SeasonProgressBar';
 import SeasonCompletionModal from '@/components/prd-generator/SeasonCompletionModal';
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
-type Season = 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN';
+type Season = 'POLLEN' | 'POEM' | 'TOTEM' | 'ANTHEM';
+type BoardType = 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
 
-const SEASON_ORDER: Season[] = ['LOVE', 'MAGIC', 'CALM', 'OPEN'];
-const SEASON_TO_PRD_LAYER: Record<Season, string> = {
-  LOVE: 'love',
-  MAGIC: 'magic',
-  CALM: 'calm',
-  OPEN: 'open',
+const SEASON_ORDER: Season[] = ['POLLEN', 'POEM', 'TOTEM', 'ANTHEM'];
+
+// Maps seasons to database board types
+const SEASON_TO_BOARD: Record<Season, BoardType> = {
+  POLLEN: 'LOVE',
+  POEM: 'MAGIC',
+  TOTEM: 'CALM',
+  ANTHEM: 'OPEN',
+};
+
+const SEASON_TO_PRD_FIELD: Record<Season, string> = {
+  POLLEN: 'love',
+  POEM: 'magic',
+  TOTEM: 'calm',
+  ANTHEM: 'open',
+};
+
+const SEASON_COLORS: Record<Season, string> = {
+  POLLEN: 'from-rose-500 to-pink-500',
+  POEM: 'from-purple-500 to-indigo-500',
+  TOTEM: 'from-blue-500 to-cyan-500',
+  ANTHEM: 'from-emerald-500 to-green-500',
 };
 
 const GlitchCompass = () => {
@@ -42,12 +59,12 @@ const GlitchCompass = () => {
   const [journeyPath, setJourneyPath] = useState<Array<{ row: number; col: number }>>([]);
 
   // Season tracking state
-  const [currentSeason, setCurrentSeason] = useState<Season>('LOVE');
+  const [currentSeason, setCurrentSeason] = useState<Season>('POLLEN');
   const [seasonProgress, setSeasonProgress] = useState<Record<Season, Set<string>>>({
-    LOVE: new Set(),
-    MAGIC: new Set(),
-    CALM: new Set(),
-    OPEN: new Set(),
+    POLLEN: new Set(),
+    POEM: new Set(),
+    TOTEM: new Set(),
+    ANTHEM: new Set(),
   });
   const [completedSeasons, setCompletedSeasons] = useState<Season[]>([]);
   const [freeTilesUnlocked, setFreeTilesUnlocked] = useState(false);
@@ -64,7 +81,7 @@ const GlitchCompass = () => {
     isAuthenticated,
     saving,
     savePolenEntry,
-  } = useTileMatrixPersistence(todayTile?.board || 'LOVE');
+  } = useTileMatrixPersistence(todayTile?.board || SEASON_TO_BOARD[currentSeason]);
 
   useEffect(() => {
     checkAuth();
@@ -172,12 +189,12 @@ const GlitchCompass = () => {
     setJourneyPath([]);
     setSelectedTile(null);
     setActiveCompass(null);
-    setCurrentSeason('LOVE');
+    setCurrentSeason('POLLEN');
     setSeasonProgress({
-      LOVE: new Set(),
-      MAGIC: new Set(),
-      CALM: new Set(),
-      OPEN: new Set(),
+      POLLEN: new Set(),
+      POEM: new Set(),
+      TOTEM: new Set(),
+      ANTHEM: new Set(),
     });
     setCompletedSeasons([]);
     setFreeTilesUnlocked(false);
@@ -276,7 +293,7 @@ const GlitchCompass = () => {
       // Call edge function to generate PRD layer
       const { data, error: fnError } = await supabase.functions.invoke('generate-prd-stage', {
         body: {
-          layer: SEASON_TO_PRD_LAYER[currentSeason],
+          layer: SEASON_TO_PRD_FIELD[currentSeason],
           polenEntries: polenEntries || [],
           board: currentSeason,
           existingContent: null,
@@ -293,9 +310,9 @@ const GlitchCompass = () => {
             owner_id: user.id,
             title: `PRD - ${new Date().toLocaleDateString()}`,
             status: 'draft',
-            main_board: currentSeason,
-            [`${SEASON_TO_PRD_LAYER[currentSeason]}_signals_summary`]: data?.content || '',
-          })
+            main_board: SEASON_TO_BOARD[currentSeason],
+            [`${SEASON_TO_PRD_FIELD[currentSeason]}_signals_summary`]: data?.content || '',
+          } as any)
           .select()
           .single();
 
@@ -306,12 +323,12 @@ const GlitchCompass = () => {
         await supabase
           .from('prds')
           .update({
-            [`${SEASON_TO_PRD_LAYER[currentSeason]}_signals_summary`]: data?.content || '',
+            [`${SEASON_TO_PRD_FIELD[currentSeason]}_signals_summary`]: data?.content || '',
           })
           .eq('id', prdId);
       }
 
-      toast.success(`${SEASON_TO_PRD_LAYER[currentSeason].toUpperCase()} layer generated!`);
+      toast.success(`${currentSeason} layer generated!`);
     } catch (error) {
       console.error('Error generating PRD layer:', error);
       toast.error('Failed to generate PRD layer');
@@ -359,7 +376,7 @@ const GlitchCompass = () => {
           {/* Journey Controls */}
           <div className="flex items-center gap-2">
             {!journeyStarted ? (
-              <Button onClick={handleStartJourney} size="sm" className={`bg-gradient-to-r ${getBoardColor(currentSeason)}`}>
+              <Button onClick={handleStartJourney} size="sm" className={`bg-gradient-to-r ${SEASON_COLORS[currentSeason]}`}>
                 <Play className="w-4 h-4 mr-1" />
                 Start {currentSeason}
               </Button>
@@ -410,7 +427,7 @@ const GlitchCompass = () => {
         <div className={`${selectedTile || showPolenBrowser ? 'flex-1' : 'w-full'} p-8 overflow-auto transition-all duration-300 flex items-center justify-center`}>
           <div className="pl-32">
             <MinimalistTileMatrix 
-              board={currentSeason}
+              board={SEASON_TO_BOARD[currentSeason]}
               selectedTile={selectedTile}
               visitedTiles={visitedTiles}
               journeyPath={journeyPath}
@@ -418,7 +435,7 @@ const GlitchCompass = () => {
               cycleNumber={currentCycleNumber}
               showToleranceOverlay={true}
               onZoneChange={setCurrentZone}
-              completedSeasons={completedSeasons}
+              completedSeasons={completedSeasons as string[]}
               freeTilesUnlocked={freeTilesUnlocked}
             />
           </div>
@@ -443,7 +460,7 @@ const GlitchCompass = () => {
             <TileDetailPanel
               selectedTile={selectedTile}
               activeCompass={activeCompass}
-              board={currentSeason}
+              board={SEASON_TO_BOARD[currentSeason]}
               isAuthenticated={isAuthenticated}
               saving={saving}
               onClose={() => setSelectedTile(null)}
