@@ -37,6 +37,8 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
     currentCycle,
     loading,
     saving,
+    recentlySyncedTiles,
+    recentlySyncedPolen,
     startNewCycle,
     visitTile,
     savePolenEntry,
@@ -631,6 +633,7 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
                       const tilePass = getTileTolerancePass(rowIdx, colIdx);
                       const isAccessible = isTileAccessible(rowIdx, colIdx);
                       const isVisited = visitedTiles.has(`${rowIdx}-${colIdx}`);
+                      const isRecentlySynced = recentlySyncedTiles.has(`${rowIdx}-${colIdx}`);
                       
                       // Tolerance zone colors
                       const getToleranceColor = (pass: TolerancePass) => {
@@ -665,11 +668,18 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
                             movement === 'glitch' ? 'ring-red-500' :
                             movement === 'drift' ? 'ring-blue-500' :
                             movement === 'tune' ? 'ring-green-500' : ''
-                          }`}
+                          } ${isRecentlySynced ? 'animate-pulse ring-2 ring-cyan-400 ring-offset-1' : ''}`}
                         >
                           <div className="text-xs text-muted-foreground">
                             {rowInfo.letter}{colLabels[colIdx].letter}
                           </div>
+                          {/* Sync indicator */}
+                          {isRecentlySynced && (
+                            <div className="absolute -top-1 -right-1 z-10">
+                              <div className="w-3 h-3 rounded-full bg-cyan-400 animate-ping" />
+                              <div className="absolute inset-0 w-3 h-3 rounded-full bg-cyan-500" />
+                            </div>
+                          )}
                           {showToleranceView && isVisited && (
                             <div className="absolute top-0.5 right-0.5">
                               <div className="w-2 h-2 rounded-full bg-primary" />
