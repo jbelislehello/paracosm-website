@@ -101,6 +101,116 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
     return null;
   };
 
+  // Generate contextual questions based on tile position and compass
+  const getContextualQuestions = (row: number, col: number, compass: CompassType | null) => {
+    const rowInfo = rowLabels[row];
+    const colInfo = colLabels[col];
+    const compassName = compass ? COMPASSES.find(c => c.id === compass)?.name : 'General';
+    
+    const rowContext = rowInfo.name.toLowerCase();
+    const colContext = colInfo.name.toLowerCase();
+    
+    // Compass-specific question framing
+    const compassFraming: Record<CompassType, { glitch: string; drift: string; tune: string }> = {
+      narrative: {
+        glitch: 'What story feels incomplete or stuck',
+        drift: 'What narrative possibilities emerge',
+        tune: 'How does this story want to be told'
+      },
+      workflow: {
+        glitch: 'What process friction exists',
+        drift: 'What workflow alternatives could we try',
+        tune: 'What method best integrates here'
+      },
+      inquiry: {
+        glitch: 'What deeper question is arising',
+        drift: 'What practices might illuminate this',
+        tune: 'What ritual or reflection crystallizes insight'
+      },
+      playground: {
+        glitch: 'What feels rigid or unfun',
+        drift: 'What playful experiments could we try',
+        tune: 'What game or experiment yields the most learning'
+      },
+      'human-dynamics': {
+        glitch: 'What relational tension is present',
+        drift: 'What systemic patterns might be at play',
+        tune: 'How do we integrate individual and collective needs'
+      }
+    };
+    
+    const frame = compass ? compassFraming[compass] : {
+      glitch: 'What feels off or alive',
+      drift: 'What options emerge',
+      tune: 'What integration is needed'
+    };
+    
+    return {
+      glitch: `${frame.glitch} in your ${rowContext} around ${colContext}?`,
+      drift: `${frame.drift} when exploring ${colContext} through ${rowContext}?`,
+      tune: `${frame.tune} for ${rowContext} × ${colContext}?`,
+      deliverable: getDeliverable(row, col)
+    };
+  };
+
+  // Get expected deliverable for tile
+  const getDeliverable = (row: number, col: number) => {
+    const deliverables: Record<string, string> = {
+      '0-0': 'Reframed belief statement',
+      '0-1': 'Emotional anchor phrase',
+      '0-2': 'Observer stance description',
+      '0-3': 'Inverted assumption',
+      '0-4': 'Design principle',
+      '0-5': 'Seed conversation script',
+      '1-0': 'Quick experiment (< 60 min)',
+      '1-1': 'Heart-led action step',
+      '1-2': 'Observation practice',
+      '1-3': 'Opposite test',
+      '1-4': 'Prototype sketch',
+      '1-5': 'Movement pattern',
+      '2-0': 'Risk-aware goal',
+      '2-1': 'Heart-aligned outcome',
+      '2-2': 'Measurable indicator',
+      '2-3': 'Counter-goal exploration',
+      '2-4': 'Designed milestone',
+      '2-5': 'Goal seed artifact',
+      '3-0': 'Landscape scan',
+      '3-1': 'Emotional terrain map',
+      '3-2': 'Field observation',
+      '3-3': 'Hidden pattern',
+      '3-4': 'Designed lens',
+      '3-5': 'Fertility assessment',
+      '4-0': 'Energy reading',
+      '4-1': 'Heart compass calibration',
+      '4-2': 'Witness stance',
+      '4-3': 'Shadow/light flip',
+      '4-4': 'Compass design',
+      '4-5': 'Energy seed',
+      '5-0': 'Chance-taking norm',
+      '5-1': 'Care norm',
+      '5-2': 'Observation norm',
+      '5-3': 'Challenge norm',
+      '5-4': 'Design norm',
+      '5-5': 'Seeding norm',
+      '5-6': 'Method-norm link',
+      '6-0': 'Synergy opportunity',
+      '6-1': 'Heart connection',
+      '6-2': 'Systemic insight',
+      '6-3': 'Tension integration',
+      '6-4': 'Design synthesis',
+      '6-5': 'Cross-pollination',
+      '7-0': 'Risk protocol',
+      '7-1': 'Care protocol',
+      '7-2': 'Observation protocol',
+      '7-3': 'Pivot protocol',
+      '7-4': 'Design blueprint',
+      '7-5': 'Pilot kit',
+      '7-6': 'SOP draft',
+      '7-7': 'System architecture'
+    };
+    return deliverables[`${row}-${col}`] || 'Tile insight';
+  };
+
   return (
     <div className="space-y-8">
       {/* Board Header */}
@@ -276,6 +386,82 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
           ))}
         </div>
       </div>
+
+      {/* Tile Detail Panel */}
+      {selectedTile && (
+        <Card className="p-6 border-2 border-primary/30 bg-gradient-to-br from-background to-primary/5">
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <Badge className={`bg-gradient-to-r ${getBoardColor(board)} text-white`}>
+                  {rowLabels[selectedTile.row].letter}{colLabels[selectedTile.col].letter}
+                </Badge>
+                <h3 className="font-bold text-lg">
+                  {rowLabels[selectedTile.row].name} × {colLabels[selectedTile.col].name}
+                </h3>
+              </div>
+              <p className="text-sm text-muted-foreground mt-1">
+                Stage: {rowLabels[selectedTile.row].stage} | 
+                Lens: {activeCompass ? COMPASSES.find(c => c.id === activeCompass)?.name : 'None selected'}
+              </p>
+            </div>
+            <button 
+              onClick={() => setSelectedTile(null)}
+              className="text-muted-foreground hover:text-foreground text-xl"
+            >
+              ×
+            </button>
+          </div>
+
+          {(() => {
+            const questions = getContextualQuestions(selectedTile.row, selectedTile.col, activeCompass);
+            return (
+              <div className="space-y-4">
+                {/* GL!TCH Question */}
+                <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <ArrowUp className="w-4 h-4 text-red-500" />
+                    <span className="font-bold text-red-500">GL!TCH</span>
+                    <span className="text-xs text-muted-foreground">— What feels off?</span>
+                  </div>
+                  <p className="text-sm">{questions.glitch}</p>
+                </div>
+
+                {/* DRIFT Question */}
+                <div className="p-4 rounded-lg bg-blue-500/10 border border-blue-500/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <ArrowRight className="w-4 h-4 text-blue-500" />
+                    <span className="font-bold text-blue-500">DRIFT</span>
+                    <span className="text-xs text-muted-foreground">— Explore possibilities</span>
+                  </div>
+                  <p className="text-sm">{questions.drift}</p>
+                </div>
+
+                {/* TUNE Question */}
+                <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <ArrowDown className="w-4 h-4 text-green-500" />
+                    <span className="font-bold text-green-500">TUNE</span>
+                    <span className="text-xs text-muted-foreground">— Integrate & crystallize</span>
+                  </div>
+                  <p className="text-sm">{questions.tune}</p>
+                </div>
+
+                {/* Expected Deliverable */}
+                <div className="p-3 rounded-lg bg-primary/10 border border-primary/30">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-primary" />
+                    <span className="font-medium text-sm">Expected Deliverable:</span>
+                    <Badge variant="outline" className="text-primary border-primary/50">
+                      {questions.deliverable}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
+        </Card>
+      )}
 
       {/* Movement Legend */}
       <Card className="p-4 bg-gradient-to-r from-background to-muted/20">
