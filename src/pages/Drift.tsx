@@ -59,7 +59,7 @@ const Drift = () => {
       if (error) throw error;
 
       toast.success('PRD created successfully');
-      navigate(`/glitch-compass/prds/${data.prd.id}`);
+      navigate(`/calm-magic-board/prds/${data.prd.id}`);
     } catch (error) {
       console.error('Error creating PRD:', error);
       toast.error('Failed to create PRD');
@@ -91,7 +91,7 @@ const Drift = () => {
       <div className="max-w-6xl mx-auto p-6 sm:p-8 lg:p-12 space-y-8">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" onClick={() => navigate('/glitch-compass')}>
+            <Button variant="ghost" onClick={() => navigate('/calm-magic-board')}>
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
             </Button>
@@ -116,8 +116,8 @@ const Drift = () => {
             <p className="text-lg text-muted-foreground">
               No events logged yet. Log some glitches first to create a PRD.
             </p>
-            <Button onClick={() => navigate('/glitch-compass')} className="mt-4">
-              Go to Glitch Compass
+            <Button onClick={() => navigate('/calm-magic-board')} className="mt-4">
+              Go to Calm Magic Board
             </Button>
           </Card>
         ) : (

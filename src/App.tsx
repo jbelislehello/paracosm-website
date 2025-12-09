@@ -11,7 +11,7 @@ import RelationalHealing from "./pages/RelationalHealing";
 import CaseStudies from "./pages/CaseStudies";
 import AboutUs from "./pages/AboutUs";
 import NotFound from "./pages/NotFound";
-import GlitchCompass from "./pages/GlitchCompass";
+import CalmMagicBoard from "./pages/CalmMagicBoard";
 import GlitchAuth from "./pages/GlitchAuth";
 import GlitchEvents from "./pages/GlitchEvents";
 import GlitchInsights from "./pages/GlitchInsights";
@@ -38,13 +38,13 @@ function App() {
               <Route path="/calm-magic-assistant" element={<RelationalHealing />} />
               <Route path="/case-studies" element={<CaseStudies />} />
               <Route path="/about-us" element={<AboutUs />} />
-              <Route path="/glitch-compass" element={<GlitchCompass />} />
-              <Route path="/glitch-compass/log" element={<GlitchLog />} />
-              <Route path="/glitch-compass/events" element={<GlitchEvents />} />
-              <Route path="/glitch-compass/insights" element={<GlitchInsights />} />
-              <Route path="/glitch-compass/drift" element={<Drift />} />
-              <Route path="/glitch-compass/prds" element={<PrdsDashboard />} />
-              <Route path="/glitch-compass/prds/:id" element={<PrdEditor />} />
+              <Route path="/calm-magic-board" element={<CalmMagicBoard />} />
+              <Route path="/calm-magic-board/log" element={<GlitchLog />} />
+              <Route path="/calm-magic-board/events" element={<GlitchEvents />} />
+              <Route path="/calm-magic-board/insights" element={<GlitchInsights />} />
+              <Route path="/calm-magic-board/drift" element={<Drift />} />
+              <Route path="/calm-magic-board/prds" element={<PrdsDashboard />} />
+              <Route path="/calm-magic-board/prds/:id" element={<PrdEditor />} />
               <Route path="/prd-editor/:id" element={<PrdEditor />} />
               <Route path="/glitch-auth" element={<GlitchAuth />} />
               <Route path="/auth" element={<GlitchAuth />} />

@@ -91,7 +91,7 @@ const PrdsDashboard = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
-        navigate('/glitch-auth');
+        navigate('/auth');
         return;
       }
 
@@ -173,7 +173,7 @@ const PrdsDashboard = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Button variant="ghost" size="icon" onClick={() => navigate('/glitch-compass')}>
+              <Button variant="ghost" size="icon" onClick={() => navigate('/calm-magic-board')}>
                 <ArrowLeft className="w-5 h-5" />
               </Button>
               <div>
@@ -187,7 +187,7 @@ const PrdsDashboard = () => {
               </div>
             </div>
             
-            <Link to="/glitch-compass">
+            <Link to="/calm-magic-board">
               <Button className="bg-gradient-to-r from-rose-500 to-amber-500 text-white">
                 <Plus className="w-4 h-4 mr-2" />
                 New PRD
@@ -282,7 +282,7 @@ const PrdsDashboard = () => {
                 ? 'Try adjusting your filters'
                 : 'Complete a 64-tile cycle to generate your first Calm Magic PRD'}
             </p>
-            <Link to="/glitch-compass">
+            <Link to="/calm-magic-board">
               <Button>Start a Cycle</Button>
             </Link>
           </Card>
@@ -296,7 +296,7 @@ const PrdsDashboard = () => {
                 <Card 
                   key={prd.id} 
                   className="p-4 hover:shadow-lg transition-shadow cursor-pointer group"
-                  onClick={() => navigate(`/glitch-compass/prds/${prd.id}`)}
+                  onClick={() => navigate(`/calm-magic-board/prds/${prd.id}`)}
                 >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1 min-w-0">
@@ -324,14 +324,14 @@ const PrdsDashboard = () => {
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={(e) => {
                           e.stopPropagation();
-                          navigate(`/glitch-compass/prds/${prd.id}`);
+                          navigate(`/calm-magic-board/prds/${prd.id}`);
                         }}>
                           <Eye className="w-4 h-4 mr-2" />
                           View
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={(e) => {
                           e.stopPropagation();
-                          navigate(`/glitch-compass/prds/${prd.id}?edit=true`);
+                          navigate(`/calm-magic-board/prds/${prd.id}?edit=true`);
                         }}>
                           <Edit3 className="w-4 h-4 mr-2" />
                           Edit
