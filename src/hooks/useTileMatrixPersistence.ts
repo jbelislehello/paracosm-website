@@ -40,6 +40,8 @@ export const useTileMatrixPersistence = (board: Board = 'LOVE') => {
   const [polenEntries, setPolenEntries] = useState<PolenEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [recentlySyncedTiles, setRecentlySyncedTiles] = useState<Set<string>>(new Set());
+  const [recentlySyncedPolen, setRecentlySyncedPolen] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   // Check auth state
@@ -93,6 +95,28 @@ export const useTileMatrixPersistence = (board: Board = 'LOVE') => {
               tags: newEntry.tags || []
             }, ...prev];
           });
+          // Mark as recently synced for visual feedback
+          if (newEntry.tile_id) {
+            const row = Math.floor((newEntry.tile_id - 1) / 8);
+            const col = (newEntry.tile_id - 1) % 8;
+            const tileKey = `${row}-${col}`;
+            setRecentlySyncedTiles(prev => new Set(prev).add(tileKey));
+            setTimeout(() => {
+              setRecentlySyncedTiles(prev => {
+                const next = new Set(prev);
+                next.delete(tileKey);
+                return next;
+              });
+            }, 3000);
+          }
+          setRecentlySyncedPolen(prev => new Set(prev).add(newEntry.id));
+          setTimeout(() => {
+            setRecentlySyncedPolen(prev => {
+              const next = new Set(prev);
+              next.delete(newEntry.id);
+              return next;
+            });
+          }, 3000);
         }
       )
       .on(
@@ -149,10 +173,29 @@ export const useTileMatrixPersistence = (board: Board = 'LOVE') => {
         },
         (payload) => {
           const updatedCycle = payload.new as JournalCycle & { user_id: string };
+          const oldCycle = payload.old as JournalCycle;
           // Only update if it's the current board and cycle
           if (updatedCycle.board === board && !updatedCycle.completed_at) {
             setCurrentCycle(prev => {
               if (prev?.id === updatedCycle.id) {
+                // Find newly visited tiles for visual feedback
+                const oldVisited = new Set(oldCycle?.tiles_visited || []);
+                const newVisited = updatedCycle.tiles_visited || [];
+                newVisited.forEach(tileId => {
+                  if (!oldVisited.has(tileId)) {
+                    const row = Math.floor((tileId - 1) / 8);
+                    const col = (tileId - 1) % 8;
+                    const tileKey = `${row}-${col}`;
+                    setRecentlySyncedTiles(prevTiles => new Set(prevTiles).add(tileKey));
+                    setTimeout(() => {
+                      setRecentlySyncedTiles(prevTiles => {
+                        const next = new Set(prevTiles);
+                        next.delete(tileKey);
+                        return next;
+                      });
+                    }, 3000);
+                  }
+                });
                 return {
                   ...updatedCycle,
                   tiles_visited: updatedCycle.tiles_visited || []
@@ -490,6 +533,8 @@ export const useTileMatrixPersistence = (board: Board = 'LOVE') => {
     polenEntries,
     loading,
     saving,
+    recentlySyncedTiles,
+    recentlySyncedPolen,
     startNewCycle,
     visitTile,
     updatePhase,

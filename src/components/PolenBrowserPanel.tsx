@@ -70,11 +70,14 @@ const PolenBrowserPanel = ({ onClose, onTileClick }: PolenBrowserPanelProps) => 
   const [selectedCompass, setSelectedCompass] = useState<CompassType | null>(null);
   const [selectedFragmentType, setSelectedFragmentType] = useState<FragmentType | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [recentlySyncedIds, setRecentlySyncedIds] = useState<Set<string>>(new Set());
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       setIsAuthenticated(!!session?.user);
+      setUserId(session?.user?.id ?? null);
       if (session?.user) {
         fetchPolenEntries();
       } else {
@@ -85,6 +88,7 @@ const PolenBrowserPanel = ({ onClose, onTileClick }: PolenBrowserPanelProps) => 
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setIsAuthenticated(!!session?.user);
+      setUserId(session?.user?.id ?? null);
       if (session?.user) {
         fetchPolenEntries();
       }
@@ -92,6 +96,89 @@ const PolenBrowserPanel = ({ onClose, onTileClick }: PolenBrowserPanelProps) => 
 
     return () => subscription.unsubscribe();
   }, []);
+
+  // Real-time subscription for POLEN entries
+  useEffect(() => {
+    if (!userId) return;
+
+    const channel = supabase
+      .channel('polen-browser-realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'polen_entries',
+          filter: `user_id=eq.${userId}`
+        },
+        (payload) => {
+          const newEntry = payload.new as PolenEntry & { user_id: string };
+          setPolenEntries(prev => {
+            if (prev.some(e => e.id === newEntry.id)) return prev;
+            return [{
+              ...newEntry,
+              tags: newEntry.tags || [],
+              fragment_type: newEntry.fragment_type as FragmentType
+            }, ...prev];
+          });
+          // Mark as recently synced
+          setRecentlySyncedIds(prev => new Set(prev).add(newEntry.id));
+          setTimeout(() => {
+            setRecentlySyncedIds(prev => {
+              const next = new Set(prev);
+              next.delete(newEntry.id);
+              return next;
+            });
+          }, 3000);
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'polen_entries',
+          filter: `user_id=eq.${userId}`
+        },
+        (payload) => {
+          const updatedEntry = payload.new as PolenEntry & { user_id: string };
+          setPolenEntries(prev =>
+            prev.map(e => e.id === updatedEntry.id ? {
+              ...updatedEntry,
+              tags: updatedEntry.tags || [],
+              fragment_type: updatedEntry.fragment_type as FragmentType
+            } : e)
+          );
+          // Mark as recently synced
+          setRecentlySyncedIds(prev => new Set(prev).add(updatedEntry.id));
+          setTimeout(() => {
+            setRecentlySyncedIds(prev => {
+              const next = new Set(prev);
+              next.delete(updatedEntry.id);
+              return next;
+            });
+          }, 3000);
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'polen_entries',
+          filter: `user_id=eq.${userId}`
+        },
+        (payload) => {
+          const deletedEntry = payload.old as { id: string };
+          setPolenEntries(prev => prev.filter(e => e.id !== deletedEntry.id));
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [userId]);
 
   const fetchPolenEntries = async () => {
     try {
@@ -315,12 +402,22 @@ const PolenBrowserPanel = ({ onClose, onTileClick }: PolenBrowserPanelProps) => 
                     const FragmentIcon = FRAGMENT_ICONS[entry.fragment_type];
                     const compassTag = entry.tags.find(t => COMPASS_OPTIONS.some(c => c.id === t));
                     const compass = compassTag ? COMPASS_OPTIONS.find(c => c.id === compassTag) : null;
+                    const isRecentlySynced = recentlySyncedIds.has(entry.id);
                     
                     return (
                       <div 
                         key={entry.id}
-                        className="p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
+                        className={`p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors relative ${
+                          isRecentlySynced ? 'ring-2 ring-cyan-400 animate-pulse' : ''
+                        }`}
                       >
+                        {/* Sync indicator */}
+                        {isRecentlySynced && (
+                          <div className="absolute -top-1 -right-1 z-10">
+                            <div className="w-3 h-3 rounded-full bg-cyan-400 animate-ping" />
+                            <div className="absolute inset-0 w-3 h-3 rounded-full bg-cyan-500" />
+                          </div>
+                        )}
                         <div className="flex items-start gap-2">
                           <FragmentIcon className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
                           <div className="flex-1 min-w-0">
