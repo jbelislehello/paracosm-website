@@ -367,7 +367,7 @@ const CalmMagicBoard = () => {
             {!journeyStarted ? (
               <Button onClick={handleStartJourney} size="sm" className={`bg-gradient-to-r ${SEASON_COLORS[currentSeason]}`}>
                 <Play className="w-4 h-4 mr-1" />
-                Start {currentSeason}
+                Start Innovating
               </Button>
             ) : (
               <>
