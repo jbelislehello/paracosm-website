@@ -82,16 +82,23 @@ const MinimalistTileMatrix = ({
     { letter: 'S', name: 'SYSTEMS' },
   ];
 
-  // Row labels - left axis (AGENDAS/LENS/MAPS stages) - reversed for bottom-up orientation
+  // Row labels - left axis (from top to bottom visually)
   const rowLabels = [
-    { letter: 'P+A', name: 'Protocols & Architectures', stage: 'MAPS' },
-    { letter: 'S', name: 'Synergies', stage: 'MAPS' },
-    { letter: 'N', name: 'Norms', stage: 'ABOVE' },
-    { letter: 'C', name: 'Compasses', stage: 'LENS' },
-    { letter: 'I', name: 'Intuition', stage: 'LENS' },
-    { letter: 'G', name: 'Goals', stage: 'AGENDAS' },
-    { letter: 'A', name: 'Agilities', stage: 'AGENDAS' },
-    { letter: 'M', name: 'Mindsets', stage: 'AGENDAS' },
+    { letter: 'P+A', name: 'P+A' },
+    { letter: 'S', name: 'Synergies' },
+    { letter: 'N', name: 'Norms' },
+    { letter: 'C', name: 'Compasses' },
+    { letter: 'I', name: 'Intuition' },
+    { letter: 'G', name: 'Goals' },
+    { letter: 'A', name: 'Agilities' },
+    { letter: 'M', name: 'Mindsets' },
+  ];
+
+  // Stage groups with their row ranges (visual indices, top to bottom)
+  const stageGroups = [
+    { name: 'MAPS', startRow: 0, rowCount: 2 },   // P+A, Synergies
+    { name: 'LENS', startRow: 2, rowCount: 3 },   // Norms, Compasses, Intuition
+    { name: 'AGENDAS', startRow: 5, rowCount: 3 }, // Goals, Agilities, Mindsets
   ];
 
   const TILE_SIZE = 48;
@@ -238,19 +245,39 @@ const MinimalistTileMatrix = ({
         </span>
       </div>
 
-      {/* Row Labels - Left side */}
-      <div className="absolute -left-32 top-0 h-full flex flex-col justify-between py-1">
-        {rowLabels.map((row, idx) => (
-          <div 
-            key={`row-label-${idx}`}
-            className="h-12 flex items-center justify-end pr-2 text-right"
-          >
-            <div className="flex flex-col items-end">
-              <span className="text-xs font-medium text-muted-foreground">{row.stage}</span>
-              <span className="text-sm font-semibold">{row.name}</span>
+      {/* Row Labels - Left side with rotated stage acronyms */}
+      <div className="absolute -left-36 top-0 h-full flex" style={{ paddingTop: 16, paddingBottom: 16 }}>
+        {/* Stage acronyms column - rotated 90° */}
+        <div className="flex flex-col">
+          {stageGroups.map((stage) => (
+            <div 
+              key={stage.name}
+              className="flex items-center justify-center border-r border-border/30 pr-2"
+              style={{ 
+                height: stage.rowCount * (TILE_SIZE + GAP) - GAP,
+                writingMode: 'vertical-rl',
+                transform: 'rotate(180deg)'
+              }}
+            >
+              <span className="text-xs font-bold tracking-widest text-muted-foreground">
+                {stage.name}
+              </span>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+        
+        {/* Row names column */}
+        <div className="flex flex-col ml-2">
+          {rowLabels.map((row, idx) => (
+            <div 
+              key={`row-label-${idx}`}
+              className="flex items-center justify-end"
+              style={{ height: TILE_SIZE + (idx < 7 ? GAP : 0) }}
+            >
+              <span className="text-sm font-medium text-foreground/80">{row.name}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Main Grid Container */}
