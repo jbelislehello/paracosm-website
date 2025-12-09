@@ -440,13 +440,16 @@ const PrdGeneratorWizard = ({
               </>
             )}
 
-            {/* CHORDS Qualifier (always at bottom) */}
-            <ChordsQualifier
-              chords={chords}
-              onUpdate={setChords}
-            />
           </div>
         </ScrollArea>
+
+        {/* CHORDS Qualifier (fixed at bottom) */}
+        <div className="flex-shrink-0 border-t pt-4">
+          <ChordsQualifier
+            chords={chords}
+            onUpdate={setChords}
+          />
+        </div>
 
         {/* Actions */}
         <div className="flex-shrink-0 flex items-center justify-between pt-4 border-t">
