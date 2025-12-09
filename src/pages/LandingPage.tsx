@@ -117,7 +117,7 @@ const LandingPage = () => {
             <Link to="/agentic-ux" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">AI Leadership</Link>
             <Link to="/calm-magic-assistant" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Team Coaching</Link>
             <Link to="/drift" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Drift</Link>
-            <Link to="/glitch-compass" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Glitch Compass</Link>
+            <Link to="/calm-magic-board" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Calm Magic Board</Link>
             <a href="#events" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Events</a>
             <a href="#contact" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Contact</a>
           </nav>
@@ -135,9 +135,9 @@ const LandingPage = () => {
                 <Link to="/agentic-ux" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">AI Leadership</Link>
                 <Link to="/calm-magic-assistant" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Team Coaching</Link>
                 <Link to="/drift" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Drift</Link>
-                <Link to="/glitch-compass" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors flex items-center gap-2">
+                <Link to="/calm-magic-board" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors flex items-center gap-2">
                   <Grid3x3 className="h-4 w-4" />
-                  Glitch Compass
+                  Calm Magic Board
                 </Link>
                 <a href="#events" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Events</a>
                 <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Contact</a>
@@ -243,7 +243,7 @@ const LandingPage = () => {
                 <span className="text-sm font-medium text-purple-600 dark:text-purple-400">New Tool</span>
               </div>
               <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                GL!TCH Compass
+                Calm Magic Board
               </h2>
               <p className="text-lg text-muted-foreground">
                 Turn "something feels off" moments into gentle next steps. Map tensions, frictions, and conflicts onto a 260-tile matrix and receive wu-wei micro-action suggestions.
@@ -272,10 +272,10 @@ const LandingPage = () => {
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/glitch-compass">
+                <Link to="/calm-magic-board">
                   <Button className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-indigo-600 hover:to-purple-600 text-white">
                     <Grid3x3 className="mr-2 h-4 w-4" />
-                    Explore Glitch Compass
+                    Explore Calm Magic Board
                   </Button>
                 </Link>
                 <Link to="/auth">

@@ -39,7 +39,7 @@ const PrdEditor = () => {
 
     if (prdError || !prdData) {
       toast.error('PRD not found');
-      navigate('/glitch-compass/drift');
+      navigate('/calm-magic-board/drift');
       return;
     }
 
@@ -121,8 +121,8 @@ const PrdEditor = () => {
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted flex items-center justify-center">
         <Card className="p-8">
           <p className="text-lg">PRD not found</p>
-          <Button onClick={() => navigate('/glitch-compass')} className="mt-4">
-            Back to Glitch Compass
+          <Button onClick={() => navigate('/calm-magic-board')} className="mt-4">
+            Back to Calm Magic Board
           </Button>
         </Card>
       </div>
@@ -155,7 +155,7 @@ const PrdEditor = () => {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" onClick={() => navigate('/glitch-compass')}>
+            <Button variant="ghost" onClick={() => navigate('/calm-magic-board')}>
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
             </Button>

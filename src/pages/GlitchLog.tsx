@@ -221,7 +221,7 @@ const GlitchLog = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
       <div className="max-w-7xl mx-auto p-6 sm:p-8 lg:p-12 space-y-8">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" onClick={() => navigate('/glitch-compass')}>
+          <Button variant="ghost" onClick={() => navigate('/calm-magic-board')}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back
           </Button>

@@ -29,7 +29,7 @@ const GlitchAuth = () => {
 
       if (signInError) {
         // If sign in fails, try to sign up
-        const redirectUrl = `${window.location.origin}/glitch-compass`;
+        const redirectUrl = `${window.location.origin}/calm-magic-board`;
         const { error: signUpError, data } = await supabase.auth.signUp({
           email: demoEmail,
           password: demoPassword,
@@ -45,13 +45,13 @@ const GlitchAuth = () => {
 
         if (data.session) {
           toast.success('Demo account created and logged in!');
-          navigate('/glitch-compass');
+          navigate('/calm-magic-board');
         } else {
           toast.success('Demo account created! Please check email to confirm.');
         }
       } else {
         toast.success('Logged in as demo user!');
-        navigate('/glitch-compass');
+        navigate('/calm-magic-board');
       }
     } catch (error: any) {
       toast.error('Demo login failed');
@@ -68,7 +68,7 @@ const GlitchAuth = () => {
   const checkUser = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      navigate('/glitch-compass');
+      navigate('/calm-magic-board');
     }
   };
 
@@ -91,9 +91,9 @@ const GlitchAuth = () => {
           throw error;
         }
         toast.success('Welcome back!');
-        navigate('/glitch-compass');
+        navigate('/calm-magic-board');
       } else {
-        const redirectUrl = `${window.location.origin}/glitch-compass`;
+        const redirectUrl = `${window.location.origin}/calm-magic-board`;
         const { error, data } = await supabase.auth.signUp({
           email,
           password,
@@ -114,7 +114,7 @@ const GlitchAuth = () => {
         // Check if email confirmation is disabled (instant login)
         if (data.session) {
           toast.success('Account created successfully!');
-          navigate('/glitch-compass');
+          navigate('/calm-magic-board');
         } else {
           toast.success('Account created! Please check your email to confirm your account.');
         }
@@ -133,7 +133,7 @@ const GlitchAuth = () => {
           <div className="flex justify-center mb-4">
             <Compass className="h-12 w-12 text-primary" />
           </div>
-          <h1 className="text-3xl font-bold">Glitch Compass</h1>
+          <h1 className="text-3xl font-bold">Calm Magic Board</h1>
           <p className="text-muted-foreground">
             {isLogin ? 'Welcome back' : 'Create your account'}
           </p>

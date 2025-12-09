@@ -43,7 +43,7 @@ const SEASON_COLORS: Record<Season, string> = {
   ANTHEM: 'from-emerald-500 to-green-500',
 };
 
-const GlitchCompass = () => {
+const CalmMagicBoard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [todayTile, setTodayTile] = useState<Tile | null>(null);
@@ -358,7 +358,7 @@ const GlitchCompass = () => {
         <div className="max-w-[1800px] mx-auto flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              Glitch Compass
+              Calm Magic Board
             </h1>
             <p className="text-sm text-muted-foreground">
               Turn "something feels off" moments into gentle next steps
@@ -409,11 +409,11 @@ const GlitchCompass = () => {
               <Library className="w-4 h-4 mr-1" />
               Polen
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => navigate('/glitch-compass/events')}>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/calm-magic-board/events')}>
               <Calendar className="w-4 h-4 mr-1" />
               Journal
             </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate('/glitch-compass/drift')}>
+            <Button variant="outline" size="sm" onClick={() => navigate('/calm-magic-board/drift')}>
               <Sparkles className="w-4 h-4 mr-1" />
               Drift → PRD
             </Button>
@@ -488,4 +488,4 @@ const GlitchCompass = () => {
   );
 };
 
-export default GlitchCompass;
+export default CalmMagicBoard;
