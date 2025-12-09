@@ -2,7 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, BookOpen, Workflow, Gamepad2, Users } from 'lucide-react';
+import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, BookOpen, Workflow, Gamepad2, Users, Compass } from 'lucide-react';
 import { useState } from 'react';
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
@@ -10,9 +10,9 @@ type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-
 const COMPASSES: { id: CompassType; name: string; description: string; icon: React.ElementType; color: string }[] = [
   { id: 'narrative', name: 'Narrative', description: 'Story & diegetic framing', icon: BookOpen, color: 'from-rose-500 to-pink-500' },
   { id: 'workflow', name: 'Workflow', description: 'Process & methods', icon: Workflow, color: 'from-blue-500 to-cyan-500' },
-  { id: 'inquiry', name: 'Inquiry & Practices', description: 'Contemplative & ritual', icon: Sparkles, color: 'from-amber-500 to-orange-500' },
+  { id: 'inquiry', name: 'Inquiry', description: 'Contemplative & ritual', icon: Sparkles, color: 'from-amber-500 to-orange-500' },
   { id: 'playground', name: 'Playground', description: 'Experimentation & play', icon: Gamepad2, color: 'from-green-500 to-emerald-500' },
-  { id: 'human-dynamics', name: 'Human Dynamics', description: 'Relational & systemic', icon: Users, color: 'from-purple-500 to-indigo-500' },
+  { id: 'human-dynamics', name: 'Human', description: 'Relational & systemic', icon: Users, color: 'from-purple-500 to-indigo-500' },
 ];
 
 const rowLabels = [
@@ -46,6 +46,7 @@ interface TileDetailPanelProps {
   onClose: () => void;
   onSavePolen: (content: string, tileId: number) => Promise<void>;
   onNavigate: (row: number, col: number) => void;
+  onCompassChange: (compass: CompassType) => void;
 }
 
 const TileDetailPanel = ({
@@ -57,6 +58,7 @@ const TileDetailPanel = ({
   onClose,
   onSavePolen,
   onNavigate,
+  onCompassChange,
 }: TileDetailPanelProps) => {
   const [polenContent, setPolenContent] = useState('');
   const [showPolenForm, setShowPolenForm] = useState(false);
@@ -215,6 +217,29 @@ const TileDetailPanel = ({
         <Button variant="ghost" size="icon" onClick={onClose} className="shrink-0">
           <X className="w-4 h-4" />
         </Button>
+      </div>
+
+      {/* Compass Selector */}
+      <div className="p-3 border-b border-border/50 bg-background/50">
+        <div className="flex items-center gap-2 mb-2">
+          <Compass className="w-4 h-4 text-muted-foreground" />
+          <span className="text-xs text-muted-foreground font-medium">Select Compass Lens</span>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {COMPASSES.map((compass) => (
+            <Button
+              key={compass.id}
+              variant={activeCompass === compass.id ? "default" : "outline"}
+              size="sm"
+              onClick={() => onCompassChange(compass.id)}
+              className={`text-xs h-7 px-2 ${activeCompass === compass.id ? `bg-gradient-to-r ${compass.color} text-white border-0` : ''}`}
+              title={compass.description}
+            >
+              <compass.icon className="w-3 h-3 mr-1" />
+              {compass.name}
+            </Button>
+          ))}
+        </div>
       </div>
 
       {/* Content */}

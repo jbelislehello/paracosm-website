@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Calendar, TrendingUp, Library } from 'lucide-react';
+import { Sparkles, Calendar, TrendingUp, Library, Play, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import MinimalistTileMatrix from '@/components/MinimalistTileMatrix';
@@ -25,6 +25,13 @@ const GlitchCompass = () => {
   const [currentCycleNumber, setCurrentCycleNumber] = useState<CycleNumber>(1);
   const [showPolenBrowser, setShowPolenBrowser] = useState(false);
   const [currentZone, setCurrentZone] = useState<'safe' | 'stretch' | 'edge' | 'unexplored'>('safe');
+
+  // Journey tracking state
+  const [journeyStarted, setJourneyStarted] = useState(false);
+  const [journeyPath, setJourneyPath] = useState<Array<{ row: number; col: number }>>([]);
+
+  // Convert journeyPath to Set for matrix visualization
+  const visitedTiles = new Set(journeyPath.map(t => `${t.row}-${t.col}`));
 
   const {
     isAuthenticated,
@@ -94,13 +101,58 @@ const GlitchCompass = () => {
     }
   };
 
-  const handleTileClick = (row: number, col: number) => {
+  // Starting point enforcement handler
+  const handleStartJourney = () => {
+    setJourneyStarted(true);
+    setSelectedTile({ row: 0, col: 0 }); // Mindsets × Chances
+    setJourneyPath([{ row: 0, col: 0 }]);
+    toast.success('Journey started at Mindsets × Chances');
+  };
+
+  // Reset journey
+  const handleResetJourney = () => {
+    setJourneyStarted(false);
+    setJourneyPath([]);
+    setSelectedTile(null);
+    setActiveCompass(null);
+    toast.info('Journey reset');
+  };
+
+  // Navigate handler with journey tracking
+  const handleNavigate = (row: number, col: number) => {
     setSelectedTile({ row, col });
+    // Only add to path if not already in path (prevent duplicates on back-navigation)
+    const tileKey = `${row}-${col}`;
+    if (!visitedTiles.has(tileKey)) {
+      setJourneyPath(prev => [...prev, { row, col }]);
+    }
+  };
+
+  // Tile click handler with journey validation
+  const handleTileClick = (row: number, col: number) => {
+    if (!journeyStarted) {
+      // Before journey, don't allow random clicks - show prompt to start
+      toast.info('Click "Start Journey" to begin at Mindsets × Chances');
+      return;
+    }
+    
+    // During journey, only allow clicks on already-visited tiles (for review)
+    const tileKey = `${row}-${col}`;
+    if (visitedTiles.has(tileKey)) {
+      setSelectedTile({ row, col }); // Allow reviewing visited tiles
+    } else {
+      toast.info('Use GL!TCH/DRIFT/TUNE buttons to navigate to new tiles');
+    }
   };
 
   const handleSavePolen = async (content: string, tileId: number) => {
     await savePolenEntry(content, tileId, 'text', [activeCompass || 'general']);
     toast.success('Polen saved successfully');
+  };
+
+  // Compass change handler
+  const handleCompassChange = (compass: CompassType) => {
+    setActiveCompass(compass);
   };
 
   if (loading) {
@@ -125,6 +177,26 @@ const GlitchCompass = () => {
             </p>
           </div>
           
+          {/* Journey Status & Controls */}
+          <div className="flex items-center gap-3">
+            {!journeyStarted ? (
+              <Button onClick={handleStartJourney} className="bg-gradient-to-r from-primary to-purple-600">
+                <Play className="w-4 h-4 mr-2" />
+                Start Journey
+              </Button>
+            ) : (
+              <>
+                <Badge variant="outline" className="text-sm px-3 py-1 border-primary/50 text-primary">
+                  Step {journeyPath.length}/64
+                </Badge>
+                <Button variant="ghost" size="sm" onClick={handleResetJourney}>
+                  <RotateCcw className="w-4 h-4 mr-1" />
+                  Reset
+                </Button>
+              </>
+            )}
+          </div>
+
           {/* Today's Tile Summary */}
           {todayTile && (
             <div className="flex items-center gap-3">
@@ -187,6 +259,8 @@ const GlitchCompass = () => {
             <MinimalistTileMatrix 
               board={todayTile?.board || 'LOVE'}
               selectedTile={selectedTile}
+              visitedTiles={visitedTiles}
+              journeyPath={journeyPath}
               onTileClick={handleTileClick}
               cycleNumber={currentCycleNumber}
               showToleranceOverlay={true}
@@ -219,7 +293,8 @@ const GlitchCompass = () => {
               saving={saving}
               onClose={() => setSelectedTile(null)}
               onSavePolen={handleSavePolen}
-              onNavigate={(row, col) => setSelectedTile({ row, col })}
+              onNavigate={handleNavigate}
+              onCompassChange={handleCompassChange}
             />
           </div>
         )}
