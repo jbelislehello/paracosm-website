@@ -242,8 +242,8 @@ const MinimalistTileMatrix = ({
 
   return (
     <div className="relative inline-block">
-      {/* VELOCITY Arrow - Left side */}
-      <div className="absolute -left-12 top-1/2 -translate-y-1/2 flex flex-col items-center gap-1">
+      {/* VELOCITY Arrow - Far left side */}
+      <div className="absolute -left-48 top-1/2 -translate-y-1/2 flex flex-col items-center gap-1">
         <ArrowUp className="w-5 h-5 text-foreground" />
         <span 
           className="text-xs font-semibold tracking-widest text-foreground"
