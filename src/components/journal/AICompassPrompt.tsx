@@ -1,12 +1,15 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { Sparkles, Loader2, RefreshCw } from 'lucide-react';
+import { Sparkles, Loader2, RefreshCw, Save, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface AICompassPromptProps {
   prompt: string | null;
   isLoading: boolean;
+  isSaving?: boolean;
+  isSaved?: boolean;
   onGenerate: () => void;
+  onSave?: () => void;
   compassName: string;
   className?: string;
 }
@@ -14,7 +17,10 @@ interface AICompassPromptProps {
 export const AICompassPrompt: React.FC<AICompassPromptProps> = ({
   prompt,
   isLoading,
+  isSaving = false,
+  isSaved = false,
   onGenerate,
+  onSave,
   compassName,
   className,
 }) => {
@@ -25,24 +31,50 @@ export const AICompassPrompt: React.FC<AICompassPromptProps> = ({
           <Sparkles className="h-3 w-3" />
           AI Guide ({compassName} Lens)
         </span>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onGenerate}
-          disabled={isLoading}
-          className="h-6 px-2 text-xs"
-        >
-          {isLoading ? (
-            <Loader2 className="h-3 w-3 animate-spin" />
-          ) : prompt ? (
-            <RefreshCw className="h-3 w-3" />
-          ) : (
-            <>
-              <Sparkles className="h-3 w-3 mr-1" />
-              Generate
-            </>
+        <div className="flex items-center gap-1">
+          {prompt && onSave && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onSave}
+              disabled={isSaving || isSaved}
+              className="h-6 px-2 text-xs"
+              title="Save as Polen entry"
+            >
+              {isSaving ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : isSaved ? (
+                <>
+                  <Check className="h-3 w-3 mr-1 text-green-500" />
+                  <span className="text-green-500">Saved</span>
+                </>
+              ) : (
+                <>
+                  <Save className="h-3 w-3 mr-1" />
+                  Save
+                </>
+              )}
+            </Button>
           )}
-        </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onGenerate}
+            disabled={isLoading}
+            className="h-6 px-2 text-xs"
+          >
+            {isLoading ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : prompt ? (
+              <RefreshCw className="h-3 w-3" />
+            ) : (
+              <>
+                <Sparkles className="h-3 w-3 mr-1" />
+                Generate
+              </>
+            )}
+          </Button>
+        </div>
       </div>
 
       {isLoading && (

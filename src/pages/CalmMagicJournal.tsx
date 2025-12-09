@@ -223,6 +223,7 @@ const CalmMagicJournal = () => {
                     tile={selectedTileContent}
                     compass={activeCompass}
                     journeyMode={journeyMode}
+                    cycleId={currentCycle?.id}
                     onComplete={handleTileWorkflowComplete}
                   />
                   {/* Feminine-Safe PRD Panel */}
