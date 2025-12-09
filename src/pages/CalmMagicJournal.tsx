@@ -220,7 +220,9 @@ const CalmMagicJournal = () => {
               {selectedTileContent ? (
                 <>
                   <TileWorkflow 
-                    tile={selectedTileContent} 
+                    tile={selectedTileContent}
+                    compass={activeCompass}
+                    journeyMode={journeyMode}
                     onComplete={handleTileWorkflowComplete}
                   />
                   {/* Feminine-Safe PRD Panel */}

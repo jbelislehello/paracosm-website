@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Zap, Waves, Music, ChevronRight, Check, Sparkles } from 'lucide-react';
 import { TileContent, getPhaseColor, COLUMN_LABELS, ROW_LABELS } from '@/data/tileContents';
+import { CompassType, JourneyMode } from '@/types/journal-expansion';
+import { useCompassPrompt } from '@/hooks/useCompassPrompt';
+import { AICompassPrompt } from './AICompassPrompt';
+import { COMPASS_CONTENT } from '@/data/compassContent';
 
 interface TileWorkflowProps {
   tile: TileContent;
+  compass?: CompassType;
+  journeyMode?: JourneyMode;
   onComplete?: (data: TileWorkflowData) => void;
 }
 
@@ -21,12 +27,32 @@ export interface TileWorkflowData {
 
 type WorkflowStep = 'glitch' | 'drift' | 'tune' | 'complete';
 
-export const TileWorkflow: React.FC<TileWorkflowProps> = ({ tile, onComplete }) => {
+export const TileWorkflow: React.FC<TileWorkflowProps> = ({ 
+  tile, 
+  compass = 'narrative',
+  journeyMode = 'relational',
+  onComplete 
+}) => {
   const [step, setStep] = useState<WorkflowStep>('glitch');
   const [glitchResponse, setGlitchResponse] = useState('');
   const [driftOptions, setDriftOptions] = useState(['', '', '']);
   const [selectedDrift, setSelectedDrift] = useState<number | null>(null);
   const [tuneDeliverable, setTuneDeliverable] = useState('');
+
+  const { prompt, isLoading, generatePrompt } = useCompassPrompt({
+    compass,
+    journeyMode,
+    tile,
+  });
+
+  const compassName = COMPASS_CONTENT[compass]?.name || 'Compass';
+
+  // Auto-generate prompt when step changes
+  useEffect(() => {
+    if (step !== 'complete') {
+      generatePrompt(step, step === 'drift' || step === 'tune' ? glitchResponse : undefined);
+    }
+  }, [step, tile.id]);
 
   const handleDriftOptionChange = (index: number, value: string) => {
     const newOptions = [...driftOptions];
@@ -49,6 +75,13 @@ export const TileWorkflow: React.FC<TileWorkflowProps> = ({ tile, onComplete }) 
       });
     }
     setStep('complete');
+  };
+
+  const handleStepChange = (newStep: WorkflowStep) => {
+    setStep(newStep);
+    if (newStep !== 'complete') {
+      generatePrompt(newStep, newStep === 'drift' || newStep === 'tune' ? glitchResponse : undefined);
+    }
   };
 
   const phaseGradient = getPhaseColor(tile.phase);
@@ -84,9 +117,9 @@ export const TileWorkflow: React.FC<TileWorkflowProps> = ({ tile, onComplete }) 
           <React.Fragment key={s}>
             <button
               onClick={() => {
-                if (s === 'glitch') setStep(s);
-                if (s === 'drift' && canProceedFromGlitch) setStep(s);
-                if (s === 'tune' && canProceedFromDrift) setStep(s);
+                if (s === 'glitch') handleStepChange(s);
+                if (s === 'drift' && canProceedFromGlitch) handleStepChange(s);
+                if (s === 'tune' && canProceedFromDrift) handleStepChange(s);
               }}
               className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
                 step === s 
@@ -130,6 +163,15 @@ export const TileWorkflow: React.FC<TileWorkflowProps> = ({ tile, onComplete }) 
                 "{tile.glitchQuestion}"
               </p>
             </div>
+            
+            {/* AI Compass Prompt */}
+            <AICompassPrompt
+              prompt={prompt}
+              isLoading={isLoading}
+              onGenerate={() => generatePrompt('glitch')}
+              compassName={compassName}
+            />
+
             <Textarea
               placeholder="Capture the glitch in one sentence..."
               value={glitchResponse}
@@ -137,7 +179,7 @@ export const TileWorkflow: React.FC<TileWorkflowProps> = ({ tile, onComplete }) 
               className="min-h-[80px] bg-background/50 border-yellow-500/30 focus:border-yellow-400"
             />
             <Button 
-              onClick={() => setStep('drift')}
+              onClick={() => handleStepChange('drift')}
               disabled={!canProceedFromGlitch}
               className="w-full bg-yellow-600 hover:bg-yellow-700"
             >
@@ -161,6 +203,15 @@ export const TileWorkflow: React.FC<TileWorkflowProps> = ({ tile, onComplete }) 
             <p className="text-sm text-blue-200/70">
               Given your glitch: <span className="italic">"{glitchResponse}"</span>
             </p>
+            
+            {/* AI Compass Prompt */}
+            <AICompassPrompt
+              prompt={prompt}
+              isLoading={isLoading}
+              onGenerate={() => generatePrompt('drift', glitchResponse)}
+              compassName={compassName}
+            />
+
             <div className="space-y-3">
               {[0, 1, 2].map((index) => (
                 <div key={index} className="flex gap-2">
@@ -187,7 +238,7 @@ export const TileWorkflow: React.FC<TileWorkflowProps> = ({ tile, onComplete }) 
               Select the option you want to pursue by clicking its number
             </p>
             <Button 
-              onClick={() => setStep('tune')}
+              onClick={() => handleStepChange('tune')}
               disabled={!canProceedFromDrift}
               className="w-full bg-blue-600 hover:bg-blue-700"
             >
@@ -220,6 +271,15 @@ export const TileWorkflow: React.FC<TileWorkflowProps> = ({ tile, onComplete }) 
                 {tile.deliverable}
               </p>
             </div>
+            
+            {/* AI Compass Prompt */}
+            <AICompassPrompt
+              prompt={prompt}
+              isLoading={isLoading}
+              onGenerate={() => generatePrompt('tune', glitchResponse)}
+              compassName={compassName}
+            />
+
             <Textarea
               placeholder="Create your deliverable here..."
               value={tuneDeliverable}
