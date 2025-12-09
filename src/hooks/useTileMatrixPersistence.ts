@@ -1,0 +1,382 @@
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import type { Database } from '@/integrations/supabase/types';
+
+type Board = Database['public']['Enums']['board'];
+type JournalPhase = Database['public']['Enums']['journal_phase'];
+type ToleranceZone = Database['public']['Enums']['tolerance_zone'];
+
+interface JournalCycle {
+  id: string;
+  user_id: string;
+  board: Board;
+  cycle_number: number;
+  tiles_visited: number[];
+  current_tile_id: number | null;
+  phase: JournalPhase;
+  inner_radius: number;
+  stretch_radius: number;
+  current_distance: number;
+  current_zone: ToleranceZone;
+  integrator_tiles_unlocked: number;
+  started_at: string;
+  completed_at: string | null;
+}
+
+interface PolenEntry {
+  id: string;
+  content: string;
+  tile_id: number | null;
+  cycle_id: string | null;
+  fragment_type: string;
+  tags: string[];
+  created_at: string;
+}
+
+export const useTileMatrixPersistence = (board: Board = 'LOVE') => {
+  const [user, setUser] = useState<{ id: string } | null>(null);
+  const [currentCycle, setCurrentCycle] = useState<JournalCycle | null>(null);
+  const [polenEntries, setPolenEntries] = useState<PolenEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const { toast } = useToast();
+
+  // Check auth state
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Fetch current cycle when user is available
+  useEffect(() => {
+    if (user) {
+      fetchCurrentCycle();
+      fetchPolenEntries();
+    } else {
+      setCurrentCycle(null);
+      setPolenEntries([]);
+      setLoading(false);
+    }
+  }, [user, board]);
+
+  const fetchCurrentCycle = async () => {
+    if (!user) return;
+    
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('journal_cycles')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('board', board)
+        .is('completed_at', null)
+        .order('created_at', { ascending: false })
+        .maybeSingle();
+
+      if (error) throw error;
+      
+      if (data) {
+        setCurrentCycle({
+          ...data,
+          tiles_visited: data.tiles_visited || []
+        });
+      } else {
+        setCurrentCycle(null);
+      }
+    } catch (error) {
+      console.error('Error fetching cycle:', error);
+      toast({
+        title: 'Error loading progress',
+        description: 'Could not load your saved progress.',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchPolenEntries = async () => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('polen_entries')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setPolenEntries(data?.map(entry => ({
+        ...entry,
+        tags: entry.tags || []
+      })) || []);
+    } catch (error) {
+      console.error('Error fetching polen:', error);
+    }
+  };
+
+  const startNewCycle = async (cycleNumber: number = 1) => {
+    if (!user) {
+      toast({
+        title: 'Login required',
+        description: 'Please log in to save your progress.',
+        variant: 'destructive'
+      });
+      return null;
+    }
+
+    try {
+      setSaving(true);
+      const { data, error } = await supabase
+        .from('journal_cycles')
+        .insert({
+          user_id: user.id,
+          board,
+          cycle_number: cycleNumber,
+          tiles_visited: [],
+          phase: 'glitch' as JournalPhase,
+          inner_radius: 1,
+          stretch_radius: 2,
+          current_distance: 0,
+          current_zone: 'inner' as ToleranceZone,
+          integrator_tiles_unlocked: 0
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      
+      setCurrentCycle({
+        ...data,
+        tiles_visited: data.tiles_visited || []
+      });
+      
+      toast({
+        title: 'New cycle started',
+        description: `Cycle ${cycleNumber} on ${board} board has begun.`
+      });
+      
+      return data;
+    } catch (error) {
+      console.error('Error starting cycle:', error);
+      toast({
+        title: 'Error starting cycle',
+        description: 'Could not start a new cycle.',
+        variant: 'destructive'
+      });
+      return null;
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const visitTile = async (row: number, col: number) => {
+    if (!user || !currentCycle) return;
+
+    const tileId = row * 8 + col + 1; // 1-indexed tile ID
+    const tilesVisited = currentCycle.tiles_visited || [];
+    
+    if (tilesVisited.includes(tileId)) return; // Already visited
+
+    try {
+      setSaving(true);
+      const newTilesVisited = [...tilesVisited, tileId];
+      
+      const { error } = await supabase
+        .from('journal_cycles')
+        .update({
+          tiles_visited: newTilesVisited,
+          current_tile_id: tileId,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', currentCycle.id);
+
+      if (error) throw error;
+
+      setCurrentCycle(prev => prev ? {
+        ...prev,
+        tiles_visited: newTilesVisited,
+        current_tile_id: tileId
+      } : null);
+    } catch (error) {
+      console.error('Error visiting tile:', error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const updatePhase = async (phase: JournalPhase) => {
+    if (!user || !currentCycle) return;
+
+    try {
+      setSaving(true);
+      const { error } = await supabase
+        .from('journal_cycles')
+        .update({
+          phase,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', currentCycle.id);
+
+      if (error) throw error;
+
+      setCurrentCycle(prev => prev ? { ...prev, phase } : null);
+    } catch (error) {
+      console.error('Error updating phase:', error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const updateToleranceZone = async (zone: ToleranceZone, innerRadius?: number, stretchRadius?: number) => {
+    if (!user || !currentCycle) return;
+
+    try {
+      setSaving(true);
+      const updateData: Partial<JournalCycle> & { updated_at: string } = {
+        current_zone: zone,
+        updated_at: new Date().toISOString()
+      };
+      
+      if (innerRadius !== undefined) updateData.inner_radius = innerRadius;
+      if (stretchRadius !== undefined) updateData.stretch_radius = stretchRadius;
+
+      const { error } = await supabase
+        .from('journal_cycles')
+        .update(updateData)
+        .eq('id', currentCycle.id);
+
+      if (error) throw error;
+
+      setCurrentCycle(prev => prev ? { 
+        ...prev, 
+        current_zone: zone,
+        ...(innerRadius !== undefined && { inner_radius: innerRadius }),
+        ...(stretchRadius !== undefined && { stretch_radius: stretchRadius })
+      } : null);
+    } catch (error) {
+      console.error('Error updating zone:', error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const savePolenEntry = async (
+    content: string, 
+    tileId: number | null, 
+    fragmentType: 'text' | 'quote' | 'image' | 'voice' | 'screenshot' | 'link' = 'text',
+    tags: string[] = []
+  ) => {
+    if (!user) {
+      toast({
+        title: 'Login required',
+        description: 'Please log in to save polen entries.',
+        variant: 'destructive'
+      });
+      return null;
+    }
+
+    try {
+      setSaving(true);
+      const { data, error } = await supabase
+        .from('polen_entries')
+        .insert({
+          user_id: user.id,
+          cycle_id: currentCycle?.id || null,
+          tile_id: tileId,
+          content,
+          fragment_type: fragmentType,
+          tags
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      
+      setPolenEntries(prev => [{
+        ...data,
+        tags: data.tags || []
+      }, ...prev]);
+      
+      toast({
+        title: 'Polen saved',
+        description: 'Your fragment has been captured.'
+      });
+      
+      return data;
+    } catch (error) {
+      console.error('Error saving polen:', error);
+      toast({
+        title: 'Error saving',
+        description: 'Could not save your polen entry.',
+        variant: 'destructive'
+      });
+      return null;
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const completeCycle = async () => {
+    if (!user || !currentCycle) return;
+
+    try {
+      setSaving(true);
+      const { error } = await supabase
+        .from('journal_cycles')
+        .update({
+          completed_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', currentCycle.id);
+
+      if (error) throw error;
+
+      toast({
+        title: 'Cycle completed!',
+        description: `You've completed cycle ${currentCycle.cycle_number} on the ${board} board.`
+      });
+
+      setCurrentCycle(null);
+    } catch (error) {
+      console.error('Error completing cycle:', error);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const getVisitedTilesSet = useCallback(() => {
+    if (!currentCycle?.tiles_visited) return new Set<string>();
+    return new Set(currentCycle.tiles_visited.map(tileId => {
+      const row = Math.floor((tileId - 1) / 8);
+      const col = (tileId - 1) % 8;
+      return `${row}-${col}`;
+    }));
+  }, [currentCycle]);
+
+  return {
+    user,
+    currentCycle,
+    polenEntries,
+    loading,
+    saving,
+    startNewCycle,
+    visitTile,
+    updatePhase,
+    updateToleranceZone,
+    savePolenEntry,
+    completeCycle,
+    getVisitedTilesSet,
+    isAuthenticated: !!user
+  };
+};
