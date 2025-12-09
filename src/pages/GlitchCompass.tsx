@@ -7,7 +7,6 @@ import { Card } from '@/components/ui/card';
 import { Sparkles, Calendar, TrendingUp, Grid3x3 } from 'lucide-react';
 import { toast } from 'sonner';
 import TileMatrix from '@/components/TileMatrix';
-import TileMatrixVisualization from '@/components/TileMatrixVisualization';
 
 const GlitchCompass = () => {
   const navigate = useNavigate();
@@ -15,10 +14,6 @@ const GlitchCompass = () => {
   const [todayTile, setTodayTile] = useState<Tile | null>(null);
   const [loading, setLoading] = useState(true);
   const [showMatrix, setShowMatrix] = useState(false);
-  const [showVisualization, setShowVisualization] = useState(false);
-  const [currentPass, setCurrentPass] = useState<1 | 2 | 3 | 4>(1);
-  const [visitedTiles] = useState<Set<string>>(new Set());
-  const [selectedTile, setSelectedTile] = useState<{ row: number; col: number } | null>(null);
 
   useEffect(() => {
     checkAuth();
@@ -194,72 +189,16 @@ const GlitchCompass = () => {
           </Card>
         </div>
 
-        {/* Visual Matrix with L.O.V.E. Axes */}
-        <Card className="p-6 space-y-4">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div className="space-y-1">
-              <h3 className="font-semibold text-lg flex items-center gap-2">
-                <Grid3x3 className="h-5 w-5" />
-                Tile Matrix Visualization
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Concentric tolerance passes with L.O.V.E. axes (Velocity × Longevity)
-              </p>
-            </div>
-            <div className="flex gap-2 items-center">
-              <div className="flex gap-1">
-                {([1, 2, 3, 4] as const).map(pass => (
-                  <Button
-                    key={pass}
-                    size="sm"
-                    variant={currentPass >= pass ? "default" : "outline"}
-                    onClick={() => setCurrentPass(pass)}
-                    className={`w-8 h-8 p-0 ${
-                      pass === 1 ? 'bg-emerald-500 hover:bg-emerald-600' :
-                      pass === 2 ? 'bg-blue-500 hover:bg-blue-600' :
-                      pass === 3 ? 'bg-amber-500 hover:bg-amber-600' :
-                      'bg-purple-500 hover:bg-purple-600'
-                    } ${currentPass < pass ? 'opacity-40' : ''}`}
-                  >
-                    {pass}
-                  </Button>
-                ))}
-              </div>
-              <Button 
-                variant={showVisualization ? "default" : "outline"}
-                onClick={() => setShowVisualization(!showVisualization)}
-              >
-                {showVisualization ? 'Hide' : 'Show'} Visualization
-              </Button>
-            </div>
-          </div>
-
-          {showVisualization && (
-            <div className="pt-6 border-t">
-              <TileMatrixVisualization 
-                board={todayTile?.board as any || 'LOVE'}
-                currentPass={currentPass}
-                visitedTiles={visitedTiles}
-                selectedTile={selectedTile}
-                onTileClick={(row, col) => {
-                  setSelectedTile({ row, col });
-                  toast.info(`Selected tile: Row ${row + 1}, Col ${col + 1}`);
-                }}
-              />
-            </div>
-          )}
-        </Card>
-
-        {/* Original Matrix Toggle */}
+        {/* Matrix Toggle */}
         <Card className="p-6 space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <h3 className="font-semibold text-lg flex items-center gap-2">
                 <Grid3x3 className="h-5 w-5" />
-                Full Tile Matrix
+                Tile Matrix
               </h3>
               <p className="text-sm text-muted-foreground">
-                Interactive 8×8 matrix with POLEN capture
+                8×8 matrix with L.O.V.E. axes, tolerance passes & POLEN capture
               </p>
             </div>
             <Button 
