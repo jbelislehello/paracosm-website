@@ -69,6 +69,70 @@ export const useTileMatrixPersistence = (board: Board = 'LOVE') => {
     }
   }, [user, board]);
 
+  // Real-time subscription for POLEN entries
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel('polen-entries-realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'polen_entries',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          const newEntry = payload.new as PolenEntry & { user_id: string };
+          setPolenEntries(prev => {
+            // Avoid duplicates (in case we already added it locally)
+            if (prev.some(e => e.id === newEntry.id)) return prev;
+            return [{
+              ...newEntry,
+              tags: newEntry.tags || []
+            }, ...prev];
+          });
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'polen_entries',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          const updatedEntry = payload.new as PolenEntry & { user_id: string };
+          setPolenEntries(prev => 
+            prev.map(e => e.id === updatedEntry.id ? {
+              ...updatedEntry,
+              tags: updatedEntry.tags || []
+            } : e)
+          );
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'polen_entries',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          const deletedEntry = payload.old as { id: string };
+          setPolenEntries(prev => prev.filter(e => e.id !== deletedEntry.id));
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
+
   const fetchCurrentCycle = async () => {
     if (!user) return;
     
