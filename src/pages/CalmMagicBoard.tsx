@@ -4,13 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Calendar, TrendingUp, Library, Play, RotateCcw, FileText } from 'lucide-react';
+import { Sparkles, Calendar, Library, Play, RotateCcw, FileText } from 'lucide-react';
 import { toast } from 'sonner';
-import { cn } from '@/lib/utils';
 import MinimalistTileMatrix from '@/components/MinimalistTileMatrix';
 import TileDetailPanel from '@/components/TileDetailPanel';
 import PolenBrowserPanel from '@/components/PolenBrowserPanel';
 import { useTileMatrixPersistence } from '@/hooks/useTileMatrixPersistence';
+import { useSeasonPersistence } from '@/hooks/useSeasonPersistence';
 import { CycleNumber } from '@/types/journal-expansion';
 import SeasonProgressBar from '@/components/prd-generator/SeasonProgressBar';
 import SeasonCompletionModal from '@/components/prd-generator/SeasonCompletionModal';
@@ -54,21 +54,19 @@ const CalmMagicBoard = () => {
   const [showPolenBrowser, setShowPolenBrowser] = useState(false);
   const [currentZone, setCurrentZone] = useState<'safe' | 'stretch' | 'edge' | 'unexplored'>('safe');
 
-  // Journey tracking state
-  const [journeyStarted, setJourneyStarted] = useState(false);
-  const [journeyPath, setJourneyPath] = useState<Array<{ row: number; col: number }>>([]);
-
-  // Season tracking state
-  const [currentSeason, setCurrentSeason] = useState<Season>('POLLEN');
-  const [seasonProgress, setSeasonProgress] = useState<Record<Season, Set<string>>>({
-    POLLEN: new Set(),
-    POEM: new Set(),
-    TOTEM: new Set(),
-    ANTHEM: new Set(),
-  });
-  const [completedSeasons, setCompletedSeasons] = useState<Season[]>([]);
-  const [freeTilesUnlocked, setFreeTilesUnlocked] = useState(false);
-  const [prdId, setPrdId] = useState<string | null>(null);
+  // Persisted season state from localStorage
+  const {
+    currentSeason,
+    seasonProgress,
+    completedSeasons,
+    freeTilesUnlocked,
+    prdId,
+    journeyStarted,
+    journeyPath,
+    updateProgress,
+    resetProgress,
+    isLoading: progressLoading,
+  } = useSeasonPersistence();
   
   // Season completion modal state
   const [showSeasonModal, setShowSeasonModal] = useState(false);
@@ -154,51 +152,38 @@ const CalmMagicBoard = () => {
 
   // Starting point enforcement handler
   const handleStartJourney = () => {
-    setJourneyStarted(true);
+    updateProgress({
+      journeyStarted: true,
+      journeyPath: [{ row: 0, col: 0 }],
+      seasonProgress: {
+        ...seasonProgress,
+        [currentSeason]: new Set(seasonProgress[currentSeason]).add('0-0')
+      }
+    });
     setSelectedTile({ row: 0, col: 0 }); // Mindsets × Chances
-    setJourneyPath([{ row: 0, col: 0 }]);
-    
-    // Add to current season progress
-    setSeasonProgress(prev => ({
-      ...prev,
-      [currentSeason]: new Set(prev[currentSeason]).add('0-0')
-    }));
-    
     toast.success(`${currentSeason} season started at Mindsets × Chances`);
   };
 
   // Reset journey (current season only)
   const handleResetJourney = () => {
-    setJourneyStarted(false);
-    setJourneyPath([]);
+    updateProgress({
+      journeyStarted: false,
+      journeyPath: [],
+      seasonProgress: {
+        ...seasonProgress,
+        [currentSeason]: new Set()
+      }
+    });
     setSelectedTile(null);
     setActiveCompass(null);
-    
-    // Reset current season progress
-    setSeasonProgress(prev => ({
-      ...prev,
-      [currentSeason]: new Set()
-    }));
-    
     toast.info(`${currentSeason} season reset`);
   };
 
   // Reset entire cycle (all seasons)
   const handleResetCycle = () => {
-    setJourneyStarted(false);
-    setJourneyPath([]);
+    resetProgress();
     setSelectedTile(null);
     setActiveCompass(null);
-    setCurrentSeason('POLLEN');
-    setSeasonProgress({
-      POLLEN: new Set(),
-      POEM: new Set(),
-      TOTEM: new Set(),
-      ANTHEM: new Set(),
-    });
-    setCompletedSeasons([]);
-    setFreeTilesUnlocked(false);
-    setPrdId(null);
     toast.info('Full cycle reset');
   };
 
@@ -209,22 +194,21 @@ const CalmMagicBoard = () => {
     
     // Add to journey path if not already visited in this season
     if (!visitedTiles.has(tileKey)) {
-      setJourneyPath(prev => [...prev, { row, col }]);
+      const newJourneyPath = [...journeyPath, { row, col }];
+      const newSeasonTiles = new Set(seasonProgress[currentSeason]).add(tileKey);
       
-      // Update season progress
-      setSeasonProgress(prev => {
-        const newSeasonTiles = new Set(prev[currentSeason]).add(tileKey);
-        
-        // Check if season is complete
-        if (newSeasonTiles.size >= 64) {
-          setTimeout(() => checkSeasonCompletion(currentSeason, newSeasonTiles), 500);
-        }
-        
-        return {
-          ...prev,
+      updateProgress({
+        journeyPath: newJourneyPath,
+        seasonProgress: {
+          ...seasonProgress,
           [currentSeason]: newSeasonTiles
-        };
+        }
       });
+      
+      // Check if season is complete
+      if (newSeasonTiles.size >= 64) {
+        setTimeout(() => checkSeasonCompletion(currentSeason, newSeasonTiles), 500);
+      }
     }
   };
 
@@ -255,21 +239,26 @@ const CalmMagicBoard = () => {
 
   // Handle season completion - continue to next season
   const handleSeasonContinue = () => {
-    // Mark current season as completed
-    setCompletedSeasons(prev => [...prev, currentSeason]);
+    const newCompletedSeasons = [...completedSeasons, currentSeason];
     
     // Advance to next season
     const currentIndex = SEASON_ORDER.indexOf(currentSeason);
     if (currentIndex < SEASON_ORDER.length - 1) {
       const nextSeason = SEASON_ORDER[currentIndex + 1];
-      setCurrentSeason(nextSeason);
-      setJourneyStarted(false);
-      setJourneyPath([]);
+      updateProgress({
+        completedSeasons: newCompletedSeasons,
+        currentSeason: nextSeason,
+        journeyStarted: false,
+        journeyPath: [],
+      });
       setSelectedTile(null);
       toast.success(`Advanced to ${nextSeason} season!`);
     } else {
       // All seasons complete - unlock FREE
-      setFreeTilesUnlocked(true);
+      updateProgress({
+        completedSeasons: newCompletedSeasons,
+        freeTilesUnlocked: true,
+      });
       toast.success('All seasons complete! FREE tiles unlocked!');
     }
     
@@ -317,7 +306,7 @@ const CalmMagicBoard = () => {
           .single();
 
         if (insertError) throw insertError;
-        setPrdId(newPrd.id);
+        updateProgress({ prdId: newPrd.id });
       } else {
         // Update existing PRD with new layer
         await supabase
@@ -343,10 +332,10 @@ const CalmMagicBoard = () => {
     return 0; // Placeholder - will be populated from actual data
   };
 
-  if (loading) {
+  if (loading || progressLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted">
-        <div className="animate-pulse text-foreground">Loading...</div>
+        <div className="animate-pulse text-foreground">Loading your journey...</div>
       </div>
     );
   }
