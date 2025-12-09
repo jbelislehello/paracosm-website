@@ -1,7 +1,17 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useState } from 'react';
-import { ArrowUp, ArrowRight, ArrowDown } from 'lucide-react';
+import { ArrowUp, ArrowRight, ArrowDown, BookOpen, Workflow, Sparkles, Gamepad2, Users } from 'lucide-react';
+
+type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
+
+const COMPASSES: { id: CompassType; name: string; description: string; icon: React.ElementType; color: string }[] = [
+  { id: 'narrative', name: 'Narrative', description: 'Story & diegetic framing', icon: BookOpen, color: 'from-rose-500 to-pink-500' },
+  { id: 'workflow', name: 'Workflow', description: 'Process & methods', icon: Workflow, color: 'from-blue-500 to-cyan-500' },
+  { id: 'inquiry', name: 'Inquiry & Practices', description: 'Contemplative & ritual', icon: Sparkles, color: 'from-amber-500 to-orange-500' },
+  { id: 'playground', name: 'Playground', description: 'Experimentation & play', icon: Gamepad2, color: 'from-green-500 to-emerald-500' },
+  { id: 'human-dynamics', name: 'Human Dynamics', description: 'Relational & systemic', icon: Users, color: 'from-purple-500 to-indigo-500' },
+];
 
 interface TileMatrixProps {
   board?: 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
@@ -10,6 +20,7 @@ interface TileMatrixProps {
 
 const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
   const [selectedTile, setSelectedTile] = useState<{ row: number; col: number } | null>(null);
+  const [activeCompass, setActiveCompass] = useState<CompassType | null>(null);
   
   // Corrected row labels: MAGIC integration (M/A/G/I/C) + N/S/P+A
   const rowLabels = [
@@ -100,6 +111,45 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
         <p className="text-muted-foreground text-sm">8×8 Tile Matrix • MAGIC Integration • Click a tile to see movement pattern</p>
       </div>
 
+      {/* 5 Compasses Selector */}
+      <Card className="p-4 bg-gradient-to-r from-background to-muted/20">
+        <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-purple-400" />
+          5 Compasses (Row C - Lens Layer)
+        </h4>
+        <div className="flex flex-wrap gap-2">
+          {COMPASSES.map((compass) => {
+            const Icon = compass.icon;
+            const isActive = activeCompass === compass.id;
+            return (
+              <button
+                key={compass.id}
+                onClick={() => setActiveCompass(isActive ? null : compass.id)}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg border-2 transition-all hover:scale-105 ${
+                  isActive
+                    ? `bg-gradient-to-r ${compass.color} text-white border-transparent shadow-lg`
+                    : 'bg-background border-border hover:border-primary/50'
+                }`}
+              >
+                <Icon className="w-4 h-4" />
+                <div className="text-left">
+                  <div className="text-xs font-medium">{compass.name}</div>
+                  <div className={`text-[10px] ${isActive ? 'text-white/80' : 'text-muted-foreground'}`}>
+                    {compass.description}
+                  </div>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+        {activeCompass && (
+          <p className="text-xs text-muted-foreground mt-2">
+            Active lens: <span className="font-medium text-primary">{COMPASSES.find(c => c.id === activeCompass)?.name}</span> — 
+            Row C (Compasses) tiles will use this interpretive frame
+          </p>
+        )}
+      </Card>
+
       {/* Matrix Container */}
       <div className="relative overflow-x-auto">
         <div className="min-w-[900px] space-y-4">
@@ -149,17 +199,22 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
                   <div key={`row-${rowIdx}`} className="flex items-center gap-1">
                     {/* Row Label */}
                     <div 
-                      className={`w-24 h-16 flex flex-col items-center justify-center font-bold border-2 rounded text-xs ${
+                      className={`w-24 h-16 flex flex-col items-center justify-center font-bold border-2 rounded text-xs transition-all ${
                         rowInfo.magic 
                           ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-purple-500/30' 
                           : 'bg-amber-500/10 border-amber-500/30'
-                      }`}
+                      } ${rowIdx === 4 && activeCompass ? 'ring-2 ring-primary ring-offset-1 animate-pulse' : ''}`}
                       title={rowInfo.connectsTo ? `Connects to ${rowInfo.connectsTo}` : undefined}
                     >
                       <span className="text-lg">{rowInfo.letter}</span>
                       <span className="text-[9px] text-muted-foreground text-center leading-tight">{rowInfo.name}</span>
                       {rowInfo.connectsTo && (
                         <span className="text-[8px] text-purple-400">↔ {rowInfo.connectsTo}</span>
+                      )}
+                      {rowIdx === 4 && activeCompass && (
+                        <span className="text-[8px] text-primary font-bold">
+                          {COMPASSES.find(c => c.id === activeCompass)?.name}
+                        </span>
                       )}
                     </div>
 
