@@ -1,11 +1,12 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useState, useEffect } from 'react';
-import { ArrowUp, ArrowRight, ArrowDown, BookOpen, Workflow, Sparkles, Gamepad2, Users, Circle, Target, LogIn, Save, Loader2 } from 'lucide-react';
+import { ArrowUp, ArrowRight, ArrowDown, BookOpen, Workflow, Sparkles, Gamepad2, Users, Circle, Target, LogIn, Save, Loader2, Library } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useTileMatrixPersistence } from '@/hooks/useTileMatrixPersistence';
+import PolenBrowserPanel from './PolenBrowserPanel';
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
 type TolerancePass = 1 | 2 | 3 | 4;
@@ -50,6 +51,7 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
   const [showToleranceView, setShowToleranceView] = useState(false);
   const [polenContent, setPolenContent] = useState('');
   const [showPolenForm, setShowPolenForm] = useState(false);
+  const [showPolenBrowser, setShowPolenBrowser] = useState(false);
 
   // Sync visited tiles from Supabase
   useEffect(() => {
@@ -376,7 +378,29 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
           <Target className="w-4 h-4 inline mr-2" />
           {showToleranceView ? 'Hide' : 'Show'} Window of Tolerance
         </button>
+        <button
+          onClick={() => setShowPolenBrowser(!showPolenBrowser)}
+          className={`mt-2 ml-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+            showPolenBrowser
+              ? 'bg-amber-500 text-white'
+              : 'bg-muted hover:bg-muted/80'
+          }`}
+        >
+          <Library className="w-4 h-4 inline mr-2" />
+          {showPolenBrowser ? 'Hide' : 'Browse'} POLEN
+        </button>
       </div>
+
+      {/* POLEN Browser */}
+      {showPolenBrowser && (
+        <PolenBrowserPanel 
+          onClose={() => setShowPolenBrowser(false)}
+          onTileClick={(row, col) => {
+            setSelectedTile({ row, col });
+            setShowPolenBrowser(false);
+          }}
+        />
+      )}
 
       {/* Window of Tolerance Expansion Visualization */}
       {showToleranceView && (
