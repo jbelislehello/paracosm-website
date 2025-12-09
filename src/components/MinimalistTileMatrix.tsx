@@ -1,17 +1,75 @@
-import { useState, useEffect } from 'react';
 import { ArrowUp, ArrowRight } from 'lucide-react';
 
+type BoardType = 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
+
 interface MinimalistTileMatrixProps {
+  board?: BoardType;
   selectedTile?: { row: number; col: number } | null;
   visitedTiles?: Set<string>;
   onTileClick?: (row: number, col: number) => void;
 }
 
+// Board color system using HSL values
+const getBoardColors = (board: BoardType) => {
+  switch (board) {
+    case 'LOVE': 
+      return { 
+        primary: 'hsl(347 77% 50%)', 
+        bg: 'hsl(347 77% 50% / 0.1)',
+        border: 'hsl(347 77% 50% / 0.4)',
+        ring: 'hsl(347 77% 50%)',
+        text: 'hsl(347 77% 50%)'
+      };
+    case 'MAGIC': 
+      return { 
+        primary: 'hsl(258 90% 66%)', 
+        bg: 'hsl(258 90% 66% / 0.1)',
+        border: 'hsl(258 90% 66% / 0.4)',
+        ring: 'hsl(258 90% 66%)',
+        text: 'hsl(258 90% 66%)'
+      };
+    case 'CALM': 
+      return { 
+        primary: 'hsl(217 91% 60%)', 
+        bg: 'hsl(217 91% 60% / 0.1)',
+        border: 'hsl(217 91% 60% / 0.4)',
+        ring: 'hsl(217 91% 60%)',
+        text: 'hsl(217 91% 60%)'
+      };
+    case 'OPEN': 
+      return { 
+        primary: 'hsl(142 71% 45%)', 
+        bg: 'hsl(142 71% 45% / 0.1)',
+        border: 'hsl(142 71% 45% / 0.4)',
+        ring: 'hsl(142 71% 45%)',
+        text: 'hsl(142 71% 45%)'
+      };
+    case 'FREE': 
+      return { 
+        primary: 'hsl(38 92% 50%)', 
+        bg: 'hsl(38 92% 50% / 0.1)',
+        border: 'hsl(38 92% 50% / 0.4)',
+        ring: 'hsl(38 92% 50%)',
+        text: 'hsl(38 92% 50%)'
+      };
+    default: 
+      return { 
+        primary: 'hsl(215 16% 47%)', 
+        bg: 'hsl(215 16% 47% / 0.1)',
+        border: 'hsl(215 16% 47% / 0.4)',
+        ring: 'hsl(215 16% 47%)',
+        text: 'hsl(215 16% 47%)'
+      };
+  }
+};
+
 const MinimalistTileMatrix = ({ 
+  board = 'LOVE',
   selectedTile,
   visitedTiles = new Set(),
   onTileClick 
 }: MinimalistTileMatrixProps) => {
+  const colors = getBoardColors(board);
   // Column labels - bottom axis (CHORDS + MAPS)
   const colLabels = [
     { letter: 'C', name: 'CHANCES TAKEN' },
@@ -237,28 +295,39 @@ const MinimalistTileMatrix = ({
                   onClick={() => handleTileClick(visualRow, col)}
                   className={`
                     relative rounded-sm transition-all duration-200
-                    border border-dashed
+                    border border-dashed flex items-center justify-center
                     ${selected 
-                      ? 'border-primary border-solid bg-primary/10 ring-2 ring-primary ring-offset-1' 
+                      ? 'border-solid ring-2 ring-offset-1' 
                       : visited
                         ? 'border-foreground/40 bg-foreground/5'
                         : 'border-muted-foreground/30 hover:border-foreground/50 hover:bg-muted/30'
                     }
                   `}
-                  style={{ width: TILE_SIZE, height: TILE_SIZE }}
+                  style={{ 
+                    width: TILE_SIZE, 
+                    height: TILE_SIZE,
+                    ...(selected ? {
+                      borderColor: colors.border,
+                      backgroundColor: colors.bg,
+                      boxShadow: `0 0 0 2px ${colors.ring}`,
+                    } : {})
+                  }}
                   title={`${rowInfo.letter} × ${colInfo.letter}: ${rowInfo.name} × ${colInfo.name}`}
                 >
                   {/* Tile label */}
-                  <span className={`
-                    text-[10px] font-medium
-                    ${selected ? 'text-primary' : 'text-muted-foreground'}
-                  `}>
+                  <span 
+                    className="text-[10px] font-medium"
+                    style={{ color: selected ? colors.text : undefined }}
+                  >
                     {rowInfo.letter}{colInfo.letter}
                   </span>
                   
                   {/* Visited indicator */}
                   {visited && !selected && (
-                    <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-foreground/50" />
+                    <div 
+                      className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full"
+                      style={{ backgroundColor: colors.primary }}
+                    />
                   )}
                 </button>
               );

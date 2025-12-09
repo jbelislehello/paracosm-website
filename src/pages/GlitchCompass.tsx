@@ -159,6 +159,7 @@ const GlitchCompass = () => {
         <div className={`${selectedTile ? 'flex-1' : 'w-full'} p-8 overflow-auto transition-all duration-300 flex items-center justify-center`}>
           <div className="pl-32">
             <MinimalistTileMatrix 
+              board={todayTile?.board || 'LOVE'}
               selectedTile={selectedTile}
               onTileClick={handleTileClick}
             />
