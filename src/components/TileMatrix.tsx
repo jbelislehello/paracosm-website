@@ -575,9 +575,20 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
         )}
       </Card>
 
-      {/* Matrix Container */}
+      {/* Matrix Container with L.O.V.E. Axes */}
       <div className="relative overflow-x-auto">
-        <div className="min-w-[900px] space-y-4">
+        {/* L.O.V.E. Axes Labels */}
+        <div className="absolute left-0 top-1/2 -translate-y-1/2 -rotate-90 flex items-center gap-2 z-20">
+          <ArrowUp className="w-4 h-4 text-rose-400 rotate-90" />
+          <span className="text-xs font-bold tracking-wider text-rose-400">VELOCITY</span>
+        </div>
+        
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
+          <span className="text-xs font-bold tracking-wider text-cyan-400">LONGEVITY</span>
+          <ArrowRight className="w-4 h-4 text-cyan-400" />
+        </div>
+
+        <div className="min-w-[900px] space-y-4 pl-8 pb-8">
           {/* Column Labels */}
           <div className="flex items-center justify-start ml-28 gap-1">
             {colLabels.map((col, idx) => (
@@ -604,134 +615,213 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
             </div>
           </div>
 
-          {/* Matrix Grid */}
-          {rowStages.map((stage) => (
-            <div key={stage.name} className="space-y-1">
-              {/* Stage Label */}
-              <div className="flex items-center gap-2 mb-1">
-                <Badge variant="outline" className={`w-32 justify-center bg-gradient-to-r ${stage.color} text-xs`}>
-                  <div className="flex flex-col items-center leading-tight">
-                    <span className="font-bold">{stage.name}</span>
-                    <span className="text-[9px] opacity-70">{stage.subtitle}</span>
-                  </div>
-                </Badge>
-              </div>
+          {/* Matrix Grid with SVG Overlay */}
+          <div className="relative">
+            {/* SVG Overlay for Concentric Rectangles and Diagonal Lines */}
+            <svg 
+              className="absolute inset-0 w-full h-full pointer-events-none z-10"
+              style={{ left: '112px', width: 'calc(100% - 112px)', height: '544px' }}
+              viewBox="0 0 544 544"
+              preserveAspectRatio="none"
+            >
+              {/* Diagonal Fan Lines from center */}
+              <g className="opacity-20">
+                <line x1="272" y1="272" x2="0" y2="0" stroke="currentColor" strokeWidth="1" className="text-muted-foreground" />
+                <line x1="272" y1="272" x2="544" y2="0" stroke="currentColor" strokeWidth="1" className="text-muted-foreground" />
+                <line x1="272" y1="272" x2="0" y2="544" stroke="currentColor" strokeWidth="1" className="text-muted-foreground" />
+                <line x1="272" y1="272" x2="544" y2="544" stroke="currentColor" strokeWidth="1" className="text-muted-foreground" />
+                {/* Additional fan lines */}
+                <line x1="272" y1="272" x2="0" y2="136" stroke="currentColor" strokeWidth="0.5" className="text-muted-foreground" />
+                <line x1="272" y1="272" x2="136" y2="0" stroke="currentColor" strokeWidth="0.5" className="text-muted-foreground" />
+                <line x1="272" y1="272" x2="544" y2="136" stroke="currentColor" strokeWidth="0.5" className="text-muted-foreground" />
+                <line x1="272" y1="272" x2="408" y2="0" stroke="currentColor" strokeWidth="0.5" className="text-muted-foreground" />
+                <line x1="272" y1="272" x2="0" y2="408" stroke="currentColor" strokeWidth="0.5" className="text-muted-foreground" />
+                <line x1="272" y1="272" x2="136" y2="544" stroke="currentColor" strokeWidth="0.5" className="text-muted-foreground" />
+                <line x1="272" y1="272" x2="544" y2="408" stroke="currentColor" strokeWidth="0.5" className="text-muted-foreground" />
+                <line x1="272" y1="272" x2="408" y2="544" stroke="currentColor" strokeWidth="0.5" className="text-muted-foreground" />
+              </g>
 
-              {/* Rows in this stage */}
-              {stage.rows.map((rowIdx) => {
-                const rowInfo = rowLabels[rowIdx];
-                return (
-                  <div key={`row-${rowIdx}`} className="flex items-center gap-1">
-                    {/* Row Label */}
-                    <div 
-                      className={`w-24 h-16 flex flex-col items-center justify-center font-bold border-2 rounded text-xs transition-all ${
-                        rowInfo.magic 
-                          ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-purple-500/30' 
-                          : 'bg-amber-500/10 border-amber-500/30'
-                      } ${rowIdx === 4 && activeCompass ? 'ring-2 ring-primary ring-offset-1 animate-pulse' : ''}`}
-                      title={rowInfo.connectsTo ? `Connects to ${rowInfo.connectsTo}` : undefined}
-                    >
-                      <span className="text-lg">{rowInfo.letter}</span>
-                      <span className="text-[9px] text-muted-foreground text-center leading-tight">{rowInfo.name}</span>
-                      {rowInfo.connectsTo && (
-                        <span className="text-[8px] text-purple-400">↔ {rowInfo.connectsTo}</span>
-                      )}
-                      {rowIdx === 4 && activeCompass && (
-                        <span className="text-[8px] text-primary font-bold">
-                          {COMPASSES.find(c => c.id === activeCompass)?.name}
-                        </span>
-                      )}
+              {/* Pass 1 - Inner 4×4 Rectangle (tiles 2-5, rows 2-5) - each tile ~68px */}
+              <rect 
+                x="136" y="136" width="272" height="272"
+                fill="none" 
+                stroke="rgb(34 197 94)" 
+                strokeWidth="3"
+                strokeDasharray="8,4"
+                className="opacity-60"
+              />
+              
+              {/* Pass 2 - 6×6 Rectangle (tiles 1-6, rows 1-6) */}
+              <rect 
+                x="68" y="68" width="408" height="408"
+                fill="none" 
+                stroke="rgb(59 130 246)" 
+                strokeWidth="2"
+                strokeDasharray="6,3"
+                className="opacity-50"
+              />
+              
+              {/* Pass 3 - Full 8×8 Rectangle */}
+              <rect 
+                x="0" y="0" width="544" height="544"
+                fill="none" 
+                stroke="rgb(245 158 11)" 
+                strokeWidth="2"
+                className="opacity-40"
+              />
+
+              {/* Center point marker */}
+              <circle cx="272" cy="272" r="6" fill="hsl(var(--primary))" className="opacity-50" />
+              <circle cx="272" cy="272" r="12" fill="none" stroke="hsl(var(--primary))" strokeWidth="1" className="opacity-30" />
+
+              {/* Corner integrator markers (Pass 4) */}
+              <circle cx="34" cy="34" r="8" fill="rgb(168 85 247)" className="opacity-40" />
+              <circle cx="510" cy="34" r="8" fill="rgb(168 85 247)" className="opacity-40" />
+              <circle cx="34" cy="510" r="8" fill="rgb(168 85 247)" className="opacity-40" />
+              <circle cx="510" cy="510" r="8" fill="rgb(168 85 247)" className="opacity-40" />
+            </svg>
+
+            {rowStages.map((stage) => (
+              <div key={stage.name} className="space-y-1">
+                {/* Stage Label */}
+                <div className="flex items-center gap-2 mb-1">
+                  <Badge variant="outline" className={`w-32 justify-center bg-gradient-to-r ${stage.color} text-xs`}>
+                    <div className="flex flex-col items-center leading-tight">
+                      <span className="font-bold">{stage.name}</span>
+                      <span className="text-[9px] opacity-70">{stage.subtitle}</span>
                     </div>
+                  </Badge>
+                </div>
 
-                    {/* Tiles */}
-                    {colLabels.map((_, colIdx) => {
-                      const isMaps = isMapsBoundary(rowIdx, colIdx);
-                      const crossConnection = hasCrossConnection(rowIdx, colIdx);
-                      const isSelected = selectedTile?.row === rowIdx && selectedTile?.col === colIdx;
-                      const movement = isMovementTile(rowIdx, colIdx);
-                      const tilePass = getTileTolerancePass(rowIdx, colIdx);
-                      const isAccessible = isTileAccessible(rowIdx, colIdx);
-                      const isVisited = visitedTiles.has(`${rowIdx}-${colIdx}`);
-                      const isRecentlySynced = recentlySyncedTiles.has(`${rowIdx}-${colIdx}`);
-                      
-                      // Tolerance zone colors
-                      const getToleranceColor = (pass: TolerancePass) => {
-                        switch (pass) {
-                          case 1: return 'border-green-500';
-                          case 2: return 'border-blue-500';
-                          case 3: return 'border-amber-500';
-                          case 4: return 'border-purple-500';
-                        }
-                      };
-                      
-                      return (
-                        <button
-                          key={`tile-${rowIdx}-${colIdx}`}
-                          onClick={() => handleTileClick(rowIdx, colIdx)}
-                          disabled={showToleranceView && !isAccessible}
-                          className={`w-16 h-16 border-2 rounded transition-all relative ${
-                            showToleranceView && !isAccessible
-                              ? 'opacity-30 cursor-not-allowed border-dashed'
-                              : 'hover:scale-105 hover:shadow-lg'
-                          } ${
-                            isSelected
-                              ? 'ring-2 ring-primary ring-offset-2 bg-primary/20 border-primary'
-                              : showToleranceView
-                                ? `${getToleranceColor(tilePass)} ${isVisited ? 'bg-primary/20' : 'bg-muted/30'}`
-                                : crossConnection
-                                  ? 'bg-gradient-to-br from-yellow-500/30 to-orange-500/30 border-yellow-500/50'
-                                  : isMaps
-                                    ? 'bg-gradient-to-br from-purple-500/20 to-indigo-500/20 border-purple-500/40 hover:border-purple-500'
-                                    : `bg-gradient-to-br ${getBoardColor(board)}/10 border-primary/20 hover:border-primary`
-                          } ${movement ? 'ring-2 ring-offset-1' : ''} ${
-                            movement === 'glitch' ? 'ring-red-500' :
-                            movement === 'drift' ? 'ring-blue-500' :
-                            movement === 'tune' ? 'ring-green-500' : ''
-                          } ${isRecentlySynced ? 'animate-pulse ring-2 ring-cyan-400 ring-offset-1' : ''}`}
-                        >
-                          <div className="text-xs text-muted-foreground">
-                            {rowInfo.letter}{colLabels[colIdx].letter}
-                          </div>
-                          {/* Sync indicator */}
-                          {isRecentlySynced && (
-                            <div className="absolute -top-1 -right-1 z-10">
-                              <div className="w-3 h-3 rounded-full bg-cyan-400 animate-ping" />
-                              <div className="absolute inset-0 w-3 h-3 rounded-full bg-cyan-500" />
+                {/* Rows in this stage */}
+                {stage.rows.map((rowIdx) => {
+                  const rowInfo = rowLabels[rowIdx];
+                  return (
+                    <div key={`row-${rowIdx}`} className="flex items-center gap-1">
+                      {/* Row Label */}
+                      <div 
+                        className={`w-24 h-16 flex flex-col items-center justify-center font-bold border-2 rounded text-xs transition-all ${
+                          rowInfo.magic 
+                            ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-purple-500/30' 
+                            : 'bg-amber-500/10 border-amber-500/30'
+                        } ${rowIdx === 4 && activeCompass ? 'ring-2 ring-primary ring-offset-1 animate-pulse' : ''}`}
+                        title={rowInfo.connectsTo ? `Connects to ${rowInfo.connectsTo}` : undefined}
+                      >
+                        <span className="text-lg">{rowInfo.letter}</span>
+                        <span className="text-[9px] text-muted-foreground text-center leading-tight">{rowInfo.name}</span>
+                        {rowInfo.connectsTo && (
+                          <span className="text-[8px] text-purple-400">↔ {rowInfo.connectsTo}</span>
+                        )}
+                        {rowIdx === 4 && activeCompass && (
+                          <span className="text-[8px] text-primary font-bold">
+                            {COMPASSES.find(c => c.id === activeCompass)?.name}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Tiles */}
+                      {colLabels.map((_, colIdx) => {
+                        const isMaps = isMapsBoundary(rowIdx, colIdx);
+                        const crossConnection = hasCrossConnection(rowIdx, colIdx);
+                        const isSelected = selectedTile?.row === rowIdx && selectedTile?.col === colIdx;
+                        const movement = isMovementTile(rowIdx, colIdx);
+                        const tilePass = getTileTolerancePass(rowIdx, colIdx);
+                        const isAccessible = isTileAccessible(rowIdx, colIdx);
+                        const isVisited = visitedTiles.has(`${rowIdx}-${colIdx}`);
+                        const isRecentlySynced = recentlySyncedTiles.has(`${rowIdx}-${colIdx}`);
+                        const isCorner = (rowIdx === 0 || rowIdx === 7) && (colIdx === 0 || colIdx === 7);
+                        
+                        // Tolerance zone colors with enhanced styling
+                        const getToleranceColor = (pass: TolerancePass) => {
+                          switch (pass) {
+                            case 1: return 'border-green-500 bg-green-500/5';
+                            case 2: return 'border-blue-500 bg-blue-500/5';
+                            case 3: return 'border-amber-500 bg-amber-500/5';
+                            case 4: return 'border-purple-500 bg-purple-500/10';
+                          }
+                        };
+                        
+                        return (
+                          <button
+                            key={`tile-${rowIdx}-${colIdx}`}
+                            onClick={() => handleTileClick(rowIdx, colIdx)}
+                            disabled={showToleranceView && !isAccessible}
+                            className={`w-16 h-16 border-2 rounded transition-all relative z-20 ${
+                              showToleranceView && !isAccessible
+                                ? 'opacity-30 cursor-not-allowed border-dashed'
+                                : 'hover:scale-105 hover:shadow-lg hover:z-30'
+                            } ${
+                              isSelected
+                                ? 'ring-2 ring-primary ring-offset-2 bg-primary/20 border-primary'
+                                : showToleranceView
+                                  ? `${getToleranceColor(tilePass)} ${isVisited ? 'bg-primary/20' : ''}`
+                                  : crossConnection
+                                    ? 'bg-gradient-to-br from-yellow-500/30 to-orange-500/30 border-yellow-500/50'
+                                    : isMaps
+                                      ? 'bg-gradient-to-br from-purple-500/20 to-indigo-500/20 border-purple-500/40 hover:border-purple-500'
+                                      : `bg-gradient-to-br ${getBoardColor(board)}/10 border-primary/20 hover:border-primary`
+                            } ${movement ? 'ring-2 ring-offset-1' : ''} ${
+                              movement === 'glitch' ? 'ring-red-500' :
+                              movement === 'drift' ? 'ring-blue-500' :
+                              movement === 'tune' ? 'ring-green-500' : ''
+                            } ${isRecentlySynced ? 'animate-pulse ring-2 ring-cyan-400 ring-offset-1' : ''}
+                            ${isCorner ? 'ring-1 ring-purple-500/50' : ''}`}
+                          >
+                            <div className="text-xs text-muted-foreground">
+                              {rowInfo.letter}{colLabels[colIdx].letter}
                             </div>
-                          )}
-                          {showToleranceView && isVisited && (
-                            <div className="absolute top-0.5 right-0.5">
-                              <div className="w-2 h-2 rounded-full bg-primary" />
-                            </div>
-                          )}
-                          {crossConnection && !showToleranceView && (
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <span className="text-[8px] text-yellow-600 font-bold">↔</span>
-                            </div>
-                          )}
-                          {movement === 'glitch' && (
-                            <div className="absolute -top-1 left-1/2 -translate-x-1/2">
-                              <ArrowUp className="w-3 h-3 text-red-500" />
-                            </div>
-                          )}
-                          {movement === 'drift' && (
-                            <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1">
-                              <ArrowRight className="w-3 h-3 text-blue-500" />
-                            </div>
-                          )}
-                          {movement === 'tune' && (
-                            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2">
-                              <ArrowDown className="w-3 h-3 text-green-500" />
-                            </div>
-                          )}
-                        </button>
-                      );
-                    })}
-                  </div>
-                );
-              })}
-            </div>
-          ))}
+                            {/* Pass indicator dot */}
+                            <span className={`absolute top-0.5 left-0.5 w-2 h-2 rounded-full ${
+                              tilePass === 1 ? 'bg-emerald-500' :
+                              tilePass === 2 ? 'bg-blue-500' :
+                              tilePass === 3 ? 'bg-amber-500' :
+                              'bg-purple-500'
+                            } ${isVisited ? 'opacity-100' : 'opacity-30'}`} />
+                            {/* Sync indicator */}
+                            {isRecentlySynced && (
+                              <div className="absolute -top-1 -right-1 z-10">
+                                <div className="w-3 h-3 rounded-full bg-cyan-400 animate-ping" />
+                                <div className="absolute inset-0 w-3 h-3 rounded-full bg-cyan-500" />
+                              </div>
+                            )}
+                            {showToleranceView && isVisited && (
+                              <div className="absolute top-0.5 right-0.5">
+                                <div className="w-2 h-2 rounded-full bg-primary" />
+                              </div>
+                            )}
+                            {crossConnection && !showToleranceView && (
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <span className="text-[8px] text-yellow-600 font-bold">↔</span>
+                              </div>
+                            )}
+                            {movement === 'glitch' && (
+                              <div className="absolute -top-1 left-1/2 -translate-x-1/2">
+                                <ArrowUp className="w-3 h-3 text-red-500" />
+                              </div>
+                            )}
+                            {movement === 'drift' && (
+                              <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1">
+                                <ArrowRight className="w-3 h-3 text-blue-500" />
+                              </div>
+                            )}
+                            {movement === 'tune' && (
+                              <div className="absolute -bottom-1 left-1/2 -translate-x-1/2">
+                                <ArrowDown className="w-3 h-3 text-green-500" />
+                              </div>
+                            )}
+                            {/* Corner integrator marker */}
+                            {isCorner && (
+                              <Target className="absolute w-3 h-3 text-purple-400 opacity-50 bottom-0.5 right-0.5" />
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
