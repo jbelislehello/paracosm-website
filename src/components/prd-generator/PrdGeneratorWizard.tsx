@@ -291,9 +291,37 @@ const PrdGeneratorWizard = ({
               <CurrentIcon className="w-5 h-5" />
               Calm Magic PRD Generator
             </DialogTitle>
-            <Badge variant="outline" className="ml-2">
-              {polenEntries.length} POLEN • 5 Layers
-            </Badge>
+            
+            {/* Layer Progress Dots */}
+            <div className="flex items-center gap-1">
+              {LAYERS.map((layer, idx) => {
+                const isCompleted = completedLayers.includes(layer);
+                const isCurrent = layer === currentLayer;
+                const LayerIcon = LAYER_ICONS[layer];
+                
+                return (
+                  <div
+                    key={layer}
+                    className={`
+                      flex items-center justify-center w-7 h-7 rounded-full transition-all
+                      ${isCompleted 
+                        ? 'bg-emerald-500 text-white' 
+                        : isCurrent 
+                          ? 'bg-primary text-primary-foreground ring-2 ring-primary/30' 
+                          : 'bg-muted text-muted-foreground'
+                      }
+                    `}
+                    title={layer}
+                  >
+                    {isCompleted ? (
+                      <Check className="w-3.5 h-3.5" />
+                    ) : (
+                      <LayerIcon className="w-3.5 h-3.5" />
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
           
           <Input
