@@ -92,14 +92,14 @@ const MinimalistTileMatrix = ({
 
   // Row labels - left axis (from top to bottom visually)
   const rowLabels = [
-    { letter: 'P+A', name: 'P+A' },
-    { letter: 'S', name: 'Synergies' },
-    { letter: 'N', name: 'Norms' },
-    { letter: 'C', name: 'Compasses' },
-    { letter: 'I', name: 'Intuition' },
-    { letter: 'G', name: 'Goals' },
-    { letter: 'A', name: 'Agilities' },
-    { letter: 'M', name: 'Mindsets' },
+    { letter: 'P', name: 'PROTOCOLS & Architectures' },
+    { letter: 'S', name: 'SYNERGIES' },
+    { letter: 'N', name: 'NORMS' },
+    { letter: 'C', name: 'COMPASSES' },
+    { letter: 'I', name: 'INTUITION' },
+    { letter: 'G', name: 'GOALS' },
+    { letter: 'A', name: 'AGILITIES' },
+    { letter: 'M', name: 'MINDSETS' },
   ];
 
   // Stage groups with their row ranges (visual indices, top to bottom)
@@ -279,10 +279,13 @@ const MinimalistTileMatrix = ({
           {rowLabels.map((row, idx) => (
             <div 
               key={`row-label-${idx}`}
-              className="flex items-center justify-end"
+              className="flex flex-col items-end justify-center"
               style={{ height: TILE_SIZE + (idx < 7 ? GAP : 0) }}
             >
-              <span className="text-sm font-medium text-foreground/80">{row.name}</span>
+              <span className="text-xs font-bold">{row.letter}</span>
+              <span className="text-[8px] text-muted-foreground leading-tight text-right" style={{ maxWidth: 80 }}>
+                {row.name}
+              </span>
             </div>
           ))}
         </div>
