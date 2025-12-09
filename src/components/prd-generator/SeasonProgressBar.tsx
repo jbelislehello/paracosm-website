@@ -1,9 +1,9 @@
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Heart, Sparkles, Mountain, Leaf, Sun, Check, Lock } from 'lucide-react';
+import { Flower2, BookOpen, Mountain, Music, Sun, Check, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-type Season = 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN';
+type Season = 'POLLEN' | 'POEM' | 'TOTEM' | 'ANTHEM';
 
 interface SeasonProgressBarProps {
   currentSeason: Season;
@@ -15,15 +15,15 @@ interface SeasonProgressBarProps {
 const SEASONS: { 
   id: Season; 
   label: string; 
-  prdLayer: string;
-  icon: typeof Heart;
+  description: string;
+  icon: typeof Flower2;
   color: string;
   bgColor: string;
 }[] = [
-  { id: 'LOVE', label: 'LOVE', prdLayer: 'POLLEN', icon: Heart, color: 'text-rose-500', bgColor: 'bg-rose-500' },
-  { id: 'MAGIC', label: 'MAGIC', prdLayer: 'POEM', icon: Sparkles, color: 'text-purple-500', bgColor: 'bg-purple-500' },
-  { id: 'CALM', label: 'CALM', prdLayer: 'TOTEM', icon: Mountain, color: 'text-blue-500', bgColor: 'bg-blue-500' },
-  { id: 'OPEN', label: 'OPEN', prdLayer: 'ANTHEM', icon: Leaf, color: 'text-emerald-500', bgColor: 'bg-emerald-500' },
+  { id: 'POLLEN', label: 'POLLEN', description: 'Signals & Context', icon: Flower2, color: 'text-rose-500', bgColor: 'bg-rose-500' },
+  { id: 'POEM', label: 'POEM', description: 'Narrative & Meaning', icon: BookOpen, color: 'text-purple-500', bgColor: 'bg-purple-500' },
+  { id: 'TOTEM', label: 'TOTEM', description: 'Form & Interfaces', icon: Mountain, color: 'text-blue-500', bgColor: 'bg-blue-500' },
+  { id: 'ANTHEM', label: 'ANTHEM', description: 'Alignment & Impact', icon: Music, color: 'text-emerald-500', bgColor: 'bg-emerald-500' },
 ];
 
 const SeasonProgressBar = ({
