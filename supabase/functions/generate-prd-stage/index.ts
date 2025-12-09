@@ -6,12 +6,19 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-type PrdStage = 'A_POIETIC' | 'B_DIEGETIC' | 'C_OPERATIONAL' | 'D_MVP';
+type PrdLayer = 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
 
 interface PolenEntry {
   content: string;
   tile_id: number | null;
   tags: string[];
+}
+
+interface MasterLens {
+  lens?: { landscape?: string; energy?: string; norms?: string; synergies?: string };
+  maps?: { methods?: string; architecture?: string; protocols?: string; systems?: string };
+  agendas?: { analysis?: string; guidelines?: string; elaboration?: string; normalization?: string; development?: string; adaptation?: string; secrets?: string };
+  chords?: { chances?: string; heart?: string; observer?: string; reversal?: string; design?: string; seeds?: string };
 }
 
 serve(async (req) => {
@@ -20,14 +27,15 @@ serve(async (req) => {
   }
 
   try {
-    const { stage, polenEntries, board, existingContent } = await req.json() as {
-      stage: PrdStage;
+    const { layer, polenEntries, board, existingContent, masterLens } = await req.json() as {
+      layer: PrdLayer;
       polenEntries: PolenEntry[];
       board: string;
       existingContent: Record<string, string>;
+      masterLens?: MasterLens;
     };
 
-    console.log(`Generating PRD content for stage: ${stage}, ${polenEntries.length} polen entries`);
+    console.log(`Generating Calm Magic PRD content for layer: ${layer}, ${polenEntries.length} polen entries`);
 
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     if (!openAIApiKey) {
@@ -44,79 +52,130 @@ serve(async (req) => {
       .map(([k, v]) => `${k}: ${v.slice(0, 200)}...`)
       .join('\n');
 
-    const systemPrompt = `You are an expert at synthesizing creative tensions and observations into structured Product Requirements Documents. You work with the Calm Magic framework (LOVE→MAGIC→CALM→OPEN→FREE) and understand the 4-stage PRD pipeline:
+    const masterLensContext = masterLens ? `
+MASTER LENS EVALUATION:
+- LENS (Landscape/Energy/Norms/Synergies): ${JSON.stringify(masterLens.lens || {})}
+- MAPS (Methods/Architecture/Protocols/Systems): ${JSON.stringify(masterLens.maps || {})}
+- AGENDAS: ${JSON.stringify(masterLens.agendas || {})}
+- CHORDS (Chances/Heart/Observer/Reversal/Design/Seeds): ${JSON.stringify(masterLens.chords || {})}
+` : '';
 
-- A (Poietic): GL!TCH/LOVE - "Is this worth existing?" - raw tensions, desires, initial trajectories
-- B (Diegetic): DRIFT/MAGIC - Story + PRD backbone + foundational prompts
-- C (Operational): TUNE/CALM+OPEN - Ontology, knowledge graph, real workflow, rules
-- D (MVP): FREE - First POEM (People/Objects/Environments/Messages/Systems), TOTEM, ANTHEM
+    const systemPrompt = `You are an expert at the Calm Magic PRD system — a 5-layer process engine that transforms ideas, signals, and intentions into structured designs.
 
-Keep the emotional and relational richness while being actionable. Write in a clear, insightful voice.`;
+The 5 layers correspond to an inner breath cycle:
+1. LOVE (inhale) — Aliveness: Detect vital charge. Does it have Longevity, Oscillations, Velocity, Elasticity?
+2. MAGIC (widen ribs) — Spaciousness: Expand cognitive playfield through 5 compasses (Narratives, Workflows, Inquiry/Practices, Playgrounds, Human Dynamics)
+3. CALM (hold exhale) — Wholeness: Bridge intuition & structure through LENS, MAPS, AGENDAS
+4. OPEN (dissolve) — Poiesis: Allow creative transformation, break symmetry, prototype rapidly
+5. FREE (expand) — Neurogenesis: Integrate, stabilize, elevate. Flourish, Release, Expand, Elevate.
 
-    const stagePrompts: Record<PrdStage, string> = {
-      A_POIETIC: `Based on these POLEN (raw glitch fragments) from a ${board} board cycle, generate:
+Each layer is evaluated through:
+- LENS: Landscape / Energy / Norms / Synergies
+- MAPS: Methods / Architecture / Protocols / Systems  
+- AGENDAS: Analysis / Guidelines / Elaboration / Normalization / Development / Adaptation / Secrets
+- CHORDS: Chances / Heart / Observer / Reversal / Design / Seeds
 
-POLEN ENTRIES:
-${polenContext}
+Keep emotional and relational richness while being actionable. Write with clarity and insight.`;
 
-Return JSON with these exact keys:
-{
-  "love_signals_summary": "2-3 paragraphs synthesizing the tensions, incoherences, and glitches into a coherent narrative. What patterns emerge? What's alive and wanting attention?",
-  "love_decision_to_exist": "2-3 sentences answering: Is this worth existing? What desire or intention drives this? Why does this matter?"
-}
-
-Be poetic but precise. Capture the emotional texture while identifying the core tension.`,
-
-      B_DIEGETIC: `Based on these POLEN and the previous LOVE layer content, generate the MAGIC layer:
-
-POLEN ENTRIES:
-${polenContext}
-
-${existingContext ? `EXISTING CONTENT:\n${existingContext}` : ''}
-
-Return JSON with these exact keys:
-{
-  "magic_storyworld": "A short diegetic story (3-4 paragraphs) that ties the glitches into a narrative. Create characters, situations, and moments that embody the tensions.",
-  "magic_prd_outline": "A bullet list of 5-8 potential features, flows, or capabilities suggested by recurring patterns in the polen.",
-  "magic_hypotheses": "3-5 'We believe that...' hypotheses about what would solve the tensions or create value."
-}
-
-Be creative and narrative-driven while maintaining connection to the real tensions.`,
-
-      C_OPERATIONAL: `Based on the previous layers and POLEN, generate the CALM and OPEN layers:
+    const layerPrompts: Record<PrdLayer, string> = {
+      LOVE: `Based on these POLEN (raw glitch fragments) from a ${board} board cycle, generate the LOVE layer:
 
 POLEN ENTRIES:
 ${polenContext}
 
-${existingContext ? `EXISTING CONTENT:\n${existingContext}` : ''}
+${masterLensContext}
 
 Return JSON with these exact keys:
 {
-  "calm_requirements": "5-8 clear requirements inferred from constraints and needs. Be specific and testable.",
-  "calm_risks_and_limits": "3-5 explicit risks, non-negotiables, or limits. What could go wrong? What must be protected?",
-  "open_ontology_and_graph": "Description of core entities, their relationships, and how they connect. Think knowledge graph.",
-  "open_real_workflow": "How would this actually work in practice? Describe the real-life workflow or process.",
-  "open_adjustment_plan": "How will we tune and adjust the prototype to match reality? What feedback loops?"
+  "love_vitality_map": "2-3 paragraphs mapping the energy, life force, and vital charge of this idea. What's alive? What has momentum?",
+  "love_resonance_notes": "What resonates deeply? What emotional and intuitive signals are strongest?",
+  "love_score": "Evaluate on four dimensions: Longevity (will this last?), Oscillations (is there dynamic tension?), Velocity (is there momentum?), Elasticity (can it adapt?)"
 }
 
-Be systematic and operational while honoring the human complexity.`,
+Be poetic but precise. Capture the emotional texture while identifying the vital core.`,
 
-      D_MVP: `Based on all previous layers, generate the FREE layer for production readiness:
+      MAGIC: `Based on the POLEN and LOVE layer, generate the MAGIC layer:
 
 POLEN ENTRIES:
 ${polenContext}
 
 ${existingContext ? `EXISTING CONTENT:\n${existingContext}` : ''}
 
+${masterLensContext}
+
 Return JSON with these exact keys:
 {
-  "free_first_poem_description": "Describe the first POEM - a structured description covering: People (who uses this?), Objects (what artifacts/tools?), Environments (where/when?), Messages (what communications?), Systems (what rules/integrations?)",
-  "free_totem_anthem": "How does this system become a TOTEM (ritual reference) and then an ANTHEM (cultural practice)? What makes it memorable and repeatable?",
-  "free_success_criteria": "What does success look like? Include behavioral indicators, stories we want to hear, and measurable outcomes.",
-  "free_next_cycle_hooks": "How do learnings flow back into the next Glitch Compass cycle? What questions remain? What new tensions might emerge?"
+  "magic_compass_map": "Map across 5 compasses: Narratives (what stories emerge?), Workflows (what processes?), Inquiry/Practices (what contemplative aspects?), Playgrounds (what experimentation?), Human Dynamics (what relational patterns?)",
+  "magic_pattern_geometry": "Identify pattern geometry: Seasons (cycles), Constellations (clusters), Transitions, Translations, Transformations",
+  "magic_contradictions": "What early contradictions or tensions appear? What paradoxes must be held?"
 }
 
-Be inspiring and practical. This is about making something real that matters.`
+Be expansive and creative. Open cognitive space.`,
+
+      CALM: `Based on previous layers and POLEN, generate the CALM layer:
+
+POLEN ENTRIES:
+${polenContext}
+
+${existingContext ? `EXISTING CONTENT:\n${existingContext}` : ''}
+
+${masterLensContext}
+
+Return JSON with these exact keys:
+{
+  "calm_lens_evaluation": "Evaluate through LENS - Landscape (context/terrain), Energy (vital force), Norms (established patterns), Synergies (connections)",
+  "calm_maps_diagram": "Structure through MAPS - Methods (ways of doing), Architecture (ways of structuring), Protocols (social agreements), Systems (technical integrations)",
+  "calm_governance": "Define governance protocol: Window of Tolerance framework (Gl!tch → Drift → Tune), decision processes, feedback loops",
+  "masterLens": {
+    "lens": { "landscape": "...", "energy": "...", "norms": "...", "synergies": "..." },
+    "maps": { "methods": "...", "architecture": "...", "protocols": "...", "systems": "..." }
+  }
+}
+
+Be systematic while honoring complexity. Bridge intuition and structure.`,
+
+      OPEN: `Based on previous layers, generate the OPEN layer (Poiesis):
+
+POLEN ENTRIES:
+${polenContext}
+
+${existingContext ? `EXISTING CONTENT:\n${existingContext}` : ''}
+
+${masterLensContext}
+
+Return JSON with these exact keys:
+{
+  "open_emergence_map": "What wants to be born that wasn't visible before? Map the emergent possibilities.",
+  "open_prototype_notes": "First rapid prototype insights: What's the minimal viable expression? What can we build now?",
+  "open_ontology_tuning": "How do categories, relationships, and structures need to adjust? What ontological shifts?"
+}
+
+Allow surprise. Let the idea mutate and contradict its earlier shape.`,
+
+      FREE: `Based on all previous layers, generate the FREE layer for integration:
+
+POLEN ENTRIES:
+${polenContext}
+
+${existingContext ? `EXISTING CONTENT:\n${existingContent}` : ''}
+
+${masterLensContext}
+
+Return JSON with these exact keys:
+{
+  "free_insight_synthesis": "What has been realized? What did this process teach about the system?",
+  "free_expanded_ontology": "The expanded understanding structure. New categories, relationships, patterns.",
+  "free_integration_blueprint": "How to embed this in the organizational OS. What changes to practice?",
+  "poem": {
+    "people": "Who is involved, affected, served?",
+    "objects": "What artifacts, tools, deliverables?",
+    "environments": "What spaces, contexts, channels?",
+    "messages": "What communications, signals, feedback?",
+    "systems": "What rules, workflows, integrations?"
+  }
+}
+
+Flourish, Release, Expand, Elevate. This is neurogenesis — new awareness arriving.`
     };
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -126,12 +185,12 @@ Be inspiring and practical. This is about making something real that matters.`
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-mini-2025-08-07',
+        model: 'gpt-4o-mini',
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: stagePrompts[stage] }
+          { role: 'user', content: layerPrompts[layer] }
         ],
-        max_completion_tokens: 2000,
+        max_tokens: 3000,
         response_format: { type: "json_object" }
       }),
     });
@@ -145,7 +204,7 @@ Be inspiring and practical. This is about making something real that matters.`
     const data = await response.json();
     const content = JSON.parse(data.choices[0].message.content);
 
-    console.log(`Generated content for stage ${stage}:`, Object.keys(content));
+    console.log(`Generated content for layer ${layer}:`, Object.keys(content));
 
     return new Response(JSON.stringify({ content }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
