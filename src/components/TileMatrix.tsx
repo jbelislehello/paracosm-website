@@ -1,8 +1,11 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useState } from 'react';
-import { ArrowUp, ArrowRight, ArrowDown, BookOpen, Workflow, Sparkles, Gamepad2, Users, Circle, Target } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ArrowUp, ArrowRight, ArrowDown, BookOpen, Workflow, Sparkles, Gamepad2, Users, Circle, Target, LogIn, Save, Loader2 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { useTileMatrixPersistence } from '@/hooks/useTileMatrixPersistence';
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
 type TolerancePass = 1 | 2 | 3 | 4;
@@ -28,11 +31,35 @@ interface TileMatrixProps {
 }
 
 const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
+  const {
+    user,
+    currentCycle,
+    loading,
+    saving,
+    startNewCycle,
+    visitTile,
+    savePolenEntry,
+    getVisitedTilesSet,
+    isAuthenticated
+  } = useTileMatrixPersistence(board);
+
   const [selectedTile, setSelectedTile] = useState<{ row: number; col: number } | null>(null);
   const [activeCompass, setActiveCompass] = useState<CompassType | null>(null);
   const [currentPass, setCurrentPass] = useState<TolerancePass>(1);
-  const [visitedTiles, setVisitedTiles] = useState<Set<string>>(new Set());
+  const [localVisitedTiles, setLocalVisitedTiles] = useState<Set<string>>(new Set());
   const [showToleranceView, setShowToleranceView] = useState(false);
+  const [polenContent, setPolenContent] = useState('');
+  const [showPolenForm, setShowPolenForm] = useState(false);
+
+  // Sync visited tiles from Supabase
+  useEffect(() => {
+    if (currentCycle) {
+      setLocalVisitedTiles(getVisitedTilesSet());
+    }
+  }, [currentCycle, getVisitedTilesSet]);
+
+  // Merge local and persisted visited tiles
+  const visitedTiles = localVisitedTiles;
   
   // Corrected row labels: MAGIC integration (M/A/G/I/C) + N/S/P+A
   const rowLabels = [
@@ -105,12 +132,34 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
     return tilePass <= currentPass;
   };
 
-  const handleTileClick = (row: number, col: number) => {
+  const handleTileClick = async (row: number, col: number) => {
     if (!isTileAccessible(row, col) && showToleranceView) return;
     setSelectedTile({ row, col });
     const tileKey = `${row}-${col}`;
-    setVisitedTiles(prev => new Set([...prev, tileKey]));
+    
+    // Update local state
+    setLocalVisitedTiles(prev => new Set([...prev, tileKey]));
+    
+    // Persist to Supabase if authenticated and cycle exists
+    if (isAuthenticated && currentCycle) {
+      await visitTile(row, col);
+    }
+    
     onTileClick?.(row, col);
+  };
+
+  const handleSavePolen = async () => {
+    if (!polenContent.trim() || !selectedTile) return;
+    
+    const tileId = selectedTile.row * 8 + selectedTile.col + 1;
+    await savePolenEntry(polenContent, tileId, 'text', [activeCompass || 'general']);
+    setPolenContent('');
+    setShowPolenForm(false);
+  };
+
+  const handleStartCycle = async () => {
+    const cycleNumber = currentCycle ? currentCycle.cycle_number + 1 : 1;
+    await startNewCycle(cycleNumber);
   };
 
   // Progress calculation
@@ -263,8 +312,53 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
     return deliverables[`${row}-${col}`] || 'Tile insight';
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <span className="ml-2 text-muted-foreground">Loading your progress...</span>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
+      {/* Auth & Cycle Status Bar */}
+      <Card className="p-4 flex items-center justify-between bg-gradient-to-r from-background to-muted/20">
+        <div className="flex items-center gap-3">
+          {isAuthenticated ? (
+            <>
+              <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/30">
+                <Save className="w-3 h-3 mr-1" />
+                Auto-saving
+              </Badge>
+              {currentCycle ? (
+                <span className="text-sm text-muted-foreground">
+                  Cycle {currentCycle.cycle_number} • {currentCycle.tiles_visited?.length || 0}/64 tiles • Phase: {currentCycle.phase}
+                </span>
+              ) : (
+                <Button size="sm" variant="outline" onClick={handleStartCycle} disabled={saving}>
+                  {saving ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : null}
+                  Start New Cycle
+                </Button>
+              )}
+            </>
+          ) : (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <LogIn className="w-4 h-4" />
+              <span>Log in to save your progress</span>
+              <a href="/glitch-auth" className="text-primary hover:underline">Sign in</a>
+            </div>
+          )}
+        </div>
+        {saving && (
+          <Badge variant="outline" className="animate-pulse">
+            <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+            Saving...
+          </Badge>
+        )}
+      </Card>
+
       {/* Board Header */}
       <div className="text-center space-y-2">
         <div className={`inline-block px-6 py-3 rounded-full bg-gradient-to-r ${getBoardColor(board)} text-white font-bold text-xl`}>
@@ -657,6 +751,57 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
                       {questions.deliverable}
                     </Badge>
                   </div>
+                </div>
+
+                {/* POLEN Entry Form */}
+                <div className="pt-4 border-t border-border/50">
+                  {showPolenForm ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-amber-500" />
+                        <span className="font-medium text-sm">Capture POLEN (raw fragment)</span>
+                      </div>
+                      <Textarea
+                        placeholder="Write your GL!TCH observation, insight, or fragment..."
+                        value={polenContent}
+                        onChange={(e) => setPolenContent(e.target.value)}
+                        className="min-h-[100px]"
+                      />
+                      <div className="flex gap-2">
+                        <Button 
+                          size="sm" 
+                          onClick={handleSavePolen}
+                          disabled={!polenContent.trim() || saving || !isAuthenticated}
+                        >
+                          {saving ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Save className="w-3 h-3 mr-1" />}
+                          Save Polen
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="ghost"
+                          onClick={() => { setShowPolenForm(false); setPolenContent(''); }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                      {!isAuthenticated && (
+                        <p className="text-xs text-muted-foreground">
+                          <LogIn className="w-3 h-3 inline mr-1" />
+                          Log in to save your polen entries
+                        </p>
+                      )}
+                    </div>
+                  ) : (
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => setShowPolenForm(true)}
+                      className="w-full"
+                    >
+                      <Sparkles className="w-3 h-3 mr-1" />
+                      Capture Polen for this tile
+                    </Button>
+                  )}
                 </div>
               </div>
             );
