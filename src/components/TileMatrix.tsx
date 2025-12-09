@@ -31,10 +31,21 @@ const TOLERANCE_PASSES: { pass: TolerancePass; name: string; zone: string; descr
 
 interface TileMatrixProps {
   board?: 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
+  selectedTile?: { row: number; col: number } | null;
+  activeCompass?: CompassType | null;
   onTileClick?: (row: number, col: number) => void;
+  onCompassChange?: (compass: CompassType | null) => void;
+  hideDetailPanel?: boolean;
 }
 
-const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
+const TileMatrix = ({ 
+  board = 'LOVE', 
+  selectedTile: externalSelectedTile,
+  activeCompass: externalActiveCompass,
+  onTileClick, 
+  onCompassChange,
+  hideDetailPanel = false 
+}: TileMatrixProps) => {
   const navigate = useNavigate();
   const {
     user,
@@ -51,8 +62,26 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
     isAuthenticated
   } = useTileMatrixPersistence(board);
 
-  const [selectedTile, setSelectedTile] = useState<{ row: number; col: number } | null>(null);
-  const [activeCompass, setActiveCompass] = useState<CompassType | null>(null);
+  const [internalSelectedTile, setInternalSelectedTile] = useState<{ row: number; col: number } | null>(null);
+  const [internalActiveCompass, setInternalActiveCompass] = useState<CompassType | null>(null);
+  
+  // Use external state if provided, otherwise use internal state
+  const selectedTile = externalSelectedTile !== undefined ? externalSelectedTile : internalSelectedTile;
+  const activeCompass = externalActiveCompass !== undefined ? externalActiveCompass : internalActiveCompass;
+  
+  const setSelectedTile = (tile: { row: number; col: number } | null) => {
+    if (externalSelectedTile === undefined) {
+      setInternalSelectedTile(tile);
+    }
+  };
+  
+  const setActiveCompass = (compass: CompassType | null) => {
+    if (externalActiveCompass === undefined) {
+      setInternalActiveCompass(compass);
+    }
+    onCompassChange?.(compass);
+  };
+  
   const [currentPass, setCurrentPass] = useState<TolerancePass>(1);
   const [localVisitedTiles, setLocalVisitedTiles] = useState<Set<string>>(new Set());
   const [showToleranceView, setShowToleranceView] = useState(false);
@@ -826,7 +855,7 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
       </div>
 
       {/* Tile Detail Panel */}
-      {selectedTile && (
+      {selectedTile && !hideDetailPanel && (
         <Card className="p-6 border-2 border-primary/30 bg-gradient-to-br from-background to-primary/5">
           <div className="flex items-start justify-between mb-4">
             <div>
