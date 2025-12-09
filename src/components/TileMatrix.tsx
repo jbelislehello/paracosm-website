@@ -1,12 +1,15 @@
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useState, useEffect } from 'react';
-import { ArrowUp, ArrowRight, ArrowDown, BookOpen, Workflow, Sparkles, Gamepad2, Users, Circle, Target, LogIn, Save, Loader2, Library } from 'lucide-react';
+import { ArrowUp, ArrowRight, ArrowDown, BookOpen, Workflow, Sparkles, Gamepad2, Users, Circle, Target, LogIn, Save, Loader2, Library, FileText } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useTileMatrixPersistence } from '@/hooks/useTileMatrixPersistence';
 import PolenBrowserPanel from './PolenBrowserPanel';
+import CycleCompletionModal from './prd-generator/CycleCompletionModal';
+import PrdGeneratorWizard from './prd-generator/PrdGeneratorWizard';
+import { useNavigate } from 'react-router-dom';
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
 type TolerancePass = 1 | 2 | 3 | 4;
@@ -32,9 +35,11 @@ interface TileMatrixProps {
 }
 
 const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
+  const navigate = useNavigate();
   const {
     user,
     currentCycle,
+    polenEntries,
     loading,
     saving,
     recentlySyncedTiles,
@@ -54,6 +59,20 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
   const [polenContent, setPolenContent] = useState('');
   const [showPolenForm, setShowPolenForm] = useState(false);
   const [showPolenBrowser, setShowPolenBrowser] = useState(false);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
+  const [showPrdWizard, setShowPrdWizard] = useState(false);
+  const [hasShownCompletion, setHasShownCompletion] = useState(false);
+
+  // Check for cycle completion (64 tiles visited)
+  const isCycleComplete = currentCycle && (currentCycle.tiles_visited?.length || 0) >= 64;
+
+  // Show completion modal when cycle completes
+  useEffect(() => {
+    if (isCycleComplete && !hasShownCompletion && isAuthenticated) {
+      setShowCompletionModal(true);
+      setHasShownCompletion(true);
+    }
+  }, [isCycleComplete, hasShownCompletion, isAuthenticated]);
 
   // Sync visited tiles from Supabase
   useEffect(() => {
@@ -898,6 +917,61 @@ const TileMatrix = ({ board = 'LOVE', onTileClick }: TileMatrixProps) => {
           </div>
         </div>
       </Card>
+
+      {/* Cycle Complete Button (visible when cycle is done) */}
+      {isCycleComplete && (
+        <Card className="p-4 border-2 border-primary/50 bg-gradient-to-r from-purple-500/10 to-indigo-500/10">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-indigo-500 flex items-center justify-center">
+                <FileText className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h4 className="font-bold">Cycle Complete!</h4>
+                <p className="text-sm text-muted-foreground">64/64 tiles explored • Ready to generate PRD</p>
+              </div>
+            </div>
+            <Button 
+              onClick={() => setShowPrdWizard(true)}
+              className="bg-gradient-to-r from-purple-500 to-indigo-500"
+            >
+              <Sparkles className="w-4 h-4 mr-2" />
+              Generate PRD
+            </Button>
+          </div>
+        </Card>
+      )}
+
+      {/* Cycle Completion Modal */}
+      {currentCycle && (
+        <CycleCompletionModal
+          isOpen={showCompletionModal}
+          onClose={() => setShowCompletionModal(false)}
+          onStartPrdGenerator={() => {
+            setShowCompletionModal(false);
+            setShowPrdWizard(true);
+          }}
+          cycleNumber={currentCycle.cycle_number}
+          tilesVisited={currentCycle.tiles_visited?.length || 0}
+          polenCount={polenEntries.filter(p => p.cycle_id === currentCycle.id).length}
+          board={board}
+          startedAt={currentCycle.started_at}
+        />
+      )}
+
+      {/* PRD Generator Wizard */}
+      {currentCycle && (
+        <PrdGeneratorWizard
+          isOpen={showPrdWizard}
+          onClose={() => setShowPrdWizard(false)}
+          cycleId={currentCycle.id}
+          polenEntries={polenEntries.filter(p => p.cycle_id === currentCycle.id)}
+          board={board}
+          onPrdCreated={(prdId) => {
+            navigate(`/prd-editor/${prdId}`);
+          }}
+        />
+      )}
     </div>
   );
 };
