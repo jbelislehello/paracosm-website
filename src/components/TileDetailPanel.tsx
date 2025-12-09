@@ -47,6 +47,7 @@ interface TileDetailPanelProps {
   onSavePolen: (content: string, tileId: number) => Promise<void>;
   onNavigate: (row: number, col: number) => void;
   onCompassChange: (compass: CompassType) => void;
+  currentSeason?: string;
 }
 
 const TileDetailPanel = ({

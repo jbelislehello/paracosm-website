@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Calendar, TrendingUp, Library, Play, RotateCcw } from 'lucide-react';
+import { Sparkles, Calendar, TrendingUp, Library, Play, RotateCcw, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import MinimalistTileMatrix from '@/components/MinimalistTileMatrix';
@@ -12,8 +12,19 @@ import TileDetailPanel from '@/components/TileDetailPanel';
 import PolenBrowserPanel from '@/components/PolenBrowserPanel';
 import { useTileMatrixPersistence } from '@/hooks/useTileMatrixPersistence';
 import { CycleNumber } from '@/types/journal-expansion';
+import SeasonProgressBar from '@/components/prd-generator/SeasonProgressBar';
+import SeasonCompletionModal from '@/components/prd-generator/SeasonCompletionModal';
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
+type Season = 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN';
+
+const SEASON_ORDER: Season[] = ['LOVE', 'MAGIC', 'CALM', 'OPEN'];
+const SEASON_TO_PRD_LAYER: Record<Season, string> = {
+  LOVE: 'love',
+  MAGIC: 'magic',
+  CALM: 'calm',
+  OPEN: 'open',
+};
 
 const GlitchCompass = () => {
   const navigate = useNavigate();
@@ -30,8 +41,24 @@ const GlitchCompass = () => {
   const [journeyStarted, setJourneyStarted] = useState(false);
   const [journeyPath, setJourneyPath] = useState<Array<{ row: number; col: number }>>([]);
 
-  // Convert journeyPath to Set for matrix visualization
-  const visitedTiles = new Set(journeyPath.map(t => `${t.row}-${t.col}`));
+  // Season tracking state
+  const [currentSeason, setCurrentSeason] = useState<Season>('LOVE');
+  const [seasonProgress, setSeasonProgress] = useState<Record<Season, Set<string>>>({
+    LOVE: new Set(),
+    MAGIC: new Set(),
+    CALM: new Set(),
+    OPEN: new Set(),
+  });
+  const [completedSeasons, setCompletedSeasons] = useState<Season[]>([]);
+  const [freeTilesUnlocked, setFreeTilesUnlocked] = useState(false);
+  const [prdId, setPrdId] = useState<string | null>(null);
+  
+  // Season completion modal state
+  const [showSeasonModal, setShowSeasonModal] = useState(false);
+  const [isGeneratingPrd, setIsGeneratingPrd] = useState(false);
+
+  // Convert journeyPath to Set for matrix visualization (within current season)
+  const visitedTiles = seasonProgress[currentSeason];
 
   const {
     isAuthenticated,
@@ -101,58 +128,202 @@ const GlitchCompass = () => {
     }
   };
 
+  // Check for season completion
+  const checkSeasonCompletion = useCallback((season: Season, tiles: Set<string>) => {
+    if (tiles.size >= 64 && !completedSeasons.includes(season)) {
+      setShowSeasonModal(true);
+    }
+  }, [completedSeasons]);
+
   // Starting point enforcement handler
   const handleStartJourney = () => {
     setJourneyStarted(true);
     setSelectedTile({ row: 0, col: 0 }); // Mindsets × Chances
     setJourneyPath([{ row: 0, col: 0 }]);
-    toast.success('Journey started at Mindsets × Chances');
+    
+    // Add to current season progress
+    setSeasonProgress(prev => ({
+      ...prev,
+      [currentSeason]: new Set(prev[currentSeason]).add('0-0')
+    }));
+    
+    toast.success(`${currentSeason} season started at Mindsets × Chances`);
   };
 
-  // Reset journey
+  // Reset journey (current season only)
   const handleResetJourney = () => {
     setJourneyStarted(false);
     setJourneyPath([]);
     setSelectedTile(null);
     setActiveCompass(null);
-    toast.info('Journey reset');
+    
+    // Reset current season progress
+    setSeasonProgress(prev => ({
+      ...prev,
+      [currentSeason]: new Set()
+    }));
+    
+    toast.info(`${currentSeason} season reset`);
   };
 
-  // Navigate handler with journey tracking
+  // Reset entire cycle (all seasons)
+  const handleResetCycle = () => {
+    setJourneyStarted(false);
+    setJourneyPath([]);
+    setSelectedTile(null);
+    setActiveCompass(null);
+    setCurrentSeason('LOVE');
+    setSeasonProgress({
+      LOVE: new Set(),
+      MAGIC: new Set(),
+      CALM: new Set(),
+      OPEN: new Set(),
+    });
+    setCompletedSeasons([]);
+    setFreeTilesUnlocked(false);
+    setPrdId(null);
+    toast.info('Full cycle reset');
+  };
+
+  // Navigate handler with journey and season tracking
   const handleNavigate = (row: number, col: number) => {
     setSelectedTile({ row, col });
-    // Only add to path if not already in path (prevent duplicates on back-navigation)
     const tileKey = `${row}-${col}`;
+    
+    // Add to journey path if not already visited in this season
     if (!visitedTiles.has(tileKey)) {
       setJourneyPath(prev => [...prev, { row, col }]);
+      
+      // Update season progress
+      setSeasonProgress(prev => {
+        const newSeasonTiles = new Set(prev[currentSeason]).add(tileKey);
+        
+        // Check if season is complete
+        if (newSeasonTiles.size >= 64) {
+          setTimeout(() => checkSeasonCompletion(currentSeason, newSeasonTiles), 500);
+        }
+        
+        return {
+          ...prev,
+          [currentSeason]: newSeasonTiles
+        };
+      });
     }
   };
 
   // Tile click handler with journey validation
   const handleTileClick = (row: number, col: number) => {
     if (!journeyStarted) {
-      // Before journey, don't allow random clicks - show prompt to start
-      toast.info('Click "Start Journey" to begin at Mindsets × Chances');
+      toast.info(`Click "Start Journey" to begin ${currentSeason} season`);
       return;
     }
     
-    // During journey, only allow clicks on already-visited tiles (for review)
     const tileKey = `${row}-${col}`;
     if (visitedTiles.has(tileKey)) {
-      setSelectedTile({ row, col }); // Allow reviewing visited tiles
+      setSelectedTile({ row, col });
     } else {
       toast.info('Use GL!TCH/DRIFT/TUNE buttons to navigate to new tiles');
     }
   };
 
   const handleSavePolen = async (content: string, tileId: number) => {
-    await savePolenEntry(content, tileId, 'text', [activeCompass || 'general']);
+    await savePolenEntry(content, tileId, 'text', [activeCompass || 'general', currentSeason]);
     toast.success('Polen saved successfully');
   };
 
   // Compass change handler
   const handleCompassChange = (compass: CompassType) => {
     setActiveCompass(compass);
+  };
+
+  // Handle season completion - continue to next season
+  const handleSeasonContinue = () => {
+    // Mark current season as completed
+    setCompletedSeasons(prev => [...prev, currentSeason]);
+    
+    // Advance to next season
+    const currentIndex = SEASON_ORDER.indexOf(currentSeason);
+    if (currentIndex < SEASON_ORDER.length - 1) {
+      const nextSeason = SEASON_ORDER[currentIndex + 1];
+      setCurrentSeason(nextSeason);
+      setJourneyStarted(false);
+      setJourneyPath([]);
+      setSelectedTile(null);
+      toast.success(`Advanced to ${nextSeason} season!`);
+    } else {
+      // All seasons complete - unlock FREE
+      setFreeTilesUnlocked(true);
+      toast.success('All seasons complete! FREE tiles unlocked!');
+    }
+    
+    setShowSeasonModal(false);
+  };
+
+  // Handle PRD layer generation
+  const handleGeneratePrdLayer = async () => {
+    setIsGeneratingPrd(true);
+    
+    try {
+      // Fetch Polen entries for this season
+      const { data: polenEntries, error } = await supabase
+        .from('polen_entries')
+        .select('*')
+        .eq('user_id', user?.id)
+        .contains('tags', [currentSeason]);
+      
+      if (error) throw error;
+
+      // Call edge function to generate PRD layer
+      const { data, error: fnError } = await supabase.functions.invoke('generate-prd-stage', {
+        body: {
+          layer: SEASON_TO_PRD_LAYER[currentSeason],
+          polenEntries: polenEntries || [],
+          board: currentSeason,
+          existingContent: null,
+        }
+      });
+
+      if (fnError) throw fnError;
+
+      // Create or update PRD
+      if (!prdId) {
+        const { data: newPrd, error: insertError } = await supabase
+          .from('prds')
+          .insert({
+            owner_id: user.id,
+            title: `PRD - ${new Date().toLocaleDateString()}`,
+            status: 'draft',
+            main_board: currentSeason,
+            [`${SEASON_TO_PRD_LAYER[currentSeason]}_signals_summary`]: data?.content || '',
+          })
+          .select()
+          .single();
+
+        if (insertError) throw insertError;
+        setPrdId(newPrd.id);
+      } else {
+        // Update existing PRD with new layer
+        await supabase
+          .from('prds')
+          .update({
+            [`${SEASON_TO_PRD_LAYER[currentSeason]}_signals_summary`]: data?.content || '',
+          })
+          .eq('id', prdId);
+      }
+
+      toast.success(`${SEASON_TO_PRD_LAYER[currentSeason].toUpperCase()} layer generated!`);
+    } catch (error) {
+      console.error('Error generating PRD layer:', error);
+      toast.error('Failed to generate PRD layer');
+    } finally {
+      setIsGeneratingPrd(false);
+    }
+  };
+
+  // Get Polen count for current season
+  const getCurrentSeasonPolenCount = () => {
+    // This would ideally come from the persistence hook
+    return 0; // Placeholder - will be populated from actual data
   };
 
   if (loading) {
@@ -177,56 +348,42 @@ const GlitchCompass = () => {
             </p>
           </div>
           
-          {/* Journey Status & Controls */}
-          <div className="flex items-center gap-3">
+          {/* Season Progress Bar */}
+          <SeasonProgressBar
+            currentSeason={currentSeason}
+            seasonProgress={seasonProgress}
+            completedSeasons={completedSeasons}
+            freeTilesUnlocked={freeTilesUnlocked}
+          />
+
+          {/* Journey Controls */}
+          <div className="flex items-center gap-2">
             {!journeyStarted ? (
-              <Button onClick={handleStartJourney} className="bg-gradient-to-r from-primary to-purple-600">
-                <Play className="w-4 h-4 mr-2" />
-                Start Journey
+              <Button onClick={handleStartJourney} size="sm" className={`bg-gradient-to-r ${getBoardColor(currentSeason)}`}>
+                <Play className="w-4 h-4 mr-1" />
+                Start {currentSeason}
               </Button>
             ) : (
               <>
-                <Badge variant="outline" className="text-sm px-3 py-1 border-primary/50 text-primary">
-                  Step {journeyPath.length}/64
+                <Badge variant="outline" className="text-sm px-2 py-0.5">
+                  {visitedTiles.size}/64
                 </Badge>
                 <Button variant="ghost" size="sm" onClick={handleResetJourney}>
-                  <RotateCcw className="w-4 h-4 mr-1" />
-                  Reset
+                  <RotateCcw className="w-3 h-3 mr-1" />
+                  Reset Season
                 </Button>
               </>
             )}
           </div>
 
-          {/* Today's Tile Summary */}
-          {todayTile && (
-            <div className="flex items-center gap-3">
-              <Badge variant="outline" className="text-xs">
-                <Calendar className="w-3 h-3 mr-1" />
-                Today
-              </Badge>
-              <Badge className={`bg-gradient-to-r ${getBoardColor(todayTile.board)} text-white`}>
-                {todayTile.board}
-              </Badge>
-              <span className="text-sm text-muted-foreground max-w-[200px] truncate">
-                "{todayTile.short_prompt}"
-              </span>
-            </div>
-          )}
-
           {/* Quick Actions */}
           <div className="flex items-center gap-2">
-            <Badge 
-              variant="outline" 
-              className={cn(
-                "text-xs",
-                currentZone === 'safe' && "border-green-500/50 text-green-600",
-                currentZone === 'stretch' && "border-yellow-500/50 text-yellow-600",
-                currentZone === 'edge' && "border-red-500/50 text-red-600",
-                currentZone === 'unexplored' && "border-muted-foreground/50 text-muted-foreground"
-              )}
-            >
-              C{currentCycleNumber} · {currentZone}
-            </Badge>
+            {prdId && (
+              <Button variant="outline" size="sm" onClick={() => navigate(`/prds/${prdId}`)}>
+                <FileText className="w-4 h-4 mr-1" />
+                View PRD
+              </Button>
+            )}
             <Button 
               variant={showPolenBrowser ? "default" : "ghost"} 
               size="sm" 
@@ -238,10 +395,6 @@ const GlitchCompass = () => {
             <Button variant="ghost" size="sm" onClick={() => navigate('/glitch-compass/events')}>
               <Calendar className="w-4 h-4 mr-1" />
               Journal
-            </Button>
-            <Button variant="ghost" size="sm" onClick={() => navigate('/glitch-compass/insights')}>
-              <TrendingUp className="w-4 h-4 mr-1" />
-              Insights
             </Button>
             <Button variant="outline" size="sm" onClick={() => navigate('/glitch-compass/drift')}>
               <Sparkles className="w-4 h-4 mr-1" />
@@ -257,7 +410,7 @@ const GlitchCompass = () => {
         <div className={`${selectedTile || showPolenBrowser ? 'flex-1' : 'w-full'} p-8 overflow-auto transition-all duration-300 flex items-center justify-center`}>
           <div className="pl-32">
             <MinimalistTileMatrix 
-              board={todayTile?.board || 'LOVE'}
+              board={currentSeason}
               selectedTile={selectedTile}
               visitedTiles={visitedTiles}
               journeyPath={journeyPath}
@@ -265,6 +418,8 @@ const GlitchCompass = () => {
               cycleNumber={currentCycleNumber}
               showToleranceOverlay={true}
               onZoneChange={setCurrentZone}
+              completedSeasons={completedSeasons}
+              freeTilesUnlocked={freeTilesUnlocked}
             />
           </div>
         </div>
@@ -288,17 +443,30 @@ const GlitchCompass = () => {
             <TileDetailPanel
               selectedTile={selectedTile}
               activeCompass={activeCompass}
-              board={todayTile?.board || 'LOVE'}
+              board={currentSeason}
               isAuthenticated={isAuthenticated}
               saving={saving}
               onClose={() => setSelectedTile(null)}
               onSavePolen={handleSavePolen}
               onNavigate={handleNavigate}
               onCompassChange={handleCompassChange}
+              currentSeason={currentSeason}
             />
           </div>
         )}
       </div>
+
+      {/* Season Completion Modal */}
+      <SeasonCompletionModal
+        isOpen={showSeasonModal}
+        onClose={() => setShowSeasonModal(false)}
+        onContinue={handleSeasonContinue}
+        onGeneratePrdLayer={handleGeneratePrdLayer}
+        season={currentSeason}
+        tilesVisited={visitedTiles.size}
+        polenCount={getCurrentSeasonPolenCount()}
+        isGenerating={isGeneratingPrd}
+      />
     </div>
   );
 };

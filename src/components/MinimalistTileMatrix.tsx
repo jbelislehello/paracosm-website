@@ -13,6 +13,8 @@ interface MinimalistTileMatrixProps {
   cycleNumber?: CycleNumber;
   showToleranceOverlay?: boolean;
   onZoneChange?: (zone: 'safe' | 'stretch' | 'edge' | 'unexplored') => void;
+  completedSeasons?: string[];
+  freeTilesUnlocked?: boolean;
 }
 
 // Board color system using HSL values
@@ -77,7 +79,9 @@ const MinimalistTileMatrix = ({
   onTileClick,
   cycleNumber = 1,
   showToleranceOverlay = true,
-  onZoneChange
+  onZoneChange,
+  completedSeasons = [],
+  freeTilesUnlocked = false
 }: MinimalistTileMatrixProps) => {
   const colors = getBoardColors(board);
   // Column labels - bottom axis (CHORDS + MAPS)
