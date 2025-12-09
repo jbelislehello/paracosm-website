@@ -4,16 +4,29 @@ import { useNavigate } from 'react-router-dom';
 import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Sparkles, Calendar, TrendingUp, Grid3x3 } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Sparkles, Calendar, TrendingUp, Grid3x3, PanelRightClose, PanelRightOpen } from 'lucide-react';
 import { toast } from 'sonner';
 import TileMatrix from '@/components/TileMatrix';
+import TileDetailPanel from '@/components/TileDetailPanel';
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable';
+import { useTileMatrixPersistence } from '@/hooks/useTileMatrixPersistence';
+
+type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
 
 const GlitchCompass = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [todayTile, setTodayTile] = useState<Tile | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showMatrix, setShowMatrix] = useState(false);
+  const [selectedTile, setSelectedTile] = useState<{ row: number; col: number } | null>(null);
+  const [activeCompass, setActiveCompass] = useState<CompassType | null>(null);
+
+  const {
+    isAuthenticated,
+    saving,
+    savePolenEntry,
+  } = useTileMatrixPersistence(todayTile?.board || 'LOVE');
 
   useEffect(() => {
     checkAuth();
@@ -77,6 +90,15 @@ const GlitchCompass = () => {
     }
   };
 
+  const handleTileClick = (row: number, col: number) => {
+    setSelectedTile({ row, col });
+  };
+
+  const handleSavePolen = async (content: string, tileId: number) => {
+    await savePolenEntry(content, tileId, 'text', [activeCompass || 'general']);
+    toast.success('Polen saved successfully');
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted">
@@ -86,148 +108,97 @@ const GlitchCompass = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
-      <div className="max-w-6xl mx-auto p-6 sm:p-8 lg:p-12 space-y-8">
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-            Glitch Compass
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Turn "something feels off" moments into gentle next steps
-          </p>
-        </div>
-
-        {/* Today's Tile */}
-        {todayTile && (
-          <Card className="p-8 space-y-6 border-2">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-semibold flex items-center gap-2">
-                  <Calendar className="h-6 w-6" />
-                  Today's Tile
-                </h2>
-                <div className={`px-4 py-2 rounded-full bg-gradient-to-r ${getBoardColor(todayTile.board)} text-white font-medium`}>
-                  {todayTile.board}
-                </div>
-              </div>
-              <p className="text-3xl font-light text-muted-foreground italic">
-                "{todayTile.short_prompt}"
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t">
-              <div className="space-y-3">
-                <div>
-                  <p className="text-sm text-muted-foreground">Senge Discipline</p>
-                  <p className="text-lg font-medium">{getSengeDisciplineLabel(todayTile.senge_discipline)}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Mindfulness Focus</p>
-                  <p className="text-lg font-medium">
-                    {Array.isArray(todayTile.mindfulness_focus) 
-                      ? todayTile.mindfulness_focus.join(', ').replace(/-/g, ' ')
-                      : ''}
-                  </p>
-                </div>
-              </div>
-              
-              <div className="space-y-3">
-                <div>
-                  <p className="text-sm text-muted-foreground">Path Phase</p>
-                  <p className="text-lg font-medium">{todayTile.default_process_state}</p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {todayTile.default_process_state === 'GLITCH' && 'See the tension clearly, without fixing it yet.'}
-                    {todayTile.default_process_state === 'DRIFT' && 'Explore, listen, and play with possibilities.'}
-                    {todayTile.default_process_state === 'TUNE' && 'Make one small, realistic adjustment.'}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Velocity & Longevity</p>
-                  <p className="text-lg font-medium">
-                    {todayTile.row && todayTile.col ? `${todayTile.row}/8 × ${todayTile.col}/8` : 'FREE tile'}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <Button 
-              size="lg" 
-              className="w-full text-lg"
-              onClick={() => navigate('/glitch-compass/log')}
-            >
-              <Sparkles className="mr-2 h-5 w-5" />
-              Log a Glitch
-            </Button>
-          </Card>
-        )}
-
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/glitch-compass/events')}>
-            <div className="space-y-2">
-              <Calendar className="h-8 w-8 text-primary" />
-              <h3 className="font-semibold text-lg">My Journal</h3>
-              <p className="text-sm text-muted-foreground">View your glitch timeline</p>
-            </div>
-          </Card>
-
-          <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/glitch-compass/insights')}>
-            <div className="space-y-2">
-              <TrendingUp className="h-8 w-8 text-primary" />
-              <h3 className="font-semibold text-lg">Insights</h3>
-              <p className="text-sm text-muted-foreground">Patterns in your glitches</p>
-            </div>
-          </Card>
-
-          <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer" onClick={() => navigate('/glitch-compass/drift')}>
-            <div className="space-y-2">
-              <Sparkles className="h-8 w-8 text-primary" />
-              <h3 className="font-semibold text-lg">Drift → PRD</h3>
-              <p className="text-sm text-muted-foreground">Create a 5-layer PRD from glitches</p>
-            </div>
-          </Card>
-        </div>
-
-        {/* Matrix Toggle */}
-        <Card className="p-6 space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <h3 className="font-semibold text-lg flex items-center gap-2">
-                <Grid3x3 className="h-5 w-5" />
-                Tile Matrix
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                8×8 matrix with L.O.V.E. axes, tolerance passes & POLEN capture
-              </p>
-            </div>
-            <Button 
-              variant={showMatrix ? "default" : "outline"}
-              onClick={() => setShowMatrix(!showMatrix)}
-            >
-              {showMatrix ? 'Hide Matrix' : 'Show Matrix'}
-            </Button>
+    <div className="h-screen flex flex-col bg-gradient-to-br from-background via-background to-muted overflow-hidden">
+      {/* Header */}
+      <div className="shrink-0 p-4 border-b border-border/50">
+        <div className="max-w-[1800px] mx-auto flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+              Glitch Compass
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Turn "something feels off" moments into gentle next steps
+            </p>
           </div>
-
-          {showMatrix && (
-            <div className="pt-6 border-t">
-              <TileMatrix 
-                board={todayTile?.board as any || 'LOVE'}
-                onTileClick={(row, col) => {
-                  toast.info(`Clicked tile at Row ${row + 1}, Column ${col + 1}`);
-                }}
-              />
+          
+          {/* Today's Tile Summary */}
+          {todayTile && (
+            <div className="flex items-center gap-3">
+              <Badge variant="outline" className="text-xs">
+                <Calendar className="w-3 h-3 mr-1" />
+                Today
+              </Badge>
+              <Badge className={`bg-gradient-to-r ${getBoardColor(todayTile.board)} text-white`}>
+                {todayTile.board}
+              </Badge>
+              <span className="text-sm text-muted-foreground max-w-[200px] truncate">
+                "{todayTile.short_prompt}"
+              </span>
             </div>
           )}
-        </Card>
 
-        {/* Welcome Message */}
-        <Card className="p-6 bg-muted/50">
-          <p className="text-center text-muted-foreground">
-            When something feels off—in you, with someone else, or in your work—log it here. 
-            <br />You don't need answers, just a starting point.
-          </p>
-        </Card>
+          {/* Quick Actions */}
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" onClick={() => navigate('/glitch-compass/events')}>
+              <Calendar className="w-4 h-4 mr-1" />
+              Journal
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/glitch-compass/insights')}>
+              <TrendingUp className="w-4 h-4 mr-1" />
+              Insights
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate('/glitch-compass/drift')}>
+              <Sparkles className="w-4 h-4 mr-1" />
+              Drift → PRD
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content: Split Layout */}
+      <div className="flex-1 min-h-0">
+        <ResizablePanelGroup direction="horizontal" className="h-full">
+          {/* Left Panel: Tile Matrix */}
+          <ResizablePanel 
+            defaultSize={selectedTile ? 65 : 100} 
+            minSize={50}
+            className="p-4 overflow-auto"
+          >
+            <div className="max-w-[1200px] mx-auto">
+              <TileMatrix 
+                board={todayTile?.board as any || 'LOVE'}
+                selectedTile={selectedTile}
+                activeCompass={activeCompass}
+                onTileClick={handleTileClick}
+                onCompassChange={setActiveCompass}
+                hideDetailPanel
+              />
+            </div>
+          </ResizablePanel>
+
+          {/* Resizable Handle & Right Panel: Tile Detail */}
+          {selectedTile && (
+            <>
+              <ResizableHandle withHandle className="bg-border/50 hover:bg-primary/20 transition-colors" />
+              <ResizablePanel 
+                defaultSize={35} 
+                minSize={25}
+                maxSize={50}
+                className="border-l border-border/50"
+              >
+                <TileDetailPanel
+                  selectedTile={selectedTile}
+                  activeCompass={activeCompass}
+                  board={todayTile?.board || 'LOVE'}
+                  isAuthenticated={isAuthenticated}
+                  saving={saving}
+                  onClose={() => setSelectedTile(null)}
+                  onSavePolen={handleSavePolen}
+                />
+              </ResizablePanel>
+            </>
+          )}
+        </ResizablePanelGroup>
       </div>
     </div>
   );
