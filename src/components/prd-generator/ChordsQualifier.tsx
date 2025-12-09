@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
-import { Music, Dice1, Heart, Eye, RotateCcw, Palette, Sprout } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Music, Dice1, Heart, Eye, RotateCcw, Palette, Sprout, ChevronDown } from 'lucide-react';
 import { ChordsEvaluation } from './MasterLensEvaluator';
 
 interface ChordsQualifierProps {
@@ -20,6 +22,8 @@ const CHORD_ITEMS = [
 ];
 
 const ChordsQualifier = ({ chords, onUpdate, readOnly = false }: ChordsQualifierProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+  
   const updateChord = (key: keyof ChordsEvaluation, value: string) => {
     onUpdate({ ...chords, [key]: value });
   };
@@ -27,46 +31,66 @@ const ChordsQualifier = ({ chords, onUpdate, readOnly = false }: ChordsQualifier
   const filledCount = Object.values(chords).filter(v => v && v.trim()).length;
 
   return (
-    <Card className="p-4 bg-gradient-to-r from-indigo-500/5 via-purple-500/5 to-pink-500/5 border-indigo-500/20">
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <Music className="w-4 h-4 text-indigo-500" />
-          <h4 className="font-semibold text-sm">C.H.O.R.D.S. Qualifier</h4>
-        </div>
-        <Badge variant="outline" className="bg-indigo-500/10">
-          {filledCount}/6 defined
-        </Badge>
-      </div>
-
-      <p className="text-xs text-muted-foreground mb-4">
-        Qualify through: Chances, Heart, Observer, Reversal, Design, Seeds
-      </p>
-
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-        {CHORD_ITEMS.map(item => {
-          const Icon = item.icon;
-          const value = chords[item.key] || '';
-
-          return (
-            <div key={item.key} className="space-y-1.5">
-              <div className="flex items-center gap-1.5">
-                <Badge variant="outline" className={`${item.bgColor} ${item.color} text-xs font-bold px-1.5`}>
-                  {item.label}
-                </Badge>
-                <Icon className={`w-3 h-3 ${item.color}`} />
-                <span className="text-xs font-medium">{item.fullLabel}</span>
+    <Card className="p-3 bg-gradient-to-r from-indigo-500/5 via-purple-500/5 to-pink-500/5 border-indigo-500/20">
+      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <CollapsibleTrigger className="w-full">
+          <div className="flex items-center justify-between cursor-pointer hover:opacity-80 transition-opacity">
+            <div className="flex items-center gap-2">
+              <Music className="w-4 h-4 text-indigo-500" />
+              <h4 className="font-semibold text-sm">C.H.O.R.D.S. Qualifier</h4>
+              <div className="flex gap-0.5">
+                {CHORD_ITEMS.map(item => (
+                  <Badge 
+                    key={item.key} 
+                    variant="outline" 
+                    className={`${item.bgColor} ${item.color} text-[10px] px-1 py-0 ${chords[item.key] ? 'opacity-100' : 'opacity-40'}`}
+                  >
+                    {item.label}
+                  </Badge>
+                ))}
               </div>
-              <Textarea
-                value={value}
-                onChange={(e) => updateChord(item.key, e.target.value)}
-                placeholder={item.desc}
-                className="min-h-[60px] text-xs resize-none"
-                disabled={readOnly}
-              />
             </div>
-          );
-        })}
-      </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="bg-indigo-500/10 text-xs">
+                {filledCount}/6
+              </Badge>
+              <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+            </div>
+          </div>
+        </CollapsibleTrigger>
+        
+        <CollapsibleContent className="mt-4">
+          <p className="text-xs text-muted-foreground mb-3">
+            Qualify through: Chances, Heart, Observer, Reversal, Design, Seeds
+          </p>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {CHORD_ITEMS.map(item => {
+              const Icon = item.icon;
+              const value = chords[item.key] || '';
+
+              return (
+                <div key={item.key} className="space-y-1.5">
+                  <div className="flex items-center gap-1.5">
+                    <Badge variant="outline" className={`${item.bgColor} ${item.color} text-xs font-bold px-1.5`}>
+                      {item.label}
+                    </Badge>
+                    <Icon className={`w-3 h-3 ${item.color}`} />
+                    <span className="text-xs font-medium">{item.fullLabel}</span>
+                  </div>
+                  <Textarea
+                    value={value}
+                    onChange={(e) => updateChord(item.key, e.target.value)}
+                    placeholder={item.desc}
+                    className="min-h-[60px] text-xs resize-none"
+                    disabled={readOnly}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
     </Card>
   );
 };
