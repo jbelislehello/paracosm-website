@@ -219,6 +219,7 @@ const GlitchCompass = () => {
               saving={saving}
               onClose={() => setSelectedTile(null)}
               onSavePolen={handleSavePolen}
+              onNavigate={(row, col) => setSelectedTile({ row, col })}
             />
           </div>
         )}

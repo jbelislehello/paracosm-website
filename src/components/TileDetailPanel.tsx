@@ -2,7 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowUp, ArrowRight, ArrowDown, Sparkles, Save, Loader2, LogIn, X, BookOpen, Workflow, Gamepad2, Users } from 'lucide-react';
+import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, BookOpen, Workflow, Gamepad2, Users } from 'lucide-react';
 import { useState } from 'react';
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
@@ -45,6 +45,7 @@ interface TileDetailPanelProps {
   saving: boolean;
   onClose: () => void;
   onSavePolen: (content: string, tileId: number) => Promise<void>;
+  onNavigate: (row: number, col: number) => void;
 }
 
 const TileDetailPanel = ({
@@ -55,9 +56,16 @@ const TileDetailPanel = ({
   saving,
   onClose,
   onSavePolen,
+  onNavigate,
 }: TileDetailPanelProps) => {
   const [polenContent, setPolenContent] = useState('');
   const [showPolenForm, setShowPolenForm] = useState(false);
+
+  // Edge detection for navigation
+  const canGlitch = selectedTile.row < 7; // Can move UP
+  const canDriftLeft = selectedTile.col > 0; // Can move LEFT
+  const canDriftRight = selectedTile.col < 7; // Can move RIGHT
+  const canTune = selectedTile.row > 0; // Can move DOWN
 
   const getBoardColor = (board: string) => {
     switch (board) {
@@ -300,6 +308,69 @@ const TileDetailPanel = ({
               <Sparkles className="w-3 h-3 mr-1 text-amber-500" />
               Capture Polen for this tile
             </Button>
+          )}
+        </Card>
+
+        {/* Navigation Buttons */}
+        <Card className="p-4 border border-border/50 bg-background/50">
+          <div className="flex flex-col items-center gap-3">
+            <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Next Move</span>
+            
+            {/* GL!TCH - Up */}
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!canGlitch}
+              onClick={() => onNavigate(selectedTile.row + 1, selectedTile.col)}
+              className="w-full border-red-500/50 text-red-600 hover:bg-red-500/10 disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              <ArrowUp className="w-4 h-4 mr-2" />
+              GL!TCH ↑ {canGlitch ? `to ${rowLabels[selectedTile.row + 1].name}` : '(edge)'}
+            </Button>
+            
+            {/* DRIFT - Left/Right */}
+            <div className="flex gap-2 w-full items-center">
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={!canDriftLeft}
+                onClick={() => onNavigate(selectedTile.row, selectedTile.col - 1)}
+                className="flex-1 border-blue-500/50 text-blue-600 hover:bg-blue-500/10 disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <ArrowLeft className="w-4 h-4 mr-1" />
+                {canDriftLeft ? colLabels[selectedTile.col - 1].name : 'Edge'}
+              </Button>
+              <span className="text-xs text-blue-500 font-bold px-2">DRIFT</span>
+              <Button
+                variant="outline"
+                size="sm"
+                disabled={!canDriftRight}
+                onClick={() => onNavigate(selectedTile.row, selectedTile.col + 1)}
+                className="flex-1 border-blue-500/50 text-blue-600 hover:bg-blue-500/10 disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                {canDriftRight ? colLabels[selectedTile.col + 1].name : 'Edge'}
+                <ArrowRight className="w-4 h-4 ml-1" />
+              </Button>
+            </div>
+            
+            {/* TUNE - Down */}
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!canTune}
+              onClick={() => onNavigate(selectedTile.row - 1, selectedTile.col)}
+              className="w-full border-green-500/50 text-green-600 hover:bg-green-500/10 disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              <ArrowDown className="w-4 h-4 mr-2" />
+              TUNE ↓ {canTune ? `to ${rowLabels[selectedTile.row - 1].name}` : '(edge)'}
+            </Button>
+          </div>
+          
+          {/* Edge indicator */}
+          {(!canGlitch || !canDriftLeft || !canDriftRight || !canTune) && (
+            <p className="text-xs text-muted-foreground text-center mt-3 italic">
+              Some moves blocked at matrix edge
+            </p>
           )}
         </Card>
       </div>
