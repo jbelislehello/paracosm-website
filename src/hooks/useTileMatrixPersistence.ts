@@ -133,6 +133,62 @@ export const useTileMatrixPersistence = (board: Board = 'LOVE') => {
     };
   }, [user]);
 
+  // Real-time subscription for journal_cycles
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel('journal-cycles-realtime')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'journal_cycles',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          const updatedCycle = payload.new as JournalCycle & { user_id: string };
+          // Only update if it's the current board and cycle
+          if (updatedCycle.board === board && !updatedCycle.completed_at) {
+            setCurrentCycle(prev => {
+              if (prev?.id === updatedCycle.id) {
+                return {
+                  ...updatedCycle,
+                  tiles_visited: updatedCycle.tiles_visited || []
+                };
+              }
+              return prev;
+            });
+          }
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'journal_cycles',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          const newCycle = payload.new as JournalCycle & { user_id: string };
+          // Set as current if it matches the board and is not completed
+          if (newCycle.board === board && !newCycle.completed_at) {
+            setCurrentCycle({
+              ...newCycle,
+              tiles_visited: newCycle.tiles_visited || []
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, board]);
+
   const fetchCurrentCycle = async () => {
     if (!user) return;
     
