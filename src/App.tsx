@@ -43,6 +43,8 @@ function App() {
               <Route path="/glitch-compass/insights" element={<GlitchInsights />} />
               <Route path="/glitch-compass/drift" element={<Drift />} />
               <Route path="/glitch-compass/prds/:id" element={<PrdEditor />} />
+              <Route path="/prd-editor/:id" element={<PrdEditor />} />
+              <Route path="/glitch-auth" element={<GlitchAuth />} />
               <Route path="/auth" element={<GlitchAuth />} />
               <Route path="/calm-magic-visualization" element={<CalmMagicVisualization />} />
               <Route path="/calm-magic-journal" element={<CalmMagicJournal />} />
