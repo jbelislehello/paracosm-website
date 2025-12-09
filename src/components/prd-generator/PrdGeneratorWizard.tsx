@@ -12,6 +12,8 @@ import { supabase } from '@/integrations/supabase/client';
 import PrdStageProgress, { PrdLayer } from './PrdStageProgress';
 import MasterLensEvaluator, { LensEvaluation, MapsEvaluation, AgendasEvaluation, ChordsEvaluation } from './MasterLensEvaluator';
 import PoemStructureBuilder, { PoemStructure } from './PoemStructureBuilder';
+import LoveScoreAxes, { LoveScore } from './LoveScoreAxes';
+import ChordsQualifier from './ChordsQualifier';
 
 interface PolenEntry {
   id: string;
@@ -113,6 +115,9 @@ const PrdGeneratorWizard = ({
   
   // POEM Structure
   const [poem, setPoem] = useState<PoemStructure>({ people: '', objects: '', environments: '', messages: '', systems: '' });
+  
+  // LOVE Score
+  const [loveScore, setLoveScore] = useState<LoveScore>({ longevity: 50, oscillations: 50, velocity: 50, elasticity: 50 });
   
   // TOTEM & ANTHEM
   const [totem, setTotem] = useState('');
@@ -374,13 +379,20 @@ const PrdGeneratorWizard = ({
               );
             })}
 
+            {/* LOVE Score Axes (for LOVE layer) */}
+            {currentLayer === 'LOVE' && (
+              <LoveScoreAxes
+                score={loveScore}
+                onUpdate={setLoveScore}
+              />
+            )}
+
             {/* Master Lens Evaluator (for CALM layer) */}
             {currentLayer === 'CALM' && (
               <MasterLensEvaluator
                 lens={lens}
                 maps={maps}
                 agendas={agendas}
-                chords={chords}
                 onUpdate={handleMasterLensUpdate}
               />
             )}
@@ -427,6 +439,12 @@ const PrdGeneratorWizard = ({
                 </Card>
               </>
             )}
+
+            {/* CHORDS Qualifier (always at bottom) */}
+            <ChordsQualifier
+              chords={chords}
+              onUpdate={setChords}
+            />
           </div>
         </ScrollArea>
 
