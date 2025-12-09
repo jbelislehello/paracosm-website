@@ -15,6 +15,7 @@ import { SpiralQuadrantVisualizer } from '@/components/journal/SpiralQuadrantVis
 import { FeminineSafePRD } from '@/components/journal/FeminineSafePRD';
 import { TorusRelationnel } from '@/components/journal/TorusRelationnel';
 import { PolenBrowser } from '@/components/journal/PolenBrowser';
+import { PolenPatternAnalytics } from '@/components/journal/PolenPatternAnalytics';
 import { JournalPhase, CompassType, JourneyMode, TorusPhase, CycleNumber } from '@/types/journal-expansion';
 import { getTileContent, COLUMN_LABELS, ROW_LABELS, getColKey, getRowKey } from '@/data/tileContents';
 
@@ -180,6 +181,9 @@ const CalmMagicJournal = () => {
 
               {/* Polen Browser */}
               <PolenBrowser cycleId={currentCycle?.id} />
+
+              {/* Pattern Analytics */}
+              <PolenPatternAnalytics />
             </div>
 
             {/* Center Column: Matrix & Cycle */}
