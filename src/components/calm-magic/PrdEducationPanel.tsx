@@ -18,6 +18,7 @@ import {
   WHAT_IS_A_PRD, 
   TRADITIONAL_PRD_TEMPLATES, 
   CALM_MAGIC_DIFFERENTIATOR,
+  WHAT_IS_RRD,
   WHAT_IS_POIESIS,
   RELATIONAL_DESIGN_APPROACHES,
   CALM_MAGIC_PERSONAL_DIFFERENTIATOR,
@@ -31,6 +32,7 @@ export const PrdEducationPanel: React.FC = () => {
   const { mode } = useMode();
   const [isOpen, setIsOpen] = useState(false);
   const [showApproaches, setShowApproaches] = useState(false);
+  const [showRrdInfo, setShowRrdInfo] = useState(false);
 
   const isPersonal = mode === 'personal';
 
@@ -42,9 +44,9 @@ export const PrdEducationPanel: React.FC = () => {
           <div className="flex items-center justify-between p-3 bg-chart-1/10 rounded-lg cursor-pointer hover:bg-chart-1/20 transition-colors border border-chart-1/30">
             <div className="flex items-center gap-2">
               <Heart className="h-4 w-4 text-chart-1" />
-              <span className="text-sm font-medium">What is Poiesis?</span>
+              <span className="text-sm font-medium">Poiesis & Relational Requirements</span>
               <Badge variant="outline" className="text-xs border-chart-1/50 text-chart-1">
-                Expressivity
+                RRD
               </Badge>
             </div>
             {isOpen ? (
@@ -56,18 +58,59 @@ export const PrdEducationPanel: React.FC = () => {
         </CollapsibleTrigger>
 
         <CollapsibleContent className="mt-3 space-y-4">
-          {/* Poiesis Definition */}
-          <div className="p-4 bg-background rounded-lg border border-chart-1/30">
+          {/* RRD Definition */}
+          <div className="p-4 bg-background rounded-lg border border-chart-2/30">
+            <div className="flex items-center gap-2 mb-2">
+              <BookOpen className="h-4 w-4 text-chart-2" />
+              <h4 className="text-sm font-semibold text-foreground">What is an RRD?</h4>
+            </div>
             <p className="text-sm text-foreground leading-relaxed">
-              {WHAT_IS_POIESIS.definition}
+              {WHAT_IS_RRD.definition}
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
-              {WHAT_IS_POIESIS.purpose.map((p, i) => (
-                <Badge key={i} variant="secondary" className="text-xs bg-chart-1/10 text-chart-1 border-chart-1/30">
+              {WHAT_IS_RRD.purpose.map((p, i) => (
+                <Badge key={i} variant="secondary" className="text-xs bg-chart-2/10 text-chart-2 border-chart-2/30">
                   {p}
                 </Badge>
               ))}
             </div>
+            
+            {/* RRD vs PRD Comparison */}
+            <Collapsible open={showRrdInfo} onOpenChange={setShowRrdInfo} className="mt-3">
+              <CollapsibleTrigger asChild>
+                <div className="flex items-center justify-between p-2 cursor-pointer hover:bg-muted/30 rounded">
+                  <span className="text-xs text-muted-foreground">RRD vs PRD</span>
+                  {showRrdInfo ? (
+                    <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                  ) : (
+                    <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+                  )}
+                </div>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="mt-2 space-y-1">
+                {WHAT_IS_RRD.keyDifferences.map((diff, i) => (
+                  <div key={i} className="flex items-center gap-2 text-xs p-2 bg-muted/20 rounded">
+                    <span className="text-muted-foreground w-1/2">{diff.prd}</span>
+                    <ArrowRight className="h-3 w-3 text-chart-1" />
+                    <span className="text-chart-1 w-1/2">{diff.rrd}</span>
+                  </div>
+                ))}
+              </CollapsibleContent>
+            </Collapsible>
+          </div>
+
+          {/* Poiesis Definition */}
+          <div className="p-4 bg-background rounded-lg border border-chart-1/30">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="h-4 w-4 text-chart-1" />
+              <h4 className="text-sm font-semibold text-foreground">What is Poiesis?</h4>
+            </div>
+            <p className="text-sm text-foreground leading-relaxed">
+              {WHAT_IS_POIESIS.definition}
+            </p>
+            <p className="text-xs text-muted-foreground mt-2 italic">
+              Poiesis is the creative engine that generates your RRD — each act of expression adds to your relational intelligence.
+            </p>
           </div>
 
           {/* Relational Approaches Comparison */}

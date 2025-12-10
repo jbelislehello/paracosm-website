@@ -41,6 +41,7 @@ import {
 import { PrdEducationPanel } from './PrdEducationPanel';
 import { PrdDimensionalView } from './PrdDimensionalView';
 import CSuiteDashboard from './CSuiteDashboard';
+import { useMode } from './context/ModeContext';
 interface PrdAssemblyPanelProps {
   isOpen: boolean;
   onClose: () => void;
@@ -86,12 +87,17 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   onGenerateLayer
 }) => {
   const navigate = useNavigate();
+  const { mode } = useMode();
   const [prdData, setPrdData] = useState<Record<string, any> | null>(null);
   const [polenCounts, setPolenCounts] = useState<Record<Season, number>>({} as Record<Season, number>);
   const [isLoading, setIsLoading] = useState(false);
   const [expandedLayers, setExpandedLayers] = useState<Set<Season>>(new Set([currentSeason]));
   const [generatingLayer, setGeneratingLayer] = useState<Season | null>(null);
   const [activeTab, setActiveTab] = useState<'layers' | 'dimensions' | 'csuite'>('layers');
+  
+  const isPersonal = mode === 'personal';
+  const documentName = isPersonal ? 'RRD' : 'PRD';
+  const documentFullName = isPersonal ? 'Relational Requirements Document' : 'Product Requirements Document';
 
   useEffect(() => {
     if (isOpen) {
@@ -219,9 +225,9 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
           <div className="flex items-center gap-3">
             <FileText className="h-5 w-5 text-primary" />
             <div>
-              <h2 className="text-lg font-semibold">Living PRD Assembly</h2>
+              <h2 className="text-lg font-semibold">Living {documentName} Assembly</h2>
               <p className="text-xs text-muted-foreground">
-                The PRD is an organism, not a document
+                The {documentName} is an organism, not a document
               </p>
             </div>
           </div>
