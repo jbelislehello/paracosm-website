@@ -1,16 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { X, Sparkles, MapPin, Lightbulb, TrendingUp, Loader2 } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { X, Sparkles, MapPin, Lightbulb, TrendingUp, Loader2, FileText, Layers, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
+import { Season, SEASON_LABELS, SEASON_PRD_LAYER, shouldTriggerPrdGeneration, getLayerReadiness } from '@/utils/prdAccessLevel';
 
 interface JourneySummaryProps {
   isOpen: boolean;
   onClose: () => void;
   currentSeason: string;
+  seasonProgress?: Set<string>;
+  prdId?: string | null;
+  onGeneratePrdLayer?: () => Promise<void>;
+  onViewPrd?: () => void;
 }
 
 interface PolenEntry {
@@ -19,6 +25,7 @@ interface PolenEntry {
   created_at: string;
   tags: string[] | null;
   tile_id: number | null;
+  season_context: string | null;
 }
 
 interface SummaryData {
@@ -31,18 +38,23 @@ interface SummaryData {
 export const JourneySummary: React.FC<JourneySummaryProps> = ({
   isOpen,
   onClose,
-  currentSeason
+  currentSeason,
+  seasonProgress,
+  prdId,
+  onGeneratePrdLayer,
+  onViewPrd
 }) => {
   const [entries, setEntries] = useState<PolenEntry[]>([]);
   const [summary, setSummary] = useState<SummaryData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isGeneratingPrd, setIsGeneratingPrd] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       fetchEntries();
     }
-  }, [isOpen]);
+  }, [isOpen, currentSeason]);
 
   const fetchEntries = async () => {
     setIsLoading(true);
@@ -54,6 +66,7 @@ export const JourneySummary: React.FC<JourneySummaryProps> = ({
         .from('polen_entries')
         .select('*')
         .eq('user_id', user.id)
+        .or(`season_context.eq.${currentSeason},tags.cs.{${currentSeason}}`)
         .order('created_at', { ascending: true });
 
       if (error) throw error;
@@ -65,6 +78,22 @@ export const JourneySummary: React.FC<JourneySummaryProps> = ({
       setIsLoading(false);
     }
   };
+
+  // Calculate PRD readiness
+  const prdReadiness = useMemo(() => {
+    const tilesVisited = seasonProgress?.size || 0;
+    const fragmentCount = entries.length;
+    const canGenerate = shouldTriggerPrdGeneration(currentSeason as Season, tilesVisited, fragmentCount);
+    const readiness = getLayerReadiness(currentSeason as Season, tilesVisited, fragmentCount, false);
+    
+    return {
+      tilesVisited,
+      fragmentCount,
+      canGenerate,
+      readiness,
+      layerName: SEASON_PRD_LAYER[currentSeason as Season] || 'LAYER',
+    };
+  }, [seasonProgress, entries, currentSeason]);
 
   const generateSummary = async () => {
     if (entries.length === 0) {
@@ -96,6 +125,21 @@ export const JourneySummary: React.FC<JourneySummaryProps> = ({
     }
   };
 
+  const handleGeneratePrdLayer = async () => {
+    if (!onGeneratePrdLayer) return;
+    
+    setIsGeneratingPrd(true);
+    try {
+      await onGeneratePrdLayer();
+      toast.success(`${prdReadiness.layerName} layer generated from your journey!`);
+    } catch (err) {
+      console.error('Failed to generate PRD layer:', err);
+      toast.error('Failed to generate PRD layer');
+    } finally {
+      setIsGeneratingPrd(false);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -106,7 +150,7 @@ export const JourneySummary: React.FC<JourneySummaryProps> = ({
           <div className="flex items-center gap-2">
             <MapPin className="h-5 w-5 text-primary" />
             <h2 className="text-lg font-semibold">Journey Summary</h2>
-            <Badge variant="secondary">{entries.length} entries</Badge>
+            <Badge variant="secondary">{entries.length} fragments</Badge>
           </div>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-4 w-4" />
@@ -120,10 +164,65 @@ export const JourneySummary: React.FC<JourneySummaryProps> = ({
             </div>
           ) : (
             <div className="space-y-6">
+              {/* PRD Readiness Card */}
+              <Card className="p-4 border-primary/30 bg-primary/5">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-medium flex items-center gap-2">
+                    <Layers className="h-4 w-4 text-primary" />
+                    {prdReadiness.layerName} Layer Readiness
+                  </h3>
+                  <Badge variant={prdReadiness.canGenerate ? "default" : "secondary"}>
+                    {prdReadiness.readiness}%
+                  </Badge>
+                </div>
+                
+                <Progress value={prdReadiness.readiness} className="h-2 mb-3" />
+                
+                <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4">
+                  <span>{prdReadiness.tilesVisited}/64 tiles explored</span>
+                  <span>{prdReadiness.fragmentCount} fragments captured</span>
+                </div>
+
+                <div className="flex gap-2">
+                  {onGeneratePrdLayer && (
+                    <Button
+                      onClick={handleGeneratePrdLayer}
+                      disabled={isGeneratingPrd || !prdReadiness.canGenerate}
+                      size="sm"
+                      className="flex-1"
+                    >
+                      {isGeneratingPrd ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      ) : (
+                        <FileText className="h-4 w-4 mr-2" />
+                      )}
+                      {isGeneratingPrd ? 'Generating...' : `Generate ${prdReadiness.layerName} Layer`}
+                    </Button>
+                  )}
+                  
+                  {prdId && onViewPrd && (
+                    <Button variant="outline" size="sm" onClick={onViewPrd}>
+                      View PRD
+                      <ArrowRight className="h-3.5 w-3.5 ml-1" />
+                    </Button>
+                  )}
+                </div>
+
+                {!prdReadiness.canGenerate && (
+                  <p className="text-xs text-muted-foreground mt-2">
+                    {prdReadiness.tilesVisited < 48 
+                      ? `Explore ${48 - prdReadiness.tilesVisited} more tiles to unlock generation`
+                      : `Capture ${8 - prdReadiness.fragmentCount} more fragments to unlock generation`
+                    }
+                  </p>
+                )}
+              </Card>
+
               {/* Generate Summary Button */}
               <Button
                 onClick={generateSummary}
                 disabled={isGenerating || entries.length === 0}
+                variant="outline"
                 className="w-full"
               >
                 {isGenerating ? (
@@ -199,27 +298,35 @@ export const JourneySummary: React.FC<JourneySummaryProps> = ({
 
               {/* Timeline of Entries */}
               <div className="space-y-2">
-                <h3 className="font-medium text-sm text-muted-foreground">Journey Timeline</h3>
-                {entries.map((entry) => (
-                  <Card key={entry.id} className="p-3">
-                    <div className="flex items-start gap-2">
-                      <div className="w-2 h-2 rounded-full bg-primary mt-2" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm line-clamp-2">{entry.content}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="text-xs text-muted-foreground">
-                            {new Date(entry.created_at).toLocaleDateString()}
-                          </span>
-                          {entry.tile_id && (
-                            <Badge variant="outline" className="text-xs">
-                              Tile {entry.tile_id}
-                            </Badge>
-                          )}
+                <h3 className="font-medium text-sm text-muted-foreground">
+                  {SEASON_LABELS[currentSeason as Season] || currentSeason} Timeline
+                </h3>
+                {entries.length === 0 ? (
+                  <p className="text-sm text-muted-foreground py-4 text-center">
+                    No fragments captured yet in this season.
+                  </p>
+                ) : (
+                  entries.map((entry) => (
+                    <Card key={entry.id} className="p-3">
+                      <div className="flex items-start gap-2">
+                        <div className="w-2 h-2 rounded-full bg-primary mt-2" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm line-clamp-2">{entry.content}</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-xs text-muted-foreground">
+                              {new Date(entry.created_at).toLocaleDateString()}
+                            </span>
+                            {entry.tile_id && (
+                              <Badge variant="outline" className="text-xs">
+                                Tile {entry.tile_id}
+                              </Badge>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </Card>
-                ))}
+                    </Card>
+                  ))
+                )}
               </div>
             </div>
           )}

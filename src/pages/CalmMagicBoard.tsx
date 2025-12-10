@@ -664,6 +664,10 @@ const CalmMagicBoard = () => {
         isOpen={showJourneySummary}
         onClose={() => setShowJourneySummary(false)}
         currentSeason={currentSeason}
+        seasonProgress={visitedTiles}
+        prdId={prdId}
+        onGeneratePrdLayer={handleGeneratePrdLayer}
+        onViewPrd={prdId ? () => navigate(`/prds/${prdId}`) : undefined}
       />
 
       {/* Insight Connections Graph */}
