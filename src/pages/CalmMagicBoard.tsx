@@ -5,7 +5,7 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import MinimalistTileMatrix from '@/components/MinimalistTileMatrix';
 import TileDetailPanel from '@/components/TileDetailPanel';
@@ -14,6 +14,7 @@ import { useTileMatrixPersistence } from '@/hooks/useTileMatrixPersistence';
 import { useSeasonPersistence } from '@/hooks/useSeasonPersistence';
 import { useQuadrantDynamics } from '@/hooks/useQuadrantDynamics';
 import { useTileEmotionalCheckins } from '@/hooks/useTileEmotionalCheckins';
+import { useOnboardingTour } from '@/hooks/useOnboardingTour';
 import { useMode } from '@/components/calm-magic/context/ModeContext';
 import { useProjectContext } from '@/hooks/useProjectContext';
 import { CycleNumber } from '@/types/journal-expansion';
@@ -27,6 +28,7 @@ import { InsightConnectionsGraph } from '@/components/calm-magic/InsightConnecti
 import { QuadrantDynamicsPanel } from '@/components/calm-magic/QuadrantDynamicsPanel';
 import { HigherSelfProphecyModal } from '@/components/calm-magic/HigherSelfProphecyModal';
 import { PrdAssemblyPanel } from '@/components/calm-magic/PrdAssemblyPanel';
+import OnboardingTour from '@/components/calm-magic/OnboardingTour';
 import { getPrdAccessLevel, Season as PrdSeason } from '@/utils/prdAccessLevel';
 import { parseBoardEntryParams, getAssessmentContextDescription } from '@/utils/parseBoardEntryParams';
 import { getGardenByType } from '@/data/gardens';
@@ -158,6 +160,14 @@ const CalmMagicBoard = () => {
     saving,
     savePolenEntry,
   } = useTileMatrixPersistence(todayTile?.board || SEASON_TO_BOARD[currentSeason]);
+
+  // Onboarding tour
+  const {
+    isOpen: showTour,
+    startTour,
+    closeTour,
+    completeTour,
+  } = useOnboardingTour({ projectId: projectContext?.id, autoStart: true });
 
   // Apply URL parameters on mount (once)
   useEffect(() => {
@@ -577,16 +587,23 @@ const CalmMagicBoard = () => {
           </div>
           
           {/* Season Navigation - Center */}
-          <SeasonProgressBar
-            currentSeason={currentSeason}
-            seasonProgress={seasonProgress}
-            completedSeasons={completedSeasons}
-          />
+          <div data-tour="seasons">
+            <SeasonProgressBar
+              currentSeason={currentSeason}
+              seasonProgress={seasonProgress}
+              completedSeasons={completedSeasons}
+            />
+          </div>
 
           {/* Journey Controls */}
           <div className="flex items-center gap-2">
             {!journeyStarted ? (
-              <Button onClick={handleStartJourney} size="sm" className={`bg-gradient-to-r ${SEASON_COLORS[currentSeason]}`}>
+              <Button 
+                onClick={handleStartJourney} 
+                size="sm" 
+                className={`bg-gradient-to-r ${SEASON_COLORS[currentSeason]}`}
+                data-tour="start-button"
+              >
                 <Play className="w-4 h-4 mr-1" />
                 Start Innovating
               </Button>
@@ -635,6 +652,7 @@ const CalmMagicBoard = () => {
               size="icon"
               onClick={() => setShowPolenBrowser(!showPolenBrowser)}
               title="Fragment Library"
+              data-tour="fragments"
             >
               <Library className="w-4 h-4" />
             </Button>
@@ -652,11 +670,22 @@ const CalmMagicBoard = () => {
                 size="sm"
                 onClick={() => setActiveView('prd-assembly')}
                 title="PRD Assembly"
+                data-tour="prd"
               >
                 <Layers className="w-4 h-4 mr-1" />
                 PRD
               </Button>
             )}
+            
+            {/* Help / Tour */}
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={startTour}
+              title="Take a Tour"
+            >
+              <HelpCircle className="w-4 h-4" />
+            </Button>
           </div>
         </div>
       </header>
@@ -669,7 +698,7 @@ const CalmMagicBoard = () => {
               <Grid3X3 className="w-3.5 h-3.5" />
               Matrix
             </TabsTrigger>
-            <TabsTrigger value="window-of-tolerance" className="text-xs gap-1.5 px-3">
+            <TabsTrigger value="window-of-tolerance" className="text-xs gap-1.5 px-3" data-tour="wot">
               <CircleDot className="w-3.5 h-3.5" />
               Window of Tolerance
             </TabsTrigger>
@@ -687,7 +716,10 @@ const CalmMagicBoard = () => {
         {activeView === 'matrix' && (
           <>
             {/* Left Panel: Tile Matrix - Always visible, scrollable */}
-            <div className={`${selectedTile || showPolenBrowser ? 'flex-1' : 'w-full'} p-8 overflow-auto transition-all duration-300 flex items-center justify-center`}>
+            <div 
+              className={`${selectedTile || showPolenBrowser ? 'flex-1' : 'w-full'} p-8 overflow-auto transition-all duration-300 flex items-center justify-center`}
+              data-tour="matrix"
+            >
               <div className="pl-32">
             <MinimalistTileMatrix 
               board={SEASON_TO_BOARD[currentSeason]}
@@ -722,21 +754,26 @@ const CalmMagicBoard = () => {
 
             {/* Right Panel: Tile Detail - Slides in when tile selected */}
             {selectedTile && (
-              <div className="w-[400px] max-w-[40vw] shrink-0 border-l border-border/50 animate-in slide-in-from-right duration-300">
-                <TileDetailPanel
-                  selectedTile={selectedTile}
-                  activeCompass={activeCompass}
-                  board={SEASON_TO_BOARD[currentSeason]}
-                  isAuthenticated={isAuthenticated}
-                  saving={saving}
-                  onClose={() => setSelectedTile(null)}
-                  onSavePolen={handleSavePolen}
-                  onNavigate={handleNavigate}
-                  onCompassChange={handleCompassChange}
-                  currentSeason={currentSeason}
-                  onEmotionalCheckin={handleEmotionalCheckin}
-                  emotionalCheckins={getAllCheckins()}
-                />
+              <div 
+                className="w-[400px] max-w-[40vw] shrink-0 border-l border-border/50 animate-in slide-in-from-right duration-300"
+                data-tour="detail-panel"
+              >
+                <div data-tour="navigation">
+                  <TileDetailPanel
+                    selectedTile={selectedTile}
+                    activeCompass={activeCompass}
+                    board={SEASON_TO_BOARD[currentSeason]}
+                    isAuthenticated={isAuthenticated}
+                    saving={saving}
+                    onClose={() => setSelectedTile(null)}
+                    onSavePolen={handleSavePolen}
+                    onNavigate={handleNavigate}
+                    onCompassChange={handleCompassChange}
+                    currentSeason={currentSeason}
+                    onEmotionalCheckin={handleEmotionalCheckin}
+                    emotionalCheckins={getAllCheckins()}
+                  />
+                </div>
               </div>
             )}
           </>
@@ -868,6 +905,13 @@ const CalmMagicBoard = () => {
         onSaveAsPolen={handleAssistantSavePolen}
         currentSeason={currentSeason}
         selectedTile={selectedTile}
+      />
+
+      {/* Onboarding Tour */}
+      <OnboardingTour
+        isOpen={showTour}
+        onClose={closeTour}
+        onComplete={completeTour}
       />
     </div>
   );
