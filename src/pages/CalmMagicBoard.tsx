@@ -13,7 +13,9 @@ import { FragmentBrowser } from '@/components/calm-magic/FragmentBrowser';
 import { useTileMatrixPersistence } from '@/hooks/useTileMatrixPersistence';
 import { useSeasonPersistence } from '@/hooks/useSeasonPersistence';
 import { useQuadrantDynamics } from '@/hooks/useQuadrantDynamics';
+import { useTileEmotionalCheckins } from '@/hooks/useTileEmotionalCheckins';
 import { CycleNumber } from '@/types/journal-expansion';
+import { FeltState, EmotionalAxes, QuadrantPosition } from '@/types/trajectory';
 import SeasonProgressBar from '@/components/prd-generator/SeasonProgressBar';
 import SeasonCompletionModal from '@/components/prd-generator/SeasonCompletionModal';
 import AssistantChatPanel from '@/components/calm-magic/AssistantChatPanel';
@@ -110,9 +112,17 @@ const CalmMagicBoard = () => {
     prophecyReflection,
     trajectoryLog,
     setProphecy,
+    applyShadowNudge,
     logTrajectoryEvent,
     resetTrajectory,
   } = useQuadrantDynamics(seasonProgress, currentSeason);
+
+  // Emotional check-ins hook
+  const {
+    checkins: emotionalCheckins,
+    addCheckin,
+    getAllCheckins,
+  } = useTileEmotionalCheckins();
 
   const {
     isAuthenticated,
@@ -282,6 +292,44 @@ const CalmMagicBoard = () => {
   const handleCompassChange = (compass: CompassType) => {
     setActiveCompass(compass);
   };
+
+  // Convert 5-axis emotional state to quadrant position
+  const convertAxesToPosition = (axes: EmotionalAxes): QuadrantPosition => {
+    // X axis: Novelty (magic, open, free) vs Memory (love, calm)
+    const noveltyWeight = (axes.magic + axes.open + axes.free) / 3;
+    const memoryWeight = (axes.love + axes.calm) / 2;
+    const x = ((noveltyWeight - memoryWeight) / 100) * 2;
+    
+    // Y axis: Sovereignty (calm, open) vs Intimacy (love, magic)
+    const sovereigntyWeight = (axes.calm + axes.open) / 2;
+    const intimacyWeight = (axes.love + axes.magic) / 2;
+    const y = ((sovereigntyWeight - intimacyWeight) / 100) * 2;
+    
+    return {
+      x: Math.max(-1, Math.min(1, x)),
+      y: Math.max(-1, Math.min(1, y)),
+    };
+  };
+
+  // Handle emotional check-in
+  const handleEmotionalCheckin = useCallback((
+    tileId: number,
+    feltState: FeltState,
+    axes: EmotionalAxes,
+    note?: string
+  ) => {
+    // Save the check-in
+    const checkin = addCheckin(tileId, feltState, axes, note);
+    
+    // Convert to position and apply as shadow nudge
+    const position = convertAxesToPosition(axes);
+    applyShadowNudge(position, feltState, note || null);
+    
+    // Log the trajectory event
+    logTrajectoryEvent('emotional_checkin', tileId, `Felt ${feltState || 'neutral'}: ${note || 'No note'}`);
+    
+    toast.success('Emotional check-in recorded');
+  }, [addCheckin, applyShadowNudge, logTrajectoryEvent]);
 
   // Handle season completion - continue to next season
   const handleSeasonContinue = () => {
@@ -559,6 +607,8 @@ const CalmMagicBoard = () => {
                   onNavigate={handleNavigate}
                   onCompassChange={handleCompassChange}
                   currentSeason={currentSeason}
+                  onEmotionalCheckin={handleEmotionalCheckin}
+                  emotionalCheckins={getAllCheckins()}
                 />
               </div>
             )}
