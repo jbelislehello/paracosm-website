@@ -157,6 +157,29 @@ export const WHAT_IS_A_PRD = {
 // PERSONAL MODE: Relational Design & Poiesis
 // ============================================
 
+export const WHAT_IS_RRD = {
+  definition: "A Relational Requirements Document (RRD) maps the requirements for transformation — not what to build, but what relationships, patterns, and ways of being want to emerge through your inner work.",
+  
+  purpose: [
+    "Self-understanding & integration",
+    "Relational coherence mapping",
+    "Window of Tolerance expansion",
+    "Embodied knowing cultivation"
+  ],
+
+  whyItMatters: "While PRDs focus on product features, RRDs focus on relational features — the qualities of connection, presence, and coherence you're developing within yourself and your relationships.",
+
+  calmMagicEvolution: "The RRD emerges naturally from your journey through the 5 seasons. As you capture fragments and dialogues, the RRD crystallizes your transformation into a living document of relational intelligence.",
+
+  keyDifferences: [
+    { prd: "What features to build", rrd: "What qualities of being to cultivate" },
+    { prd: "User requirements", rrd: "Relational requirements" },
+    { prd: "Product-market fit", rrd: "Self-world coherence" },
+    { prd: "Technical specifications", rrd: "Embodied practices" },
+    { prd: "Stakeholder alignment", rrd: "Inner parts integration" }
+  ]
+};
+
 export const WHAT_IS_POIESIS = {
   definition: "Poiesis (Greek: ποίησις) is the act of bringing something into being that did not exist before — creative emergence where inner knowing meets outer expression through the body's wisdom.",
   
