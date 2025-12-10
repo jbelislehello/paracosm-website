@@ -3,12 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { SeasonQualities, QuadrantPosition, TrajectoryEvent, QUADRANT_LABELS } from '@/types/trajectory';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { SeasonQualities, QuadrantPosition, TrajectoryEvent, QUADRANT_LABELS, ShadowFactors, FeltState } from '@/types/trajectory';
+import { GapInfo } from '@/utils/coherenceAnalysis';
 import { TrajectoryVisualization } from './TrajectoryVisualization';
 import { SeasonQualityBars } from './SeasonQualityBars';
 import { TrajectoryLog } from './TrajectoryLog';
 import { HigherSelfProphecyModal } from './HigherSelfProphecyModal';
-import { Target, RotateCcw, Sparkles } from 'lucide-react';
+import { ShadowFactorsDisplay } from './ShadowFactorsDisplay';
+import { ShadowNudgePanel } from './ShadowNudgePanel';
+import { Target, RotateCcw, Sparkles, ChevronDown, Sliders } from 'lucide-react';
 
 interface QuadrantDynamicsPanelProps {
   seasonQualities: SeasonQualities;
@@ -18,8 +22,13 @@ interface QuadrantDynamicsPanelProps {
   higherSelfQuadrant: 'SN' | 'IN' | 'IM' | 'SM' | null;
   prophecyReflection: string | null;
   trajectoryLog: TrajectoryEvent[];
+  shadowFactors?: ShadowFactors;
+  gaps?: GapInfo[];
+  shadowNudge?: { position: QuadrantPosition; felt_state: FeltState; note: string | null } | null;
   onSetProphecy: (position: QuadrantPosition, reflection?: string) => void;
   onResetTrajectory: () => void;
+  onApplyShadowNudge?: (position: QuadrantPosition, feltState: FeltState, note: string | null) => void;
+  onResetShadowNudge?: () => void;
 }
 
 export const QuadrantDynamicsPanel: React.FC<QuadrantDynamicsPanelProps> = ({
@@ -30,10 +39,16 @@ export const QuadrantDynamicsPanel: React.FC<QuadrantDynamicsPanelProps> = ({
   higherSelfQuadrant,
   prophecyReflection,
   trajectoryLog,
+  shadowFactors,
+  gaps = [],
+  shadowNudge,
   onSetProphecy,
   onResetTrajectory,
+  onApplyShadowNudge,
+  onResetShadowNudge,
 }) => {
   const [showProphecyModal, setShowProphecyModal] = useState(false);
+  const [showNudgePanel, setShowNudgePanel] = useState(false);
 
   return (
     <div className="h-full overflow-auto p-6 space-y-6">
@@ -102,6 +117,11 @@ export const QuadrantDynamicsPanel: React.FC<QuadrantDynamicsPanelProps> = ({
               <p className="text-[10px] text-muted-foreground">
                 {QUADRANT_LABELS[shadowQuadrant].description}
               </p>
+              {shadowNudge && (
+                <Badge variant="outline" className="mt-2 text-[10px]">
+                  Nudged • {shadowNudge.felt_state || 'neutral'}
+                </Badge>
+              )}
             </div>
             
             {higherSelfQuadrant ? (
@@ -146,6 +166,43 @@ export const QuadrantDynamicsPanel: React.FC<QuadrantDynamicsPanelProps> = ({
           )}
         </CardContent>
       </Card>
+
+      {/* Shadow Factors */}
+      {shadowFactors && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm flex items-center justify-between">
+              <span>Shadow Analysis</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-7 px-2"
+                onClick={() => setShowNudgePanel(!showNudgePanel)}
+              >
+                <Sliders className="w-3 h-3 mr-1" />
+                Nudge
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <ShadowFactorsDisplay 
+              factors={shadowFactors} 
+              gaps={gaps}
+              showGaps={true}
+            />
+            
+            {/* Nudge Panel */}
+            {showNudgePanel && onApplyShadowNudge && onResetShadowNudge && (
+              <ShadowNudgePanel
+                currentPosition={shadowPosition}
+                onApplyNudge={onApplyShadowNudge}
+                onReset={onResetShadowNudge}
+                hasExistingNudge={!!shadowNudge}
+              />
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       <Separator />
 

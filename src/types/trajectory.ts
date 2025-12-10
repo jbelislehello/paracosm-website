@@ -20,7 +20,8 @@ export type TrajectoryEventType =
   | 'tune_complete' 
   | 'season_end' 
   | 'prd_generated'
-  | 'prophecy_set';
+  | 'prophecy_set'
+  | 'shadow_nudge';
 
 export interface TrajectoryEvent {
   id: string;
@@ -33,6 +34,22 @@ export interface TrajectoryEvent {
   note?: string;
 }
 
+export interface ShadowFactors {
+  completeness: number; // 0-1, tiles visited / total
+  coherence: number;    // 0-1, pattern clustering
+  depth: number;        // 0-1, engagement per tile
+  flow: number;         // 0-1, movement validity
+}
+
+export type FeltState = 'stuck' | 'flowing' | 'breakthrough' | null;
+
+export interface ShadowNudge {
+  position: QuadrantPosition;
+  felt_state: FeltState;
+  note: string | null;
+  applied_at: string;
+}
+
 export interface TrajectoryState {
   higher_self_position: QuadrantPosition | null;
   higher_self_quadrant: 'SN' | 'IN' | 'IM' | 'SM' | null;
@@ -40,6 +57,8 @@ export interface TrajectoryState {
   prophecy_set_at: string | null;
   trajectory_log: TrajectoryEvent[];
   last_shadow_position: QuadrantPosition;
+  shadow_nudge: ShadowNudge | null;
+  shadow_factors: ShadowFactors;
 }
 
 export const QUADRANT_LABELS = {
