@@ -6,6 +6,52 @@ export type CycleNumber = 1 | 2 | 3 | 4;
 export type JourneyMode = 'relational' | 'product';
 export type SpiralQuadrant = 'sovereignty' | 'memory' | 'intimacy' | 'novelty';
 
+// PRD Layer types - 5 pluralized layers
+export type PrdLayer = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
+
+// PRD Meta-stages - 3 stages grouping the 5 layers
+export type PrdStage = 'real-intelligence' | 'knowledge-objects' | 'understanding';
+
+export interface PrdStageDefinition {
+  id: PrdStage;
+  name: string;
+  description: string;
+  themes: string[];
+  layers: PrdLayer[];
+  icon: string;
+  color: string;
+}
+
+export const PRD_STAGES: PrdStageDefinition[] = [
+  {
+    id: 'real-intelligence',
+    name: 'Real Intelligence',
+    description: 'Surfacing what actually matters through intuition and relational feedback',
+    themes: ['Intuitions', 'Shared Ideas', 'PRD Shadows', 'Cultural Issues', 'RI Feedback', 'Biases'],
+    layers: ['POLLENS', 'NOEMS'],
+    icon: '🧠',
+    color: 'from-rose-500 to-amber-500'
+  },
+  {
+    id: 'knowledge-objects',
+    name: 'Knowledge Objects',
+    description: 'Crystallizing insights into structured, reusable knowledge',
+    themes: ['Content Sources', 'Data Nodes', 'API'],
+    layers: ['POEMS'],
+    icon: '💎',
+    color: 'from-purple-500 to-indigo-500'
+  },
+  {
+    id: 'understanding',
+    name: 'Understanding',
+    description: 'Mapping processes and relationships through semantic structures',
+    themes: ['Processes', 'Maps', 'Three Graph Model', 'Subject Graph', 'Lexical Graph', 'Domain Graph', 'RDF', 'OWL'],
+    layers: ['TOTEMS', 'ANTHEMS'],
+    icon: '🗺️',
+    color: 'from-blue-500 to-emerald-500'
+  }
+];
+
 // 5 Compasses from MAGIC system
 export type CompassType = 
   | 'narrative'          // Storytelling lens
@@ -58,20 +104,43 @@ export const MAGIC_ACRONYM = {
   C: 'Compasses'
 };
 
-// Feminine-Safe PRD Design Principles
+// Feminine-Safe PRD Design Principles - Enhanced with practical UX qualities
 export interface FemininePrinciple {
   id: string;
   name: string;
   description: string;
   practices: string[];
+  essence: string;
+  designCue: string;
+  reviewQuestion: string;
+  icon: string;
+  stage: PrdStage;
 }
 
-// Feminine-Safe PRD Threats
-export interface FeminineThreat {
+// Feminine-Safe PRD Anti-patterns (replacing threats)
+export interface FeminineAntiPattern {
   id: string;
   name: string;
   description: string;
   signs: string[];
+  counterPrinciple: string;
+}
+
+// Stack emergence tracking
+export interface StackComponent {
+  id: 'ontology' | 'backend' | 'frontend' | 'database' | 'api';
+  name: string;
+  description: string;
+  maturityLevel: number; // 0-100
+  emergencePhase: PrdLayer | null;
+}
+
+export interface MaturityMetric {
+  id: 'documentation' | 'automation' | 'orchestration';
+  name: string;
+  description: string;
+  level: number; // 0-100
+  indicators: string[];
 }
 
 // Polen Entry - Raw fragments (GLITCH phase)
@@ -246,4 +315,16 @@ export function getSpiralQuadrant(x: number, y: number): SpiralQuadrant {
   if (x < 0 && y >= 0) return 'memory';       // top-left: memory + sovereignty
   if (x < 0 && y < 0) return 'intimacy';      // bottom-left: memory + intimacy
   return 'novelty';                            // bottom-right: novelty + intimacy
+}
+
+// Get PRD stage for a tile based on row position
+export function getTileStage(row: number): PrdStage {
+  if (row <= 2) return 'real-intelligence';   // Rows 0-2: Mindsets, Agilities, Goals
+  if (row <= 4) return 'knowledge-objects';   // Rows 3-4: Intuition, Landscape
+  return 'understanding';                      // Rows 5-7: Energy, Norms, Synergies
+}
+
+// Get stage definition by ID
+export function getStageById(stageId: PrdStage): PrdStageDefinition | undefined {
+  return PRD_STAGES.find(s => s.id === stageId);
 }

@@ -6,7 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-type PrdLayer = 'POLLEN' | 'POEM' | 'TOTEM' | 'ANTHEM' | 'EXECUTION';
+type PrdLayer = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 
 interface PolenEntry {
   content: string;
@@ -25,34 +25,48 @@ serve(async (req) => {
       polenEntries: PolenEntry[];
       board: string;
       existingContent: Record<string, string>;
-      glitchData?: any; // Structured glitch output from assistant
-      driftData?: any;  // Structured drift output from assistant
+      glitchData?: any;
+      driftData?: any;
     };
 
     console.log(`Generating Calm Magic PRD content for layer: ${layer}, ${polenEntries.length} polen entries`);
     
     // If we have structured data from the assistant, use it directly
-    if (layer === 'POLLEN' && glitchData?.pollen) {
-      const pollen = glitchData.pollen;
+    if (layer === 'POLLENS' && glitchData?.pollens) {
+      const pollens = glitchData.pollens;
       const content = {
-        pollen_observations: pollen.glitches.map((g: any) => `• **${g.title}**: ${g.description}`).join('\n'),
-        pollen_constraints: pollen.constraints?.join('\n') || '',
-        pollen_emotional_climate: `**Stakes:** ${pollen.stakes || ''}\n\n**Anchor Glitches:** ${pollen.anchor_glitches?.join(', ') || ''}`
+        pollens_observations: pollens.glitches?.map((g: any) => `• **${g.title}**: ${g.description}`).join('\n') || '',
+        pollens_biases: pollens.biases_surfaced?.join('\n') || '',
+        pollens_cultural_issues: pollens.cultural_issues?.join('\n') || '',
+        pollens_prd_shadows: pollens.prd_shadows?.join('\n') || '',
+        pollens_constraints: pollens.constraints?.join('\n') || '',
+        pollens_stakes: pollens.stakes || ''
+      };
+      return new Response(JSON.stringify({ content }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (layer === 'NOEMS' && (glitchData?.noems || driftData?.noems)) {
+      const noems = driftData?.noems || glitchData?.noems;
+      const content = {
+        noems_concepts: noems.concepts?.map((c: any) => `• **${c.title}**: ${c.insight} (${c.maturity})`).join('\n') || '',
+        noems_shared_ideas: noems.shared_ideas?.join('\n• ') || '',
+        noems_intuitions: noems.intuitions?.join('\n• ') || ''
       };
       return new Response(JSON.stringify({ content }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
     
-    if (layer === 'POEM' && driftData?.poem) {
-      const poem = driftData.poem;
-      const totem = driftData.totem;
+    if (layer === 'POEMS' && driftData?.poems) {
+      const poems = driftData.poems;
       const content = {
-        poem_user_journeys: poem.futures?.map((f: any) => 
+        poems_narratives: poems.futures?.map((f: any) => 
           `**${f.title}** (${f.persona})\n\n*Before:* ${f.scenario.before}\n*During:* ${f.scenario.during}\n*After:* ${f.scenario.after}`
         ).join('\n\n---\n\n') || '',
-        poem_hypotheses: poem.primary_narrative?.why_it_matters || '',
-        poem_thematic_anchors: totem?.candidate_forms?.join('\n• ') || ''
+        poems_content_sources: poems.primary_narrative?.content_sources?.join('\n• ') || '',
+        poems_data_nodes: poems.primary_narrative?.data_nodes?.join('\n• ') || ''
       };
       return new Response(JSON.stringify({ content }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -74,127 +88,110 @@ serve(async (req) => {
       .map(([k, v]) => `${k}: ${v.slice(0, 300)}...`)
       .join('\n');
 
-    const systemPrompt = `You are an expert at the Calm Magic PRD system — a 5-layer process engine that transforms Gl!tches into actionable designs.
+    const systemPrompt = `You are an expert at the Calm Magic PRD system — a 5-layer process that transforms raw signals into structured understanding.
 
-The Calm Magic PRD assumes three things:
-1. Gl!tch – we start from noise, tension, symptoms, desires
-2. Drift – we expand the window of tolerance, explore options, test narratives
-3. Tune – we converge, commit, and design protocols that can actually run
+THE THREE STAGES:
+1. REAL INTELLIGENCE (POLLENS + NOEMS): Surfacing intuitions, biases, PRD shadows, cultural issues, relational feedback
+2. KNOWLEDGE OBJECTS (POEMS): Crystallizing narratives, content sources, data nodes, API contracts
+3. UNDERSTANDING (TOTEMS + ANTHEMS): Mapping processes, semantic structures, Three Graph Model (Subject/Lexical/Domain), RDF/OWL patterns
 
-The 5 PRD layers are:
-1. POLLEN (Gl!tch phase) – Signals & Context: raw observations, constraints, emotional climate
-2. POEM (Drift phase) – Narrative & Meaning: user journeys, hypotheses, thematic anchors
-3. TOTEM (Tune phase) – Form & Interfaces: core flows, ontological backbone, system boundaries
-4. ANTHEM (Tune phase) – Alignment & Impact: success metrics, guardrails, strategic alignment
-5. EXECUTION (FREE→LOVE loop) – Roadmap & Operations: milestones, responsibilities, learning cadence
+THE 5 PRD LAYERS:
+1. POLLENS (Gl!tch) – Raw signals: observations, biases, cultural issues, PRD shadows, stakes
+2. NOEMS (Drift) – Concepts: crystallized insights, shared ideas, intuitions becoming structure
+3. POEMS (Drift→Tune) – Narratives: user journeys, content sources, data node definitions
+4. TOTEMS (Tune) – Structures: processes, maps, Three Graph Model, semantic relationships
+5. ANTHEMS (Tune→FREE) – Integration: alignment, guardrails, roadmap, feminine quality review
 
-The PRD is a living map, not a dead document. It protects the Gl!tch, uses Drift as design space, and treats Tune as commitment.
+FEMININE DESIGN QUALITY LENS:
+Always consider: Receptivity, Softness & Safety, Relationality, Cyclical Time, Embodiment, Intuition & Ambiguity, Care & Nurturance, Inclusivity & Plurality
 
-Write with clarity and emotional intelligence. Be poetic but precise.`;
+Write with clarity and emotional intelligence. Treat insights as living organisms.`;
 
     const layerPrompts: Record<PrdLayer, string> = {
-      POLLEN: `Based on these raw POLLEN (glitch fragments) from a ${board} board cycle, generate the POLLEN layer:
+      POLLENS: `Based on these raw signals from a ${board} board cycle, generate the POLLENS layer:
 
 POLLEN ENTRIES:
 ${polenContext}
 
-KEY PROMPTS TO ANSWER:
-- What hurts, confuses, or excites people right now?
-- What happens if we do nothing in 6–12 months?
-- Which tensions keep coming back in different forms?
-
 Return JSON with these exact keys:
 {
-  "pollen_observations": "5-15 clear tensions/glitches. Raw observations, weird use cases, quotes from users/stakeholders. What's not working? What feels promising but undefined?",
-  "pollen_constraints": "Constraints named honestly: legal, ethical, financial, technical barriers",
-  "pollen_emotional_climate": "Fears, hopes, invisible stakes. The emotional texture of the situation."
+  "pollens_observations": "5-15 clear tensions/glitches with emotional texture",
+  "pollens_biases": "Biases surfaced in the conversation (cognitive, cultural, institutional)",
+  "pollens_cultural_issues": "Systemic and cultural patterns noticed",
+  "pollens_prd_shadows": "What the PRD might be hiding or avoiding",
+  "pollens_constraints": "Legal, ethical, financial, technical barriers named honestly",
+  "pollens_stakes": "What happens if nothing changes (emotional and practical)"
 }
 
-Capture the raw signal without prematurely fixing anything.`,
+Stay with the raw signal. No premature solutions.`,
 
-      POEM: `Based on the POLLEN and context, generate the POEM layer:
-
-POLLEN ENTRIES:
-${polenContext}
-
-${existingContext ? `EXISTING CONTENT:\n${existingContext}` : ''}
-
-KEY PROMPTS TO ANSWER:
-- If this product was a character, who would it be helping, and how?
-- What emotions should users feel before / during / after interacting with it?
-- Which parts of the story must never be compromised?
-
-Return JSON with these exact keys:
-{
-  "poem_user_journeys": "1-3 user journeys as short stories (before → during → after). Future press release or day-in-the-life vignettes.",
-  "poem_hypotheses": "'We believe that...' statements about what will shift in behavior, emotion, or cognition",
-  "poem_thematic_anchors": "Core themes: curiosity, confidence, play, trust, care, etc. Emotions & symbolic roles identified."
-}
-
-Be expansive. Allow many possible futures to coexist.`,
-
-      TOTEM: `Based on previous layers, generate the TOTEM layer:
+      NOEMS: `Based on POLLENS and context, generate the NOEMS layer (conceptual atoms):
 
 POLLEN ENTRIES:
 ${polenContext}
 
 ${existingContext ? `EXISTING CONTENT:\n${existingContext}` : ''}
 
-KEY PROMPTS TO ANSWER:
-- What is the smallest coherent experience we can ship that honors the Poem?
-- Which entities, concepts, and relationships define the ontology of this product?
-- Where does this product plug into existing workflows, tools, or ecosystems?
-
 Return JSON with these exact keys:
 {
-  "totem_core_flows": "Core flows and screens, or service blueprints. Information architecture. What people will touch, see, or feel.",
-  "totem_ontology": "Ontological backbone: entities, relationships, data model. The minimal conceptual structure.",
-  "totem_system_boundaries": "What this product explicitly does NOT do. Where human oversight is required. Risk & governance framing."
+  "noems_concepts": "Crystallized concepts emerging from pollens. Format: Title: Insight (maturity: seed/growing/ripe)",
+  "noems_shared_ideas": "Ideas that emerged from multiple glitches or tensions",
+  "noems_intuitions": "Gut feelings and hunches worth tracking, not yet proven"
 }
 
-Things stop being pure possibility and become concrete design.`,
+Let concepts emerge naturally. Don't force structure.`,
 
-      ANTHEM: `Based on previous layers, generate the ANTHEM layer:
+      POEMS: `Based on previous layers, generate the POEMS layer (narratives & knowledge objects):
 
 POLLEN ENTRIES:
 ${polenContext}
 
 ${existingContext ? `EXISTING CONTENT:\n${existingContext}` : ''}
 
-KEY PROMPTS TO ANSWER:
-- What would "regret" look like if we shipped this carelessly?
-- What signals tell us this product is healing something vs. extracting from it?
-- How does this project feed back into our long-term narrative?
-
 Return JSON with these exact keys:
 {
-  "anthem_success_metrics": "3-5 success signals, qualitative and quantitative. What behavior/stories/metrics indicate success?",
-  "anthem_guardrails": "3-5 guardrails: ethics, compliance, well-being, ecological and social impact. What we must NOT do.",
-  "anthem_strategic_alignment": "How this supports the organization's story and your own paracosm. Long-term narrative alignment."
+  "poems_narratives": "1-3 user journeys as stories (before → during → after) with emotional texture",
+  "poems_content_sources": "What content, data, and information powers these narratives",
+  "poems_data_nodes": "Key data entities and relationships that the system needs to track"
 }
 
-Why is this worth our time? How will we know it's working?`,
+Stories first, then structure. Allow many possible futures.`,
 
-      EXECUTION: `Based on all previous layers, generate the EXECUTION layer:
+      TOTEMS: `Based on previous layers, generate the TOTEMS layer (semantic structures):
 
 POLLEN ENTRIES:
 ${polenContext}
 
 ${existingContext ? `EXISTING CONTENT:\n${existingContext}` : ''}
 
-KEY PROMPTS TO ANSWER:
-- What's the smallest high-leverage slice we can ship first?
-- Who needs to be in the room at each major decision point?
-- How do we build in time for Drift (reflection, re-ontologizing) between Tunes?
+Return JSON with these exact keys:
+{
+  "totems_processes": "Core flows, service blueprints, what people will touch/see/feel",
+  "totems_maps": "Relationship maps, conceptual architecture, system boundaries",
+  "totems_three_graph": "Three Graph Model hints: Subject Graph (who/what), Lexical Graph (vocabulary), Domain Graph (concepts)",
+  "totems_semantic_notes": "RDF/OWL patterns emerging, ontological commitments being made"
+}
+
+Things become concrete here. Semantic structures crystallize.`,
+
+      ANTHEMS: `Based on all previous layers, generate the ANTHEMS layer (integration & alignment):
+
+POLLEN ENTRIES:
+${polenContext}
+
+${existingContext ? `EXISTING CONTENT:\n${existingContext}` : ''}
 
 Return JSON with these exact keys:
 {
-  "exec_milestones": "Simple roadmap (now / next / later). Milestones, sprints, releases. What's the smallest high-leverage slice?",
-  "exec_responsibility_map": "Responsibility mapping (RACI, roles, circles). Who needs to be in the room? Named owner(s).",
-  "exec_learning_cadence": "Learning cadence: demos, retros, drift sessions. How do we build in time for reflection? Rituals for Drift."
+  "anthems_alignment": "How this supports the organization's story and long-term narrative",
+  "anthems_success_signals": "3-5 qualitative and quantitative signals of success",
+  "anthems_guardrails": "3-5 guardrails: ethics, compliance, ecological and social impact",
+  "anthems_roadmap": "Simple now/next/later roadmap with named owners",
+  "anthems_feminine_quality": "Which of the 8 principles this honors, and which need attention",
+  "anthems_learning_cadence": "How we build in time for Drift between Tunes"
 }
 
-What we learn here becomes new POLLEN for the next cycle. This is the FREE → LOVE loop.`
+Integration time. What we learn flows back into POLLENS for the next cycle.`
     };
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {

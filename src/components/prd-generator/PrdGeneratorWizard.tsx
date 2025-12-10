@@ -6,10 +6,13 @@ import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Loader2, Sparkles, ArrowRight, ArrowLeft, Check, Edit3, FileText, Sprout, BookOpen, Shapes, Flag, Rocket, CheckCircle2, Circle, Download } from 'lucide-react';
+import { Loader2, Sparkles, ArrowRight, ArrowLeft, Check, Edit3, FileText, Sprout, Gem, BookOpen, Landmark, Music, CheckCircle2, Circle, Download, Shield } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import PrdStageProgress, { PrdLayer } from './PrdStageProgress';
+import StackFormation from './StackFormation';
+import { FeminineSafePRD } from '@/components/journal/FeminineSafePRD';
+import { PRD_STAGES, PrdStage } from '@/types/journal-expansion';
 
 interface PolenEntry {
   id: string;
@@ -29,92 +32,111 @@ interface PrdGeneratorWizardProps {
 }
 
 interface GeneratedContent {
-  // POLLEN Layer
-  pollen_observations?: string;
-  pollen_constraints?: string;
-  pollen_emotional_climate?: string;
-  // POEM Layer
-  poem_user_journeys?: string;
-  poem_hypotheses?: string;
-  poem_thematic_anchors?: string;
-  // TOTEM Layer
-  totem_core_flows?: string;
-  totem_ontology?: string;
-  totem_system_boundaries?: string;
-  // ANTHEM Layer
-  anthem_success_metrics?: string;
-  anthem_guardrails?: string;
-  anthem_strategic_alignment?: string;
-  // EXECUTION Layer
-  exec_milestones?: string;
-  exec_responsibility_map?: string;
-  exec_learning_cadence?: string;
+  // POLLENS Layer
+  pollens_observations?: string;
+  pollens_biases?: string;
+  pollens_cultural_issues?: string;
+  pollens_prd_shadows?: string;
+  pollens_constraints?: string;
+  pollens_stakes?: string;
+  // NOEMS Layer
+  noems_concepts?: string;
+  noems_shared_ideas?: string;
+  noems_intuitions?: string;
+  // POEMS Layer
+  poems_narratives?: string;
+  poems_content_sources?: string;
+  poems_data_nodes?: string;
+  // TOTEMS Layer
+  totems_processes?: string;
+  totems_maps?: string;
+  totems_three_graph?: string;
+  totems_semantic_notes?: string;
+  // ANTHEMS Layer
+  anthems_alignment?: string;
+  anthems_success_signals?: string;
+  anthems_guardrails?: string;
+  anthems_roadmap?: string;
+  anthems_feminine_quality?: string;
+  anthems_learning_cadence?: string;
 }
 
 const LAYER_FIELDS: Record<PrdLayer, (keyof GeneratedContent)[]> = {
-  POLLEN: ['pollen_observations', 'pollen_constraints', 'pollen_emotional_climate'],
-  POEM: ['poem_user_journeys', 'poem_hypotheses', 'poem_thematic_anchors'],
-  TOTEM: ['totem_core_flows', 'totem_ontology', 'totem_system_boundaries'],
-  ANTHEM: ['anthem_success_metrics', 'anthem_guardrails', 'anthem_strategic_alignment'],
-  EXECUTION: ['exec_milestones', 'exec_responsibility_map', 'exec_learning_cadence']
+  POLLENS: ['pollens_observations', 'pollens_biases', 'pollens_cultural_issues', 'pollens_prd_shadows', 'pollens_constraints', 'pollens_stakes'],
+  NOEMS: ['noems_concepts', 'noems_shared_ideas', 'noems_intuitions'],
+  POEMS: ['poems_narratives', 'poems_content_sources', 'poems_data_nodes'],
+  TOTEMS: ['totems_processes', 'totems_maps', 'totems_three_graph', 'totems_semantic_notes'],
+  ANTHEMS: ['anthems_alignment', 'anthems_success_signals', 'anthems_guardrails', 'anthems_roadmap', 'anthems_feminine_quality', 'anthems_learning_cadence']
 };
 
 const FIELD_LABELS: Record<string, { label: string; description: string }> = {
-  // POLLEN
-  pollen_observations: { label: 'Raw Observations & Glitches', description: 'Tensions, complaints, weird use cases, quotes from users/stakeholders' },
-  pollen_constraints: { label: 'Constraints', description: 'Legal, ethical, financial, technical constraints' },
-  pollen_emotional_climate: { label: 'Emotional Climate', description: 'Fears, hopes, invisible stakes, what hurts/excites people now' },
-  // POEM
-  poem_user_journeys: { label: 'User Journeys', description: 'Short stories: before → during → after interactions' },
-  poem_hypotheses: { label: 'Hypotheses', description: '"We believe that..." statements about behavior/emotion/cognition shifts' },
-  poem_thematic_anchors: { label: 'Thematic Anchors', description: 'Core themes: curiosity, confidence, play, trust, etc.' },
-  // TOTEM
-  totem_core_flows: { label: 'Core Flows & Screens', description: 'Service blueprints, information architecture, what people touch/see/feel' },
-  totem_ontology: { label: 'Ontological Backbone', description: 'Entities, concepts, relationships that define this product' },
-  totem_system_boundaries: { label: 'System Boundaries', description: 'What this product explicitly does NOT do' },
-  // ANTHEM
-  anthem_success_metrics: { label: 'Success Metrics', description: 'Qualitative and quantitative signals of success' },
-  anthem_guardrails: { label: 'Guardrails', description: 'Ethics, compliance, well-being, ecological and social impact' },
-  anthem_strategic_alignment: { label: 'Strategic Alignment', description: 'How this supports the organization\'s story and your paracosm' },
-  // EXECUTION
-  exec_milestones: { label: 'Milestones & Releases', description: 'Now / Next / Later roadmap, sprints, releases' },
-  exec_responsibility_map: { label: 'Responsibility Map', description: 'RACI, roles, circles, who needs to be in the room' },
-  exec_learning_cadence: { label: 'Learning Cadence', description: 'Demos, retros, drift sessions, time for reflection' }
+  // POLLENS
+  pollens_observations: { label: 'Raw Observations & Glitches', description: 'Tensions, complaints, weird use cases, emotional texture' },
+  pollens_biases: { label: 'Biases Surfaced', description: 'Cognitive, cultural, institutional biases noticed' },
+  pollens_cultural_issues: { label: 'Cultural Issues', description: 'Systemic and cultural patterns' },
+  pollens_prd_shadows: { label: 'PRD Shadows', description: 'What the PRD might be hiding or avoiding' },
+  pollens_constraints: { label: 'Constraints', description: 'Legal, ethical, financial, technical barriers' },
+  pollens_stakes: { label: 'Stakes', description: 'What happens if nothing changes' },
+  // NOEMS
+  noems_concepts: { label: 'Crystallized Concepts', description: 'Emerging concepts with maturity levels' },
+  noems_shared_ideas: { label: 'Shared Ideas', description: 'Ideas emerging from multiple tensions' },
+  noems_intuitions: { label: 'Intuitions', description: 'Gut feelings worth tracking' },
+  // POEMS
+  poems_narratives: { label: 'User Narratives', description: 'Before → during → after journeys' },
+  poems_content_sources: { label: 'Content Sources', description: 'What content/data powers narratives' },
+  poems_data_nodes: { label: 'Data Nodes', description: 'Key entities and relationships' },
+  // TOTEMS
+  totems_processes: { label: 'Processes & Flows', description: 'Service blueprints, what people touch' },
+  totems_maps: { label: 'Relationship Maps', description: 'Conceptual architecture, boundaries' },
+  totems_three_graph: { label: 'Three Graph Model', description: 'Subject, Lexical, Domain graphs' },
+  totems_semantic_notes: { label: 'Semantic Notes', description: 'RDF/OWL patterns emerging' },
+  // ANTHEMS
+  anthems_alignment: { label: 'Strategic Alignment', description: 'How this supports the larger story' },
+  anthems_success_signals: { label: 'Success Signals', description: 'Qualitative and quantitative indicators' },
+  anthems_guardrails: { label: 'Guardrails', description: 'Ethics, compliance, social impact' },
+  anthems_roadmap: { label: 'Roadmap', description: 'Now/next/later with owners' },
+  anthems_feminine_quality: { label: 'Feminine Quality Review', description: 'Which principles honored/at risk' },
+  anthems_learning_cadence: { label: 'Learning Cadence', description: 'How we build in Drift time' }
 };
 
-// Checklist requirements per layer
 const LAYER_CHECKLIST: Record<PrdLayer, { label: string; check: (content: GeneratedContent) => boolean }[]> = {
-  POLLEN: [
-    { label: '5–15 tensions/glitches captured', check: (c) => (c.pollen_observations?.length || 0) > 100 },
-    { label: 'Constraints & stakes named', check: (c) => !!(c.pollen_constraints && c.pollen_emotional_climate) }
+  POLLENS: [
+    { label: '5–15 tensions/glitches captured', check: (c) => (c.pollens_observations?.length || 0) > 100 },
+    { label: 'Biases and shadows surfaced', check: (c) => !!(c.pollens_biases || c.pollens_prd_shadows) }
   ],
-  POEM: [
-    { label: '1–3 narrative arcs described', check: (c) => (c.poem_user_journeys?.length || 0) > 100 },
-    { label: 'Emotions & symbolic roles identified', check: (c) => !!(c.poem_thematic_anchors) }
+  NOEMS: [
+    { label: 'Concepts crystallized with maturity', check: (c) => (c.noems_concepts?.length || 0) > 50 },
+    { label: 'Intuitions captured', check: (c) => !!(c.noems_intuitions) }
   ],
-  TOTEM: [
-    { label: 'Minimal ontology defined', check: (c) => (c.totem_ontology?.length || 0) > 50 },
-    { label: 'Smallest coherent experience defined', check: (c) => (c.totem_core_flows?.length || 0) > 50 }
+  POEMS: [
+    { label: '1–3 narrative arcs described', check: (c) => (c.poems_narratives?.length || 0) > 100 },
+    { label: 'Data nodes identified', check: (c) => !!(c.poems_data_nodes) }
   ],
-  ANTHEM: [
-    { label: '3–5 success signals defined', check: (c) => (c.anthem_success_metrics?.length || 0) > 50 },
-    { label: '3–5 guardrails defined', check: (c) => (c.anthem_guardrails?.length || 0) > 50 },
-    { label: 'Strategic alignment articulated', check: (c) => (c.anthem_strategic_alignment?.length || 0) > 50 }
+  TOTEMS: [
+    { label: 'Processes mapped', check: (c) => (c.totems_processes?.length || 0) > 50 },
+    { label: 'Three Graph Model hints', check: (c) => (c.totems_three_graph?.length || 0) > 30 }
   ],
-  EXECUTION: [
-    { label: 'Simple roadmap (now/next/later)', check: (c) => (c.exec_milestones?.length || 0) > 50 },
-    { label: 'Named owner(s) and rituals', check: (c) => !!(c.exec_responsibility_map && c.exec_learning_cadence) }
+  ANTHEMS: [
+    { label: 'Success signals defined', check: (c) => (c.anthems_success_signals?.length || 0) > 50 },
+    { label: 'Guardrails defined', check: (c) => (c.anthems_guardrails?.length || 0) > 50 },
+    { label: 'Feminine quality reviewed', check: (c) => (c.anthems_feminine_quality?.length || 0) > 30 }
   ]
 };
 
-const LAYERS: PrdLayer[] = ['POLLEN', 'POEM', 'TOTEM', 'ANTHEM', 'EXECUTION'];
+const LAYERS: PrdLayer[] = ['POLLENS', 'NOEMS', 'POEMS', 'TOTEMS', 'ANTHEMS'];
 
 const LAYER_ICONS: Record<PrdLayer, React.ElementType> = {
-  POLLEN: Sprout,
-  POEM: BookOpen,
-  TOTEM: Shapes,
-  ANTHEM: Flag,
-  EXECUTION: Rocket
+  POLLENS: Sprout,
+  NOEMS: Gem,
+  POEMS: BookOpen,
+  TOTEMS: Landmark,
+  ANTHEMS: Music
+};
+
+const getStageForLayer = (layer: PrdLayer): PrdStage => {
+  if (layer === 'POLLENS' || layer === 'NOEMS') return 'real-intelligence';
+  if (layer === 'POEMS') return 'knowledge-objects';
+  return 'understanding';
 };
 
 const PrdGeneratorWizard = ({
@@ -125,76 +147,22 @@ const PrdGeneratorWizard = ({
   board,
   onPrdCreated
 }: PrdGeneratorWizardProps) => {
-  const [currentLayer, setCurrentLayer] = useState<PrdLayer>('POLLEN');
+  const [currentLayer, setCurrentLayer] = useState<PrdLayer>('POLLENS');
   const [completedLayers, setCompletedLayers] = useState<PrdLayer[]>([]);
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [title, setTitle] = useState(`Calm Magic PRD — ${board} Cycle — ${new Date().toLocaleDateString()}`);
   const [content, setContent] = useState<GeneratedContent>({});
   const [editingField, setEditingField] = useState<string | null>(null);
-  const [importedData, setImportedData] = useState<{ glitchData?: any; driftData?: any }>({});
+  const [showQualityReview, setShowQualityReview] = useState(false);
   
   const { toast } = useToast();
-
-  // Try to load assistant data from localStorage
-  const importFromAssistant = () => {
-    try {
-      // Get the latest assistant conversation data
-      const storedData = localStorage.getItem('calm-magic-assistant-data');
-      if (storedData) {
-        const parsed = JSON.parse(storedData);
-        setImportedData(parsed);
-        
-        // Auto-populate POLLEN fields if glitch data exists
-        if (parsed.glitchData?.pollen && currentLayer === 'POLLEN') {
-          const pollen = parsed.glitchData.pollen;
-          setContent(prev => ({
-            ...prev,
-            pollen_observations: pollen.glitches?.map((g: any) => `• **${g.title}**: ${g.description}`).join('\n') || '',
-            pollen_constraints: pollen.constraints?.join('\n') || '',
-            pollen_emotional_climate: `**Stakes:** ${pollen.stakes || ''}\n\n**Anchor Glitches:** ${pollen.anchor_glitches?.join(', ') || ''}`
-          }));
-        }
-        
-        // Auto-populate POEM fields if drift data exists
-        if (parsed.driftData?.poem && currentLayer === 'POEM') {
-          const poem = parsed.driftData.poem;
-          const totem = parsed.driftData.totem;
-          setContent(prev => ({
-            ...prev,
-            poem_user_journeys: poem.futures?.map((f: any) => 
-              `**${f.title}** (${f.persona})\n\n*Before:* ${f.scenario.before}\n*During:* ${f.scenario.during}\n*After:* ${f.scenario.after}`
-            ).join('\n\n---\n\n') || '',
-            poem_hypotheses: poem.primary_narrative?.why_it_matters || '',
-            poem_thematic_anchors: totem?.candidate_forms?.map((f: string) => `• ${f}`).join('\n') || ''
-          }));
-        }
-        
-        toast({
-          title: 'Imported from Assistant',
-          description: 'Content from your Glitch/Drift sessions has been loaded.'
-        });
-      } else {
-        toast({
-          title: 'No assistant data found',
-          description: 'Start a conversation with the Calm Magic Assistant first.',
-          variant: 'destructive'
-        });
-      }
-    } catch (e) {
-      console.error('Failed to import assistant data:', e);
-      toast({
-        title: 'Import failed',
-        description: 'Could not load assistant data.',
-        variant: 'destructive'
-      });
-    }
-  };
 
   const currentIndex = LAYERS.indexOf(currentLayer);
   const isFirstLayer = currentIndex === 0;
   const isLastLayer = currentIndex === LAYERS.length - 1;
   const CurrentIcon = LAYER_ICONS[currentLayer];
+  const currentStage = getStageForLayer(currentLayer);
 
   const generateLayerContent = async () => {
     setGenerating(true);
@@ -266,32 +234,28 @@ const PrdGeneratorWizard = ({
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      // Map new layer fields to existing PRD database columns
       const prdData = {
         owner_id: user.id,
         title,
         status: 'draft',
         prototype_stage: 'B_DIEGETIC',
         main_board: board as any,
-        // POLLEN → LOVE columns
-        love_signals_summary: content.pollen_observations,
-        love_decision_to_exist: `Constraints: ${content.pollen_constraints || ''}\n\nEmotional Climate: ${content.pollen_emotional_climate || ''}`,
-        // POEM → MAGIC columns
-        magic_storyworld: content.poem_user_journeys,
-        magic_prd_outline: content.poem_thematic_anchors,
-        magic_hypotheses: content.poem_hypotheses,
-        // TOTEM → CALM columns
-        calm_requirements: content.totem_core_flows,
-        calm_risks_and_limits: `Ontology: ${content.totem_ontology || ''}\n\nBoundaries: ${content.totem_system_boundaries || ''}`,
-        // ANTHEM → OPEN columns
-        open_ontology_and_graph: content.anthem_strategic_alignment,
-        open_real_workflow: content.anthem_success_metrics,
-        open_adjustment_plan: content.anthem_guardrails,
-        // EXECUTION → FREE columns
-        free_first_poem_description: content.exec_milestones,
-        free_totem_anthem: content.exec_responsibility_map,
-        free_success_criteria: content.exec_learning_cadence,
-        free_next_cycle_hooks: 'Learnings flow back into POLLEN for the next cycle.'
+        // Map new fields to database columns
+        love_signals_summary: content.pollens_observations,
+        love_decision_to_exist: `Biases: ${content.pollens_biases || ''}\n\nShadows: ${content.pollens_prd_shadows || ''}\n\nStakes: ${content.pollens_stakes || ''}`,
+        magic_storyworld: content.poems_narratives,
+        magic_prd_outline: content.noems_concepts,
+        magic_hypotheses: content.noems_shared_ideas,
+        magic_patterns: content.noems_intuitions,
+        calm_requirements: content.totems_processes,
+        calm_risks_and_limits: `Three Graph: ${content.totems_three_graph || ''}\n\nSemantic: ${content.totems_semantic_notes || ''}`,
+        open_ontology_and_graph: content.totems_maps,
+        open_real_workflow: content.poems_content_sources,
+        open_adjustment_plan: content.anthems_guardrails,
+        free_first_poem_description: content.anthems_roadmap,
+        free_totem_anthem: content.anthems_alignment,
+        free_success_criteria: content.anthems_success_signals,
+        free_next_cycle_hooks: content.anthems_learning_cadence
       };
 
       const { data: prd, error } = await supabase
@@ -304,7 +268,7 @@ const PrdGeneratorWizard = ({
 
       toast({
         title: 'Calm Magic PRD Created!',
-        description: 'Your 5-layer PRD has been saved and is ready for use.'
+        description: 'Your 5-layer PRD has been saved.'
       });
 
       onPrdCreated(prd.id);
@@ -330,7 +294,7 @@ const PrdGeneratorWizard = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader className="flex-shrink-0">
           <div className="flex items-center justify-between">
             <DialogTitle className="text-xl flex items-center gap-2">
@@ -338,7 +302,6 @@ const PrdGeneratorWizard = ({
               Calm Magic PRD Generator
             </DialogTitle>
             
-            {/* Layer Progress Dots */}
             <div className="flex items-center gap-1">
               {LAYERS.map((layer, idx) => {
                 const isCompleted = completedLayers.includes(layer);
@@ -351,25 +314,15 @@ const PrdGeneratorWizard = ({
                     key={layer}
                     onClick={() => canNavigate && setCurrentLayer(layer)}
                     disabled={!canNavigate}
-                    className={`
-                      flex items-center justify-center w-7 h-7 rounded-full transition-all
-                      ${isCompleted 
-                        ? 'bg-emerald-500 text-white hover:bg-emerald-600' 
-                        : isCurrent 
-                          ? 'bg-primary text-primary-foreground ring-2 ring-primary/30' 
-                          : canNavigate
-                            ? 'bg-muted text-muted-foreground hover:bg-muted/80'
-                            : 'bg-muted/50 text-muted-foreground/50 cursor-not-allowed'
-                      }
-                      ${canNavigate && !isCurrent ? 'cursor-pointer' : ''}
-                    `}
-                    title={`${layer}${!canNavigate ? ' (complete previous layers first)' : ''}`}
+                    className={`flex items-center justify-center w-7 h-7 rounded-full transition-all ${
+                      isCompleted ? 'bg-emerald-500 text-white hover:bg-emerald-600' 
+                        : isCurrent ? 'bg-primary text-primary-foreground ring-2 ring-primary/30' 
+                        : canNavigate ? 'bg-muted text-muted-foreground hover:bg-muted/80'
+                        : 'bg-muted/50 text-muted-foreground/50 cursor-not-allowed'
+                    }`}
+                    title={layer}
                   >
-                    {isCompleted ? (
-                      <Check className="w-3.5 h-3.5" />
-                    ) : (
-                      <LayerIcon className="w-3.5 h-3.5" />
-                    )}
+                    {isCompleted ? <Check className="w-3.5 h-3.5" /> : <LayerIcon className="w-3.5 h-3.5" />}
                   </button>
                 );
               })}
@@ -384,158 +337,126 @@ const PrdGeneratorWizard = ({
           />
         </DialogHeader>
 
-        {/* Layer Progress */}
         <div className="flex-shrink-0 py-4 border-b">
           <PrdStageProgress currentLayer={currentLayer} completedLayers={completedLayers} />
         </div>
 
-        {/* Content Area */}
-        <ScrollArea className="flex-1 py-4">
-          <div className="space-y-4">
-            {/* POLLEN Preview (for POLLEN layer) */}
-            {currentLayer === 'POLLEN' && !layerHasContent() && (
-              <Card className="p-4 bg-amber-500/10 border-amber-500/30">
-                <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
-                  <FileText className="w-4 h-4" />
-                  Raw POLLEN from your cycle ({polenEntries.length} entries)
-                </h4>
-                <div className="space-y-2 max-h-32 overflow-y-auto">
-                  {polenEntries.slice(0, 5).map(polen => (
-                    <div key={polen.id} className="text-xs p-2 bg-background rounded border">
-                      {polen.content.slice(0, 100)}...
-                    </div>
-                  ))}
-                  {polenEntries.length > 5 && (
-                    <div className="text-xs text-muted-foreground">
-                      +{polenEntries.length - 5} more entries
-                    </div>
-                  )}
-                </div>
-              </Card>
-            )}
-
-            {/* Layer Fields */}
-            {LAYER_FIELDS[currentLayer].map(field => {
-              const fieldInfo = FIELD_LABELS[field];
-              const value = content[field] || '';
-              const isEditing = editingField === field;
-
-              return (
-                <Card key={field} className="p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <div>
-                      <h4 className="font-semibold text-sm">{fieldInfo.label}</h4>
-                      <p className="text-xs text-muted-foreground">{fieldInfo.description}</p>
-                    </div>
-                    {value && (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => setEditingField(isEditing ? null : field)}
-                      >
-                        {isEditing ? <Check className="w-4 h-4" /> : <Edit3 className="w-4 h-4" />}
-                      </Button>
+        <div className="flex-1 flex gap-4 min-h-0">
+          {/* Main Content */}
+          <ScrollArea className="flex-1 py-4">
+            <div className="space-y-4 pr-4">
+              {currentLayer === 'POLLENS' && !layerHasContent() && (
+                <Card className="p-4 bg-amber-500/10 border-amber-500/30">
+                  <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    Raw signals from your cycle ({polenEntries.length} entries)
+                  </h4>
+                  <div className="space-y-2 max-h-32 overflow-y-auto">
+                    {polenEntries.slice(0, 5).map(polen => (
+                      <div key={polen.id} className="text-xs p-2 bg-background rounded border">
+                        {polen.content.slice(0, 100)}...
+                      </div>
+                    ))}
+                    {polenEntries.length > 5 && (
+                      <div className="text-xs text-muted-foreground">+{polenEntries.length - 5} more</div>
                     )}
                   </div>
-                  
-                  {value ? (
-                    isEditing ? (
-                      <Textarea
-                        value={value}
-                        onChange={(e) => updateField(field, e.target.value)}
-                        className="min-h-[100px]"
-                      />
-                    ) : (
-                      <div className="text-sm whitespace-pre-wrap bg-muted/50 p-3 rounded-lg">
-                        {value}
-                      </div>
-                    )
-                  ) : (
-                    <div className="text-sm text-muted-foreground italic p-3 bg-muted/30 rounded-lg border-2 border-dashed">
-                      Content will be generated...
-                    </div>
-                  )}
                 </Card>
-              );
-            })}
+              )}
 
-            {/* Checklist */}
-            <Card className="p-4 border-dashed">
-              <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4" />
-                {currentLayer} Checklist
-              </h4>
-              <div className="space-y-2">
-                {checklistItems.map((item, idx) => {
-                  const isChecked = item.check(content);
-                  return (
-                    <div key={idx} className="flex items-center gap-2 text-sm">
-                      {isChecked ? (
-                        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                      ) : (
-                        <Circle className="w-4 h-4 text-muted-foreground" />
+              {LAYER_FIELDS[currentLayer].map(field => {
+                const fieldInfo = FIELD_LABELS[field];
+                const value = content[field] || '';
+                const isEditing = editingField === field;
+
+                return (
+                  <Card key={field} className="p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div>
+                        <h4 className="font-semibold text-sm">{fieldInfo.label}</h4>
+                        <p className="text-xs text-muted-foreground">{fieldInfo.description}</p>
+                      </div>
+                      {value && (
+                        <Button size="sm" variant="ghost" onClick={() => setEditingField(isEditing ? null : field)}>
+                          {isEditing ? <Check className="w-4 h-4" /> : <Edit3 className="w-4 h-4" />}
+                        </Button>
                       )}
-                      <span className={isChecked ? 'text-foreground' : 'text-muted-foreground'}>
-                        {item.label}
-                      </span>
                     </div>
-                  );
-                })}
-              </div>
-            </Card>
-          </div>
-        </ScrollArea>
+                    
+                    {value ? (
+                      isEditing ? (
+                        <Textarea value={value} onChange={(e) => updateField(field, e.target.value)} className="min-h-[100px]" />
+                      ) : (
+                        <div className="text-sm whitespace-pre-wrap bg-muted/50 p-3 rounded-lg">{value}</div>
+                      )
+                    ) : (
+                      <div className="text-sm text-muted-foreground italic p-3 bg-muted/30 rounded-lg border-2 border-dashed">
+                        Content will be generated...
+                      </div>
+                    )}
+                  </Card>
+                );
+              })}
 
-        {/* Actions */}
+              <Card className="p-4 border-dashed">
+                <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4" />
+                  {currentLayer} Checklist
+                </h4>
+                <div className="space-y-2">
+                  {checklistItems.map((item, idx) => {
+                    const isChecked = item.check(content);
+                    return (
+                      <div key={idx} className="flex items-center gap-2 text-sm">
+                        {isChecked ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : <Circle className="w-4 h-4 text-muted-foreground" />}
+                        <span className={isChecked ? 'text-foreground' : 'text-muted-foreground'}>{item.label}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </Card>
+            </div>
+          </ScrollArea>
+
+          {/* Side Panel */}
+          <div className="w-72 flex-shrink-0 space-y-4 overflow-y-auto">
+            <StackFormation completedLayers={completedLayers} currentLayer={currentLayer} />
+            
+            <Button 
+              variant="outline" 
+              size="sm" 
+              className="w-full"
+              onClick={() => setShowQualityReview(!showQualityReview)}
+            >
+              <Shield className="w-4 h-4 mr-2" />
+              {showQualityReview ? 'Hide' : 'Show'} Quality Review
+            </Button>
+            
+            {showQualityReview && (
+              <FeminineSafePRD reviewMode currentStage={currentStage} showAntiPatterns={false} />
+            )}
+          </div>
+        </div>
+
         <div className="flex-shrink-0 flex items-center justify-between pt-4 border-t">
-          <Button
-            variant="outline"
-            onClick={handleBack}
-            disabled={isFirstLayer}
-          >
+          <Button variant="outline" onClick={handleBack} disabled={isFirstLayer}>
             <ArrowLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
 
           <div className="flex items-center gap-2">
-            {/* Import from Assistant button */}
-            {(currentLayer === 'POLLEN' || currentLayer === 'POEM') && (
-              <Button
-                onClick={importFromAssistant}
-                variant="outline"
-                size="sm"
-              >
-                <Download className="mr-2 h-4 w-4" />
-                Import from Assistant
-              </Button>
-            )}
-            
-            <Button
-              onClick={generateLayerContent}
-              disabled={generating}
-              variant="outline"
-            >
-              {generating ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Sparkles className="mr-2 h-4 w-4" />
-              )}
+            <Button onClick={generateLayerContent} disabled={generating} variant="outline">
+              {generating ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
               Generate {currentLayer}
             </Button>
 
             {isLastLayer && completedLayers.length === LAYERS.length - 1 ? (
-              <Button
-                onClick={handleSavePrd}
-                disabled={saving || !layerHasContent()}
-              >
+              <Button onClick={handleSavePrd} disabled={saving || !layerHasContent()}>
                 {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Save PRD
               </Button>
             ) : (
-              <Button
-                onClick={handleNext}
-                disabled={!layerHasContent()}
-              >
+              <Button onClick={handleNext} disabled={!layerHasContent()}>
                 Next
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>

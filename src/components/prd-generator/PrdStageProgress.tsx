@@ -1,18 +1,58 @@
 import { Badge } from '@/components/ui/badge';
-import { Check, Sparkles, Sprout, BookOpen, Shapes, Flag, Rocket } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Check, Sparkles, Sprout, Gem, BookOpen, Landmark, Music } from 'lucide-react';
 
-export type PrdLayer = 'POLLEN' | 'POEM' | 'TOTEM' | 'ANTHEM' | 'EXECUTION';
+export type PrdLayer = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 
 interface PrdStageProgressProps {
   currentLayer: PrdLayer;
   completedLayers: PrdLayer[];
 }
 
+// 3 Meta-stages with revised themes
+const STAGES: {
+  id: string;
+  name: string;
+  description: string;
+  themes: string[];
+  layers: PrdLayer[];
+  icon: string;
+  color: string;
+}[] = [
+  {
+    id: 'real-intelligence',
+    name: 'Real Intelligence',
+    description: 'Surfacing what actually matters',
+    themes: ['Intuitions', 'Shared Ideas', 'PRD Shadows', 'Cultural Issues', 'RI Feedback', 'Biases'],
+    layers: ['POLLENS', 'NOEMS'],
+    icon: '🧠',
+    color: 'from-rose-500 to-amber-500'
+  },
+  {
+    id: 'knowledge-objects',
+    name: 'Knowledge Objects',
+    description: 'Crystallizing structured knowledge',
+    themes: ['Content Sources', 'Data Nodes', 'API'],
+    layers: ['POEMS'],
+    icon: '💎',
+    color: 'from-purple-500 to-indigo-500'
+  },
+  {
+    id: 'understanding',
+    name: 'Understanding',
+    description: 'Semantic structures & processes',
+    themes: ['Processes', 'Maps', 'Three Graph Model', 'Subject Graph', 'Lexical Graph', 'Domain Graph', 'RDF', 'OWL'],
+    layers: ['TOTEMS', 'ANTHEMS'],
+    icon: '🗺️',
+    color: 'from-blue-500 to-emerald-500'
+  }
+];
+
+// 5 PRD Layers with updated names
 const LAYERS: {
   id: PrdLayer;
   name: string;
   purpose: string;
-  breath: string;
   phase: string;
   question: string;
   icon: React.ElementType;
@@ -20,185 +60,206 @@ const LAYERS: {
   bgColor: string;
 }[] = [
   {
-    id: 'POLLEN',
-    name: 'Signals & Context',
-    purpose: 'Gather raw tensions & stakes',
-    breath: 'gather',
+    id: 'POLLENS',
+    name: 'Raw Signals',
+    purpose: 'Gather intuitions, tensions & biases',
     phase: 'Gl!tch',
-    question: 'What is really happening in the field, and why does it matter now?',
+    question: 'What real intelligence is surfacing from the field?',
     icon: Sprout,
     color: 'from-amber-500 to-yellow-500',
     bgColor: 'bg-amber-500/10'
   },
   {
-    id: 'POEM',
-    name: 'Narrative & Meaning',
-    purpose: 'Expand the story space',
-    breath: 'expand',
+    id: 'NOEMS',
+    name: 'Concepts',
+    purpose: 'Crystallize shared ideas & shadows',
     phase: 'Drift',
-    question: 'What story are we actually telling by solving this?',
+    question: 'What conceptual atoms are emerging from the pollens?',
+    icon: Gem,
+    color: 'from-rose-500 to-pink-500',
+    bgColor: 'bg-rose-500/10'
+  },
+  {
+    id: 'POEMS',
+    name: 'Narratives',
+    purpose: 'Structure content & data nodes',
+    phase: 'Drift → Tune',
+    question: 'What stories and knowledge objects crystallize?',
     icon: BookOpen,
     color: 'from-purple-500 to-violet-500',
     bgColor: 'bg-purple-500/10'
   },
   {
-    id: 'TOTEM',
-    name: 'Form & Interfaces',
-    purpose: 'Structure what people will touch',
-    breath: 'structure',
+    id: 'TOTEMS',
+    name: 'Structures',
+    purpose: 'Map processes & relationships',
     phase: 'Tune',
-    question: 'What are we actually building that people will touch, see, or feel?',
-    icon: Shapes,
+    question: 'What semantic structures emerge (graphs, ontologies)?',
+    icon: Landmark,
     color: 'from-blue-500 to-cyan-500',
     bgColor: 'bg-blue-500/10'
   },
   {
-    id: 'ANTHEM',
-    name: 'Alignment & Impact',
-    purpose: 'Align on purpose & guardrails',
-    breath: 'align',
-    phase: 'Tune',
-    question: 'Why is this worth our time, and how will we know it\'s working?',
-    icon: Flag,
+    id: 'ANTHEMS',
+    name: 'Integration',
+    purpose: 'Align purpose, guardrails & roadmap',
+    phase: 'Tune → FREE',
+    question: 'How do we integrate understanding into action?',
+    icon: Music,
     color: 'from-emerald-500 to-teal-500',
     bgColor: 'bg-emerald-500/10'
-  },
-  {
-    id: 'EXECUTION',
-    name: 'Roadmap & Operations',
-    purpose: 'Launch and learn',
-    breath: 'launch',
-    phase: 'FREE → LOVE',
-    question: 'How do we bring this to life over time with real constraints?',
-    icon: Rocket,
-    color: 'from-rose-500 to-pink-500',
-    bgColor: 'bg-rose-500/10'
   }
 ];
+
+const getStageForLayer = (layerId: PrdLayer) => {
+  return STAGES.find(s => s.layers.includes(layerId));
+};
 
 const PrdStageProgress = ({ currentLayer, completedLayers }: PrdStageProgressProps) => {
   const currentIndex = LAYERS.findIndex(l => l.id === currentLayer);
   const CurrentIcon = LAYERS[currentIndex]?.icon || Sprout;
+  const currentStage = getStageForLayer(currentLayer);
 
   return (
-    <div className="w-full space-y-4">
-      {/* Phase Indicator */}
-      <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-        <span className="font-medium">Phase:</span>
-        {LAYERS.map((layer, i) => (
-          <span 
-            key={layer.id}
-            className={`px-2 py-0.5 rounded-full transition-all ${
-              i === currentIndex 
-                ? `bg-gradient-to-r ${layer.color} text-white` 
-                : i < currentIndex 
-                  ? 'bg-muted text-muted-foreground' 
-                  : 'opacity-50'
-            }`}
-          >
-            {layer.phase}
-          </span>
-        ))}
-      </div>
-
-      {/* Main Progress Bar */}
-      <div className="relative">
-        {/* Connection Line */}
-        <div className="absolute top-6 left-6 right-6 h-1 bg-muted rounded-full" />
-        <div 
-          className="absolute top-6 left-6 h-1 bg-gradient-to-r from-amber-500 via-purple-500 via-blue-500 via-emerald-500 to-rose-500 rounded-full transition-all duration-500"
-          style={{ width: `${(currentIndex / (LAYERS.length - 1)) * (100 - 6)}%` }}
-        />
-
-        {/* Layer Circles */}
-        <div className="flex justify-between relative">
-          {LAYERS.map((layer, index) => {
-            const isCompleted = completedLayers.includes(layer.id);
-            const isCurrent = layer.id === currentLayer;
-            const isPending = index > currentIndex;
-            const Icon = layer.icon;
-
+    <TooltipProvider>
+      <div className="w-full space-y-4">
+        {/* Stage Headers */}
+        <div className="flex items-center justify-between gap-2">
+          {STAGES.map((stage, stageIdx) => {
+            const stageComplete = stage.layers.every(l => completedLayers.includes(l));
+            const stageCurrent = stage.layers.includes(currentLayer);
+            
             return (
-              <div key={layer.id} className="flex flex-col items-center">
-                {/* Circle */}
-                <div
-                  className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
-                    isCompleted
-                      ? 'bg-gradient-to-r ' + layer.color + ' text-white shadow-lg'
-                      : isCurrent
-                        ? 'bg-gradient-to-r ' + layer.color + ' text-white shadow-lg animate-pulse ring-4 ring-white/30'
-                        : 'bg-muted text-muted-foreground border-2 border-dashed border-muted-foreground/30'
-                  }`}
-                >
-                  {isCompleted ? (
-                    <Check className="w-5 h-5" />
-                  ) : isCurrent ? (
-                    <Sparkles className="w-5 h-5" />
-                  ) : (
-                    <Icon className="w-5 h-5" />
-                  )}
-                </div>
-
-                {/* Label */}
-                <div className={`mt-3 text-center transition-opacity ${isPending ? 'opacity-50' : ''}`}>
-                  <div className={`text-sm font-bold ${isCurrent ? 'text-primary' : ''}`}>
-                    {layer.id}
+              <Tooltip key={stage.id}>
+                <TooltipTrigger asChild>
+                  <div 
+                    className={`flex-1 p-2 rounded-lg border transition-all cursor-help ${
+                      stageCurrent 
+                        ? `bg-gradient-to-r ${stage.color} text-white border-transparent` 
+                        : stageComplete
+                          ? 'bg-muted/50 border-emerald-500/50'
+                          : 'bg-muted/30 border-border/50 opacity-60'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg">{stage.icon}</span>
+                      <div>
+                        <div className="text-xs font-bold">{stage.name}</div>
+                        <div className="text-[10px] opacity-80">{stage.description}</div>
+                      </div>
+                      {stageComplete && <Check className="w-4 h-4 ml-auto" />}
+                    </div>
                   </div>
-                  <div className="text-[10px] text-muted-foreground">
-                    {layer.name}
-                  </div>
-                </div>
-              </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-xs">
+                  <p className="font-semibold mb-1">{stage.name} Themes:</p>
+                  <p className="text-xs text-muted-foreground">{stage.themes.join(' • ')}</p>
+                </TooltipContent>
+              </Tooltip>
             );
           })}
         </div>
-      </div>
 
-      {/* Current Layer Details */}
-      {currentLayer && (
-        <div className={`mt-6 p-4 rounded-xl bg-gradient-to-r ${LAYERS[currentIndex].color} text-white`}>
-          <div className="flex items-center justify-between">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className="bg-white/20 text-white border-white/30 text-xs">
-                  {LAYERS[currentIndex].phase}
-                </Badge>
-                <Badge variant="outline" className="bg-white/20 text-white border-white/30 text-xs">
-                  {LAYERS[currentIndex].purpose}
-                </Badge>
-              </div>
-              <h3 className="text-lg font-bold">{LAYERS[currentIndex].id} — {LAYERS[currentIndex].name}</h3>
-              <p className="text-sm opacity-90 italic">"{LAYERS[currentIndex].question}"</p>
-            </div>
-            <CurrentIcon className="w-12 h-12 opacity-30" />
+        {/* Layer Progress */}
+        <div className="relative">
+          {/* Connection Line */}
+          <div className="absolute top-6 left-6 right-6 h-1 bg-muted rounded-full" />
+          <div 
+            className="absolute top-6 left-6 h-1 bg-gradient-to-r from-amber-500 via-purple-500 to-emerald-500 rounded-full transition-all duration-500"
+            style={{ width: `${(currentIndex / (LAYERS.length - 1)) * (100 - 6)}%` }}
+          />
+
+          {/* Layer Circles */}
+          <div className="flex justify-between relative">
+            {LAYERS.map((layer, index) => {
+              const isCompleted = completedLayers.includes(layer.id);
+              const isCurrent = layer.id === currentLayer;
+              const isPending = index > currentIndex;
+              const Icon = layer.icon;
+              const stage = getStageForLayer(layer.id);
+
+              return (
+                <Tooltip key={layer.id}>
+                  <TooltipTrigger asChild>
+                    <div className="flex flex-col items-center cursor-help">
+                      {/* Circle */}
+                      <div
+                        className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${
+                          isCompleted
+                            ? 'bg-gradient-to-r ' + layer.color + ' text-white shadow-lg'
+                            : isCurrent
+                              ? 'bg-gradient-to-r ' + layer.color + ' text-white shadow-lg animate-pulse ring-4 ring-white/30'
+                              : 'bg-muted text-muted-foreground border-2 border-dashed border-muted-foreground/30'
+                        }`}
+                      >
+                        {isCompleted ? (
+                          <Check className="w-5 h-5" />
+                        ) : isCurrent ? (
+                          <Sparkles className="w-5 h-5" />
+                        ) : (
+                          <Icon className="w-5 h-5" />
+                        )}
+                      </div>
+
+                      {/* Label */}
+                      <div className={`mt-3 text-center transition-opacity ${isPending ? 'opacity-50' : ''}`}>
+                        <div className={`text-sm font-bold ${isCurrent ? 'text-primary' : ''}`}>
+                          {layer.id}
+                        </div>
+                        <div className="text-[10px] text-muted-foreground">
+                          {layer.name}
+                        </div>
+                      </div>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="font-semibold">{layer.purpose}</p>
+                    <p className="text-xs text-muted-foreground">Phase: {layer.phase}</p>
+                  </TooltipContent>
+                </Tooltip>
+              );
+            })}
           </div>
         </div>
-      )}
 
-      {/* Legend Strip */}
-      <div className="flex flex-wrap gap-3 text-[10px] text-muted-foreground pt-2 border-t">
-        <div className="flex items-center gap-1">
-          <div className="w-2 h-2 rounded-full bg-amber-500" />
-          <span>POLLEN = Raw tensions, constraints, emotional climate</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <div className="w-2 h-2 rounded-full bg-purple-500" />
-          <span>POEM = User journeys, hypotheses, thematic anchors</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <div className="w-2 h-2 rounded-full bg-blue-500" />
-          <span>TOTEM = Core flows, ontology, system boundaries</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <div className="w-2 h-2 rounded-full bg-emerald-500" />
-          <span>ANTHEM = Success metrics, guardrails, strategic alignment</span>
-        </div>
-        <div className="flex items-center gap-1">
-          <div className="w-2 h-2 rounded-full bg-rose-500" />
-          <span>EXECUTION = Milestones, responsibilities, learning cadence</span>
+        {/* Current Layer Details */}
+        {currentLayer && (
+          <div className={`mt-6 p-4 rounded-xl bg-gradient-to-r ${LAYERS[currentIndex].color} text-white`}>
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="bg-white/20 text-white border-white/30 text-xs">
+                    {currentStage?.icon} {currentStage?.name}
+                  </Badge>
+                  <Badge variant="outline" className="bg-white/20 text-white border-white/30 text-xs">
+                    {LAYERS[currentIndex].phase}
+                  </Badge>
+                </div>
+                <h3 className="text-lg font-bold">{LAYERS[currentIndex].id} — {LAYERS[currentIndex].name}</h3>
+                <p className="text-sm opacity-90 italic">"{LAYERS[currentIndex].question}"</p>
+              </div>
+              <CurrentIcon className="w-12 h-12 opacity-30" />
+            </div>
+          </div>
+        )}
+
+        {/* Legend Strip with Stages */}
+        <div className="flex flex-wrap gap-3 text-[10px] text-muted-foreground pt-2 border-t">
+          <div className="flex items-center gap-1">
+            <span className="text-sm">🧠</span>
+            <span>Real Intelligence: POLLENS + NOEMS</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-sm">💎</span>
+            <span>Knowledge Objects: POEMS</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-sm">🗺️</span>
+            <span>Understanding: TOTEMS + ANTHEMS</span>
+          </div>
         </div>
       </div>
-    </div>
+    </TooltipProvider>
   );
 };
 
