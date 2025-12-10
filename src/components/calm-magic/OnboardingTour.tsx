@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -24,7 +24,7 @@ interface TourStep {
   title: string;
   description: string;
   icon: React.ReactNode;
-  highlight?: string; // CSS selector or element ID to highlight
+  highlight?: string;
   position?: 'top' | 'bottom' | 'left' | 'right' | 'center';
 }
 
@@ -115,6 +115,10 @@ interface OnboardingTourProps {
   onComplete: () => void;
 }
 
+const CARD_WIDTH = 420;
+const CARD_HEIGHT = 320;
+const SAFE_PADDING = 16;
+
 const OnboardingTour: React.FC<OnboardingTourProps> = ({
   isOpen,
   onClose,
@@ -122,10 +126,57 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [highlightedElement, setHighlightedElement] = useState<Element | null>(null);
+  const [cardPosition, setCardPosition] = useState<{ top?: number; left?: number; right?: number; bottom?: number } | null>(null);
 
   const step = TOUR_STEPS[currentStep];
   const isFirstStep = currentStep === 0;
   const isLastStep = currentStep === TOUR_STEPS.length - 1;
+
+  // Calculate safe card position within viewport
+  const calculateCardPosition = useCallback((element: Element | null, position: string | undefined) => {
+    if (!element || position === 'center') {
+      setCardPosition(null);
+      return;
+    }
+
+    const rect = element.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
+
+    let pos: { top?: number; left?: number; right?: number; bottom?: number } = {};
+
+    switch (position) {
+      case 'bottom':
+        pos.top = Math.min(rect.bottom + SAFE_PADDING, viewportHeight - CARD_HEIGHT - SAFE_PADDING);
+        pos.left = Math.max(SAFE_PADDING, Math.min(rect.left, viewportWidth - CARD_WIDTH - SAFE_PADDING));
+        break;
+      case 'top':
+        pos.top = Math.max(SAFE_PADDING, rect.top - CARD_HEIGHT - SAFE_PADDING);
+        pos.left = Math.max(SAFE_PADDING, Math.min(rect.left, viewportWidth - CARD_WIDTH - SAFE_PADDING));
+        break;
+      case 'left':
+        pos.top = Math.max(SAFE_PADDING, Math.min(rect.top, viewportHeight - CARD_HEIGHT - SAFE_PADDING));
+        pos.left = Math.max(SAFE_PADDING, rect.left - CARD_WIDTH - SAFE_PADDING);
+        // If no space on left, fallback to right or center
+        if (pos.left < SAFE_PADDING) {
+          pos.left = Math.min(rect.right + SAFE_PADDING, viewportWidth - CARD_WIDTH - SAFE_PADDING);
+        }
+        break;
+      case 'right':
+        pos.top = Math.max(SAFE_PADDING, Math.min(rect.top, viewportHeight - CARD_HEIGHT - SAFE_PADDING));
+        pos.left = Math.min(rect.right + SAFE_PADDING, viewportWidth - CARD_WIDTH - SAFE_PADDING);
+        break;
+      default:
+        setCardPosition(null);
+        return;
+    }
+
+    // Final safety check - ensure card is always visible
+    pos.top = Math.max(SAFE_PADDING, Math.min(pos.top || 0, viewportHeight - CARD_HEIGHT - SAFE_PADDING));
+    pos.left = Math.max(SAFE_PADDING, Math.min(pos.left || 0, viewportWidth - CARD_WIDTH - SAFE_PADDING));
+
+    setCardPosition(pos);
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -138,11 +189,56 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
       // Scroll element into view
       if (element) {
         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Delay position calculation to allow scroll to complete
+        setTimeout(() => {
+          calculateCardPosition(element, step.position);
+        }, 100);
+      } else {
+        // Element not found, center the card
+        setCardPosition(null);
       }
     } else {
       setHighlightedElement(null);
+      setCardPosition(null);
     }
-  }, [isOpen, currentStep, step.highlight]);
+  }, [isOpen, currentStep, step.highlight, step.position, calculateCardPosition]);
+
+  // Recalculate position on window resize
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleResize = () => {
+      if (highlightedElement) {
+        calculateCardPosition(highlightedElement, step.position);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isOpen, highlightedElement, step.position, calculateCardPosition]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      switch (e.key) {
+        case 'Escape':
+          onComplete();
+          break;
+        case 'ArrowRight':
+        case 'Enter':
+          handleNext();
+          break;
+        case 'ArrowLeft':
+          if (!isFirstStep) handlePrevious();
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, isFirstStep, isLastStep]);
 
   const handleNext = () => {
     if (isLastStep) {
@@ -162,40 +258,18 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
 
   if (!isOpen) return null;
 
-  const getPositionClasses = () => {
-    if (!highlightedElement || step.position === 'center') {
-      return 'fixed inset-0 flex items-center justify-center';
-    }
-
-    const rect = highlightedElement.getBoundingClientRect();
-    const padding = 16;
-
-    switch (step.position) {
-      case 'top':
-        return `fixed`;
-      case 'bottom':
-        return `fixed`;
-      case 'left':
-        return `fixed`;
-      case 'right':
-        return `fixed`;
-      default:
-        return 'fixed inset-0 flex items-center justify-center';
-    }
-  };
-
   return (
     <>
-      {/* Overlay */}
+      {/* Overlay - highest z-index base */}
       <div 
-        className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[100]"
+        className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[9998]"
         onClick={handleSkip}
       />
 
       {/* Highlight cutout */}
       {highlightedElement && (
         <div
-          className="fixed z-[101] ring-4 ring-primary ring-offset-4 ring-offset-background rounded-lg pointer-events-none transition-all duration-300"
+          className="fixed z-[9999] ring-4 ring-primary ring-offset-4 ring-offset-background rounded-lg pointer-events-none transition-all duration-300"
           style={{
             top: highlightedElement.getBoundingClientRect().top - 8,
             left: highlightedElement.getBoundingClientRect().left - 8,
@@ -205,48 +279,21 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
         />
       )}
 
-      {/* Tour Card */}
-      <div className={cn(
-        "fixed z-[102] p-4",
-        step.position === 'center' || !highlightedElement
-          ? "inset-0 flex items-center justify-center"
-          : ""
-      )}>
+      {/* Tour Card - always on top */}
+      <div 
+        className={cn(
+          "fixed z-[10000] pointer-events-none",
+          !cardPosition && "inset-0 flex items-center justify-center p-4"
+        )}
+        style={cardPosition ? {
+          top: cardPosition.top,
+          left: cardPosition.left,
+          padding: SAFE_PADDING,
+        } : undefined}
+      >
         <Card 
-          className={cn(
-            "w-full max-w-md shadow-2xl border-primary/20",
-            highlightedElement && step.position !== 'center' && "absolute"
-          )}
-          style={highlightedElement && step.position !== 'center' ? (() => {
-            const rect = highlightedElement.getBoundingClientRect();
-            const viewportHeight = window.innerHeight;
-            const viewportWidth = window.innerWidth;
-            
-            switch (step.position) {
-              case 'bottom':
-                return {
-                  top: Math.min(rect.bottom + 16, viewportHeight - 300),
-                  left: Math.max(16, Math.min(rect.left, viewportWidth - 420)),
-                };
-              case 'top':
-                return {
-                  bottom: viewportHeight - rect.top + 16,
-                  left: Math.max(16, Math.min(rect.left, viewportWidth - 420)),
-                };
-              case 'left':
-                return {
-                  top: Math.max(16, rect.top),
-                  right: viewportWidth - rect.left + 16,
-                };
-              case 'right':
-                return {
-                  top: Math.max(16, rect.top),
-                  left: rect.right + 16,
-                };
-              default:
-                return {};
-            }
-          })() : undefined}
+          className="w-full max-w-md shadow-2xl border-primary/20 pointer-events-auto"
+          style={{ maxWidth: CARD_WIDTH }}
         >
           <CardContent className="p-6">
             {/* Header */}
@@ -326,6 +373,11 @@ const OnboardingTour: React.FC<OnboardingTourProps> = ({
                 </Button>
               </div>
             </div>
+
+            {/* Keyboard hint */}
+            <p className="text-xs text-muted-foreground/60 text-center mt-4">
+              Use ← → arrow keys to navigate, Esc to skip
+            </p>
           </CardContent>
         </Card>
       </div>
