@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Calendar, Library, Play, RotateCcw, FileText } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import MinimalistTileMatrix from '@/components/MinimalistTileMatrix';
 import TileDetailPanel from '@/components/TileDetailPanel';
@@ -16,31 +16,34 @@ import SeasonProgressBar from '@/components/prd-generator/SeasonProgressBar';
 import SeasonCompletionModal from '@/components/prd-generator/SeasonCompletionModal';
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
-type Season = 'POLLEN' | 'POEM' | 'TOTEM' | 'ANTHEM';
+type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 type BoardType = 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
 
-const SEASON_ORDER: Season[] = ['POLLEN', 'POEM', 'TOTEM', 'ANTHEM'];
+const SEASON_ORDER: Season[] = ['POLLENS', 'NOEMS', 'POEMS', 'TOTEMS', 'ANTHEMS'];
 
 // Maps seasons to database board types
 const SEASON_TO_BOARD: Record<Season, BoardType> = {
-  POLLEN: 'LOVE',
-  POEM: 'MAGIC',
-  TOTEM: 'CALM',
-  ANTHEM: 'OPEN',
+  POLLENS: 'LOVE',
+  NOEMS: 'MAGIC',
+  POEMS: 'CALM',
+  TOTEMS: 'OPEN',
+  ANTHEMS: 'FREE',
 };
 
 const SEASON_TO_PRD_FIELD: Record<Season, string> = {
-  POLLEN: 'love',
-  POEM: 'magic',
-  TOTEM: 'calm',
-  ANTHEM: 'open',
+  POLLENS: 'love',
+  NOEMS: 'magic',
+  POEMS: 'calm',
+  TOTEMS: 'open',
+  ANTHEMS: 'free',
 };
 
 const SEASON_COLORS: Record<Season, string> = {
-  POLLEN: 'from-rose-500 to-pink-500',
-  POEM: 'from-purple-500 to-indigo-500',
-  TOTEM: 'from-blue-500 to-cyan-500',
-  ANTHEM: 'from-emerald-500 to-green-500',
+  POLLENS: 'from-rose-500 to-pink-500',
+  NOEMS: 'from-violet-500 to-purple-500',
+  POEMS: 'from-purple-500 to-indigo-500',
+  TOTEMS: 'from-blue-500 to-cyan-500',
+  ANTHEMS: 'from-emerald-500 to-green-500',
 };
 
 const CalmMagicBoard = () => {
@@ -59,7 +62,6 @@ const CalmMagicBoard = () => {
     currentSeason,
     seasonProgress,
     completedSeasons,
-    freeTilesUnlocked,
     prdId,
     journeyStarted,
     journeyPath,
@@ -215,7 +217,7 @@ const CalmMagicBoard = () => {
   // Tile click handler with journey validation
   const handleTileClick = (row: number, col: number) => {
     if (!journeyStarted) {
-      toast.info(`Click "Start Journey" to begin ${currentSeason} season`);
+      toast.info(`Click "Start Innovating" to begin ${currentSeason} season`);
       return;
     }
     
@@ -254,12 +256,12 @@ const CalmMagicBoard = () => {
       setSelectedTile(null);
       toast.success(`Advanced to ${nextSeason} season!`);
     } else {
-      // All seasons complete - unlock FREE
+      // All 5 seasons complete - PRD ready
       updateProgress({
         completedSeasons: newCompletedSeasons,
-        freeTilesUnlocked: true,
       });
-      toast.success('All seasons complete! FREE tiles unlocked!');
+      toast.success('All seasons complete! Your PRD is ready for review.');
+      navigate('/prds-dashboard');
     }
     
     setShowSeasonModal(false);
@@ -342,24 +344,19 @@ const CalmMagicBoard = () => {
 
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-background via-background to-muted overflow-hidden">
-      {/* Header */}
-      <div className="shrink-0 p-4 border-b border-border/50">
-        <div className="max-w-[1800px] mx-auto flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              Calm Magic Board
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Turn "something feels off" moments into gentle next steps
-            </p>
-          </div>
+      {/* Header - Clean, single line */}
+      <header className="shrink-0 px-6 py-3 border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="max-w-[1800px] mx-auto flex items-center justify-between gap-4">
+          {/* Logo/Title - Single line */}
+          <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent whitespace-nowrap">
+            Calm Magic Board
+          </h1>
           
-          {/* Season Progress Bar */}
+          {/* Season Navigation - Center */}
           <SeasonProgressBar
             currentSeason={currentSeason}
             seasonProgress={seasonProgress}
             completedSeasons={completedSeasons}
-            freeTilesUnlocked={freeTilesUnlocked}
           />
 
           {/* Journey Controls */}
@@ -376,39 +373,28 @@ const CalmMagicBoard = () => {
                 </Badge>
                 <Button variant="ghost" size="sm" onClick={handleResetJourney}>
                   <RotateCcw className="w-3 h-3 mr-1" />
-                  Reset Season
+                  Reset
                 </Button>
               </>
             )}
-          </div>
-
-          {/* Quick Actions */}
-          <div className="flex items-center gap-2">
+            
+            {/* Quick Actions */}
             {prdId && (
               <Button variant="outline" size="sm" onClick={() => navigate(`/prds/${prdId}`)}>
                 <FileText className="w-4 h-4 mr-1" />
-                View PRD
+                PRD
               </Button>
             )}
             <Button 
               variant={showPolenBrowser ? "default" : "ghost"} 
-              size="sm" 
+              size="icon"
               onClick={() => setShowPolenBrowser(!showPolenBrowser)}
             >
-              <Library className="w-4 h-4 mr-1" />
-              Polen
-            </Button>
-            <Button variant="ghost" size="sm" onClick={() => navigate('/calm-magic-board/events')}>
-              <Calendar className="w-4 h-4 mr-1" />
-              Journal
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate('/calm-magic-board/drift')}>
-              <Sparkles className="w-4 h-4 mr-1" />
-              Drift → PRD
+              <Library className="w-4 h-4" />
             </Button>
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Main Content: Split Layout */}
       <div className="flex-1 min-h-0 flex">
@@ -425,7 +411,6 @@ const CalmMagicBoard = () => {
               showToleranceOverlay={true}
               onZoneChange={setCurrentZone}
               completedSeasons={completedSeasons as string[]}
-              freeTilesUnlocked={freeTilesUnlocked}
             />
           </div>
         </div>

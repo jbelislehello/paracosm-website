@@ -2,9 +2,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { PartyPopper, Sparkles, ArrowRight, Flower2, BookOpen, Mountain, Music, Sun, FileText } from 'lucide-react';
+import { PartyPopper, Sparkles, ArrowRight, Flower2, BookOpen, Mountain, Music, FileText } from 'lucide-react';
 
-type Season = 'POLLEN' | 'POEM' | 'TOTEM' | 'ANTHEM';
+type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 
 interface SeasonCompletionModalProps {
   isOpen: boolean;
@@ -23,39 +23,47 @@ const SEASON_CONFIG: Record<Season, {
   icon: typeof Flower2;
   color: string;
   gradient: string;
-  nextSeason: Season | 'FREE';
+  nextSeason: Season | null;
 }> = {
-  POLLEN: {
-    label: 'POLLEN',
+  POLLENS: {
+    label: 'Pollens',
     description: 'Signals & Context - raw observations, glitches, tensions, and emotional climate',
     icon: Flower2,
     color: 'text-rose-500',
     gradient: 'from-rose-500 to-pink-500',
-    nextSeason: 'POEM',
+    nextSeason: 'NOEMS',
   },
-  POEM: {
-    label: 'POEM',
+  NOEMS: {
+    label: 'Noems',
+    description: 'Conceptual Atoms - distilled insights, core patterns, and knowledge nuggets',
+    icon: Sparkles,
+    color: 'text-violet-500',
+    gradient: 'from-violet-500 to-purple-500',
+    nextSeason: 'POEMS',
+  },
+  POEMS: {
+    label: 'Poems',
     description: 'Narrative & Meaning - user journeys, hypotheses, and thematic anchors',
     icon: BookOpen,
     color: 'text-purple-500',
     gradient: 'from-purple-500 to-indigo-500',
-    nextSeason: 'TOTEM',
+    nextSeason: 'TOTEMS',
   },
-  TOTEM: {
-    label: 'TOTEM',
+  TOTEMS: {
+    label: 'Totems',
     description: 'Form & Interfaces - core flows, ontology, and system boundaries',
     icon: Mountain,
     color: 'text-blue-500',
     gradient: 'from-blue-500 to-cyan-500',
-    nextSeason: 'ANTHEM',
+    nextSeason: 'ANTHEMS',
   },
-  ANTHEM: {
-    label: 'ANTHEM',
+  ANTHEMS: {
+    label: 'Anthems',
     description: 'Alignment & Impact - success metrics, guardrails, and strategic alignment',
     icon: Music,
     color: 'text-emerald-500',
     gradient: 'from-emerald-500 to-green-500',
-    nextSeason: 'FREE',
+    nextSeason: null,
   },
 };
 
@@ -71,7 +79,7 @@ const SeasonCompletionModal = ({
 }: SeasonCompletionModalProps) => {
   const config = SEASON_CONFIG[season];
   const Icon = config.icon;
-  const isLastSeason = season === 'ANTHEM';
+  const isLastSeason = season === 'ANTHEMS';
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -137,7 +145,7 @@ const SeasonCompletionModal = ({
           {/* Next Steps */}
           <div className="text-sm text-muted-foreground text-center">
             {isLastSeason ? (
-              <p>All 4 seasons complete! The FREE tiles will now unlock for final integration.</p>
+              <p>All 5 seasons complete! Your PRD is ready for review.</p>
             ) : (
               <p>Next: <Badge variant="outline">{config.nextSeason}</Badge> season to build the next PRD layer</p>
             )}
@@ -155,9 +163,9 @@ const SeasonCompletionModal = ({
             </Button>
             <Button 
               onClick={onContinue} 
-              className={`flex-1 bg-gradient-to-r ${config.nextSeason === 'FREE' ? 'from-amber-500 to-orange-500' : config.gradient}`}
+              className={`flex-1 bg-gradient-to-r ${config.gradient}`}
             >
-              {isLastSeason ? 'Unlock FREE' : `Continue to ${config.nextSeason}`}
+              {isLastSeason ? 'Complete PRD' : `Continue to ${config.nextSeason}`}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
