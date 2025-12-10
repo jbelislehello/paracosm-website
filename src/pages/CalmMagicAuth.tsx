@@ -22,6 +22,17 @@ const CalmMagicAuth: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Check for recovery hash fragment FIRST before any session checks
+    const hashParams = new URLSearchParams(window.location.hash.substring(1));
+    const type = hashParams.get('type');
+    
+    if (type === 'recovery') {
+      setAuthMode('reset');
+      setCheckingSession(false);
+      // Don't check session or redirect - stay on reset form
+      return;
+    }
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY') {
         setAuthMode('reset');
