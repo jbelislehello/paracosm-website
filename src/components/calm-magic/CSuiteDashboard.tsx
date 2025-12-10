@@ -9,6 +9,8 @@ import { PRD_DIMENSIONS, QUALITY_LENS_CATEGORIES } from '@/data/prdDimensions';
 import { calculateRoleHealth, RoleHealthResult } from '@/utils/cSuiteHealth';
 import { Target, TrendingUp, AlertTriangle, CheckCircle2, Lightbulb } from 'lucide-react';
 import { Season } from '@/types/trajectory';
+import { useMode } from './context/ModeContext';
+import PersonalCSuiteDashboard from './PersonalCSuiteDashboard';
 
 interface CSuiteDashboardProps {
   seasonProgress: Record<string, Set<number>>;
@@ -186,6 +188,7 @@ const CSuiteDashboard: React.FC<CSuiteDashboardProps> = ({
   prdData,
   currentSeason
 }) => {
+  const { mode } = useMode();
   const [selectedRole, setSelectedRole] = useState<'ceo' | 'cfo' | 'cto'>('ceo');
   
   const healthResults = useMemo(() => {
@@ -197,6 +200,11 @@ const CSuiteDashboard: React.FC<CSuiteDashboardProps> = ({
 
   const currentRole = C_SUITE_ROLES.find(r => r.id === selectedRole)!;
   const currentHealth = healthResults[selectedRole];
+
+  // Render Personal C-Suite for personal mode
+  if (mode === 'personal') {
+    return <PersonalCSuiteDashboard />;
+  }
 
   return (
     <div className="space-y-4">
