@@ -2,20 +2,13 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, BookOpen, Workflow, Gamepad2, Users, Compass, Leaf, Heart } from 'lucide-react';
-import { useState } from 'react';
-import { getTileStage, getStageById, PRD_STAGES } from '@/types/journal-expansion';
+import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { getTileStage, getStageById } from '@/types/journal-expansion';
 import { getPrinciplesByStage } from '@/data/femininePrinciples';
-
-type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
-
-const COMPASSES: { id: CompassType; name: string; description: string; icon: React.ElementType; color: string }[] = [
-  { id: 'narrative', name: 'Narrative', description: 'Story & diegetic framing', icon: BookOpen, color: 'from-rose-500 to-pink-500' },
-  { id: 'workflow', name: 'Workflow', description: 'Process & methods', icon: Workflow, color: 'from-blue-500 to-cyan-500' },
-  { id: 'inquiry', name: 'Inquiry', description: 'Contemplative & ritual', icon: Sparkles, color: 'from-amber-500 to-orange-500' },
-  { id: 'playground', name: 'Playground', description: 'Experimentation & play', icon: Gamepad2, color: 'from-green-500 to-emerald-500' },
-  { id: 'human-dynamics', name: 'Human', description: 'Relational & systemic', icon: Users, color: 'from-purple-500 to-indigo-500' },
-];
+import { useAgentTileConversation } from '@/hooks/useAgentTileConversation';
+import { TILE_CONTENTS } from '@/data/tileContents';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const rowLabels = [
   { letter: 'M', name: 'Mindsets', stage: 'AGENDAS' },
@@ -41,41 +34,53 @@ const colLabels = [
 
 interface TileDetailPanelProps {
   selectedTile: { row: number; col: number };
-  activeCompass: CompassType | null;
+  activeCompass: string | null;
   board: string;
   isAuthenticated: boolean;
   saving: boolean;
   onClose: () => void;
   onSavePolen: (content: string, tileId: number) => Promise<void>;
   onNavigate: (row: number, col: number) => void;
-  onCompassChange: (compass: CompassType) => void;
+  onCompassChange: (compass: any) => void;
   currentSeason?: string;
 }
 
 const TileDetailPanel = ({
   selectedTile,
-  activeCompass,
   board,
   isAuthenticated,
   saving,
   onClose,
   onSavePolen,
   onNavigate,
-  onCompassChange,
+  currentSeason = 'POLLENS',
 }: TileDetailPanelProps) => {
-  const [polenContent, setPolenContent] = useState('');
-  const [showPolenForm, setShowPolenForm] = useState(false);
+  const [userInput, setUserInput] = useState('');
+  const [conversationSaved, setConversationSaved] = useState(false);
+
+  const {
+    messages,
+    isLoading,
+    error,
+    sendResponse,
+    saveConversationAsPolen,
+    fetchInitialQuestion
+  } = useAgentTileConversation(selectedTile, currentSeason, isAuthenticated);
 
   // Edge detection for navigation
-  const canGlitch = selectedTile.row < 7; // Can move UP
-  const canDriftLeft = selectedTile.col > 0; // Can move LEFT
-  const canDriftRight = selectedTile.col < 7; // Can move RIGHT
-  const canTune = selectedTile.row > 0; // Can move DOWN
+  const canGlitch = selectedTile.row < 7;
+  const canDriftLeft = selectedTile.col > 0;
+  const canDriftRight = selectedTile.col < 7;
+  const canTune = selectedTile.row > 0;
 
   // Get tile's stage and principles
   const tileStage = getTileStage(selectedTile.row);
   const stageDefinition = getStageById(tileStage);
   const stagePrinciples = getPrinciplesByStage(tileStage);
+
+  // Get tile content
+  const tileId = selectedTile.row * 8 + selectedTile.col + 1;
+  const tileContent = TILE_CONTENTS.find(t => t.id === tileId);
 
   const getBoardColor = (board: string) => {
     switch (board) {
@@ -88,121 +93,35 @@ const TileDetailPanel = ({
     }
   };
 
-  const getContextualQuestions = (row: number, col: number, compass: CompassType | null) => {
-    const rowInfo = rowLabels[row];
-    const colInfo = colLabels[col];
+  const handleSendResponse = async () => {
+    if (!userInput.trim() || isLoading) return;
     
-    const rowContext = rowInfo.name.toLowerCase();
-    const colContext = colInfo.name.toLowerCase();
-    
-    const compassFraming: Record<CompassType, { glitch: string; drift: string; tune: string }> = {
-      narrative: {
-        glitch: 'What story feels incomplete or stuck',
-        drift: 'What narrative possibilities emerge',
-        tune: 'How does this story want to be told'
-      },
-      workflow: {
-        glitch: 'What process friction exists',
-        drift: 'What workflow alternatives could we try',
-        tune: 'What method best integrates here'
-      },
-      inquiry: {
-        glitch: 'What deeper question is arising',
-        drift: 'What practices might illuminate this',
-        tune: 'What ritual or reflection crystallizes insight'
-      },
-      playground: {
-        glitch: 'What feels rigid or unfun',
-        drift: 'What playful experiments could we try',
-        tune: 'What game or experiment yields the most learning'
-      },
-      'human-dynamics': {
-        glitch: 'What relational tension is present',
-        drift: 'What systemic patterns might be at play',
-        tune: 'How do we integrate individual and collective needs'
-      }
-    };
-    
-    const frame = compass ? compassFraming[compass] : {
-      glitch: 'What feels off or alive',
-      drift: 'What options emerge',
-      tune: 'What integration is needed'
-    };
-    
-    return {
-      glitch: `${frame.glitch} in your ${rowContext} around ${colContext}?`,
-      drift: `${frame.drift} when exploring ${colContext} through ${rowContext}?`,
-      tune: `${frame.tune} for ${rowContext} × ${colContext}?`,
-      deliverable: getDeliverable(row, col)
-    };
+    const success = await sendResponse(userInput);
+    if (success) {
+      setUserInput('');
+      setConversationSaved(false);
+    }
   };
 
-  const getDeliverable = (row: number, col: number) => {
-    const deliverables: Record<string, string> = {
-      '0-0': 'Reframed belief statement',
-      '0-1': 'Emotional anchor phrase',
-      '0-2': 'Observer stance description',
-      '0-3': 'Inverted assumption',
-      '0-4': 'Design principle',
-      '0-5': 'Seed conversation script',
-      '1-0': 'Quick experiment (< 60 min)',
-      '1-1': 'Heart-led action step',
-      '1-2': 'Observation practice',
-      '1-3': 'Opposite test',
-      '1-4': 'Prototype sketch',
-      '1-5': 'Movement pattern',
-      '2-0': 'Risk-aware goal',
-      '2-1': 'Heart-aligned outcome',
-      '2-2': 'Measurable indicator',
-      '2-3': 'Counter-goal exploration',
-      '2-4': 'Designed milestone',
-      '2-5': 'Goal seed artifact',
-      '3-0': 'Landscape scan',
-      '3-1': 'Emotional terrain map',
-      '3-2': 'Field observation',
-      '3-3': 'Hidden pattern',
-      '3-4': 'Designed lens',
-      '3-5': 'Fertility assessment',
-      '4-0': 'Energy reading',
-      '4-1': 'Heart compass calibration',
-      '4-2': 'Witness stance',
-      '4-3': 'Shadow/light flip',
-      '4-4': 'Compass design',
-      '4-5': 'Energy seed',
-      '5-0': 'Chance-taking norm',
-      '5-1': 'Care norm',
-      '5-2': 'Observation norm',
-      '5-3': 'Challenge norm',
-      '5-4': 'Design norm',
-      '5-5': 'Seeding norm',
-      '5-6': 'Method-norm link',
-      '6-0': 'Synergy opportunity',
-      '6-1': 'Heart connection',
-      '6-2': 'Systemic insight',
-      '6-3': 'Tension integration',
-      '6-4': 'Design synthesis',
-      '6-5': 'Cross-pollination',
-      '7-0': 'Risk protocol',
-      '7-1': 'Care protocol',
-      '7-2': 'Observation protocol',
-      '7-3': 'Pivot protocol',
-      '7-4': 'Design blueprint',
-      '7-5': 'Pilot kit',
-      '7-6': 'SOP draft',
-      '7-7': 'System architecture'
-    };
-    return deliverables[`${row}-${col}`] || 'Tile insight';
+  const handleSaveConversation = async () => {
+    const success = await saveConversationAsPolen();
+    if (success) {
+      setConversationSaved(true);
+    }
   };
 
-  const handleSavePolen = async () => {
-    if (!polenContent.trim()) return;
-    const tileId = selectedTile.row * 8 + selectedTile.col + 1;
-    await onSavePolen(polenContent, tileId);
-    setPolenContent('');
-    setShowPolenForm(false);
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendResponse();
+    }
   };
 
-  const questions = getContextualQuestions(selectedTile.row, selectedTile.col, activeCompass);
+  // Reset saved state when tile changes
+  useEffect(() => {
+    setConversationSaved(false);
+    setUserInput('');
+  }, [selectedTile.row, selectedTile.col]);
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-background to-muted/30">
@@ -224,12 +143,12 @@ const TileDetailPanel = ({
               {rowLabels[selectedTile.row].letter}{colLabels[selectedTile.col].letter}
             </Badge>
             <h3 className="font-bold text-lg">
-              {rowLabels[selectedTile.row].name} × {colLabels[selectedTile.col].name}
+              {tileContent?.name || `${rowLabels[selectedTile.row].name} × ${colLabels[selectedTile.col].name}`}
             </h3>
           </div>
           <div className="flex items-center gap-2 mt-1">
             <p className="text-sm text-muted-foreground">
-              Stage: {rowLabels[selectedTile.row].stage}
+              {rowLabels[selectedTile.row].name} × {colLabels[selectedTile.col].name}
             </p>
             {stageDefinition && (
               <Badge variant="outline" className="text-[10px]">
@@ -264,189 +183,182 @@ const TileDetailPanel = ({
         </div>
       )}
 
-      {/* Compass Selector */}
-      <div className="p-3 border-b border-border/50 bg-background/50">
-        <div className="flex items-center gap-2 mb-2">
-          <Compass className="w-4 h-4 text-muted-foreground" />
-          <span className="text-xs text-muted-foreground font-medium">Select Compass Lens</span>
+      {/* Expected Deliverable */}
+      <div className="px-4 py-2 bg-primary/5 border-b border-border/30">
+        <div className="flex items-center gap-2">
+          <Sparkles className="w-3 h-3 text-primary" />
+          <span className="text-xs text-muted-foreground">Expected:</span>
+          <span className="text-xs font-medium text-primary">{tileContent?.deliverable || 'Tile insight'}</span>
         </div>
-        <div className="flex flex-wrap gap-1.5">
-          {COMPASSES.map((compass) => (
-            <Button
-              key={compass.id}
-              variant={activeCompass === compass.id ? "default" : "outline"}
-              size="sm"
-              onClick={() => onCompassChange(compass.id)}
-              className={`text-xs h-7 px-2 ${activeCompass === compass.id ? `bg-gradient-to-r ${compass.color} text-white border-0` : ''}`}
-              title={compass.description}
-            >
-              <compass.icon className="w-3 h-3 mr-1" />
-              {compass.name}
-            </Button>
-          ))}
-        </div>
+        <p className="text-[10px] text-muted-foreground mt-1 flex items-center gap-1">
+          <Heart className="w-3 h-3" />
+          Contributes to: {tileStage === 'real-intelligence' ? 'Ontology & Concepts' : tileStage === 'knowledge-objects' ? 'Data Nodes & API' : 'Graphs & Processes'}
+        </p>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {/* GL!TCH Question */}
-        <Card className="p-4 bg-red-500/10 border border-red-500/30">
-          <div className="flex items-center gap-2 mb-2">
-            <ArrowUp className="w-4 h-4 text-red-500" />
-            <span className="font-bold text-red-500">GL!TCH</span>
-            <span className="text-xs text-muted-foreground">— What feels off?</span>
+      {/* Conversation Area */}
+      <ScrollArea className="flex-1 px-4 py-3">
+        <div className="space-y-3">
+          {/* Season Context */}
+          <div className="text-xs text-muted-foreground text-center py-2 border-b border-dashed border-border/50">
+            <span className="font-medium">{currentSeason}</span> season exploration
           </div>
-          <p className="text-sm">{questions.glitch}</p>
-        </Card>
 
-        {/* DRIFT Question */}
-        <Card className="p-4 bg-blue-500/10 border border-blue-500/30">
-          <div className="flex items-center gap-2 mb-2">
-            <ArrowRight className="w-4 h-4 text-blue-500" />
-            <span className="font-bold text-blue-500">DRIFT</span>
-            <span className="text-xs text-muted-foreground">— Explore possibilities</span>
-          </div>
-          <p className="text-sm">{questions.drift}</p>
-        </Card>
-
-        {/* TUNE Question */}
-        <Card className="p-4 bg-green-500/10 border border-green-500/30">
-          <div className="flex items-center gap-2 mb-2">
-            <ArrowDown className="w-4 h-4 text-green-500" />
-            <span className="font-bold text-green-500">TUNE</span>
-            <span className="text-xs text-muted-foreground">— Integrate & crystallize</span>
-          </div>
-          <p className="text-sm">{questions.tune}</p>
-        </Card>
-
-        {/* Expected Deliverable + Stack Contribution */}
-        <Card className="p-3 bg-primary/10 border border-primary/30">
-          <div className="flex items-center gap-2 mb-2">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span className="font-medium text-sm">Expected Deliverable:</span>
-            <Badge variant="outline" className="text-primary border-primary/50">
-              {questions.deliverable}
-            </Badge>
-          </div>
-          <p className="text-[10px] text-muted-foreground flex items-center gap-1">
-            <Heart className="w-3 h-3" />
-            Contributes to: {tileStage === 'real-intelligence' ? 'Ontology & Concepts' : tileStage === 'knowledge-objects' ? 'Data Nodes & API' : 'Graphs & Processes'}
-          </p>
-        </Card>
-
-        {/* POLEN Entry Form */}
-        <Card className="p-4 border border-amber-500/30 bg-amber-500/5">
-          {showPolenForm ? (
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-amber-500" />
-                <span className="font-medium text-sm">Capture POLEN (raw fragment)</span>
-              </div>
-              <Textarea
-                placeholder="Write your GL!TCH observation, insight, or fragment..."
-                value={polenContent}
-                onChange={(e) => setPolenContent(e.target.value)}
-                className="min-h-[120px]"
-              />
-              <div className="flex gap-2">
-                <Button 
-                  size="sm" 
-                  onClick={handleSavePolen}
-                  disabled={!polenContent.trim() || saving || !isAuthenticated}
-                >
-                  {saving ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Save className="w-3 h-3 mr-1" />}
-                  Save Polen
-                </Button>
-                <Button 
-                  size="sm" 
-                  variant="ghost"
-                  onClick={() => { setShowPolenForm(false); setPolenContent(''); }}
-                >
-                  Cancel
-                </Button>
-              </div>
-              {!isAuthenticated && (
-                <p className="text-xs text-muted-foreground">
-                  <LogIn className="w-3 h-3 inline mr-1" />
-                  Log in to save your polen entries
-                </p>
-              )}
-            </div>
-          ) : (
-            <Button 
-              size="sm" 
-              variant="outline"
-              onClick={() => setShowPolenForm(true)}
-              className="w-full border-amber-500/50 hover:bg-amber-500/10"
+          {/* Messages */}
+          {messages.map((message, index) => (
+            <div
+              key={index}
+              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
-              <Sparkles className="w-3 h-3 mr-1 text-amber-500" />
-              Capture Polen for this tile
-            </Button>
+              <div
+                className={`max-w-[85%] rounded-lg px-3 py-2 ${
+                  message.role === 'user'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-muted border border-border/50'
+                }`}
+              >
+                {message.role === 'assistant' && (
+                  <div className="flex items-center gap-1 mb-1 text-[10px] text-muted-foreground">
+                    <MessageCircle className="w-3 h-3" />
+                    Guide
+                  </div>
+                )}
+                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+              </div>
+            </div>
+          ))}
+
+          {/* Loading indicator */}
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="bg-muted rounded-lg px-3 py-2 border border-border/50">
+                <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+              </div>
+            </div>
           )}
-        </Card>
 
-        {/* Navigation Buttons */}
-        <Card className="p-4 border border-border/50 bg-background/50">
-          <div className="flex flex-col items-center gap-3">
-            <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Next Move</span>
-            
-            {/* GL!TCH - Up */}
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={!canGlitch}
-              onClick={() => onNavigate(selectedTile.row + 1, selectedTile.col)}
-              className="w-full border-red-500/50 text-red-600 hover:bg-red-500/10 disabled:opacity-30 disabled:cursor-not-allowed"
-            >
-              <ArrowUp className="w-4 h-4 mr-2" />
-              GL!TCH ↑ {canGlitch ? `to ${rowLabels[selectedTile.row + 1].name}` : '(edge)'}
-            </Button>
-            
-            {/* DRIFT - Left/Right */}
-            <div className="flex gap-2 w-full items-center">
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={!canDriftLeft}
-                onClick={() => onNavigate(selectedTile.row, selectedTile.col - 1)}
-                className="flex-1 border-blue-500/50 text-blue-600 hover:bg-blue-500/10 disabled:opacity-30 disabled:cursor-not-allowed"
-              >
-                <ArrowLeft className="w-4 h-4 mr-1" />
-                {canDriftLeft ? colLabels[selectedTile.col - 1].name : 'Edge'}
-              </Button>
-              <span className="text-xs text-blue-500 font-bold px-2">DRIFT</span>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={!canDriftRight}
-                onClick={() => onNavigate(selectedTile.row, selectedTile.col + 1)}
-                className="flex-1 border-blue-500/50 text-blue-600 hover:bg-blue-500/10 disabled:opacity-30 disabled:cursor-not-allowed"
-              >
-                {canDriftRight ? colLabels[selectedTile.col + 1].name : 'Edge'}
-                <ArrowRight className="w-4 h-4 ml-1" />
+          {/* Error message */}
+          {error && (
+            <div className="text-xs text-destructive text-center py-2">
+              {error}
+              <Button variant="ghost" size="sm" onClick={fetchInitialQuestion} className="ml-2">
+                <RefreshCw className="w-3 h-3 mr-1" />
+                Retry
               </Button>
             </div>
-            
-            {/* TUNE - Down */}
+          )}
+        </div>
+      </ScrollArea>
+
+      {/* Input Area */}
+      <div className="p-3 border-t border-border/50 bg-background/80 space-y-2">
+        <div className="flex gap-2">
+          <Textarea
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder="Share your thoughts..."
+            className="min-h-[60px] resize-none text-sm"
+            disabled={isLoading || !isAuthenticated}
+          />
+          <Button
+            size="icon"
+            onClick={handleSendResponse}
+            disabled={!userInput.trim() || isLoading || !isAuthenticated}
+            className="shrink-0 h-[60px] w-10"
+          >
+            {isLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Send className="w-4 h-4" />
+            )}
+          </Button>
+        </div>
+
+        {/* Auth warning */}
+        {!isAuthenticated && (
+          <p className="text-xs text-muted-foreground flex items-center gap-1">
+            <LogIn className="w-3 h-3" />
+            Log in to engage with tiles
+          </p>
+        )}
+
+        {/* Save conversation button */}
+        {messages.length >= 2 && isAuthenticated && (
+          <Button
+            variant={conversationSaved ? "secondary" : "outline"}
+            size="sm"
+            onClick={handleSaveConversation}
+            disabled={saving || conversationSaved}
+            className="w-full"
+          >
+            {saving ? (
+              <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+            ) : conversationSaved ? (
+              <>✓ Saved as Polen</>
+            ) : (
+              <>
+                <Save className="w-3 h-3 mr-1" />
+                Save conversation as Polen
+              </>
+            )}
+          </Button>
+        )}
+      </div>
+
+      {/* Navigation Buttons */}
+      <div className="p-3 border-t border-border/50 bg-muted/30">
+        <div className="flex flex-col items-center gap-2">
+          <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Navigate</span>
+          
+          {/* Up */}
+          <Button
+            variant="ghost"
+            size="sm"
+            disabled={!canGlitch}
+            onClick={() => onNavigate(selectedTile.row + 1, selectedTile.col)}
+            className="w-full h-7 text-xs disabled:opacity-30"
+          >
+            <ArrowUp className="w-3 h-3 mr-1" />
+            {canGlitch ? rowLabels[selectedTile.row + 1].name : 'Edge'}
+          </Button>
+          
+          {/* Left/Right */}
+          <div className="flex gap-1 w-full">
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
-              disabled={!canTune}
-              onClick={() => onNavigate(selectedTile.row - 1, selectedTile.col)}
-              className="w-full border-green-500/50 text-green-600 hover:bg-green-500/10 disabled:opacity-30 disabled:cursor-not-allowed"
+              disabled={!canDriftLeft}
+              onClick={() => onNavigate(selectedTile.row, selectedTile.col - 1)}
+              className="flex-1 h-7 text-xs disabled:opacity-30"
             >
-              <ArrowDown className="w-4 h-4 mr-2" />
-              TUNE ↓ {canTune ? `to ${rowLabels[selectedTile.row - 1].name}` : '(edge)'}
+              <ArrowLeft className="w-3 h-3 mr-1" />
+              {canDriftLeft ? colLabels[selectedTile.col - 1].name : 'Edge'}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              disabled={!canDriftRight}
+              onClick={() => onNavigate(selectedTile.row, selectedTile.col + 1)}
+              className="flex-1 h-7 text-xs disabled:opacity-30"
+            >
+              {canDriftRight ? colLabels[selectedTile.col + 1].name : 'Edge'}
+              <ArrowRight className="w-3 h-3 ml-1" />
             </Button>
           </div>
           
-          {/* Edge indicator */}
-          {(!canGlitch || !canDriftLeft || !canDriftRight || !canTune) && (
-            <p className="text-xs text-muted-foreground text-center mt-3 italic">
-              Some moves blocked at matrix edge
-            </p>
-          )}
-        </Card>
+          {/* Down */}
+          <Button
+            variant="ghost"
+            size="sm"
+            disabled={!canTune}
+            onClick={() => onNavigate(selectedTile.row - 1, selectedTile.col)}
+            className="w-full h-7 text-xs disabled:opacity-30"
+          >
+            <ArrowDown className="w-3 h-3 mr-1" />
+            {canTune ? rowLabels[selectedTile.row - 1].name : 'Edge'}
+          </Button>
+        </div>
       </div>
     </div>
   );
