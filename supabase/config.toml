@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.generate-prd-stage]
 verify_jwt = true
+
+[functions.tile-agent]
+verify_jwt = false
