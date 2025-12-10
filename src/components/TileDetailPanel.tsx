@@ -258,7 +258,7 @@ const TileDetailPanel = ({
       )}
 
       {/* Add-ons Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0 overflow-hidden">
         <div className="px-2 pt-2 shrink-0">
           <TabsList className="w-full grid grid-cols-3 h-8">
             <TabsTrigger value="chat" className="text-xs gap-1">
@@ -277,8 +277,8 @@ const TileDetailPanel = ({
         </div>
 
         {/* Chat Tab */}
-        <TabsContent value="chat" className="flex-1 flex flex-col min-h-0 m-0 mt-0">
-          <ScrollArea className="flex-1 px-4 py-3">
+        <TabsContent value="chat" className="flex-1 flex flex-col min-h-0 m-0 mt-0 overflow-hidden">
+          <div className="flex-1 overflow-y-auto px-4 py-3">
             <div className="space-y-3">
               {/* Season Context */}
               <div className="text-xs text-muted-foreground text-center py-2 border-b border-dashed border-border/50">
@@ -329,7 +329,7 @@ const TileDetailPanel = ({
                 </div>
               )}
             </div>
-          </ScrollArea>
+          </div>
 
           {/* Input Area */}
           <div className="p-3 border-t border-border/50 bg-background/80 space-y-2">
