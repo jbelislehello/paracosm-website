@@ -261,13 +261,17 @@ const CalmMagicBoard = () => {
         .from('tiles')
         .select('*')
         .eq('id', tileId)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
-      setTodayTile(data);
+      
+      if (data) {
+        setTodayTile(data);
+      }
+      // If no tile found, we just don't set it - not an error
     } catch (error) {
       console.error('Error loading today tile:', error);
-      toast.error('Failed to load today\'s tile');
+      // Don't show error toast for missing tile data - it's expected if tiles aren't seeded
     } finally {
       setLoading(false);
     }
