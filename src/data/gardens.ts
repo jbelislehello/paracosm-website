@@ -1,29 +1,43 @@
+import { Garden, GardenType } from "@/types/journal";
 
-import { Garden } from "@/types/journal";
+export interface ExtendedGarden extends Garden {
+  semanticStage: string;
+  stageDetails: string[];
+}
 
-export const gardens: Garden[] = [
+export const gardens: ExtendedGarden[] = [
   {
     type: 'intelligence',
     name: 'Garden of Intelligence',
     description: 'Data, language, insight. Uncover what the organization knows, consciously and unconsciously—its cognitive architecture, informational flows, and latent knowing.',
     color: '#2563eb',
-    icon: '🧠'
+    icon: '🧠',
+    semanticStage: 'Real Intelligence',
+    stageDetails: ['Intuitions', 'Shared Ideas', 'Cultural Issues', 'Biases']
   },
   {
     type: 'systems',
     name: 'Garden of Systems',
     description: 'Infrastructure, routines, governance. Trace the living mechanics—how things move, interconnect, and constrain or enable emergence.',
     color: '#7c3aed',
-    icon: '⚙️'
+    icon: '⚙️',
+    semanticStage: 'Knowledge Objects',
+    stageDetails: ['Content Sources', 'Data Nodes', 'API', 'Ontologies']
   },
   {
     type: 'prototypes',
     name: 'Garden of Prototypes',
     description: 'Imagination, embodiment, foresight. Ideas embodied in diegetic artifacts—story-driven interfaces that make stakeholders feel what the future could be.',
     color: '#db2777',
-    icon: '🌱'
+    icon: '🌱',
+    semanticStage: 'Understanding',
+    stageDetails: ['Processes', 'Maps', 'Three Graph Model', 'RDF/OWL']
   }
 ];
+
+export const getGardenByType = (type: GardenType): ExtendedGarden | undefined => {
+  return gardens.find(g => g.type === type);
+};
 
 export const energeticAxes = [
   {

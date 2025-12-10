@@ -15,6 +15,7 @@ import { useSeasonPersistence } from '@/hooks/useSeasonPersistence';
 import { useQuadrantDynamics } from '@/hooks/useQuadrantDynamics';
 import { useTileEmotionalCheckins } from '@/hooks/useTileEmotionalCheckins';
 import { useMode } from '@/components/calm-magic/context/ModeContext';
+import { useProjectContext } from '@/hooks/useProjectContext';
 import { CycleNumber } from '@/types/journal-expansion';
 import { FeltState, EmotionalAxes, QuadrantPosition } from '@/types/trajectory';
 import SeasonProgressBar from '@/components/prd-generator/SeasonProgressBar';
@@ -28,6 +29,7 @@ import { HigherSelfProphecyModal } from '@/components/calm-magic/HigherSelfProph
 import { PrdAssemblyPanel } from '@/components/calm-magic/PrdAssemblyPanel';
 import { getPrdAccessLevel, Season as PrdSeason } from '@/utils/prdAccessLevel';
 import { parseBoardEntryParams, getAssessmentContextDescription } from '@/utils/parseBoardEntryParams';
+import { getGardenByType } from '@/data/gardens';
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
 type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
@@ -74,6 +76,7 @@ const CalmMagicBoard = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { mode, setMode } = useMode();
+  const { projectContext, setProjectContext, isLoading: projectLoading } = useProjectContext();
   const hasAppliedUrlParams = useRef(false);
   
   const [user, setUser] = useState<any>(null);
@@ -151,7 +154,7 @@ const CalmMagicBoard = () => {
 
   // Apply URL parameters on mount (once)
   useEffect(() => {
-    if (hasAppliedUrlParams.current || progressLoading) return;
+    if (hasAppliedUrlParams.current || progressLoading || projectLoading) return;
     
     const params = parseBoardEntryParams(searchParams);
     
@@ -161,6 +164,16 @@ const CalmMagicBoard = () => {
       // Set mode from URL
       if (params.mode) {
         setMode(params.mode);
+      }
+      
+      // Set project context if garden and projectName are provided
+      if (params.garden && params.projectName && params.mode) {
+        setProjectContext({
+          projectName: params.projectName,
+          garden: params.garden,
+          mode: params.mode,
+          createdAt: new Date().toISOString(),
+        });
       }
       
       // Apply initial shadow position
@@ -191,12 +204,12 @@ const CalmMagicBoard = () => {
       // Clear URL params after applying (keeps URL clean)
       setSearchParams({}, { replace: true });
       
-      toast.success('Journey personalized from your assessment', {
+      toast.success(params.projectName ? `Project "${params.projectName}" created` : 'Journey personalized from your assessment', {
         description: description,
         duration: 5000,
       });
     }
-  }, [searchParams, progressLoading, journeyStarted, visitedTiles.size]);
+  }, [searchParams, progressLoading, projectLoading, journeyStarted, visitedTiles.size]);
 
   useEffect(() => {
     checkAuth();
@@ -499,7 +512,10 @@ const CalmMagicBoard = () => {
     return 0; // Placeholder - will be populated from actual data
   };
 
-  if (loading || progressLoading) {
+  // Get current garden info
+  const currentGarden = projectContext?.garden ? getGardenByType(projectContext.garden) : null;
+
+  if (loading || progressLoading || projectLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted">
         <div className="animate-pulse text-foreground">Loading your journey...</div>
@@ -509,7 +525,25 @@ const CalmMagicBoard = () => {
 
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-background via-background to-muted overflow-hidden">
-      {/* Header - Clean, single line */}
+      {/* Project Title Bar - Above everything */}
+      {projectContext && (
+        <div className="shrink-0 px-6 py-2 border-b border-border/30" style={{ backgroundColor: `${currentGarden?.color}10` }}>
+          <div className="max-w-[1800px] mx-auto flex items-center gap-3">
+            <span className="text-2xl">{currentGarden?.icon}</span>
+            <h1 className="text-lg font-semibold text-foreground">
+              {projectContext.projectName}
+            </h1>
+            <Badge 
+              variant="outline" 
+              className="text-xs"
+              style={{ borderColor: currentGarden?.color, color: currentGarden?.color }}
+            >
+              {currentGarden?.name}
+            </Badge>
+          </div>
+        </div>
+      )}
+
       {/* Assessment Context Banner */}
       {showAssessmentBanner && assessmentContext && (
         <div className="shrink-0 px-6 py-2 bg-gradient-to-r from-primary/10 via-purple-500/10 to-pink-500/10 border-b border-border/50 flex items-center justify-between">
