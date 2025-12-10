@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Library, Play, RotateCcw, FileText } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2 } from 'lucide-react';
 import { toast } from 'sonner';
 import MinimalistTileMatrix from '@/components/MinimalistTileMatrix';
 import TileDetailPanel from '@/components/TileDetailPanel';
@@ -16,6 +16,8 @@ import SeasonProgressBar from '@/components/prd-generator/SeasonProgressBar';
 import SeasonCompletionModal from '@/components/prd-generator/SeasonCompletionModal';
 import AssistantChatPanel from '@/components/calm-magic/AssistantChatPanel';
 import AssistantChatButton from '@/components/calm-magic/AssistantChatButton';
+import { JourneySummary } from '@/components/calm-magic/JourneySummary';
+import { InsightConnectionsGraph } from '@/components/calm-magic/InsightConnectionsGraph';
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
 type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
@@ -58,6 +60,10 @@ const CalmMagicBoard = () => {
   const [currentCycleNumber, setCurrentCycleNumber] = useState<CycleNumber>(1);
   const [showPolenBrowser, setShowPolenBrowser] = useState(false);
   const [currentZone, setCurrentZone] = useState<'safe' | 'stretch' | 'edge' | 'unexplored'>('safe');
+
+  // New panel states
+  const [showJourneySummary, setShowJourneySummary] = useState(false);
+  const [showInsightsGraph, setShowInsightsGraph] = useState(false);
 
   // Persisted season state from localStorage
   const {
@@ -398,10 +404,32 @@ const CalmMagicBoard = () => {
                 PRD
               </Button>
             )}
+            
+            {/* Journey Summary */}
+            <Button 
+              variant={showJourneySummary ? "default" : "ghost"} 
+              size="icon"
+              onClick={() => setShowJourneySummary(true)}
+              title="Journey Summary"
+            >
+              <MapPin className="w-4 h-4" />
+            </Button>
+            
+            {/* Insight Connections */}
+            <Button 
+              variant={showInsightsGraph ? "default" : "ghost"} 
+              size="icon"
+              onClick={() => setShowInsightsGraph(true)}
+              title="Insight Connections"
+            >
+              <Link2 className="w-4 h-4" />
+            </Button>
+            
             <Button 
               variant={showPolenBrowser ? "default" : "ghost"} 
               size="icon"
               onClick={() => setShowPolenBrowser(!showPolenBrowser)}
+              title="Polen Library"
             >
               <Library className="w-4 h-4" />
             </Button>
@@ -470,6 +498,19 @@ const CalmMagicBoard = () => {
         tilesVisited={visitedTiles.size}
         polenCount={getCurrentSeasonPolenCount()}
         isGenerating={isGeneratingPrd}
+      />
+
+      {/* Journey Summary Panel */}
+      <JourneySummary
+        isOpen={showJourneySummary}
+        onClose={() => setShowJourneySummary(false)}
+        currentSeason={currentSeason}
+      />
+
+      {/* Insight Connections Graph */}
+      <InsightConnectionsGraph
+        isOpen={showInsightsGraph}
+        onClose={() => setShowInsightsGraph(false)}
       />
 
       {/* Assistant Chat */}

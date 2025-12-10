@@ -17,3 +17,9 @@ verify_jwt = true
 
 [functions.tile-agent]
 verify_jwt = false
+
+[functions.journey-summary]
+verify_jwt = false
+
+[functions.analyze-insights]
+verify_jwt = false
