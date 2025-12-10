@@ -24,7 +24,8 @@ import {
   FileDown,
   Printer,
   Layers,
-  Eye
+  Eye,
+  Briefcase
 } from 'lucide-react';
 import { downloadMarkdown, exportPrdAsPdf } from '@/utils/prdExport';
 import { toast } from 'sonner';
@@ -39,7 +40,7 @@ import {
 } from '@/utils/prdAccessLevel';
 import { PrdEducationPanel } from './PrdEducationPanel';
 import { PrdDimensionalView } from './PrdDimensionalView';
-
+import CSuiteDashboard from './CSuiteDashboard';
 interface PrdAssemblyPanelProps {
   isOpen: boolean;
   onClose: () => void;
@@ -90,7 +91,7 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [expandedLayers, setExpandedLayers] = useState<Set<Season>>(new Set([currentSeason]));
   const [generatingLayer, setGeneratingLayer] = useState<Season | null>(null);
-  const [activeTab, setActiveTab] = useState<'layers' | 'dimensions'>('layers');
+  const [activeTab, setActiveTab] = useState<'layers' | 'dimensions' | 'csuite'>('layers');
 
   useEffect(() => {
     if (isOpen) {
@@ -251,7 +252,7 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : (
-            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'layers' | 'dimensions')}>
+            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'layers' | 'dimensions' | 'csuite')}>
               <TabsList className="w-full justify-start mb-4">
                 <TabsTrigger value="layers" className="text-xs">
                   <Layers className="h-3.5 w-3.5 mr-1" />
@@ -259,7 +260,11 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
                 </TabsTrigger>
                 <TabsTrigger value="dimensions" className="text-xs">
                   <Eye className="h-3.5 w-3.5 mr-1" />
-                  Dimensions & Lenses
+                  Dimensions
+                </TabsTrigger>
+                <TabsTrigger value="csuite" className="text-xs">
+                  <Briefcase className="h-3.5 w-3.5 mr-1" />
+                  C-Suite
                 </TabsTrigger>
               </TabsList>
 
@@ -381,6 +386,16 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
                   seasonProgress={seasonProgress as Record<string, Set<string>>}
                   completedSeasons={completedSeasons}
                   prdData={prdData}
+                />
+              </TabsContent>
+
+              <TabsContent value="csuite">
+                <CSuiteDashboard
+                  seasonProgress={Object.fromEntries(
+                    Object.entries(seasonProgress).map(([k, v]) => [k, new Set([...v].map(Number))])
+                  ) as Record<string, Set<number>>}
+                  prdData={prdData}
+                  currentSeason={currentSeason}
                 />
               </TabsContent>
             </Tabs>
