@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
 import { EmotionalState } from '@/types/journal';
 import EmotionalStagesFramework from './EmotionalStagesFramework';
 import CalmMagicLensOverlay from './CalmMagicLensOverlay';
@@ -10,6 +11,8 @@ import PulseToPatternVisualizer from './PulseToPatternVisualizer';
 import ExperienceDotsVisualization from '../components/ExperienceDotsVisualization';
 import ClientNeedsAssessment from './ClientNeedsAssessment';
 import ClientRecommendations from './ClientRecommendations';
+import BoardEntryGate from '../BoardEntryGate';
+import { Compass, ArrowRight } from 'lucide-react';
 
 interface InteractiveToolsPanelProps {
   emotionalState: Partial<EmotionalState>;
@@ -22,6 +25,7 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
 }) => {
   const [recommendations, setRecommendations] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('assessment');
+  const [showBoardGate, setShowBoardGate] = useState(false);
 
   const handleRecommendationsReady = (recs: any) => {
     setRecommendations(recs);
@@ -46,6 +50,30 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
 
   return (
     <div className="w-full">
+      {/* Boussole Calm Magic Quick Access */}
+      <div className="mb-4 p-4 bg-gradient-to-r from-rose-50 to-purple-50 dark:from-rose-950/20 dark:to-purple-950/20 rounded-lg border border-primary/20">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-rose-500 to-purple-600 flex items-center justify-center">
+              <Compass className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-foreground">Boussole Calm Magic</h3>
+              <p className="text-sm text-muted-foreground">
+                Commencez votre voyage d'expansion sur le Calm Magic Board
+              </p>
+            </div>
+          </div>
+          <Button
+            onClick={() => setShowBoardGate(true)}
+            className="bg-gradient-to-r from-rose-500 to-purple-600 hover:from-rose-600 hover:to-purple-700"
+          >
+            Ouvrir le Board
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
+        </div>
+      </div>
+
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-8">
           <TabsTrigger value="assessment">🎯 Assessment</TabsTrigger>
@@ -105,6 +133,14 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
           <ExperienceDotsVisualization mode="personal" />
         </TabsContent>
       </Tabs>
+
+      {/* Board Entry Gate Modal */}
+      <BoardEntryGate
+        isOpen={showBoardGate}
+        onClose={() => setShowBoardGate(false)}
+        sourceContext="relational"
+        preselectedMode="personal"
+      />
     </div>
   );
 };

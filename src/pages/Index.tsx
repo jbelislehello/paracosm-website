@@ -280,6 +280,63 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Living PRD Section */}
+      <section className="py-16 px-4 bg-gradient-to-r from-blue-50 via-purple-50 to-rose-50 dark:from-blue-950/20 dark:via-purple-950/20 dark:to-rose-950/20">
+        <div className="container max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-rose-600">
+              From Vision to Living PRD
+            </h2>
+            <p className="text-xl text-slate-600 dark:text-slate-300 mb-4 max-w-3xl mx-auto">
+              The Calm Magic Board transforms your Imagineering insights into actionable Living PRDs 
+              that evolve with your product journey.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-blue-200 dark:border-blue-800">
+              <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Target className="w-6 h-6 text-blue-600" />
+              </div>
+              <h3 className="font-semibold text-center mb-2">GL!TCH → POLLENS</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 text-center">
+                Capture tensions and signals that inform your product direction
+              </p>
+            </div>
+            
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-purple-200 dark:border-purple-800">
+              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Brain className="w-6 h-6 text-purple-600" />
+              </div>
+              <h3 className="font-semibold text-center mb-2">DRIFT → POEMS</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 text-center">
+                Explore narratives and possibilities that shape your vision
+              </p>
+            </div>
+            
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-rose-200 dark:border-rose-800">
+              <div className="w-12 h-12 bg-rose-100 dark:bg-rose-900/30 rounded-lg flex items-center justify-center mx-auto mb-4">
+                <Cog className="w-6 h-6 text-rose-600" />
+              </div>
+              <h3 className="font-semibold text-center mb-2">TUNE → TOTEMS</h3>
+              <p className="text-sm text-slate-600 dark:text-slate-400 text-center">
+                Crystallize requirements into actionable specifications
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <Link to="/calm-magic-board?mode=professional">
+              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 text-lg px-8 py-6">
+                <Sparkles className="w-5 h-5 mr-2" />
+                Open Calm Magic Board
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Relational Innovation Bridge Section */}
       <section className="py-16 px-4 bg-gradient-to-r from-rose-50 to-purple-50 dark:from-rose-950/20 dark:to-purple-950/20">
         <div className="container max-w-6xl mx-auto text-center">
@@ -297,10 +354,10 @@ const Index = () => {
                 Explore Relational Innovation
               </Button>
             </Link>
-            <Link to="/">
-              <Button variant="outline" className="flex items-center gap-2">
-                <Users className="w-4 h-4" />
-                View All Coaching Paths
+            <Link to="/calm-magic-board?mode=personal">
+              <Button variant="outline" className="flex items-center gap-2 border-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/20">
+                <Compass className="w-4 h-4" />
+                Personal Expansion Journal
               </Button>
             </Link>
           </div>
