@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 
-type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
+export type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 
 // Old season names for migration
 type OldSeason = 'POLLEN' | 'POEM' | 'TOTEM' | 'ANTHEM';
@@ -11,7 +11,7 @@ const OLD_TO_NEW_SEASON: Record<OldSeason, Season> = {
   'ANTHEM': 'ANTHEMS',
 };
 
-interface SeasonPersistenceState {
+export interface SeasonPersistenceState {
   currentSeason: Season;
   seasonProgress: Record<Season, Set<string>>;
   completedSeasons: Season[];
@@ -30,7 +30,9 @@ interface StoredState {
   lastUpdated: string;
 }
 
-const STORAGE_KEY = 'calmMagicBoardProgress';
+const LEGACY_STORAGE_KEY = 'calmMagicBoardProgress';
+const getStorageKey = (projectId: string | null) => 
+  projectId ? `calmMagicBoardProgress-${projectId}` : LEGACY_STORAGE_KEY;
 
 const createEmptyProgress = (): Record<Season, Set<string>> => ({
   POLLENS: new Set(),
@@ -61,12 +63,45 @@ const migrateSeason = (season: string): Season => {
   return 'POLLENS';
 };
 
-export const useSeasonPersistence = () => {
+// Helper to get progress for a specific project (for dashboard)
+export const getProjectSeasonProgress = (projectId: string): SeasonPersistenceState | null => {
+  try {
+    const stored = localStorage.getItem(getStorageKey(projectId));
+    if (!stored) return null;
+    
+    const parsed: StoredState = JSON.parse(stored);
+    const seasonProgress = createEmptyProgress();
+    
+    if (parsed.seasonProgress) {
+      Object.entries(parsed.seasonProgress).forEach(([key, tiles]) => {
+        const newKey = migrateSeason(key);
+        if (tiles && Array.isArray(tiles)) {
+          seasonProgress[newKey] = new Set(tiles);
+        }
+      });
+    }
+    
+    return {
+      currentSeason: migrateSeason(parsed.currentSeason || 'POLLENS'),
+      seasonProgress,
+      completedSeasons: (parsed.completedSeasons || []).map(s => migrateSeason(s)),
+      prdId: parsed.prdId || null,
+      journeyStarted: parsed.journeyStarted || false,
+      journeyPath: parsed.journeyPath || [],
+    };
+  } catch {
+    return null;
+  }
+};
+
+export const useSeasonPersistence = (projectId: string | null = null) => {
+  const STORAGE_KEY = getStorageKey(projectId);
   const [state, setState] = useState<SeasonPersistenceState>(defaultState);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load from localStorage on mount
+  // Load from localStorage on mount or when projectId changes
   useEffect(() => {
+    setIsLoading(true);
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
@@ -101,13 +136,17 @@ export const useSeasonPersistence = () => {
           journeyStarted: parsed.journeyStarted || false,
           journeyPath: parsed.journeyPath || [],
         });
+      } else {
+        // Reset to default state for new project
+        setState(defaultState);
       }
     } catch (e) {
       console.error('Failed to load season progress:', e);
+      setState(defaultState);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [STORAGE_KEY]);
 
   // Save to localStorage
   const saveToStorage = useCallback((newState: SeasonPersistenceState) => {

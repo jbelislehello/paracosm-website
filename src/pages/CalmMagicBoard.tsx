@@ -106,7 +106,7 @@ const CalmMagicBoard = () => {
   const [showJourneySummary, setShowJourneySummary] = useState(false);
   const [showInsightsGraph, setShowInsightsGraph] = useState(false);
 
-  // Persisted season state from localStorage
+  // Persisted season state from localStorage (project-specific)
   const {
     currentSeason,
     seasonProgress,
@@ -117,7 +117,7 @@ const CalmMagicBoard = () => {
     updateProgress,
     resetProgress,
     isLoading: progressLoading,
-  } = useSeasonPersistence();
+  } = useSeasonPersistence(projectContext?.id || null);
   
   // Season completion modal state
   const [showSeasonModal, setShowSeasonModal] = useState(false);
