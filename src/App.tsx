@@ -56,7 +56,7 @@ function App() {
                 <Route path="/prd-editor/:id" element={<ProtectedRoute><PrdEditor /></ProtectedRoute>} />
                 <Route path="/calm-magic-visualization" element={<CalmMagicVisualization />} />
                 <Route path="/calm-magic-journal" element={<CalmMagicJournal />} />
-                <Route path="/projects" element={<ProtectedRoute><ProjectsDashboard /></ProtectedRoute>} />
+                <Route path="/projects" element={<ProjectsDashboard />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <Toaster />

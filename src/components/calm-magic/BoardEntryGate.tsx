@@ -19,15 +19,17 @@ import {
   ArrowLeft,
   Sparkles,
   Target,
-  Check
+  Check,
+  LogIn
 } from 'lucide-react';
 import { MODE_CONTENT, MODE_THEMES, JOURNEY_MODES_DESCRIPTION, ModeType } from '@/data/modeAwareContent';
 import { AssessmentResult, generateBoardEntryParams } from '@/utils/assessmentToTolerance';
 import { gardens, ExtendedGarden } from '@/data/gardens';
 import { GardenType } from '@/types/journal';
 import { useProjectContext } from '@/hooks/useProjectContext';
+import { useUserSession } from '@/hooks/useUserSession';
 
-type EntryStep = 'mode' | 'garden' | 'name';
+type EntryStep = 'mode' | 'garden' | 'name' | 'signup';
 
 interface BoardEntryGateProps {
   isOpen: boolean;
@@ -45,11 +47,15 @@ const BoardEntryGate: React.FC<BoardEntryGateProps> = ({
   preselectedMode
 }) => {
   const navigate = useNavigate();
-  const { createProject } = useProjectContext();
+  const { user } = useUserSession();
+  const { createProject } = useProjectContext(user?.id);
   const [currentStep, setCurrentStep] = useState<EntryStep>(preselectedMode ? 'garden' : 'mode');
   const [selectedMode, setSelectedMode] = useState<ModeType | null>(preselectedMode || null);
   const [selectedGarden, setSelectedGarden] = useState<GardenType | null>(null);
   const [projectName, setProjectName] = useState('');
+  const [pendingProject, setPendingProject] = useState<{ id: string } | null>(null);
+  
+  const isGuest = !user;
 
   const handleModeSelect = (mode: ModeType) => {
     setSelectedMode(mode);
@@ -59,39 +65,36 @@ const BoardEntryGate: React.FC<BoardEntryGateProps> = ({
     setSelectedGarden(gardenType);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentStep === 'mode' && selectedMode) {
       setCurrentStep('garden');
     } else if (currentStep === 'garden' && selectedGarden) {
       setCurrentStep('name');
+    } else if (currentStep === 'name' && projectName.trim().length >= 3) {
+      // Create project first (saves to localStorage for guests)
+      const newProject = await createProject(projectName.trim(), selectedGarden!, selectedMode!);
+      setPendingProject(newProject);
+      
+      if (isGuest) {
+        setCurrentStep('signup');
+      } else {
+        // Navigate directly for authenticated users
+        navigateToBoard(newProject.id);
+      }
     }
   };
 
-  const handleBack = () => {
-    if (currentStep === 'garden') {
-      setCurrentStep('mode');
-    } else if (currentStep === 'name') {
-      setCurrentStep('garden');
-    }
-  };
-
-  const handleStartJourney = async () => {
-    if (!selectedMode || !selectedGarden || !projectName.trim()) return;
-
-    // Create the project using the hook (now async)
-    const newProject = await createProject(projectName.trim(), selectedGarden, selectedMode);
-
+  const navigateToBoard = (projectId: string) => {
     let url = '/calm-magic-board';
     const params = new URLSearchParams();
     
-    params.set('projectId', newProject.id);
+    params.set('projectId', projectId);
     
     if (assessmentResult) {
-      const assessmentParams = generateBoardEntryParams(assessmentResult, selectedMode);
-      // Merge assessment params (they already include mode)
+      const assessmentParams = generateBoardEntryParams(assessmentResult, selectedMode!);
       const assessmentSearchParams = new URLSearchParams(assessmentParams);
       assessmentSearchParams.forEach((value, key) => {
-        if (key !== 'mode') { // Don't override mode
+        if (key !== 'mode') {
           params.set(key, value);
         }
       });
@@ -102,22 +105,36 @@ const BoardEntryGate: React.FC<BoardEntryGateProps> = ({
     navigate(url);
   };
 
+  const handleBack = () => {
+    if (currentStep === 'garden') {
+      setCurrentStep('mode');
+    } else if (currentStep === 'name') {
+      setCurrentStep('garden');
+    } else if (currentStep === 'signup') {
+      setCurrentStep('name');
+    }
+  };
+
+  const handleSignIn = () => {
+    onClose();
+    navigate('/auth', { state: { returnTo: '/projects' } });
+  };
+
   const canProceed = () => {
     if (currentStep === 'mode') return !!selectedMode;
     if (currentStep === 'garden') return !!selectedGarden;
     if (currentStep === 'name') return projectName.trim().length >= 3;
+    if (currentStep === 'signup') return true;
     return false;
   };
 
-  const getStepNumber = (step: EntryStep) => {
-    const steps: EntryStep[] = ['mode', 'garden', 'name'];
-    return steps.indexOf(step) + 1;
-  };
+  const visibleSteps: EntryStep[] = isGuest ? ['mode', 'garden', 'name', 'signup'] : ['mode', 'garden', 'name'];
 
   const isStepComplete = (step: EntryStep) => {
     if (step === 'mode') return !!selectedMode;
     if (step === 'garden') return !!selectedGarden;
     if (step === 'name') return projectName.trim().length >= 3;
+    if (step === 'signup') return false;
     return false;
   };
 
@@ -138,7 +155,7 @@ const BoardEntryGate: React.FC<BoardEntryGateProps> = ({
 
         {/* Step Indicator */}
         <div className="flex items-center justify-center gap-2 py-2">
-          {(['mode', 'garden', 'name'] as EntryStep[]).map((step, index) => (
+          {visibleSteps.filter(s => s !== 'signup').map((step, index) => (
             <React.Fragment key={step}>
               <div className="flex items-center gap-2">
                 <div
@@ -343,6 +360,58 @@ const BoardEntryGate: React.FC<BoardEntryGateProps> = ({
             </div>
           )}
 
+          {/* Step 4: Signup Prompt (Guests Only) */}
+          {currentStep === 'signup' && (
+            <div className="space-y-4">
+              <div className="text-center space-y-2">
+                <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-r from-primary/20 to-purple-500/20 flex items-center justify-center mb-4">
+                  <Check className="w-8 h-8 text-primary" />
+                </div>
+                <h3 className="text-lg font-semibold">Project Created!</h3>
+                <p className="text-sm text-muted-foreground">
+                  Your project "{projectName}" has been saved locally.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-lg bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20">
+                <div className="flex items-start gap-3">
+                  <LogIn className="w-5 h-5 text-amber-600 mt-0.5 shrink-0" />
+                  <div>
+                    <h4 className="font-medium text-foreground">Sign in to continue</h4>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Create an account or sign in to access the full Calm Magic Board experience and sync your projects across devices.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Project Summary */}
+              <div className="p-4 rounded-lg bg-muted/30 border border-border/50">
+                <div className="flex items-start gap-3">
+                  <Sparkles className="w-5 h-5 text-primary mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-foreground">{projectName}</h4>
+                    <div className="flex items-center gap-2 mt-2">
+                      <Badge variant="outline" className="text-xs capitalize">
+                        {selectedMode}
+                      </Badge>
+                      <Badge 
+                        variant="outline" 
+                        className="text-xs"
+                        style={{ 
+                          borderColor: gardens.find(g => g.type === selectedGarden)?.color,
+                          color: gardens.find(g => g.type === selectedGarden)?.color
+                        }}
+                      >
+                        {gardens.find(g => g.type === selectedGarden)?.icon} {gardens.find(g => g.type === selectedGarden)?.name}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Assessment Context (if available) */}
           {assessmentResult && currentStep === 'mode' && (
             <div className="p-3 bg-muted/30 rounded-lg border border-border/50">
@@ -367,10 +436,14 @@ const BoardEntryGate: React.FC<BoardEntryGateProps> = ({
 
         {/* Actions */}
         <div className="flex gap-3 pt-2">
-          {currentStep !== 'mode' ? (
+          {currentStep !== 'mode' && currentStep !== 'signup' ? (
             <Button variant="outline" onClick={handleBack} className="flex-1">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
+            </Button>
+          ) : currentStep === 'signup' ? (
+            <Button variant="outline" onClick={onClose} className="flex-1">
+              Maybe Later
             </Button>
           ) : (
             <Button variant="outline" onClick={onClose} className="flex-1">
@@ -378,26 +451,27 @@ const BoardEntryGate: React.FC<BoardEntryGateProps> = ({
             </Button>
           )}
           
-          {currentStep === 'name' ? (
+          {currentStep === 'signup' ? (
             <Button 
-              onClick={handleStartJourney} 
-              disabled={!canProceed()}
-              className={`flex-1 ${
-                selectedMode === 'personal' 
-                  ? 'bg-gradient-to-r from-rose-500 to-purple-600 hover:from-rose-600 hover:to-purple-700' 
-                  : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'
-              }`}
+              onClick={handleSignIn}
+              className="flex-1 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90"
             >
-              Start Journey
-              <ArrowRight className="w-4 h-4 ml-2" />
+              <LogIn className="w-4 h-4 mr-2" />
+              Sign In / Sign Up
             </Button>
           ) : (
             <Button 
               onClick={handleNext} 
               disabled={!canProceed()}
-              className="flex-1"
+              className={`flex-1 ${
+                currentStep === 'name' && selectedMode
+                  ? selectedMode === 'personal' 
+                    ? 'bg-gradient-to-r from-rose-500 to-purple-600 hover:from-rose-600 hover:to-purple-700' 
+                    : 'bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700'
+                  : ''
+              }`}
             >
-              Next
+              {currentStep === 'name' ? 'Create Project' : 'Next'}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           )}
