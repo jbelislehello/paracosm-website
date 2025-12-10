@@ -2,8 +2,10 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, BookOpen, Workflow, Gamepad2, Users, Compass } from 'lucide-react';
+import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, BookOpen, Workflow, Gamepad2, Users, Compass, Leaf, Heart } from 'lucide-react';
 import { useState } from 'react';
+import { getTileStage, getStageById, PRD_STAGES } from '@/types/journal-expansion';
+import { getPrinciplesByStage } from '@/data/femininePrinciples';
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
 
@@ -69,6 +71,11 @@ const TileDetailPanel = ({
   const canDriftLeft = selectedTile.col > 0; // Can move LEFT
   const canDriftRight = selectedTile.col < 7; // Can move RIGHT
   const canTune = selectedTile.row > 0; // Can move DOWN
+
+  // Get tile's stage and principles
+  const tileStage = getTileStage(selectedTile.row);
+  const stageDefinition = getStageById(tileStage);
+  const stagePrinciples = getPrinciplesByStage(tileStage);
 
   const getBoardColor = (board: string) => {
     switch (board) {
@@ -199,6 +206,16 @@ const TileDetailPanel = ({
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-background to-muted/30">
+      {/* Living Organism Header */}
+      <div className="px-4 py-2 bg-gradient-to-r from-amber-500/10 to-rose-500/10 border-b border-amber-500/20">
+        <div className="flex items-center gap-2 text-xs">
+          <Leaf className="w-3 h-3 text-amber-500" />
+          <span className="text-amber-700 dark:text-amber-300 italic">
+            This tile is a living organism — treat your insights as organisms, not artifacts
+          </span>
+        </div>
+      </div>
+
       {/* Header */}
       <div className="p-4 border-b border-border/50 flex items-start justify-between bg-background/80 backdrop-blur-sm">
         <div>
@@ -210,15 +227,42 @@ const TileDetailPanel = ({
               {rowLabels[selectedTile.row].name} × {colLabels[selectedTile.col].name}
             </h3>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
-            Stage: {rowLabels[selectedTile.row].stage} | 
-            Lens: {activeCompass ? COMPASSES.find(c => c.id === activeCompass)?.name : 'None selected'}
-          </p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-sm text-muted-foreground">
+              Stage: {rowLabels[selectedTile.row].stage}
+            </p>
+            {stageDefinition && (
+              <Badge variant="outline" className="text-[10px]">
+                {stageDefinition.icon} {stageDefinition.name}
+              </Badge>
+            )}
+          </div>
         </div>
         <Button variant="ghost" size="icon" onClick={onClose} className="shrink-0">
           <X className="w-4 h-4" />
         </Button>
       </div>
+
+      {/* Stage Context & Principles */}
+      {stageDefinition && (
+        <div className="px-4 py-2 bg-muted/30 border-b border-border/30">
+          <p className="text-[10px] text-muted-foreground mb-1">
+            <span className="font-medium">Stage Themes:</span> {stageDefinition.themes.slice(0, 4).join(' • ')}
+          </p>
+          <div className="flex flex-wrap gap-1">
+            {stagePrinciples.slice(0, 2).map(principle => (
+              <span 
+                key={principle.id}
+                className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary flex items-center gap-1"
+                title={principle.designCue}
+              >
+                <span>{principle.icon}</span>
+                {principle.name}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Compass Selector */}
       <div className="p-3 border-b border-border/50 bg-background/50">
@@ -275,15 +319,19 @@ const TileDetailPanel = ({
           <p className="text-sm">{questions.tune}</p>
         </Card>
 
-        {/* Expected Deliverable */}
+        {/* Expected Deliverable + Stack Contribution */}
         <Card className="p-3 bg-primary/10 border border-primary/30">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mb-2">
             <Sparkles className="w-4 h-4 text-primary" />
             <span className="font-medium text-sm">Expected Deliverable:</span>
             <Badge variant="outline" className="text-primary border-primary/50">
               {questions.deliverable}
             </Badge>
           </div>
+          <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+            <Heart className="w-3 h-3" />
+            Contributes to: {tileStage === 'real-intelligence' ? 'Ontology & Concepts' : tileStage === 'knowledge-objects' ? 'Data Nodes & API' : 'Graphs & Processes'}
+          </p>
         </Card>
 
         {/* POLEN Entry Form */}

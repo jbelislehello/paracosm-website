@@ -235,7 +235,7 @@ const CalmMagicJournal = () => {
                     onComplete={handleTileWorkflowComplete}
                   />
                   {/* Feminine-Safe PRD Panel */}
-                  <FeminineSafePRD showThreats={true} />
+                  <FeminineSafePRD showAntiPatterns={true} />
                 </>
               ) : (
                 <Card className="bg-muted/30">
