@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Pencil, Check, X, FolderOpen } from 'lucide-react';
 import { Project } from '@/hooks/useProjectContext';
 import { getGardenByType } from '@/data/gardens';
+import UserProfileMenu from '@/components/UserProfileMenu';
 
 interface ProjectTitleBarProps {
   project: Project;
@@ -110,15 +111,18 @@ const ProjectTitleBar: React.FC<ProjectTitleBarProps> = ({
           </Badge>
         </div>
         
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-muted-foreground hover:text-foreground shrink-0"
-          onClick={() => navigate('/projects')}
-        >
-          <FolderOpen className="w-4 h-4 mr-1.5" />
-          All Projects
-        </Button>
+        <div className="flex items-center gap-2 shrink-0">
+          <UserProfileMenu />
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-muted-foreground hover:text-foreground"
+            onClick={() => navigate('/projects')}
+          >
+            <FolderOpen className="w-4 h-4 mr-1.5" />
+            All Projects
+          </Button>
+        </div>
       </div>
     </div>
   );
