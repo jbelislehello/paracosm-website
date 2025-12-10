@@ -152,3 +152,169 @@ export const WHAT_IS_A_PRD = {
 
   calmMagicEvolution: "Calm Magic transforms the PRD from a static specification into a living documentation system that tracks not just requirements, but the emergence of understanding itself."
 };
+
+// ============================================
+// PERSONAL MODE: Relational Design & Poiesis
+// ============================================
+
+export const WHAT_IS_POIESIS = {
+  definition: "Poiesis (Greek: ποίησις) is the act of bringing something into being that did not exist before — creative emergence where inner knowing meets outer expression through the body's wisdom.",
+  
+  purpose: [
+    "Express what's alive in you",
+    "Transform tension into creative form",
+    "Navigate inner landscapes safely",
+    "Build relational coherence"
+  ],
+
+  whyItMatters: "Most journaling and inner work tools focus on processing thoughts. But true transformation happens through embodied expression — giving form to what's emerging within.",
+
+  calmMagicEvolution: "The Calm Magic Expansion Journal transforms inner work from journaling into a living navigation system that expands your Window of Tolerance through creative expression."
+};
+
+export interface RelationalDesignApproach {
+  name: string;
+  author?: string;
+  principles: string[];
+  strength: string;
+  limitation: string;
+}
+
+export const RELATIONAL_DESIGN_APPROACHES: RelationalDesignApproach[] = [
+  {
+    name: "Somatic Experiencing",
+    author: "Peter Levine",
+    principles: [
+      "Body-first processing",
+      "Pendulation between activation & calm",
+      "Titration of overwhelming experiences"
+    ],
+    strength: "Deep trauma-informed nervous system regulation through felt sense",
+    limitation: "Requires trained facilitation for deeper work"
+  },
+  {
+    name: "Internal Family Systems",
+    author: "Richard Schwartz",
+    principles: [
+      "Parts work & inner multiplicity",
+      "Self-leadership from the center",
+      "Unburdening wounded parts"
+    ],
+    strength: "Excellent for inner conflict resolution and self-compassion",
+    limitation: "Can intellectualize when embodiment is needed"
+  },
+  {
+    name: "Focusing",
+    author: "Eugene Gendlin",
+    principles: [
+      "Felt sense inquiry",
+      "Friendly attention to body sensations",
+      "Allowing meaning to emerge"
+    ],
+    strength: "Accessible practice for connecting with body wisdom",
+    limitation: "May miss relational and systemic dimensions"
+  },
+  {
+    name: "Polyvagal-Informed Work",
+    author: "Stephen Porges",
+    principles: [
+      "Neuroception of safety",
+      "Vagal tone & co-regulation",
+      "State-dependent responses"
+    ],
+    strength: "Scientific grounding for safety-first approaches",
+    limitation: "Can become overly technical, losing felt experience"
+  }
+];
+
+export const CALM_MAGIC_PERSONAL_DIFFERENTIATOR = {
+  philosophy: "Your inner landscape is a living ecosystem, not a problem to solve",
+  subtitle: "Expanding your Window of Tolerance through creative emergence and embodied expression",
+  
+  corePromise: `Traditional inner work asks "What's wrong?"
+Calm Magic asks "What wants to emerge, and how can I give it form?"`,
+
+  principles: [
+    {
+      name: "Sacred Space",
+      description: "Each tile is a container for what wants to emerge — not a task to complete"
+    },
+    {
+      name: "Somatic Knowing",
+      description: "The body knows before the mind understands — we honor felt sense first"
+    },
+    {
+      name: "Relational Field",
+      description: "Healing happens in connection — with self, others, and the creative act"
+    },
+    {
+      name: "Cyclical Time",
+      description: "We move in spirals, not lines — returning to themes at deeper levels"
+    },
+    {
+      name: "Gentle Ambiguity",
+      description: "Not-knowing is welcomed — clarity emerges through the process"
+    }
+  ],
+
+  keyDifferences: [
+    {
+      traditional: "Processing trauma/emotions",
+      calmMagic: "Expressing what wants to emerge through form"
+    },
+    {
+      traditional: "Individual healing journey",
+      calmMagic: "Relational field including inner parts, others, and creative work"
+    },
+    {
+      traditional: "Fixed therapeutic goals",
+      calmMagic: "Expanding Window of Tolerance through embodied practice"
+    },
+    {
+      traditional: "Talk-based or cognitive",
+      calmMagic: "Multi-modal: voice, sketch, movement, writing, dialogue"
+    },
+    {
+      traditional: "Problem → Solution",
+      calmMagic: "Sensing → Exploring → Embodying (poiesis cycle)"
+    }
+  ]
+};
+
+export interface EmergenceStage {
+  id: string;
+  name: string;
+  icon: string;
+  description: string;
+  bodyQuestion: string;
+}
+
+export const EMERGENCE_NAVIGATION: EmergenceStage[] = [
+  {
+    id: 'sensing',
+    name: 'Sensing',
+    icon: '👁️',
+    description: "What's arising in the field?",
+    bodyQuestion: "Where do I feel this in my body?"
+  },
+  {
+    id: 'exploring',
+    name: 'Exploring',
+    icon: '🌊',
+    description: "Dancing with possibility",
+    bodyQuestion: "What wants to move or be expressed?"
+  },
+  {
+    id: 'embodying',
+    name: 'Embodying',
+    icon: '✨',
+    description: "Giving form to emergence",
+    bodyQuestion: "What form wants to hold this knowing?"
+  }
+];
+
+export const COHERENCE_CONCEPT = {
+  definition: "Coherence = Safety + Presence",
+  explanation: "When we feel safe enough to be present with what is, coherence naturally emerges — the parts align, the body settles, and creative expression flows.",
+  contrast: "Safety without presence is dissociation. Presence without safety is overwhelm. Coherence is their union."
+};
