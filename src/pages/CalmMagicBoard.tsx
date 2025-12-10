@@ -75,7 +75,8 @@ const CalmMagicBoard = () => {
   const [isGeneratingPrd, setIsGeneratingPrd] = useState(false);
 
   // Convert journeyPath to Set for matrix visualization (within current season)
-  const visitedTiles = seasonProgress[currentSeason];
+  // Fallback to empty Set if season data not yet loaded
+  const visitedTiles = seasonProgress[currentSeason] || new Set<string>();
 
   const {
     isAuthenticated,

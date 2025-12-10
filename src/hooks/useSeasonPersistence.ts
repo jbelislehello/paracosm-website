@@ -2,6 +2,15 @@ import { useState, useEffect, useCallback } from 'react';
 
 type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 
+// Old season names for migration
+type OldSeason = 'POLLEN' | 'POEM' | 'TOTEM' | 'ANTHEM';
+const OLD_TO_NEW_SEASON: Record<OldSeason, Season> = {
+  'POLLEN': 'POLLENS',
+  'POEM': 'POEMS',
+  'TOTEM': 'TOTEMS',
+  'ANTHEM': 'ANTHEMS',
+};
+
 interface SeasonPersistenceState {
   currentSeason: Season;
   seasonProgress: Record<Season, Set<string>>;
@@ -12,9 +21,9 @@ interface SeasonPersistenceState {
 }
 
 interface StoredState {
-  currentSeason: Season;
-  seasonProgress: Record<Season, string[]>;
-  completedSeasons: Season[];
+  currentSeason: string;
+  seasonProgress: Record<string, string[]>;
+  completedSeasons: string[];
   prdId: string | null;
   journeyStarted: boolean;
   journeyPath: Array<{ row: number; col: number }>;
@@ -23,19 +32,33 @@ interface StoredState {
 
 const STORAGE_KEY = 'calmMagicBoardProgress';
 
+const createEmptyProgress = (): Record<Season, Set<string>> => ({
+  POLLENS: new Set(),
+  NOEMS: new Set(),
+  POEMS: new Set(),
+  TOTEMS: new Set(),
+  ANTHEMS: new Set(),
+});
+
 const defaultState: SeasonPersistenceState = {
   currentSeason: 'POLLENS',
-  seasonProgress: {
-    POLLENS: new Set(),
-    NOEMS: new Set(),
-    POEMS: new Set(),
-    TOTEMS: new Set(),
-    ANTHEMS: new Set(),
-  },
+  seasonProgress: createEmptyProgress(),
   completedSeasons: [],
   prdId: null,
   journeyStarted: false,
   journeyPath: [],
+};
+
+// Migrate old season name to new
+const migrateSeason = (season: string): Season => {
+  if (season in OLD_TO_NEW_SEASON) {
+    return OLD_TO_NEW_SEASON[season as OldSeason];
+  }
+  // Already new format or fallback
+  if (['POLLENS', 'NOEMS', 'POEMS', 'TOTEMS', 'ANTHEMS'].includes(season)) {
+    return season as Season;
+  }
+  return 'POLLENS';
 };
 
 export const useSeasonPersistence = () => {
@@ -49,19 +72,31 @@ export const useSeasonPersistence = () => {
       if (stored) {
         const parsed: StoredState = JSON.parse(stored);
         
-        // Convert arrays back to Sets
-        const seasonProgress: Record<Season, Set<string>> = {
-          POLLENS: new Set(parsed.seasonProgress?.POLLENS || []),
-          NOEMS: new Set(parsed.seasonProgress?.NOEMS || []),
-          POEMS: new Set(parsed.seasonProgress?.POEMS || []),
-          TOTEMS: new Set(parsed.seasonProgress?.TOTEMS || []),
-          ANTHEMS: new Set(parsed.seasonProgress?.ANTHEMS || []),
-        };
+        // Migrate current season
+        const migratedCurrentSeason = migrateSeason(parsed.currentSeason || 'POLLENS');
+        
+        // Create fresh progress with migrated data
+        const seasonProgress = createEmptyProgress();
+        
+        // Migrate old season progress if exists
+        if (parsed.seasonProgress) {
+          Object.entries(parsed.seasonProgress).forEach(([key, tiles]) => {
+            const newKey = migrateSeason(key);
+            if (tiles && Array.isArray(tiles)) {
+              seasonProgress[newKey] = new Set(tiles);
+            }
+          });
+        }
+        
+        // Migrate completed seasons
+        const migratedCompletedSeasons = (parsed.completedSeasons || [])
+          .map(s => migrateSeason(s))
+          .filter((s, i, arr) => arr.indexOf(s) === i); // Remove duplicates
         
         setState({
-          currentSeason: parsed.currentSeason || 'POLLENS',
+          currentSeason: migratedCurrentSeason,
           seasonProgress,
-          completedSeasons: parsed.completedSeasons || [],
+          completedSeasons: migratedCompletedSeasons,
           prdId: parsed.prdId || null,
           journeyStarted: parsed.journeyStarted || false,
           journeyPath: parsed.journeyPath || [],
@@ -80,11 +115,11 @@ export const useSeasonPersistence = () => {
       const toStore: StoredState = {
         currentSeason: newState.currentSeason,
         seasonProgress: {
-          POLLENS: Array.from(newState.seasonProgress.POLLENS),
-          NOEMS: Array.from(newState.seasonProgress.NOEMS),
-          POEMS: Array.from(newState.seasonProgress.POEMS),
-          TOTEMS: Array.from(newState.seasonProgress.TOTEMS),
-          ANTHEMS: Array.from(newState.seasonProgress.ANTHEMS),
+          POLLENS: Array.from(newState.seasonProgress.POLLENS || []),
+          NOEMS: Array.from(newState.seasonProgress.NOEMS || []),
+          POEMS: Array.from(newState.seasonProgress.POEMS || []),
+          TOTEMS: Array.from(newState.seasonProgress.TOTEMS || []),
+          ANTHEMS: Array.from(newState.seasonProgress.ANTHEMS || []),
         },
         completedSeasons: newState.completedSeasons,
         prdId: newState.prdId,
