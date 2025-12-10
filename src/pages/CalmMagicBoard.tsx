@@ -5,11 +5,11 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers } from 'lucide-react';
 import { toast } from 'sonner';
 import MinimalistTileMatrix from '@/components/MinimalistTileMatrix';
 import TileDetailPanel from '@/components/TileDetailPanel';
-import PolenBrowserPanel from '@/components/PolenBrowserPanel';
+import { FragmentBrowser } from '@/components/calm-magic/FragmentBrowser';
 import { useTileMatrixPersistence } from '@/hooks/useTileMatrixPersistence';
 import { useSeasonPersistence } from '@/hooks/useSeasonPersistence';
 import { useQuadrantDynamics } from '@/hooks/useQuadrantDynamics';
@@ -22,6 +22,8 @@ import { JourneySummary } from '@/components/calm-magic/JourneySummary';
 import { InsightConnectionsGraph } from '@/components/calm-magic/InsightConnectionsGraph';
 import { QuadrantDynamicsPanel } from '@/components/calm-magic/QuadrantDynamicsPanel';
 import { HigherSelfProphecyModal } from '@/components/calm-magic/HigherSelfProphecyModal';
+import { PrdAssemblyPanel } from '@/components/calm-magic/PrdAssemblyPanel';
+import { getPrdAccessLevel, Season as PrdSeason } from '@/utils/prdAccessLevel';
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
 type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 type BoardType = 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
@@ -53,7 +55,7 @@ const SEASON_COLORS: Record<Season, string> = {
   ANTHEMS: 'from-emerald-500 to-green-500',
 };
 
-type ViewTab = 'matrix' | 'window-of-tolerance';
+type ViewTab = 'matrix' | 'window-of-tolerance' | 'prd-assembly';
 
 const CalmMagicBoard = () => {
   const navigate = useNavigate();
@@ -457,10 +459,29 @@ const CalmMagicBoard = () => {
               variant={showPolenBrowser ? "default" : "ghost"} 
               size="icon"
               onClick={() => setShowPolenBrowser(!showPolenBrowser)}
-              title="Polen Library"
+              title="Fragment Library"
             >
               <Library className="w-4 h-4" />
             </Button>
+            
+            {/* PRD Assembly - Show when accessible */}
+            {getPrdAccessLevel({
+              completedSeasons: completedSeasons as PrdSeason[],
+              currentSeason: currentSeason as PrdSeason,
+              seasonProgress: seasonProgress as Record<PrdSeason, Set<string>>,
+              polenCountBySeason: {} as Record<PrdSeason, number>,
+              prdId
+            }) !== 'hidden' && (
+              <Button 
+                variant={activeView === 'prd-assembly' ? "default" : "outline"} 
+                size="sm"
+                onClick={() => setActiveView('prd-assembly')}
+                title="PRD Assembly"
+              >
+                <Layers className="w-4 h-4 mr-1" />
+                PRD
+              </Button>
+            )}
           </div>
         </div>
       </header>
@@ -476,6 +497,10 @@ const CalmMagicBoard = () => {
             <TabsTrigger value="window-of-tolerance" className="text-xs gap-1.5 px-3">
               <CircleDot className="w-3.5 h-3.5" />
               Window of Tolerance
+            </TabsTrigger>
+            <TabsTrigger value="prd-assembly" className="text-xs gap-1.5 px-3">
+              <Layers className="w-3.5 h-3.5" />
+              PRD Assembly
             </TabsTrigger>
           </TabsList>
         </Tabs>
