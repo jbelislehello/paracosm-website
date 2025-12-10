@@ -44,6 +44,7 @@ import { useProjectContext, Project } from '@/hooks/useProjectContext';
 import { getGardenByType, gardens } from '@/data/gardens';
 import { GardenType } from '@/types/journal';
 import BoardEntryGate from '@/components/calm-magic/BoardEntryGate';
+import UserProfileMenu from '@/components/UserProfileMenu';
 
 const ProjectsDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -140,13 +141,16 @@ const ProjectsDashboard: React.FC = () => {
               </div>
             </div>
             
-            <Button
-              onClick={() => setShowCreateModal(true)}
-              className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              New Project
-            </Button>
+            <div className="flex items-center gap-3">
+              <UserProfileMenu />
+              <Button
+                onClick={() => setShowCreateModal(true)}
+                className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                New Project
+              </Button>
+            </div>
           </div>
         </div>
       </header>
