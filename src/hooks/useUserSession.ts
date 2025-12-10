@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 
-interface UserProfile {
+export interface UserProfile {
   id: string;
   username: string | null;
   full_name: string | null;
@@ -17,6 +17,7 @@ interface UseUserSessionReturn {
   isLoading: boolean;
   signOut: () => Promise<void>;
   refreshProfile: () => Promise<void>;
+  updateProfile: (updates: Partial<UserProfile>) => Promise<{ error: Error | null }>;
 }
 
 export const useUserSession = (): UseUserSessionReturn => {
@@ -57,6 +58,35 @@ export const useUserSession = (): UseUserSessionReturn => {
     setSession(null);
     setProfile(null);
   }, []);
+
+  const updateProfile = useCallback(async (updates: Partial<UserProfile>): Promise<{ error: Error | null }> => {
+    if (!user) {
+      return { error: new Error('Not authenticated') };
+    }
+
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          full_name: updates.full_name,
+          username: updates.username,
+          avatar_url: updates.avatar_url,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', user.id);
+
+      if (error) {
+        return { error: new Error(error.message) };
+      }
+
+      // Refresh profile after update
+      const profileData = await fetchProfile(user.id);
+      setProfile(profileData);
+      return { error: null };
+    } catch (err) {
+      return { error: err as Error };
+    }
+  }, [user, fetchProfile]);
 
   useEffect(() => {
     // Set up auth state listener FIRST
@@ -105,5 +135,6 @@ export const useUserSession = (): UseUserSessionReturn => {
     isLoading,
     signOut,
     refreshProfile,
+    updateProfile,
   };
 };

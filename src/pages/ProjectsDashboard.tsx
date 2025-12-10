@@ -41,6 +41,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { useProjectContext, Project } from '@/hooks/useProjectContext';
+import { useUserSession } from '@/hooks/useUserSession';
 import { getGardenByType, gardens } from '@/data/gardens';
 import { GardenType } from '@/types/journal';
 import BoardEntryGate from '@/components/calm-magic/BoardEntryGate';
@@ -48,13 +49,14 @@ import UserProfileMenu from '@/components/UserProfileMenu';
 
 const ProjectsDashboard: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useUserSession();
   const { 
     projects, 
     setActiveProject, 
     deleteProject, 
     updateProject,
     isLoading 
-  } = useProjectContext();
+  } = useProjectContext(user?.id);
   
   const [searchQuery, setSearchQuery] = useState('');
   const [gardenFilter, setGardenFilter] = useState<GardenType | 'all'>('all');
