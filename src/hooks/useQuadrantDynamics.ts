@@ -7,7 +7,11 @@ import {
   TrajectoryState,
   TrajectoryEventType,
   Season,
+  ShadowFactors,
+  ShadowNudge,
+  FeltState,
 } from '@/types/trajectory';
+import { analyzeCoherence, GapInfo } from '@/utils/coherenceAnalysis';
 
 const STORAGE_KEY = 'calmMagicTrajectory';
 
@@ -19,6 +23,13 @@ const defaultQualities: SeasonQualities = {
   expansion: 0,
 };
 
+const defaultShadowFactors: ShadowFactors = {
+  completeness: 0,
+  coherence: 0,
+  depth: 0,
+  flow: 0,
+};
+
 const defaultTrajectoryState: TrajectoryState = {
   higher_self_position: null,
   higher_self_quadrant: null,
@@ -26,10 +37,12 @@ const defaultTrajectoryState: TrajectoryState = {
   prophecy_set_at: null,
   trajectory_log: [],
   last_shadow_position: { x: 0, y: 0 },
+  shadow_nudge: null,
+  shadow_factors: defaultShadowFactors,
 };
 
-// Calculate shadow position from season qualities
-export function calculateShadowPosition(qualities: SeasonQualities): QuadrantPosition {
+// Calculate base shadow position from season qualities
+function calculateBasePosition(qualities: SeasonQualities): QuadrantPosition {
   const noveltyWeight = (qualities.spaciousness + qualities.openness + qualities.expansion) / 3;
   const memoryWeight = (qualities.vitality + qualities.wholeness) / 2;
   const x = ((noveltyWeight - memoryWeight) / 100) * 2;
@@ -44,6 +57,31 @@ export function calculateShadowPosition(qualities: SeasonQualities): QuadrantPos
   };
 }
 
+// Calculate enhanced shadow position from multiple factors
+export function calculateEnhancedShadowPosition(
+  factors: ShadowFactors,
+  userNudge: ShadowNudge | null
+): QuadrantPosition {
+  // Map factors to position:
+  // - High completeness + coherence → Novelty (explored broadly, connected)
+  // - High depth + flow → Sovereignty (engaged deeply, moving well)
+  const x = (factors.completeness * 0.5 + factors.coherence * 0.5) * 2 - 1;
+  const y = (factors.depth * 0.5 + factors.flow * 0.5) * 2 - 1;
+  
+  let position = { x, y };
+  
+  // Apply user nudge (70% system, 30% nudge)
+  if (userNudge) {
+    position.x = position.x * 0.7 + userNudge.position.x * 0.3;
+    position.y = position.y * 0.7 + userNudge.position.y * 0.3;
+  }
+  
+  return {
+    x: Math.max(-1, Math.min(1, position.x)),
+    y: Math.max(-1, Math.min(1, position.y)),
+  };
+}
+
 // Get quadrant from position
 export function getQuadrantFromPosition(pos: QuadrantPosition): 'SN' | 'IN' | 'IM' | 'SM' {
   if (pos.x >= 0 && pos.y >= 0) return 'SN';
@@ -54,12 +92,15 @@ export function getQuadrantFromPosition(pos: QuadrantPosition): 'SN' | 'IN' | 'I
 
 export function useQuadrantDynamics(
   seasonProgress: Record<Season, Set<string>>,
-  currentSeason: Season
+  currentSeason: Season,
+  polenCounts: Record<string, number> = {},
+  journeyPath: Array<{ row: number; col: number }> = []
 ) {
   const [trajectoryState, setTrajectoryState] = useState<TrajectoryState>(defaultTrajectoryState);
   const [isLoading, setIsLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [gaps, setGaps] = useState<GapInfo[]>([]);
 
   // Get user ID on mount
   useEffect(() => {
@@ -74,16 +115,13 @@ export function useQuadrantDynamics(
   useEffect(() => {
     const loadTrajectoryState = async () => {
       try {
-        // First, try localStorage for immediate display
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) {
           const parsed = JSON.parse(stored);
-          setTrajectoryState(parsed);
+          setTrajectoryState({ ...defaultTrajectoryState, ...parsed });
         }
 
-        // If user is authenticated, fetch from Supabase
         if (userId) {
-          // Use type assertion since trajectory_states table is new
           const { data, error } = await (supabase
             .from('trajectory_states' as any) as any)
             .select('*')
@@ -100,9 +138,10 @@ export function useQuadrantDynamics(
               prophecy_set_at: data.prophecy_set_at,
               trajectory_log: (data.trajectory_log as unknown as TrajectoryEvent[]) || [],
               last_shadow_position: (data.last_shadow_position as unknown as QuadrantPosition) || { x: 0, y: 0 },
+              shadow_nudge: (data.shadow_nudge as unknown as ShadowNudge) || null,
+              shadow_factors: (data.shadow_factors as unknown as ShadowFactors) || defaultShadowFactors,
             };
             setTrajectoryState(supabaseState);
-            // Update localStorage with Supabase data
             localStorage.setItem(STORAGE_KEY, JSON.stringify(supabaseState));
           }
         }
@@ -118,18 +157,15 @@ export function useQuadrantDynamics(
 
   // Save to both localStorage and Supabase
   const saveState = useCallback(async (state: TrajectoryState) => {
-    // Always save to localStorage immediately
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch (e) {
       console.error('Failed to save to localStorage:', e);
     }
 
-    // Sync to Supabase if authenticated
     if (userId && !isSyncing) {
       setIsSyncing(true);
       try {
-        // Use type assertion since trajectory_states table is new
         const { error } = await (supabase
           .from('trajectory_states' as any) as any)
           .upsert({
@@ -140,6 +176,8 @@ export function useQuadrantDynamics(
             prophecy_set_at: state.prophecy_set_at,
             trajectory_log: state.trajectory_log,
             last_shadow_position: state.last_shadow_position,
+            shadow_nudge: state.shadow_nudge,
+            shadow_factors: state.shadow_factors,
             updated_at: new Date().toISOString(),
           }, {
             onConflict: 'user_id',
@@ -167,15 +205,74 @@ export function useQuadrantDynamics(
     };
   }, [seasonProgress]);
 
-  // Calculate current shadow position
+  // Calculate shadow factors from multiple sources
+  const shadowFactors = useMemo((): ShadowFactors => {
+    const currentSeasonTiles = seasonProgress[currentSeason] || new Set<string>();
+    const analysis = analyzeCoherence(currentSeasonTiles, polenCounts, journeyPath);
+    
+    setGaps(analysis.gaps);
+    
+    return {
+      completeness: currentSeasonTiles.size / 64,
+      coherence: analysis.score,
+      depth: analysis.depth,
+      flow: analysis.flow,
+    };
+  }, [seasonProgress, currentSeason, polenCounts, journeyPath]);
+
+  // Calculate current shadow position with factors and nudge
   const shadowPosition = useMemo(() => {
-    return calculateShadowPosition(seasonQualities);
-  }, [seasonQualities]);
+    return calculateEnhancedShadowPosition(shadowFactors, trajectoryState.shadow_nudge);
+  }, [shadowFactors, trajectoryState.shadow_nudge]);
 
   // Get current shadow quadrant
   const shadowQuadrant = useMemo(() => {
     return getQuadrantFromPosition(shadowPosition);
   }, [shadowPosition]);
+
+  // Apply shadow nudge
+  const applyShadowNudge = useCallback((
+    position: QuadrantPosition,
+    feltState: FeltState,
+    note: string | null
+  ) => {
+    const nudge: ShadowNudge = {
+      position,
+      felt_state: feltState,
+      note,
+      applied_at: new Date().toISOString(),
+    };
+    
+    const event: TrajectoryEvent = {
+      id: crypto.randomUUID(),
+      timestamp: new Date().toISOString(),
+      event_type: 'shadow_nudge',
+      shadow_position: calculateEnhancedShadowPosition(shadowFactors, nudge),
+      season: currentSeason,
+      quality_snapshot: { ...seasonQualities },
+      note: note || `Felt state: ${feltState || 'neutral'}`,
+    };
+    
+    const newState: TrajectoryState = {
+      ...trajectoryState,
+      shadow_nudge: nudge,
+      shadow_factors: shadowFactors,
+      trajectory_log: [...trajectoryState.trajectory_log, event],
+    };
+    
+    setTrajectoryState(newState);
+    saveState(newState);
+  }, [trajectoryState, shadowFactors, currentSeason, seasonQualities, saveState]);
+
+  // Reset shadow nudge
+  const resetShadowNudge = useCallback(() => {
+    const newState: TrajectoryState = {
+      ...trajectoryState,
+      shadow_nudge: null,
+    };
+    setTrajectoryState(newState);
+    saveState(newState);
+  }, [trajectoryState, saveState]);
 
   // Set higher self prophecy
   const setProphecy = useCallback((
@@ -191,7 +288,6 @@ export function useQuadrantDynamics(
       prophecy_set_at: new Date().toISOString(),
     };
     
-    // Add prophecy event to log
     const event: TrajectoryEvent = {
       id: crypto.randomUUID(),
       timestamp: new Date().toISOString(),
@@ -228,21 +324,20 @@ export function useQuadrantDynamics(
       ...trajectoryState,
       trajectory_log: [...trajectoryState.trajectory_log, event],
       last_shadow_position: shadowPosition,
+      shadow_factors: shadowFactors,
     };
     
     setTrajectoryState(newState);
     saveState(newState);
-  }, [trajectoryState, shadowPosition, currentSeason, seasonQualities, saveState]);
+  }, [trajectoryState, shadowPosition, currentSeason, seasonQualities, shadowFactors, saveState]);
 
   // Reset trajectory
   const resetTrajectory = useCallback(async () => {
     setTrajectoryState(defaultTrajectoryState);
     localStorage.removeItem(STORAGE_KEY);
     
-    // Delete from Supabase if authenticated
     if (userId) {
       try {
-        // Use type assertion since trajectory_states table is new
         await (supabase
           .from('trajectory_states' as any) as any)
           .delete()
@@ -259,15 +354,20 @@ export function useQuadrantDynamics(
     seasonQualities,
     shadowPosition,
     shadowQuadrant,
+    shadowFactors,
+    gaps,
     higherSelfPosition: trajectoryState.higher_self_position,
     higherSelfQuadrant: trajectoryState.higher_self_quadrant,
     prophecyReflection: trajectoryState.prophecy_reflection,
+    shadowNudge: trajectoryState.shadow_nudge,
     trajectoryLog: trajectoryState.trajectory_log,
     isLoading,
     isSyncing,
     
     // Actions
     setProphecy,
+    applyShadowNudge,
+    resetShadowNudge,
     logTrajectoryEvent,
     resetTrajectory,
   };

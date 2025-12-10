@@ -4,7 +4,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { formatDistanceToNow } from 'date-fns';
 import { getQuadrantFromPosition } from '@/hooks/useQuadrantDynamics';
-import { Play, Check, Sparkles, FileText, Target } from 'lucide-react';
+import { Play, Check, Sparkles, FileText, Target, Sliders } from 'lucide-react';
 
 interface TrajectoryLogProps {
   events: TrajectoryEvent[];
@@ -40,6 +40,11 @@ const EVENT_CONFIG: Record<TrajectoryEvent['event_type'], {
     icon: <Target className="w-3 h-3" />,
     label: 'Prophecy Set',
     color: 'bg-primary/10 text-primary',
+  },
+  shadow_nudge: {
+    icon: <Sliders className="w-3 h-3" />,
+    label: 'Shadow Nudged',
+    color: 'bg-orange-500/10 text-orange-600',
   },
 };
 

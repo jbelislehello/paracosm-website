@@ -999,6 +999,8 @@ export type Database = {
           last_shadow_position: Json | null
           prophecy_reflection: string | null
           prophecy_set_at: string | null
+          shadow_factors: Json | null
+          shadow_nudge: Json | null
           trajectory_log: Json | null
           updated_at: string
           user_id: string
@@ -1011,6 +1013,8 @@ export type Database = {
           last_shadow_position?: Json | null
           prophecy_reflection?: string | null
           prophecy_set_at?: string | null
+          shadow_factors?: Json | null
+          shadow_nudge?: Json | null
           trajectory_log?: Json | null
           updated_at?: string
           user_id: string
@@ -1023,6 +1027,8 @@ export type Database = {
           last_shadow_position?: Json | null
           prophecy_reflection?: string | null
           prophecy_set_at?: string | null
+          shadow_factors?: Json | null
+          shadow_nudge?: Json | null
           trajectory_log?: Json | null
           updated_at?: string
           user_id?: string
