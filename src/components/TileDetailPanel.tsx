@@ -2,13 +2,18 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Link2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { getTileStage, getStageById } from '@/types/journal-expansion';
 import { getPrinciplesByStage } from '@/data/femininePrinciples';
 import { useAgentTileConversation } from '@/hooks/useAgentTileConversation';
+import { useVoiceInput } from '@/hooks/useVoiceInput';
 import { TILE_CONTENTS } from '@/data/tileContents';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { SketchPad } from '@/components/calm-magic/tools/SketchPad';
+import { DiagramBuilder } from '@/components/calm-magic/tools/DiagramBuilder';
+import { toast } from 'sonner';
 
 const rowLabels = [
   { letter: 'M', name: 'Mindsets', stage: 'AGENDAS' },
@@ -57,6 +62,7 @@ const TileDetailPanel = ({
 }: TileDetailPanelProps) => {
   const [userInput, setUserInput] = useState('');
   const [conversationSaved, setConversationSaved] = useState(false);
+  const [activeTab, setActiveTab] = useState('chat');
 
   const {
     messages,
@@ -66,6 +72,24 @@ const TileDetailPanel = ({
     saveConversationAsPolen,
     fetchInitialQuestion
   } = useAgentTileConversation(selectedTile, currentSeason, isAuthenticated);
+
+  const {
+    isListening,
+    transcript,
+    interimTranscript,
+    startListening,
+    stopListening,
+    resetTranscript,
+    browserSupported: voiceSupported,
+  } = useVoiceInput();
+
+  // Sync voice transcript to input
+  useEffect(() => {
+    if (transcript) {
+      setUserInput(prev => prev + transcript);
+      resetTranscript();
+    }
+  }, [transcript, resetTranscript]);
 
   // Edge detection for navigation
   const canGlitch = selectedTile.row < 7;
@@ -117,10 +141,30 @@ const TileDetailPanel = ({
     }
   };
 
+  const handleVoiceToggle = () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      startListening();
+    }
+  };
+
+  const handleSketchSave = async (dataUrl: string) => {
+    await onSavePolen(`[Sketch]\n${dataUrl}`, tileId);
+    toast.success('Sketch saved as Polen');
+  };
+
+  const handleDiagramSave = async (svg: string, source: string, type: string) => {
+    const content = `[Diagram: ${type}]\n\nSource:\n\`\`\`mermaid\n${source}\n\`\`\``;
+    await onSavePolen(content, tileId);
+    toast.success('Diagram saved as Polen');
+  };
+
   // Reset saved state when tile changes
   useEffect(() => {
     setConversationSaved(false);
     setUserInput('');
+    setActiveTab('chat');
   }, [selectedTile.row, selectedTile.col]);
 
   return (
@@ -196,118 +240,167 @@ const TileDetailPanel = ({
         </p>
       </div>
 
-      {/* Conversation Area */}
-      <ScrollArea className="flex-1 px-4 py-3">
-        <div className="space-y-3">
-          {/* Season Context */}
-          <div className="text-xs text-muted-foreground text-center py-2 border-b border-dashed border-border/50">
-            <span className="font-medium">{currentSeason}</span> season exploration
-          </div>
+      {/* Add-ons Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
+        <div className="px-2 pt-2 shrink-0">
+          <TabsList className="w-full grid grid-cols-3 h-8">
+            <TabsTrigger value="chat" className="text-xs gap-1">
+              <MessageCircle className="w-3 h-3" />
+              Chat
+            </TabsTrigger>
+            <TabsTrigger value="sketch" className="text-xs gap-1">
+              <Pencil className="w-3 h-3" />
+              Sketch
+            </TabsTrigger>
+            <TabsTrigger value="diagram" className="text-xs gap-1">
+              <GitBranch className="w-3 h-3" />
+              Diagram
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
-          {/* Messages */}
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div
-                className={`max-w-[85%] rounded-lg px-3 py-2 ${
-                  message.role === 'user'
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted border border-border/50'
-                }`}
-              >
-                {message.role === 'assistant' && (
-                  <div className="flex items-center gap-1 mb-1 text-[10px] text-muted-foreground">
-                    <MessageCircle className="w-3 h-3" />
-                    Guide
+        {/* Chat Tab */}
+        <TabsContent value="chat" className="flex-1 flex flex-col min-h-0 m-0 mt-0">
+          <ScrollArea className="flex-1 px-4 py-3">
+            <div className="space-y-3">
+              {/* Season Context */}
+              <div className="text-xs text-muted-foreground text-center py-2 border-b border-dashed border-border/50">
+                <span className="font-medium">{currentSeason}</span> season exploration
+              </div>
+
+              {/* Messages */}
+              {messages.map((message, index) => (
+                <div
+                  key={index}
+                  className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`max-w-[85%] rounded-lg px-3 py-2 ${
+                      message.role === 'user'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted border border-border/50'
+                    }`}
+                  >
+                    {message.role === 'assistant' && (
+                      <div className="flex items-center gap-1 mb-1 text-[10px] text-muted-foreground">
+                        <MessageCircle className="w-3 h-3" />
+                        Guide
+                      </div>
+                    )}
+                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
                   </div>
+                </div>
+              ))}
+
+              {/* Loading indicator */}
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-muted rounded-lg px-3 py-2 border border-border/50">
+                    <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                  </div>
+                </div>
+              )}
+
+              {/* Error message */}
+              {error && (
+                <div className="text-xs text-destructive text-center py-2">
+                  {error}
+                  <Button variant="ghost" size="sm" onClick={fetchInitialQuestion} className="ml-2">
+                    <RefreshCw className="w-3 h-3 mr-1" />
+                    Retry
+                  </Button>
+                </div>
+              )}
+            </div>
+          </ScrollArea>
+
+          {/* Input Area */}
+          <div className="p-3 border-t border-border/50 bg-background/80 space-y-2">
+            <div className="flex gap-2">
+              {/* Voice button */}
+              {voiceSupported && (
+                <Button
+                  variant={isListening ? "default" : "ghost"}
+                  size="icon"
+                  onClick={handleVoiceToggle}
+                  disabled={!isAuthenticated}
+                  className={`shrink-0 h-[60px] w-10 ${isListening ? 'animate-pulse bg-destructive' : ''}`}
+                >
+                  {isListening ? (
+                    <MicOff className="w-4 h-4" />
+                  ) : (
+                    <Mic className="w-4 h-4" />
+                  )}
+                </Button>
+              )}
+              
+              <Textarea
+                value={userInput + (interimTranscript ? ` ${interimTranscript}` : '')}
+                onChange={(e) => setUserInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={isListening ? "Listening..." : "Share your thoughts..."}
+                className={`min-h-[60px] resize-none text-sm ${isListening ? 'border-destructive' : ''}`}
+                disabled={isLoading || !isAuthenticated}
+              />
+              <Button
+                size="icon"
+                onClick={handleSendResponse}
+                disabled={!userInput.trim() || isLoading || !isAuthenticated}
+                className="shrink-0 h-[60px] w-10"
+              >
+                {isLoading ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Send className="w-4 h-4" />
                 )}
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-              </div>
-            </div>
-          ))}
-
-          {/* Loading indicator */}
-          {isLoading && (
-            <div className="flex justify-start">
-              <div className="bg-muted rounded-lg px-3 py-2 border border-border/50">
-                <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
-              </div>
-            </div>
-          )}
-
-          {/* Error message */}
-          {error && (
-            <div className="text-xs text-destructive text-center py-2">
-              {error}
-              <Button variant="ghost" size="sm" onClick={fetchInitialQuestion} className="ml-2">
-                <RefreshCw className="w-3 h-3 mr-1" />
-                Retry
               </Button>
             </div>
-          )}
-        </div>
-      </ScrollArea>
 
-      {/* Input Area */}
-      <div className="p-3 border-t border-border/50 bg-background/80 space-y-2">
-        <div className="flex gap-2">
-          <Textarea
-            value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder="Share your thoughts..."
-            className="min-h-[60px] resize-none text-sm"
-            disabled={isLoading || !isAuthenticated}
-          />
-          <Button
-            size="icon"
-            onClick={handleSendResponse}
-            disabled={!userInput.trim() || isLoading || !isAuthenticated}
-            className="shrink-0 h-[60px] w-10"
-          >
-            {isLoading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Send className="w-4 h-4" />
+            {/* Auth warning */}
+            {!isAuthenticated && (
+              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <LogIn className="w-3 h-3" />
+                Log in to engage with tiles
+              </p>
             )}
-          </Button>
-        </div>
 
-        {/* Auth warning */}
-        {!isAuthenticated && (
-          <p className="text-xs text-muted-foreground flex items-center gap-1">
-            <LogIn className="w-3 h-3" />
-            Log in to engage with tiles
-          </p>
-        )}
-
-        {/* Save conversation button */}
-        {messages.length >= 2 && isAuthenticated && (
-          <Button
-            variant={conversationSaved ? "secondary" : "outline"}
-            size="sm"
-            onClick={handleSaveConversation}
-            disabled={saving || conversationSaved}
-            className="w-full"
-          >
-            {saving ? (
-              <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-            ) : conversationSaved ? (
-              <>✓ Saved as Polen</>
-            ) : (
-              <>
-                <Save className="w-3 h-3 mr-1" />
-                Save conversation as Polen
-              </>
+            {/* Save conversation button */}
+            {messages.length >= 2 && isAuthenticated && (
+              <Button
+                variant={conversationSaved ? "secondary" : "outline"}
+                size="sm"
+                onClick={handleSaveConversation}
+                disabled={saving || conversationSaved}
+                className="w-full"
+              >
+                {saving ? (
+                  <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+                ) : conversationSaved ? (
+                  <>✓ Saved as Polen</>
+                ) : (
+                  <>
+                    <Save className="w-3 h-3 mr-1" />
+                    Save conversation as Polen
+                  </>
+                )}
+              </Button>
             )}
-          </Button>
-        )}
-      </div>
+          </div>
+        </TabsContent>
+
+        {/* Sketch Tab */}
+        <TabsContent value="sketch" className="flex-1 overflow-auto p-2 m-0">
+          <SketchPad onSave={handleSketchSave} />
+        </TabsContent>
+
+        {/* Diagram Tab */}
+        <TabsContent value="diagram" className="flex-1 overflow-auto p-2 m-0">
+          <DiagramBuilder onSave={handleDiagramSave} />
+        </TabsContent>
+      </Tabs>
 
       {/* Navigation Buttons */}
-      <div className="p-3 border-t border-border/50 bg-muted/30">
+      <div className="p-3 border-t border-border/50 bg-muted/30 shrink-0">
         <div className="flex flex-col items-center gap-2">
           <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Navigate</span>
           
