@@ -1,12 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 
-type Season = 'POLLEN' | 'POEM' | 'TOTEM' | 'ANTHEM';
+type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 
 interface SeasonPersistenceState {
   currentSeason: Season;
   seasonProgress: Record<Season, Set<string>>;
   completedSeasons: Season[];
-  freeTilesUnlocked: boolean;
   prdId: string | null;
   journeyStarted: boolean;
   journeyPath: Array<{ row: number; col: number }>;
@@ -16,7 +15,6 @@ interface StoredState {
   currentSeason: Season;
   seasonProgress: Record<Season, string[]>;
   completedSeasons: Season[];
-  freeTilesUnlocked: boolean;
   prdId: string | null;
   journeyStarted: boolean;
   journeyPath: Array<{ row: number; col: number }>;
@@ -26,15 +24,15 @@ interface StoredState {
 const STORAGE_KEY = 'calmMagicBoardProgress';
 
 const defaultState: SeasonPersistenceState = {
-  currentSeason: 'POLLEN',
+  currentSeason: 'POLLENS',
   seasonProgress: {
-    POLLEN: new Set(),
-    POEM: new Set(),
-    TOTEM: new Set(),
-    ANTHEM: new Set(),
+    POLLENS: new Set(),
+    NOEMS: new Set(),
+    POEMS: new Set(),
+    TOTEMS: new Set(),
+    ANTHEMS: new Set(),
   },
   completedSeasons: [],
-  freeTilesUnlocked: false,
   prdId: null,
   journeyStarted: false,
   journeyPath: [],
@@ -53,17 +51,17 @@ export const useSeasonPersistence = () => {
         
         // Convert arrays back to Sets
         const seasonProgress: Record<Season, Set<string>> = {
-          POLLEN: new Set(parsed.seasonProgress?.POLLEN || []),
-          POEM: new Set(parsed.seasonProgress?.POEM || []),
-          TOTEM: new Set(parsed.seasonProgress?.TOTEM || []),
-          ANTHEM: new Set(parsed.seasonProgress?.ANTHEM || []),
+          POLLENS: new Set(parsed.seasonProgress?.POLLENS || []),
+          NOEMS: new Set(parsed.seasonProgress?.NOEMS || []),
+          POEMS: new Set(parsed.seasonProgress?.POEMS || []),
+          TOTEMS: new Set(parsed.seasonProgress?.TOTEMS || []),
+          ANTHEMS: new Set(parsed.seasonProgress?.ANTHEMS || []),
         };
         
         setState({
-          currentSeason: parsed.currentSeason || 'POLLEN',
+          currentSeason: parsed.currentSeason || 'POLLENS',
           seasonProgress,
           completedSeasons: parsed.completedSeasons || [],
-          freeTilesUnlocked: parsed.freeTilesUnlocked || false,
           prdId: parsed.prdId || null,
           journeyStarted: parsed.journeyStarted || false,
           journeyPath: parsed.journeyPath || [],
@@ -82,13 +80,13 @@ export const useSeasonPersistence = () => {
       const toStore: StoredState = {
         currentSeason: newState.currentSeason,
         seasonProgress: {
-          POLLEN: Array.from(newState.seasonProgress.POLLEN),
-          POEM: Array.from(newState.seasonProgress.POEM),
-          TOTEM: Array.from(newState.seasonProgress.TOTEM),
-          ANTHEM: Array.from(newState.seasonProgress.ANTHEM),
+          POLLENS: Array.from(newState.seasonProgress.POLLENS),
+          NOEMS: Array.from(newState.seasonProgress.NOEMS),
+          POEMS: Array.from(newState.seasonProgress.POEMS),
+          TOTEMS: Array.from(newState.seasonProgress.TOTEMS),
+          ANTHEMS: Array.from(newState.seasonProgress.ANTHEMS),
         },
         completedSeasons: newState.completedSeasons,
-        freeTilesUnlocked: newState.freeTilesUnlocked,
         prdId: newState.prdId,
         journeyStarted: newState.journeyStarted,
         journeyPath: newState.journeyPath,
