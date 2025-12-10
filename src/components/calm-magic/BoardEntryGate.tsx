@@ -75,11 +75,11 @@ const BoardEntryGate: React.FC<BoardEntryGateProps> = ({
     }
   };
 
-  const handleStartJourney = () => {
+  const handleStartJourney = async () => {
     if (!selectedMode || !selectedGarden || !projectName.trim()) return;
 
-    // Create the project using the hook
-    const newProject = createProject(projectName.trim(), selectedGarden, selectedMode);
+    // Create the project using the hook (now async)
+    const newProject = await createProject(projectName.trim(), selectedGarden, selectedMode);
 
     let url = '/calm-magic-board';
     const params = new URLSearchParams();

@@ -692,6 +692,36 @@ export type Database = {
         }
         Relationships: []
       }
+      projects: {
+        Row: {
+          created_at: string
+          garden: string
+          id: string
+          mode: string
+          project_name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          garden: string
+          id?: string
+          mode: string
+          project_name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          garden?: string
+          id?: string
+          mode?: string
+          project_name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       revenue_opportunities: {
         Row: {
           amount_max: number | null
