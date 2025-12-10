@@ -1,5 +1,8 @@
 project_id = "qeqfbywgcokyxvubjlhy"
 
+[functions.calm-magic-assistant]
+verify_jwt = false
+
 [functions.compass-prompt]
 verify_jwt = false
 

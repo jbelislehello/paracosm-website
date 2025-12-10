@@ -20,14 +20,44 @@ serve(async (req) => {
   }
 
   try {
-    const { layer, polenEntries, board, existingContent } = await req.json() as {
+    const { layer, polenEntries, board, existingContent, glitchData, driftData } = await req.json() as {
       layer: PrdLayer;
       polenEntries: PolenEntry[];
       board: string;
       existingContent: Record<string, string>;
+      glitchData?: any; // Structured glitch output from assistant
+      driftData?: any;  // Structured drift output from assistant
     };
 
     console.log(`Generating Calm Magic PRD content for layer: ${layer}, ${polenEntries.length} polen entries`);
+    
+    // If we have structured data from the assistant, use it directly
+    if (layer === 'POLLEN' && glitchData?.pollen) {
+      const pollen = glitchData.pollen;
+      const content = {
+        pollen_observations: pollen.glitches.map((g: any) => `• **${g.title}**: ${g.description}`).join('\n'),
+        pollen_constraints: pollen.constraints?.join('\n') || '',
+        pollen_emotional_climate: `**Stakes:** ${pollen.stakes || ''}\n\n**Anchor Glitches:** ${pollen.anchor_glitches?.join(', ') || ''}`
+      };
+      return new Response(JSON.stringify({ content }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    
+    if (layer === 'POEM' && driftData?.poem) {
+      const poem = driftData.poem;
+      const totem = driftData.totem;
+      const content = {
+        poem_user_journeys: poem.futures?.map((f: any) => 
+          `**${f.title}** (${f.persona})\n\n*Before:* ${f.scenario.before}\n*During:* ${f.scenario.during}\n*After:* ${f.scenario.after}`
+        ).join('\n\n---\n\n') || '',
+        poem_hypotheses: poem.primary_narrative?.why_it_matters || '',
+        poem_thematic_anchors: totem?.candidate_forms?.join('\n• ') || ''
+      };
+      return new Response(JSON.stringify({ content }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     if (!openAIApiKey) {
