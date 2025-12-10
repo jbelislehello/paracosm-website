@@ -438,7 +438,8 @@ export const useTileMatrixPersistence = (board: Board = 'LOVE') => {
     content: string, 
     tileId: number | null, 
     fragmentType: 'text' | 'quote' | 'image' | 'voice' | 'screenshot' | 'link' = 'text',
-    tags: string[] = []
+    tags: string[] = [],
+    seasonContext?: 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS'
   ) => {
     if (!user) {
       toast({
@@ -451,6 +452,12 @@ export const useTileMatrixPersistence = (board: Board = 'LOVE') => {
 
     try {
       setSaving(true);
+      
+      // Auto-detect season from tags if not provided
+      const detectedSeason = seasonContext || tags.find(t => 
+        ['POLLENS', 'NOEMS', 'POEMS', 'TOTEMS', 'ANTHEMS'].includes(t)
+      ) as typeof seasonContext;
+      
       const { data, error } = await supabase
         .from('polen_entries')
         .insert({
@@ -459,7 +466,8 @@ export const useTileMatrixPersistence = (board: Board = 'LOVE') => {
           tile_id: tileId,
           content,
           fragment_type: fragmentType,
-          tags
+          tags,
+          season_context: detectedSeason || null
         })
         .select()
         .single();
@@ -472,16 +480,16 @@ export const useTileMatrixPersistence = (board: Board = 'LOVE') => {
       }, ...prev]);
       
       toast({
-        title: 'Polen saved',
+        title: 'Fragment saved',
         description: 'Your fragment has been captured.'
       });
       
       return data;
     } catch (error) {
-      console.error('Error saving polen:', error);
+      console.error('Error saving fragment:', error);
       toast({
         title: 'Error saving',
-        description: 'Could not save your polen entry.',
+        description: 'Could not save your fragment.',
         variant: 'destructive'
       });
       return null;
