@@ -100,7 +100,6 @@ export function useQuadrantDynamics(
   const [isLoading, setIsLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
-  const [gaps, setGaps] = useState<GapInfo[]>([]);
 
   // Get user ID on mount
   useEffect(() => {
@@ -205,18 +204,19 @@ export function useQuadrantDynamics(
     };
   }, [seasonProgress]);
 
-  // Calculate shadow factors from multiple sources
-  const shadowFactors = useMemo((): ShadowFactors => {
+  // Calculate shadow factors and gaps from multiple sources
+  const { shadowFactors, gaps } = useMemo((): { shadowFactors: ShadowFactors; gaps: GapInfo[] } => {
     const currentSeasonTiles = seasonProgress[currentSeason] || new Set<string>();
     const analysis = analyzeCoherence(currentSeasonTiles, polenCounts, journeyPath);
     
-    setGaps(analysis.gaps);
-    
     return {
-      completeness: currentSeasonTiles.size / 64,
-      coherence: analysis.score,
-      depth: analysis.depth,
-      flow: analysis.flow,
+      shadowFactors: {
+        completeness: currentSeasonTiles.size / 64,
+        coherence: analysis.score,
+        depth: analysis.depth,
+        flow: analysis.flow,
+      },
+      gaps: analysis.gaps,
     };
   }, [seasonProgress, currentSeason, polenCounts, journeyPath]);
 
