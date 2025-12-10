@@ -4,13 +4,15 @@ import { useNavigate } from 'react-router-dom';
 import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2 } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot } from 'lucide-react';
 import { toast } from 'sonner';
 import MinimalistTileMatrix from '@/components/MinimalistTileMatrix';
 import TileDetailPanel from '@/components/TileDetailPanel';
 import PolenBrowserPanel from '@/components/PolenBrowserPanel';
 import { useTileMatrixPersistence } from '@/hooks/useTileMatrixPersistence';
 import { useSeasonPersistence } from '@/hooks/useSeasonPersistence';
+import { useQuadrantDynamics } from '@/hooks/useQuadrantDynamics';
 import { CycleNumber } from '@/types/journal-expansion';
 import SeasonProgressBar from '@/components/prd-generator/SeasonProgressBar';
 import SeasonCompletionModal from '@/components/prd-generator/SeasonCompletionModal';
@@ -18,7 +20,8 @@ import AssistantChatPanel from '@/components/calm-magic/AssistantChatPanel';
 import AssistantChatButton from '@/components/calm-magic/AssistantChatButton';
 import { JourneySummary } from '@/components/calm-magic/JourneySummary';
 import { InsightConnectionsGraph } from '@/components/calm-magic/InsightConnectionsGraph';
-
+import { QuadrantDynamicsPanel } from '@/components/calm-magic/QuadrantDynamicsPanel';
+import { HigherSelfProphecyModal } from '@/components/calm-magic/HigherSelfProphecyModal';
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
 type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 type BoardType = 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
@@ -50,6 +53,8 @@ const SEASON_COLORS: Record<Season, string> = {
   ANTHEMS: 'from-emerald-500 to-green-500',
 };
 
+type ViewTab = 'matrix' | 'window-of-tolerance';
+
 const CalmMagicBoard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
@@ -60,6 +65,9 @@ const CalmMagicBoard = () => {
   const [currentCycleNumber, setCurrentCycleNumber] = useState<CycleNumber>(1);
   const [showPolenBrowser, setShowPolenBrowser] = useState(false);
   const [currentZone, setCurrentZone] = useState<'safe' | 'stretch' | 'edge' | 'unexplored'>('safe');
+  
+  // Sub-navigation state
+  const [activeView, setActiveView] = useState<ViewTab>('matrix');
 
   // New panel states
   const [showJourneySummary, setShowJourneySummary] = useState(false);
@@ -89,6 +97,20 @@ const CalmMagicBoard = () => {
   // Convert journeyPath to Set for matrix visualization (within current season)
   // Fallback to empty Set if season data not yet loaded
   const visitedTiles = seasonProgress[currentSeason] || new Set<string>();
+
+  // Quadrant dynamics hook
+  const {
+    seasonQualities,
+    shadowPosition,
+    shadowQuadrant,
+    higherSelfPosition,
+    higherSelfQuadrant,
+    prophecyReflection,
+    trajectoryLog,
+    setProphecy,
+    logTrajectoryEvent,
+    resetTrajectory,
+  } = useQuadrantDynamics(seasonProgress, currentSeason);
 
   const {
     isAuthenticated,
@@ -176,6 +198,7 @@ const CalmMagicBoard = () => {
       }
     });
     setSelectedTile({ row: 0, col: 0 }); // Mindsets × Chances
+    logTrajectoryEvent('season_start', 1, `Started ${currentSeason} season`);
     toast.success(`${currentSeason} season started at Mindsets × Chances`);
   };
 
@@ -262,6 +285,9 @@ const CalmMagicBoard = () => {
   const handleSeasonContinue = () => {
     const newCompletedSeasons = [...completedSeasons, currentSeason];
     
+    // Log season end event
+    logTrajectoryEvent('season_end', undefined, `Completed ${currentSeason} season`);
+    
     // Advance to next season
     const currentIndex = SEASON_ORDER.indexOf(currentSeason);
     if (currentIndex < SEASON_ORDER.length - 1) {
@@ -338,6 +364,8 @@ const CalmMagicBoard = () => {
           .eq('id', prdId);
       }
 
+      // Log PRD generation event
+      logTrajectoryEvent('prd_generated', undefined, `Generated ${currentSeason} PRD layer`);
       toast.success(`${currentSeason} layer generated!`);
     } catch (error) {
       console.error('Error generating PRD layer:', error);
@@ -437,11 +465,30 @@ const CalmMagicBoard = () => {
         </div>
       </header>
 
+      {/* Sub Navigation */}
+      <div className="shrink-0 px-6 py-2 border-b border-border/30 bg-background/80">
+        <Tabs value={activeView} onValueChange={(v) => setActiveView(v as ViewTab)}>
+          <TabsList className="h-8">
+            <TabsTrigger value="matrix" className="text-xs gap-1.5 px-3">
+              <Grid3X3 className="w-3.5 h-3.5" />
+              Matrix
+            </TabsTrigger>
+            <TabsTrigger value="window-of-tolerance" className="text-xs gap-1.5 px-3">
+              <CircleDot className="w-3.5 h-3.5" />
+              Window of Tolerance
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
       {/* Main Content: Split Layout */}
       <div className="flex-1 min-h-0 flex">
-        {/* Left Panel: Tile Matrix - Always visible, scrollable */}
-        <div className={`${selectedTile || showPolenBrowser ? 'flex-1' : 'w-full'} p-8 overflow-auto transition-all duration-300 flex items-center justify-center`}>
-          <div className="pl-32">
+        {/* Matrix View */}
+        {activeView === 'matrix' && (
+          <>
+            {/* Left Panel: Tile Matrix - Always visible, scrollable */}
+            <div className={`${selectedTile || showPolenBrowser ? 'flex-1' : 'w-full'} p-8 overflow-auto transition-all duration-300 flex items-center justify-center`}>
+              <div className="pl-32">
             <MinimalistTileMatrix 
               board={SEASON_TO_BOARD[currentSeason]}
               selectedTile={selectedTile}
@@ -469,20 +516,39 @@ const CalmMagicBoard = () => {
           </div>
         )}
 
-        {/* Right Panel: Tile Detail - Slides in when tile selected */}
-        {selectedTile && (
-          <div className="w-[400px] max-w-[40vw] shrink-0 border-l border-border/50 animate-in slide-in-from-right duration-300">
-            <TileDetailPanel
-              selectedTile={selectedTile}
-              activeCompass={activeCompass}
-              board={SEASON_TO_BOARD[currentSeason]}
-              isAuthenticated={isAuthenticated}
-              saving={saving}
-              onClose={() => setSelectedTile(null)}
-              onSavePolen={handleSavePolen}
-              onNavigate={handleNavigate}
-              onCompassChange={handleCompassChange}
-              currentSeason={currentSeason}
+            {/* Right Panel: Tile Detail - Slides in when tile selected */}
+            {selectedTile && (
+              <div className="w-[400px] max-w-[40vw] shrink-0 border-l border-border/50 animate-in slide-in-from-right duration-300">
+                <TileDetailPanel
+                  selectedTile={selectedTile}
+                  activeCompass={activeCompass}
+                  board={SEASON_TO_BOARD[currentSeason]}
+                  isAuthenticated={isAuthenticated}
+                  saving={saving}
+                  onClose={() => setSelectedTile(null)}
+                  onSavePolen={handleSavePolen}
+                  onNavigate={handleNavigate}
+                  onCompassChange={handleCompassChange}
+                  currentSeason={currentSeason}
+                />
+              </div>
+            )}
+          </>
+        )}
+
+        {/* Window of Tolerance View */}
+        {activeView === 'window-of-tolerance' && (
+          <div className="flex-1 overflow-hidden">
+            <QuadrantDynamicsPanel
+              seasonQualities={seasonQualities}
+              shadowPosition={shadowPosition}
+              shadowQuadrant={shadowQuadrant}
+              higherSelfPosition={higherSelfPosition}
+              higherSelfQuadrant={higherSelfQuadrant}
+              prophecyReflection={prophecyReflection}
+              trajectoryLog={trajectoryLog}
+              onSetProphecy={setProphecy}
+              onResetTrajectory={resetTrajectory}
             />
           </div>
         )}
