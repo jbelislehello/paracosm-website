@@ -23,18 +23,18 @@ export const SEASON_LABELS: Record<Season, string> = {
 
 export const SEASON_PRD_LAYER: Record<Season, string> = {
   POLLENS: 'POLLEN',
-  NOEMS: 'POEM',
-  POEMS: 'TOTEM',
-  TOTEMS: 'ANTHEM',
-  ANTHEMS: 'EXECUTION',
+  NOEMS: 'NOEM',
+  POEMS: 'POEM',
+  TOTEMS: 'TOTEM',
+  ANTHEMS: 'ANTHEM',
 };
 
 export const PRD_LAYER_FIELDS: Record<string, string[]> = {
   POLLEN: ['love_signals_summary', 'love_decision_to_exist'],
-  POEM: ['magic_storyworld', 'magic_prd_outline', 'magic_hypotheses', 'magic_patterns'],
-  TOTEM: ['calm_requirements', 'calm_risks_and_limits'],
-  ANTHEM: ['open_ontology_and_graph', 'open_real_workflow', 'open_adjustment_plan'],
-  EXECUTION: ['free_first_poem_description', 'free_totem_anthem', 'free_success_criteria', 'free_next_cycle_hooks'],
+  NOEM: ['magic_storyworld', 'magic_prd_outline', 'magic_hypotheses', 'magic_patterns'],
+  POEM: ['calm_requirements', 'calm_risks_and_limits'],
+  TOTEM: ['open_ontology_and_graph', 'open_real_workflow', 'open_adjustment_plan'],
+  ANTHEM: ['free_first_poem_description', 'free_totem_anthem', 'free_success_criteria', 'free_next_cycle_hooks'],
 };
 
 /**

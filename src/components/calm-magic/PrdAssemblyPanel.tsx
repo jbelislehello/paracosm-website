@@ -19,8 +19,11 @@ import {
   Sparkles,
   ExternalLink,
   Loader2,
-  Check
+  Check,
+  FileDown,
+  Printer
 } from 'lucide-react';
+import { downloadMarkdown, exportPrdAsPdf } from '@/utils/prdExport';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -361,11 +364,35 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
             <span className="text-muted-foreground">
               {completedSeasons.length}/5 layers complete
             </span>
-            {completedSeasons.length >= 5 && (
-              <Badge className="bg-green-500/20 text-green-500 border-green-500/30">
-                PRD Ready for Export
-              </Badge>
-            )}
+            <div className="flex items-center gap-2">
+              {completedSeasons.length >= 5 && prdData && (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => downloadMarkdown(prdData as any)}
+                    className="text-xs"
+                  >
+                    <FileDown className="h-3.5 w-3.5 mr-1" />
+                    Markdown
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => exportPrdAsPdf(prdData as any)}
+                    className="text-xs"
+                  >
+                    <Printer className="h-3.5 w-3.5 mr-1" />
+                    PDF
+                  </Button>
+                </>
+              )}
+              {completedSeasons.length >= 5 && (
+                <Badge className="bg-green-500/20 text-green-500 border-green-500/30">
+                  Ready
+                </Badge>
+              )}
+            </div>
           </div>
         </div>
       </div>
