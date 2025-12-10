@@ -574,11 +574,6 @@ const CalmMagicBoard = () => {
             <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent whitespace-nowrap">
               Calm Magic Board
             </h1>
-            {mode && (
-              <Badge variant="outline" className="text-xs capitalize">
-                {mode}
-              </Badge>
-            )}
           </div>
           
           {/* Season Navigation - Center */}

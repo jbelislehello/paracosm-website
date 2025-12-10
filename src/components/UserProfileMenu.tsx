@@ -11,13 +11,20 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { 
   LogIn, 
   LogOut, 
   CreditCard, 
   User as UserIcon,
   Sparkles,
-  ChevronDown
+  ChevronDown,
+  Cloud
 } from 'lucide-react';
 import { useUserSession } from '@/hooks/useUserSession';
 import { ProfileEditModal } from '@/components/ProfileEditModal';
@@ -52,17 +59,26 @@ const UserProfileMenu: React.FC = () => {
     );
   }
 
-  // Not logged in - show Sign In button
+  // Not logged in - show enhanced Sign In button
   if (!user) {
     return (
-      <Button
-        variant="outline"
-        onClick={() => navigate('/auth')}
-        className="gap-2"
-      >
-        <LogIn className="w-4 h-4" />
-        Sign In
-      </Button>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="outline"
+              onClick={() => navigate('/auth')}
+              className="gap-2 border-primary/30 hover:border-primary/50 hover:bg-primary/5"
+            >
+              <Cloud className="w-4 h-4 text-primary" />
+              <span className="hidden sm:inline">Sign In</span>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Sign in to save across devices</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     );
   }
 

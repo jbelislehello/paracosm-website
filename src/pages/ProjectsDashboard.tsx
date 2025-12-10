@@ -38,7 +38,8 @@ import {
   Trash2, 
   Pencil,
   FolderOpen,
-  Sparkles
+  Sparkles,
+  Cloud
 } from 'lucide-react';
 import { useProjectContext, Project } from '@/hooks/useProjectContext';
 import { useUserSession } from '@/hooks/useUserSession';
@@ -46,6 +47,7 @@ import { getGardenByType, gardens } from '@/data/gardens';
 import { GardenType } from '@/types/journal';
 import BoardEntryGate from '@/components/calm-magic/BoardEntryGate';
 import UserProfileMenu from '@/components/UserProfileMenu';
+import SignupPromptModal from '@/components/SignupPromptModal';
 
 const ProjectsDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -65,6 +67,11 @@ const ProjectsDashboard: React.FC = () => {
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
   const [editingProject, setEditingProject] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
+  const [showSignupPrompt, setShowSignupPrompt] = useState(false);
+
+  // Check if we should show guest banner
+  const isGuest = !user;
+  const hasProjects = projects.length > 0;
 
   // Filter projects
   const filteredProjects = projects.filter((project) => {
@@ -342,11 +349,40 @@ const ProjectsDashboard: React.FC = () => {
         )}
       </div>
 
+      {/* Guest Mode Banner */}
+      {isGuest && hasProjects && (
+        <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-primary/10 to-purple-500/10 border-t border-primary/20 backdrop-blur-sm">
+          <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Cloud className="w-5 h-5 text-primary" />
+              <span className="text-sm">
+                <strong>Guest Mode</strong> — Your projects are saved locally.
+              </span>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowSignupPrompt(true)}
+              className="border-primary/30 hover:border-primary/50"
+            >
+              Sign in to sync
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* Create Project Modal */}
       <BoardEntryGate
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
         sourceContext="direct"
+      />
+
+      {/* Signup Prompt Modal */}
+      <SignupPromptModal
+        open={showSignupPrompt}
+        onOpenChange={setShowSignupPrompt}
+        context="save-progress"
       />
 
       {/* Delete Confirmation Dialog */}
