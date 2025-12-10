@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   X, 
   FileText, 
@@ -21,7 +22,9 @@ import {
   Loader2,
   Check,
   FileDown,
-  Printer
+  Printer,
+  Layers,
+  Eye
 } from 'lucide-react';
 import { downloadMarkdown, exportPrdAsPdf } from '@/utils/prdExport';
 import { toast } from 'sonner';
@@ -34,6 +37,8 @@ import {
   PRD_LAYER_FIELDS,
   getLayerReadiness 
 } from '@/utils/prdAccessLevel';
+import { PrdEducationPanel } from './PrdEducationPanel';
+import { PrdDimensionalView } from './PrdDimensionalView';
 
 interface PrdAssemblyPanelProps {
   isOpen: boolean;
@@ -85,6 +90,7 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [expandedLayers, setExpandedLayers] = useState<Set<Season>>(new Set([currentSeason]));
   const [generatingLayer, setGeneratingLayer] = useState<Season | null>(null);
+  const [activeTab, setActiveTab] = useState<'layers' | 'dimensions'>('layers');
 
   useEffect(() => {
     if (isOpen) {
@@ -128,7 +134,6 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
 
       if (error) throw error;
 
-      // Count by season
       const counts: Record<Season, number> = {
         POLLENS: 0,
         NOEMS: 0,
@@ -155,7 +160,7 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
     setGeneratingLayer(season);
     try {
       await onGenerateLayer(season);
-      await fetchPrdData(); // Refresh PRD data after generation
+      await fetchPrdData();
       toast.success(`${SEASON_LABELS[season]} layer generated!`);
     } catch (err) {
       toast.error('Failed to generate layer');
@@ -213,9 +218,9 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
           <div className="flex items-center gap-3">
             <FileText className="h-5 w-5 text-primary" />
             <div>
-              <h2 className="text-lg font-semibold">PRD Assembly</h2>
+              <h2 className="text-lg font-semibold">Living PRD Assembly</h2>
               <p className="text-xs text-muted-foreground">
-                {prdId ? 'Editing PRD' : 'PRD will be created on first layer generation'}
+                The PRD is an organism, not a document
               </p>
             </div>
           </div>
@@ -238,123 +243,147 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
 
         {/* Content */}
         <ScrollArea className="flex-1 p-4">
+          {/* Educational Panel */}
+          <PrdEducationPanel />
+
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : (
-            <div className="space-y-3">
-              {SEASON_ORDER.map(season => {
-                const layer = getLayerData(season);
-                const isExpanded = expandedLayers.has(season);
-                const isCurrent = season === currentSeason;
-                const isGenerating = generatingLayer === season;
-                
-                return (
-                  <Card 
-                    key={season}
-                    className={`border ${isCurrent ? 'border-primary/50 ring-1 ring-primary/20' : 'border-border/50'}`}
-                  >
-                    <Collapsible open={isExpanded} onOpenChange={() => toggleLayer(season)}>
-                      <CollapsibleTrigger asChild>
-                        <CardHeader className="py-3 px-4 cursor-pointer hover:bg-muted/30 transition-colors">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div className={`p-1.5 rounded ${SEASON_COLORS[season]}`}>
-                                {SEASON_ICONS[season]}
-                              </div>
-                              <div>
-                                <CardTitle className="text-sm flex items-center gap-2">
-                                  {SEASON_LABELS[season]}
-                                  <Badge variant="outline" className="text-xs font-normal">
-                                    {layer.layerName}
-                                  </Badge>
-                                  {layer.isComplete && (
-                                    <Check className="h-3.5 w-3.5 text-green-500" />
-                                  )}
-                                </CardTitle>
-                                <div className="flex items-center gap-2 mt-1">
-                                  <Progress value={layer.readiness} className="h-1.5 w-20" />
-                                  <span className="text-xs text-muted-foreground">
-                                    {layer.readiness}%
-                                  </span>
+            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'layers' | 'dimensions')}>
+              <TabsList className="w-full justify-start mb-4">
+                <TabsTrigger value="layers" className="text-xs">
+                  <Layers className="h-3.5 w-3.5 mr-1" />
+                  5 Layers
+                </TabsTrigger>
+                <TabsTrigger value="dimensions" className="text-xs">
+                  <Eye className="h-3.5 w-3.5 mr-1" />
+                  Dimensions & Lenses
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="layers" className="space-y-3">
+                {SEASON_ORDER.map(season => {
+                  const layer = getLayerData(season);
+                  const isExpanded = expandedLayers.has(season);
+                  const isCurrent = season === currentSeason;
+                  const isGenerating = generatingLayer === season;
+                  
+                  return (
+                    <Card 
+                      key={season}
+                      className={`border ${isCurrent ? 'border-primary/50 ring-1 ring-primary/20' : 'border-border/50'}`}
+                    >
+                      <Collapsible open={isExpanded} onOpenChange={() => toggleLayer(season)}>
+                        <CollapsibleTrigger asChild>
+                          <CardHeader className="py-3 px-4 cursor-pointer hover:bg-muted/30 transition-colors">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className={`p-1.5 rounded ${SEASON_COLORS[season]}`}>
+                                  {SEASON_ICONS[season]}
+                                </div>
+                                <div>
+                                  <CardTitle className="text-sm flex items-center gap-2">
+                                    {SEASON_LABELS[season]}
+                                    <Badge variant="outline" className="text-xs font-normal">
+                                      {layer.layerName}
+                                    </Badge>
+                                    {layer.isComplete && (
+                                      <Check className="h-3.5 w-3.5 text-green-500" />
+                                    )}
+                                  </CardTitle>
+                                  <div className="flex items-center gap-2 mt-1">
+                                    <Progress value={layer.readiness} className="h-1.5 w-20" />
+                                    <span className="text-xs text-muted-foreground">
+                                      {layer.readiness}%
+                                    </span>
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                            {isExpanded ? (
-                              <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                            ) : (
-                              <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                            )}
-                          </div>
-                        </CardHeader>
-                      </CollapsibleTrigger>
-
-                      <CollapsibleContent>
-                        <CardContent className="pt-0 pb-4 px-4 space-y-3">
-                          {/* Stats */}
-                          <div className="flex gap-4 text-xs text-muted-foreground">
-                            <span>{seasonProgress[season]?.size || 0}/64 tiles</span>
-                            <span>{polenCounts[season] || 0} fragments</span>
-                          </div>
-
-                          {/* Content Preview */}
-                          {hasContent(layer) ? (
-                            <div className="space-y-2">
-                              {layer.fields.map(field => {
-                                const value = layer.content[field];
-                                if (!value) return null;
-                                
-                                return (
-                                  <div key={field} className="bg-muted/30 rounded p-2">
-                                    <p className="text-xs font-medium text-muted-foreground mb-1">
-                                      {field.replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase())}
-                                    </p>
-                                    <p className="text-sm line-clamp-3">{value}</p>
-                                  </div>
-                                );
-                              })}
-                            </div>
-                          ) : (
-                            <p className="text-sm text-muted-foreground italic">
-                              No content generated yet
-                            </p>
-                          )}
-
-                          {/* Actions */}
-                          <div className="flex gap-2 pt-2">
-                            <Button
-                              size="sm"
-                              variant={hasContent(layer) ? "outline" : "default"}
-                              onClick={() => handleGenerateLayer(season)}
-                              disabled={isGenerating || (seasonProgress[season]?.size || 0) < 8}
-                              className="text-xs"
-                            >
-                              {isGenerating ? (
-                                <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                              {isExpanded ? (
+                                <ChevronDown className="h-4 w-4 text-muted-foreground" />
                               ) : (
-                                <Sparkles className="h-3 w-3 mr-1" />
+                                <ChevronRight className="h-4 w-4 text-muted-foreground" />
                               )}
-                              {hasContent(layer) ? 'Regenerate' : 'Generate'} Layer
-                            </Button>
-                            {prdId && hasContent(layer) && (
+                            </div>
+                          </CardHeader>
+                        </CollapsibleTrigger>
+
+                        <CollapsibleContent>
+                          <CardContent className="pt-0 pb-4 px-4 space-y-3">
+                            {/* Stats */}
+                            <div className="flex gap-4 text-xs text-muted-foreground">
+                              <span>{seasonProgress[season]?.size || 0}/64 tiles</span>
+                              <span>{polenCounts[season] || 0} fragments</span>
+                            </div>
+
+                            {/* Content Preview */}
+                            {hasContent(layer) ? (
+                              <div className="space-y-2">
+                                {layer.fields.map(field => {
+                                  const value = layer.content[field];
+                                  if (!value) return null;
+                                  
+                                  return (
+                                    <div key={field} className="bg-muted/30 rounded p-2">
+                                      <p className="text-xs font-medium text-muted-foreground mb-1">
+                                        {field.replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase())}
+                                      </p>
+                                      <p className="text-sm line-clamp-3">{value}</p>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            ) : (
+                              <p className="text-sm text-muted-foreground italic">
+                                No content generated yet
+                              </p>
+                            )}
+
+                            {/* Actions */}
+                            <div className="flex gap-2 pt-2">
                               <Button
                                 size="sm"
-                                variant="ghost"
-                                onClick={() => navigate(`/prds/${prdId}`)}
+                                variant={hasContent(layer) ? "outline" : "default"}
+                                onClick={() => handleGenerateLayer(season)}
+                                disabled={isGenerating || (seasonProgress[season]?.size || 0) < 8}
                                 className="text-xs"
                               >
-                                Edit
+                                {isGenerating ? (
+                                  <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                                ) : (
+                                  <Sparkles className="h-3 w-3 mr-1" />
+                                )}
+                                {hasContent(layer) ? 'Regenerate' : 'Generate'} Layer
                               </Button>
-                            )}
-                          </div>
-                        </CardContent>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  </Card>
-                );
-              })}
-            </div>
+                              {prdId && hasContent(layer) && (
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => navigate(`/prds/${prdId}`)}
+                                  className="text-xs"
+                                >
+                                  Edit
+                                </Button>
+                              )}
+                            </div>
+                          </CardContent>
+                        </CollapsibleContent>
+                      </Collapsible>
+                    </Card>
+                  );
+                })}
+              </TabsContent>
+
+              <TabsContent value="dimensions">
+                <PrdDimensionalView
+                  seasonProgress={seasonProgress as Record<string, Set<string>>}
+                  completedSeasons={completedSeasons}
+                  prdData={prdData}
+                />
+              </TabsContent>
+            </Tabs>
           )}
         </ScrollArea>
 
