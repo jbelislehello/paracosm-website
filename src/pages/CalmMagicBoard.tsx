@@ -14,6 +14,8 @@ import { useSeasonPersistence } from '@/hooks/useSeasonPersistence';
 import { CycleNumber } from '@/types/journal-expansion';
 import SeasonProgressBar from '@/components/prd-generator/SeasonProgressBar';
 import SeasonCompletionModal from '@/components/prd-generator/SeasonCompletionModal';
+import AssistantChatPanel from '@/components/calm-magic/AssistantChatPanel';
+import AssistantChatButton from '@/components/calm-magic/AssistantChatButton';
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
 type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
@@ -73,6 +75,10 @@ const CalmMagicBoard = () => {
   // Season completion modal state
   const [showSeasonModal, setShowSeasonModal] = useState(false);
   const [isGeneratingPrd, setIsGeneratingPrd] = useState(false);
+  
+  // Assistant chat state
+  const [showAssistantChat, setShowAssistantChat] = useState(false);
+  const [assistantMode, setAssistantMode] = useState<'glitch' | 'drift' | 'idle'>('idle');
 
   // Convert journeyPath to Set for matrix visualization (within current season)
   // Fallback to empty Set if season data not yet loaded
@@ -230,9 +236,15 @@ const CalmMagicBoard = () => {
     }
   };
 
-  const handleSavePolen = async (content: string, tileId: number) => {
-    await savePolenEntry(content, tileId, 'text', [activeCompass || 'general', currentSeason]);
+  const handleSavePolen = async (content: string, tileId?: number) => {
+    const tile = tileId ?? (selectedTile ? selectedTile.row * 8 + selectedTile.col + 1 : 1);
+    await savePolenEntry(content, tile, 'text', [activeCompass || 'general', currentSeason]);
     toast.success('Polen saved successfully');
+  };
+  
+  // Handle assistant polen save
+  const handleAssistantSavePolen = (content: string) => {
+    handleSavePolen(content);
   };
 
   // Compass change handler
@@ -458,6 +470,23 @@ const CalmMagicBoard = () => {
         tilesVisited={visitedTiles.size}
         polenCount={getCurrentSeasonPolenCount()}
         isGenerating={isGeneratingPrd}
+      />
+
+      {/* Assistant Chat */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <AssistantChatButton
+          onClick={() => setShowAssistantChat(true)}
+          isOpen={showAssistantChat}
+          mode={assistantMode}
+        />
+      </div>
+      
+      <AssistantChatPanel
+        isOpen={showAssistantChat}
+        onClose={() => setShowAssistantChat(false)}
+        onSaveAsPolen={handleAssistantSavePolen}
+        currentSeason={currentSeason}
+        selectedTile={selectedTile}
       />
     </div>
   );

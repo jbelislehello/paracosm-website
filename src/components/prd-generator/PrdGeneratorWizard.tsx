@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Loader2, Sparkles, ArrowRight, ArrowLeft, Check, Edit3, FileText, Sprout, BookOpen, Shapes, Flag, Rocket, CheckCircle2, Circle } from 'lucide-react';
+import { Loader2, Sparkles, ArrowRight, ArrowLeft, Check, Edit3, FileText, Sprout, BookOpen, Shapes, Flag, Rocket, CheckCircle2, Circle, Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import PrdStageProgress, { PrdLayer } from './PrdStageProgress';
@@ -132,8 +132,64 @@ const PrdGeneratorWizard = ({
   const [title, setTitle] = useState(`Calm Magic PRD — ${board} Cycle — ${new Date().toLocaleDateString()}`);
   const [content, setContent] = useState<GeneratedContent>({});
   const [editingField, setEditingField] = useState<string | null>(null);
+  const [importedData, setImportedData] = useState<{ glitchData?: any; driftData?: any }>({});
   
   const { toast } = useToast();
+
+  // Try to load assistant data from localStorage
+  const importFromAssistant = () => {
+    try {
+      // Get the latest assistant conversation data
+      const storedData = localStorage.getItem('calm-magic-assistant-data');
+      if (storedData) {
+        const parsed = JSON.parse(storedData);
+        setImportedData(parsed);
+        
+        // Auto-populate POLLEN fields if glitch data exists
+        if (parsed.glitchData?.pollen && currentLayer === 'POLLEN') {
+          const pollen = parsed.glitchData.pollen;
+          setContent(prev => ({
+            ...prev,
+            pollen_observations: pollen.glitches?.map((g: any) => `• **${g.title}**: ${g.description}`).join('\n') || '',
+            pollen_constraints: pollen.constraints?.join('\n') || '',
+            pollen_emotional_climate: `**Stakes:** ${pollen.stakes || ''}\n\n**Anchor Glitches:** ${pollen.anchor_glitches?.join(', ') || ''}`
+          }));
+        }
+        
+        // Auto-populate POEM fields if drift data exists
+        if (parsed.driftData?.poem && currentLayer === 'POEM') {
+          const poem = parsed.driftData.poem;
+          const totem = parsed.driftData.totem;
+          setContent(prev => ({
+            ...prev,
+            poem_user_journeys: poem.futures?.map((f: any) => 
+              `**${f.title}** (${f.persona})\n\n*Before:* ${f.scenario.before}\n*During:* ${f.scenario.during}\n*After:* ${f.scenario.after}`
+            ).join('\n\n---\n\n') || '',
+            poem_hypotheses: poem.primary_narrative?.why_it_matters || '',
+            poem_thematic_anchors: totem?.candidate_forms?.map((f: string) => `• ${f}`).join('\n') || ''
+          }));
+        }
+        
+        toast({
+          title: 'Imported from Assistant',
+          description: 'Content from your Glitch/Drift sessions has been loaded.'
+        });
+      } else {
+        toast({
+          title: 'No assistant data found',
+          description: 'Start a conversation with the Calm Magic Assistant first.',
+          variant: 'destructive'
+        });
+      }
+    } catch (e) {
+      console.error('Failed to import assistant data:', e);
+      toast({
+        title: 'Import failed',
+        description: 'Could not load assistant data.',
+        variant: 'destructive'
+      });
+    }
+  };
 
   const currentIndex = LAYERS.indexOf(currentLayer);
   const isFirstLayer = currentIndex === 0;
@@ -442,6 +498,18 @@ const PrdGeneratorWizard = ({
           </Button>
 
           <div className="flex items-center gap-2">
+            {/* Import from Assistant button */}
+            {(currentLayer === 'POLLEN' || currentLayer === 'POEM') && (
+              <Button
+                onClick={importFromAssistant}
+                variant="outline"
+                size="sm"
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Import from Assistant
+              </Button>
+            )}
+            
             <Button
               onClick={generateLayerContent}
               disabled={generating}
