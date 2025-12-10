@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { SeasonProgressIndicator } from '@/components/calm-magic/SeasonProgressIndicator';
 import { 
   ArrowLeft, 
   Plus, 
@@ -316,7 +317,12 @@ const ProjectsDashboard: React.FC = () => {
                       </Badge>
                     </div>
                     
-                    <div className="text-xs text-muted-foreground pt-2 border-t border-border/50">
+                    {/* Season Progress */}
+                    <div className="pt-2 border-t border-border/50">
+                      <SeasonProgressIndicator projectId={project.id} compact />
+                    </div>
+                    
+                    <div className="text-xs text-muted-foreground">
                       <div className="flex justify-between">
                         <span>Created {formatDate(project.createdAt)}</span>
                         <span>Updated {formatDate(project.updatedAt)}</span>
