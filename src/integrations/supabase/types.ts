@@ -442,6 +442,7 @@ export type Database = {
           fragment_type: Database["public"]["Enums"]["fragment_type"]
           hexagram_number: number | null
           id: string
+          season_context: string | null
           source_reference: string | null
           tags: string[] | null
           tile_id: number | null
@@ -456,6 +457,7 @@ export type Database = {
           fragment_type?: Database["public"]["Enums"]["fragment_type"]
           hexagram_number?: number | null
           id?: string
+          season_context?: string | null
           source_reference?: string | null
           tags?: string[] | null
           tile_id?: number | null
@@ -470,6 +472,7 @@ export type Database = {
           fragment_type?: Database["public"]["Enums"]["fragment_type"]
           hexagram_number?: number | null
           id?: string
+          season_context?: string | null
           source_reference?: string | null
           tags?: string[] | null
           tile_id?: number | null
