@@ -112,7 +112,6 @@ const ProjectTitleBar: React.FC<ProjectTitleBarProps> = ({
         </div>
         
         <div className="flex items-center gap-2 shrink-0">
-          <UserProfileMenu />
           <Button
             variant="ghost"
             size="sm"
@@ -122,6 +121,7 @@ const ProjectTitleBar: React.FC<ProjectTitleBarProps> = ({
             <FolderOpen className="w-4 h-4 mr-1.5" />
             All Projects
           </Button>
+          <UserProfileMenu />
         </div>
       </div>
     </div>
