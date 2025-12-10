@@ -269,8 +269,8 @@ const CalmMagicBoard = () => {
 
   const handleSavePolen = async (content: string, tileId?: number) => {
     const tile = tileId ?? (selectedTile ? selectedTile.row * 8 + selectedTile.col + 1 : 1);
-    await savePolenEntry(content, tile, 'text', [activeCompass || 'general', currentSeason]);
-    toast.success('Polen saved successfully');
+    await savePolenEntry(content, tile, 'text', [activeCompass || 'general', currentSeason], currentSeason as 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS');
+    toast.success('Fragment saved successfully');
   };
   
   // Handle assistant polen save
@@ -528,14 +528,18 @@ const CalmMagicBoard = () => {
           </div>
         </div>
 
-        {/* Polen Browser Panel */}
+        {/* Fragment Browser Panel */}
         {showPolenBrowser && !selectedTile && (
-          <div className="w-[400px] max-w-[40vw] shrink-0 border-l border-border/50 animate-in slide-in-from-right duration-300">
-            <PolenBrowserPanel 
-              onClose={() => setShowPolenBrowser(false)}
-              onTileClick={(row, col) => {
-                setSelectedTile({ row, col });
-                setShowPolenBrowser(false);
+          <div className="w-[400px] max-w-[40vw] shrink-0 border-l border-border/50 animate-in slide-in-from-right duration-300 p-4">
+            <FragmentBrowser 
+              currentSeason={currentSeason as PrdSeason}
+              onEntrySelect={(entry) => {
+                if (entry.tile_id) {
+                  const row = Math.floor((entry.tile_id - 1) / 8);
+                  const col = (entry.tile_id - 1) % 8;
+                  setSelectedTile({ row, col });
+                  setShowPolenBrowser(false);
+                }
               }}
             />
           </div>
@@ -574,6 +578,70 @@ const CalmMagicBoard = () => {
               trajectoryLog={trajectoryLog}
               onSetProphecy={setProphecy}
               onResetTrajectory={resetTrajectory}
+            />
+          </div>
+        )}
+
+        {/* PRD Assembly View */}
+        {activeView === 'prd-assembly' && (
+          <div className="flex-1 overflow-hidden p-6">
+            <PrdAssemblyPanel
+              isOpen={true}
+              onClose={() => setActiveView('matrix')}
+              currentSeason={currentSeason as PrdSeason}
+              seasonProgress={seasonProgress as Record<PrdSeason, Set<string>>}
+              completedSeasons={completedSeasons as PrdSeason[]}
+              prdId={prdId}
+              onGenerateLayer={async (season) => {
+                // Fetch Polen entries for this season
+                const { data: polenEntries, error } = await supabase
+                  .from('polen_entries')
+                  .select('*')
+                  .eq('user_id', user?.id)
+                  .or(`season_context.eq.${season},tags.cs.{${season}}`);
+                
+                if (error) throw error;
+
+                // Call edge function to generate PRD layer
+                const layerField = SEASON_TO_PRD_FIELD[season as Season];
+                const { data, error: fnError } = await supabase.functions.invoke('generate-prd-stage', {
+                  body: {
+                    layer: layerField,
+                    polenEntries: polenEntries || [],
+                    board: season,
+                    existingContent: null,
+                  }
+                });
+
+                if (fnError) throw fnError;
+
+                // Create or update PRD
+                if (!prdId) {
+                  const { data: newPrd, error: insertError } = await supabase
+                    .from('prds')
+                    .insert({
+                      owner_id: user.id,
+                      title: `PRD - ${new Date().toLocaleDateString()}`,
+                      status: 'draft',
+                      main_board: SEASON_TO_BOARD[season as Season],
+                      [`${layerField}_signals_summary`]: data?.content || '',
+                    } as any)
+                    .select()
+                    .single();
+
+                  if (insertError) throw insertError;
+                  updateProgress({ prdId: newPrd.id });
+                } else {
+                  await supabase
+                    .from('prds')
+                    .update({
+                      [`${layerField}_signals_summary`]: data?.content || '',
+                    })
+                    .eq('id', prdId);
+                }
+
+                logTrajectoryEvent('prd_generated', undefined, `Generated ${season} PRD layer`);
+              }}
             />
           </div>
         )}
