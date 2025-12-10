@@ -30,6 +30,7 @@ import { PrdAssemblyPanel } from '@/components/calm-magic/PrdAssemblyPanel';
 import { getPrdAccessLevel, Season as PrdSeason } from '@/utils/prdAccessLevel';
 import { parseBoardEntryParams, getAssessmentContextDescription } from '@/utils/parseBoardEntryParams';
 import { getGardenByType } from '@/data/gardens';
+import ProjectTitleBar from '@/components/calm-magic/ProjectTitleBar';
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
 type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
@@ -76,7 +77,13 @@ const CalmMagicBoard = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { mode, setMode } = useMode();
-  const { projectContext, setProjectContext, isLoading: projectLoading } = useProjectContext();
+  const { 
+    projectContext, 
+    setActiveProject, 
+    getProjectById,
+    updateProject,
+    isLoading: projectLoading 
+  } = useProjectContext();
   const hasAppliedUrlParams = useRef(false);
   
   const [user, setUser] = useState<any>(null);
@@ -157,23 +164,25 @@ const CalmMagicBoard = () => {
     if (hasAppliedUrlParams.current || progressLoading || projectLoading) return;
     
     const params = parseBoardEntryParams(searchParams);
+    const projectId = searchParams.get('projectId');
     
-    if (params.hasAssessmentContext) {
+    // If projectId is provided, set it as active
+    if (projectId) {
+      const project = getProjectById(projectId);
+      if (project) {
+        setActiveProject(projectId);
+        if (project.mode) {
+          setMode(project.mode);
+        }
+      }
+    }
+    
+    if (params.hasAssessmentContext || projectId) {
       hasAppliedUrlParams.current = true;
       
-      // Set mode from URL
-      if (params.mode) {
+      // Set mode from URL (fallback if not from project)
+      if (params.mode && !projectId) {
         setMode(params.mode);
-      }
-      
-      // Set project context if garden and projectName are provided
-      if (params.garden && params.projectName && params.mode) {
-        setProjectContext({
-          projectName: params.projectName,
-          garden: params.garden,
-          mode: params.mode,
-          createdAt: new Date().toISOString(),
-        });
       }
       
       // Apply initial shadow position
@@ -196,18 +205,21 @@ const CalmMagicBoard = () => {
         setActiveCompass(COMPASS_MAP[params.compass]);
       }
       
-      // Show assessment context banner
-      const description = getAssessmentContextDescription(params);
-      setAssessmentContext(description);
-      setShowAssessmentBanner(true);
+      // Show assessment context banner if there's assessment data
+      if (params.hasAssessmentContext) {
+        const description = getAssessmentContextDescription(params);
+        setAssessmentContext(description);
+        setShowAssessmentBanner(true);
+      }
       
       // Clear URL params after applying (keeps URL clean)
       setSearchParams({}, { replace: true });
       
-      toast.success(params.projectName ? `Project "${params.projectName}" created` : 'Journey personalized from your assessment', {
-        description: description,
-        duration: 5000,
-      });
+      if (projectContext) {
+        toast.success(`Project "${projectContext.projectName}" loaded`, {
+          duration: 3000,
+        });
+      }
     }
   }, [searchParams, progressLoading, projectLoading, journeyStarted, visitedTiles.size]);
 
@@ -512,8 +524,12 @@ const CalmMagicBoard = () => {
     return 0; // Placeholder - will be populated from actual data
   };
 
-  // Get current garden info
-  const currentGarden = projectContext?.garden ? getGardenByType(projectContext.garden) : null;
+  // Handle project rename
+  const handleProjectRename = (newName: string) => {
+    if (projectContext) {
+      updateProject(projectContext.id, { projectName: newName });
+    }
+  };
 
   if (loading || progressLoading || projectLoading) {
     return (
@@ -527,21 +543,10 @@ const CalmMagicBoard = () => {
     <div className="h-screen flex flex-col bg-gradient-to-br from-background via-background to-muted overflow-hidden">
       {/* Project Title Bar - Above everything */}
       {projectContext && (
-        <div className="shrink-0 px-6 py-2 border-b border-border/30" style={{ backgroundColor: `${currentGarden?.color}10` }}>
-          <div className="max-w-[1800px] mx-auto flex items-center gap-3">
-            <span className="text-2xl">{currentGarden?.icon}</span>
-            <h1 className="text-lg font-semibold text-foreground">
-              {projectContext.projectName}
-            </h1>
-            <Badge 
-              variant="outline" 
-              className="text-xs"
-              style={{ borderColor: currentGarden?.color, color: currentGarden?.color }}
-            >
-              {currentGarden?.name}
-            </Badge>
-          </div>
-        </div>
+        <ProjectTitleBar
+          project={projectContext}
+          onRename={handleProjectRename}
+        />
       )}
 
       {/* Assessment Context Banner */}
