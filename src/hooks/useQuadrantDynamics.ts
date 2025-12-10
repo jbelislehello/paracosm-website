@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   SeasonQualities, 
   QuadrantPosition, 
@@ -6,7 +7,6 @@ import {
   TrajectoryState,
   TrajectoryEventType,
   Season,
-  SEASON_QUALITY_MAP
 } from '@/types/trajectory';
 
 const STORAGE_KEY = 'calmMagicTrajectory';
@@ -30,16 +30,10 @@ const defaultTrajectoryState: TrajectoryState = {
 
 // Calculate shadow position from season qualities
 export function calculateShadowPosition(qualities: SeasonQualities): QuadrantPosition {
-  // X-axis: Memory (-1) to Novelty (+1)
-  // Higher MAGIC/OPEN/FREE → Novelty
-  // Higher LOVE/CALM → Memory
   const noveltyWeight = (qualities.spaciousness + qualities.openness + qualities.expansion) / 3;
   const memoryWeight = (qualities.vitality + qualities.wholeness) / 2;
-  const x = ((noveltyWeight - memoryWeight) / 100) * 2; // Scale to -1 to +1
+  const x = ((noveltyWeight - memoryWeight) / 100) * 2;
   
-  // Y-axis: Intimacy (-1) to Sovereignty (+1)
-  // Higher CALM/OPEN → Sovereignty
-  // Higher LOVE/MAGIC → Intimacy
   const sovereigntyWeight = (qualities.wholeness + qualities.openness) / 2;
   const intimacyWeight = (qualities.vitality + qualities.spaciousness) / 2;
   const y = ((sovereigntyWeight - intimacyWeight) / 100) * 2;
@@ -52,10 +46,10 @@ export function calculateShadowPosition(qualities: SeasonQualities): QuadrantPos
 
 // Get quadrant from position
 export function getQuadrantFromPosition(pos: QuadrantPosition): 'SN' | 'IN' | 'IM' | 'SM' {
-  if (pos.x >= 0 && pos.y >= 0) return 'SN'; // Sovereignty + Novelty
-  if (pos.x < 0 && pos.y >= 0) return 'SM';  // Sovereignty + Memory
-  if (pos.x < 0 && pos.y < 0) return 'IM';   // Intimacy + Memory
-  return 'IN'; // Intimacy + Novelty
+  if (pos.x >= 0 && pos.y >= 0) return 'SN';
+  if (pos.x < 0 && pos.y >= 0) return 'SM';
+  if (pos.x < 0 && pos.y < 0) return 'IM';
+  return 'IN';
 }
 
 export function useQuadrantDynamics(
@@ -64,30 +58,103 @@ export function useQuadrantDynamics(
 ) {
   const [trajectoryState, setTrajectoryState] = useState<TrajectoryState>(defaultTrajectoryState);
   const [isLoading, setIsLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [isSyncing, setIsSyncing] = useState(false);
 
-  // Load from localStorage
+  // Get user ID on mount
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setTrajectoryState(parsed);
-      }
-    } catch (e) {
-      console.error('Failed to load trajectory state:', e);
-    } finally {
-      setIsLoading(false);
-    }
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUserId(user?.id || null);
+    };
+    getUser();
   }, []);
 
-  // Save to localStorage
-  const saveToStorage = useCallback((state: TrajectoryState) => {
+  // Load from Supabase (with localStorage fallback)
+  useEffect(() => {
+    const loadTrajectoryState = async () => {
+      try {
+        // First, try localStorage for immediate display
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          setTrajectoryState(parsed);
+        }
+
+        // If user is authenticated, fetch from Supabase
+        if (userId) {
+          // Use type assertion since trajectory_states table is new
+          const { data, error } = await (supabase
+            .from('trajectory_states' as any) as any)
+            .select('*')
+            .eq('user_id', userId)
+            .maybeSingle();
+
+          if (error && error.code !== 'PGRST116') {
+            console.error('Error fetching trajectory state:', error);
+          } else if (data) {
+            const supabaseState: TrajectoryState = {
+              higher_self_position: data.higher_self_position as unknown as QuadrantPosition | null,
+              higher_self_quadrant: data.higher_self_quadrant as 'SN' | 'IN' | 'IM' | 'SM' | null,
+              prophecy_reflection: data.prophecy_reflection,
+              prophecy_set_at: data.prophecy_set_at,
+              trajectory_log: (data.trajectory_log as unknown as TrajectoryEvent[]) || [],
+              last_shadow_position: (data.last_shadow_position as unknown as QuadrantPosition) || { x: 0, y: 0 },
+            };
+            setTrajectoryState(supabaseState);
+            // Update localStorage with Supabase data
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(supabaseState));
+          }
+        }
+      } catch (e) {
+        console.error('Failed to load trajectory state:', e);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadTrajectoryState();
+  }, [userId]);
+
+  // Save to both localStorage and Supabase
+  const saveState = useCallback(async (state: TrajectoryState) => {
+    // Always save to localStorage immediately
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch (e) {
-      console.error('Failed to save trajectory state:', e);
+      console.error('Failed to save to localStorage:', e);
     }
-  }, []);
+
+    // Sync to Supabase if authenticated
+    if (userId && !isSyncing) {
+      setIsSyncing(true);
+      try {
+        // Use type assertion since trajectory_states table is new
+        const { error } = await (supabase
+          .from('trajectory_states' as any) as any)
+          .upsert({
+            user_id: userId,
+            higher_self_position: state.higher_self_position,
+            higher_self_quadrant: state.higher_self_quadrant,
+            prophecy_reflection: state.prophecy_reflection,
+            prophecy_set_at: state.prophecy_set_at,
+            trajectory_log: state.trajectory_log,
+            last_shadow_position: state.last_shadow_position,
+            updated_at: new Date().toISOString(),
+          }, {
+            onConflict: 'user_id',
+          });
+
+        if (error) {
+          console.error('Failed to sync trajectory to Supabase:', error);
+        }
+      } catch (e) {
+        console.error('Failed to sync trajectory:', e);
+      } finally {
+        setIsSyncing(false);
+      }
+    }
+  }, [userId, isSyncing]);
 
   // Calculate season qualities from progress
   const seasonQualities = useMemo((): SeasonQualities => {
@@ -137,8 +204,8 @@ export function useQuadrantDynamics(
     newState.trajectory_log = [...newState.trajectory_log, event];
     
     setTrajectoryState(newState);
-    saveToStorage(newState);
-  }, [trajectoryState, shadowPosition, currentSeason, seasonQualities, saveToStorage]);
+    saveState(newState);
+  }, [trajectoryState, shadowPosition, currentSeason, seasonQualities, saveState]);
 
   // Log trajectory event
   const logTrajectoryEvent = useCallback((
@@ -164,14 +231,27 @@ export function useQuadrantDynamics(
     };
     
     setTrajectoryState(newState);
-    saveToStorage(newState);
-  }, [trajectoryState, shadowPosition, currentSeason, seasonQualities, saveToStorage]);
+    saveState(newState);
+  }, [trajectoryState, shadowPosition, currentSeason, seasonQualities, saveState]);
 
   // Reset trajectory
-  const resetTrajectory = useCallback(() => {
+  const resetTrajectory = useCallback(async () => {
     setTrajectoryState(defaultTrajectoryState);
     localStorage.removeItem(STORAGE_KEY);
-  }, []);
+    
+    // Delete from Supabase if authenticated
+    if (userId) {
+      try {
+        // Use type assertion since trajectory_states table is new
+        await (supabase
+          .from('trajectory_states' as any) as any)
+          .delete()
+          .eq('user_id', userId);
+      } catch (e) {
+        console.error('Failed to delete trajectory from Supabase:', e);
+      }
+    }
+  }, [userId]);
 
   return {
     // State
@@ -184,6 +264,7 @@ export function useQuadrantDynamics(
     prophecyReflection: trajectoryState.prophecy_reflection,
     trajectoryLog: trajectoryState.trajectory_log,
     isLoading,
+    isSyncing,
     
     // Actions
     setProphecy,

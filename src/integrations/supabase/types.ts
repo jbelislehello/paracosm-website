@@ -990,6 +990,45 @@ export type Database = {
           },
         ]
       }
+      trajectory_states: {
+        Row: {
+          created_at: string
+          higher_self_position: Json | null
+          higher_self_quadrant: string | null
+          id: string
+          last_shadow_position: Json | null
+          prophecy_reflection: string | null
+          prophecy_set_at: string | null
+          trajectory_log: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          higher_self_position?: Json | null
+          higher_self_quadrant?: string | null
+          id?: string
+          last_shadow_position?: Json | null
+          prophecy_reflection?: string | null
+          prophecy_set_at?: string | null
+          trajectory_log?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          higher_self_position?: Json | null
+          higher_self_quadrant?: string | null
+          id?: string
+          last_shadow_position?: Json | null
+          prophecy_reflection?: string | null
+          prophecy_set_at?: string | null
+          trajectory_log?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       urgent_priorities: {
         Row: {
           category: string

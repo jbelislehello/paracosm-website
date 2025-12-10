@@ -1,11 +1,19 @@
 import React from 'react';
 import { SeasonQualities, QUALITY_LABELS } from '@/types/trajectory';
-import { Progress } from '@/components/ui/progress';
 
 interface SeasonQualityBarsProps {
   qualities: SeasonQualities;
   compact?: boolean;
 }
+
+// Explicit colors for each quality (matching chart colors)
+const QUALITY_COLORS: Record<keyof SeasonQualities, string> = {
+  vitality: 'hsl(346, 77%, 49%)',      // Rose/Love
+  spaciousness: 'hsl(270, 60%, 50%)',  // Purple/Magic
+  wholeness: 'hsl(210, 70%, 50%)',     // Blue/Calm
+  openness: 'hsl(142, 71%, 45%)',      // Green/Open
+  expansion: 'hsl(45, 93%, 47%)',      // Amber/Free
+};
 
 export const SeasonQualityBars: React.FC<SeasonQualityBarsProps> = ({ 
   qualities,
@@ -14,26 +22,28 @@ export const SeasonQualityBars: React.FC<SeasonQualityBarsProps> = ({
   const qualityEntries = Object.entries(QUALITY_LABELS) as [keyof SeasonQualities, typeof QUALITY_LABELS[keyof SeasonQualities]][];
   
   return (
-    <div className={`space-y-${compact ? '2' : '3'}`}>
+    <div className={compact ? 'space-y-2' : 'space-y-3'}>
       {qualityEntries.map(([key, config]) => (
-        <div key={key} className="space-y-1">
+        <div key={key} className="space-y-1.5">
           <div className="flex items-center justify-between text-xs">
             <span className="flex items-center gap-1.5">
               <span>{config.icon}</span>
-              <span className="font-medium">{config.label}</span>
-              <span className="text-muted-foreground">({config.season})</span>
+              <span className="font-medium text-foreground">{config.label}</span>
+              <span className="text-muted-foreground text-[10px]">({config.season})</span>
             </span>
-            <span className="text-muted-foreground font-mono">
+            <span className="text-foreground font-mono font-medium">
               {qualities[key]}%
             </span>
           </div>
-          <Progress 
-            value={qualities[key]} 
-            className="h-2"
-            style={{
-              '--progress-background': config.color,
-            } as React.CSSProperties}
-          />
+          <div className="h-2.5 w-full rounded-full bg-muted overflow-hidden">
+            <div 
+              className="h-full rounded-full transition-all duration-500 ease-out"
+              style={{
+                width: `${qualities[key]}%`,
+                backgroundColor: QUALITY_COLORS[key],
+              }}
+            />
+          </div>
         </div>
       ))}
     </div>

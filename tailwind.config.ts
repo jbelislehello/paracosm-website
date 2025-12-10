@@ -114,6 +114,14 @@ export default {
                         'background-position': '100% 50%'
                     }
                 },
+                'draw-path': {
+                    from: { strokeDashoffset: '100' },
+                    to: { strokeDashoffset: '0' }
+                },
+                'shadow-pulse': {
+                    '0%, 100%': { transform: 'scale(1)', opacity: '1' },
+                    '50%': { transform: 'scale(1.3)', opacity: '0.5' }
+                },
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
@@ -121,6 +129,8 @@ export default {
                 'float': 'float 6s ease-in-out infinite',
                 'pulse-slow': 'pulse-slow 4s ease-in-out infinite',
                 'gradient-x': 'gradient-x 15s ease infinite',
+                'draw-path': 'draw-path 0.6s ease-out forwards',
+                'shadow-pulse': 'shadow-pulse 0.6s ease-out',
 			}
 		}
 	},
