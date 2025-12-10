@@ -13,7 +13,9 @@ import { TILE_CONTENTS } from '@/data/tileContents';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { SketchPad } from '@/components/calm-magic/tools/SketchPad';
 import { DiagramBuilder } from '@/components/calm-magic/tools/DiagramBuilder';
+import { EmotionalCheckIn } from '@/components/calm-magic/tools/EmotionalCheckIn';
 import { toast } from 'sonner';
+import { FeltState, EmotionalAxes, EmotionalCheckInData } from '@/types/trajectory';
 
 const rowLabels = [
   { letter: 'M', name: 'Mindsets', stage: 'AGENDAS' },
@@ -48,6 +50,8 @@ interface TileDetailPanelProps {
   onNavigate: (row: number, col: number) => void;
   onCompassChange: (compass: any) => void;
   currentSeason?: string;
+  onEmotionalCheckin?: (tileId: number, feltState: FeltState, axes: EmotionalAxes, note?: string) => void;
+  emotionalCheckins?: EmotionalCheckInData[];
 }
 
 const TileDetailPanel = ({
@@ -59,6 +63,8 @@ const TileDetailPanel = ({
   onSavePolen,
   onNavigate,
   currentSeason = 'POLLENS',
+  onEmotionalCheckin,
+  emotionalCheckins = [],
 }: TileDetailPanelProps) => {
   const [userInput, setUserInput] = useState('');
   const [conversationSaved, setConversationSaved] = useState(false);
@@ -239,6 +245,17 @@ const TileDetailPanel = ({
           Contributes to: {tileStage === 'real-intelligence' ? 'Ontology & Concepts' : tileStage === 'knowledge-objects' ? 'Data Nodes & API' : 'Graphs & Processes'}
         </p>
       </div>
+
+      {/* Emotional Check-in Section */}
+      {onEmotionalCheckin && (
+        <div className="border-b border-border/30">
+          <EmotionalCheckIn
+            tileId={tileId}
+            onCheckin={(feltState, axes, note) => onEmotionalCheckin(tileId, feltState, axes, note)}
+            previousCheckins={emotionalCheckins.filter(c => c.tile_id === tileId)}
+          />
+        </div>
+      )}
 
       {/* Add-ons Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">

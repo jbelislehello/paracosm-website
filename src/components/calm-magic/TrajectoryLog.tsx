@@ -4,7 +4,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { formatDistanceToNow } from 'date-fns';
 import { getQuadrantFromPosition } from '@/hooks/useQuadrantDynamics';
-import { Play, Check, Sparkles, FileText, Target, Sliders } from 'lucide-react';
+import { Play, Check, Sparkles, FileText, Target, Sliders, Activity } from 'lucide-react';
 
 interface TrajectoryLogProps {
   events: TrajectoryEvent[];
@@ -45,6 +45,11 @@ const EVENT_CONFIG: Record<TrajectoryEvent['event_type'], {
     icon: <Sliders className="w-3 h-3" />,
     label: 'Shadow Nudged',
     color: 'bg-orange-500/10 text-orange-600',
+  },
+  emotional_checkin: {
+    icon: <Activity className="w-3 h-3" />,
+    label: 'Emotional Check-in',
+    color: 'bg-rose-500/10 text-rose-600',
   },
 };
 

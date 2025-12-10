@@ -21,7 +21,26 @@ export type TrajectoryEventType =
   | 'season_end' 
   | 'prd_generated'
   | 'prophecy_set'
-  | 'shadow_nudge';
+  | 'shadow_nudge'
+  | 'emotional_checkin';
+
+// Emotional check-in types
+export interface EmotionalAxes {
+  love: number;    // 0-100
+  magic: number;   // 0-100
+  calm: number;    // 0-100
+  open: number;    // 0-100
+  free: number;    // 0-100
+}
+
+export interface EmotionalCheckInData {
+  id: string;
+  tile_id: number;
+  timestamp: string;
+  felt_state: FeltState;
+  axes: EmotionalAxes;
+  note?: string;
+}
 
 export interface TrajectoryEvent {
   id: string;
