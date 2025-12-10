@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -12,8 +12,12 @@ import {
   Sprout, 
   Heart,
   TrendingUp,
-  CheckCircle
+  CheckCircle,
+  Compass,
+  ArrowRight
 } from 'lucide-react';
+import BoardEntryGate from '../BoardEntryGate';
+import { AssessmentResult } from '@/utils/assessmentToTolerance';
 
 interface Recommendation {
   profile: {
@@ -39,6 +43,17 @@ const ClientRecommendations: React.FC<ClientRecommendationsProps> = ({
   recommendations,
   onStartJourney
 }) => {
+  const [showBoardGate, setShowBoardGate] = useState(false);
+
+  // Convert recommendations to AssessmentResult format for BoardEntryGate
+  const assessmentResult: AssessmentResult = {
+    dominantAxis: recommendations.profile.dominantAxis,
+    primaryGarden: recommendations.profile.primaryGarden,
+    connectorMagnesorType: recommendations.profile.connectorMagnesorType,
+    vitalityScore: recommendations.profile.vitalityScore,
+    stabilityScore: recommendations.profile.stabilityScore,
+    integrationLevel: recommendations.profile.integrationLevel
+  };
   const getAxisColor = (axis: string) => {
     const colors: { [key: string]: string } = {
       love: '#ef4444',
@@ -237,10 +252,42 @@ const ClientRecommendations: React.FC<ClientRecommendationsProps> = ({
         </CardContent>
       </Card>
 
-      {/* Next Steps */}
-      <Card className="border-green-200 bg-green-50">
+      {/* Calm Magic Board Entry CTA */}
+      <Card className="border-primary/30 bg-gradient-to-r from-rose-50 to-purple-50 dark:from-rose-950/20 dark:to-purple-950/20">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-green-800">
+          <CardTitle className="flex items-center gap-2 text-primary">
+            <Compass className="w-5 h-5" />
+            Boussole Calm Magic
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground mb-4">
+            Votre profil est prêt ! Commencez votre voyage sur le Calm Magic Board pour une exploration approfondie 
+            avec un point de départ personnalisé basé sur votre évaluation.
+          </p>
+          <div className="flex items-center gap-3 p-3 bg-background/60 rounded-lg mb-4">
+            <div className="flex-1">
+              <p className="text-sm font-medium">Point de départ suggéré:</p>
+              <p className="text-xs text-muted-foreground">
+                Axe {recommendations.profile.dominantAxis.toUpperCase()} • Jardin {recommendations.profile.primaryGarden} • {recommendations.profile.connectorMagnesorType}
+              </p>
+            </div>
+          </div>
+          <Button
+            onClick={() => setShowBoardGate(true)}
+            className="w-full bg-gradient-to-r from-rose-500 to-purple-600 hover:from-rose-600 hover:to-purple-700"
+          >
+            <Compass className="w-4 h-4 mr-2" />
+            Ouvrir le Calm Magic Board
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Next Steps */}
+      <Card className="border-green-200 bg-green-50 dark:bg-green-950/20 dark:border-green-800">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-green-800 dark:text-green-200">
             <Target className="w-5 h-5" />
             Prochaines Étapes
           </CardTitle>
@@ -274,6 +321,15 @@ const ClientRecommendations: React.FC<ClientRecommendationsProps> = ({
           </ol>
         </CardContent>
       </Card>
+
+      {/* Board Entry Gate Modal */}
+      <BoardEntryGate
+        isOpen={showBoardGate}
+        onClose={() => setShowBoardGate(false)}
+        sourceContext="relational"
+        assessmentResult={assessmentResult}
+        preselectedMode="personal"
+      />
     </div>
   );
 };

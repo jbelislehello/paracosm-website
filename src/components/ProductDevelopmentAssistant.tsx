@@ -4,11 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Lightbulb, X, Minimize2, Maximize2, Sparkles } from 'lucide-react';
+import { Lightbulb, X, Minimize2, Maximize2, Sparkles, FileText, ArrowRight } from 'lucide-react';
 import OverviewTab from './product-development/OverviewTab';
 import ProcessTab from './product-development/ProcessTab';
 import BridgeTab from './product-development/BridgeTab';
 import { useLanguage } from '@/contexts/LanguageContext';
+import BoardEntryGate from './calm-magic/BoardEntryGate';
 
 interface ProductDevelopmentAssistantProps {
   onStartJourney?: () => void;
@@ -23,6 +24,7 @@ const ProductDevelopmentAssistant: React.FC<ProductDevelopmentAssistantProps> = 
 }) => {
   const [internalIsOpen, setInternalIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [showBoardGate, setShowBoardGate] = useState(false);
   const { t } = useLanguage();
   
   const isOpen = controlledIsOpen !== undefined ? controlledIsOpen : internalIsOpen;
@@ -92,6 +94,27 @@ const ProductDevelopmentAssistant: React.FC<ProductDevelopmentAssistantProps> = 
               <TabsContent value="overview" className="space-y-6 mt-0">
                 <div className="space-y-4">
                   <OverviewTab onStartJourney={onStartJourney} />
+                  
+                  {/* Living PRD CTA */}
+                  <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-lg border border-primary/20 mt-4">
+                    <div className="flex items-start gap-3">
+                      <FileText className="w-5 h-5 text-primary mt-0.5" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-foreground">Transform Vision into Living PRD</h4>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Use the Calm Magic Board to generate a Living PRD that preserves your creative vision through technical implementation.
+                        </p>
+                        <Button
+                          onClick={() => setShowBoardGate(true)}
+                          className="mt-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700"
+                          size="sm"
+                        >
+                          Generate Living PRD
+                          <ArrowRight className="w-4 h-4 ml-2" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </TabsContent>
 
@@ -121,6 +144,14 @@ const ProductDevelopmentAssistant: React.FC<ProductDevelopmentAssistantProps> = 
           </CardContent>
         )}
       </Card>
+
+      {/* Board Entry Gate Modal */}
+      <BoardEntryGate
+        isOpen={showBoardGate}
+        onClose={() => setShowBoardGate(false)}
+        sourceContext="agentic"
+        preselectedMode="professional"
+      />
     </div>
   );
 };
