@@ -1,4 +1,5 @@
 import { QuadrantPosition } from '@/types/trajectory';
+import { GardenType } from '@/types/journal';
 
 export type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 export type ToleranceZone = 'inner' | 'stretch' | 'outer';
@@ -11,7 +12,8 @@ export interface BoardEntryParams {
   compass: string | null;
   toleranceZone: ToleranceZone | null;
   dominantAxis: string | null;
-  garden: string | null;
+  garden: GardenType | null;
+  projectName: string | null;
   hasAssessmentContext: boolean;
 }
 
@@ -58,7 +60,17 @@ export function parseBoardEntryParams(searchParams: URLSearchParams): BoardEntry
 
   // Parse assessment context
   const dominantAxis = searchParams.get('dominantAxis');
-  const garden = searchParams.get('garden');
+  
+  // Parse garden
+  const gardenParam = searchParams.get('garden');
+  const validGardens: GardenType[] = ['intelligence', 'systems', 'prototypes'];
+  const garden = validGardens.includes(gardenParam as GardenType)
+    ? gardenParam as GardenType
+    : null;
+
+  // Parse project name
+  const projectNameParam = searchParams.get('projectName');
+  const projectName = projectNameParam ? decodeURIComponent(projectNameParam) : null;
 
   // Determine if we have meaningful assessment context
   const hasAssessmentContext = !!(
@@ -66,7 +78,8 @@ export function parseBoardEntryParams(searchParams: URLSearchParams): BoardEntry
     higherSelfPosition || 
     startingSeason || 
     dominantAxis || 
-    garden
+    garden ||
+    projectName
   );
 
   return {
@@ -78,6 +91,7 @@ export function parseBoardEntryParams(searchParams: URLSearchParams): BoardEntry
     toleranceZone,
     dominantAxis,
     garden,
+    projectName,
     hasAssessmentContext,
   };
 }
