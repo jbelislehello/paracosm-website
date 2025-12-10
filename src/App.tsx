@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
 import { PartnerToolsProvider } from "./context/PartnerToolsContext";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import { ModeProvider } from "./components/calm-magic/context/ModeContext";
 import Index from "./pages/Index";
 import LandingPage from "./pages/LandingPage";
 import DriftLanding from "./pages/DriftLanding";
@@ -30,30 +31,32 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
         <PartnerToolsProvider>
-          <Router>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/drift" element={<DriftLanding />} />
-              <Route path="/agentic-ux" element={<Index />} />
-              <Route path="/calm-magic-assistant" element={<RelationalHealing />} />
-              <Route path="/case-studies" element={<CaseStudies />} />
-              <Route path="/about-us" element={<AboutUs />} />
-              <Route path="/calm-magic-board" element={<CalmMagicBoard />} />
-              <Route path="/calm-magic-board/log" element={<GlitchLog />} />
-              <Route path="/calm-magic-board/events" element={<GlitchEvents />} />
-              <Route path="/calm-magic-board/insights" element={<GlitchInsights />} />
-              <Route path="/calm-magic-board/drift" element={<Drift />} />
-              <Route path="/calm-magic-board/prds" element={<PrdsDashboard />} />
-              <Route path="/calm-magic-board/prds/:id" element={<PrdEditor />} />
-              <Route path="/prd-editor/:id" element={<PrdEditor />} />
-              <Route path="/glitch-auth" element={<GlitchAuth />} />
-              <Route path="/auth" element={<GlitchAuth />} />
-              <Route path="/calm-magic-visualization" element={<CalmMagicVisualization />} />
-              <Route path="/calm-magic-journal" element={<CalmMagicJournal />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            <Toaster />
-          </Router>
+          <ModeProvider>
+            <Router>
+              <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/drift" element={<DriftLanding />} />
+                <Route path="/agentic-ux" element={<Index />} />
+                <Route path="/calm-magic-assistant" element={<RelationalHealing />} />
+                <Route path="/case-studies" element={<CaseStudies />} />
+                <Route path="/about-us" element={<AboutUs />} />
+                <Route path="/calm-magic-board" element={<CalmMagicBoard />} />
+                <Route path="/calm-magic-board/log" element={<GlitchLog />} />
+                <Route path="/calm-magic-board/events" element={<GlitchEvents />} />
+                <Route path="/calm-magic-board/insights" element={<GlitchInsights />} />
+                <Route path="/calm-magic-board/drift" element={<Drift />} />
+                <Route path="/calm-magic-board/prds" element={<PrdsDashboard />} />
+                <Route path="/calm-magic-board/prds/:id" element={<PrdEditor />} />
+                <Route path="/prd-editor/:id" element={<PrdEditor />} />
+                <Route path="/glitch-auth" element={<GlitchAuth />} />
+                <Route path="/auth" element={<GlitchAuth />} />
+                <Route path="/calm-magic-visualization" element={<CalmMagicVisualization />} />
+                <Route path="/calm-magic-journal" element={<CalmMagicJournal />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <Toaster />
+            </Router>
+          </ModeProvider>
         </PartnerToolsProvider>
       </LanguageProvider>
     </QueryClientProvider>

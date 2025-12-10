@@ -1,11 +1,11 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X } from 'lucide-react';
 import { toast } from 'sonner';
 import MinimalistTileMatrix from '@/components/MinimalistTileMatrix';
 import TileDetailPanel from '@/components/TileDetailPanel';
@@ -14,6 +14,7 @@ import { useTileMatrixPersistence } from '@/hooks/useTileMatrixPersistence';
 import { useSeasonPersistence } from '@/hooks/useSeasonPersistence';
 import { useQuadrantDynamics } from '@/hooks/useQuadrantDynamics';
 import { useTileEmotionalCheckins } from '@/hooks/useTileEmotionalCheckins';
+import { useMode } from '@/components/calm-magic/context/ModeContext';
 import { CycleNumber } from '@/types/journal-expansion';
 import { FeltState, EmotionalAxes, QuadrantPosition } from '@/types/trajectory';
 import SeasonProgressBar from '@/components/prd-generator/SeasonProgressBar';
@@ -26,6 +27,8 @@ import { QuadrantDynamicsPanel } from '@/components/calm-magic/QuadrantDynamicsP
 import { HigherSelfProphecyModal } from '@/components/calm-magic/HigherSelfProphecyModal';
 import { PrdAssemblyPanel } from '@/components/calm-magic/PrdAssemblyPanel';
 import { getPrdAccessLevel, Season as PrdSeason } from '@/utils/prdAccessLevel';
+import { parseBoardEntryParams, getAssessmentContextDescription } from '@/utils/parseBoardEntryParams';
+
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
 type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 type BoardType = 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
@@ -57,10 +60,22 @@ const SEASON_COLORS: Record<Season, string> = {
   ANTHEMS: 'from-emerald-500 to-green-500',
 };
 
+const COMPASS_MAP: Record<string, CompassType> = {
+  'Narrative': 'narrative',
+  'Workflow': 'workflow',
+  'Inquiry & Practices': 'inquiry',
+  'Playground': 'playground',
+  'Human Dynamics & Systems': 'human-dynamics',
+};
+
 type ViewTab = 'matrix' | 'window-of-tolerance' | 'prd-assembly';
 
 const CalmMagicBoard = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { mode, setMode } = useMode();
+  const hasAppliedUrlParams = useRef(false);
+  
   const [user, setUser] = useState<any>(null);
   const [todayTile, setTodayTile] = useState<Tile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -69,6 +84,10 @@ const CalmMagicBoard = () => {
   const [currentCycleNumber, setCurrentCycleNumber] = useState<CycleNumber>(1);
   const [showPolenBrowser, setShowPolenBrowser] = useState(false);
   const [currentZone, setCurrentZone] = useState<'safe' | 'stretch' | 'edge' | 'unexplored'>('safe');
+  
+  // Assessment context banner
+  const [showAssessmentBanner, setShowAssessmentBanner] = useState(false);
+  const [assessmentContext, setAssessmentContext] = useState<string | null>(null);
   
   // Sub-navigation state
   const [activeView, setActiveView] = useState<ViewTab>('matrix');
@@ -129,6 +148,55 @@ const CalmMagicBoard = () => {
     saving,
     savePolenEntry,
   } = useTileMatrixPersistence(todayTile?.board || SEASON_TO_BOARD[currentSeason]);
+
+  // Apply URL parameters on mount (once)
+  useEffect(() => {
+    if (hasAppliedUrlParams.current || progressLoading) return;
+    
+    const params = parseBoardEntryParams(searchParams);
+    
+    if (params.hasAssessmentContext) {
+      hasAppliedUrlParams.current = true;
+      
+      // Set mode from URL
+      if (params.mode) {
+        setMode(params.mode);
+      }
+      
+      // Apply initial shadow position
+      if (params.shadowPosition) {
+        applyShadowNudge(params.shadowPosition, 'flowing', 'Initial position from assessment');
+      }
+      
+      // Set higher self prophecy
+      if (params.higherSelfPosition) {
+        setProphecy(params.higherSelfPosition, 'Prophesied destination from assessment');
+      }
+      
+      // Set starting season if not already progressed
+      if (params.startingSeason && !journeyStarted && visitedTiles.size === 0) {
+        updateProgress({ currentSeason: params.startingSeason });
+      }
+      
+      // Set compass
+      if (params.compass && COMPASS_MAP[params.compass]) {
+        setActiveCompass(COMPASS_MAP[params.compass]);
+      }
+      
+      // Show assessment context banner
+      const description = getAssessmentContextDescription(params);
+      setAssessmentContext(description);
+      setShowAssessmentBanner(true);
+      
+      // Clear URL params after applying (keeps URL clean)
+      setSearchParams({}, { replace: true });
+      
+      toast.success('Journey personalized from your assessment', {
+        description: description,
+        duration: 5000,
+      });
+    }
+  }, [searchParams, progressLoading, journeyStarted, visitedTiles.size]);
 
   useEffect(() => {
     checkAuth();
@@ -442,12 +510,37 @@ const CalmMagicBoard = () => {
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-background via-background to-muted overflow-hidden">
       {/* Header - Clean, single line */}
+      {/* Assessment Context Banner */}
+      {showAssessmentBanner && assessmentContext && (
+        <div className="shrink-0 px-6 py-2 bg-gradient-to-r from-primary/10 via-purple-500/10 to-pink-500/10 border-b border-border/50 flex items-center justify-between">
+          <div className="flex items-center gap-2 text-sm">
+            <Sparkles className="w-4 h-4 text-primary" />
+            <span className="text-muted-foreground">{assessmentContext}</span>
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-6 w-6"
+            onClick={() => setShowAssessmentBanner(false)}
+          >
+            <X className="w-3 h-3" />
+          </Button>
+        </div>
+      )}
+
       <header className="shrink-0 px-6 py-3 border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="max-w-[1800px] mx-auto flex items-center justify-between gap-4">
           {/* Logo/Title - Single line */}
-          <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent whitespace-nowrap">
-            Calm Magic Board
-          </h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent whitespace-nowrap">
+              Calm Magic Board
+            </h1>
+            {mode && (
+              <Badge variant="outline" className="text-xs capitalize">
+                {mode}
+              </Badge>
+            )}
+          </div>
           
           {/* Season Navigation - Center */}
           <SeasonProgressBar
