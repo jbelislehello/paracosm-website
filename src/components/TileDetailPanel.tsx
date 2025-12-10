@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Link2 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getTileStage, getStageById } from '@/types/journal-expansion';
 import { getPrinciplesByStage } from '@/data/femininePrinciples';
 import { useAgentTileConversation } from '@/hooks/useAgentTileConversation';
@@ -69,6 +69,7 @@ const TileDetailPanel = ({
   const [userInput, setUserInput] = useState('');
   const [conversationSaved, setConversationSaved] = useState(false);
   const [activeTab, setActiveTab] = useState('chat');
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const {
     messages,
@@ -96,6 +97,11 @@ const TileDetailPanel = ({
       resetTranscript();
     }
   }, [transcript, resetTranscript]);
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, isLoading]);
 
   // Edge detection for navigation
   const canGlitch = selectedTile.row < 7;
@@ -328,6 +334,9 @@ const TileDetailPanel = ({
                   </Button>
                 </div>
               )}
+              
+              {/* Scroll anchor */}
+              <div ref={messagesEndRef} />
             </div>
           </div>
 
