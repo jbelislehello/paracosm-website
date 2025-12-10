@@ -16,7 +16,7 @@ import { useQuadrantDynamics } from '@/hooks/useQuadrantDynamics';
 import { useTileEmotionalCheckins } from '@/hooks/useTileEmotionalCheckins';
 import { useOnboardingTour } from '@/hooks/useOnboardingTour';
 import { useMode } from '@/components/calm-magic/context/ModeContext';
-import { useProjectContext } from '@/hooks/useProjectContext';
+import { useProjects } from '@/context/ProjectsContext';
 import { CycleNumber } from '@/types/journal-expansion';
 import { FeltState, EmotionalAxes, QuadrantPosition } from '@/types/trajectory';
 import SeasonProgressBar from '@/components/prd-generator/SeasonProgressBar';
@@ -85,7 +85,7 @@ const CalmMagicBoard = () => {
     getProjectById,
     updateProject,
     isLoading: projectLoading 
-  } = useProjectContext();
+  } = useProjects();
   const hasAppliedUrlParams = useRef(false);
   
   const [user, setUser] = useState<any>(null);

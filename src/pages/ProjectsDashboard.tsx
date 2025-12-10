@@ -41,7 +41,7 @@ import {
   Sparkles,
   Cloud
 } from 'lucide-react';
-import { useProjectContext, Project } from '@/hooks/useProjectContext';
+import { useProjects, Project } from '@/context/ProjectsContext';
 import { useUserSession } from '@/hooks/useUserSession';
 import { getGardenByType, gardens } from '@/data/gardens';
 import { GardenType } from '@/types/journal';
@@ -58,7 +58,7 @@ const ProjectsDashboard: React.FC = () => {
     deleteProject, 
     updateProject,
     isLoading 
-  } = useProjectContext(user?.id);
+  } = useProjects();
   
   const [searchQuery, setSearchQuery] = useState('');
   const [gardenFilter, setGardenFilter] = useState<GardenType | 'all'>('all');

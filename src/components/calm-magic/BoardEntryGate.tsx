@@ -26,7 +26,7 @@ import { MODE_CONTENT, MODE_THEMES, JOURNEY_MODES_DESCRIPTION, ModeType } from '
 import { AssessmentResult, generateBoardEntryParams } from '@/utils/assessmentToTolerance';
 import { gardens, ExtendedGarden } from '@/data/gardens';
 import { GardenType } from '@/types/journal';
-import { useProjectContext } from '@/hooks/useProjectContext';
+import { useProjects } from '@/context/ProjectsContext';
 import { useUserSession } from '@/hooks/useUserSession';
 
 type EntryStep = 'mode' | 'garden' | 'name' | 'signup';
@@ -48,7 +48,7 @@ const BoardEntryGate: React.FC<BoardEntryGateProps> = ({
 }) => {
   const navigate = useNavigate();
   const { user } = useUserSession();
-  const { createProject } = useProjectContext(user?.id);
+  const { createProject } = useProjects();
   const [currentStep, setCurrentStep] = useState<EntryStep>(preselectedMode ? 'garden' : 'mode');
   const [selectedMode, setSelectedMode] = useState<ModeType | null>(preselectedMode || null);
   const [selectedGarden, setSelectedGarden] = useState<GardenType | null>(null);
