@@ -25,6 +25,7 @@ import { MODE_CONTENT, MODE_THEMES, JOURNEY_MODES_DESCRIPTION, ModeType } from '
 import { AssessmentResult, generateBoardEntryParams } from '@/utils/assessmentToTolerance';
 import { gardens, ExtendedGarden } from '@/data/gardens';
 import { GardenType } from '@/types/journal';
+import { useProjectContext } from '@/hooks/useProjectContext';
 
 type EntryStep = 'mode' | 'garden' | 'name';
 
@@ -44,6 +45,7 @@ const BoardEntryGate: React.FC<BoardEntryGateProps> = ({
   preselectedMode
 }) => {
   const navigate = useNavigate();
+  const { createProject } = useProjectContext();
   const [currentStep, setCurrentStep] = useState<EntryStep>(preselectedMode ? 'garden' : 'mode');
   const [selectedMode, setSelectedMode] = useState<ModeType | null>(preselectedMode || null);
   const [selectedGarden, setSelectedGarden] = useState<GardenType | null>(null);
@@ -76,12 +78,13 @@ const BoardEntryGate: React.FC<BoardEntryGateProps> = ({
   const handleStartJourney = () => {
     if (!selectedMode || !selectedGarden || !projectName.trim()) return;
 
+    // Create the project using the hook
+    const newProject = createProject(projectName.trim(), selectedGarden, selectedMode);
+
     let url = '/calm-magic-board';
     const params = new URLSearchParams();
     
-    params.set('mode', selectedMode);
-    params.set('garden', selectedGarden);
-    params.set('projectName', encodeURIComponent(projectName.trim()));
+    params.set('projectId', newProject.id);
     
     if (assessmentResult) {
       const assessmentParams = generateBoardEntryParams(assessmentResult, selectedMode);

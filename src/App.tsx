@@ -22,6 +22,7 @@ import PrdEditor from "./pages/PrdEditor";
 import PrdsDashboard from "./pages/PrdsDashboard";
 import CalmMagicVisualization from "./pages/CalmMagicVisualization";
 import CalmMagicJournal from "./pages/CalmMagicJournal";
+import ProjectsDashboard from "./pages/ProjectsDashboard";
 import "./App.css";
 
 const queryClient = new QueryClient();
@@ -52,6 +53,7 @@ function App() {
                 <Route path="/auth" element={<GlitchAuth />} />
                 <Route path="/calm-magic-visualization" element={<CalmMagicVisualization />} />
                 <Route path="/calm-magic-journal" element={<CalmMagicJournal />} />
+                <Route path="/projects" element={<ProjectsDashboard />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
               <Toaster />
