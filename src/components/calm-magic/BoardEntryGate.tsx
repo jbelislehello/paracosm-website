@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Dialog,
@@ -20,7 +20,8 @@ import {
   Sparkles,
   Target,
   Check,
-  LogIn
+  LogIn,
+  Rocket
 } from 'lucide-react';
 import { MODE_CONTENT, MODE_THEMES, JOURNEY_MODES_DESCRIPTION, ModeType } from '@/data/modeAwareContent';
 import { AssessmentResult, generateBoardEntryParams } from '@/utils/assessmentToTolerance';
@@ -28,8 +29,16 @@ import { gardens, ExtendedGarden } from '@/data/gardens';
 import { GardenType } from '@/types/journal';
 import { useProjects } from '@/context/ProjectsContext';
 import { useUserSession } from '@/hooks/useUserSession';
+import { useSubscription } from '@/hooks/useSubscription';
+import { 
+  canCreateProject, 
+  getProjectLimit, 
+  getTierDisplayName,
+  getNextUpgradeTier,
+  SUBSCRIPTION_TIERS 
+} from '@/data/subscriptionTiers';
 
-type EntryStep = 'mode' | 'garden' | 'name' | 'signup';
+type EntryStep = 'limit' | 'mode' | 'garden' | 'name' | 'signup';
 
 interface BoardEntryGateProps {
   isOpen: boolean;
@@ -48,14 +57,31 @@ const BoardEntryGate: React.FC<BoardEntryGateProps> = ({
 }) => {
   const navigate = useNavigate();
   const { user } = useUserSession();
-  const { createProject } = useProjects();
+  const { projects, createProject } = useProjects();
+  const { tier, createCheckout, isLoading: isSubLoading } = useSubscription();
   const [currentStep, setCurrentStep] = useState<EntryStep>(preselectedMode ? 'garden' : 'mode');
   const [selectedMode, setSelectedMode] = useState<ModeType | null>(preselectedMode || null);
   const [selectedGarden, setSelectedGarden] = useState<GardenType | null>(null);
   const [projectName, setProjectName] = useState('');
   const [pendingProject, setPendingProject] = useState<{ id: string } | null>(null);
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
   
   const isGuest = !user;
+  const projectCount = projects.length;
+  const canCreate = canCreateProject(tier, projectCount);
+  const projectLimit = getProjectLimit(tier);
+  const tierName = getTierDisplayName(tier);
+  const nextTierKey = getNextUpgradeTier(tier);
+  const nextTier = nextTierKey ? SUBSCRIPTION_TIERS[nextTierKey] : null;
+
+  // Check project limit when modal opens
+  useEffect(() => {
+    if (isOpen && !canCreate) {
+      setCurrentStep('limit');
+    } else if (isOpen) {
+      setCurrentStep(preselectedMode ? 'garden' : 'mode');
+    }
+  }, [isOpen, canCreate, preselectedMode]);
 
   const handleModeSelect = (mode: ModeType) => {
     setSelectedMode(mode);
@@ -153,38 +179,105 @@ const BoardEntryGate: React.FC<BoardEntryGateProps> = ({
           </DialogDescription>
         </DialogHeader>
 
-        {/* Step Indicator */}
-        <div className="flex items-center justify-center gap-2 py-2">
-          {visibleSteps.filter(s => s !== 'signup').map((step, index) => (
-            <React.Fragment key={step}>
-              <div className="flex items-center gap-2">
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
-                    isStepComplete(step)
-                      ? 'bg-primary text-primary-foreground'
-                      : isStepActive(step)
-                      ? 'bg-primary/20 text-primary border-2 border-primary'
-                      : 'bg-muted text-muted-foreground'
-                  }`}
-                >
-                  {isStepComplete(step) && !isStepActive(step) ? (
-                    <Check className="w-4 h-4" />
-                  ) : (
-                    index + 1
-                  )}
+        {/* Step Indicator - hide when at limit */}
+        {currentStep !== 'limit' && (
+          <div className="flex items-center justify-center gap-2 py-2">
+            {visibleSteps.filter(s => s !== 'signup' && s !== 'limit').map((step, index) => (
+              <React.Fragment key={step}>
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
+                      isStepComplete(step)
+                        ? 'bg-primary text-primary-foreground'
+                        : isStepActive(step)
+                        ? 'bg-primary/20 text-primary border-2 border-primary'
+                        : 'bg-muted text-muted-foreground'
+                    }`}
+                  >
+                    {isStepComplete(step) && !isStepActive(step) ? (
+                      <Check className="w-4 h-4" />
+                    ) : (
+                      index + 1
+                    )}
+                  </div>
+                  <span className={`text-sm hidden sm:inline ${isStepActive(step) ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
+                    {step === 'mode' ? 'Mode' : step === 'garden' ? 'Garden' : 'Name'}
+                  </span>
                 </div>
-                <span className={`text-sm hidden sm:inline ${isStepActive(step) ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
-                  {step === 'mode' ? 'Mode' : step === 'garden' ? 'Garden' : 'Name'}
-                </span>
-              </div>
-              {index < 2 && (
-                <div className={`w-8 h-0.5 ${isStepComplete(step) ? 'bg-primary' : 'bg-muted'}`} />
-              )}
-            </React.Fragment>
-          ))}
-        </div>
+                {index < 2 && (
+                  <div className={`w-8 h-0.5 ${isStepComplete(step) ? 'bg-primary' : 'bg-muted'}`} />
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+        )}
 
         <div className="space-y-6 py-4">
+          {/* Project Limit Reached */}
+          {currentStep === 'limit' && (
+            <div className="space-y-4">
+              <div className="text-center space-y-2">
+                <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 flex items-center justify-center mb-4">
+                  <Rocket className="w-8 h-8 text-amber-600" />
+                </div>
+                <h3 className="text-lg font-semibold">Project Limit Reached</h3>
+                <p className="text-sm text-muted-foreground">
+                  You've used all {projectLimit} project{projectLimit !== 1 ? 's' : ''} on the {tierName} plan
+                </p>
+              </div>
+
+              {/* Current Usage */}
+              <div className="p-4 rounded-lg bg-muted/50 border border-border">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm text-muted-foreground">Projects Used</span>
+                  <span className="font-semibold">{projectCount} / {projectLimit}</span>
+                </div>
+                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-amber-500 to-orange-500"
+                    style={{ width: '100%' }}
+                  />
+                </div>
+              </div>
+
+              {/* Upgrade Option */}
+              {nextTier ? (
+                <div className="p-4 rounded-xl bg-gradient-to-r from-primary/10 via-purple-500/10 to-pink-500/10 border border-primary/20">
+                  <div className="flex items-start gap-3">
+                    <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-primary to-purple-600 flex items-center justify-center shrink-0">
+                      <Sparkles className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="font-semibold">{nextTier.name}</h4>
+                        <Badge className="bg-gradient-to-r from-primary to-purple-600 text-white border-0">
+                          ${nextTier.price}/mo
+                        </Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        {nextTier.projects === -1 ? 'Unlimited projects' : `Up to ${nextTier.projects} projects`}
+                      </p>
+                      <ul className="space-y-1">
+                        {nextTier.features.slice(0, 3).map((feature, i) => (
+                          <li key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Check className="w-3 h-3 text-primary" />
+                            <span>{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-4 rounded-lg bg-muted/50 border border-border text-center">
+                  <p className="text-sm text-muted-foreground">
+                    You're on the highest tier. Contact us for enterprise options.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Step 1: Mode Selection */}
           {currentStep === 'mode' && (
             <div className="space-y-4">
@@ -436,7 +529,39 @@ const BoardEntryGate: React.FC<BoardEntryGateProps> = ({
 
         {/* Actions */}
         <div className="flex gap-3 pt-2">
-          {currentStep !== 'mode' && currentStep !== 'signup' ? (
+          {currentStep === 'limit' ? (
+            <>
+              <Button variant="outline" onClick={onClose} className="flex-1">
+                Cancel
+              </Button>
+              {nextTier ? (
+                <Button 
+                  onClick={async () => {
+                    setIsCheckoutLoading(true);
+                    try {
+                      await createCheckout(nextTier.priceId);
+                    } catch (e) {
+                      console.error('Checkout error:', e);
+                    } finally {
+                      setIsCheckoutLoading(false);
+                    }
+                  }}
+                  disabled={isCheckoutLoading || isSubLoading}
+                  className="flex-1 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90"
+                >
+                  {isCheckoutLoading ? 'Opening...' : `Upgrade to ${nextTier.name}`}
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              ) : (
+                <Button 
+                  onClick={() => { onClose(); navigate('/pricing'); }}
+                  className="flex-1"
+                >
+                  View Plans
+                </Button>
+              )}
+            </>
+          ) : currentStep !== 'mode' && currentStep !== 'signup' ? (
             <Button variant="outline" onClick={handleBack} className="flex-1">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
@@ -451,7 +576,7 @@ const BoardEntryGate: React.FC<BoardEntryGateProps> = ({
             </Button>
           )}
           
-          {currentStep === 'signup' ? (
+          {currentStep !== 'limit' && currentStep === 'signup' ? (
             <Button 
               onClick={handleSignIn}
               className="flex-1 bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90"
@@ -459,7 +584,7 @@ const BoardEntryGate: React.FC<BoardEntryGateProps> = ({
               <LogIn className="w-4 h-4 mr-2" />
               Sign In / Sign Up
             </Button>
-          ) : (
+          ) : currentStep !== 'limit' && (
             <Button 
               onClick={handleNext} 
               disabled={!canProceed()}
