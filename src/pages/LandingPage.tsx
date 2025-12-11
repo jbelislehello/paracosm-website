@@ -177,7 +177,7 @@ const LandingPage = () => {
               </div>
               
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-rose-600 animate-gradient-x mb-4 sm:mb-6">
-                Transformational Leadership Coaching
+                Expansive Leadership Coaching
               </h1>
               
               <p className="text-base sm:text-lg md:text-xl mb-4 sm:mb-6 text-gray-700 dark:text-gray-200 px-2 font-medium">
@@ -205,7 +205,7 @@ const LandingPage = () => {
               </div>
               
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-4 sm:mb-6 px-2">
-                Choose your pathway to transformational leadership through proven methodologies that create lasting change
+                Choose your pathway to expansive leadership through proven methodologies that create lasting change
               </p>
 
               {/* Lead Generation CTA */}
