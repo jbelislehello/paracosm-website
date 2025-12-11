@@ -283,10 +283,9 @@ const TileDetailPanel = ({
         </div>
 
         {/* Chat Tab */}
-        <TabsContent value="chat" className="flex-1 flex flex-col min-h-0 m-0 mt-0 overflow-hidden">
-          <div className="flex-1 overflow-y-auto px-4 py-3">
-            <div className="space-y-3">
-              {/* Season Context */}
+        <TabsContent value="chat" className="flex-1 flex flex-col min-h-0 m-0 mt-0 overflow-hidden" forceMount>
+          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
+            {/* Season Context */}
               <div className="text-xs text-muted-foreground text-center py-2 border-b border-dashed border-border/50">
                 <span className="font-medium">{currentSeason}</span> season exploration
               </div>
@@ -335,13 +334,12 @@ const TileDetailPanel = ({
                 </div>
               )}
               
-              {/* Scroll anchor */}
-              <div ref={messagesEndRef} />
-            </div>
+            {/* Scroll anchor */}
+            <div ref={messagesEndRef} />
           </div>
 
           {/* Input Area */}
-          <div className="p-3 border-t border-border/50 bg-background/80 space-y-2">
+          <div className="p-3 border-t border-border/50 bg-background/80 space-y-2 shrink-0">
             <div className="flex gap-2">
               {/* Voice button */}
               {voiceSupported && (
