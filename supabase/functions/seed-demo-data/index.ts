@@ -74,7 +74,7 @@ const DEMO_POLEN_ENTRIES = {
 const DEMO_PRD = {
   title: "AI-Powered Customer Success Platform",
   status: "draft",
-  prototype_stage: "poem",
+  prototype_stage: "B_DIEGETIC",
   // LOVE/POLLEN layer
   love_signals_summary: "Signals captured from 50+ customer interviews and support ticket analysis: (1) Customers feel unheard when issues escalate through multiple support tiers, (2) Success metrics focus on activity rather than outcomes, (3) Proactive outreach feels scripted rather than genuine, (4) Integration with existing workflows is friction-heavy",
   love_decision_to_exist: "This platform exists to transform customer success from reactive support to proactive partnership. We choose to build because current tools treat customers as tickets, not relationships. Our north star: every customer interaction should feel like talking to someone who truly knows them.",
