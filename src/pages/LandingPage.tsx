@@ -233,70 +233,127 @@ const LandingPage = () => {
         </div>
       </section>
       
-      {/* Glitch Compass Feature Section */}
+      {/* Calm Magic Board Feature Section */}
       <section className="py-16 px-4 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800">
         <div className="container mx-auto max-w-6xl">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="space-y-6">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 dark:bg-purple-900/30 rounded-full">
                 <Sparkles className="w-4 h-4 text-purple-600 dark:text-purple-400" />
-                <span className="text-sm font-medium text-purple-600 dark:text-purple-400">New Tool</span>
+                <span className="text-sm font-medium text-purple-600 dark:text-purple-400">AI-Powered Innovation Tool</span>
               </div>
               <h2 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                Calm Magic Board
+                Transform Tensions into Innovation
               </h2>
               <p className="text-lg text-muted-foreground">
-                Turn "something feels off" moments into gentle next steps. Map tensions, frictions, and conflicts onto a 260-tile matrix and receive wu-wei micro-action suggestions.
+                A 260-tile AI conversation engine that transforms "something feels off" moments into Living PRDs. Each tile sparks contextual AI dialogue, guiding you from raw tensions to actionable product specifications.
               </p>
               <div className="space-y-3">
                 <div className="flex items-start gap-3">
                   <Grid3x3 className="w-5 h-5 text-purple-600 mt-1" />
                   <div>
-                    <h3 className="font-semibold">8×8 Tile Matrix Framework</h3>
-                    <p className="text-sm text-muted-foreground">AGENDAS → LENS → MAPS progression with MAGIC integration</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Users className="w-5 h-5 text-purple-600 mt-1" />
-                  <div>
-                    <h3 className="font-semibold">Solo & Team Modes</h3>
-                    <p className="text-sm text-muted-foreground">Track patterns individually or collaborate with your team</p>
+                    <h3 className="font-semibold">260-Tile AI Conversation Engine</h3>
+                    <p className="text-sm text-muted-foreground">Each tile sparks contextual dialogue through GL!TCH → DRIFT → TUNE phases</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
                   <Sparkles className="w-5 h-5 text-purple-600 mt-1" />
                   <div>
-                    <h3 className="font-semibold">5-Layer PRD Engine</h3>
-                    <p className="text-sm text-muted-foreground">Transform glitches into actionable product requirements</p>
+                    <h3 className="font-semibold">5-Layer Living PRD Generator</h3>
+                    <p className="text-sm text-muted-foreground">POLLENS → NOEMS → POEMS → TOTEMS → ANTHEMS auto-generated from your journey</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Zap className="w-5 h-5 text-purple-600 mt-1" />
+                  <div>
+                    <h3 className="font-semibold">Multi-Platform Prompt Compiler</h3>
+                    <p className="text-sm text-muted-foreground">Export to Lovable, Base44, Claude, or Supabase Edge Functions</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Heart className="w-5 h-5 text-purple-600 mt-1" />
+                  <div>
+                    <h3 className="font-semibold">Window of Tolerance Tracker</h3>
+                    <p className="text-sm text-muted-foreground">Track your nervous system capacity and emotional states through the journey</p>
                   </div>
                 </div>
               </div>
+              
+              {/* Subscription Tiers Preview */}
+              <div className="flex flex-wrap gap-2 pt-2">
+                <span className="text-xs px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded-full">Free: 1 project</span>
+                <span className="text-xs px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-full">Growth: C-Suite Dashboard</span>
+                <span className="text-xs px-2 py-1 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full">Scale: AI Prompt Compiler</span>
+              </div>
+              
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/calm-magic-board">
+                <Link to="/auth">
                   <Button className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-indigo-600 hover:to-purple-600 text-white">
                     <Grid3x3 className="mr-2 h-4 w-4" />
-                    Explore Calm Magic Board
+                    Start Free Journey
                   </Button>
                 </Link>
-                <Link to="/auth">
+                <Link to="/pricing">
                   <Button variant="outline">
-                    Get Started Free
+                    View Pricing
                   </Button>
                 </Link>
               </div>
             </div>
             <div className="relative">
-              <div className="bg-gradient-to-br from-purple-500/10 to-indigo-500/10 rounded-2xl p-8 border-2 border-purple-200 dark:border-purple-800">
-                <div className="grid grid-cols-8 gap-1">
-                  {Array.from({ length: 64 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="aspect-square bg-gradient-to-br from-purple-400 to-indigo-400 rounded opacity-60 hover:opacity-100 transition-opacity"
-                      style={{
-                        animationDelay: `${i * 0.02}s`,
-                      }}
-                    />
+              <div className="bg-gradient-to-br from-purple-500/10 to-indigo-500/10 rounded-2xl p-6 border-2 border-purple-200 dark:border-purple-800">
+                {/* 5 Season Progress Indicator */}
+                <div className="flex justify-between mb-4 px-2">
+                  {['POLLENS', 'NOEMS', 'POEMS', 'TOTEMS', 'ANTHEMS'].map((season, i) => (
+                    <div key={season} className="flex flex-col items-center">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
+                        i === 0 ? 'bg-rose-500 text-white' :
+                        i === 1 ? 'bg-purple-500 text-white' :
+                        i === 2 ? 'bg-blue-500 text-white' :
+                        i === 3 ? 'bg-green-500 text-white' :
+                        'bg-amber-500 text-white'
+                      }`}>
+                        {i + 1}
+                      </div>
+                      <span className="text-[8px] mt-1 text-muted-foreground">{season}</span>
+                    </div>
                   ))}
+                </div>
+                
+                {/* 8x8 Tile Matrix */}
+                <div className="grid grid-cols-8 gap-1">
+                  {Array.from({ length: 64 }).map((_, i) => {
+                    const row = Math.floor(i / 8);
+                    const col = i % 8;
+                    const isInner = row >= 2 && row <= 5 && col >= 2 && col <= 5;
+                    const isStretch = !isInner && row >= 1 && row <= 6 && col >= 1 && col <= 6;
+                    return (
+                      <div
+                        key={i}
+                        className={`aspect-square rounded transition-all duration-300 hover:scale-110 cursor-pointer ${
+                          isInner ? 'bg-gradient-to-br from-rose-400 to-purple-400 opacity-90' :
+                          isStretch ? 'bg-gradient-to-br from-purple-400 to-blue-400 opacity-70' :
+                          'bg-gradient-to-br from-blue-400 to-indigo-400 opacity-50'
+                        }`}
+                      />
+                    );
+                  })}
+                </div>
+                
+                {/* Legend */}
+                <div className="flex justify-center gap-4 mt-4 text-xs text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <div className="w-3 h-3 rounded bg-gradient-to-br from-rose-400 to-purple-400" />
+                    Inner
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <div className="w-3 h-3 rounded bg-gradient-to-br from-purple-400 to-blue-400" />
+                    Stretch
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <div className="w-3 h-3 rounded bg-gradient-to-br from-blue-400 to-indigo-400" />
+                    Edge
+                  </span>
                 </div>
               </div>
             </div>
