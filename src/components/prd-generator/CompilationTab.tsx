@@ -3,8 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle2, Circle, AlertTriangle, Zap, XCircle, AlertCircle } from 'lucide-react';
-import { COMPILATION_TARGET, COMPILATION_CHECKLIST, validateCompilation, ValidationResult } from '@/data/prdCompilation';
+import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { CheckCircle2, Circle, AlertTriangle, Zap, XCircle, AlertCircle, ArrowRight } from 'lucide-react';
+import { COMPILATION_TARGET, COMPILATION_CHECKLIST, validateCompilation, ValidationResult, ValidationIssue, Season } from '@/data/prdCompilation';
 import TechStackCompiler from './TechStackCompiler';
 import FoundationalPromptCompiler from './FoundationalPromptCompiler';
 
@@ -13,10 +15,14 @@ interface CompilationTabProps {
   stackImplications: Record<string, string>;
   promptHooks: Record<string, string>;
   completedLayers: string[];
+  onNavigateToLayer?: (season: Season) => void;
 }
 
 // Validation Panel Component
-const ValidationPanel: React.FC<{ validation: ValidationResult }> = ({ validation }) => {
+const ValidationPanel: React.FC<{ 
+  validation: ValidationResult;
+  onNavigateToLayer?: (season: Season) => void;
+}> = ({ validation, onNavigateToLayer }) => {
   const getScoreColor = (score: number) => {
     if (score >= 80) return 'text-green-500';
     if (score >= 50) return 'text-yellow-500';
@@ -27,6 +33,12 @@ const ValidationPanel: React.FC<{ validation: ValidationResult }> = ({ validatio
     if (score >= 80) return 'Ready to Export';
     if (score >= 50) return 'Needs Attention';
     return 'Incomplete';
+  };
+
+  const handleIssueClick = (issue: ValidationIssue) => {
+    if (onNavigateToLayer && issue.targetSeason) {
+      onNavigateToLayer(issue.targetSeason);
+    }
   };
 
   return (
@@ -70,15 +82,42 @@ const ValidationPanel: React.FC<{ validation: ValidationResult }> = ({ validatio
               <XCircle className="h-3 w-3" />
               {validation.errors.length} Critical Issue{validation.errors.length > 1 ? 's' : ''}
             </p>
-            <div className="space-y-1 pl-4">
-              {validation.errors.slice(0, 3).map((error, idx) => (
-                <p key={idx} className="text-[10px] text-red-400">
-                  • {error.message}
-                </p>
+            <div className="space-y-1.5 pl-4">
+              {validation.errors.slice(0, 5).map((error, idx) => (
+                <TooltipProvider key={idx}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div 
+                        className={`flex items-center justify-between text-[10px] text-red-400 ${
+                          onNavigateToLayer ? 'hover:bg-red-500/10 rounded px-1 py-0.5 -ml-1 cursor-pointer transition-colors' : ''
+                        }`}
+                        onClick={() => handleIssueClick(error)}
+                      >
+                        <span>• {error.message}</span>
+                        {onNavigateToLayer && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-5 px-1.5 text-[10px] text-red-400 hover:text-red-300 hover:bg-red-500/20"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleIssueClick(error);
+                            }}
+                          >
+                            Fix <ArrowRight className="h-2.5 w-2.5 ml-0.5" />
+                          </Button>
+                        )}
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="left" className="max-w-xs">
+                      <p className="text-xs font-medium">Hint: {error.fixHint}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               ))}
-              {validation.errors.length > 3 && (
+              {validation.errors.length > 5 && (
                 <p className="text-[10px] text-muted-foreground">
-                  +{validation.errors.length - 3} more...
+                  +{validation.errors.length - 5} more...
                 </p>
               )}
             </div>
@@ -92,15 +131,42 @@ const ValidationPanel: React.FC<{ validation: ValidationResult }> = ({ validatio
               <AlertTriangle className="h-3 w-3" />
               {validation.warnings.length} Suggestion{validation.warnings.length > 1 ? 's' : ''}
             </p>
-            <div className="space-y-1 pl-4">
-              {validation.warnings.slice(0, 2).map((warning, idx) => (
-                <p key={idx} className="text-[10px] text-yellow-400">
-                  • {warning.message}
-                </p>
+            <div className="space-y-1.5 pl-4">
+              {validation.warnings.slice(0, 3).map((warning, idx) => (
+                <TooltipProvider key={idx}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div 
+                        className={`flex items-center justify-between text-[10px] text-yellow-400 ${
+                          onNavigateToLayer ? 'hover:bg-yellow-500/10 rounded px-1 py-0.5 -ml-1 cursor-pointer transition-colors' : ''
+                        }`}
+                        onClick={() => handleIssueClick(warning)}
+                      >
+                        <span>• {warning.message}</span>
+                        {onNavigateToLayer && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-5 px-1.5 text-[10px] text-yellow-400 hover:text-yellow-300 hover:bg-yellow-500/20"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleIssueClick(warning);
+                            }}
+                          >
+                            Fix <ArrowRight className="h-2.5 w-2.5 ml-0.5" />
+                          </Button>
+                        )}
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent side="left" className="max-w-xs">
+                      <p className="text-xs font-medium">Hint: {warning.fixHint}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               ))}
-              {validation.warnings.length > 2 && (
+              {validation.warnings.length > 3 && (
                 <p className="text-[10px] text-muted-foreground">
-                  +{validation.warnings.length - 2} more...
+                  +{validation.warnings.length - 3} more...
                 </p>
               )}
             </div>
@@ -123,7 +189,8 @@ export const CompilationTab: React.FC<CompilationTabProps> = ({
   projectName,
   stackImplications,
   promptHooks,
-  completedLayers
+  completedLayers,
+  onNavigateToLayer
 }) => {
   // Run validation
   const validation = useMemo(() => {
@@ -173,7 +240,7 @@ export const CompilationTab: React.FC<CompilationTabProps> = ({
       </Alert>
 
       {/* Validation Panel */}
-      <ValidationPanel validation={validation} />
+      <ValidationPanel validation={validation} onNavigateToLayer={onNavigateToLayer} />
 
       {/* Compilation Status */}
       <div className="flex items-center justify-between text-sm">

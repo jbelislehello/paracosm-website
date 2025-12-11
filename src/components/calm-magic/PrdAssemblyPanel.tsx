@@ -429,6 +429,10 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
                     prompt_hooks_anthems: prdData?.prompt_hooks_anthems || '',
                   }}
                   completedLayers={completedSeasons}
+                  onNavigateToLayer={(season) => {
+                    setActiveTab('layers');
+                    setExpandedLayers(prev => new Set([...prev, season]));
+                  }}
                 />
               </TabsContent>
             </Tabs>
