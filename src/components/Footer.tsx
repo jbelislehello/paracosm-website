@@ -10,7 +10,7 @@ const SESSION_TYPES = [
     description: 'Deep exploration of tensions',
     duration: '45-60 min',
     icon: Zap,
-    link: 'https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting',
+    link: 'https://app.reclaim.ai/m/jonathan-helloarchitekt',
     gradient: 'from-rose-500 to-rose-600'
   },
   {
@@ -18,7 +18,7 @@ const SESSION_TYPES = [
     description: 'Relational exploration',
     duration: '30 min',
     icon: Compass,
-    link: 'https://app.reclaim.ai/m/jonathan-helloarchitekt/flexible-quick-meeting',
+    link: 'https://app.reclaim.ai/m/jonathan-helloarchitekt',
     gradient: 'from-purple-500 to-purple-600'
   },
   {
@@ -26,7 +26,7 @@ const SESSION_TYPES = [
     description: 'Quick tactical check-ins',
     duration: '15 min',
     icon: Settings,
-    link: 'https://app.reclaim.ai/m/jonathan-helloarchitekt/quick-meeting',
+    link: 'https://app.reclaim.ai/m/jonathan-helloarchitekt',
     gradient: 'from-blue-500 to-blue-600'
   }
 ];
@@ -150,7 +150,7 @@ const Footer: React.FC = () => {
           <div>
             <h3 className="font-semibold text-white mb-4">Get Started</h3>
             <div className="space-y-3">
-              <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
+              <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt" target="_blank" rel="noopener noreferrer">
                 <Button 
                   variant="outline" 
                   size="sm" 

@@ -13,7 +13,7 @@ const SESSION_TYPES = [
     duration: "45-60 min",
     purpose: "Initial discovery & deep exploration",
     bestFor: "First contact, strategic consultation, exploring what feels 'off' or alive in your organization",
-    link: "https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting",
+    link: "https://app.reclaim.ai/m/jonathan-helloarchitekt",
     gradient: "from-rose-500 to-red-600",
     bgColor: "bg-rose-100 dark:bg-rose-900/30",
     textColor: "text-rose-600"
@@ -24,7 +24,7 @@ const SESSION_TYPES = [
     duration: "30 min",
     purpose: "Relational exploration & flexible discovery",
     bestFor: "Ongoing transformation work, relational coaching, brainstorming possibilities",
-    link: "https://app.reclaim.ai/m/jonathan-helloarchitekt/flexible-quick-meeting",
+    link: "https://app.reclaim.ai/m/jonathan-helloarchitekt",
     gradient: "from-purple-500 to-violet-600",
     bgColor: "bg-purple-100 dark:bg-purple-900/30",
     textColor: "text-purple-600"
@@ -35,7 +35,7 @@ const SESSION_TYPES = [
     duration: "15-20 min",
     purpose: "Focused action & tactical check-ins",
     bestFor: "Quick implementation questions, specific deliverable review, workshop scheduling",
-    link: "https://app.reclaim.ai/m/jonathan-helloarchitekt/quick-meeting",
+    link: "https://app.reclaim.ai/m/jonathan-helloarchitekt",
     gradient: "from-blue-500 to-cyan-600",
     bgColor: "bg-blue-100 dark:bg-blue-900/30",
     textColor: "text-blue-600"
@@ -270,7 +270,7 @@ Contact Form System
                   <div>
                     <h4 className="font-semibold mb-1">Free Discovery Call</h4>
                     <p className="text-slate-600 dark:text-slate-300">30-minute consultation to explore your needs</p>
-                    <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 font-medium text-sm">
+                    <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-700 font-medium text-sm">
                       Book Now →
                     </a>
                   </div>

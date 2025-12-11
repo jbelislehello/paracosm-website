@@ -70,7 +70,7 @@ const ParacosmEventsSection = () => {
                   </div>
                 </div>
 
-                <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
+                <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt" target="_blank" rel="noopener noreferrer">
                   <Button 
                     variant="outline" 
                     size="sm" 
@@ -92,7 +92,7 @@ const ParacosmEventsSection = () => {
               Don't wait for the next event. Start your transformation journey today with a personalized discovery call to explore how our proven methodologies can accelerate your success.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
+              <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt" target="_blank" rel="noopener noreferrer">
                 <Button 
                   className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 px-8 py-3"
                   size="lg"

@@ -148,7 +148,7 @@ const LandingPage = () => {
           {/* Mobile & Desktop Actions */}
           <div className="hidden lg:flex items-center gap-1 sm:gap-2 md:gap-4">
             <LanguageSwitcher />
-            <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
+            <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt" target="_blank" rel="noopener noreferrer">
               <Button variant="outline" size="sm" className="hidden md:inline-flex text-xs">
                 Book Call
               </Button>
@@ -210,7 +210,7 @@ const LandingPage = () => {
 
               {/* Lead Generation CTA */}
               <div className="flex flex-col items-center gap-2">
-                <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
+                <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt" target="_blank" rel="noopener noreferrer">
                   <Button 
                     variant="outline" 
                     size="sm" 

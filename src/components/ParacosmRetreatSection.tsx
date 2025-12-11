@@ -174,7 +174,7 @@ const ParacosmRetreatSection = () => {
             {t("retreat.cta.description")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
+            <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt" target="_blank" rel="noopener noreferrer">
               <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 px-8 py-3 flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
                 {t("retreat.cta.book_consultation")}
