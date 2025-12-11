@@ -759,10 +759,10 @@ const CalmMagicBoard = () => {
             {/* Right Panel: Tile Detail - Slides in when tile selected */}
             {selectedTile && (
               <div 
-                className="w-[400px] max-w-[40vw] shrink-0 border-l border-border/50 animate-in slide-in-from-right duration-300"
+                className="w-[400px] max-w-[40vw] h-full shrink-0 border-l border-border/50 animate-in slide-in-from-right duration-300"
                 data-tour="detail-panel"
               >
-                <div data-tour="navigation">
+                <div data-tour="navigation" className="h-full">
                   <TileDetailPanel
                     selectedTile={selectedTile}
                     activeCompass={activeCompass}
