@@ -207,8 +207,12 @@ const Pricing: React.FC = () => {
         <div className="mt-12 text-center">
           <p className="text-sm text-muted-foreground">
             Need a custom plan for your organization?{' '}
-            <a href="mailto:hello@paracosm.io" className="text-primary hover:underline">
+            <Link to="/#contact" className="text-primary hover:underline">
               Contact us
+            </Link>
+            {' '}or email{' '}
+            <a href="mailto:jbelisle@helloarchitekt.com" className="text-primary hover:underline">
+              jbelisle@helloarchitekt.com
             </a>
           </p>
         </div>

@@ -271,7 +271,11 @@ const BoardEntryGate: React.FC<BoardEntryGateProps> = ({
               ) : (
                 <div className="p-4 rounded-lg bg-muted/50 border border-border text-center">
                   <p className="text-sm text-muted-foreground">
-                    You're on the highest tier. Contact us for enterprise options.
+                    You're on the highest tier.{' '}
+                    <a href="/#contact" className="text-primary hover:underline">
+                      Contact us
+                    </a>{' '}
+                    for enterprise options.
                   </p>
                 </div>
               )}
