@@ -25,7 +25,8 @@ import {
   Printer,
   Layers,
   Eye,
-  Briefcase
+  Briefcase,
+  Zap
 } from 'lucide-react';
 import { downloadMarkdown, exportPrdAsPdf } from '@/utils/prdExport';
 import { toast } from 'sonner';
@@ -41,6 +42,7 @@ import {
 import { PrdEducationPanel } from './PrdEducationPanel';
 import { PrdDimensionalView } from './PrdDimensionalView';
 import CSuiteDashboard from './CSuiteDashboard';
+import CompilationTab from '@/components/prd-generator/CompilationTab';
 import { useMode } from './context/ModeContext';
 interface PrdAssemblyPanelProps {
   isOpen: boolean;
@@ -93,7 +95,7 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [expandedLayers, setExpandedLayers] = useState<Set<Season>>(new Set([currentSeason]));
   const [generatingLayer, setGeneratingLayer] = useState<Season | null>(null);
-  const [activeTab, setActiveTab] = useState<'layers' | 'dimensions' | 'csuite'>('layers');
+  const [activeTab, setActiveTab] = useState<'layers' | 'dimensions' | 'csuite' | 'compilation'>('layers');
   
   const isPersonal = mode === 'personal';
   const documentName = isPersonal ? 'RRD' : 'PRD';
@@ -258,8 +260,8 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : (
-            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'layers' | 'dimensions' | 'csuite')}>
-              <TabsList className="w-full justify-start mb-4">
+            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'layers' | 'dimensions' | 'csuite' | 'compilation')}>
+              <TabsList className="w-full justify-start mb-4 flex-wrap">
                 <TabsTrigger value="layers" className="text-xs">
                   <Layers className="h-3.5 w-3.5 mr-1" />
                   5 Layers
@@ -271,6 +273,10 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
                 <TabsTrigger value="csuite" className="text-xs">
                   <Briefcase className="h-3.5 w-3.5 mr-1" />
                   C-Suite
+                </TabsTrigger>
+                <TabsTrigger value="compilation" className="text-xs">
+                  <Zap className="h-3.5 w-3.5 mr-1" />
+                  Compilation
                 </TabsTrigger>
               </TabsList>
 
@@ -402,6 +408,27 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
                   ) as Record<string, Set<number>>}
                   prdData={prdData}
                   currentSeason={currentSeason}
+                />
+              </TabsContent>
+
+              <TabsContent value="compilation">
+                <CompilationTab
+                  projectName={prdData?.title || 'Untitled Project'}
+                  stackImplications={{
+                    stack_implications_pollens: prdData?.stack_implications_pollens || '',
+                    stack_implications_noems: prdData?.stack_implications_noems || '',
+                    stack_implications_poems: prdData?.stack_implications_poems || '',
+                    stack_implications_totems: prdData?.stack_implications_totems || '',
+                    stack_implications_anthems: prdData?.stack_implications_anthems || '',
+                  }}
+                  promptHooks={{
+                    prompt_hooks_pollens: prdData?.prompt_hooks_pollens || '',
+                    prompt_hooks_noems: prdData?.prompt_hooks_noems || '',
+                    prompt_hooks_poems: prdData?.prompt_hooks_poems || '',
+                    prompt_hooks_totems: prdData?.prompt_hooks_totems || '',
+                    prompt_hooks_anthems: prdData?.prompt_hooks_anthems || '',
+                  }}
+                  completedLayers={completedSeasons}
                 />
               </TabsContent>
             </Tabs>

@@ -120,7 +120,9 @@ Return JSON with these exact keys:
   "pollens_cultural_issues": "Systemic and cultural patterns noticed",
   "pollens_prd_shadows": "What the PRD might be hiding or avoiding",
   "pollens_constraints": "Legal, ethical, financial, technical barriers named honestly",
-  "pollens_stakes": "What happens if nothing changes (emotional and practical)"
+  "pollens_stakes": "What happens if nothing changes (emotional and practical)",
+  "stack_implications_pollens": "High-level constraints: on-prem/cloud, data residency, sensitivity levels. Integration context: existing tools, APIs, identity systems. Latency/robustness expectations.",
+  "prompt_hooks_pollens": "Project name + one-line purpose. Core vibe (tone, ethos, personality). Primary user archetypes and their main questions."
 }
 
 Stay with the raw signal. No premature solutions.`,
@@ -136,7 +138,9 @@ Return JSON with these exact keys:
 {
   "noems_concepts": "Crystallized concepts emerging from pollens. Format: Title: Insight (maturity: seed/growing/ripe)",
   "noems_shared_ideas": "Ideas that emerged from multiple glitches or tensions",
-  "noems_intuitions": "Gut feelings and hunches worth tracking, not yet proven"
+  "noems_intuitions": "Gut feelings and hunches worth tracking, not yet proven",
+  "stack_implications_noems": "Data types & sources (files, DB, APIs, logs). Needed capabilities: OCR, Vision, RAG, workflow engine, etc. Candidate components: Supabase, vector DB, orchestration tools.",
+  "prompt_hooks_noems": "Ontology: key entities, relationships, allowed operations. What the assistant knows and must protect/respect."
 }
 
 Let concepts emerge naturally. Don't force structure.`,
@@ -152,7 +156,9 @@ Return JSON with these exact keys:
 {
   "poems_narratives": "1-3 user journeys as stories (before → during → after) with emotional texture",
   "poems_content_sources": "What content, data, and information powers these narratives",
-  "poems_data_nodes": "Key data entities and relationships that the system needs to track"
+  "poems_data_nodes": "Key data entities and relationships that the system needs to track",
+  "stack_implications_poems": "UX surface: chat, dashboard, form assistant, background agent. Needed adapters: email, calendar, file upload, webhooks, etc. Session + memory model (short-term vs long-term).",
+  "prompt_hooks_poems": "Canonical flows in natural language ('When user does X, the assistant must...'). Error states, guardrails, escalation behavior."
 }
 
 Stories first, then structure. Allow many possible futures.`,
@@ -169,7 +175,9 @@ Return JSON with these exact keys:
   "totems_processes": "Core flows, service blueprints, what people will touch/see/feel",
   "totems_maps": "Relationship maps, conceptual architecture, system boundaries",
   "totems_three_graph": "Three Graph Model hints: Subject Graph (who/what), Lexical Graph (vocabulary), Domain Graph (concepts)",
-  "totems_semantic_notes": "RDF/OWL patterns emerging, ontological commitments being made"
+  "totems_semantic_notes": "RDF/OWL patterns emerging, ontological commitments being made",
+  "stack_implications_totems": "Logging/observability, evaluation harness, test suites. Role-based access, multi-tenant patterns, privacy layers. Monitoring tools (dashboards, alerts, feedback capture).",
+  "prompt_hooks_totems": "Non-negotiable rules (compliance, ethics, tone). 'Never do X', 'Always explain Y', 'Ask for clarification when Z'. Evaluation criteria the assistant should self-check against."
 }
 
 Things become concrete here. Semantic structures crystallize.`,
@@ -188,7 +196,9 @@ Return JSON with these exact keys:
   "anthems_guardrails": "3-5 guardrails: ethics, compliance, ecological and social impact",
   "anthems_roadmap": "Simple now/next/later roadmap with named owners",
   "anthems_feminine_quality": "Which of the 8 principles this honors, and which need attention",
-  "anthems_learning_cadence": "How we build in time for Drift between Tunes"
+  "anthems_learning_cadence": "How we build in time for Drift between Tunes",
+  "stack_implications_anthems": "MVP vs V2 vs V3 stack choices (start simple, grow complexity). Cost/performance tradeoffs, multi-tenant vs single-tenant. Licensing/deployment model (SaaS, self-host, hybrid).",
+  "prompt_hooks_anthems": "Phased evolution of the assistant ('In Phase 1, assistant can only do... In Phase 2...'). Flags for features that are future capabilities vs current."
 }
 
 Integration time. What we learn flows back into POLLENS for the next cycle.`

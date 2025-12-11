@@ -37,6 +37,18 @@ interface PrdData {
   free_totem_anthem?: string | null;
   free_success_criteria?: string | null;
   free_next_cycle_hooks?: string | null;
+  // COMPILATION: Stack Implications
+  stack_implications_pollens?: string | null;
+  stack_implications_noems?: string | null;
+  stack_implications_poems?: string | null;
+  stack_implications_totems?: string | null;
+  stack_implications_anthems?: string | null;
+  // COMPILATION: Prompt Hooks
+  prompt_hooks_pollens?: string | null;
+  prompt_hooks_noems?: string | null;
+  prompt_hooks_poems?: string | null;
+  prompt_hooks_totems?: string | null;
+  prompt_hooks_anthems?: string | null;
 }
 
 const STAGE_LABELS: Record<string, string> = {
@@ -260,6 +272,52 @@ ${formatContent(prd.free_success_criteria)}
 
 ### Next Cycle Hooks
 ${formatContent(prd.free_next_cycle_hooks)}
+
+---
+
+## 🔧 Tech Stack Compilation
+
+### Stack Implications by Layer
+
+| Layer | Technical Requirements |
+|-------|----------------------|
+| POLLENS | ${formatContent(prd.stack_implications_pollens)} |
+| NOEMS | ${formatContent(prd.stack_implications_noems)} |
+| POEMS | ${formatContent(prd.stack_implications_poems)} |
+| TOTEMS | ${formatContent(prd.stack_implications_totems)} |
+| ANTHEMS | ${formatContent(prd.stack_implications_anthems)} |
+
+---
+
+## 🤖 Foundational Prompt Compilation
+
+### Prompt Hooks by Layer
+
+**POLLENS (Role & Identity):**
+${formatContent(prd.prompt_hooks_pollens)}
+
+**NOEMS (Knowledge & Ontology):**
+${formatContent(prd.prompt_hooks_noems)}
+
+**POEMS (Core Behaviors):**
+${formatContent(prd.prompt_hooks_poems)}
+
+**TOTEMS (Rules & Guardrails):**
+${formatContent(prd.prompt_hooks_totems)}
+
+**ANTHEMS (Evolution & Roadmap):**
+${formatContent(prd.prompt_hooks_anthems)}
+
+---
+
+## ✅ Compilation Checklist
+
+- [ ] Extracted stack_implications from all 5 layers
+- [ ] Extracted prompt_hooks from all 5 layers
+- [ ] Tech Stack Proposal compiled
+- [ ] Foundational Vibing Prompt compiled
+- [ ] Reviewed by: Product, Tech, Legal/Compliance
+- [ ] Approved for implementation
 
 ---
 

@@ -59,14 +59,26 @@ interface GeneratedContent {
   anthems_roadmap?: string;
   anthems_feminine_quality?: string;
   anthems_learning_cadence?: string;
+  // COMPILATION: Stack Implications per layer
+  stack_implications_pollens?: string;
+  stack_implications_noems?: string;
+  stack_implications_poems?: string;
+  stack_implications_totems?: string;
+  stack_implications_anthems?: string;
+  // COMPILATION: Prompt Hooks per layer
+  prompt_hooks_pollens?: string;
+  prompt_hooks_noems?: string;
+  prompt_hooks_poems?: string;
+  prompt_hooks_totems?: string;
+  prompt_hooks_anthems?: string;
 }
 
 const LAYER_FIELDS: Record<PrdLayer, (keyof GeneratedContent)[]> = {
-  POLLENS: ['pollens_observations', 'pollens_biases', 'pollens_cultural_issues', 'pollens_prd_shadows', 'pollens_constraints', 'pollens_stakes'],
-  NOEMS: ['noems_concepts', 'noems_shared_ideas', 'noems_intuitions'],
-  POEMS: ['poems_narratives', 'poems_content_sources', 'poems_data_nodes'],
-  TOTEMS: ['totems_processes', 'totems_maps', 'totems_three_graph', 'totems_semantic_notes'],
-  ANTHEMS: ['anthems_alignment', 'anthems_success_signals', 'anthems_guardrails', 'anthems_roadmap', 'anthems_feminine_quality', 'anthems_learning_cadence']
+  POLLENS: ['pollens_observations', 'pollens_biases', 'pollens_cultural_issues', 'pollens_prd_shadows', 'pollens_constraints', 'pollens_stakes', 'stack_implications_pollens', 'prompt_hooks_pollens'],
+  NOEMS: ['noems_concepts', 'noems_shared_ideas', 'noems_intuitions', 'stack_implications_noems', 'prompt_hooks_noems'],
+  POEMS: ['poems_narratives', 'poems_content_sources', 'poems_data_nodes', 'stack_implications_poems', 'prompt_hooks_poems'],
+  TOTEMS: ['totems_processes', 'totems_maps', 'totems_three_graph', 'totems_semantic_notes', 'stack_implications_totems', 'prompt_hooks_totems'],
+  ANTHEMS: ['anthems_alignment', 'anthems_success_signals', 'anthems_guardrails', 'anthems_roadmap', 'anthems_feminine_quality', 'anthems_learning_cadence', 'stack_implications_anthems', 'prompt_hooks_anthems']
 };
 
 const FIELD_LABELS: Record<string, { label: string; description: string }> = {
@@ -96,7 +108,19 @@ const FIELD_LABELS: Record<string, { label: string; description: string }> = {
   anthems_guardrails: { label: 'Guardrails', description: 'Ethics, compliance, social impact' },
   anthems_roadmap: { label: 'Roadmap', description: 'Now/next/later with owners' },
   anthems_feminine_quality: { label: 'Feminine Quality Review', description: 'Which principles honored/at risk' },
-  anthems_learning_cadence: { label: 'Learning Cadence', description: 'How we build in Drift time' }
+  anthems_learning_cadence: { label: 'Learning Cadence', description: 'How we build in Drift time' },
+  // COMPILATION: Stack Implications
+  stack_implications_pollens: { label: '🔧 Stack Implications', description: 'Constraints, integrations, latency requirements' },
+  stack_implications_noems: { label: '🔧 Stack Implications', description: 'Data types, capabilities, candidate components' },
+  stack_implications_poems: { label: '🔧 Stack Implications', description: 'UX surface, adapters, session model' },
+  stack_implications_totems: { label: '🔧 Stack Implications', description: 'Logging, access control, monitoring' },
+  stack_implications_anthems: { label: '🔧 Stack Implications', description: 'MVP vs V2/V3, cost tradeoffs, licensing' },
+  // COMPILATION: Prompt Hooks
+  prompt_hooks_pollens: { label: '🤖 Prompt Hooks', description: 'Purpose, vibe, user archetypes' },
+  prompt_hooks_noems: { label: '🤖 Prompt Hooks', description: 'Ontology, entities, relationships' },
+  prompt_hooks_poems: { label: '🤖 Prompt Hooks', description: 'Canonical flows, error states, guardrails' },
+  prompt_hooks_totems: { label: '🤖 Prompt Hooks', description: 'Rules, never/always constraints' },
+  prompt_hooks_anthems: { label: '🤖 Prompt Hooks', description: 'Phase capabilities, feature flags' }
 };
 
 const LAYER_CHECKLIST: Record<PrdLayer, { label: string; check: (content: GeneratedContent) => boolean }[]> = {
