@@ -26,7 +26,8 @@ import {
   Layers,
   Eye,
   Briefcase,
-  Zap
+  Zap,
+  Lock
 } from 'lucide-react';
 import { downloadMarkdown, exportPrdAsPdf } from '@/utils/prdExport';
 import { toast } from 'sonner';
@@ -44,6 +45,10 @@ import { PrdDimensionalView } from './PrdDimensionalView';
 import CSuiteDashboard from './CSuiteDashboard';
 import CompilationTab from '@/components/prd-generator/CompilationTab';
 import { useMode } from './context/ModeContext';
+import { useSubscription } from '@/hooks/useSubscription';
+import { hasFeatureAccess, PremiumFeature } from '@/data/subscriptionTiers';
+import FeatureGate from '@/components/FeatureGate';
+import PremiumBadge from '@/components/PremiumBadge';
 interface PrdAssemblyPanelProps {
   isOpen: boolean;
   onClose: () => void;
@@ -96,6 +101,11 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   const [expandedLayers, setExpandedLayers] = useState<Set<Season>>(new Set([currentSeason]));
   const [generatingLayer, setGeneratingLayer] = useState<Season | null>(null);
   const [activeTab, setActiveTab] = useState<'layers' | 'dimensions' | 'csuite' | 'compilation'>('layers');
+  
+  const { tier } = useSubscription();
+  const canAccessCSuite = hasFeatureAccess(tier, 'csuite_dashboard');
+  const canAccessCompilation = hasFeatureAccess(tier, 'compilation_tab');
+  const canExportPdf = hasFeatureAccess(tier, 'pdf_export');
   
   const isPersonal = mode === 'personal';
   const documentName = isPersonal ? 'RRD' : 'PRD';
@@ -270,13 +280,15 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
                   <Eye className="h-3.5 w-3.5 mr-1" />
                   Dimensions
                 </TabsTrigger>
-                <TabsTrigger value="csuite" className="text-xs">
+                <TabsTrigger value="csuite" className="text-xs relative">
                   <Briefcase className="h-3.5 w-3.5 mr-1" />
                   C-Suite
+                  {!canAccessCSuite && <Lock className="h-3 w-3 ml-1 text-amber-500" />}
                 </TabsTrigger>
-                <TabsTrigger value="compilation" className="text-xs">
+                <TabsTrigger value="compilation" className="text-xs relative">
                   <Zap className="h-3.5 w-3.5 mr-1" />
                   Compilation
+                  {!canAccessCompilation && <Lock className="h-3 w-3 ml-1 text-amber-500" />}
                 </TabsTrigger>
               </TabsList>
 
@@ -402,38 +414,42 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
               </TabsContent>
 
               <TabsContent value="csuite">
-                <CSuiteDashboard
-                  seasonProgress={Object.fromEntries(
-                    Object.entries(seasonProgress).map(([k, v]) => [k, new Set([...v].map(Number))])
-                  ) as Record<string, Set<number>>}
-                  prdData={prdData}
-                  currentSeason={currentSeason}
-                />
+                <FeatureGate feature="csuite_dashboard">
+                  <CSuiteDashboard
+                    seasonProgress={Object.fromEntries(
+                      Object.entries(seasonProgress).map(([k, v]) => [k, new Set([...v].map(Number))])
+                    ) as Record<string, Set<number>>}
+                    prdData={prdData}
+                    currentSeason={currentSeason}
+                  />
+                </FeatureGate>
               </TabsContent>
 
               <TabsContent value="compilation">
-                <CompilationTab
-                  projectName={prdData?.title || 'Untitled Project'}
-                  stackImplications={{
-                    stack_implications_pollens: prdData?.stack_implications_pollens || '',
-                    stack_implications_noems: prdData?.stack_implications_noems || '',
-                    stack_implications_poems: prdData?.stack_implications_poems || '',
-                    stack_implications_totems: prdData?.stack_implications_totems || '',
-                    stack_implications_anthems: prdData?.stack_implications_anthems || '',
-                  }}
-                  promptHooks={{
-                    prompt_hooks_pollens: prdData?.prompt_hooks_pollens || '',
-                    prompt_hooks_noems: prdData?.prompt_hooks_noems || '',
-                    prompt_hooks_poems: prdData?.prompt_hooks_poems || '',
-                    prompt_hooks_totems: prdData?.prompt_hooks_totems || '',
-                    prompt_hooks_anthems: prdData?.prompt_hooks_anthems || '',
-                  }}
-                  completedLayers={completedSeasons}
-                  onNavigateToLayer={(season) => {
-                    setActiveTab('layers');
-                    setExpandedLayers(prev => new Set([...prev, season]));
-                  }}
-                />
+                <FeatureGate feature="compilation_tab">
+                  <CompilationTab
+                    projectName={prdData?.title || 'Untitled Project'}
+                    stackImplications={{
+                      stack_implications_pollens: prdData?.stack_implications_pollens || '',
+                      stack_implications_noems: prdData?.stack_implications_noems || '',
+                      stack_implications_poems: prdData?.stack_implications_poems || '',
+                      stack_implications_totems: prdData?.stack_implications_totems || '',
+                      stack_implications_anthems: prdData?.stack_implications_anthems || '',
+                    }}
+                    promptHooks={{
+                      prompt_hooks_pollens: prdData?.prompt_hooks_pollens || '',
+                      prompt_hooks_noems: prdData?.prompt_hooks_noems || '',
+                      prompt_hooks_poems: prdData?.prompt_hooks_poems || '',
+                      prompt_hooks_totems: prdData?.prompt_hooks_totems || '',
+                      prompt_hooks_anthems: prdData?.prompt_hooks_anthems || '',
+                    }}
+                    completedLayers={completedSeasons}
+                    onNavigateToLayer={(season) => {
+                      setActiveTab('layers');
+                      setExpandedLayers(prev => new Set([...prev, season]));
+                    }}
+                  />
+                </FeatureGate>
               </TabsContent>
             </Tabs>
           )}
@@ -457,15 +473,28 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
                     <FileDown className="h-3.5 w-3.5 mr-1" />
                     Markdown
                   </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => exportPrdAsPdf(prdData as any)}
-                    className="text-xs"
-                  >
-                    <Printer className="h-3.5 w-3.5 mr-1" />
-                    PDF
-                  </Button>
+                  {canExportPdf ? (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => exportPrdAsPdf(prdData as any)}
+                      className="text-xs"
+                    >
+                      <Printer className="h-3.5 w-3.5 mr-1" />
+                      PDF
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-xs opacity-60"
+                      disabled
+                    >
+                      <Lock className="h-3.5 w-3.5 mr-1" />
+                      PDF
+                      <PremiumBadge feature="pdf_export" className="ml-1" />
+                    </Button>
+                  )}
                 </>
               )}
               {completedSeasons.length >= 5 && (

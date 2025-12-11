@@ -103,3 +103,47 @@ export const getNextUpgradeTier = (currentTier: string | null): string | null =>
   if (currentTier === 'growth') return 'scale';
   return null; // Already at scale
 };
+
+// Premium feature definitions
+export type PremiumFeature = 
+  | 'csuite_dashboard'
+  | 'compilation_tab'
+  | 'ai_journey_summary'
+  | 'insight_connections'
+  | 'pdf_export';
+
+export const FEATURE_TIERS: Record<PremiumFeature, string> = {
+  csuite_dashboard: 'growth',
+  ai_journey_summary: 'growth',
+  pdf_export: 'growth',
+  insight_connections: 'scale',
+  compilation_tab: 'scale',
+};
+
+export const FEATURE_DISPLAY_NAMES: Record<PremiumFeature, string> = {
+  csuite_dashboard: 'C-Suite Dashboard',
+  ai_journey_summary: 'AI Journey Summary',
+  pdf_export: 'PDF Export',
+  insight_connections: 'Insight Connections Graph',
+  compilation_tab: 'AI Compilation Tools',
+};
+
+const TIER_HIERARCHY = ['starter', 'growth', 'scale'];
+
+export const hasFeatureAccess = (tier: string | null, feature: PremiumFeature): boolean => {
+  const requiredTier = FEATURE_TIERS[feature];
+  if (!tier) return false; // Free users have no premium features
+  
+  const userTierIndex = TIER_HIERARCHY.indexOf(tier);
+  const requiredTierIndex = TIER_HIERARCHY.indexOf(requiredTier);
+  
+  return userTierIndex >= requiredTierIndex;
+};
+
+export const getRequiredTierForFeature = (feature: PremiumFeature): string => {
+  return FEATURE_TIERS[feature];
+};
+
+export const getFeatureDisplayName = (feature: PremiumFeature): string => {
+  return FEATURE_DISPLAY_NAMES[feature];
+};

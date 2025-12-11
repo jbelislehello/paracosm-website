@@ -5,9 +5,12 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { X, Sparkles, MapPin, Lightbulb, TrendingUp, Loader2, FileText, Layers, ArrowRight } from 'lucide-react';
+import { X, Sparkles, MapPin, Lightbulb, TrendingUp, Loader2, FileText, Layers, ArrowRight, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 import { Season, SEASON_LABELS, SEASON_PRD_LAYER, shouldTriggerPrdGeneration, getLayerReadiness } from '@/utils/prdAccessLevel';
+import { useSubscription } from '@/hooks/useSubscription';
+import { hasFeatureAccess } from '@/data/subscriptionTiers';
+import PremiumBadge from '@/components/PremiumBadge';
 
 interface JourneySummaryProps {
   isOpen: boolean;
@@ -49,6 +52,9 @@ export const JourneySummary: React.FC<JourneySummaryProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGeneratingPrd, setIsGeneratingPrd] = useState(false);
+  
+  const { tier } = useSubscription();
+  const canUseAiSummary = hasFeatureAccess(tier, 'ai_journey_summary');
 
   useEffect(() => {
     if (isOpen) {
@@ -219,19 +225,33 @@ export const JourneySummary: React.FC<JourneySummaryProps> = ({
               </Card>
 
               {/* Generate Summary Button */}
-              <Button
-                onClick={generateSummary}
-                disabled={isGenerating || entries.length === 0}
-                variant="outline"
-                className="w-full"
-              >
-                {isGenerating ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <Sparkles className="h-4 w-4 mr-2" />
-                )}
-                {isGenerating ? 'Analyzing...' : 'Generate AI Summary'}
-              </Button>
+              {canUseAiSummary ? (
+                <Button
+                  onClick={generateSummary}
+                  disabled={isGenerating || entries.length === 0}
+                  variant="outline"
+                  className="w-full"
+                >
+                  {isGenerating ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Sparkles className="h-4 w-4 mr-2" />
+                  )}
+                  {isGenerating ? 'Analyzing...' : 'Generate AI Summary'}
+                </Button>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    className="flex-1 opacity-60"
+                    disabled
+                  >
+                    <Lock className="h-4 w-4 mr-2" />
+                    Generate AI Summary
+                  </Button>
+                  <PremiumBadge feature="ai_journey_summary" showLabel />
+                </div>
+              )}
 
               {/* Summary Results */}
               {summary && (
