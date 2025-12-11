@@ -118,6 +118,7 @@ const Footer: React.FC = () => {
           <div className="flex space-x-4 mt-4 md:mt-0">
             <a href="https://www.linkedin.com/newsletters/calm-magic-6884529759464816640/" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">LinkedIn</a>
             <a href="https://calmmagic.medium.com/" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">Medium</a>
+            <a href="https://www.youtube.com/watch?v=vK5PlnVQUqo&list=PLPBdUXhaUvYS_Lm7cIIBhikixfSkVB1Dd" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">YouTube</a>
           </div>
         </div>
       </div>
