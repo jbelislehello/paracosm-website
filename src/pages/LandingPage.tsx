@@ -9,6 +9,7 @@ import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
 import RetreatAnnouncementPopup from "@/components/RetreatAnnouncementPopup";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
+import FAQSection from "@/components/FAQSection";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Zap, Heart, ChevronDown, Users, Menu, Grid3x3, Sparkles } from 'lucide-react';
@@ -380,6 +381,9 @@ const LandingPage = () => {
       <section id="partners">
         <PartnerToolsSection />
       </section>
+      
+      {/* FAQ Section */}
+      <FAQSection />
       
       {/* Contact Section */}
       <section id="contact">
