@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Copy, Download, Check, Bot, Sparkles, Heart } from 'lucide-react';
-import { compileFoundationalPrompt, formatForLovable } from '@/data/prdCompilation';
+import { Copy, Download, Check, Bot, Sparkles, Heart, Hexagon, Code } from 'lucide-react';
+import { compileFoundationalPrompt, formatForLovable, formatForBase44, formatForEdgeFunction } from '@/data/prdCompilation';
 import { toast } from 'sonner';
 
 interface FoundationalPromptCompilerProps {
@@ -21,6 +21,8 @@ export const FoundationalPromptCompiler: React.FC<FoundationalPromptCompilerProp
 }) => {
   const [copied, setCopied] = useState(false);
   const [copiedLovable, setCopiedLovable] = useState(false);
+  const [copiedBase44, setCopiedBase44] = useState(false);
+  const [copiedEdgeFunction, setCopiedEdgeFunction] = useState(false);
 
   const compiledPrompt = useMemo(() => {
     return compileFoundationalPrompt(promptHooks, projectName);
@@ -43,6 +45,22 @@ export const FoundationalPromptCompiler: React.FC<FoundationalPromptCompilerProp
     setCopiedLovable(true);
     toast.success('Copied for Lovable! Paste into Project Settings → Manage Knowledge');
     setTimeout(() => setCopiedLovable(false), 2000);
+  };
+
+  const handleCopyToBase44 = async () => {
+    const base44Formatted = formatForBase44(compiledPrompt, projectName);
+    await navigator.clipboard.writeText(base44Formatted);
+    setCopiedBase44(true);
+    toast.success('Copied for Base44! Paste into AI Agent Settings');
+    setTimeout(() => setCopiedBase44(false), 2000);
+  };
+
+  const handleCopyToEdgeFunction = async () => {
+    const edgeFunctionCode = formatForEdgeFunction(compiledPrompt, projectName);
+    await navigator.clipboard.writeText(edgeFunctionCode);
+    setCopiedEdgeFunction(true);
+    toast.success('Edge Function copied! Create new function file and paste');
+    setTimeout(() => setCopiedEdgeFunction(false), 2000);
   };
 
   const handleDownload = () => {
@@ -118,32 +136,75 @@ export const FoundationalPromptCompiler: React.FC<FoundationalPromptCompilerProp
         {/* Platform Compatibility */}
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <span>Compatible with:</span>
-          <Badge variant="secondary" className="text-[10px]">Lovable</Badge>
-          <Badge variant="secondary" className="text-[10px]">Base44</Badge>
-          <Badge variant="secondary" className="text-[10px]">Custom Agents</Badge>
+          <Badge variant="secondary" className="text-[10px] bg-rose-500/10 text-rose-500 border-rose-500/30">Lovable</Badge>
+          <Badge variant="secondary" className="text-[10px] bg-blue-500/10 text-blue-500 border-blue-500/30">Base44</Badge>
+          <Badge variant="secondary" className="text-[10px] bg-emerald-500/10 text-emerald-500 border-emerald-500/30">Edge Functions</Badge>
         </div>
 
         {/* Actions */}
         <div className="flex flex-col gap-2">
-          {/* Primary Lovable Action */}
+          {/* Primary Platform Actions */}
           <TooltipProvider>
+            <div className="grid grid-cols-2 gap-2">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="sm"
+                    onClick={handleCopyToLovable}
+                    className="bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white"
+                  >
+                    {copiedLovable ? (
+                      <Check className="h-3.5 w-3.5 mr-1" />
+                    ) : (
+                      <Heart className="h-3.5 w-3.5 mr-1" />
+                    )}
+                    {copiedLovable ? 'Copied!' : 'Lovable'}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-xs">Copy for Lovable's Project Knowledge settings</p>
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="sm"
+                    onClick={handleCopyToBase44}
+                    className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white"
+                  >
+                    {copiedBase44 ? (
+                      <Check className="h-3.5 w-3.5 mr-1" />
+                    ) : (
+                      <Hexagon className="h-3.5 w-3.5 mr-1" />
+                    )}
+                    {copiedBase44 ? 'Copied!' : 'Base44'}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-xs">Copy for Base44's AI Agent settings</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+
+            {/* Edge Function Export */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   size="sm"
-                  onClick={handleCopyToLovable}
-                  className="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white"
+                  onClick={handleCopyToEdgeFunction}
+                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white"
                 >
-                  {copiedLovable ? (
+                  {copiedEdgeFunction ? (
                     <Check className="h-3.5 w-3.5 mr-1" />
                   ) : (
-                    <Heart className="h-3.5 w-3.5 mr-1" />
+                    <Code className="h-3.5 w-3.5 mr-1" />
                   )}
-                  {copiedLovable ? 'Copied for Lovable!' : 'Copy to Lovable'}
+                  {copiedEdgeFunction ? 'Copied!' : 'Copy as Edge Function'}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p className="text-xs">Formats with proper escaping for Lovable's Knowledge settings</p>
+                <p className="text-xs">Generate complete Supabase Edge Function with Lovable AI integration</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -161,7 +222,7 @@ export const FoundationalPromptCompiler: React.FC<FoundationalPromptCompilerProp
               ) : (
                 <Copy className="h-3.5 w-3.5 mr-1" />
               )}
-              {copied ? 'Copied!' : 'Copy Raw'}
+              {copied ? 'Copied!' : 'Raw'}
             </Button>
             <Button
               size="sm"
