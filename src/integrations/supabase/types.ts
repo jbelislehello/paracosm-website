@@ -543,6 +543,8 @@ export type Database = {
         Row: {
           calm_requirements: string | null
           calm_risks_and_limits: string | null
+          compiled_prompt: string | null
+          compiled_tech_stack: Json | null
           created_at: string
           free_first_poem_description: string | null
           free_next_cycle_hooks: string | null
@@ -568,7 +570,17 @@ export type Database = {
           open_ontology_and_graph: string | null
           open_real_workflow: string | null
           owner_id: string
+          prompt_hooks_anthems: string | null
+          prompt_hooks_noems: string | null
+          prompt_hooks_poems: string | null
+          prompt_hooks_pollens: string | null
+          prompt_hooks_totems: string | null
           prototype_stage: string
+          stack_implications_anthems: string | null
+          stack_implications_noems: string | null
+          stack_implications_poems: string | null
+          stack_implications_pollens: string | null
+          stack_implications_totems: string | null
           status: string
           team_id: string | null
           title: string
@@ -577,6 +589,8 @@ export type Database = {
         Insert: {
           calm_requirements?: string | null
           calm_risks_and_limits?: string | null
+          compiled_prompt?: string | null
+          compiled_tech_stack?: Json | null
           created_at?: string
           free_first_poem_description?: string | null
           free_next_cycle_hooks?: string | null
@@ -602,7 +616,17 @@ export type Database = {
           open_ontology_and_graph?: string | null
           open_real_workflow?: string | null
           owner_id: string
+          prompt_hooks_anthems?: string | null
+          prompt_hooks_noems?: string | null
+          prompt_hooks_poems?: string | null
+          prompt_hooks_pollens?: string | null
+          prompt_hooks_totems?: string | null
           prototype_stage?: string
+          stack_implications_anthems?: string | null
+          stack_implications_noems?: string | null
+          stack_implications_poems?: string | null
+          stack_implications_pollens?: string | null
+          stack_implications_totems?: string | null
           status?: string
           team_id?: string | null
           title: string
@@ -611,6 +635,8 @@ export type Database = {
         Update: {
           calm_requirements?: string | null
           calm_risks_and_limits?: string | null
+          compiled_prompt?: string | null
+          compiled_tech_stack?: Json | null
           created_at?: string
           free_first_poem_description?: string | null
           free_next_cycle_hooks?: string | null
@@ -636,7 +662,17 @@ export type Database = {
           open_ontology_and_graph?: string | null
           open_real_workflow?: string | null
           owner_id?: string
+          prompt_hooks_anthems?: string | null
+          prompt_hooks_noems?: string | null
+          prompt_hooks_poems?: string | null
+          prompt_hooks_pollens?: string | null
+          prompt_hooks_totems?: string | null
           prototype_stage?: string
+          stack_implications_anthems?: string | null
+          stack_implications_noems?: string | null
+          stack_implications_poems?: string | null
+          stack_implications_pollens?: string | null
+          stack_implications_totems?: string | null
           status?: string
           team_id?: string | null
           title?: string

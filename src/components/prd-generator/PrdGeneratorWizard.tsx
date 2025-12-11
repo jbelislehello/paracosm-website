@@ -279,7 +279,19 @@ const PrdGeneratorWizard = ({
         free_first_poem_description: content.anthems_roadmap,
         free_totem_anthem: content.anthems_alignment,
         free_success_criteria: content.anthems_success_signals,
-        free_next_cycle_hooks: content.anthems_learning_cadence
+        free_next_cycle_hooks: content.anthems_learning_cadence,
+        // COMPILATION: Stack Implications
+        stack_implications_pollens: content.stack_implications_pollens,
+        stack_implications_noems: content.stack_implications_noems,
+        stack_implications_poems: content.stack_implications_poems,
+        stack_implications_totems: content.stack_implications_totems,
+        stack_implications_anthems: content.stack_implications_anthems,
+        // COMPILATION: Prompt Hooks
+        prompt_hooks_pollens: content.prompt_hooks_pollens,
+        prompt_hooks_noems: content.prompt_hooks_noems,
+        prompt_hooks_poems: content.prompt_hooks_poems,
+        prompt_hooks_totems: content.prompt_hooks_totems,
+        prompt_hooks_anthems: content.prompt_hooks_anthems,
       };
 
       const { data: prd, error } = await supabase
