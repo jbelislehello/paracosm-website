@@ -125,7 +125,7 @@ const CoachingServices: React.FC = () => {
                   ))}
                 </ul>
 
-                <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
+                <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/flexible-quick-meeting" target="_blank" rel="noopener noreferrer">
                   <Button className="w-full bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600">
                     Book Discovery Call
                   </Button>

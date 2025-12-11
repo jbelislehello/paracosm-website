@@ -119,7 +119,7 @@ const CalmMagicLensOverlay: React.FC<CalmMagicLensOverlayProps> = ({
             <strong>Recommendation:</strong> {getSuggestion()}
           </div>
           <div className="flex gap-2">
-            <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
+            <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/quick-meeting" target="_blank" rel="noopener noreferrer">
               <Button size="sm" variant="outline">Schedule Workshop</Button>
             </a>
             <Button size="sm" variant="outline">AI Assistant Session</Button>

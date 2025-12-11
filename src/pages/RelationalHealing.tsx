@@ -66,7 +66,7 @@ const RelationalHealing = () => {
                   <Heart className="w-4 h-4" />
                   {t("hero.explore_inner_landscape")}
                 </Button>
-                <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
+                <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/flexible-quick-meeting" target="_blank" rel="noopener noreferrer">
                   <Button variant="outline" className="flex items-center gap-2">
                     {t("hero.book_discovery")}
                   </Button>
