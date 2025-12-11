@@ -21,8 +21,8 @@ const SubscriptionCanceled: React.FC = () => {
           <div className="bg-muted/50 rounded-lg p-4">
             <p className="text-sm text-muted-foreground">
               If you have any questions about our plans or need help deciding, feel free to reach out to us at{' '}
-              <a href="mailto:hello@paracosm.io" className="text-primary hover:underline">
-                hello@paracosm.io
+              <a href="mailto:jbelisle@helloarchitekt.com" className="text-primary hover:underline">
+                jbelisle@helloarchitekt.com
               </a>
             </p>
           </div>

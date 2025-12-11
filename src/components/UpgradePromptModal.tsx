@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   Dialog,
   DialogContent,
@@ -185,7 +185,11 @@ const UpgradePromptModal: React.FC<UpgradePromptModalProps> = ({
           ) : (
             <div className="p-4 rounded-lg bg-muted/50 border border-border text-center">
               <p className="text-sm text-muted-foreground">
-                You're on the highest tier. Contact us for enterprise options.
+                You're on the highest tier.{' '}
+                <Link to="/#contact" className="text-primary hover:underline">
+                  Contact us
+                </Link>{' '}
+                for enterprise options.
               </p>
             </div>
           )}
