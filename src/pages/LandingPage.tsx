@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 
 import CoachingApproachSection from "@/components/CoachingApproachSection";
@@ -9,6 +8,7 @@ import ParacosmEventsSection from "@/components/ParacosmEventsSection";
 import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
 import RetreatAnnouncementPopup from "@/components/RetreatAnnouncementPopup";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Zap, Heart, ChevronDown, Users, Menu, Grid3x3, Sparkles } from 'lucide-react';
@@ -387,57 +387,7 @@ const LandingPage = () => {
       </section>
       
       {/* Footer */}
-      <footer className="bg-slate-900 text-slate-300 py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-md flex items-center justify-center">
-                  <span className="text-white font-bold">P</span>
-                </div>
-                <span className="font-bold text-lg text-white">Paracosm</span>
-              </div>
-              <p className="text-sm text-slate-400 mb-4">
-                Transformational leadership coaching that bridges vision and execution through proven methodologies for AI leadership and team development.
-              </p>
-              <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/high-priority-meeting" target="_blank" rel="noopener noreferrer">
-                <Button variant="outline" size="sm" className="text-white border-white hover:bg-white hover:text-slate-900">
-                  Book Discovery Call
-                </Button>
-              </a>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold text-white mb-4">Services</h3>
-              <ul className="space-y-2">
-                <li><Link to="/agentic-ux" className="text-sm hover:text-purple-600">AI Leadership & Strategy</Link></li>
-                <li><Link to="/calm-magic-assistant" className="text-sm hover:text-purple-600">Team Coaching & Culture</Link></li>
-                <li><a href="#leadership-roles" className="text-sm hover:text-purple-600">Executive Development</a></li>
-                <li><Link to="/case-studies" className="text-sm hover:text-purple-600">Case Studies</Link></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold text-white mb-4">Company</h3>
-              <ul className="space-y-2">
-                <li><Link to="/about-us" className="text-sm hover:text-purple-600">About Jonathan</Link></li>
-                <li><a href="#events" className="text-sm hover:text-purple-600">Upcoming Events</a></li>
-                <li><a href="#coaching-approach" className="text-sm hover:text-purple-600">Our Methodology</a></li>
-                <li><a href="#contact" className="text-sm hover:text-purple-600">Contact Us</a></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-slate-400">© 2025 Paracosm. All rights reserved.</p>
-            <div className="flex space-x-4 mt-4 md:mt-0">
-              <a href="#" className="text-slate-400 hover:text-white">LinkedIn</a>
-              <a href="#" className="text-slate-400 hover:text-white">Twitter</a>
-              <a href="#" className="text-slate-400 hover:text-white">Medium</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

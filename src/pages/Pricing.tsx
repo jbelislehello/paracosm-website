@@ -8,6 +8,7 @@ import { useUserSession } from '@/hooks/useUserSession';
 import { useSubscription } from '@/hooks/useSubscription';
 import { SUBSCRIPTION_TIERS, SubscriptionTier } from '@/data/subscriptionTiers';
 import { useToast } from '@/hooks/use-toast';
+import Footer from '@/components/Footer';
 
 const PricingCard: React.FC<{ 
   tierKey: string;
@@ -217,6 +218,9 @@ const Pricing: React.FC = () => {
           </p>
         </div>
       </div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };

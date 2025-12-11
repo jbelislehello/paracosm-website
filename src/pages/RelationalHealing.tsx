@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
 import CoachingServices from "@/components/calm-magic/CoachingServices";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Heart, ArrowLeft } from 'lucide-react';
 import { Link } from "react-router-dom";
@@ -89,51 +90,7 @@ const RelationalHealing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-slate-300 py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-rose-600 to-purple-600 rounded-md flex items-center justify-center">
-                  <Heart className="w-4 h-4 text-white" />
-                </div>
-                <span className="font-bold text-lg text-white">Calm Magic</span>
-              </div>
-              <p className="text-sm text-slate-400 mb-4">
-                {t("footer.calm_magic_description")}
-              </p>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold text-white mb-4">{t("footer.services_title")}</h3>
-              <ul className="space-y-2">
-                <li><a href="#coaching-services" className="text-sm hover:text-purple-600">{t("footer.individual_coaching")}</a></li>
-                <li><a href="#coaching-services" className="text-sm hover:text-purple-600">{t("footer.relationship_design")}</a></li>
-                <li><a href="#coaching-services" className="text-sm hover:text-purple-600">{t("footer.transformation_programs")}</a></li>
-                <li><Link to="/case-studies" className="text-sm hover:text-purple-600">{t("navigation.case_studies")}</Link></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold text-white mb-4">{t("footer.company_title")}</h3>
-              <ul className="space-y-2">
-                <li><Link to="/about-us" className="text-sm hover:text-purple-600">{t("footer.about_jonathan")}</Link></li>
-                <li><Link to="/" className="text-sm hover:text-purple-600">{t("footer.leadership_coaching")}</Link></li>
-                <li><a href="#" className="text-sm hover:text-purple-600">{t("footer.privacy")}</a></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-slate-400">© 2025 Jonathan Bélisle. {t("footer.rights_reserved")}</p>
-            <div className="flex space-x-4 mt-4 md:mt-0">
-              <a href="#" className="text-slate-400 hover:text-white">LinkedIn</a>
-              <a href="#" className="text-slate-400 hover:text-white">Twitter</a>
-              <a href="#" className="text-slate-400 hover:text-white">Medium</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>;
 };
 export default RelationalHealing;

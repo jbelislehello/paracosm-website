@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Mic, Calendar, Compass, Mail, CheckCircle } from "lucide-react";
 import { energeticAxes } from "@/data/gardens";
 import { useToast } from "@/hooks/use-toast";
+import Footer from "@/components/Footer";
 
 const DriftLanding = () => {
   const [email, setEmail] = useState("");
@@ -262,6 +263,9 @@ const DriftLanding = () => {
           </Card>
         </div>
       </section>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 };
