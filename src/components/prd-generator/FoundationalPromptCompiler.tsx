@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Copy, Download, Check, Bot, Sparkles } from 'lucide-react';
-import { compileFoundationalPrompt } from '@/data/prdCompilation';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Copy, Download, Check, Bot, Sparkles, Heart } from 'lucide-react';
+import { compileFoundationalPrompt, formatForLovable } from '@/data/prdCompilation';
 import { toast } from 'sonner';
 
 interface FoundationalPromptCompilerProps {
@@ -19,6 +20,7 @@ export const FoundationalPromptCompiler: React.FC<FoundationalPromptCompilerProp
   isComplete
 }) => {
   const [copied, setCopied] = useState(false);
+  const [copiedLovable, setCopiedLovable] = useState(false);
 
   const compiledPrompt = useMemo(() => {
     return compileFoundationalPrompt(promptHooks, projectName);
@@ -33,6 +35,14 @@ export const FoundationalPromptCompiler: React.FC<FoundationalPromptCompilerProp
     setCopied(true);
     toast.success('Foundational Prompt copied to clipboard');
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleCopyToLovable = async () => {
+    const lovableFormatted = formatForLovable(compiledPrompt, projectName);
+    await navigator.clipboard.writeText(lovableFormatted);
+    setCopiedLovable(true);
+    toast.success('Copied for Lovable! Paste into Project Settings → Manage Knowledge');
+    setTimeout(() => setCopiedLovable(false), 2000);
   };
 
   const handleDownload = () => {
@@ -114,29 +124,55 @@ export const FoundationalPromptCompiler: React.FC<FoundationalPromptCompilerProp
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={handleCopy}
-            className="flex-1"
-          >
-            {copied ? (
-              <Check className="h-3.5 w-3.5 mr-1" />
-            ) : (
-              <Copy className="h-3.5 w-3.5 mr-1" />
-            )}
-            {copied ? 'Copied!' : 'Copy Prompt'}
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={handleDownload}
-            className="flex-1"
-          >
-            <Download className="h-3.5 w-3.5 mr-1" />
-            Download
-          </Button>
+        <div className="flex flex-col gap-2">
+          {/* Primary Lovable Action */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  size="sm"
+                  onClick={handleCopyToLovable}
+                  className="w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white"
+                >
+                  {copiedLovable ? (
+                    <Check className="h-3.5 w-3.5 mr-1" />
+                  ) : (
+                    <Heart className="h-3.5 w-3.5 mr-1" />
+                  )}
+                  {copiedLovable ? 'Copied for Lovable!' : 'Copy to Lovable'}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="text-xs">Formats with proper escaping for Lovable's Knowledge settings</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          {/* Secondary Actions */}
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleCopy}
+              className="flex-1"
+            >
+              {copied ? (
+                <Check className="h-3.5 w-3.5 mr-1" />
+              ) : (
+                <Copy className="h-3.5 w-3.5 mr-1" />
+              )}
+              {copied ? 'Copied!' : 'Copy Raw'}
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleDownload}
+              className="flex-1"
+            >
+              <Download className="h-3.5 w-3.5 mr-1" />
+              Download
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
