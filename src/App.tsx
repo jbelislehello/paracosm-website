@@ -26,6 +26,8 @@ import CalmMagicVisualization from "./pages/CalmMagicVisualization";
 import CalmMagicJournal from "./pages/CalmMagicJournal";
 import ProjectsDashboard from "./pages/ProjectsDashboard";
 import Pricing from "./pages/Pricing";
+import SubscriptionSuccess from "./pages/SubscriptionSuccess";
+import SubscriptionCanceled from "./pages/SubscriptionCanceled";
 import "./App.css";
 
 const queryClient = new QueryClient();
@@ -59,6 +61,8 @@ function App() {
                   <Route path="/calm-magic-visualization" element={<CalmMagicVisualization />} />
                   <Route path="/calm-magic-journal" element={<CalmMagicJournal />} />
                   <Route path="/projects" element={<ProjectsDashboard />} />
+                  <Route path="/subscription-success" element={<SubscriptionSuccess />} />
+                  <Route path="/subscription-canceled" element={<SubscriptionCanceled />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
                 <Toaster />

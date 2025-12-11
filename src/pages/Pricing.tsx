@@ -1,78 +1,116 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, Sparkles, Users, FolderOpen, ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Check, Sparkles, Users, FolderOpen, ArrowLeft, Loader2, Settings } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useUserSession } from '@/hooks/useUserSession';
+import { useSubscription } from '@/hooks/useSubscription';
+import { SUBSCRIPTION_TIERS, SubscriptionTier } from '@/data/subscriptionTiers';
+import { useToast } from '@/hooks/use-toast';
 
-interface PricingTier {
-  name: string;
-  price: number;
-  description: string;
-  features: string[];
-  projects: string;
-  users: string;
-  popular?: boolean;
-}
+const PricingCard: React.FC<{ 
+  tierKey: string;
+  tier: SubscriptionTier;
+  currentTier: string | null;
+  isLoggedIn: boolean;
+  isLoading: boolean;
+  onSubscribe: (priceId: string) => Promise<void>;
+  onManage: () => Promise<void>;
+}> = ({ tierKey, tier, currentTier, isLoggedIn, isLoading, onSubscribe, onManage }) => {
+  const [isProcessing, setIsProcessing] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  
+  const isCurrentPlan = currentTier === tierKey;
+  const projectsDisplay = tier.projects === -1 ? 'Unlimited projects' : `${tier.projects} project${tier.projects > 1 ? 's' : ''}`;
+  const usersDisplay = `${tier.users} user${tier.users > 1 ? 's' : ''}`;
 
-const pricingTiers: PricingTier[] = [
-  {
-    name: 'Starter',
-    price: 50,
-    description: 'Perfect for individual exploration',
-    projects: '1 project',
-    users: '1 user',
-    features: [
-      'Full Calm Magic Board access',
-      'Personal & Professional modes',
-      'Window of Tolerance tracking',
-      'Living PRD generation',
-      'Fragment Browser',
-      'Journey Summary',
-      'Email support'
-    ]
-  },
-  {
-    name: 'Growth',
-    price: 100,
-    description: 'For growing teams and multiple projects',
-    projects: '5 projects',
-    users: '2 users',
-    popular: true,
-    features: [
-      'Everything in Starter',
-      'Team collaboration',
-      'Shared PRD editing',
-      'C-Suite Dashboard',
-      'Cross-project insights',
-      'Priority support',
-      'Monthly check-in call'
-    ]
-  },
-  {
-    name: 'Scale',
-    price: 250,
-    description: 'For organizations embracing transformation',
-    projects: 'Unlimited projects',
-    users: '5 users',
-    features: [
-      'Everything in Growth',
-      'Unlimited projects',
-      'Advanced analytics',
-      'Custom integrations',
-      'Dedicated success manager',
-      'Team training session',
-      'API access (coming soon)'
-    ]
-  }
-];
+  const handleClick = async () => {
+    if (!isLoggedIn) {
+      navigate('/auth');
+      return;
+    }
 
-const PricingCard: React.FC<{ tier: PricingTier }> = ({ tier }) => {
+    if (isCurrentPlan) {
+      setIsProcessing(true);
+      try {
+        await onManage();
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: error instanceof Error ? error.message : "Failed to open portal",
+          variant: "destructive",
+        });
+      } finally {
+        setIsProcessing(false);
+      }
+      return;
+    }
+
+    if (currentTier) {
+      // Has a different subscription - open portal to change
+      setIsProcessing(true);
+      try {
+        await onManage();
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: error instanceof Error ? error.message : "Failed to open portal",
+          variant: "destructive",
+        });
+      } finally {
+        setIsProcessing(false);
+      }
+      return;
+    }
+
+    // Not subscribed - create checkout
+    setIsProcessing(true);
+    try {
+      await onSubscribe(tier.priceId);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to start checkout",
+        variant: "destructive",
+      });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const getButtonContent = () => {
+    if (isProcessing || isLoading) {
+      return <Loader2 className="h-4 w-4 animate-spin" />;
+    }
+    if (!isLoggedIn) {
+      return 'Sign in to Subscribe';
+    }
+    if (isCurrentPlan) {
+      return (
+        <>
+          <Settings className="h-4 w-4 mr-2" />
+          Manage Plan
+        </>
+      );
+    }
+    if (currentTier) {
+      return 'Change Plan';
+    }
+    return 'Subscribe';
+  };
+
   return (
-    <Card className={`relative flex flex-col ${tier.popular ? 'border-purple-500 shadow-lg shadow-purple-500/10' : 'border-border'}`}>
-      {tier.popular && (
+    <Card className={`relative flex flex-col ${tier.popular ? 'border-purple-500 shadow-lg shadow-purple-500/10' : 'border-border'} ${isCurrentPlan ? 'ring-2 ring-green-500' : ''}`}>
+      {tier.popular && !isCurrentPlan && (
         <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-rose-500 to-purple-500">
           Most Popular
+        </Badge>
+      )}
+      {isCurrentPlan && (
+        <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-green-500">
+          Your Plan
         </Badge>
       )}
       <CardHeader className="text-center pb-2">
@@ -89,11 +127,11 @@ const PricingCard: React.FC<{ tier: PricingTier }> = ({ tier }) => {
         <div className="flex justify-center gap-4 text-sm">
           <div className="flex items-center gap-1.5">
             <FolderOpen className="h-4 w-4 text-purple-500" />
-            <span>{tier.projects}</span>
+            <span>{projectsDisplay}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <Users className="h-4 w-4 text-rose-500" />
-            <span>{tier.users}</span>
+            <span>{usersDisplay}</span>
           </div>
         </div>
 
@@ -108,11 +146,12 @@ const PricingCard: React.FC<{ tier: PricingTier }> = ({ tier }) => {
       </CardContent>
       <CardFooter>
         <Button 
-          className={`w-full ${tier.popular ? 'bg-gradient-to-r from-rose-500 to-purple-500 hover:from-rose-600 hover:to-purple-600' : ''}`}
-          variant={tier.popular ? 'default' : 'outline'}
-          disabled
+          className={`w-full ${tier.popular && !isCurrentPlan ? 'bg-gradient-to-r from-rose-500 to-purple-500 hover:from-rose-600 hover:to-purple-600' : ''}`}
+          variant={tier.popular && !isCurrentPlan ? 'default' : 'outline'}
+          onClick={handleClick}
+          disabled={isProcessing || isLoading}
         >
-          Coming Soon
+          {getButtonContent()}
         </Button>
       </CardFooter>
     </Card>
@@ -120,6 +159,9 @@ const PricingCard: React.FC<{ tier: PricingTier }> = ({ tier }) => {
 };
 
 const Pricing: React.FC = () => {
+  const { user } = useUserSession();
+  const { tier: currentTier, isLoading, createCheckout, openCustomerPortal } = useSubscription();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-500/5 via-purple-500/5 to-indigo-500/5">
       <div className="container mx-auto px-4 py-12">
@@ -148,26 +190,27 @@ const Pricing: React.FC = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {pricingTiers.map((tier) => (
-            <PricingCard key={tier.name} tier={tier} />
+          {Object.entries(SUBSCRIPTION_TIERS).map(([key, tier]) => (
+            <PricingCard 
+              key={key}
+              tierKey={key}
+              tier={tier}
+              currentTier={currentTier}
+              isLoggedIn={!!user}
+              isLoading={isLoading}
+              onSubscribe={createCheckout}
+              onManage={openCustomerPortal}
+            />
           ))}
         </div>
 
-        <div className="mt-12 text-center space-y-4">
+        <div className="mt-12 text-center">
           <p className="text-sm text-muted-foreground">
             Need a custom plan for your organization?{' '}
             <a href="mailto:hello@paracosm.io" className="text-primary hover:underline">
               Contact us
             </a>
           </p>
-          <Card className="max-w-2xl mx-auto border-amber-500/20 bg-gradient-to-br from-amber-500/5 to-orange-500/5">
-            <CardContent className="pt-6">
-              <p className="text-sm text-center text-muted-foreground">
-                <strong className="text-foreground">🚀 Early Access:</strong> Payment integration coming soon. 
-                In the meantime, create an account to start exploring the Calm Magic Board for free!
-              </p>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </div>
