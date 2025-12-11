@@ -305,11 +305,15 @@ ${anthemsHooks}
 // VALIDATION TYPES
 // =============================================================================
 
+export type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
+
 export interface ValidationIssue {
   layer: string;
   field: string;
   message: string;
   severity: 'error' | 'warning';
+  targetSeason: Season;
+  fixHint: string;
 }
 
 export interface ValidationResult {
@@ -329,6 +333,29 @@ export const VALIDATION_RULES = {
 // VALIDATION FUNCTION
 // =============================================================================
 
+const LAYER_FIX_HINTS: Record<string, { stack: string; prompt: string }> = {
+  POLLENS: {
+    stack: 'Add constraints, integrations, and latency expectations',
+    prompt: 'Define project purpose, vibe, and user archetypes'
+  },
+  NOEMS: {
+    stack: 'Specify data types, AI capabilities, and candidate components',
+    prompt: 'Define entities, relationships, and domain knowledge'
+  },
+  POEMS: {
+    stack: 'Describe UX surfaces, adapters, and session model',
+    prompt: 'Document user flows, behaviors, and error handling'
+  },
+  TOTEMS: {
+    stack: 'Add logging, access control, and monitoring requirements',
+    prompt: 'Define rules, guardrails, and evaluation criteria'
+  },
+  ANTHEMS: {
+    stack: 'Plan MVP vs future phases and deployment model',
+    prompt: 'Describe phased evolution and capability flags'
+  }
+};
+
 export const validateCompilation = (
   stackImplications: Record<string, string>,
   promptHooks: Record<string, string>
@@ -336,42 +363,48 @@ export const validateCompilation = (
   const errors: ValidationIssue[] = [];
   const warnings: ValidationIssue[] = [];
   
-  const layers = ['pollens', 'noems', 'poems', 'totems', 'anthems'];
+  const layers: Season[] = ['POLLENS', 'NOEMS', 'POEMS', 'TOTEMS', 'ANTHEMS'];
   let filledFields = 0;
   const totalFields = 10;
 
   // Validate stack implications
   layers.forEach(layer => {
-    const key = `stack_implications_${layer}`;
+    const key = `stack_implications_${layer.toLowerCase()}`;
     const content = stackImplications[key] || '';
+    const targetSeason = layer;
     
     if (!content || content.length < 10) {
       errors.push({
-        layer: layer.toUpperCase(),
+        layer,
         field: 'stack_implications',
-        message: `Missing stack implications for ${layer.toUpperCase()}`,
-        severity: 'error'
+        message: `Missing stack implications for ${layer}`,
+        severity: 'error',
+        targetSeason,
+        fixHint: LAYER_FIX_HINTS[layer].stack
       });
     } else if (content.length < VALIDATION_RULES.minContentLength) {
       warnings.push({
-        layer: layer.toUpperCase(),
+        layer,
         field: 'stack_implications',
-        message: `Stack implications for ${layer.toUpperCase()} is too brief (${content.length} chars)`,
-        severity: 'warning'
+        message: `Stack implications for ${layer} is too brief (${content.length} chars)`,
+        severity: 'warning',
+        targetSeason,
+        fixHint: LAYER_FIX_HINTS[layer].stack
       });
       filledFields += 0.5;
     } else {
       filledFields += 1;
-      // Check for technical keywords
       const hasKeyword = VALIDATION_RULES.stackKeywords.some(kw => 
         content.toLowerCase().includes(kw)
       );
       if (!hasKeyword) {
         warnings.push({
-          layer: layer.toUpperCase(),
+          layer,
           field: 'stack_implications',
-          message: `Consider adding technical details (data, API, cloud, etc.) to ${layer.toUpperCase()}`,
-          severity: 'warning'
+          message: `Consider adding technical details to ${layer}`,
+          severity: 'warning',
+          targetSeason,
+          fixHint: LAYER_FIX_HINTS[layer].stack
         });
       }
     }
@@ -379,36 +412,42 @@ export const validateCompilation = (
 
   // Validate prompt hooks
   layers.forEach(layer => {
-    const key = `prompt_hooks_${layer}`;
+    const key = `prompt_hooks_${layer.toLowerCase()}`;
     const content = promptHooks[key] || '';
+    const targetSeason = layer;
     
     if (!content || content.length < 10) {
       errors.push({
-        layer: layer.toUpperCase(),
+        layer,
         field: 'prompt_hooks',
-        message: `Missing prompt hooks for ${layer.toUpperCase()}`,
-        severity: 'error'
+        message: `Missing prompt hooks for ${layer}`,
+        severity: 'error',
+        targetSeason,
+        fixHint: LAYER_FIX_HINTS[layer].prompt
       });
     } else if (content.length < VALIDATION_RULES.minContentLength) {
       warnings.push({
-        layer: layer.toUpperCase(),
+        layer,
         field: 'prompt_hooks',
-        message: `Prompt hooks for ${layer.toUpperCase()} is too brief (${content.length} chars)`,
-        severity: 'warning'
+        message: `Prompt hooks for ${layer} is too brief (${content.length} chars)`,
+        severity: 'warning',
+        targetSeason,
+        fixHint: LAYER_FIX_HINTS[layer].prompt
       });
       filledFields += 0.5;
     } else {
       filledFields += 1;
-      // Check for behavioral keywords
       const hasKeyword = VALIDATION_RULES.promptKeywords.some(kw => 
         content.toLowerCase().includes(kw)
       );
       if (!hasKeyword) {
         warnings.push({
-          layer: layer.toUpperCase(),
+          layer,
           field: 'prompt_hooks',
-          message: `Consider adding behavioral language (user, when, must) to ${layer.toUpperCase()}`,
-          severity: 'warning'
+          message: `Consider adding behavioral language to ${layer}`,
+          severity: 'warning',
+          targetSeason,
+          fixHint: LAYER_FIX_HINTS[layer].prompt
         });
       }
     }
@@ -480,6 +519,104 @@ ${escaped}
 # ═══════════════════════════════════════════════════════════════
 # END OF BASE44 AGENT CONFIGURATION
 `;
+};
+
+// =============================================================================
+// CLAUDE FORMAT EXPORT
+// =============================================================================
+
+const escapeXml = (str: string): string => {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+};
+
+export const formatForClaude = (prompt: string, projectName: string): string => {
+  const timestamp = new Date().toISOString().split('T')[0];
+  
+  // Parse sections from the compiled prompt
+  const sections = prompt.split(/^# /m).filter(Boolean);
+  const parsedSections: Record<string, string> = {};
+  
+  sections.forEach(section => {
+    const [title, ...content] = section.split('\n');
+    const key = title.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
+    parsedSections[key] = content.join('\n').trim();
+  });
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<!-- ${projectName} - Claude System Prompt -->
+<!-- Generated by Calm Magic PRD Compiler on ${timestamp} -->
+<!--
+  INSTRUCTIONS:
+  1. Use this XML-formatted prompt with Claude API or Claude.ai
+  2. Paste into the system prompt field
+  3. XML structure helps Claude understand context boundaries
+-->
+
+<system>
+  <meta>
+    <project_name>${escapeXml(projectName)}</project_name>
+    <generated_at>${timestamp}</generated_at>
+    <compiler>Calm Magic PRD</compiler>
+  </meta>
+
+  <role>
+    <identity>${escapeXml(projectName)} Assistant</identity>
+    <purpose>
+${escapeXml(parsedSections.role___identity || parsedSections.role_identity || 'AI assistant designed to help users achieve their goals')}
+    </purpose>
+  </role>
+
+  <knowledge>
+    <ontology>
+${escapeXml(parsedSections.knowledge___ontology || parsedSections.knowledge_ontology || 'Domain knowledge to be defined')}
+    </ontology>
+  </knowledge>
+
+  <behaviors>
+    <flows>
+${escapeXml(parsedSections.core_behaviors___flows || parsedSections.core_behaviors_flows || 'User flows to be defined')}
+    </flows>
+  </behaviors>
+
+  <rules>
+    <guardrails>
+${escapeXml(parsedSections.rules___guardrails || parsedSections.rules_guardrails || 'Rules and guardrails to be defined')}
+    </guardrails>
+    <always>
+      <item>Acknowledge what you understood before acting</item>
+      <item>Ask targeted questions when missing information</item>
+    </always>
+    <never>
+      <item>Pretend to support features outside current phase</item>
+      <item>Make assumptions about sensitive data</item>
+    </never>
+  </rules>
+
+  <style>
+    <tone>Calm, precise, and supportive</tone>
+    <priorities>
+      <item>Clarity</item>
+      <item>Safety</item>
+      <item>User empowerment</item>
+    </priorities>
+${escapeXml(parsedSections.style___vibe || parsedSections.style_vibe || '')}
+  </style>
+
+  <evolution>
+${escapeXml(parsedSections.evolution___roadmap_awareness || parsedSections.evolution_roadmap_awareness || 'Phase capabilities to be defined')}
+  </evolution>
+
+  <fallback>
+    <instruction>If you're missing information, ask targeted questions.</instruction>
+    <instruction>If user requests something outside your scope, explain your limits and suggest safe alternatives.</instruction>
+${escapeXml(parsedSections.meta_instruction || '')}
+  </fallback>
+</system>`;
 };
 
 // =============================================================================
