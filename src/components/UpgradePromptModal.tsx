@@ -13,28 +13,34 @@ import {
   Sparkles, 
   ArrowRight, 
   Rocket,
-  Check
+  Check,
+  Lock
 } from 'lucide-react';
 import { 
   SUBSCRIPTION_TIERS, 
   getTierDisplayName, 
   getProjectLimit,
-  getNextUpgradeTier 
+  getNextUpgradeTier,
+  PremiumFeature,
+  getFeatureDisplayName,
+  getRequiredTierForFeature 
 } from '@/data/subscriptionTiers';
 import { useSubscription } from '@/hooks/useSubscription';
 
 interface UpgradePromptModalProps {
   isOpen: boolean;
   onClose: () => void;
-  currentProjectCount: number;
+  currentProjectCount?: number;
   reason?: 'project_limit' | 'feature_locked';
+  feature?: PremiumFeature;
 }
 
 const UpgradePromptModal: React.FC<UpgradePromptModalProps> = ({
   isOpen,
   onClose,
-  currentProjectCount,
-  reason = 'project_limit'
+  currentProjectCount = 0,
+  reason = 'project_limit',
+  feature
 }) => {
   const navigate = useNavigate();
   const { tier, createCheckout, isLoading } = useSubscription();
@@ -42,8 +48,13 @@ const UpgradePromptModal: React.FC<UpgradePromptModalProps> = ({
 
   const currentTierName = getTierDisplayName(tier);
   const currentLimit = getProjectLimit(tier);
-  const nextTierKey = getNextUpgradeTier(tier);
+  
+  // For feature locks, target the required tier; for project limits, target next tier
+  const featureRequiredTier = feature ? getRequiredTierForFeature(feature) : null;
+  const nextTierKey = featureRequiredTier || getNextUpgradeTier(tier);
   const nextTier = nextTierKey ? SUBSCRIPTION_TIERS[nextTierKey] : null;
+  
+  const featureName = feature ? getFeatureDisplayName(feature) : null;
 
   const handleUpgrade = async () => {
     if (!nextTier) {
@@ -67,42 +78,71 @@ const UpgradePromptModal: React.FC<UpgradePromptModalProps> = ({
     navigate('/pricing');
   };
 
+  const isFeatureLock = reason === 'feature_locked' && featureName;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[480px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
-            <Rocket className="w-6 h-6 text-primary" />
-            Upgrade to Create More
+            {isFeatureLock ? (
+              <>
+                <Lock className="w-6 h-6 text-primary" />
+                Unlock {featureName}
+              </>
+            ) : (
+              <>
+                <Rocket className="w-6 h-6 text-primary" />
+                Upgrade to Create More
+              </>
+            )}
           </DialogTitle>
           <DialogDescription>
-            You've reached your project limit on the {currentTierName} plan
+            {isFeatureLock 
+              ? `${featureName} is available on the ${nextTier?.name || 'higher'} plan`
+              : `You've reached your project limit on the ${currentTierName} plan`
+            }
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-6 py-4">
-          {/* Current Usage */}
-          <div className="p-4 rounded-lg bg-muted/50 border border-border">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-muted-foreground">Current Plan</span>
-              <Badge variant="outline">{currentTierName}</Badge>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Projects Used</span>
-              <span className="font-semibold">
-                {currentProjectCount} / {currentLimit === -1 ? '∞' : currentLimit}
-              </span>
-            </div>
-            {/* Progress bar */}
-            {currentLimit !== -1 && (
-              <div className="mt-3 h-2 bg-muted rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-primary to-purple-500 transition-all"
-                  style={{ width: `${Math.min((currentProjectCount / currentLimit) * 100, 100)}%` }}
-                />
+          {/* Current Usage - only show for project limits */}
+          {!isFeatureLock && (
+            <div className="p-4 rounded-lg bg-muted/50 border border-border">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-muted-foreground">Current Plan</span>
+                <Badge variant="outline">{currentTierName}</Badge>
               </div>
-            )}
-          </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Projects Used</span>
+                <span className="font-semibold">
+                  {currentProjectCount} / {currentLimit === -1 ? '∞' : currentLimit}
+                </span>
+              </div>
+              {/* Progress bar */}
+              {currentLimit !== -1 && (
+                <div className="mt-3 h-2 bg-muted rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-primary to-purple-500 transition-all"
+                    style={{ width: `${Math.min((currentProjectCount / currentLimit) * 100, 100)}%` }}
+                  />
+                </div>
+              )}
+            </div>
+          )}
+          
+          {/* Feature description for feature locks */}
+          {isFeatureLock && (
+            <div className="p-4 rounded-lg bg-muted/50 border border-border">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-muted-foreground">Current Plan</span>
+                <Badge variant="outline">{currentTierName || 'Free'}</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                {featureName} helps you gain deeper insights and accelerate your workflow.
+              </p>
+            </div>
+          )}
 
           {/* Upgrade Option */}
           {nextTier ? (

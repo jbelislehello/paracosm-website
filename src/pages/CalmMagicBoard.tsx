@@ -5,7 +5,7 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock } from 'lucide-react';
 import { toast } from 'sonner';
 import MinimalistTileMatrix from '@/components/MinimalistTileMatrix';
 import TileDetailPanel from '@/components/TileDetailPanel';
@@ -17,6 +17,8 @@ import { useTileEmotionalCheckins } from '@/hooks/useTileEmotionalCheckins';
 import { useOnboardingTour } from '@/hooks/useOnboardingTour';
 import { useMode } from '@/components/calm-magic/context/ModeContext';
 import { useProjects } from '@/context/ProjectsContext';
+import { useSubscription } from '@/hooks/useSubscription';
+import { hasFeatureAccess } from '@/data/subscriptionTiers';
 import { CycleNumber } from '@/types/journal-expansion';
 import { FeltState, EmotionalAxes, QuadrantPosition } from '@/types/trajectory';
 import SeasonProgressBar from '@/components/prd-generator/SeasonProgressBar';
@@ -29,6 +31,8 @@ import { QuadrantDynamicsPanel } from '@/components/calm-magic/QuadrantDynamicsP
 import { HigherSelfProphecyModal } from '@/components/calm-magic/HigherSelfProphecyModal';
 import { PrdAssemblyPanel } from '@/components/calm-magic/PrdAssemblyPanel';
 import OnboardingTour from '@/components/calm-magic/OnboardingTour';
+import UpgradePromptModal from '@/components/UpgradePromptModal';
+import PremiumBadge from '@/components/PremiumBadge';
 import { getPrdAccessLevel, Season as PrdSeason } from '@/utils/prdAccessLevel';
 import { parseBoardEntryParams, getAssessmentContextDescription } from '@/utils/parseBoardEntryParams';
 import { getGardenByType } from '@/data/gardens';
@@ -107,6 +111,12 @@ const CalmMagicBoard = () => {
   // New panel states
   const [showJourneySummary, setShowJourneySummary] = useState(false);
   const [showInsightsGraph, setShowInsightsGraph] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [upgradeFeature, setUpgradeFeature] = useState<'insight_connections' | null>(null);
+  
+  // Subscription state for feature gating
+  const { tier } = useSubscription();
+  const canAccessInsights = hasFeatureAccess(tier, 'insight_connections');
 
   // Persisted season state from localStorage (project-specific)
   const {
@@ -645,10 +655,19 @@ const CalmMagicBoard = () => {
             <Button 
               variant={showInsightsGraph ? "default" : "ghost"} 
               size="icon"
-              onClick={() => setShowInsightsGraph(true)}
-              title="Insight Connections"
+              onClick={() => {
+                if (canAccessInsights) {
+                  setShowInsightsGraph(true);
+                } else {
+                  setUpgradeFeature('insight_connections');
+                  setShowUpgradeModal(true);
+                }
+              }}
+              title={canAccessInsights ? "Insight Connections" : "Insight Connections (Scale plan)"}
+              className="relative"
             >
               <Link2 className="w-4 h-4" />
+              {!canAccessInsights && <Lock className="w-2.5 h-2.5 absolute -top-0.5 -right-0.5 text-amber-500" />}
             </Button>
             
             <Button 
@@ -916,6 +935,17 @@ const CalmMagicBoard = () => {
         isOpen={showTour}
         onClose={closeTour}
         onComplete={completeTour}
+      />
+      
+      {/* Upgrade Modal for Feature Locks */}
+      <UpgradePromptModal
+        isOpen={showUpgradeModal}
+        onClose={() => {
+          setShowUpgradeModal(false);
+          setUpgradeFeature(null);
+        }}
+        reason="feature_locked"
+        feature={upgradeFeature || undefined}
       />
     </div>
   );
