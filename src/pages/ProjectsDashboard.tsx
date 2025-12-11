@@ -39,19 +39,29 @@ import {
   Pencil,
   FolderOpen,
   Sparkles,
-  Cloud
+  Cloud,
+  Rocket
 } from 'lucide-react';
 import { useProjects, Project } from '@/context/ProjectsContext';
 import { useUserSession } from '@/hooks/useUserSession';
+import { useSubscription } from '@/hooks/useSubscription';
 import { getGardenByType, gardens } from '@/data/gardens';
 import { GardenType } from '@/types/journal';
+import { 
+  canCreateProject, 
+  getProjectLimit, 
+  getProjectLimitDisplay,
+  getTierDisplayName 
+} from '@/data/subscriptionTiers';
 import BoardEntryGate from '@/components/calm-magic/BoardEntryGate';
 import UserProfileMenu from '@/components/UserProfileMenu';
 import SignupPromptModal from '@/components/SignupPromptModal';
+import UpgradePromptModal from '@/components/UpgradePromptModal';
 
 const ProjectsDashboard: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useUserSession();
+  const { tier } = useSubscription();
   const { 
     projects, 
     setActiveProject, 
@@ -64,6 +74,7 @@ const ProjectsDashboard: React.FC = () => {
   const [gardenFilter, setGardenFilter] = useState<GardenType | 'all'>('all');
   const [modeFilter, setModeFilter] = useState<'all' | 'personal' | 'professional'>('all');
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
   const [editingProject, setEditingProject] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
@@ -72,6 +83,10 @@ const ProjectsDashboard: React.FC = () => {
   // Check if we should show guest banner
   const isGuest = !user;
   const hasProjects = projects.length > 0;
+  const projectCount = projects.length;
+  const canCreate = canCreateProject(tier, projectCount);
+  const projectLimit = getProjectLimit(tier);
+  const limitDisplay = getProjectLimitDisplay(tier, projectCount);
 
   // Filter projects
   const filteredProjects = projects.filter((project) => {
@@ -132,7 +147,7 @@ const ProjectsDashboard: React.FC = () => {
       <header className="border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4">
               <Button
                 variant="ghost"
                 size="icon"
@@ -145,20 +160,30 @@ const ProjectsDashboard: React.FC = () => {
                   My Projects
                 </h1>
                 <p className="text-sm text-muted-foreground">
-                  {projects.length} project{projects.length !== 1 ? 's' : ''}
+                  {limitDisplay}
                 </p>
               </div>
             </div>
             
             <div className="flex items-center gap-3">
               <UserProfileMenu />
-              <Button
-                onClick={() => setShowCreateModal(true)}
-                className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90"
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                New Project
-              </Button>
+              {canCreate ? (
+                <Button
+                  onClick={() => setShowCreateModal(true)}
+                  className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  New Project
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => setShowUpgradeModal(true)}
+                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                >
+                  <Rocket className="w-4 h-4 mr-2" />
+                  Upgrade to Create More
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -383,6 +408,13 @@ const ProjectsDashboard: React.FC = () => {
         open={showSignupPrompt}
         onOpenChange={setShowSignupPrompt}
         context="save-progress"
+      />
+
+      {/* Upgrade Prompt Modal */}
+      <UpgradePromptModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        currentProjectCount={projectCount}
       />
 
       {/* Delete Confirmation Dialog */}

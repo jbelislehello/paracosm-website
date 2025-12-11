@@ -80,3 +80,26 @@ export const getTierDisplayName = (tierKey: string | null): string => {
   if (!tierKey) return 'Free';
   return SUBSCRIPTION_TIERS[tierKey]?.name || 'Free';
 };
+
+export const getProjectLimit = (tier: string | null): number => {
+  if (!tier) return 1; // Free tier: 1 project
+  return SUBSCRIPTION_TIERS[tier]?.projects ?? 1;
+};
+
+export const canCreateProject = (tier: string | null, currentProjectCount: number): boolean => {
+  const limit = getProjectLimit(tier);
+  if (limit === -1) return true; // Unlimited
+  return currentProjectCount < limit;
+};
+
+export const getProjectLimitDisplay = (tier: string | null, currentCount: number): string => {
+  const limit = getProjectLimit(tier);
+  if (limit === -1) return `${currentCount} projects (Unlimited)`;
+  return `${currentCount} of ${limit} project${limit !== 1 ? 's' : ''}`;
+};
+
+export const getNextUpgradeTier = (currentTier: string | null): string | null => {
+  if (!currentTier || currentTier === 'starter') return 'growth';
+  if (currentTier === 'growth') return 'scale';
+  return null; // Already at scale
+};
