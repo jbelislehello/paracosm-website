@@ -24,19 +24,42 @@ import {
   User as UserIcon,
   Sparkles,
   ChevronDown,
-  Cloud
+  Cloud,
+  Settings,
+  Loader2
 } from 'lucide-react';
 import { useUserSession } from '@/hooks/useUserSession';
+import { useSubscription } from '@/hooks/useSubscription';
 import { ProfileEditModal } from '@/components/ProfileEditModal';
+import { getTierDisplayName } from '@/data/subscriptionTiers';
+import { useToast } from '@/hooks/use-toast';
 
 const UserProfileMenu: React.FC = () => {
   const navigate = useNavigate();
   const { user, profile, isLoading, signOut, updateProfile } = useUserSession();
+  const { tier, isSubscribed, isLoading: subLoading, openCustomerPortal } = useSubscription();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isPortalLoading, setIsPortalLoading] = useState(false);
+  const { toast } = useToast();
 
   const handleSignOut = async () => {
     await signOut();
     navigate('/auth');
+  };
+
+  const handleManageSubscription = async () => {
+    setIsPortalLoading(true);
+    try {
+      await openCustomerPortal();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to open portal",
+        variant: "destructive",
+      });
+    } finally {
+      setIsPortalLoading(false);
+    }
   };
 
   // Get display name - prioritize full_name, then username, then email
@@ -81,6 +104,8 @@ const UserProfileMenu: React.FC = () => {
       </TooltipProvider>
     );
   }
+
+  const tierDisplay = getTierDisplayName(tier);
 
   // Logged in - show profile dropdown
   return (
@@ -132,19 +157,41 @@ const UserProfileMenu: React.FC = () => {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-xs text-muted-foreground">Plan</span>
-              <Badge variant="secondary" className="text-xs gap-1">
-                <Sparkles className="w-3 h-3" />
-                Free Plan
-              </Badge>
+              {subLoading ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : (
+                <Badge 
+                  variant={isSubscribed ? "default" : "secondary"} 
+                  className={`text-xs gap-1 ${isSubscribed ? 'bg-gradient-to-r from-rose-500 to-purple-500' : ''}`}
+                >
+                  <Sparkles className="w-3 h-3" />
+                  {tierDisplay}
+                </Badge>
+              )}
             </div>
           </div>
           
           <DropdownMenuSeparator />
           
           {/* Menu Items */}
+          {isSubscribed && (
+            <DropdownMenuItem 
+              onClick={handleManageSubscription} 
+              className="cursor-pointer"
+              disabled={isPortalLoading}
+            >
+              {isPortalLoading ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <Settings className="w-4 h-4 mr-2" />
+              )}
+              Manage Subscription
+            </DropdownMenuItem>
+          )}
+          
           <DropdownMenuItem onClick={() => navigate('/pricing')} className="cursor-pointer">
             <CreditCard className="w-4 h-4 mr-2" />
-            View Pricing Plans
+            {isSubscribed ? 'View Plans' : 'View Pricing Plans'}
           </DropdownMenuItem>
           
           <DropdownMenuItem onClick={() => setIsEditModalOpen(true)} className="cursor-pointer">
