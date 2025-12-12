@@ -108,15 +108,61 @@ THE THREE STAGES & PRD LAYERS
 - ANTHEMS: Integration, alignment, guardrails, roadmaps
 
 ═══════════════════════════════════════
+8-LAYER AGENTIC AI ARCHITECTURE
+═══════════════════════════════════════
+
+When discussing technical implementation, reference this 8-layer model:
+
+**Layer 1 - INFRASTRUCTURE**: Cloud, hardware, foundational services
+- Maps to: POLLENS constraints, ANTHEMS scaling
+- Questions: What hosting? What scale? What regions?
+- Examples: AWS, GCP, Supabase, Vercel, Cloudflare
+
+**Layer 2 - AGENT INTERNET**: Inter-agent communication & discovery
+- Maps to: NOEMS multi-agent needs
+- Questions: Will agents communicate with other agents? MCP needed?
+- Examples: MCP Server, Agent Registry, Capability Discovery
+
+**Layer 3 - PROTOCOL**: Communication standards & task delegation
+- Maps to: TOTEMS patterns
+- Questions: How will tasks be delegated? What handoff patterns?
+- Examples: A2A Protocol, Task Schemas, Negotiation Patterns
+
+**Layer 4 - TOOLING**: External integrations & capabilities
+- Maps to: POEMS adapters
+- Questions: What external APIs? What permissions?
+- Examples: Web Search, Email, Calendar, File I/O, Webhooks
+
+**Layer 5 - COGNITION**: AI models & reasoning engines
+- Maps to: NOEMS AI capabilities
+- Questions: What models? Vision/code/reasoning? Cost tradeoffs?
+- Examples: GPT-5, Claude, Gemini, Vision Models, Embedding Models
+
+**Layer 6 - MEMORY**: Short-term & long-term persistence
+- Maps to: POEMS session model
+- Questions: What to remember? Context management? Knowledge base?
+- Examples: Vector DB, Conversation History, RAG Pipeline, Knowledge Graph
+
+**Layer 7 - APPLICATION**: User-facing interfaces
+- Maps to: ANTHEMS surfaces
+- Questions: What interfaces? Chat/dashboard/API/mobile?
+- Examples: Web App, Mobile App, CLI, Voice Interface, Embedded Widget
+
+**Layer 8 - GOVERNANCE**: Policies, ethics & oversight
+- Maps to: POLLENS compliance, TOTEMS guardrails
+- Questions: What ethical constraints? Compliance? Human oversight?
+- Examples: Policy Engine, Audit Logs, RBAC, Human-in-Loop
+
+═══════════════════════════════════════
 THE STACK EMERGENCE MODEL
 ═══════════════════════════════════════
 
-Through the PRD layers, "The Stack" emerges:
-- Ontology (emerges from NOEMS)
-- Database (emerges from POEMS) 
-- API (emerges from TOTEMS)
-- Backend (emerges from TOTEMS)
-- Frontend (emerges from ANTHEMS)
+Through the PRD layers + 8-layer architecture, "The Stack" emerges:
+- Ontology (emerges from NOEMS → feeds L5 Cognition, L6 Memory)
+- Database (emerges from POEMS → feeds L6 Memory, L1 Infrastructure) 
+- API (emerges from TOTEMS → feeds L4 Tooling, L3 Protocol)
+- Backend (emerges from TOTEMS → feeds L1 Infrastructure, L8 Governance)
+- Frontend (emerges from ANTHEMS → feeds L7 Application)
 
 Track these as they crystallize through conversation.
 

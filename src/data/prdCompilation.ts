@@ -37,6 +37,7 @@ export interface TechStackStructure {
     hosting?: 'cloud' | 'on-prem' | 'hybrid';
     latency?: string;
   };
+  // Legacy 5-layer structure (for backward compatibility)
   layers: {
     data: string[];
     ai: string[];
@@ -44,10 +45,26 @@ export interface TechStackStructure {
     ux: string[];
     ops: string[];
   };
+  // 8-layer Agentic AI Architecture
+  agentic_layers: {
+    infrastructure: string[];    // Layer 1: Cloud, hardware, foundational services
+    agent_internet: string[];    // Layer 2: Inter-agent communication, MCP
+    protocol: string[];          // Layer 3: Communication protocols, A2A
+    tooling: string[];           // Layer 4: External integrations, APIs
+    cognition: string[];         // Layer 5: AI models, reasoning
+    memory: string[];            // Layer 6: Short/long-term persistence
+    application: string[];       // Layer 7: User-facing surfaces
+    governance: string[];        // Layer 8: Policies, ethics, auditing
+  };
   phase_plan: {
     mvp: string[];
     phase_2: string[];
     phase_3: string[];
+  };
+  maturity: {
+    documentation: 'manual' | 'auto-generated' | 'context-aware' | 'living';
+    automation: 'manual' | 'triggered' | 'predictive' | 'self-healing';
+    orchestration: 'siloed' | 'connected' | 'coordinated' | 'emergent';
   };
 }
 
@@ -58,6 +75,7 @@ export interface FoundationalPrompt {
   rules_guardrails: string;
   style_vibe: string;
   evolution_roadmap: string;
+  agentic_architecture: string;
   meta_instruction: string;
 }
 
@@ -65,7 +83,7 @@ export interface FoundationalPrompt {
 // LAYER EXTRACTION GUIDES
 // =============================================================================
 
-export const LAYER_EXTRACTION_GUIDES: Record<string, { stack: string; prompt: string }> = {
+export const LAYER_EXTRACTION_GUIDES: Record<string, { stack: string; prompt: string; agentic: string }> = {
   POLLENS: {
     stack: `Extract from POLLENS layer:
 - High-level constraints (on-prem/cloud, data residency, sensitivity levels)
@@ -74,7 +92,10 @@ export const LAYER_EXTRACTION_GUIDES: Record<string, { stack: string; prompt: st
     prompt: `Extract from POLLENS layer:
 - Project name + one-line purpose
 - Core "vibe" (tone, ethos, personality)
-- Primary user archetypes and their main questions`
+- Primary user archetypes and their main questions`,
+    agentic: `Map to Agentic Layers:
+- Layer 1 (Infrastructure): Cloud/hosting constraints, scale expectations, regional requirements
+- Layer 8 (Governance): Compliance requirements, ethical guardrails, audit needs`
   },
   NOEMS: {
     stack: `Extract from NOEMS layer:
@@ -83,7 +104,10 @@ export const LAYER_EXTRACTION_GUIDES: Record<string, { stack: string; prompt: st
 - Candidate components (Supabase, vector DB, orchestration tools)`,
     prompt: `Extract from NOEMS layer:
 - Ontology: key entities, relationships, allowed operations
-- What the assistant knows and must protect/respect`
+- What the assistant knows and must protect/respect`,
+    agentic: `Map to Agentic Layers:
+- Layer 5 (Cognition): AI models needed, reasoning capabilities, vision/code/multimodal
+- Layer 2 (Agent Internet): Multi-agent needs, MCP integration, capability discovery`
   },
   POEMS: {
     stack: `Extract from POEMS layer:
@@ -92,7 +116,10 @@ export const LAYER_EXTRACTION_GUIDES: Record<string, { stack: string; prompt: st
 - Session + memory model (short-term vs long-term)`,
     prompt: `Extract from POEMS layer:
 - Canonical flows in natural language ("When user does X, the assistant must...")
-- Error states, guardrails, escalation behavior`
+- Error states, guardrails, escalation behavior`,
+    agentic: `Map to Agentic Layers:
+- Layer 4 (Tooling): External APIs, tools, integrations needed
+- Layer 6 (Memory): Context management, RAG strategy, knowledge persistence`
   },
   TOTEMS: {
     stack: `Extract from TOTEMS layer:
@@ -102,7 +129,10 @@ export const LAYER_EXTRACTION_GUIDES: Record<string, { stack: string; prompt: st
     prompt: `Extract from TOTEMS layer:
 - Non-negotiable rules (compliance, ethics, tone)
 - "Never do X", "Always explain Y", "Ask for clarification when Z"
-- Evaluation criteria the assistant should self-check against`
+- Evaluation criteria the assistant should self-check against`,
+    agentic: `Map to Agentic Layers:
+- Layer 3 (Protocol): Communication patterns, task delegation, handoff behavior
+- Layer 8 (Governance): Policy engine, audit requirements, human-in-loop triggers`
   },
   ANTHEMS: {
     stack: `Extract from ANTHEMS layer:
@@ -111,7 +141,10 @@ export const LAYER_EXTRACTION_GUIDES: Record<string, { stack: string; prompt: st
 - Licensing/deployment model (SaaS, self-host, hybrid)`,
     prompt: `Extract from ANTHEMS layer:
 - Phased evolution of the assistant ("In Phase 1, assistant can only do... In Phase 2...")
-- Flags for features that are future capabilities vs current`
+- Flags for features that are future capabilities vs current`,
+    agentic: `Map to Agentic Layers:
+- Layer 7 (Application): User interfaces, interaction surfaces, accessibility
+- Layer 1 (Infrastructure): Phased scaling plan, deployment model evolution`
   }
 };
 
@@ -127,6 +160,7 @@ export const TECH_STACK_TEMPLATE: TechStackStructure = {
     sensitivity: "medium",
     hosting: "cloud"
   },
+  // Legacy 5-layer structure
   layers: {
     data: ["Supabase Postgres", "Object storage"],
     ai: ["Gemini 2.5 Flash", "Embedding model"],
@@ -134,10 +168,26 @@ export const TECH_STACK_TEMPLATE: TechStackStructure = {
     ux: ["Web app", "Chat interface"],
     ops: ["Logging", "Monitoring"]
   },
+  // 8-layer Agentic AI Architecture
+  agentic_layers: {
+    infrastructure: ["Supabase", "Vercel Edge", "Cloudflare"],
+    agent_internet: [],
+    protocol: [],
+    tooling: ["Web search", "File I/O"],
+    cognition: ["Gemini 2.5 Flash", "Embedding model"],
+    memory: ["Postgres", "Vector DB"],
+    application: ["Web app", "Chat interface"],
+    governance: ["Audit logs", "Rate limiting"]
+  },
   phase_plan: {
     mvp: [],
     phase_2: [],
     phase_3: []
+  },
+  maturity: {
+    documentation: 'manual',
+    automation: 'manual',
+    orchestration: 'siloed'
   }
 };
 
@@ -173,9 +223,32 @@ In these situations, you act as follows:
 - In this phase, you are allowed to: [features from ANTHEMS MVP]
 - You must not pretend to support future phases.
 
+# Agentic Architecture Awareness
+
+## 8-Layer Agentic Model
+This assistant operates within an 8-layer agentic architecture:
+
+1. **Infrastructure** (L1): Foundational compute, storage, networking
+2. **Agent Internet** (L2): Inter-agent discovery and communication (MCP/A2A)
+3. **Protocol** (L3): Standardized message formats and task delegation
+4. **Tooling** (L4): External APIs, integrations, and capabilities
+5. **Cognition** (L5): AI models, reasoning, and intelligence substrate
+6. **Memory** (L6): Short-term context and long-term knowledge persistence
+7. **Application** (L7): User-facing interfaces and interaction surfaces
+8. **Governance** (L8): Policies, ethics, auditing, and oversight
+
+## Active Layers
+[Specify which layers are currently active and their configurations]
+
+## Inter-Layer Communication
+- Memory ↔ Cognition: RAG-augmented reasoning with persistent context
+- Tooling ↔ Cognition: Tool invocation with audit logging
+- Governance ↔ All: Policy checks applied at each layer boundary
+
 # Meta-Instruction
 - If you're missing information, ask targeted questions.
-- If user requests something outside your scope, explain your limits and suggest safe alternatives.`;
+- If user requests something outside your scope, explain your limits and suggest safe alternatives.
+- Acknowledge which agentic layers are relevant to the current request.`;
 
 // =============================================================================
 // COMPILATION CHECKLIST
@@ -208,59 +281,152 @@ export const compileStackImplications = (
 ): TechStackStructure => {
   const stack: TechStackStructure = {
     ...TECH_STACK_TEMPLATE,
-    name: projectName
+    name: projectName,
+    agentic_layers: {
+      infrastructure: [...TECH_STACK_TEMPLATE.agentic_layers.infrastructure],
+      agent_internet: [...TECH_STACK_TEMPLATE.agentic_layers.agent_internet],
+      protocol: [...TECH_STACK_TEMPLATE.agentic_layers.protocol],
+      tooling: [...TECH_STACK_TEMPLATE.agentic_layers.tooling],
+      cognition: [...TECH_STACK_TEMPLATE.agentic_layers.cognition],
+      memory: [...TECH_STACK_TEMPLATE.agentic_layers.memory],
+      application: [...TECH_STACK_TEMPLATE.agentic_layers.application],
+      governance: [...TECH_STACK_TEMPLATE.agentic_layers.governance],
+    },
+    layers: {
+      data: [...TECH_STACK_TEMPLATE.layers.data],
+      ai: [...TECH_STACK_TEMPLATE.layers.ai],
+      orchestration: [...TECH_STACK_TEMPLATE.layers.orchestration],
+      ux: [...TECH_STACK_TEMPLATE.layers.ux],
+      ops: [...TECH_STACK_TEMPLATE.layers.ops],
+    }
   };
 
-  // Parse POLLENS for constraints
+  // Parse POLLENS for constraints + Infrastructure (L1) + Governance (L8)
   const pollensImpl = implications.stack_implications_pollens || '';
   if (pollensImpl.toLowerCase().includes('high')) {
     stack.constraints.sensitivity = 'high';
+    stack.agentic_layers.governance.push('Enhanced audit logging');
   }
   if (pollensImpl.toLowerCase().includes('on-prem')) {
     stack.constraints.hosting = 'on-prem';
+    stack.agentic_layers.infrastructure.push('On-premises deployment');
   }
   if (pollensImpl.toLowerCase().includes('hybrid')) {
     stack.constraints.hosting = 'hybrid';
+    stack.agentic_layers.infrastructure.push('Hybrid cloud setup');
+  }
+  if (pollensImpl.toLowerCase().includes('gdpr') || pollensImpl.toLowerCase().includes('hipaa')) {
+    stack.agentic_layers.governance.push('Compliance framework');
+  }
+  if (pollensImpl.toLowerCase().includes('scale') || pollensImpl.toLowerCase().includes('enterprise')) {
+    stack.agentic_layers.infrastructure.push('Auto-scaling');
   }
 
-  // Parse NOEMS for data/AI components
+  // Parse NOEMS for Cognition (L5) + Agent Internet (L2)
   const noemsImpl = implications.stack_implications_noems || '';
   if (noemsImpl.toLowerCase().includes('vector')) {
     stack.layers.data.push('Vector DB');
+    stack.agentic_layers.memory.push('Vector embeddings');
   }
   if (noemsImpl.toLowerCase().includes('rag')) {
     stack.layers.ai.push('RAG Pipeline');
+    stack.agentic_layers.cognition.push('RAG Pipeline');
+    stack.agentic_layers.memory.push('Knowledge retrieval');
   }
   if (noemsImpl.toLowerCase().includes('vision')) {
     stack.layers.ai.push('Vision API');
+    stack.agentic_layers.cognition.push('Vision model');
+  }
+  if (noemsImpl.toLowerCase().includes('mcp') || noemsImpl.toLowerCase().includes('multi-agent')) {
+    stack.agentic_layers.agent_internet.push('MCP Server');
+    stack.agentic_layers.protocol.push('A2A Protocol');
+  }
+  if (noemsImpl.toLowerCase().includes('reasoning')) {
+    stack.agentic_layers.cognition.push('Reasoning engine');
   }
 
-  // Parse POEMS for UX components
+  // Parse POEMS for Tooling (L4) + Memory (L6)
   const poemsImpl = implications.stack_implications_poems || '';
   if (poemsImpl.toLowerCase().includes('chat')) {
     if (!stack.layers.ux.includes('Chat interface')) {
       stack.layers.ux.push('Chat interface');
     }
+    stack.agentic_layers.application.push('Conversational UI');
   }
   if (poemsImpl.toLowerCase().includes('dashboard')) {
     stack.layers.ux.push('Admin dashboard');
+    stack.agentic_layers.application.push('Dashboard interface');
   }
   if (poemsImpl.toLowerCase().includes('email')) {
     stack.layers.ux.push('Email hooks');
+    stack.agentic_layers.tooling.push('Email integration');
+  }
+  if (poemsImpl.toLowerCase().includes('calendar')) {
+    stack.agentic_layers.tooling.push('Calendar API');
+  }
+  if (poemsImpl.toLowerCase().includes('long-term') || poemsImpl.toLowerCase().includes('persistent')) {
+    stack.agentic_layers.memory.push('Long-term memory store');
+  }
+  if (poemsImpl.toLowerCase().includes('webhook')) {
+    stack.agentic_layers.tooling.push('Webhook handlers');
   }
 
-  // Parse TOTEMS for ops components
+  // Parse TOTEMS for Protocol (L3) + Governance (L8)
   const totemsImpl = implications.stack_implications_totems || '';
   if (totemsImpl.toLowerCase().includes('eval')) {
     stack.layers.ops.push('Eval harness');
+    stack.agentic_layers.governance.push('Evaluation framework');
   }
-  if (totemsImpl.toLowerCase().includes('role')) {
+  if (totemsImpl.toLowerCase().includes('role') || totemsImpl.toLowerCase().includes('rbac')) {
     stack.layers.ops.push('RBAC');
+    stack.agentic_layers.governance.push('Role-based access control');
+  }
+  if (totemsImpl.toLowerCase().includes('human') || totemsImpl.toLowerCase().includes('oversight')) {
+    stack.agentic_layers.governance.push('Human-in-loop controls');
+  }
+  if (totemsImpl.toLowerCase().includes('task') || totemsImpl.toLowerCase().includes('delegation')) {
+    stack.agentic_layers.protocol.push('Task delegation protocol');
+  }
+  if (totemsImpl.toLowerCase().includes('handoff')) {
+    stack.agentic_layers.protocol.push('Agent handoff patterns');
   }
 
-  // Parse ANTHEMS for phasing
+  // Parse ANTHEMS for Application (L7) + phasing
   const anthemsImpl = implications.stack_implications_anthems || '';
-  // Extract phase information if present
+  if (anthemsImpl.toLowerCase().includes('mobile')) {
+    stack.agentic_layers.application.push('Mobile interface');
+  }
+  if (anthemsImpl.toLowerCase().includes('api')) {
+    stack.agentic_layers.application.push('Public API');
+  }
+  if (anthemsImpl.toLowerCase().includes('voice')) {
+    stack.agentic_layers.application.push('Voice interface');
+  }
+  if (anthemsImpl.toLowerCase().includes('cli')) {
+    stack.agentic_layers.application.push('CLI tool');
+  }
+  
+  // Determine maturity levels based on content
+  const allContent = Object.values(implications).join(' ').toLowerCase();
+  if (allContent.includes('living') || allContent.includes('context-aware')) {
+    stack.maturity.documentation = 'context-aware';
+  } else if (allContent.includes('auto-generate')) {
+    stack.maturity.documentation = 'auto-generated';
+  }
+  if (allContent.includes('self-heal') || allContent.includes('autonomous')) {
+    stack.maturity.automation = 'self-healing';
+  } else if (allContent.includes('predictive')) {
+    stack.maturity.automation = 'predictive';
+  } else if (allContent.includes('trigger') || allContent.includes('automated')) {
+    stack.maturity.automation = 'triggered';
+  }
+  if (allContent.includes('emergent') || allContent.includes('swarm')) {
+    stack.maturity.orchestration = 'emergent';
+  } else if (allContent.includes('coordinated') || allContent.includes('multi-agent')) {
+    stack.maturity.orchestration = 'coordinated';
+  } else if (allContent.includes('connected') || allContent.includes('integrated')) {
+    stack.maturity.orchestration = 'connected';
+  }
   
   return stack;
 };
