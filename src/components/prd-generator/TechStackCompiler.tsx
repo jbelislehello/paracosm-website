@@ -3,7 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Copy, Download, Check, Server, Database, Brain, Workflow, Monitor, Layers } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { 
+  Copy, Download, Check, Server, Database, Brain, Workflow, Monitor, Layers, 
+  Network, FileCode, Wrench, HardDrive, Shield, Cpu, MessageSquare
+} from 'lucide-react';
 import { TechStackStructure, compileStackImplications, TECH_STACK_TEMPLATE } from '@/data/prdCompilation';
 import { toast } from 'sonner';
 
@@ -13,6 +17,41 @@ interface TechStackCompilerProps {
   isComplete: boolean;
 }
 
+// 8-Layer Agentic Architecture Icons
+const AGENTIC_LAYER_ICONS: Record<string, React.ReactNode> = {
+  infrastructure: <HardDrive className="h-4 w-4" />,
+  agent_internet: <Network className="h-4 w-4" />,
+  protocol: <FileCode className="h-4 w-4" />,
+  tooling: <Wrench className="h-4 w-4" />,
+  cognition: <Brain className="h-4 w-4" />,
+  memory: <Database className="h-4 w-4" />,
+  application: <MessageSquare className="h-4 w-4" />,
+  governance: <Shield className="h-4 w-4" />,
+};
+
+const AGENTIC_LAYER_COLORS: Record<string, string> = {
+  infrastructure: 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/30',
+  agent_internet: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border-cyan-500/30',
+  protocol: 'bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/30',
+  tooling: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30',
+  cognition: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30',
+  memory: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30',
+  application: 'bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/30',
+  governance: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30',
+};
+
+const AGENTIC_LAYER_NAMES: Record<string, string> = {
+  infrastructure: 'L1: Infrastructure',
+  agent_internet: 'L2: Agent Internet',
+  protocol: 'L3: Protocol',
+  tooling: 'L4: Tooling',
+  cognition: 'L5: Cognition',
+  memory: 'L6: Memory',
+  application: 'L7: Application',
+  governance: 'L8: Governance',
+};
+
+// Legacy 5-layer icons
 const LAYER_ICONS: Record<string, React.ReactNode> = {
   data: <Database className="h-4 w-4" />,
   ai: <Brain className="h-4 w-4" />,
@@ -64,7 +103,8 @@ export const TechStackCompiler: React.FC<TechStackCompilerProps> = ({
     toast.success('Tech Stack JSON downloaded');
   };
 
-  const layerCount = Object.values(compiledStack.layers).reduce((acc, arr) => acc + arr.length, 0);
+  const legacyLayerCount = Object.values(compiledStack.layers).reduce((acc, arr) => acc + arr.length, 0);
+  const agenticLayerCount = Object.values(compiledStack.agentic_layers).reduce((acc, arr) => acc + arr.length, 0);
 
   return (
     <Card className="border-primary/20">
@@ -81,28 +121,71 @@ export const TechStackCompiler: React.FC<TechStackCompilerProps> = ({
               </Badge>
             ) : (
               <Badge variant="outline" className="text-xs">
-                {layerCount} components
+                {agenticLayerCount} agentic components
               </Badge>
             )}
           </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Visual Stack Overview */}
-        <div className="grid grid-cols-5 gap-2">
-          {Object.entries(compiledStack.layers).map(([layer, components]) => (
-            <div
-              key={layer}
-              className={`p-2 rounded-lg border ${LAYER_COLORS[layer]} text-center`}
-            >
-              <div className="flex justify-center mb-1">
-                {LAYER_ICONS[layer]}
-              </div>
-              <p className="text-[10px] font-medium uppercase">{layer}</p>
-              <p className="text-xs text-muted-foreground">{components.length}</p>
+        <Tabs defaultValue="agentic" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="agentic" className="text-xs">8-Layer Agentic</TabsTrigger>
+            <TabsTrigger value="legacy" className="text-xs">5-Layer Classic</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="agentic" className="mt-3 space-y-3">
+            {/* 8-Layer Agentic Architecture Grid */}
+            <div className="grid grid-cols-4 gap-2">
+              {Object.entries(compiledStack.agentic_layers).map(([layer, components]) => (
+                <div
+                  key={layer}
+                  className={`p-2 rounded-lg border ${AGENTIC_LAYER_COLORS[layer]} text-center transition-all hover:scale-105`}
+                >
+                  <div className="flex justify-center mb-1">
+                    {AGENTIC_LAYER_ICONS[layer]}
+                  </div>
+                  <p className="text-[9px] font-medium leading-tight">{AGENTIC_LAYER_NAMES[layer]}</p>
+                  <p className="text-xs text-muted-foreground font-semibold">{components.length}</p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+            
+            {/* Maturity Indicators */}
+            <div className="flex flex-wrap gap-2 pt-2 border-t">
+              <Badge variant="outline" className="text-[10px]">
+                <Cpu className="h-3 w-3 mr-1" />
+                Doc: {compiledStack.maturity.documentation}
+              </Badge>
+              <Badge variant="outline" className="text-[10px]">
+                <Workflow className="h-3 w-3 mr-1" />
+                Auto: {compiledStack.maturity.automation}
+              </Badge>
+              <Badge variant="outline" className="text-[10px]">
+                <Network className="h-3 w-3 mr-1" />
+                Orch: {compiledStack.maturity.orchestration}
+              </Badge>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="legacy" className="mt-3">
+            {/* Legacy 5-Layer Grid */}
+            <div className="grid grid-cols-5 gap-2">
+              {Object.entries(compiledStack.layers).map(([layer, components]) => (
+                <div
+                  key={layer}
+                  className={`p-2 rounded-lg border ${LAYER_COLORS[layer]} text-center`}
+                >
+                  <div className="flex justify-center mb-1">
+                    {LAYER_ICONS[layer]}
+                  </div>
+                  <p className="text-[10px] font-medium uppercase">{layer}</p>
+                  <p className="text-xs text-muted-foreground">{components.length}</p>
+                </div>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
 
         {/* Constraints Summary */}
         <div className="flex flex-wrap gap-2">
