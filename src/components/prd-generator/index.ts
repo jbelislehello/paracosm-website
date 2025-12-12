@@ -8,6 +8,7 @@ export { default as ChordsQualifier } from './ChordsQualifier';
 export { default as TechStackCompiler } from './TechStackCompiler';
 export { default as FoundationalPromptCompiler } from './FoundationalPromptCompiler';
 export { default as CompilationTab } from './CompilationTab';
+export { default as AgenticLayerDiagram } from './AgenticLayerDiagram';
 export type { PrdLayer } from './PrdStageProgress';
 export type { LensEvaluation, MapsEvaluation, AgendasEvaluation, ChordsEvaluation } from './MasterLensEvaluator';
 export type { PoemStructure } from './PoemStructureBuilder';

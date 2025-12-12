@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -6,15 +6,17 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Copy, Download, Check, Server, Database, Brain, Workflow, Monitor, Layers, 
-  Network, FileCode, Wrench, HardDrive, Shield, Cpu, MessageSquare
+  Network, FileCode, Wrench, HardDrive, Shield, Cpu, MessageSquare, GitBranch
 } from 'lucide-react';
 import { TechStackStructure, compileStackImplications, TECH_STACK_TEMPLATE } from '@/data/prdCompilation';
+import { AgenticLayerDiagram } from './AgenticLayerDiagram';
 import { toast } from 'sonner';
 
 interface TechStackCompilerProps {
   projectName: string;
   stackImplications: Record<string, string>;
   isComplete: boolean;
+  onStackUpdate?: (stack: TechStackStructure) => void;
 }
 
 // 8-Layer Agentic Architecture Icons
@@ -71,17 +73,21 @@ const LAYER_COLORS: Record<string, string> = {
 export const TechStackCompiler: React.FC<TechStackCompilerProps> = ({
   projectName,
   stackImplications,
-  isComplete
+  isComplete,
+  onStackUpdate
 }) => {
   const [copied, setCopied] = useState(false);
-
+  const [editableStack, setEditableStack] = useState<TechStackStructure | null>(null);
   const compiledStack = useMemo(() => {
     return compileStackImplications(stackImplications, projectName);
   }, [stackImplications, projectName]);
 
+  // Use editable stack for interactive diagram, fall back to compiled
+  const activeStack = editableStack || compiledStack;
+
   const jsonOutput = useMemo(() => {
-    return JSON.stringify(compiledStack, null, 2);
-  }, [compiledStack]);
+    return JSON.stringify(activeStack, null, 2);
+  }, [activeStack]);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(jsonOutput);
@@ -103,8 +109,19 @@ export const TechStackCompiler: React.FC<TechStackCompilerProps> = ({
     toast.success('Tech Stack JSON downloaded');
   };
 
-  const legacyLayerCount = Object.values(compiledStack.layers).reduce((acc, arr) => acc + arr.length, 0);
-  const agenticLayerCount = Object.values(compiledStack.agentic_layers).reduce((acc, arr) => acc + arr.length, 0);
+  const handleLayerUpdate = useCallback((layer: string, components: string[]) => {
+    const newStack = {
+      ...(editableStack || compiledStack),
+      agentic_layers: {
+        ...(editableStack || compiledStack).agentic_layers,
+        [layer]: components
+      }
+    };
+    setEditableStack(newStack);
+    onStackUpdate?.(newStack);
+  }, [editableStack, compiledStack, onStackUpdate]);
+
+  const agenticLayerCount = Object.values(activeStack.agentic_layers).reduce((acc, arr) => acc + arr.length, 0);
 
   return (
     <Card className="border-primary/20">
@@ -128,16 +145,29 @@ export const TechStackCompiler: React.FC<TechStackCompilerProps> = ({
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Tabs defaultValue="agentic" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="agentic" className="text-xs">8-Layer Agentic</TabsTrigger>
-            <TabsTrigger value="legacy" className="text-xs">5-Layer Classic</TabsTrigger>
+        <Tabs defaultValue="diagram" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="diagram" className="text-xs">
+              <GitBranch className="h-3 w-3 mr-1" />
+              Diagram
+            </TabsTrigger>
+            <TabsTrigger value="agentic" className="text-xs">8-Layer Grid</TabsTrigger>
+            <TabsTrigger value="legacy" className="text-xs">5-Layer</TabsTrigger>
           </TabsList>
+          
+          {/* Interactive Diagram Tab */}
+          <TabsContent value="diagram" className="mt-3">
+            <AgenticLayerDiagram 
+              stack={activeStack}
+              onUpdateStack={handleLayerUpdate}
+              readOnly={false}
+            />
+          </TabsContent>
           
           <TabsContent value="agentic" className="mt-3 space-y-3">
             {/* 8-Layer Agentic Architecture Grid */}
             <div className="grid grid-cols-4 gap-2">
-              {Object.entries(compiledStack.agentic_layers).map(([layer, components]) => (
+              {Object.entries(activeStack.agentic_layers).map(([layer, components]) => (
                 <div
                   key={layer}
                   className={`p-2 rounded-lg border ${AGENTIC_LAYER_COLORS[layer]} text-center transition-all hover:scale-105`}
@@ -155,15 +185,15 @@ export const TechStackCompiler: React.FC<TechStackCompilerProps> = ({
             <div className="flex flex-wrap gap-2 pt-2 border-t">
               <Badge variant="outline" className="text-[10px]">
                 <Cpu className="h-3 w-3 mr-1" />
-                Doc: {compiledStack.maturity.documentation}
+                Doc: {activeStack.maturity.documentation}
               </Badge>
               <Badge variant="outline" className="text-[10px]">
                 <Workflow className="h-3 w-3 mr-1" />
-                Auto: {compiledStack.maturity.automation}
+                Auto: {activeStack.maturity.automation}
               </Badge>
               <Badge variant="outline" className="text-[10px]">
                 <Network className="h-3 w-3 mr-1" />
-                Orch: {compiledStack.maturity.orchestration}
+                Orch: {activeStack.maturity.orchestration}
               </Badge>
             </div>
           </TabsContent>
@@ -171,7 +201,7 @@ export const TechStackCompiler: React.FC<TechStackCompilerProps> = ({
           <TabsContent value="legacy" className="mt-3">
             {/* Legacy 5-Layer Grid */}
             <div className="grid grid-cols-5 gap-2">
-              {Object.entries(compiledStack.layers).map(([layer, components]) => (
+              {Object.entries(activeStack.layers).map(([layer, components]) => (
                 <div
                   key={layer}
                   className={`p-2 rounded-lg border ${LAYER_COLORS[layer]} text-center`}
@@ -190,14 +220,14 @@ export const TechStackCompiler: React.FC<TechStackCompilerProps> = ({
         {/* Constraints Summary */}
         <div className="flex flex-wrap gap-2">
           <Badge variant="outline" className="text-xs">
-            {compiledStack.constraints.hosting}
+            {activeStack.constraints.hosting}
           </Badge>
           <Badge variant="outline" className="text-xs">
-            {compiledStack.constraints.sensitivity} sensitivity
+            {activeStack.constraints.sensitivity} sensitivity
           </Badge>
-          {compiledStack.constraints.data_residency && (
+          {activeStack.constraints.data_residency && (
             <Badge variant="outline" className="text-xs">
-              {compiledStack.constraints.data_residency}
+              {activeStack.constraints.data_residency}
             </Badge>
           )}
         </div>
