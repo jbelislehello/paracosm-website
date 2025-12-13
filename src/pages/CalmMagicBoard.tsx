@@ -5,11 +5,12 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Wand2, Globe } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Wand2, Globe, Donut } from 'lucide-react';
 import { toast } from 'sonner';
 import MinimalistTileMatrix from '@/components/MinimalistTileMatrix';
 import CosmologicalBoardOverlay from '@/components/calm-magic/CosmologicalBoardOverlay';
 import Cosmological3DManifold from '@/components/calm-magic/Cosmological3DManifold';
+import { TorusManifoldVisualization } from '@/components/calm-magic/TorusManifoldVisualization';
 import TileDetailPanel from '@/components/TileDetailPanel';
 import { FragmentBrowser } from '@/components/calm-magic/FragmentBrowser';
 import { useTileMatrixPersistence } from '@/hooks/useTileMatrixPersistence';
@@ -123,6 +124,7 @@ const CalmMagicBoard = () => {
   // Cosmological overlay state (Wild Guess)
   const [showCosmologyOverlay, setShowCosmologyOverlay] = useState(false);
   const [show3DManifold, setShow3DManifold] = useState(false);
+  const [showTorusManifold, setShowTorusManifold] = useState(false);
   
   
   
@@ -736,6 +738,18 @@ const CalmMagicBoard = () => {
               3D View
             </Button>
             
+            {/* Torus Manifold - Full Journey Visualization */}
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setShowTorusManifold(true)}
+              title="Torus Manifold - Full Journey Topology"
+              className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-500/30 hover:border-amber-500"
+            >
+              <Donut className="w-4 h-4 mr-1" />
+              Manifold
+            </Button>
+            
             {/* Help / Tour */}
             <Button 
               variant="ghost" 
@@ -1000,6 +1014,11 @@ const CalmMagicBoard = () => {
           }}
           onClose={() => setShow3DManifold(false)}
         />
+      )}
+      
+      {/* Torus Manifold - Full Journey Topology */}
+      {showTorusManifold && (
+        <TorusManifoldVisualization onClose={() => setShowTorusManifold(false)} />
       )}
     </div>
   );
