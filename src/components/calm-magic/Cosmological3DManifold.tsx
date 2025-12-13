@@ -1,7 +1,8 @@
-import React, { useRef, useMemo, useState } from 'react';
+import React, { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Text, Float, MeshTransmissionMaterial } from '@react-three/drei';
+import { OrbitControls, Text, Float } from '@react-three/drei';
 import * as THREE from 'three';
+import { useCosmologicalAudio } from '@/hooks/useCosmologicalAudio';
 
 type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 
@@ -425,6 +426,31 @@ const Cosmological3DManifold: React.FC<Cosmological3DManifoldProps> = ({
   onTileClick,
   onClose,
 }) => {
+  const { playTileSound, initAudio } = useCosmologicalAudio();
+  const [audioEnabled, setAudioEnabled] = useState(false);
+  const lastSelectedTile = useRef<number | null>(null);
+
+  // Initialize audio on user interaction
+  const handleEnableAudio = () => {
+    initAudio();
+    setAudioEnabled(true);
+  };
+
+  // Play sound when tile changes
+  useEffect(() => {
+    if (audioEnabled && selectedTile && selectedTile !== lastSelectedTile.current) {
+      playTileSound(selectedTile, season);
+      lastSelectedTile.current = selectedTile;
+    }
+  }, [selectedTile, audioEnabled, playTileSound, season]);
+
+  const handleTileClick = (id: number) => {
+    if (audioEnabled) {
+      playTileSound(id, season);
+    }
+    onTileClick(id);
+  };
+
   return (
     <div className="fixed inset-0 z-50 bg-background">
       {/* Header */}
@@ -440,6 +466,18 @@ const Cosmological3DManifold: React.FC<Cosmological3DManifoldProps> = ({
           >
             {season}
           </span>
+          {!audioEnabled ? (
+            <button
+              onClick={handleEnableAudio}
+              className="px-3 py-1 rounded-full text-sm font-medium bg-primary/20 hover:bg-primary/30 text-primary transition-colors flex items-center gap-1"
+            >
+              🔇 Enable Audio
+            </button>
+          ) : (
+            <span className="px-3 py-1 rounded-full text-sm font-medium bg-emerald-500/20 text-emerald-400 flex items-center gap-1">
+              🔊 Audio On
+            </span>
+          )}
         </div>
         <button
           onClick={onClose}
@@ -459,7 +497,7 @@ const Cosmological3DManifold: React.FC<Cosmological3DManifoldProps> = ({
           season={season}
           visitedTiles={visitedTiles}
           selectedTile={selectedTile}
-          onTileClick={onTileClick}
+          onTileClick={handleTileClick}
         />
       </Canvas>
       
@@ -470,8 +508,8 @@ const Cosmological3DManifold: React.FC<Cosmological3DManifoldProps> = ({
           <ul className="text-xs text-muted-foreground space-y-1">
             <li>• Drag to rotate view</li>
             <li>• Scroll to zoom in/out</li>
-            <li>• Click tiles to select</li>
-            <li>• Auto-rotation enabled</li>
+            <li>• Click tiles to select & hear tone</li>
+            <li>• Each seal has a unique harmonic</li>
           </ul>
         </div>
         
@@ -484,6 +522,9 @@ const Cosmological3DManifold: React.FC<Cosmological3DManifoldProps> = ({
             <p className="text-xs text-muted-foreground mt-1">
               Row {Math.floor((selectedTile - 1) / 8) + 1}, Col {((selectedTile - 1) % 8) + 1}
             </p>
+            {audioEnabled && (
+              <p className="text-xs text-primary mt-2">♪ Playing harmonic tone</p>
+            )}
           </div>
         )}
       </div>
