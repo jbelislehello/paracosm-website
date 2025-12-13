@@ -5,10 +5,11 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Wand2 } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Wand2, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 import MinimalistTileMatrix from '@/components/MinimalistTileMatrix';
 import CosmologicalBoardOverlay from '@/components/calm-magic/CosmologicalBoardOverlay';
+import Cosmological3DManifold from '@/components/calm-magic/Cosmological3DManifold';
 import TileDetailPanel from '@/components/TileDetailPanel';
 import { FragmentBrowser } from '@/components/calm-magic/FragmentBrowser';
 import { useTileMatrixPersistence } from '@/hooks/useTileMatrixPersistence';
@@ -120,6 +121,7 @@ const CalmMagicBoard = () => {
   
   // Cosmological overlay state (Wild Guess)
   const [showCosmologyOverlay, setShowCosmologyOverlay] = useState(false);
+  const [show3DManifold, setShow3DManifold] = useState(false);
   
   // Subscription state for feature gating
   const { tier } = useSubscription();
@@ -719,6 +721,18 @@ const CalmMagicBoard = () => {
               Wild Guess
             </Button>
             
+            {/* 3D Manifold View */}
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setShow3DManifold(true)}
+              title="3D Cosmological Manifold"
+              className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border-indigo-500/30 hover:border-indigo-500"
+            >
+              <Globe className="w-4 h-4 mr-1" />
+              3D View
+            </Button>
+            
             {/* Help / Tour */}
             <Button 
               variant="ghost" 
@@ -966,6 +980,24 @@ const CalmMagicBoard = () => {
         reason="feature_locked"
         feature={upgradeFeature || undefined}
       />
+      
+      {/* 3D Cosmological Manifold Full Screen */}
+      {show3DManifold && (
+        <Cosmological3DManifold
+          season={currentSeason}
+          visitedTiles={Array.from(visitedTiles).map(key => {
+            const [row, col] = key.split('-').map(Number);
+            return row * 8 + col + 1;
+          })}
+          selectedTile={selectedTile ? selectedTile.row * 8 + selectedTile.col + 1 : null}
+          onTileClick={(id) => {
+            const row = Math.floor((id - 1) / 8);
+            const col = (id - 1) % 8;
+            handleTileClick(row, col);
+          }}
+          onClose={() => setShow3DManifold(false)}
+        />
+      )}
     </div>
   );
 };
