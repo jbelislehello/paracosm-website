@@ -3,7 +3,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Link2, Wand2, Moon, BookOpen, ScrollText } from 'lucide-react';
+import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Link2, Wand2, Moon, BookOpen, ScrollText, Focus } from 'lucide-react';
+import { MinimalistTileCard } from '@/components/calm-magic/MinimalistTileCard';
 import { useState, useEffect, useRef } from 'react';
 import { getTileStage, getStageById } from '@/types/journal-expansion';
 import { getPrinciplesByStage } from '@/data/femininePrinciples';
@@ -79,6 +80,7 @@ const TileDetailPanel = ({
   const [activeTab, setActiveTab] = useState('chat');
   const [showMeditationMode, setShowMeditationMode] = useState(false);
   const [highlightedTile, setHighlightedTile] = useState<number | null>(null);
+  const [showFocusMode, setShowFocusMode] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // Tzolkin resonance for meditation mode
@@ -226,9 +228,21 @@ const TileDetailPanel = ({
             )}
           </div>
         </div>
-        <Button variant="ghost" size="icon" onClick={onClose} className="shrink-0">
-          <X className="w-4 h-4" />
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            onClick={() => setShowFocusMode(true)}
+            className="gap-1"
+            title="Focus Mode"
+          >
+            <Focus className="w-3 h-3" />
+            Focus
+          </Button>
+          <Button variant="ghost" size="icon" onClick={onClose} className="shrink-0">
+            <X className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
 
       {/* Stage Context & Principles */}
@@ -578,6 +592,18 @@ const TileDetailPanel = ({
             }
           }}
           onClose={() => setShowMeditationMode(false)}
+        />
+      )}
+
+      {/* Focus Mode Overlay */}
+      {showFocusMode && (
+        <MinimalistTileCard
+          selectedTile={selectedTile}
+          board={board}
+          currentSeason={currentSeason}
+          onClose={() => setShowFocusMode(false)}
+          onSavePolen={onSavePolen}
+          onExpandToFull={() => setShowFocusMode(false)}
         />
       )}
     </div>
