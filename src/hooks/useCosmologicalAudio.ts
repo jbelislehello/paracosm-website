@@ -1,4 +1,4 @@
-import { useRef, useCallback, useEffect } from 'react';
+import { useRef, useCallback, useEffect, useState } from 'react';
 import { getTileCosmology } from '@/data/cosmologicalMapping';
 
 type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
@@ -61,6 +61,7 @@ export const useCosmologicalAudio = () => {
   const audioContextRef = useRef<AudioContext | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
   const isPlayingRef = useRef(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   // Initialize audio context on first use
   const initAudio = useCallback(() => {
@@ -69,6 +70,7 @@ export const useCosmologicalAudio = () => {
       gainNodeRef.current = audioContextRef.current.createGain();
       gainNodeRef.current.connect(audioContextRef.current.destination);
       gainNodeRef.current.gain.value = 0.3; // Master volume
+      setIsInitialized(true);
     }
     
     if (audioContextRef.current.state === 'suspended') {
@@ -224,6 +226,7 @@ export const useCosmologicalAudio = () => {
     playTileSound,
     playTilePath,
     playResonanceChord,
-    initAudio
+    initAudio,
+    isInitialized
   };
 };
