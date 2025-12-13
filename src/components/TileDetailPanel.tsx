@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Link2 } from 'lucide-react';
+import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Link2, Wand2 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { getTileStage, getStageById } from '@/types/journal-expansion';
 import { getPrinciplesByStage } from '@/data/femininePrinciples';
@@ -14,6 +14,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { SketchPad } from '@/components/calm-magic/tools/SketchPad';
 import { DiagramBuilder } from '@/components/calm-magic/tools/DiagramBuilder';
 import { EmotionalCheckIn } from '@/components/calm-magic/tools/EmotionalCheckIn';
+import CosmologicalContextTab from '@/components/calm-magic/CosmologicalContextTab';
 import { toast } from 'sonner';
 import { FeltState, EmotionalAxes, EmotionalCheckInData } from '@/types/trajectory';
 
@@ -266,10 +267,14 @@ const TileDetailPanel = ({
       {/* Add-ons Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0 overflow-hidden">
         <div className="px-2 pt-2 shrink-0">
-          <TabsList className="w-full grid grid-cols-3 h-8">
+          <TabsList className="w-full grid grid-cols-4 h-8">
             <TabsTrigger value="chat" className="text-xs gap-1">
               <MessageCircle className="w-3 h-3" />
               Chat
+            </TabsTrigger>
+            <TabsTrigger value="wild-guess" className="text-xs gap-1">
+              <Wand2 className="w-3 h-3" />
+              Wild Guess
             </TabsTrigger>
             <TabsTrigger value="sketch" className="text-xs gap-1">
               <Pencil className="w-3 h-3" />
@@ -410,6 +415,15 @@ const TileDetailPanel = ({
               </Button>
             )}
           </div>
+        </TabsContent>
+
+        {/* Wild Guess Tab - Cosmological Context */}
+        <TabsContent value="wild-guess" className="flex-1 overflow-auto p-2 m-0">
+          <CosmologicalContextTab 
+            tileId={tileId}
+            season={currentSeason as 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS'}
+            onDiagonalMove={(toRow, toCol) => onNavigate(toRow, toCol)}
+          />
         </TabsContent>
 
         {/* Sketch Tab */}
