@@ -15,6 +15,7 @@ import { SketchPad } from '@/components/calm-magic/tools/SketchPad';
 import { DiagramBuilder } from '@/components/calm-magic/tools/DiagramBuilder';
 import { EmotionalCheckIn } from '@/components/calm-magic/tools/EmotionalCheckIn';
 import CosmologicalContextTab from '@/components/calm-magic/CosmologicalContextTab';
+import TzolkinResonancePanel from '@/components/calm-magic/TzolkinResonancePanel';
 import { toast } from 'sonner';
 import { FeltState, EmotionalAxes, EmotionalCheckInData } from '@/types/trajectory';
 
@@ -417,13 +418,25 @@ const TileDetailPanel = ({
           </div>
         </TabsContent>
 
-        {/* Wild Guess Tab - Cosmological Context */}
+        {/* Wild Guess Tab - Cosmological Context & Resonance */}
         <TabsContent value="wild-guess" className="flex-1 overflow-auto p-2 m-0">
-          <CosmologicalContextTab 
-            tileId={tileId}
-            season={currentSeason as 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS'}
-            onDiagonalMove={(toRow, toCol) => onNavigate(toRow, toCol)}
-          />
+          <ScrollArea className="h-full">
+            <div className="space-y-4 pb-4">
+              <TzolkinResonancePanel 
+                season={currentSeason as 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS'}
+                onTileSelect={(id) => {
+                  const row = Math.floor((id - 1) / 8);
+                  const col = (id - 1) % 8;
+                  onNavigate(row, col);
+                }}
+              />
+              <CosmologicalContextTab 
+                tileId={tileId}
+                season={currentSeason as 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS'}
+                onDiagonalMove={(toRow, toCol) => onNavigate(toRow, toCol)}
+              />
+            </div>
+          </ScrollArea>
         </TabsContent>
 
         {/* Sketch Tab */}
