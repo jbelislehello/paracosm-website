@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Link2, Wand2 } from 'lucide-react';
+import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Link2, Wand2, Moon, BookOpen } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { getTileStage, getStageById } from '@/types/journal-expansion';
 import { getPrinciplesByStage } from '@/data/femininePrinciples';
@@ -16,6 +16,9 @@ import { DiagramBuilder } from '@/components/calm-magic/tools/DiagramBuilder';
 import { EmotionalCheckIn } from '@/components/calm-magic/tools/EmotionalCheckIn';
 import CosmologicalContextTab from '@/components/calm-magic/CosmologicalContextTab';
 import TzolkinResonancePanel from '@/components/calm-magic/TzolkinResonancePanel';
+import { HexagramOracle } from '@/components/calm-magic/HexagramOracle';
+import { MeditationMode } from '@/components/calm-magic/MeditationMode';
+import { useTzolkinResonance } from '@/hooks/useTzolkinResonance';
 import { toast } from 'sonner';
 import { FeltState, EmotionalAxes, EmotionalCheckInData } from '@/types/trajectory';
 
@@ -54,6 +57,7 @@ interface TileDetailPanelProps {
   currentSeason?: string;
   onEmotionalCheckin?: (tileId: number, feltState: FeltState, axes: EmotionalAxes, note?: string) => void;
   emotionalCheckins?: EmotionalCheckInData[];
+  visitedTiles?: Set<number>;
 }
 
 const TileDetailPanel = ({
@@ -67,11 +71,17 @@ const TileDetailPanel = ({
   currentSeason = 'POLLENS',
   onEmotionalCheckin,
   emotionalCheckins = [],
+  visitedTiles = new Set<number>(),
 }: TileDetailPanelProps) => {
   const [userInput, setUserInput] = useState('');
   const [conversationSaved, setConversationSaved] = useState(false);
   const [activeTab, setActiveTab] = useState('chat');
+  const [showMeditationMode, setShowMeditationMode] = useState(false);
+  const [highlightedTile, setHighlightedTile] = useState<number | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  // Tzolkin resonance for meditation mode
+  const { result: resonanceResult } = useTzolkinResonance();
 
   const {
     messages,
@@ -268,7 +278,7 @@ const TileDetailPanel = ({
       {/* Add-ons Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0 overflow-hidden">
         <div className="px-2 pt-2 shrink-0">
-          <TabsList className="w-full grid grid-cols-4 h-8">
+          <TabsList className="w-full grid grid-cols-5 h-8">
             <TabsTrigger value="chat" className="text-xs gap-1">
               <MessageCircle className="w-3 h-3" />
               Chat
@@ -276,6 +286,10 @@ const TileDetailPanel = ({
             <TabsTrigger value="wild-guess" className="text-xs gap-1">
               <Wand2 className="w-3 h-3" />
               Wild Guess
+            </TabsTrigger>
+            <TabsTrigger value="oracle" className="text-xs gap-1">
+              <BookOpen className="w-3 h-3" />
+              Oracle
             </TabsTrigger>
             <TabsTrigger value="sketch" className="text-xs gap-1">
               <Pencil className="w-3 h-3" />
@@ -422,6 +436,18 @@ const TileDetailPanel = ({
         <TabsContent value="wild-guess" className="flex-1 overflow-auto p-2 m-0">
           <ScrollArea className="h-full">
             <div className="space-y-4 pb-4">
+              {/* Meditation Mode Button */}
+              {resonanceResult && resonanceResult.topMatches.length > 0 && (
+                <Button 
+                  variant="outline" 
+                  className="w-full gap-2"
+                  onClick={() => setShowMeditationMode(true)}
+                >
+                  <Moon className="w-4 h-4" />
+                  Enter Meditation Mode ({resonanceResult.topMatches.length} resonating tiles)
+                </Button>
+              )}
+              
               <TzolkinResonancePanel 
                 season={currentSeason as 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS'}
                 onTileSelect={(id) => {
@@ -436,6 +462,24 @@ const TileDetailPanel = ({
                 onDiagonalMove={(toRow, toCol) => onNavigate(toRow, toCol)}
               />
             </div>
+          </ScrollArea>
+        </TabsContent>
+
+        {/* Oracle Tab - Hexagram I Ching */}
+        <TabsContent value="oracle" className="flex-1 overflow-auto p-2 m-0">
+          <ScrollArea className="h-full">
+            <HexagramOracle
+              currentTileId={tileId}
+              visitedTiles={visitedTiles}
+              emotionalState={emotionalCheckins.length > 0 ? {
+                feltState: emotionalCheckins[emotionalCheckins.length - 1]?.felt_state || 'flowing',
+                vitality: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.love || 50,
+                spaciousness: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.magic || 50,
+                wholeness: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.calm || 50,
+                openness: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.open || 50,
+                expansion: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.free || 50,
+              } : undefined}
+            />
           </ScrollArea>
         </TabsContent>
 
@@ -504,6 +548,26 @@ const TileDetailPanel = ({
           </Button>
         </div>
       </div>
+
+      {/* Meditation Mode Overlay */}
+      {showMeditationMode && resonanceResult && (
+        <MeditationMode
+          resonatingTiles={resonanceResult.topMatches.map(m => ({
+            tileId: m.tileId,
+            score: m.resonanceScore / 100,
+            sealName: m.sealName,
+          }))}
+          onTileHighlight={(id) => {
+            setHighlightedTile(id);
+            if (id) {
+              const row = Math.floor((id - 1) / 8);
+              const col = (id - 1) % 8;
+              onNavigate(row, col);
+            }
+          }}
+          onClose={() => setShowMeditationMode(false)}
+        />
+      )}
     </div>
   );
 };
