@@ -195,6 +195,54 @@ export type Database = {
           },
         ]
       }
+      hexagram_readings: {
+        Row: {
+          changing_lines: number[] | null
+          created_at: string
+          cycle_id: string | null
+          emotional_state: Json | null
+          id: string
+          interpretation: string | null
+          primary_hexagram: number
+          question: string
+          reflection: string | null
+          relating_hexagram: number | null
+          tags: string[] | null
+          tile_id: number | null
+          user_id: string
+        }
+        Insert: {
+          changing_lines?: number[] | null
+          created_at?: string
+          cycle_id?: string | null
+          emotional_state?: Json | null
+          id?: string
+          interpretation?: string | null
+          primary_hexagram: number
+          question: string
+          reflection?: string | null
+          relating_hexagram?: number | null
+          tags?: string[] | null
+          tile_id?: number | null
+          user_id: string
+        }
+        Update: {
+          changing_lines?: number[] | null
+          created_at?: string
+          cycle_id?: string | null
+          emotional_state?: Json | null
+          id?: string
+          interpretation?: string | null
+          primary_hexagram?: number
+          question?: string
+          reflection?: string | null
+          relating_hexagram?: number | null
+          tags?: string[] | null
+          tile_id?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       journal_cycles: {
         Row: {
           board: Database["public"]["Enums"]["board"]
