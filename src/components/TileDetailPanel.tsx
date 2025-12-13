@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Link2, Wand2, Moon, BookOpen } from 'lucide-react';
+import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Link2, Wand2, Moon, BookOpen, ScrollText } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { getTileStage, getStageById } from '@/types/journal-expansion';
 import { getPrinciplesByStage } from '@/data/femininePrinciples';
@@ -18,6 +18,7 @@ import CosmologicalContextTab from '@/components/calm-magic/CosmologicalContextT
 import TzolkinResonancePanel from '@/components/calm-magic/TzolkinResonancePanel';
 import { HexagramOracle } from '@/components/calm-magic/HexagramOracle';
 import { MeditationMode } from '@/components/calm-magic/MeditationMode';
+import { HexagramJournal } from '@/components/calm-magic/HexagramJournal';
 import { useTzolkinResonance } from '@/hooks/useTzolkinResonance';
 import { toast } from 'sonner';
 import { FeltState, EmotionalAxes, EmotionalCheckInData } from '@/types/trajectory';
@@ -278,18 +279,22 @@ const TileDetailPanel = ({
       {/* Add-ons Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0 overflow-hidden">
         <div className="px-2 pt-2 shrink-0">
-          <TabsList className="w-full grid grid-cols-5 h-8">
+          <TabsList className="w-full grid grid-cols-6 h-8">
             <TabsTrigger value="chat" className="text-xs gap-1">
               <MessageCircle className="w-3 h-3" />
               Chat
             </TabsTrigger>
             <TabsTrigger value="wild-guess" className="text-xs gap-1">
               <Wand2 className="w-3 h-3" />
-              Wild Guess
+              Wild
             </TabsTrigger>
             <TabsTrigger value="oracle" className="text-xs gap-1">
               <BookOpen className="w-3 h-3" />
               Oracle
+            </TabsTrigger>
+            <TabsTrigger value="journal" className="text-xs gap-1">
+              <ScrollText className="w-3 h-3" />
+              Journal
             </TabsTrigger>
             <TabsTrigger value="sketch" className="text-xs gap-1">
               <Pencil className="w-3 h-3" />
@@ -480,6 +485,13 @@ const TileDetailPanel = ({
                 expansion: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.free || 50,
               } : undefined}
             />
+          </ScrollArea>
+        </TabsContent>
+
+        {/* Journal Tab - Hexagram Reading History */}
+        <TabsContent value="journal" className="flex-1 overflow-auto p-2 m-0">
+          <ScrollArea className="h-full">
+            <HexagramJournal />
           </ScrollArea>
         </TabsContent>
 

@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Sparkles, RefreshCw, BookOpen, Compass, Heart, Brain, Zap } from 'lucide-react';
+import { Sparkles, RefreshCw, BookOpen, Compass, Heart, Brain, Zap, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import HexagramDisplay from './HexagramDisplay';
 import { getHexagramByNumber, Hexagram } from '@/data/cosmologicalMapping';
-
+import { useHexagramJournal } from '@/hooks/useHexagramJournal';
 interface HexagramOracleProps {
   currentTileId: number | null;
   visitedTiles: Set<number>;
@@ -66,7 +66,8 @@ export const HexagramOracle: React.FC<HexagramOracleProps> = ({
   } | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [showAnimation, setShowAnimation] = useState(false);
-
+  const [isSaved, setIsSaved] = useState(false);
+  const { saveReading } = useHexagramJournal();
   const generateReading = useCallback(async () => {
     setIsGenerating(true);
     setShowAnimation(true);
@@ -144,8 +145,29 @@ export const HexagramOracle: React.FC<HexagramOracleProps> = ({
   const clearReading = () => {
     setReading(null);
     setQuestion('');
+    setIsSaved(false);
   };
 
+  const handleSaveReading = async () => {
+    if (!reading) return;
+    
+    const saved = await saveReading({
+      question: question || 'No question specified',
+      primary_hexagram: reading.primary.number,
+      relating_hexagram: reading.relating?.number || null,
+      changing_lines: reading.changingLines,
+      interpretation: reading.interpretation,
+      tile_id: currentTileId,
+      cycle_id: null,
+      emotional_state: emotionalState || null,
+      tags: reading.primary.keywords,
+      reflection: null
+    });
+    
+    if (saved) {
+      setIsSaved(true);
+    }
+  };
   return (
     <Card className="border-primary/20">
       <CardHeader className="pb-3">
@@ -282,8 +304,14 @@ export const HexagramOracle: React.FC<HexagramOracleProps> = ({
                 <RefreshCw className="w-4 h-4 mr-2" />
                 New Reading
               </Button>
-              <Button variant="ghost" size="icon">
-                <Brain className="w-4 h-4" />
+              <Button 
+                variant={isSaved ? "secondary" : "default"}
+                onClick={handleSaveReading}
+                disabled={isSaved}
+                className="gap-2"
+              >
+                <Save className="w-4 h-4" />
+                {isSaved ? 'Saved' : 'Save'}
               </Button>
             </div>
           </>
