@@ -54,7 +54,23 @@ const CosmologicalP5Canvas = ({
     const sketch = (p: p5) => {
       let rotation = 0;
       let portalParticles: { x: number; y: number; angle: number; speed: number; tileId: number }[] = [];
-      let diagonalParticles: { x: number; y: number; progress: number; fromX: number; fromY: number; toX: number; toY: number }[] = [];
+      
+      // Enhanced diagonal particle system
+      interface DiagonalParticle {
+        x: number;
+        y: number;
+        vx: number;
+        vy: number;
+        life: number;
+        maxLife: number;
+        size: number;
+        color: { r: number; g: number; b: number };
+        type: 'trail' | 'spark' | 'burst' | 'comet';
+      }
+      let diagonalParticles: DiagonalParticle[] = [];
+      let diagonalTrailPoints: { x: number; y: number; alpha: number }[] = [];
+      let lastDiagonalSpawnTime = 0;
+      let burstTriggered = false;
 
       p.setup = () => {
         p.createCanvas(CANVAS_SIZE, CANVAS_SIZE);
@@ -84,6 +100,126 @@ const CosmologicalP5Canvas = ({
               }
             }
           }
+        }
+      };
+
+      // Spawn diagonal pathway particles
+      const spawnDiagonalParticles = (fromX: number, fromY: number, toX: number, toY: number) => {
+        const now = p.millis();
+        if (now - lastDiagonalSpawnTime < 50) return; // Throttle spawning
+        lastDiagonalSpawnTime = now;
+
+        const dx = toX - fromX;
+        const dy = toY - fromY;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const angle = Math.atan2(dy, dx);
+
+        // Comet head particles
+        for (let i = 0; i < 3; i++) {
+          const progress = (p.frameCount * 0.015 + i * 0.3) % 1;
+          const px = fromX + dx * progress;
+          const py = fromY + dy * progress;
+          
+          diagonalParticles.push({
+            x: px,
+            y: py,
+            vx: Math.cos(angle) * 2 + (Math.random() - 0.5) * 0.5,
+            vy: Math.sin(angle) * 2 + (Math.random() - 0.5) * 0.5,
+            life: 1,
+            maxLife: 1,
+            size: 10 + Math.random() * 5,
+            color: { r: 255, g: 200 + Math.random() * 55, b: 100 },
+            type: 'comet',
+          });
+        }
+
+        // Trail particles
+        for (let i = 0; i < 8; i++) {
+          const progress = Math.random();
+          const px = fromX + dx * progress;
+          const py = fromY + dy * progress;
+          const perpAngle = angle + Math.PI / 2;
+          const offset = (Math.random() - 0.5) * 20;
+
+          diagonalParticles.push({
+            x: px + Math.cos(perpAngle) * offset,
+            y: py + Math.sin(perpAngle) * offset,
+            vx: (Math.random() - 0.5) * 1,
+            vy: (Math.random() - 0.5) * 1,
+            life: 0.5 + Math.random() * 0.5,
+            maxLife: 0.5 + Math.random() * 0.5,
+            size: 3 + Math.random() * 4,
+            color: { r: 255, g: 180 + Math.random() * 75, b: 50 + Math.random() * 100 },
+            type: 'trail',
+          });
+        }
+
+        // Sparkle particles
+        for (let i = 0; i < 2; i++) {
+          const progress = Math.random();
+          const px = fromX + dx * progress;
+          const py = fromY + dy * progress;
+
+          diagonalParticles.push({
+            x: px,
+            y: py,
+            vx: (Math.random() - 0.5) * 3,
+            vy: (Math.random() - 0.5) * 3,
+            life: 0.3 + Math.random() * 0.4,
+            maxLife: 0.3 + Math.random() * 0.4,
+            size: 2 + Math.random() * 3,
+            color: { r: 255, g: 255, b: 200 + Math.random() * 55 },
+            type: 'spark',
+          });
+        }
+
+        // Store trail points for ribbon effect
+        const numPoints = 20;
+        for (let i = 0; i < numPoints; i++) {
+          const t = i / numPoints;
+          diagonalTrailPoints.push({
+            x: fromX + dx * t,
+            y: fromY + dy * t,
+            alpha: 1 - t * 0.5,
+          });
+        }
+      };
+
+      // Spawn burst particles at destination
+      const spawnBurstAtDestination = (x: number, y: number) => {
+        for (let i = 0; i < 20; i++) {
+          const angle = (Math.PI * 2 * i) / 20 + Math.random() * 0.3;
+          const speed = 2 + Math.random() * 4;
+
+          diagonalParticles.push({
+            x,
+            y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            life: 0.6 + Math.random() * 0.4,
+            maxLife: 0.6 + Math.random() * 0.4,
+            size: 4 + Math.random() * 6,
+            color: { r: 200 + Math.random() * 55, g: 100 + Math.random() * 100, b: 255 },
+            type: 'burst',
+          });
+        }
+
+        // Inner ring
+        for (let i = 0; i < 12; i++) {
+          const angle = (Math.PI * 2 * i) / 12;
+          const speed = 1 + Math.random() * 2;
+
+          diagonalParticles.push({
+            x,
+            y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            life: 0.8 + Math.random() * 0.2,
+            maxLife: 0.8 + Math.random() * 0.2,
+            size: 6 + Math.random() * 4,
+            color: { r: 255, g: 220, b: 100 },
+            type: 'burst',
+          });
         }
       };
 
@@ -259,22 +395,111 @@ const CosmologicalP5Canvas = ({
         const from = getTilePosition(diagonalPathActive.from.row, diagonalPathActive.from.col);
         const to = getTilePosition(diagonalPathActive.to.row, diagonalPathActive.to.col);
         
-        // Animated line
-        p.stroke(255, 200, 100);
-        p.strokeWeight(3);
-        p.line(from.x, from.y, to.x, to.y);
+        // Spawn new particles
+        spawnDiagonalParticles(from.x, from.y, to.x, to.y);
         
-        // Particles along path
-        const particleCount = 5;
-        for (let i = 0; i < particleCount; i++) {
-          const t = ((p.frameCount * 0.02 + i / particleCount) % 1);
-          const px = p.lerp(from.x, to.x, t);
-          const py = p.lerp(from.y, to.y, t);
+        // Trigger burst at destination once
+        if (!burstTriggered) {
+          burstTriggered = true;
+          spawnBurstAtDestination(to.x, to.y);
+        }
+        
+        // Draw glowing base line with gradient
+        const gradient = p.drawingContext as CanvasRenderingContext2D;
+        const lineGradient = gradient.createLinearGradient(from.x, from.y, to.x, to.y);
+        lineGradient.addColorStop(0, 'rgba(255, 200, 100, 0.8)');
+        lineGradient.addColorStop(0.5, 'rgba(255, 150, 255, 0.6)');
+        lineGradient.addColorStop(1, 'rgba(200, 100, 255, 0.8)');
+        
+        gradient.strokeStyle = lineGradient;
+        gradient.lineWidth = 4;
+        gradient.shadowBlur = 15;
+        gradient.shadowColor = 'rgba(255, 200, 100, 0.6)';
+        gradient.beginPath();
+        gradient.moveTo(from.x, from.y);
+        gradient.lineTo(to.x, to.y);
+        gradient.stroke();
+        gradient.shadowBlur = 0;
+        
+        // Draw energy ribbon trail
+        if (diagonalTrailPoints.length > 1) {
+          p.noFill();
+          p.strokeWeight(8);
+          for (let i = 1; i < diagonalTrailPoints.length; i++) {
+            const alpha = diagonalTrailPoints[i].alpha * 100;
+            p.stroke(255, 200, 100, alpha);
+            p.line(
+              diagonalTrailPoints[i - 1].x, 
+              diagonalTrailPoints[i - 1].y,
+              diagonalTrailPoints[i].x, 
+              diagonalTrailPoints[i].y
+            );
+          }
+        }
+        
+        // Draw all particle types
+        diagonalParticles.forEach(particle => {
+          const lifeRatio = particle.life / particle.maxLife;
+          const alpha = lifeRatio * 255;
+          const { r, g, b } = particle.color;
           
           p.noStroke();
-          p.fill(255, 220, 100, 200 * (1 - t));
-          p.circle(px, py, 8 * (1 - t * 0.5));
-        }
+          
+          switch (particle.type) {
+            case 'comet':
+              // Glowing comet head
+              p.fill(r, g, b, alpha * 0.3);
+              p.circle(particle.x, particle.y, particle.size * 2);
+              p.fill(r, g, b, alpha * 0.6);
+              p.circle(particle.x, particle.y, particle.size * 1.2);
+              p.fill(255, 255, 255, alpha);
+              p.circle(particle.x, particle.y, particle.size * 0.5);
+              break;
+              
+            case 'trail':
+              // Soft trail particles
+              p.fill(r, g, b, alpha * 0.7);
+              p.circle(particle.x, particle.y, particle.size * lifeRatio);
+              break;
+              
+            case 'spark':
+              // Sharp sparkle with star shape
+              p.fill(r, g, b, alpha);
+              p.push();
+              p.translate(particle.x, particle.y);
+              p.rotate(p.frameCount * 0.2);
+              const sparkSize = particle.size * lifeRatio;
+              for (let i = 0; i < 4; i++) {
+                p.rotate(p.PI / 2);
+                p.triangle(0, 0, -sparkSize * 0.3, -sparkSize, sparkSize * 0.3, -sparkSize);
+              }
+              p.pop();
+              break;
+              
+            case 'burst':
+              // Explosion burst with glow
+              p.fill(r, g, b, alpha * 0.5);
+              p.circle(particle.x, particle.y, particle.size * 1.5 * lifeRatio);
+              p.fill(255, 255, 255, alpha * 0.8);
+              p.circle(particle.x, particle.y, particle.size * 0.6 * lifeRatio);
+              break;
+          }
+        });
+        
+        // Draw pulsing orbs at endpoints
+        const pulse = Math.sin(p.frameCount * 0.15) * 0.3 + 0.7;
+        
+        // Source orb
+        p.fill(255, 220, 100, 150 * pulse);
+        p.circle(from.x, from.y, 25 * pulse);
+        p.fill(255, 255, 255, 200);
+        p.circle(from.x, from.y, 8);
+        
+        // Destination orb
+        p.fill(200, 100, 255, 180 * pulse);
+        p.circle(to.x, to.y, 30 * pulse);
+        p.fill(255, 255, 255, 200);
+        p.circle(to.x, to.y, 10);
       };
 
       const drawHexagramOverlay = (p: p5, tile: { row: number; col: number }) => {
@@ -308,13 +533,35 @@ const CosmologicalP5Canvas = ({
       };
 
       const updateParticles = () => {
-        // Update diagonal particles if active
-        diagonalParticles = diagonalParticles.filter(p => p.progress < 1);
-        diagonalParticles.forEach(p => {
-          p.progress += 0.02;
-          p.x = p5.prototype.lerp(p.fromX, p.toX, p.progress);
-          p.y = p5.prototype.lerp(p.fromY, p.toY, p.progress);
+        // Update diagonal particles
+        diagonalParticles = diagonalParticles.filter(particle => particle.life > 0);
+        diagonalParticles.forEach(particle => {
+          particle.x += particle.vx;
+          particle.y += particle.vy;
+          particle.life -= 0.02;
+          
+          // Add some drag
+          particle.vx *= 0.98;
+          particle.vy *= 0.98;
+          
+          // Gravity for burst particles
+          if (particle.type === 'burst') {
+            particle.vy += 0.05;
+          }
         });
+        
+        // Fade trail points
+        diagonalTrailPoints = diagonalTrailPoints.filter(pt => pt.alpha > 0.05);
+        diagonalTrailPoints.forEach(pt => {
+          pt.alpha *= 0.95;
+        });
+        
+        // Reset burst trigger when diagonal path ends
+        if (!diagonalPathActive) {
+          burstTriggered = false;
+          diagonalParticles = [];
+          diagonalTrailPoints = [];
+        }
       };
 
       p.mousePressed = () => {
