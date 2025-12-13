@@ -5,7 +5,7 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Wand2 } from 'lucide-react';
 import { toast } from 'sonner';
 import MinimalistTileMatrix from '@/components/MinimalistTileMatrix';
 import CosmologicalBoardOverlay from '@/components/calm-magic/CosmologicalBoardOverlay';
@@ -80,6 +80,9 @@ const COMPASS_MAP: Record<string, CompassType> = {
 
 type ViewTab = 'matrix' | 'window-of-tolerance' | 'prd-assembly';
 
+// Cosmological overlay state
+
+
 const CalmMagicBoard = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -114,6 +117,9 @@ const CalmMagicBoard = () => {
   const [showInsightsGraph, setShowInsightsGraph] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeFeature, setUpgradeFeature] = useState<'insight_connections' | null>(null);
+  
+  // Cosmological overlay state (Wild Guess)
+  const [showCosmologyOverlay, setShowCosmologyOverlay] = useState(false);
   
   // Subscription state for feature gating
   const { tier } = useSubscription();
@@ -700,6 +706,18 @@ const CalmMagicBoard = () => {
                 PRD
               </Button>
             )}
+            
+            {/* Wild Guess - Cosmological Overlay Toggle */}
+            <Button 
+              variant={showCosmologyOverlay ? "default" : "outline"} 
+              size="sm"
+              onClick={() => setShowCosmologyOverlay(!showCosmologyOverlay)}
+              title="Wild Guess - Cosmological Navigation"
+              className={showCosmologyOverlay ? "bg-gradient-to-r from-violet-500 to-purple-600 border-0" : ""}
+            >
+              <Wand2 className="w-4 h-4 mr-1" />
+              Wild Guess
+            </Button>
             
             {/* Help / Tour */}
             <Button 
