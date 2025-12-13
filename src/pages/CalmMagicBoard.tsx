@@ -5,7 +5,7 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Wand2, Globe, Focus } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Wand2, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 import MinimalistTileMatrix from '@/components/MinimalistTileMatrix';
 import CosmologicalBoardOverlay from '@/components/calm-magic/CosmologicalBoardOverlay';
@@ -39,7 +39,7 @@ import { getPrdAccessLevel, Season as PrdSeason } from '@/utils/prdAccessLevel';
 import { parseBoardEntryParams, getAssessmentContextDescription } from '@/utils/parseBoardEntryParams';
 import { getGardenByType } from '@/data/gardens';
 import ProjectTitleBar from '@/components/calm-magic/ProjectTitleBar';
-import { MinimalistTileCard } from '@/components/calm-magic/MinimalistTileCard';
+
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
 type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
@@ -124,9 +124,7 @@ const CalmMagicBoard = () => {
   const [showCosmologyOverlay, setShowCosmologyOverlay] = useState(false);
   const [show3DManifold, setShow3DManifold] = useState(false);
   
-  // Focus Mode (minimalist tile view)
-  const [focusMode, setFocusMode] = useState(false);
-  const [focusTile, setFocusTile] = useState<{ row: number; col: number } | null>(null);
+  
   
   // Subscription state for feature gating
   const { tier } = useSubscription();
@@ -402,12 +400,7 @@ const CalmMagicBoard = () => {
     
     const tileKey = `${row}-${col}`;
     if (visitedTiles.has(tileKey)) {
-      // Use Focus Mode if enabled, otherwise use full panel
-      if (focusMode) {
-        setFocusTile({ row, col });
-      } else {
-        setSelectedTile({ row, col });
-      }
+      setSelectedTile({ row, col });
     } else {
       toast.info('Use GL!TCH/DRIFT/TUNE buttons to navigate to new tiles');
     }
@@ -743,18 +736,6 @@ const CalmMagicBoard = () => {
               3D View
             </Button>
             
-            {/* Focus Mode Toggle */}
-            <Button 
-              variant={focusMode ? "default" : "outline"} 
-              size="sm"
-              onClick={() => setFocusMode(!focusMode)}
-              title="Focus Mode - Minimalist tile interaction"
-              className={focusMode ? "bg-gradient-to-r from-amber-500 to-orange-500 border-0" : ""}
-            >
-              <Focus className="w-4 h-4 mr-1" />
-              Focus
-            </Button>
-            
             {/* Help / Tour */}
             <Button 
               variant="ghost" 
@@ -1018,21 +999,6 @@ const CalmMagicBoard = () => {
             handleTileClick(row, col);
           }}
           onClose={() => setShow3DManifold(false)}
-        />
-      )}
-      
-      {/* Focus Mode - Minimalist Tile Card */}
-      {focusMode && focusTile && (
-        <MinimalistTileCard
-          selectedTile={focusTile}
-          board={SEASON_TO_BOARD[currentSeason]}
-          currentSeason={currentSeason}
-          onClose={() => setFocusTile(null)}
-          onSavePolen={handleSavePolen}
-          onExpandToFull={() => {
-            setSelectedTile(focusTile);
-            setFocusTile(null);
-          }}
         />
       )}
     </div>
