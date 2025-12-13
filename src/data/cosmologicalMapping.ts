@@ -392,3 +392,9 @@ export const getTileCosmology = (
     diagonalPaths,
   };
 };
+
+// Get hexagram by number (1-64)
+export const getHexagramByNumber = (num: number): Hexagram => {
+  const hexagram = HEXAGRAMS.find(h => h.number === num);
+  return hexagram || HEXAGRAMS[0];
+};
