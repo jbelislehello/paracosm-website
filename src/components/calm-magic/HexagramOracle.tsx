@@ -8,6 +8,8 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import HexagramDisplay from './HexagramDisplay';
 import { getHexagramByNumber, Hexagram } from '@/data/cosmologicalMapping';
 import { useHexagramJournal } from '@/hooks/useHexagramJournal';
+import { useMode } from './context/ModeContext';
+import { getTerminology } from '@/data/modeAwareTerminology';
 interface HexagramOracleProps {
   currentTileId: number | null;
   visitedTiles: Set<number>;
@@ -68,6 +70,8 @@ export const HexagramOracle: React.FC<HexagramOracleProps> = ({
   const [showAnimation, setShowAnimation] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const { saveReading } = useHexagramJournal();
+  const { mode } = useMode();
+  const terms = getTerminology(mode);
   const generateReading = useCallback(async () => {
     setIsGenerating(true);
     setShowAnimation(true);
@@ -173,9 +177,9 @@ export const HexagramOracle: React.FC<HexagramOracleProps> = ({
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <BookOpen className="w-5 h-5 text-primary" />
-          Hexagram Oracle
+          {terms.hexagramOracle}
           <Badge variant="outline" className="ml-auto text-xs">
-            I Ching
+            {terms.iChing}
           </Badge>
         </CardTitle>
       </CardHeader>
@@ -221,12 +225,12 @@ export const HexagramOracle: React.FC<HexagramOracleProps> = ({
               {isGenerating ? (
                 <>
                   <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                  Consulting the Oracle...
+                  {terms.consultingTheOracle}
                 </>
               ) : (
                 <>
                   <Sparkles className="w-4 h-4 mr-2" />
-                  Cast the Oracle
+                  {terms.castTheOracle}
                 </>
               )}
             </Button>

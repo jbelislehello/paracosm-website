@@ -2,6 +2,8 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { getTilePosition } from '@/types/journal-expansion';
+import { useMode } from '@/components/calm-magic/context/ModeContext';
+import { getTerminology } from '@/data/modeAwareTerminology';
 
 interface TzolkinIntegratorProps {
   tileId: number;
@@ -52,6 +54,9 @@ export const TzolkinIntegrator: React.FC<TzolkinIntegratorProps> = ({
   const tone = ((kin - 1) % 13) + 1;
   const seal = SOLAR_SEALS[sealIndex];
   const hexagramName = HEXAGRAMS[hexagram - 1];
+  
+  const { mode } = useMode();
+  const terms = getTerminology(mode);
 
   const getToneEmoji = (t: number) => {
     const tones = ['•', '••', '•••', '••••', '—', '•—', '••—', '•••—', '••••—', '—•', '—••', '—•••', '—••••'];
@@ -62,34 +67,34 @@ export const TzolkinIntegrator: React.FC<TzolkinIntegratorProps> = ({
     <Card className="bg-gradient-to-br from-indigo-950/50 to-purple-950/50 border-purple-500/30">
       <CardHeader className="pb-2">
         <CardTitle className="text-sm flex items-center justify-between">
-          <span className="text-purple-300">Cosmological Mapping</span>
+          <span className="text-purple-300">{terms.cosmologicalMapping}</span>
           <Badge variant="outline" className="text-xs border-purple-500/50 text-purple-300">
             Tile {tileId}
           </Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* I Ching */}
+        {/* Hexagram / Wild Guess */}
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-lg bg-amber-900/30 border border-amber-600/30 flex items-center justify-center">
             <span className="text-2xl font-bold text-amber-400">{hexagram}</span>
           </div>
           <div>
-            <div className="text-xs text-amber-400/70">I Ching Hexagram</div>
+            <div className="text-xs text-amber-400/70">{terms.iChing} {terms.hexagram}</div>
             <div className="text-sm font-medium text-amber-200">{hexagramName}</div>
           </div>
         </div>
 
-        {/* Tzolkin */}
+        {/* Tzolkin / Sync */}
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-lg bg-cyan-900/30 border border-cyan-600/30 flex flex-col items-center justify-center">
             <span className="text-lg font-bold text-cyan-400">{kin}</span>
             <span className="text-[10px] text-cyan-500">{getToneEmoji(tone)}</span>
           </div>
           <div>
-            <div className="text-xs text-cyan-400/70">Tzolkin Kin</div>
+            <div className="text-xs text-cyan-400/70">{terms.tzolkinKin}</div>
             <div className="text-sm font-medium text-cyan-200">
-              {seal} <span className="text-cyan-400/70">(Tone {tone})</span>
+              {seal} <span className="text-cyan-400/70">({mode === 'professional' ? 'Rhythm' : 'Tone'} {tone})</span>
             </div>
           </div>
         </div>

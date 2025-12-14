@@ -16,6 +16,8 @@ import {
   PORTAL_DAYS 
 } from '@/data/cosmologicalMapping';
 import { Sparkles, Grid3X3, Map, Info, X } from 'lucide-react';
+import { useMode } from './context/ModeContext';
+import { getTerminology } from '@/data/modeAwareTerminology';
 
 interface CosmologicalBoardOverlayProps {
   season: 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
@@ -40,6 +42,9 @@ const CosmologicalBoardOverlay = ({
     to: { row: number; col: number };
   } | null>(null);
   const [activeTab, setActiveTab] = useState('canvas');
+  
+  const { mode } = useMode();
+  const terms = getTerminology(mode);
 
   const currentCastle = CASTLES.find(c => c.season === season);
   const selectedTileId = selectedTile ? selectedTile.row * 8 + selectedTile.col + 1 : null;
@@ -98,7 +103,7 @@ const CosmologicalBoardOverlay = ({
             
             <Badge variant="outline" className="gap-1">
               <Sparkles className="w-3 h-3 text-purple-500" />
-              {seasonPortals.length} Portal Days
+              {seasonPortals.length} {terms.portalDays}
             </Badge>
             
             <Button variant="ghost" size="icon" onClick={onClose}>
@@ -119,7 +124,7 @@ const CosmologicalBoardOverlay = ({
                 </TabsTrigger>
                 <TabsTrigger value="navigator" className="gap-2">
                   <Map className="w-4 h-4" />
-                  Castle Navigator
+                  {terms.castle} Navigator
                 </TabsTrigger>
               </TabsList>
 
@@ -173,9 +178,9 @@ const CosmologicalBoardOverlay = ({
                 ) : (
                   <div className="text-center text-muted-foreground py-20">
                     <Info className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>Select a tile to view its cosmological context</p>
+                    <p>Select a tile to view its {mode === 'professional' ? 'pattern' : 'cosmological'} context</p>
                     <p className="text-xs mt-2">
-                      Click on the board to explore I Ching hexagrams and Tzolkin kins
+                      Click on the board to explore {terms.hexagram}s and {terms.tzolkinKin}s
                     </p>
                   </div>
                 )}
@@ -189,7 +194,7 @@ const CosmologicalBoardOverlay = ({
           <div className="flex items-center justify-center gap-6 text-xs text-muted-foreground">
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 rounded border-2 border-purple-500" />
-              <span>Portal Day (diagonal allowed)</span>
+              <span>{terms.portalDay} ({mode === 'professional' ? 'cross-functional' : 'diagonal'} allowed)</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 rounded bg-green-500/30" />

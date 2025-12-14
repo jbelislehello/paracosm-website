@@ -10,6 +10,8 @@ import { InsightParticles, ConnectionLines } from './manifold/InsightParticles';
 import { ManifoldControls } from './manifold/ManifoldControls';
 import { ManifoldSeason, SEASON_COLORS } from '@/utils/torusManifoldMath';
 import { useCosmologicalAudio } from '@/hooks/useCosmologicalAudio';
+import { useMode } from './context/ModeContext';
+import { getTerminology } from '@/data/modeAwareTerminology';
 
 interface TorusManifoldVisualizationProps {
   onClose: () => void;
@@ -170,6 +172,9 @@ export function TorusManifoldVisualization({ onClose }: TorusManifoldVisualizati
     maxDensity
   } = useManifoldData();
 
+  const { mode } = useMode();
+  const terms = getTerminology(mode);
+
   // Visualization state
   const [showCurvature, setShowCurvature] = useState(false);
   const [showSeasonColors, setShowSeasonColors] = useState(true);
@@ -209,7 +214,7 @@ export function TorusManifoldVisualization({ onClose }: TorusManifoldVisualizati
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b border-border bg-background/80 backdrop-blur-sm">
         <div className="flex items-center gap-4">
-          <h2 className="text-xl font-bold">Torus Manifold Visualization</h2>
+          <h2 className="text-xl font-bold">{terms.torusManifold} Visualization</h2>
           {isLoading && (
             <span className="text-sm text-muted-foreground animate-pulse">
               Loading manifold data...
