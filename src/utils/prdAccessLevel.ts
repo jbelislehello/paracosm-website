@@ -102,6 +102,6 @@ export function shouldTriggerPrdGeneration(
   polenCount: number
 ): boolean {
   // Trigger when season is complete (64 tiles) OR 
-  // significant progress (48+ tiles) with enough material (8+ fragments)
-  return tilesVisited >= 64 || (tilesVisited >= 48 && polenCount >= 8);
+  // early access (32+ tiles) with enough material (5+ fragments)
+  return tilesVisited >= 64 || (tilesVisited >= 32 && polenCount >= 5);
 }
