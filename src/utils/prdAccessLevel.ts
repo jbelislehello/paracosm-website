@@ -62,13 +62,13 @@ export function getPrdAccessLevel(input: PrdAccessInput): PrdAccessLevel {
   const currentProgress = seasonProgress[currentSeason]?.size || 0;
   const currentPolen = polenCountBySeason[currentSeason] || 0;
   
-  // At least 16 tiles (25%) visited AND 5+ fragments = preview
-  if (currentProgress >= 16 && currentPolen >= 5) {
+  // At least 8 tiles visited AND 3+ fragments = preview
+  if (currentProgress >= 8 && currentPolen >= 3) {
     return 'preview';
   }
   
-  // At least 8 tiles visited OR 3+ fragments = preview
-  if (currentProgress >= 8 || currentPolen >= 3) {
+  // At least 4 tiles visited OR 2+ fragments = preview
+  if (currentProgress >= 4 || currentPolen >= 2) {
     return 'preview';
   }
   
