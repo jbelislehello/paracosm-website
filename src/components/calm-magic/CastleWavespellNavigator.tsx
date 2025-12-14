@@ -15,6 +15,8 @@ import {
 } from '@/data/cosmologicalMapping';
 import { cn } from '@/lib/utils';
 import { Sparkles, ChevronRight, Star } from 'lucide-react';
+import { useMode } from '@/components/calm-magic/context/ModeContext';
+import { getTerminology, ModeType } from '@/data/modeAwareTerminology';
 
 interface CastleWavespellNavigatorProps {
   currentSeason: 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
@@ -22,6 +24,7 @@ interface CastleWavespellNavigatorProps {
   onKinSelect?: (kin: number) => void;
   onWavespellSelect?: (wavespell: Wavespell) => void;
   className?: string;
+  mode?: ModeType;
 }
 
 const CastleWavespellNavigator = ({
@@ -30,7 +33,11 @@ const CastleWavespellNavigator = ({
   onKinSelect,
   onWavespellSelect,
   className,
+  mode: propMode,
 }: CastleWavespellNavigatorProps) => {
+  const { mode: contextMode } = useMode();
+  const mode = propMode || contextMode;
+  const terminology = getTerminology(mode);
   const [selectedCastle, setSelectedCastle] = useState<Castle | null>(
     CASTLES.find(c => c.season === currentSeason) || null
   );
@@ -95,7 +102,7 @@ const CastleWavespellNavigator = ({
           <div className="flex items-center justify-between mb-2">
             <h3 className="font-semibold text-sm">{selectedCastle.name}</h3>
             <Badge variant="outline" className="text-[10px]">
-              Kin {selectedCastle.kinRange[0]}-{selectedCastle.kinRange[1]}
+              {terminology.tzolkinKin} {selectedCastle.kinRange[0]}-{selectedCastle.kinRange[1]}
             </Badge>
           </div>
           <p className="text-xs text-muted-foreground">{selectedCastle.theme}</p>
@@ -133,7 +140,7 @@ const CastleWavespellNavigator = ({
               </div>
               <span className="text-[10px] text-muted-foreground mt-1">{ws.theme}</span>
               <span className="text-[10px] text-muted-foreground">
-                Kin {ws.kinRange[0]}-{ws.kinRange[1]}
+                {terminology.tzolkinKin} {ws.kinRange[0]}-{ws.kinRange[1]}
               </span>
             </Button>
           );
@@ -145,7 +152,7 @@ const CastleWavespellNavigator = ({
         <div className="border-t border-border/50 pt-4">
           <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
             <span className="text-lg">{getSealForKin(selectedWavespell.kinRange[0]).glyph}</span>
-            {selectedWavespell.seal} Wavespell
+            {selectedWavespell.seal} {terminology.wavespell}
           </h4>
           
           <ScrollArea className="h-32">
@@ -166,11 +173,13 @@ const CastleWavespellNavigator = ({
                       isCurrent && 'ring-2 ring-primary'
                     )}
                     onClick={() => handleKinClick(kin)}
-                    title={`Kin ${kin}: ${tone.name} Tone`}
+                    title={`${terminology.tzolkinKin} ${kin}: ${tone.name} ${terminology.galacticTone}`}
                   >
                     {tone.number}
                     {portal && (
-                      <Sparkles className="w-2 h-2 absolute -top-0.5 -right-0.5 text-purple-500" />
+                      <span title={terminology.portalDay}>
+                        <Sparkles className="w-2 h-2 absolute -top-0.5 -right-0.5 text-purple-500" />
+                      </span>
                     )}
                   </Button>
                 );
@@ -190,7 +199,7 @@ const CastleWavespellNavigator = ({
         <div className="mt-4 p-3 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-lg border border-purple-500/20">
           <div className="flex items-center gap-2 mb-2">
             <Sparkles className="w-4 h-4 text-purple-500" />
-            <span className="text-xs font-medium">Kin {currentKin} Affirmation</span>
+            <span className="text-xs font-medium">{terminology.tzolkinKin} {currentKin} {terminology.galacticAffirmation}</span>
           </div>
           <p className="text-xs italic whitespace-pre-line text-muted-foreground">
             {generateAffirmation(currentKin)}
