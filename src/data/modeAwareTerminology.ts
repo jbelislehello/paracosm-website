@@ -45,6 +45,13 @@ interface CosmologicalTerminology {
   resonanceLabel: string;
   clickToPlayTone: string;
   patternArchetype: string;
+  
+  // Oracle terminology
+  changingLines: string;
+  newReading: string;
+  tilesExplored: string;
+  oracleQuestionPlaceholder: string;
+  positionLabel: string;
 }
 
 const PERSONAL_TERMINOLOGY: CosmologicalTerminology = {
@@ -86,6 +93,13 @@ const PERSONAL_TERMINOLOGY: CosmologicalTerminology = {
   resonanceLabel: 'resonance',
   clickToPlayTone: '(click to play tone)',
   patternArchetype: '',
+  
+  // Oracle
+  changingLines: 'Lines',
+  newReading: 'New Reading',
+  tilesExplored: 'explored',
+  oracleQuestionPlaceholder: 'What question do you hold? (Optional - the oracle reads your journey state)',
+  positionLabel: 'Tile',
 };
 
 const PROFESSIONAL_TERMINOLOGY: CosmologicalTerminology = {
@@ -127,6 +141,13 @@ const PROFESSIONAL_TERMINOLOGY: CosmologicalTerminology = {
   resonanceLabel: 'match',
   clickToPlayTone: '(click to preview)',
   patternArchetype: ' Pattern',
+  
+  // Oracle
+  changingLines: 'Transition factors',
+  newReading: 'New Analysis',
+  tilesExplored: 'analyzed',
+  oracleQuestionPlaceholder: 'What challenge are you facing? (Optional - the system analyzes your progress state)',
+  positionLabel: 'Position',
 };
 
 export const getTerminology = (mode: ModeType): CosmologicalTerminology => {
