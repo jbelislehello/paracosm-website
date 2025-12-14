@@ -41,6 +41,7 @@ import { getPrdAccessLevel, Season as PrdSeason } from '@/utils/prdAccessLevel';
 import { parseBoardEntryParams, getAssessmentContextDescription } from '@/utils/parseBoardEntryParams';
 import { getGardenByType } from '@/data/gardens';
 import ProjectTitleBar from '@/components/calm-magic/ProjectTitleBar';
+import { PrdUnlockProgress } from '@/components/calm-magic/PrdUnlockProgress';
 
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
@@ -765,7 +766,7 @@ const CalmMagicBoard = () => {
       </header>
 
       {/* Sub Navigation */}
-      <div className="shrink-0 px-6 py-2 border-b border-border/30 bg-background/80">
+      <div className="shrink-0 px-6 py-2 border-b border-border/30 bg-background/80 flex items-center justify-between gap-4">
         <Tabs value={activeView} onValueChange={(v) => setActiveView(v as ViewTab)}>
           <TabsList className="h-8">
             <TabsTrigger value="matrix" className="text-xs gap-1.5 px-3">
@@ -782,6 +783,13 @@ const CalmMagicBoard = () => {
             </TabsTrigger>
           </TabsList>
         </Tabs>
+        
+        {/* PRD Unlock Progress Indicator */}
+        <PrdUnlockProgress 
+          tilesVisited={visitedTiles.size}
+          currentSeason={currentSeason}
+          userId={user?.id}
+        />
       </div>
 
       {/* Main Content: Split Layout */}
