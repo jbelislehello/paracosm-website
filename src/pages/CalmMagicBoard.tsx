@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Wand2, Globe, Donut } from 'lucide-react';
+import { getTerminology } from '@/data/modeAwareTerminology';
 import { toast } from 'sonner';
 import MinimalistTileMatrix from '@/components/MinimalistTileMatrix';
 import CosmologicalBoardOverlay from '@/components/calm-magic/CosmologicalBoardOverlay';
@@ -743,11 +744,11 @@ const CalmMagicBoard = () => {
               variant="outline" 
               size="sm"
               onClick={() => setShowTorusManifold(true)}
-              title="Torus Manifold - Full Journey Topology"
+              title={`${getTerminology(mode).torusManifold} - Full Journey Topology`}
               className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-500/30 hover:border-amber-500"
             >
               <Donut className="w-4 h-4 mr-1" />
-              Manifold
+              {getTerminology(mode).manifoldView}
             </Button>
             
             {/* Help / Tour */}
