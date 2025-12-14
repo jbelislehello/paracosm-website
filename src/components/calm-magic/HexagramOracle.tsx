@@ -189,12 +189,12 @@ export const HexagramOracle: React.FC<HexagramOracleProps> = ({
           {currentTileId && (
             <Badge variant="secondary" className="gap-1">
               <Compass className="w-3 h-3" />
-              Tile {currentTileId}
+              {terms.positionLabel} {currentTileId}
             </Badge>
           )}
           <Badge variant="secondary" className="gap-1">
             <Zap className="w-3 h-3" />
-            {visitedTiles.size}/64 explored
+            {visitedTiles.size}/64 {terms.tilesExplored}
           </Badge>
           {emotionalState && (
             <Badge variant="secondary" className="gap-1">
@@ -211,7 +211,7 @@ export const HexagramOracle: React.FC<HexagramOracleProps> = ({
               <Textarea
                 value={question}
                 onChange={(e) => setQuestion(e.target.value)}
-                placeholder="What question do you hold? (Optional - the oracle reads your journey state)"
+                placeholder={terms.oracleQuestionPlaceholder}
                 className="min-h-[80px] resize-none"
               />
             </div>
@@ -255,7 +255,7 @@ export const HexagramOracle: React.FC<HexagramOracleProps> = ({
                   <div className="flex flex-col items-center justify-center h-24">
                     <span className="text-muted-foreground">→</span>
                     <span className="text-xs text-muted-foreground">
-                      Lines {reading.changingLines.join(',')}
+                      {terms.changingLines} {reading.changingLines.join(',')}
                     </span>
                   </div>
                   <div className="text-muted-foreground">
@@ -306,7 +306,7 @@ export const HexagramOracle: React.FC<HexagramOracleProps> = ({
             <div className="flex gap-2">
               <Button variant="outline" onClick={clearReading} className="flex-1">
                 <RefreshCw className="w-4 h-4 mr-2" />
-                New Reading
+                {terms.newReading}
               </Button>
               <Button 
                 variant={isSaved ? "secondary" : "default"}
