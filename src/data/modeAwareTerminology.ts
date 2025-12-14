@@ -38,6 +38,13 @@ interface CosmologicalTerminology {
   // Torus/Manifold - same for both modes
   torusManifold: string;
   manifoldView: string;
+  
+  // Resonance panel terminology
+  detectResonance: string;
+  resonatingTiles: string;
+  resonanceLabel: string;
+  clickToPlayTone: string;
+  patternArchetype: string;
 }
 
 const PERSONAL_TERMINOLOGY: CosmologicalTerminology = {
@@ -72,6 +79,13 @@ const PERSONAL_TERMINOLOGY: CosmologicalTerminology = {
   // Manifold
   torusManifold: 'Torus Manifold',
   manifoldView: 'Manifold View',
+  
+  // Resonance panel
+  detectResonance: 'Detect Resonance',
+  resonatingTiles: 'Resonating Tiles',
+  resonanceLabel: 'resonance',
+  clickToPlayTone: '(click to play tone)',
+  patternArchetype: '',
 };
 
 const PROFESSIONAL_TERMINOLOGY: CosmologicalTerminology = {
@@ -106,6 +120,13 @@ const PROFESSIONAL_TERMINOLOGY: CosmologicalTerminology = {
   // Manifold - same
   torusManifold: 'Insight Manifold',
   manifoldView: 'Manifold View',
+  
+  // Resonance panel
+  detectResonance: 'Detect Pattern Match',
+  resonatingTiles: 'Matching Patterns',
+  resonanceLabel: 'match',
+  clickToPlayTone: '(click to preview)',
+  patternArchetype: ' Pattern',
 };
 
 export const getTerminology = (mode: ModeType): CosmologicalTerminology => {
