@@ -715,16 +715,16 @@ const CalmMagicBoard = () => {
               </Button>
             )}
             
-            {/* Wild Guess - Cosmological Overlay Toggle */}
+            {/* Wild Guess / Hexagram - Cosmological Overlay Toggle */}
             <Button 
               variant={showCosmologyOverlay ? "default" : "outline"} 
               size="sm"
               onClick={() => setShowCosmologyOverlay(!showCosmologyOverlay)}
-              title="Wild Guess - Cosmological Navigation"
+              title={`${getTerminology(mode).hexagramOracle} - Cosmological Navigation`}
               className={showCosmologyOverlay ? "bg-gradient-to-r from-violet-500 to-purple-600 border-0" : ""}
             >
               <Wand2 className="w-4 h-4 mr-1" />
-              Wild Guess
+              {getTerminology(mode).hexagram}
             </Button>
             
             {/* 3D Manifold View */}

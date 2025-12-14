@@ -8,6 +8,8 @@ import {
   CASTLES,
   TileCosmology 
 } from '@/data/cosmologicalMapping';
+import { useMode } from '@/components/calm-magic/context/ModeContext';
+import { getTerminology, ModeType } from '@/data/modeAwareTerminology';
 
 interface CosmologicalP5CanvasProps {
   season: 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
@@ -16,6 +18,7 @@ interface CosmologicalP5CanvasProps {
   onTileClick?: (row: number, col: number) => void;
   highlightedPortals?: number[];
   diagonalPathActive?: { from: { row: number; col: number }; to: { row: number; col: number } } | null;
+  mode?: ModeType;
 }
 
 const CosmologicalP5Canvas = ({
@@ -25,7 +28,12 @@ const CosmologicalP5Canvas = ({
   onTileClick,
   highlightedPortals = [],
   diagonalPathActive,
+  mode: propMode,
 }: CosmologicalP5CanvasProps) => {
+  const { mode: contextMode } = useMode();
+  const mode = propMode || contextMode;
+  const terminology = getTerminology(mode);
+  
   const containerRef = useRef<HTMLDivElement>(null);
   const p5InstanceRef = useRef<p5 | null>(null);
   const [hoveredTile, setHoveredTile] = useState<{ row: number; col: number } | null>(null);
@@ -612,7 +620,7 @@ const CosmologicalP5Canvas = ({
     };
 
     p5InstanceRef.current = new p5(sketch, containerRef.current);
-  }, [season, selectedTile, visitedTiles, onTileClick, diagonalPathActive, getTilePosition, hoveredTile]);
+  }, [season, selectedTile, visitedTiles, onTileClick, diagonalPathActive, getTilePosition, hoveredTile, terminology]);
 
   useEffect(() => {
     initSketch();
@@ -623,12 +631,45 @@ const CosmologicalP5Canvas = ({
     };
   }, [initSketch]);
 
+  // Get cosmology for hovered tile
+  const hoveredCosmology = hoveredTile 
+    ? getTileCosmology(hoveredTile.row * 8 + hoveredTile.col + 1, season)
+    : null;
+
   return (
-    <div 
-      ref={containerRef} 
-      className="rounded-lg overflow-hidden bg-background/50"
-      style={{ width: CANVAS_SIZE, height: CANVAS_SIZE }}
-    />
+    <div className="relative">
+      <div 
+        ref={containerRef} 
+        className="rounded-lg overflow-hidden bg-background/50"
+        style={{ width: CANVAS_SIZE, height: CANVAS_SIZE }}
+      />
+      {/* Mode-aware tooltip overlay */}
+      {hoveredTile && hoveredCosmology && (
+        <div 
+          className="absolute pointer-events-none bg-popover/95 backdrop-blur-sm border border-border rounded-lg px-3 py-2 shadow-lg z-10"
+          style={{
+            left: PADDING + hoveredTile.col * (TILE_SIZE + GAP) + TILE_SIZE + 10,
+            top: PADDING + (7 - hoveredTile.row) * (TILE_SIZE + GAP),
+            maxWidth: 200,
+          }}
+        >
+          <div className="text-xs font-medium text-foreground">
+            {terminology.hexagram} #{hoveredCosmology.hexagram.number}
+          </div>
+          <div className="text-xs text-muted-foreground">
+            {terminology.solarSeal}: {hoveredCosmology.seal.name}
+          </div>
+          <div className="text-xs text-muted-foreground">
+            {terminology.galacticTone}: {hoveredCosmology.tone.number}
+          </div>
+          {hoveredCosmology.isPortalDay && (
+            <div className="text-xs text-purple-400 font-medium mt-1">
+              ✨ {terminology.portalDay}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 };
 
