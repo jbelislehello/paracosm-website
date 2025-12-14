@@ -7,6 +7,8 @@ import { getTileCosmology, TileCosmology, CASTLES } from '@/data/cosmologicalMap
 import HexagramDisplay from './HexagramDisplay';
 import { Sparkles, Star, ArrowUpRight, ArrowDownRight, ArrowUpLeft, ArrowDownLeft, Compass } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useMode } from './context/ModeContext';
+import { getTerminology } from '@/data/modeAwareTerminology';
 
 interface CosmologicalContextTabProps {
   tileId: number;
@@ -22,6 +24,8 @@ const CosmologicalContextTab = ({
   className,
 }: CosmologicalContextTabProps) => {
   const [showAffirmation, setShowAffirmation] = useState(false);
+  const { mode } = useMode();
+  const terms = getTerminology(mode);
   
   const cosmology = getTileCosmology(tileId, season);
   const castle = CASTLES.find(c => c.season === season);
@@ -42,13 +46,13 @@ const CosmologicalContextTab = ({
 
   return (
     <div className={cn('space-y-4', className)}>
-      {/* Tzolkin Signature */}
+      {/* Tzolkin/Sync Signature */}
       <Card className="p-4 bg-gradient-to-br from-purple-500/10 to-pink-500/10 border-purple-500/20">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <span className="text-2xl">{cosmology.seal.glyph}</span>
             <div>
-              <h3 className="font-bold text-lg">Kin {cosmology.kin}</h3>
+              <h3 className="font-bold text-lg">{terms.tzolkinKin} {cosmology.kin}</h3>
               <p className="text-sm text-muted-foreground">
                 {cosmology.tone.name} {cosmology.seal.name}
               </p>
@@ -58,7 +62,7 @@ const CosmologicalContextTab = ({
           {cosmology.isPortalDay && (
             <Badge className="bg-purple-500 text-white gap-1">
               <Sparkles className="w-3 h-3" />
-              Portal Day
+              {terms.portalDay}
             </Badge>
           )}
         </div>
@@ -66,12 +70,12 @@ const CosmologicalContextTab = ({
         {/* Seal & Tone Details */}
         <div className="grid grid-cols-2 gap-3 text-sm">
           <div className="p-2 bg-background/50 rounded">
-            <span className="text-muted-foreground text-xs">Solar Seal</span>
+            <span className="text-muted-foreground text-xs">{terms.solarSeal}</span>
             <div className="font-medium">{cosmology.seal.name}</div>
             <div className="text-xs text-muted-foreground">{cosmology.seal.meaning}</div>
           </div>
           <div className="p-2 bg-background/50 rounded">
-            <span className="text-muted-foreground text-xs">Galactic Tone</span>
+            <span className="text-muted-foreground text-xs">{terms.galacticTone}</span>
             <div className="font-medium">{cosmology.tone.number}. {cosmology.tone.name}</div>
             <div className="text-xs text-muted-foreground">
               {cosmology.tone.power} • {cosmology.tone.action}
@@ -87,7 +91,7 @@ const CosmologicalContextTab = ({
           onClick={() => setShowAffirmation(!showAffirmation)}
         >
           <Star className="w-3 h-3 mr-1" />
-          {showAffirmation ? 'Hide' : 'Show'} Galactic Affirmation
+          {showAffirmation ? 'Hide' : 'Show'} {terms.galacticAffirmation}
         </Button>
         
         {showAffirmation && (
@@ -99,11 +103,11 @@ const CosmologicalContextTab = ({
         )}
       </Card>
 
-      {/* Castle & Wavespell Context */}
+      {/* Castle/Quarter & Wavespell/Sprint Context */}
       <Card className="p-4" style={{ borderColor: castle?.color + '40' }}>
         <div className="flex items-center gap-2 mb-3">
           <Compass className="w-4 h-4 text-muted-foreground" />
-          <h4 className="font-medium text-sm">Castle & Wavespell</h4>
+          <h4 className="font-medium text-sm">{terms.castle} & {terms.wavespell}</h4>
         </div>
         
         <div className="space-y-2">
@@ -120,29 +124,29 @@ const CosmologicalContextTab = ({
               className="text-[10px]"
               style={{ borderColor: castle?.color, color: castle?.color }}
             >
-              Castle {cosmology.castle.id}
+              {terms.castle} {cosmology.castle.id}
             </Badge>
           </div>
           
           <div className="p-2 bg-muted/30 rounded-lg flex items-center justify-between">
             <div>
               <span className="font-medium text-sm">
-                {cosmology.wavespell.seal} Wavespell
+                {cosmology.wavespell.seal} {terms.wavespell}
               </span>
               <p className="text-xs text-muted-foreground">{cosmology.wavespell.theme}</p>
             </div>
             <Badge variant="secondary" className="text-[10px]">
-              WS {cosmology.wavespell.id}
+              {mode === 'professional' ? 'SW' : 'WS'} {cosmology.wavespell.id}
             </Badge>
           </div>
         </div>
       </Card>
 
-      {/* I Ching Hexagram */}
+      {/* Hexagram / Wild Guess */}
       <Card className="p-4">
         <div className="flex items-center gap-2 mb-4">
           <span className="text-lg">☯</span>
-          <h4 className="font-medium text-sm">I Ching Hexagram</h4>
+          <h4 className="font-medium text-sm">{terms.iChing} {terms.hexagram}</h4>
         </div>
         
         <HexagramDisplay 
@@ -152,18 +156,20 @@ const CosmologicalContextTab = ({
         />
       </Card>
 
-      {/* Diagonal Movement Options (if Portal Day) */}
+      {/* Diagonal Movement Options (if Portal/Sync Day) */}
       {cosmology.isPortalDay && cosmology.diagonalPaths.length > 0 && (
         <Card className="p-4 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-amber-500/20">
           <div className="flex items-center gap-2 mb-3">
             <Sparkles className="w-4 h-4 text-amber-500" />
             <h4 className="font-medium text-sm text-amber-700 dark:text-amber-300">
-              Portal Day Diagonal Paths
+              {terms.diagonalPaths}
             </h4>
           </div>
           
           <p className="text-xs text-muted-foreground mb-3">
-            As a Galactic Activation Portal, this tile unlocks diagonal movement across the matrix.
+            {mode === 'professional' 
+              ? 'As a Sync Day, this tile unlocks cross-functional movement across the matrix.'
+              : 'As a Galactic Activation Portal, this tile unlocks diagonal movement across the matrix.'}
           </p>
           
           <div className="grid grid-cols-2 gap-2">

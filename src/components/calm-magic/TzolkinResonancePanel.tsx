@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useTzolkinResonance, ResonanceMatch } from '@/hooks/useTzolkinResonance';
 import { useCosmologicalAudio } from '@/hooks/useCosmologicalAudio';
+import { useMode } from './context/ModeContext';
+import { getTerminology } from '@/data/modeAwareTerminology';
 
 type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 
@@ -45,6 +47,8 @@ const TzolkinResonancePanel: React.FC<TzolkinResonancePanelProps> = ({
   const [inputText, setInputText] = useState('');
   const { analyzeResonance, isAnalyzing, result, error, clearResult } = useTzolkinResonance();
   const { playTileSound, playResonanceChord } = useCosmologicalAudio();
+  const { mode } = useMode();
+  const terms = getTerminology(mode);
 
   const handleAnalyze = async () => {
     const res = await analyzeResonance(inputText, season);
@@ -66,10 +70,12 @@ const TzolkinResonancePanel: React.FC<TzolkinResonancePanelProps> = ({
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Sparkles className="w-5 h-5 text-primary" />
-            Tzolkin Resonance Detection
+            {terms.tzolkinResonance}
           </CardTitle>
           <p className="text-xs text-muted-foreground">
-            Enter your thoughts, intentions, or questions to discover which solar seals and galactic tones resonate with your energy.
+            {mode === 'professional' 
+              ? 'Enter your thoughts to discover which pattern archetypes and iteration rhythms align with your current focus.'
+              : 'Enter your thoughts, intentions, or questions to discover which solar seals and galactic tones resonate with your energy.'}
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
