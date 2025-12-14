@@ -100,7 +100,7 @@ const TzolkinResonancePanel: React.FC<TzolkinResonancePanelProps> = ({
               ) : (
                 <>
                   <Sparkles className="w-4 h-4 mr-2" />
-                  Detect Resonance
+                  {terms.detectResonance}
                 </>
               )}
             </Button>
@@ -132,16 +132,16 @@ const TzolkinResonancePanel: React.FC<TzolkinResonancePanelProps> = ({
                   </p>
                   <div className="flex items-center gap-2 mt-3">
                     <Badge variant="outline" className="bg-background/50">
-                      {result.dominantSeal}
+                      {result.dominantSeal}{terms.patternArchetype}
                     </Badge>
                     <Badge variant="outline" className="bg-background/50">
-                      {result.dominantTone} Tone
+                      {result.dominantTone} {terms.galacticTone}
                     </Badge>
                     <Badge 
                       variant="secondary"
                       className="ml-auto"
                     >
-                      {Math.round(result.overallResonance)}% resonance
+                      {Math.round(result.overallResonance)}% {terms.resonanceLabel}
                     </Badge>
                   </div>
                 </div>
@@ -154,9 +154,9 @@ const TzolkinResonancePanel: React.FC<TzolkinResonancePanelProps> = ({
             <CardHeader className="pb-2">
               <CardTitle className="text-sm flex items-center gap-2">
                 <Music className="w-4 h-4" />
-                Resonating Tiles
+                {terms.resonatingTiles}
                 <span className="text-xs text-muted-foreground font-normal ml-1">
-                  (click to play tone)
+                  {terms.clickToPlayTone}
                 </span>
               </CardTitle>
             </CardHeader>
@@ -177,9 +177,9 @@ const TzolkinResonancePanel: React.FC<TzolkinResonancePanelProps> = ({
                     
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium text-sm">{match.sealName}</span>
+                        <span className="font-medium text-sm">{match.sealName}{terms.patternArchetype}</span>
                         <span className="text-xs text-muted-foreground">
-                          {match.toneName}
+                          {match.toneName} {terms.galacticTone}
                         </span>
                         <Volume2 className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity ml-auto" />
                       </div>
