@@ -1049,6 +1049,7 @@ const CalmMagicBoard = () => {
                     currentSeason={currentSeason}
                     onEmotionalCheckin={handleEmotionalCheckin}
                     emotionalCheckins={getAllCheckins()}
+                    onOpenAssistant={() => setShowAssistantChat(true)}
                   />
                 </div>
               </div>
@@ -1157,6 +1158,7 @@ const CalmMagicBoard = () => {
                   currentSeason={currentSeason}
                   onEmotionalCheckin={handleEmotionalCheckin}
                   emotionalCheckins={getAllCheckins()}
+                  onOpenAssistant={() => setShowAssistantChat(true)}
                 />
               )}
             </div>

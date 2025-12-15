@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Link2, Wand2, Moon, BookOpen, ScrollText, Focus } from 'lucide-react';
+import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Link2, Wand2, Moon, BookOpen, ScrollText, Focus, Bot } from 'lucide-react';
 import { MinimalistTileCard } from '@/components/calm-magic/MinimalistTileCard';
 import { useState, useEffect, useRef } from 'react';
 import { getTileStage, getStageById } from '@/types/journal-expansion';
@@ -60,6 +60,7 @@ interface TileDetailPanelProps {
   onEmotionalCheckin?: (tileId: number, feltState: FeltState, axes: EmotionalAxes, note?: string) => void;
   emotionalCheckins?: EmotionalCheckInData[];
   visitedTiles?: Set<number>;
+  onOpenAssistant?: () => void;
 }
 
 const TileDetailPanel = ({
@@ -74,6 +75,7 @@ const TileDetailPanel = ({
   onEmotionalCheckin,
   emotionalCheckins = [],
   visitedTiles = new Set<number>(),
+  onOpenAssistant,
 }: TileDetailPanelProps) => {
   const [userInput, setUserInput] = useState('');
   const [conversationSaved, setConversationSaved] = useState(false);
@@ -229,6 +231,18 @@ const TileDetailPanel = ({
           </div>
         </div>
         <div className="flex items-center gap-1">
+          {onOpenAssistant && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={onOpenAssistant}
+              className="gap-1"
+              title="Open AI Assistant"
+            >
+              <Bot className="w-3 h-3" />
+              Assistant
+            </Button>
+          )}
           <Button 
             variant="outline" 
             size="sm" 
@@ -290,8 +304,8 @@ const TileDetailPanel = ({
         </div>
       )}
 
-      {/* Add-ons Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0 overflow-hidden">
+      {/* Add-ons Tabs - Main scrollable area */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
         <div className="px-2 pt-2 shrink-0">
           <TabsList className="w-full grid grid-cols-6 h-8">
             <TabsTrigger value="chat" className="text-xs gap-1">
@@ -322,9 +336,10 @@ const TileDetailPanel = ({
         </div>
 
         {/* Chat Tab */}
-        <TabsContent value="chat" className="flex-1 flex flex-col min-h-0 m-0 mt-0 overflow-hidden data-[state=inactive]:hidden" forceMount>
-          <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3">
-            {/* Season Context */}
+        <TabsContent value="chat" className="flex-1 flex flex-col min-h-0 m-0 mt-0 data-[state=inactive]:hidden" forceMount>
+          <ScrollArea className="flex-1 max-h-[calc(100vh-450px)] min-h-[200px]">
+            <div className="px-4 py-3 space-y-3">
+              {/* Season Context */}
               <div className="text-xs text-muted-foreground text-center py-2 border-b border-dashed border-border/50">
                 <span className="font-medium">{currentSeason}</span> season exploration
               </div>
@@ -373,9 +388,10 @@ const TileDetailPanel = ({
                 </div>
               )}
               
-            {/* Scroll anchor */}
-            <div ref={messagesEndRef} />
-          </div>
+              {/* Scroll anchor */}
+              <div ref={messagesEndRef} />
+            </div>
+          </ScrollArea>
 
           {/* Input Area */}
           <div className="p-3 border-t border-border/50 bg-background/80 space-y-2 shrink-0">
@@ -452,8 +468,8 @@ const TileDetailPanel = ({
         </TabsContent>
 
         {/* Wild Guess Tab - Cosmological Context & Resonance */}
-        <TabsContent value="wild-guess" className="flex-1 overflow-auto p-2 m-0">
-          <ScrollArea className="h-full">
+        <TabsContent value="wild-guess" className="flex-1 min-h-0 p-2 m-0">
+          <ScrollArea className="max-h-[calc(100vh-450px)] min-h-[200px]">
             <div className="space-y-4 pb-4">
               {/* Meditation Mode Button */}
               {resonanceResult && resonanceResult.topMatches.length > 0 && (
@@ -485,8 +501,8 @@ const TileDetailPanel = ({
         </TabsContent>
 
         {/* Oracle Tab - Hexagram I Ching */}
-        <TabsContent value="oracle" className="flex-1 overflow-auto p-2 m-0">
-          <ScrollArea className="h-full">
+        <TabsContent value="oracle" className="flex-1 min-h-0 p-2 m-0">
+          <ScrollArea className="max-h-[calc(100vh-450px)] min-h-[200px]">
             <HexagramOracle
               currentTileId={tileId}
               visitedTiles={visitedTiles}
@@ -503,19 +519,19 @@ const TileDetailPanel = ({
         </TabsContent>
 
         {/* Journal Tab - Hexagram Reading History */}
-        <TabsContent value="journal" className="flex-1 overflow-auto p-2 m-0">
-          <ScrollArea className="h-full">
+        <TabsContent value="journal" className="flex-1 min-h-0 p-2 m-0">
+          <ScrollArea className="max-h-[calc(100vh-450px)] min-h-[200px]">
             <HexagramJournal />
           </ScrollArea>
         </TabsContent>
 
         {/* Sketch Tab */}
-        <TabsContent value="sketch" className="flex-1 overflow-auto p-2 m-0">
+        <TabsContent value="sketch" className="flex-1 min-h-0 p-2 m-0 overflow-auto">
           <SketchPad onSave={handleSketchSave} />
         </TabsContent>
 
         {/* Diagram Tab */}
-        <TabsContent value="diagram" className="flex-1 overflow-auto p-2 m-0">
+        <TabsContent value="diagram" className="flex-1 min-h-0 p-2 m-0 overflow-auto">
           <DiagramBuilder onSave={handleDiagramSave} />
         </TabsContent>
       </Tabs>
