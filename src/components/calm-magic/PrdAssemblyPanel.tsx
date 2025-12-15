@@ -123,6 +123,7 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   const [generatingLayer, setGeneratingLayer] = useState<Season | null>(null);
   const [activeTab, setActiveTab] = useState<'layers' | 'dimensions' | 'csuite' | 'compilation'>('layers');
   const [showFullPreview, setShowFullPreview] = useState(false);
+  const [isGeneratingAll, setIsGeneratingAll] = useState(false);
   
   const { tier } = useSubscription();
   const canAccessCSuite = hasFeatureAccess(tier, 'csuite_dashboard');
@@ -207,6 +208,37 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
       toast.error('Failed to generate layer');
     } finally {
       setGeneratingLayer(null);
+    }
+  };
+
+  const handleGenerateAllLayers = async () => {
+    setIsGeneratingAll(true);
+    let successCount = 0;
+    
+    try {
+      for (const season of SEASON_ORDER) {
+        const tilesVisited = seasonProgress[season]?.size || 0;
+        if (tilesVisited >= 8) {
+          setGeneratingLayer(season);
+          try {
+            await onGenerateLayer(season);
+            successCount++;
+          } catch (err) {
+            console.error(`Failed to generate ${season}:`, err);
+          }
+        }
+      }
+      
+      await fetchPrdData();
+      
+      if (successCount > 0) {
+        toast.success(`Generated ${successCount} PRD layer${successCount > 1 ? 's' : ''}!`);
+      } else {
+        toast.info('Visit more tiles to unlock PRD generation');
+      }
+    } finally {
+      setGeneratingLayer(null);
+      setIsGeneratingAll(false);
     }
   };
 
@@ -321,6 +353,19 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <Button 
+              variant="default" 
+              size="sm"
+              onClick={handleGenerateAllLayers}
+              disabled={isGeneratingAll || progressStats.overallPercentage === 100}
+            >
+              {isGeneratingAll ? (
+                <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
+              ) : (
+                <Sparkles className="h-3.5 w-3.5 mr-1" />
+              )}
+              {isGeneratingAll ? 'Generating...' : 'Generate PRD'}
+            </Button>
             <Button 
               variant="outline" 
               size="sm"
