@@ -186,6 +186,7 @@ const CalmMagicBoard = () => {
     isAuthenticated,
     saving,
     savePolenEntry,
+    polenEntries,
   } = useTileMatrixPersistence(todayTile?.board || SEASON_TO_BOARD[currentSeason]);
 
   // Onboarding tour
@@ -1185,7 +1186,7 @@ const CalmMagicBoard = () => {
       <PrdGeneratorWizard
         isOpen={showPrdWizard}
         onClose={() => setShowPrdWizard(false)}
-        polenEntries={[]}
+        polenEntries={polenEntries}
         board={SEASON_TO_BOARD[currentSeason]}
       />
       
