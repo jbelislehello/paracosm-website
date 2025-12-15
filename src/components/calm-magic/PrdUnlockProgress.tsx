@@ -31,6 +31,7 @@ interface PrdUnlockProgressProps {
   tilesVisited: number;
   currentSeason: string;
   userId?: string;
+  onGeneratePrd?: () => void;
 }
 
 const TILES_THRESHOLD = 32;
@@ -39,7 +40,8 @@ const FRAGMENTS_THRESHOLD = 5;
 export const PrdUnlockProgress = ({ 
   tilesVisited, 
   currentSeason,
-  userId 
+  userId,
+  onGeneratePrd 
 }: PrdUnlockProgressProps) => {
   const [polenCount, setPolenCount] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
@@ -97,11 +99,14 @@ export const PrdUnlockProgress = ({
     return (
       <>
         {showConfetti && <Confetti />}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/30">
+        <button
+          onClick={onGeneratePrd}
+          className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/30 hover:bg-primary/20 transition-colors cursor-pointer"
+        >
           <Unlock className="w-3.5 h-3.5 text-primary" />
-          <span className="text-xs font-medium text-primary">PRD Generation Ready</span>
+          <span className="text-xs font-medium text-primary">Generate PRD</span>
           <Sparkles className="w-3 h-3 text-primary animate-pulse" />
-        </div>
+        </button>
       </>
     );
   }

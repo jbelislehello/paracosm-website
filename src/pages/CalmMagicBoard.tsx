@@ -41,6 +41,7 @@ import { parseBoardEntryParams, getAssessmentContextDescription } from '@/utils/
 import { getGardenByType } from '@/data/gardens';
 import ProjectTitleBar from '@/components/calm-magic/ProjectTitleBar';
 import { PrdUnlockProgress } from '@/components/calm-magic/PrdUnlockProgress';
+import { PrdGeneratorWizard } from '@/components/prd-generator/PrdGeneratorWizard';
 
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
@@ -121,6 +122,7 @@ const CalmMagicBoard = () => {
   const [showInsightsGraph, setShowInsightsGraph] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeFeature, setUpgradeFeature] = useState<'insight_connections' | null>(null);
+  const [showPrdWizard, setShowPrdWizard] = useState(false);
   
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   
@@ -888,6 +890,7 @@ const CalmMagicBoard = () => {
           tilesVisited={visitedTiles.size}
           currentSeason={currentSeason}
           userId={user?.id}
+          onGeneratePrd={() => setShowPrdWizard(true)}
         />
       </div>
 
