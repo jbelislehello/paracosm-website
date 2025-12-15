@@ -32,13 +32,13 @@ export const useUserSession = (): UseUserSessionReturn => {
         .from('profiles')
         .select('id, username, full_name, avatar_url, mode')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Error fetching profile:', error);
         return null;
       }
-      return data as UserProfile;
+      return data as UserProfile | null;
     } catch (err) {
       console.error('Error in fetchProfile:', err);
       return null;
