@@ -72,7 +72,9 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
     allMessages,
     branches,
     currentBranchId,
-    isLoading, 
+    isLoading,
+    isSaving: conversationSaving,
+    lastSavedAt,
     sendResponse, 
     saveConversationAsPolen,
     createBranch,
@@ -100,7 +102,7 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
       toast({ description: "Have a conversation first before saving." });
       return;
     }
-    const saved = await saveConversationAsPolen();
+    const saved = await saveConversationAsPolen(false);
     if (saved) {
       toast({ 
         title: "💾 Conversation saved",
@@ -112,6 +114,14 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
         description: "Failed to save conversation." 
       });
     }
+  };
+
+  // Save conversation on close if not already saved
+  const handleClose = async () => {
+    if (messages.length >= 2) {
+      await saveConversationAsPolen(true);
+    }
+    onClose();
   };
 
   // Handle creating a branch from a specific message
@@ -629,7 +639,18 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
             </div>
             <div>
               <h2 className="font-semibold text-sm">{tileContent?.name || 'Dialogical Cue'}</h2>
-              <p className="text-xs text-muted-foreground">{currentSeason} · Focus Mode</p>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                <span>{currentSeason} · Focus Mode</span>
+                {conversationSaving && (
+                  <span className="flex items-center gap-1 text-primary">
+                    <Loader2 className="w-2 h-2 animate-spin" />
+                    saving
+                  </span>
+                )}
+                {lastSavedAt && !conversationSaving && (
+                  <span className="text-green-600 dark:text-green-400">✓ saved</span>
+                )}
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -656,7 +677,7 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
                 Full View
               </Button>
             )}
-            <Button variant="ghost" size="icon" onClick={onClose}>
+            <Button variant="ghost" size="icon" onClick={handleClose}>
               <X className="w-4 h-4" />
             </Button>
           </div>

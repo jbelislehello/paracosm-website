@@ -90,6 +90,8 @@ const TileDetailPanel = ({
   const {
     messages,
     isLoading,
+    isSaving: conversationSaving,
+    lastSavedAt,
     error,
     sendResponse,
     saveConversationAsPolen,
@@ -156,7 +158,7 @@ const TileDetailPanel = ({
   };
 
   const handleSaveConversation = async () => {
-    const success = await saveConversationAsPolen();
+    const success = await saveConversationAsPolen(false);
     if (success) {
       setConversationSaved(true);
       // Prompt user to try Focus Mode
@@ -169,6 +171,14 @@ const TileDetailPanel = ({
         duration: 5000,
       });
     }
+  };
+
+  // Save conversation on panel close if not already saved
+  const handleClose = async () => {
+    if (messages.length >= 2 && isAuthenticated && !conversationSaved) {
+      await saveConversationAsPolen(true);
+    }
+    onClose();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -249,7 +259,7 @@ const TileDetailPanel = ({
             <Focus className="w-3 h-3" />
             Focus
           </Button>
-          <Button variant="ghost" size="icon" onClick={onClose} className="shrink-0">
+          <Button variant="ghost" size="icon" onClick={handleClose} className="shrink-0">
             <X className="w-4 h-4" />
           </Button>
         </div>
@@ -372,18 +382,40 @@ const TileDetailPanel = ({
             </p>
           )}
 
+          {/* Save status indicator */}
+          {isAuthenticated && (
+            <div className="flex items-center justify-between">
+              {conversationSaving && (
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  Auto-saving...
+                </div>
+              )}
+              {lastSavedAt && !conversationSaving && (
+                <div className="text-xs text-muted-foreground">
+                  Saved {lastSavedAt.toLocaleTimeString()}
+                </div>
+              )}
+              {!lastSavedAt && !conversationSaving && messages.length >= 2 && (
+                <div className="text-xs text-muted-foreground opacity-50">
+                  Unsaved changes
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Save conversation button */}
           {messages.length >= 2 && isAuthenticated && (
             <Button
               variant={conversationSaved ? "secondary" : "outline"}
               size="sm"
               onClick={handleSaveConversation}
-              disabled={saving || conversationSaved}
+              disabled={saving || conversationSaved || conversationSaving}
               className="w-full"
             >
-              {saving ? (
+              {saving || conversationSaving ? (
                 <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-              ) : conversationSaved ? (
+              ) : conversationSaved || lastSavedAt ? (
                 <>✓ Saved as Fragment</>
               ) : (
                 <>

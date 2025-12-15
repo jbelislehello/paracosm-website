@@ -53,8 +53,11 @@ export const useAgentTileConversation = (
   const [error, setError] = useState<string | null>(null);
   const [completedTiles, setCompletedTiles] = useState<CompletedTile[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<string>('');
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
   const autoSaveTriggered = useRef(false);
   const previousTile = useRef<{ row: number; col: number } | null>(null);
+  const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Get messages for current branch (including parent branches up to branch point)
   const messages = useCallback(() => {
@@ -280,13 +283,17 @@ export const useAgentTileConversation = (
   }, [tile, season, messages, completedTiles, buildTileContext, currentBranchId]);
 
   // Save conversation as Polen entry (saves current branch)
-  const saveConversationAsPolen = useCallback(async (): Promise<boolean> => {
+  const saveConversationAsPolen = useCallback(async (silent: boolean = false): Promise<boolean> => {
     const currentMessages = messages();
     if (!tile || !isAuthenticated || currentMessages.length < 2) return false;
 
+    setIsSaving(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return false;
+      if (!user) {
+        setIsSaving(false);
+        return false;
+      }
 
       const tileId = tile.row * 8 + tile.col + 1;
       const tileKey = `${tile.row}-${tile.col}`;
@@ -304,7 +311,8 @@ export const useAgentTileConversation = (
         tile_id: tileId,
         fragment_type: 'text',
         tags: [season, 'tile-conversation', `branch:${currentBranchId}`],
-        source_reference: `tile-agent:${tileKey}:${currentBranchId}`
+        source_reference: `tile-agent:${tileKey}:${currentBranchId}`,
+        season_context: season
       });
 
       if (error) throw error;
@@ -323,13 +331,38 @@ export const useAgentTileConversation = (
         response: userResponses
       }]);
 
+      setLastSavedAt(new Date());
+      if (!silent) {
+        console.log('Conversation saved successfully');
+      }
       return true;
 
     } catch (err) {
       console.error('Error saving conversation:', err);
       return false;
+    } finally {
+      setIsSaving(false);
     }
   }, [tile, isAuthenticated, messages, season, currentQuestion, buildTileContext, branches, currentBranchId]);
+
+  // Debounced auto-save after user response
+  const scheduleAutoSave = useCallback(() => {
+    // Clear any existing timeout
+    if (autoSaveTimeoutRef.current) {
+      clearTimeout(autoSaveTimeoutRef.current);
+    }
+    
+    // Schedule save after 3 seconds of inactivity
+    autoSaveTimeoutRef.current = setTimeout(async () => {
+      const currentMessages = messages();
+      if (currentMessages.length >= 2 && isAuthenticated) {
+        const saved = await saveConversationAsPolen(true);
+        if (saved) {
+          console.log('Auto-saved conversation after response');
+        }
+      }
+    }, 3000);
+  }, [messages, isAuthenticated, saveConversationAsPolen]);
 
   // Reset conversation
   const resetConversation = useCallback(() => {
@@ -375,6 +408,23 @@ export const useAgentTileConversation = (
     }
   }, [tile?.row, tile?.col, season]);
 
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (autoSaveTimeoutRef.current) {
+        clearTimeout(autoSaveTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Schedule auto-save when messages change after user response
+  useEffect(() => {
+    const currentMessages = messages();
+    if (currentMessages.length >= 2 && isAuthenticated) {
+      scheduleAutoSave();
+    }
+  }, [allMessages.length, isAuthenticated, scheduleAutoSave]);
+
   return {
     messages: messages(),
     allMessages,
@@ -382,6 +432,8 @@ export const useAgentTileConversation = (
     currentBranchId,
     currentQuestion,
     isLoading,
+    isSaving,
+    lastSavedAt,
     error,
     completedTiles,
     sendResponse,
