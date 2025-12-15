@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -35,7 +35,9 @@ import {
   Shield,
   CheckCircle2,
   Circle,
-  AlertCircle
+  AlertCircle,
+  CloudOff,
+  Cloud
 } from 'lucide-react';
 import { downloadMarkdown, exportPrdAsPdf } from '@/utils/prdExport';
 import { toast } from 'sonner';
@@ -206,6 +208,7 @@ interface PrdAssemblyPanelProps {
   completedSeasons: Season[];
   prdId: string | null;
   onGenerateLayer: (season: Season) => Promise<void>;
+  onPrdCreated?: (prdId: string) => void;
 }
 
 export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
@@ -215,7 +218,8 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   seasonProgress,
   completedSeasons,
   prdId,
-  onGenerateLayer
+  onGenerateLayer,
+  onPrdCreated
 }) => {
   const navigate = useNavigate();
   const { mode } = useMode();
@@ -234,6 +238,13 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   const [showQualityReview, setShowQualityReview] = useState(false);
   const [title, setTitle] = useState(`Calm Magic PRD — ${new Date().toLocaleDateString()}`);
   const [saving, setSaving] = useState(false);
+  const [autoSaving, setAutoSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  
+  // Refs for auto-save debouncing
+  const autoSaveTimeoutRef = useRef<NodeJS.Timeout>();
+  const contentRef = useRef(content);
+  contentRef.current = content;
   
   const { tier } = useSubscription();
   const canAccessCSuite = hasFeatureAccess(tier, 'csuite_dashboard');
@@ -356,6 +367,108 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
     return fields.some(field => content[field] && String(content[field]).trim().length > 0);
   };
 
+  // Auto-save PRD function
+  const autoSavePrd = useCallback(async (silent = true): Promise<string | null> => {
+    // Check if there's any content to save
+    const hasAnyContent = LAYERS.some(layer => 
+      LAYER_FIELDS[layer].some(field => contentRef.current[field] && String(contentRef.current[field]).trim().length > 0)
+    );
+    
+    if (!hasAnyContent) return null;
+    
+    setAutoSaving(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const prdPayload = {
+        owner_id: user.id,
+        title,
+        status: 'draft',
+        prototype_stage: 'B_DIEGETIC',
+        love_signals_summary: contentRef.current.pollens_observations,
+        love_decision_to_exist: `Biases: ${contentRef.current.pollens_biases || ''}\n\nShadows: ${contentRef.current.pollens_prd_shadows || ''}\n\nStakes: ${contentRef.current.pollens_stakes || ''}`,
+        magic_storyworld: contentRef.current.poems_narratives,
+        magic_prd_outline: contentRef.current.noems_concepts,
+        magic_hypotheses: contentRef.current.noems_shared_ideas,
+        magic_patterns: contentRef.current.noems_intuitions,
+        calm_requirements: contentRef.current.totems_processes,
+        calm_risks_and_limits: `Three Graph: ${contentRef.current.totems_three_graph || ''}\n\nSemantic: ${contentRef.current.totems_semantic_notes || ''}`,
+        open_ontology_and_graph: contentRef.current.totems_maps,
+        open_real_workflow: contentRef.current.poems_content_sources,
+        open_adjustment_plan: contentRef.current.anthems_guardrails,
+        free_first_poem_description: contentRef.current.anthems_roadmap,
+        free_totem_anthem: contentRef.current.anthems_alignment,
+        free_success_criteria: contentRef.current.anthems_success_signals,
+        free_next_cycle_hooks: contentRef.current.anthems_learning_cadence,
+        stack_implications_pollens: contentRef.current.stack_implications_pollens,
+        stack_implications_noems: contentRef.current.stack_implications_noems,
+        stack_implications_poems: contentRef.current.stack_implications_poems,
+        stack_implications_totems: contentRef.current.stack_implications_totems,
+        stack_implications_anthems: contentRef.current.stack_implications_anthems,
+        prompt_hooks_pollens: contentRef.current.prompt_hooks_pollens,
+        prompt_hooks_noems: contentRef.current.prompt_hooks_noems,
+        prompt_hooks_poems: contentRef.current.prompt_hooks_poems,
+        prompt_hooks_totems: contentRef.current.prompt_hooks_totems,
+        prompt_hooks_anthems: contentRef.current.prompt_hooks_anthems,
+      };
+
+      let savedId = prdId;
+
+      if (prdId) {
+        await supabase.from('prds').update(prdPayload).eq('id', prdId);
+      } else {
+        const { data: newPrd, error } = await supabase
+          .from('prds')
+          .insert(prdPayload as any)
+          .select()
+          .single();
+        if (error) throw error;
+        savedId = newPrd.id;
+        onPrdCreated?.(newPrd.id);
+      }
+      
+      setLastSaved(new Date());
+      if (!silent) {
+        toast.success(`${documentName} saved`);
+      }
+      
+      return savedId;
+    } catch (error) {
+      console.error('Auto-save error:', error);
+      if (!silent) {
+        toast.error('Could not save. Please try again.');
+      }
+      return null;
+    } finally {
+      setAutoSaving(false);
+    }
+  }, [prdId, title, documentName, onPrdCreated]);
+
+  // Debounced auto-save on content changes
+  useEffect(() => {
+    if (autoSaveTimeoutRef.current) {
+      clearTimeout(autoSaveTimeoutRef.current);
+    }
+    
+    // Only debounce auto-save if there's content
+    const hasAnyContent = LAYERS.some(layer => 
+      LAYER_FIELDS[layer].some(field => content[field] && String(content[field]).trim().length > 0)
+    );
+    
+    if (hasAnyContent) {
+      autoSaveTimeoutRef.current = setTimeout(() => {
+        autoSavePrd(true);
+      }, 5000); // 5 second debounce for manual edits
+    }
+    
+    return () => {
+      if (autoSaveTimeoutRef.current) {
+        clearTimeout(autoSaveTimeoutRef.current);
+      }
+    };
+  }, [content, autoSavePrd]);
+
   // Generate content for current layer
   const generateLayerContent = async () => {
     setGeneratingLayer(currentLayer);
@@ -375,8 +488,19 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
 
       if (error) throw error;
 
-      setContent(prev => ({ ...prev, ...data.content }));
-      toast.success(`${currentLayer} layer content generated`);
+      const newContent = { ...content, ...data.content };
+      setContent(newContent);
+      
+      // Mark layer as completed
+      if (!completedLayers.includes(currentLayer)) {
+        setCompletedLayers(prev => [...prev, currentLayer]);
+      }
+      
+      // Auto-save immediately after generation
+      contentRef.current = newContent;
+      await autoSavePrd(true);
+      
+      toast.success(`${currentLayer} layer generated and saved`);
     } catch (error) {
       console.error('Generation error:', error);
       toast.error('Could not generate content. Please try again.');
@@ -385,22 +509,31 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
     }
   };
 
-  const handleNext = () => {
+  // Layer switch with auto-save
+  const handleLayerSwitch = async (targetLayer: PrdLayer) => {
+    // Save current layer's content before switching
+    if (layerHasContent()) {
+      await autoSavePrd(true);
+      if (!completedLayers.includes(currentLayer)) {
+        setCompletedLayers(prev => [...prev, currentLayer]);
+      }
+    }
+    setCurrentLayer(targetLayer);
+  };
+
+  const handleNext = async () => {
     if (!layerHasContent()) {
       toast.error('Please generate or add content before proceeding');
       return;
     }
-    if (!completedLayers.includes(currentLayer)) {
-      setCompletedLayers(prev => [...prev, currentLayer]);
-    }
     if (!isLastLayer) {
-      setCurrentLayer(LAYERS[currentIndex + 1]);
+      await handleLayerSwitch(LAYERS[currentIndex + 1]);
     }
   };
 
-  const handleBack = () => {
+  const handleBack = async () => {
     if (!isFirstLayer) {
-      setCurrentLayer(LAYERS[currentIndex - 1]);
+      await handleLayerSwitch(LAYERS[currentIndex - 1]);
     }
   };
 
@@ -510,9 +643,21 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
           <FileText className="h-5 w-5 text-primary" />
           <div>
             <h2 className="text-lg font-semibold">Living {documentName} Assembly</h2>
-            <p className="text-xs text-muted-foreground">
-              {completedLayers.length}/{LAYERS.length} layers • {progressPercentage}% complete
-            </p>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <span>{completedLayers.length}/{LAYERS.length} layers • {progressPercentage}% complete</span>
+              {autoSaving && (
+                <span className="flex items-center gap-1 text-amber-500">
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  Saving...
+                </span>
+              )}
+              {!autoSaving && lastSaved && (
+                <span className="flex items-center gap-1 text-emerald-500">
+                  <Cloud className="h-3 w-3" />
+                  Saved
+                </span>
+              )}
+            </div>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -589,7 +734,7 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
                       return (
                         <button
                           key={layer}
-                          onClick={() => canNavigate && setCurrentLayer(layer)}
+                          onClick={() => canNavigate && handleLayerSwitch(layer)}
                           disabled={!canNavigate}
                           className={`flex items-center justify-center w-7 h-7 rounded-full transition-all ${
                             isCompleted ? 'bg-emerald-500 text-white hover:bg-emerald-600' 

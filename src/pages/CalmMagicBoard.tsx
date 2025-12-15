@@ -1025,6 +1025,7 @@ const CalmMagicBoard = () => {
               seasonProgress={seasonProgress as Record<PrdSeason, Set<string>>}
               completedSeasons={completedSeasons as PrdSeason[]}
               prdId={prdId}
+              onPrdCreated={(newPrdId) => updateProgress({ prdId: newPrdId })}
               onGenerateLayer={async (season) => {
                 // Fetch Polen entries for this season
                 const { data: polenEntries, error } = await supabase
