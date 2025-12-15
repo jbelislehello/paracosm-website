@@ -83,10 +83,12 @@ serve(async (req) => {
       `- [Tile ${p.tile_id || 'free'}] ${p.content} ${p.tags.length ? `(tags: ${p.tags.join(', ')})` : ''}`
     ).join('\n');
 
-    const existingContext = Object.entries(existingContent)
-      .filter(([_, v]) => v)
-      .map(([k, v]) => `${k}: ${v.slice(0, 300)}...`)
-      .join('\n');
+    const existingContext = existingContent 
+      ? Object.entries(existingContent)
+          .filter(([_, v]) => v)
+          .map(([k, v]) => `${k}: ${v.slice(0, 300)}...`)
+          .join('\n')
+      : '';
 
     const systemPrompt = `You are an expert at the Calm Magic PRD system — a 5-layer process that transforms raw signals into structured understanding.
 
