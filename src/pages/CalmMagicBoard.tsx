@@ -5,7 +5,7 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Wand2, Globe, Donut, Menu } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Wand2, Globe, Donut, Menu, RefreshCw } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { getTerminology } from '@/data/modeAwareTerminology';
@@ -147,8 +147,11 @@ const CalmMagicBoard = () => {
     journeyPath,
     updateProgress,
     resetProgress,
+    recoverFromPolen,
     isLoading: progressLoading,
   } = useSeasonPersistence(projectContext?.id || null);
+  
+  const [isSyncing, setIsSyncing] = useState(false);
   
   // Season completion modal state
   const [showSeasonModal, setShowSeasonModal] = useState(false);
@@ -763,6 +766,22 @@ const CalmMagicBoard = () => {
             >
               <Donut className="w-4 h-4 mr-1" />
               {getTerminology(mode).manifoldView}
+            </Button>
+            
+            {/* Sync Progress */}
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={async () => {
+                setIsSyncing(true);
+                await recoverFromPolen();
+                setIsSyncing(false);
+                toast.success('Progress synced from saved fragments');
+              }}
+              disabled={isSyncing}
+              title="Sync Progress from POLEN entries"
+            >
+              <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
             </Button>
             
             {/* Help / Tour */}
