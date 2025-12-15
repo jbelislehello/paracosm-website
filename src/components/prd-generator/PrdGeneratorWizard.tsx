@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Loader2, Sparkles, ArrowRight, ArrowLeft, Check, Edit3, FileText, Sprout, Gem, BookOpen, Landmark, Music, CheckCircle2, Circle, Download, Shield } from 'lucide-react';
+import { Loader2, Sparkles, ArrowRight, ArrowLeft, Check, Edit3, FileText, Sprout, Gem, BookOpen, Landmark, Music, CheckCircle2, Circle, Download, Shield, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import PrdStageProgress, { PrdLayer } from './PrdStageProgress';
@@ -336,6 +336,17 @@ const PrdGeneratorWizard = ({
             <DialogTitle className="text-xl flex items-center gap-2">
               <CurrentIcon className="w-5 h-5" />
               Calm Magic PRD Generator
+              <Badge 
+                variant="outline"
+                className={`ml-2 text-xs ${
+                  polenEntries.length === 0 
+                    ? 'bg-amber-500/10 text-amber-600 border-amber-500/30' 
+                    : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/30'
+                }`}
+              >
+                <Sprout className="w-3 h-3 mr-1" />
+                {polenEntries.length} fragment{polenEntries.length !== 1 ? 's' : ''} available
+              </Badge>
             </DialogTitle>
             
             <div className="flex items-center gap-1">
@@ -372,6 +383,15 @@ const PrdGeneratorWizard = ({
             placeholder="PRD Title..."
           />
         </DialogHeader>
+
+        {polenEntries.length === 0 && (
+          <Card className="p-3 bg-amber-500/10 border-amber-500/30 flex-shrink-0 mt-2">
+            <p className="text-sm text-amber-600 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              No POLEN fragments captured yet. Visit tiles and capture insights first for richer PRD generation.
+            </p>
+          </Card>
+        )}
 
         <div className="flex-shrink-0 py-4 border-b">
           <PrdStageProgress currentLayer={currentLayer} completedLayers={completedLayers} />
