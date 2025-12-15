@@ -28,6 +28,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 import { SeasonProgressIndicator } from '@/components/calm-magic/SeasonProgressIndicator';
 import { 
   ArrowLeft, 
@@ -40,11 +47,14 @@ import {
   FolderOpen,
   Sparkles,
   Cloud,
-  Rocket
+  Rocket,
+  Filter,
+  X
 } from 'lucide-react';
 import { useProjects, Project } from '@/context/ProjectsContext';
 import { useUserSession } from '@/hooks/useUserSession';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { getGardenByType, gardens } from '@/data/gardens';
 import { GardenType } from '@/types/journal';
 import { 
@@ -79,6 +89,8 @@ const ProjectsDashboard: React.FC = () => {
   const [editingProject, setEditingProject] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
   const [showSignupPrompt, setShowSignupPrompt] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const isMobile = useIsMobile();
 
   // Check if we should show guest banner
   const isGuest = !user;
@@ -87,6 +99,7 @@ const ProjectsDashboard: React.FC = () => {
   const canCreate = canCreateProject(tier, projectCount);
   const projectLimit = getProjectLimit(tier);
   const limitDisplay = getProjectLimitDisplay(tier, projectCount);
+  const hasActiveFilters = gardenFilter !== 'all' || modeFilter !== 'all' || searchQuery !== '';
 
   // Filter projects
   const filteredProjects = projects.filter((project) => {
@@ -142,46 +155,50 @@ const ProjectsDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted pb-20 md:pb-0">
       {/* Header */}
       <header className="border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
+        <div className="max-w-6xl mx-auto px-4 md:px-6 py-3 md:py-4">
+          <div className="flex items-center justify-between gap-2 md:gap-4">
+            <div className="flex items-center gap-2 md:gap-4 min-w-0">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => navigate(-1)}
+                className="shrink-0"
               >
                 <ArrowLeft className="w-5 h-5" />
               </Button>
-              <div>
-                <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+              <div className="min-w-0">
+                <h1 className="text-lg md:text-2xl font-bold tracking-tight bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent truncate">
                   My Projects
                 </h1>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs md:text-sm text-muted-foreground truncate">
                   {limitDisplay}
                 </p>
               </div>
             </div>
             
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3 shrink-0">
               <UserProfileMenu />
               {canCreate ? (
                 <Button
                   onClick={() => setShowCreateModal(true)}
+                  size={isMobile ? "icon" : "default"}
                   className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90"
                 >
-                  <Plus className="w-4 h-4 mr-2" />
-                  New Project
+                  <Plus className="w-4 h-4 md:mr-2" />
+                  <span className="hidden md:inline">New Project</span>
                 </Button>
               ) : (
                 <Button
                   onClick={() => setShowUpgradeModal(true)}
+                  size={isMobile ? "sm" : "default"}
                   className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
                 >
-                  <Rocket className="w-4 h-4 mr-2" />
-                  Upgrade to Create More
+                  <Rocket className="w-4 h-4 md:mr-2" />
+                  <span className="hidden md:inline">Upgrade to Create More</span>
+                  <span className="md:hidden">Upgrade</span>
                 </Button>
               )}
             </div>
@@ -189,8 +206,8 @@ const ProjectsDashboard: React.FC = () => {
         </div>
       </header>
 
-      {/* Filters */}
-      <div className="max-w-6xl mx-auto px-6 py-4">
+      {/* Filters - Desktop */}
+      <div className="hidden md:block max-w-6xl mx-auto px-6 py-4">
         <div className="flex flex-wrap gap-3 items-center">
           <div className="relative flex-1 min-w-[200px] max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -232,17 +249,129 @@ const ProjectsDashboard: React.FC = () => {
         </div>
       </div>
 
+      {/* Filters - Mobile */}
+      <div className="md:hidden px-4 py-3">
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9 h-10"
+            />
+          </div>
+          
+          <Sheet open={showFilters} onOpenChange={setShowFilters}>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon" className="h-10 w-10 shrink-0 relative">
+                <Filter className="w-4 h-4" />
+                {hasActiveFilters && (
+                  <span className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full" />
+                )}
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="h-auto max-h-[50vh]">
+              <SheetHeader className="pb-4">
+                <SheetTitle className="flex items-center justify-between">
+                  Filters
+                  {hasActiveFilters && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setGardenFilter('all');
+                        setModeFilter('all');
+                        setSearchQuery('');
+                      }}
+                      className="text-muted-foreground"
+                    >
+                      <X className="w-4 h-4 mr-1" />
+                      Clear all
+                    </Button>
+                  )}
+                </SheetTitle>
+              </SheetHeader>
+              <div className="space-y-4 pb-6">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Garden</label>
+                  <Select value={gardenFilter} onValueChange={(v) => setGardenFilter(v as GardenType | 'all')}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="All Gardens" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Gardens</SelectItem>
+                      {gardens.map((garden) => (
+                        <SelectItem key={garden.type} value={garden.type}>
+                          <span className="flex items-center gap-2">
+                            <span>{garden.icon}</span>
+                            {garden.name}
+                          </span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Mode</label>
+                  <Select value={modeFilter} onValueChange={(v) => setModeFilter(v as 'all' | 'personal' | 'professional')}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="All Modes" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Modes</SelectItem>
+                      <SelectItem value="personal">Personal</SelectItem>
+                      <SelectItem value="professional">Professional</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <Button 
+                  className="w-full mt-4" 
+                  onClick={() => setShowFilters(false)}
+                >
+                  Apply Filters
+                </Button>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+        
+        {/* Active filter chips */}
+        {hasActiveFilters && (
+          <div className="flex flex-wrap gap-2 mt-3">
+            {gardenFilter !== 'all' && (
+              <Badge variant="secondary" className="gap-1">
+                {getGardenByType(gardenFilter)?.icon} {getGardenByType(gardenFilter)?.name}
+                <button onClick={() => setGardenFilter('all')} className="ml-1">
+                  <X className="w-3 h-3" />
+                </button>
+              </Badge>
+            )}
+            {modeFilter !== 'all' && (
+              <Badge variant="secondary" className="gap-1 capitalize">
+                {modeFilter}
+                <button onClick={() => setModeFilter('all')} className="ml-1">
+                  <X className="w-3 h-3" />
+                </button>
+              </Badge>
+            )}
+          </div>
+        )}
+      </div>
+
       {/* Projects Grid */}
-      <div className="max-w-6xl mx-auto px-6 pb-12">
+      <div className="max-w-6xl mx-auto px-4 md:px-6 pb-12">
         {sortedProjects.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="flex flex-col items-center justify-center py-12 md:py-16 text-center px-4">
             {projects.length === 0 ? (
               <>
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-purple-500/20 flex items-center justify-center mb-4">
-                  <Sparkles className="w-10 h-10 text-primary" />
+                <div className="w-16 md:w-20 h-16 md:h-20 rounded-full bg-gradient-to-br from-primary/20 to-purple-500/20 flex items-center justify-center mb-4">
+                  <Sparkles className="w-8 md:w-10 h-8 md:h-10 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">No projects yet</h3>
-                <p className="text-muted-foreground mb-6 max-w-sm">
+                <h3 className="text-lg md:text-xl font-semibold mb-2">No projects yet</h3>
+                <p className="text-sm md:text-base text-muted-foreground mb-6 max-w-sm">
                   Create your first Calm Magic Board project to start your innovation journey
                 </p>
                 <Button
@@ -255,16 +384,16 @@ const ProjectsDashboard: React.FC = () => {
               </>
             ) : (
               <>
-                <FolderOpen className="w-12 h-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium mb-2">No matching projects</h3>
-                <p className="text-muted-foreground">
+                <FolderOpen className="w-10 md:w-12 h-10 md:h-12 text-muted-foreground mb-4" />
+                <h3 className="text-base md:text-lg font-medium mb-2">No matching projects</h3>
+                <p className="text-sm text-muted-foreground">
                   Try adjusting your search or filters
                 </p>
               </>
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
             {sortedProjects.map((project) => {
               const garden = getGardenByType(project.garden);
               const isEditing = editingProject === project.id;
@@ -376,21 +505,21 @@ const ProjectsDashboard: React.FC = () => {
 
       {/* Guest Mode Banner */}
       {isGuest && hasProjects && (
-        <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-primary/10 to-purple-500/10 border-t border-primary/20 backdrop-blur-sm">
-          <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Cloud className="w-5 h-5 text-primary" />
-              <span className="text-sm">
-                <strong>Guest Mode</strong> — Your projects are saved locally.
+        <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-primary/10 to-purple-500/10 border-t border-primary/20 backdrop-blur-sm z-20">
+          <div className="max-w-6xl mx-auto px-4 md:px-6 py-2 md:py-3 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 md:gap-3 min-w-0">
+              <Cloud className="w-4 md:w-5 h-4 md:h-5 text-primary shrink-0" />
+              <span className="text-xs md:text-sm truncate">
+                <strong>Guest</strong> <span className="hidden sm:inline">— Projects saved locally</span>
               </span>
             </div>
             <Button
               variant="outline"
               size="sm"
               onClick={() => setShowSignupPrompt(true)}
-              className="border-primary/30 hover:border-primary/50"
+              className="border-primary/30 hover:border-primary/50 shrink-0 text-xs md:text-sm h-8"
             >
-              Sign in to sync
+              Sign in
             </Button>
           </div>
         </div>
