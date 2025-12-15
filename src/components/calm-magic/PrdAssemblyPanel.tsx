@@ -254,6 +254,13 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   const isPersonal = mode === 'personal';
   const documentName = isPersonal ? 'RRD' : 'PRD';
 
+  // Check if there's any content worth saving
+  const hasAnyContent = useMemo(() => 
+    LAYERS.some(layer => 
+      LAYER_FIELDS[layer].some(field => content[field] && String(content[field]).trim().length > 0)
+    ) || title.trim().length > 0,
+  [content, title]);
+
   useEffect(() => {
     if (isOpen) {
       fetchPrdData();
@@ -661,6 +668,22 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => autoSavePrd(false)}
+            disabled={autoSaving || !hasAnyContent}
+            className="h-7 px-2 text-xs"
+          >
+            {autoSaving ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : (
+              <>
+                <Cloud className="h-3 w-3 mr-1" />
+                Save Now
+              </>
+            )}
+          </Button>
           <Button 
             variant="outline" 
             size="sm"
