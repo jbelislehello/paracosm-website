@@ -879,6 +879,22 @@ const CalmMagicBoard = () => {
                   <HelpCircle className="w-4 h-4 mr-2" />
                   Tour
                 </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="justify-start"
+                  disabled={isSyncing}
+                  onClick={async () => { 
+                    setIsSyncing(true);
+                    await recoverFromPolen();
+                    setIsSyncing(false);
+                    toast.success('Progress synced from saved fragments');
+                    setShowMobileMenu(false);
+                  }}
+                >
+                  <RefreshCw className={`w-4 h-4 mr-2 ${isSyncing ? 'animate-spin' : ''}`} />
+                  Sync
+                </Button>
               </div>
             </div>
 
