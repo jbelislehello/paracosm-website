@@ -4,12 +4,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { X, Send, Sparkles, ArrowRight, Loader2, Check, ArrowLeft, Maximize2, Minimize2, Save, MessageSquare, GitBranch } from 'lucide-react';
+import { X, Send, Sparkles, ArrowRight, Loader2, Check, ArrowLeft, Maximize2, Minimize2, Save, MessageSquare, GitBranch, Network } from 'lucide-react';
 import { TILE_CONTENTS } from '@/data/tileContents';
 import { useAgentTileConversation } from '@/hooks/useAgentTileConversation';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
 import { BranchNavigator } from './BranchNavigator';
+import { BranchTreeDiagram } from './BranchTreeDiagram';
 
 interface MinimalistTileCardProps {
   selectedTile: { row: number; col: number };
@@ -60,6 +61,7 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [showConversationHistory, setShowConversationHistory] = useState(false);
+  const [showBranchTree, setShowBranchTree] = useState(false);
   const [branchFromMessageId, setBranchFromMessageId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -412,7 +414,7 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
       </div>
 
       {/* Branch Navigator & Conversation History Toggle */}
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-2 flex-wrap">
         {branches.length > 1 && (
           <BranchNavigator 
             branches={branches}
@@ -420,18 +422,60 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
             onSwitchBranch={switchBranch}
           />
         )}
-        {messages.length > 1 && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowConversationHistory(!showConversationHistory)}
-            className="gap-2 text-xs text-muted-foreground ml-auto"
-          >
-            <MessageSquare className="w-3 h-3" />
-            {showConversationHistory ? 'Hide' : 'Show'} ({messages.length})
-          </Button>
-        )}
+        <div className="flex gap-2 ml-auto">
+          {branches.length > 1 && (
+            <Button
+              variant={showBranchTree ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => {
+                setShowBranchTree(!showBranchTree);
+                if (!showBranchTree) setShowConversationHistory(false);
+              }}
+              className="gap-2 text-xs text-muted-foreground"
+            >
+              <Network className="w-3 h-3" />
+              Tree
+            </Button>
+          )}
+          {messages.length > 1 && (
+            <Button
+              variant={showConversationHistory ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => {
+                setShowConversationHistory(!showConversationHistory);
+                if (!showConversationHistory) setShowBranchTree(false);
+              }}
+              className="gap-2 text-xs text-muted-foreground"
+            >
+              <MessageSquare className="w-3 h-3" />
+              Chat ({messages.length})
+            </Button>
+          )}
+        </div>
       </div>
+
+      {/* Branch Tree Diagram */}
+      {showBranchTree && branches.length > 1 && (
+        <div className={cn(
+          "border rounded-lg bg-muted/20",
+          isExpanded ? "h-[250px]" : "h-[180px]"
+        )}>
+          <BranchTreeDiagram
+            branches={branches}
+            currentBranchId={currentBranchId}
+            onSwitchBranch={(branchId) => {
+              switchBranch(branchId);
+              setShowBranchTree(false);
+            }}
+            messageCountByBranch={branches.reduce((acc, branch) => {
+              // Count messages per branch - simplified count
+              acc[branch.id] = messages.filter(m => m.branchId === branch.id).length || 
+                (branch.id === currentBranchId ? messages.length : 0);
+              return acc;
+            }, {} as Record<string, number>)}
+          />
+        </div>
+      )}
 
       {/* Expandable Conversation History with Branch Points */}
       {showConversationHistory && messages.length > 0 && (
