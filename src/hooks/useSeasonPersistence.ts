@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 export type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 
@@ -56,12 +57,109 @@ const migrateSeason = (season: string): Season => {
   if (season in OLD_TO_NEW_SEASON) {
     return OLD_TO_NEW_SEASON[season as OldSeason];
   }
-  // Already new format or fallback
   if (['POLLENS', 'NOEMS', 'POEMS', 'TOTEMS', 'ANTHEMS'].includes(season)) {
     return season as Season;
   }
   return 'POLLENS';
 };
+
+// Season context mapping for POLEN entries
+const SEASON_CONTEXT_MAP: Record<string, Season> = {
+  'LOVE': 'POLLENS',
+  'MAGIC': 'NOEMS', 
+  'CALM': 'POEMS',
+  'OPEN': 'TOTEMS',
+  'FREE': 'ANTHEMS',
+  'POLLENS': 'POLLENS',
+  'NOEMS': 'NOEMS',
+  'POEMS': 'POEMS',
+  'TOTEMS': 'TOTEMS',
+  'ANTHEMS': 'ANTHEMS',
+};
+
+// Convert state to DB format
+const stateToDb = (state: SeasonPersistenceState) => ({
+  current_season: state.currentSeason,
+  season_progress: {
+    POLLENS: Array.from(state.seasonProgress.POLLENS || []),
+    NOEMS: Array.from(state.seasonProgress.NOEMS || []),
+    POEMS: Array.from(state.seasonProgress.POEMS || []),
+    TOTEMS: Array.from(state.seasonProgress.TOTEMS || []),
+    ANTHEMS: Array.from(state.seasonProgress.ANTHEMS || []),
+  },
+  completed_seasons: state.completedSeasons,
+  prd_id: state.prdId,
+  journey_started: state.journeyStarted,
+  journey_path: state.journeyPath,
+});
+
+// Convert DB row to state
+const dbToState = (row: any): SeasonPersistenceState => {
+  const seasonProgress = createEmptyProgress();
+  const dbProgress = row.season_progress || {};
+  
+  Object.entries(dbProgress).forEach(([key, tiles]) => {
+    const season = migrateSeason(key);
+    if (tiles && Array.isArray(tiles)) {
+      seasonProgress[season] = new Set(tiles as string[]);
+    }
+  });
+
+  return {
+    currentSeason: migrateSeason(row.current_season || 'POLLENS'),
+    seasonProgress,
+    completedSeasons: (row.completed_seasons || []).map((s: string) => migrateSeason(s)),
+    prdId: row.prd_id || null,
+    journeyStarted: row.journey_started || false,
+    journeyPath: row.journey_path || [],
+  };
+};
+
+// Recover progress from POLEN entries
+async function recoverProgressFromPolen(userId: string, projectId: string): Promise<Record<Season, Set<string>>> {
+  const progress = createEmptyProgress();
+  
+  try {
+    // Fetch all POLEN entries for the user
+    const { data: polenEntries, error } = await supabase
+      .from('polen_entries')
+      .select('tile_id, season_context')
+      .eq('user_id', userId)
+      .not('tile_id', 'is', null);
+
+    if (error) {
+      console.error('Failed to fetch POLEN entries for recovery:', error);
+      return progress;
+    }
+
+    if (!polenEntries || polenEntries.length === 0) {
+      return progress;
+    }
+
+    // Group tiles by season
+    polenEntries.forEach(entry => {
+      if (entry.tile_id) {
+        const tileKey = String(entry.tile_id);
+        const seasonContext = entry.season_context?.toUpperCase() || 'POLLENS';
+        const season = SEASON_CONTEXT_MAP[seasonContext] || 'POLLENS';
+        progress[season].add(tileKey);
+      }
+    });
+
+    console.log('Recovered progress from POLEN entries:', {
+      POLLENS: progress.POLLENS.size,
+      NOEMS: progress.NOEMS.size,
+      POEMS: progress.POEMS.size,
+      TOTEMS: progress.TOTEMS.size,
+      ANTHEMS: progress.ANTHEMS.size,
+    });
+
+  } catch (e) {
+    console.error('Error recovering progress from POLEN:', e);
+  }
+
+  return progress;
+}
 
 // Helper to get progress for a specific project (for dashboard)
 export const getProjectSeasonProgress = (projectId: string): SeasonPersistenceState | null => {
@@ -94,62 +192,155 @@ export const getProjectSeasonProgress = (projectId: string): SeasonPersistenceSt
   }
 };
 
+// Async version that checks Supabase first
+export const getProjectSeasonProgressAsync = async (projectId: string, userId?: string): Promise<SeasonPersistenceState | null> => {
+  // Try Supabase first if user is logged in
+  if (userId) {
+    try {
+      const { data, error } = await supabase
+        .from('project_season_progress')
+        .select('*')
+        .eq('project_id', projectId)
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      if (!error && data) {
+        return dbToState(data);
+      }
+    } catch (e) {
+      console.error('Error fetching from Supabase:', e);
+    }
+  }
+
+  // Fallback to localStorage
+  return getProjectSeasonProgress(projectId);
+};
+
 export const useSeasonPersistence = (projectId: string | null = null) => {
   const STORAGE_KEY = getStorageKey(projectId);
   const [state, setState] = useState<SeasonPersistenceState>(defaultState);
   const [isLoading, setIsLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
 
-  // Load from localStorage on mount or when projectId changes
+  // Get user ID
   useEffect(() => {
-    setIsLoading(true);
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed: StoredState = JSON.parse(stored);
-        
-        // Migrate current season
-        const migratedCurrentSeason = migrateSeason(parsed.currentSeason || 'POLLENS');
-        
-        // Create fresh progress with migrated data
-        const seasonProgress = createEmptyProgress();
-        
-        // Migrate old season progress if exists
-        if (parsed.seasonProgress) {
-          Object.entries(parsed.seasonProgress).forEach(([key, tiles]) => {
-            const newKey = migrateSeason(key);
-            if (tiles && Array.isArray(tiles)) {
-              seasonProgress[newKey] = new Set(tiles);
-            }
-          });
-        }
-        
-        // Migrate completed seasons
-        const migratedCompletedSeasons = (parsed.completedSeasons || [])
-          .map(s => migrateSeason(s))
-          .filter((s, i, arr) => arr.indexOf(s) === i); // Remove duplicates
-        
-        setState({
-          currentSeason: migratedCurrentSeason,
-          seasonProgress,
-          completedSeasons: migratedCompletedSeasons,
-          prdId: parsed.prdId || null,
-          journeyStarted: parsed.journeyStarted || false,
-          journeyPath: parsed.journeyPath || [],
-        });
-      } else {
-        // Reset to default state for new project
-        setState(defaultState);
-      }
-    } catch (e) {
-      console.error('Failed to load season progress:', e);
-      setState(defaultState);
-    } finally {
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUserId(user?.id || null);
+    };
+    getUser();
+  }, []);
+
+  // Load from Supabase or localStorage on mount
+  useEffect(() => {
+    if (!projectId) {
       setIsLoading(false);
+      return;
     }
-  }, [STORAGE_KEY]);
+
+    const loadProgress = async () => {
+      setIsLoading(true);
+      
+      // Try Supabase first if logged in
+      if (userId) {
+        try {
+          const { data, error } = await supabase
+            .from('project_season_progress')
+            .select('*')
+            .eq('project_id', projectId)
+            .eq('user_id', userId)
+            .maybeSingle();
+
+          if (!error && data) {
+            const loadedState = dbToState(data);
+            
+            // Check if we should recover from POLEN entries
+            const totalTiles = Object.values(loadedState.seasonProgress)
+              .reduce((sum, set) => sum + set.size, 0);
+            
+            if (totalTiles === 0) {
+              // No progress saved, try to recover from POLEN entries
+              const recoveredProgress = await recoverProgressFromPolen(userId, projectId);
+              const recoveredTotal = Object.values(recoveredProgress)
+                .reduce((sum, set) => sum + set.size, 0);
+              
+              if (recoveredTotal > 0) {
+                loadedState.seasonProgress = recoveredProgress;
+                // Save recovered progress
+                await supabase
+                  .from('project_season_progress')
+                  .update(stateToDb(loadedState))
+                  .eq('project_id', projectId)
+                  .eq('user_id', userId);
+              }
+            }
+            
+            setState(loadedState);
+            // Also update localStorage as cache
+            saveToLocalStorage(loadedState);
+            setIsLoading(false);
+            return;
+          }
+
+          // No record in DB, check localStorage and migrate
+          const localState = getProjectSeasonProgress(projectId);
+          
+          // Also try to recover from POLEN entries
+          const recoveredProgress = await recoverProgressFromPolen(userId, projectId);
+          const recoveredTotal = Object.values(recoveredProgress)
+            .reduce((sum, set) => sum + set.size, 0);
+          
+          // Merge local state with recovered progress
+          const mergedState: SeasonPersistenceState = localState || defaultState;
+          if (recoveredTotal > 0) {
+            Object.keys(recoveredProgress).forEach(key => {
+              const season = key as Season;
+              recoveredProgress[season].forEach(tile => {
+                mergedState.seasonProgress[season].add(tile);
+              });
+            });
+          }
+          
+          // Create record in Supabase
+          const { error: insertError } = await supabase
+            .from('project_season_progress')
+            .insert({
+              project_id: projectId,
+              user_id: userId,
+              ...stateToDb(mergedState),
+            });
+
+          if (!insertError) {
+            setState(mergedState);
+            saveToLocalStorage(mergedState);
+          }
+          
+        } catch (e) {
+          console.error('Error loading from Supabase:', e);
+          // Fallback to localStorage
+          const localState = getProjectSeasonProgress(projectId);
+          if (localState) {
+            setState(localState);
+          }
+        }
+      } else {
+        // Not logged in, use localStorage only
+        const localState = getProjectSeasonProgress(projectId);
+        if (localState) {
+          setState(localState);
+        }
+      }
+      
+      setIsLoading(false);
+    };
+
+    loadProgress();
+  }, [projectId, userId, STORAGE_KEY]);
 
   // Save to localStorage
-  const saveToStorage = useCallback((newState: SeasonPersistenceState) => {
+  const saveToLocalStorage = useCallback((newState: SeasonPersistenceState) => {
+    if (!projectId) return;
+    
     try {
       const toStore: StoredState = {
         currentSeason: newState.currentSeason,
@@ -168,29 +359,92 @@ export const useSeasonPersistence = (projectId: string | null = null) => {
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(toStore));
     } catch (e) {
-      console.error('Failed to save season progress:', e);
+      console.error('Failed to save to localStorage:', e);
     }
-  }, []);
+  }, [projectId, STORAGE_KEY]);
+
+  // Save to Supabase
+  const saveToSupabase = useCallback(async (newState: SeasonPersistenceState) => {
+    if (!projectId || !userId) return;
+
+    try {
+      const { error } = await supabase
+        .from('project_season_progress')
+        .upsert({
+          project_id: projectId,
+          user_id: userId,
+          ...stateToDb(newState),
+          updated_at: new Date().toISOString(),
+        }, {
+          onConflict: 'project_id,user_id',
+        });
+
+      if (error) {
+        console.error('Failed to save to Supabase:', error);
+      }
+    } catch (e) {
+      console.error('Error saving to Supabase:', e);
+    }
+  }, [projectId, userId]);
 
   // Update state and persist
   const updateProgress = useCallback((updates: Partial<SeasonPersistenceState>) => {
     setState(prev => {
       const newState = { ...prev, ...updates };
-      saveToStorage(newState);
+      saveToLocalStorage(newState);
+      saveToSupabase(newState);
       return newState;
     });
-  }, [saveToStorage]);
+  }, [saveToLocalStorage, saveToSupabase]);
 
   // Reset all progress
-  const resetProgress = useCallback(() => {
+  const resetProgress = useCallback(async () => {
     setState(defaultState);
     localStorage.removeItem(STORAGE_KEY);
-  }, []);
+    
+    if (projectId && userId) {
+      try {
+        await supabase
+          .from('project_season_progress')
+          .delete()
+          .eq('project_id', projectId)
+          .eq('user_id', userId);
+      } catch (e) {
+        console.error('Error deleting from Supabase:', e);
+      }
+    }
+  }, [projectId, userId, STORAGE_KEY]);
+
+  // Force recovery from POLEN entries
+  const recoverFromPolen = useCallback(async () => {
+    if (!projectId || !userId) return;
+    
+    setIsLoading(true);
+    const recoveredProgress = await recoverProgressFromPolen(userId, projectId);
+    
+    setState(prev => {
+      const mergedProgress = { ...prev.seasonProgress };
+      Object.keys(recoveredProgress).forEach(key => {
+        const season = key as Season;
+        recoveredProgress[season].forEach(tile => {
+          mergedProgress[season].add(tile);
+        });
+      });
+      
+      const newState = { ...prev, seasonProgress: mergedProgress };
+      saveToLocalStorage(newState);
+      saveToSupabase(newState);
+      return newState;
+    });
+    
+    setIsLoading(false);
+  }, [projectId, userId, saveToLocalStorage, saveToSupabase]);
 
   return {
     ...state,
     updateProgress,
     resetProgress,
+    recoverFromPolen,
     isLoading,
   };
 };

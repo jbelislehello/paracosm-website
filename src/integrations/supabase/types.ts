@@ -776,6 +776,63 @@ export type Database = {
         }
         Relationships: []
       }
+      project_season_progress: {
+        Row: {
+          completed_seasons: string[]
+          created_at: string
+          current_season: string
+          id: string
+          journey_path: Json
+          journey_started: boolean
+          prd_id: string | null
+          project_id: string
+          season_progress: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_seasons?: string[]
+          created_at?: string
+          current_season?: string
+          id?: string
+          journey_path?: Json
+          journey_started?: boolean
+          prd_id?: string | null
+          project_id: string
+          season_progress?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_seasons?: string[]
+          created_at?: string
+          current_season?: string
+          id?: string
+          journey_path?: Json
+          journey_started?: boolean
+          prd_id?: string | null
+          project_id?: string
+          season_progress?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_season_progress_prd_id_fkey"
+            columns: ["prd_id"]
+            isOneToOne: false
+            referencedRelation: "prds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_season_progress_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       projects: {
         Row: {
           created_at: string
