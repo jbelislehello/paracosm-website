@@ -5,15 +5,12 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Wand2, Globe, Donut, Menu, RefreshCw } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { getTerminology } from '@/data/modeAwareTerminology';
 import { toast } from 'sonner';
 import MinimalistTileMatrix from '@/components/MinimalistTileMatrix';
-import CosmologicalBoardOverlay from '@/components/calm-magic/CosmologicalBoardOverlay';
-import Cosmological3DManifold from '@/components/calm-magic/Cosmological3DManifold';
-import { TorusManifoldVisualization } from '@/components/calm-magic/TorusManifoldVisualization';
 import TileDetailPanel from '@/components/TileDetailPanel';
 import { FragmentBrowser } from '@/components/calm-magic/FragmentBrowser';
 import { useTileMatrixPersistence } from '@/hooks/useTileMatrixPersistence';
@@ -125,10 +122,6 @@ const CalmMagicBoard = () => {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeFeature, setUpgradeFeature] = useState<'insight_connections' | null>(null);
   
-  // Cosmological overlay state (Wild Guess)
-  const [showCosmologyOverlay, setShowCosmologyOverlay] = useState(false);
-  const [show3DManifold, setShow3DManifold] = useState(false);
-  const [showTorusManifold, setShowTorusManifold] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   
   const isMobile = useIsMobile();
@@ -712,61 +705,6 @@ const CalmMagicBoard = () => {
               <Library className="w-4 h-4" />
             </Button>
             
-            {/* PRD Assembly - Show when accessible */}
-            {getPrdAccessLevel({
-              completedSeasons: completedSeasons as PrdSeason[],
-              currentSeason: currentSeason as PrdSeason,
-              seasonProgress: seasonProgress as Record<PrdSeason, Set<string>>,
-              polenCountBySeason: {} as Record<PrdSeason, number>,
-              prdId
-            }) !== 'hidden' && (
-              <Button 
-                variant={activeView === 'prd-assembly' ? "default" : "outline"} 
-                size="sm"
-                onClick={() => setActiveView('prd-assembly')}
-                title="PRD Assembly"
-                data-tour="prd"
-              >
-                <Layers className="w-4 h-4 mr-1" />
-                PRD
-              </Button>
-            )}
-            
-            {/* Wild Guess / Hexagram - Cosmological Overlay Toggle */}
-            <Button 
-              variant={showCosmologyOverlay ? "default" : "outline"} 
-              size="sm"
-              onClick={() => setShowCosmologyOverlay(!showCosmologyOverlay)}
-              title={`${getTerminology(mode).hexagramOracle} - Cosmological Navigation`}
-              className={showCosmologyOverlay ? "bg-gradient-to-r from-violet-500 to-purple-600 border-0" : ""}
-            >
-              <Wand2 className="w-4 h-4 mr-1" />
-              {getTerminology(mode).hexagram}
-            </Button>
-            
-            {/* 3D Manifold View */}
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => setShow3DManifold(true)}
-              title="3D Cosmological Manifold"
-              className="bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border-indigo-500/30 hover:border-indigo-500"
-            >
-              <Globe className="w-4 h-4 mr-1" />
-              3D View
-            </Button>
-            
-            {/* Torus Manifold - Full Journey Visualization */}
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={() => setShowTorusManifold(true)}
-              title={`${getTerminology(mode).torusManifold} - Full Journey Topology`}
-              className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-amber-500/30 hover:border-amber-500"
-            >
-              <Donut className="w-4 h-4 mr-1" />
-              {getTerminology(mode).manifoldView}
-            </Button>
             
             {/* Sync Progress */}
             <Button 
@@ -860,15 +798,6 @@ const CalmMagicBoard = () => {
                 >
                   <Library className="w-4 h-4 mr-2" />
                   Library
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="justify-start"
-                  onClick={() => { setShowCosmologyOverlay(!showCosmologyOverlay); setShowMobileMenu(false); }}
-                >
-                  <Wand2 className="w-4 h-4 mr-2" />
-                  Oracle
                 </Button>
                 <Button 
                   variant="outline" 
@@ -1249,28 +1178,6 @@ const CalmMagicBoard = () => {
         feature={upgradeFeature || undefined}
       />
       
-      {/* 3D Cosmological Manifold Full Screen */}
-      {show3DManifold && (
-        <Cosmological3DManifold
-          season={currentSeason}
-          visitedTiles={Array.from(visitedTiles).map(key => {
-            const [row, col] = key.split('-').map(Number);
-            return row * 8 + col + 1;
-          })}
-          selectedTile={selectedTile ? selectedTile.row * 8 + selectedTile.col + 1 : null}
-          onTileClick={(id) => {
-            const row = Math.floor((id - 1) / 8);
-            const col = (id - 1) % 8;
-            handleTileClick(row, col);
-          }}
-          onClose={() => setShow3DManifold(false)}
-        />
-      )}
-      
-      {/* Torus Manifold - Full Journey Topology */}
-      {showTorusManifold && (
-        <TorusManifoldVisualization onClose={() => setShowTorusManifold(false)} />
-      )}
     </div>
   );
 };

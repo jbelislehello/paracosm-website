@@ -148,7 +148,12 @@ async function recoverProgressFromPolen(userId: string, projectId: string): Prom
     // Group tiles by season and build journey path
     polenEntries.forEach(entry => {
       if (entry.tile_id) {
-        const tileKey = String(entry.tile_id);
+        // Convert tile_id to row-col format (tile_id is 1-indexed, 8x8 grid)
+        const tileId = Number(entry.tile_id);
+        const row = Math.floor((tileId - 1) / 8);
+        const col = (tileId - 1) % 8;
+        const tileKey = `${row}-${col}`; // FIX: Use row-col format to match MinimalistTileMatrix
+        
         const seasonContext = entry.season_context?.toUpperCase() || 'POLLENS';
         const season = SEASON_CONTEXT_MAP[seasonContext] || 'POLLENS';
         progress[season].add(tileKey);
@@ -156,10 +161,6 @@ async function recoverProgressFromPolen(userId: string, projectId: string): Prom
         // Build journey path - only add each tile once, in order of first visit
         if (!seenTiles.has(tileKey)) {
           seenTiles.add(tileKey);
-          // Convert tile_id to row/col (tile_id is 1-indexed, 8x8 grid)
-          const tileId = Number(entry.tile_id);
-          const row = Math.floor((tileId - 1) / 8);
-          const col = (tileId - 1) % 8;
           journeyPath.push({ row, col });
         }
       }
