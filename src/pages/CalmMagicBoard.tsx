@@ -41,7 +41,7 @@ import { parseBoardEntryParams, getAssessmentContextDescription } from '@/utils/
 import { getGardenByType } from '@/data/gardens';
 import ProjectTitleBar from '@/components/calm-magic/ProjectTitleBar';
 import { PrdUnlockProgress } from '@/components/calm-magic/PrdUnlockProgress';
-import { PrdGeneratorWizard } from '@/components/prd-generator/PrdGeneratorWizard';
+import PrdGeneratorWizard from '@/components/prd-generator/PrdGeneratorWizard';
 
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
@@ -1179,6 +1179,14 @@ const CalmMagicBoard = () => {
         }}
         reason="feature_locked"
         feature={upgradeFeature || undefined}
+      />
+      
+      {/* PRD Generator Wizard */}
+      <PrdGeneratorWizard
+        isOpen={showPrdWizard}
+        onClose={() => setShowPrdWizard(false)}
+        polenEntries={[]}
+        board={SEASON_TO_BOARD[currentSeason]}
       />
       
     </div>
