@@ -115,34 +115,53 @@ const dbToState = (row: any): SeasonPersistenceState => {
   };
 };
 
+// Recovery result type
+interface RecoveryResult {
+  progress: Record<Season, Set<string>>;
+  journeyPath: Array<{ row: number; col: number }>;
+}
+
 // Recover progress from POLEN entries
-async function recoverProgressFromPolen(userId: string, projectId: string): Promise<Record<Season, Set<string>>> {
+async function recoverProgressFromPolen(userId: string, projectId: string): Promise<RecoveryResult> {
   const progress = createEmptyProgress();
+  const journeyPath: Array<{ row: number; col: number }> = [];
+  const seenTiles = new Set<string>();
   
   try {
-    // Fetch all POLEN entries for the user
+    // Fetch all POLEN entries for the user, ordered by creation date
     const { data: polenEntries, error } = await supabase
       .from('polen_entries')
-      .select('tile_id, season_context')
+      .select('tile_id, season_context, created_at')
       .eq('user_id', userId)
-      .not('tile_id', 'is', null);
+      .not('tile_id', 'is', null)
+      .order('created_at', { ascending: true });
 
     if (error) {
       console.error('Failed to fetch POLEN entries for recovery:', error);
-      return progress;
+      return { progress, journeyPath };
     }
 
     if (!polenEntries || polenEntries.length === 0) {
-      return progress;
+      return { progress, journeyPath };
     }
 
-    // Group tiles by season
+    // Group tiles by season and build journey path
     polenEntries.forEach(entry => {
       if (entry.tile_id) {
         const tileKey = String(entry.tile_id);
         const seasonContext = entry.season_context?.toUpperCase() || 'POLLENS';
         const season = SEASON_CONTEXT_MAP[seasonContext] || 'POLLENS';
         progress[season].add(tileKey);
+        
+        // Build journey path - only add each tile once, in order of first visit
+        if (!seenTiles.has(tileKey)) {
+          seenTiles.add(tileKey);
+          // Convert tile_id to row/col (tile_id is 1-indexed, 8x8 grid)
+          const tileId = Number(entry.tile_id);
+          const row = Math.floor((tileId - 1) / 8);
+          const col = (tileId - 1) % 8;
+          journeyPath.push({ row, col });
+        }
       }
     });
 
@@ -152,13 +171,14 @@ async function recoverProgressFromPolen(userId: string, projectId: string): Prom
       POEMS: progress.POEMS.size,
       TOTEMS: progress.TOTEMS.size,
       ANTHEMS: progress.ANTHEMS.size,
+      journeyPathLength: journeyPath.length,
     });
 
   } catch (e) {
     console.error('Error recovering progress from POLEN:', e);
   }
 
-  return progress;
+  return { progress, journeyPath };
 }
 
 // Helper to get progress for a specific project (for dashboard)
@@ -257,15 +277,20 @@ export const useSeasonPersistence = (projectId: string | null = null) => {
             // Check if we should recover from POLEN entries
             const totalTiles = Object.values(loadedState.seasonProgress)
               .reduce((sum, set) => sum + set.size, 0);
+            const hasJourneyPath = loadedState.journeyPath.length > 0;
             
-            if (totalTiles === 0) {
-              // No progress saved, try to recover from POLEN entries
-              const recoveredProgress = await recoverProgressFromPolen(userId, projectId);
-              const recoveredTotal = Object.values(recoveredProgress)
+            if (totalTiles === 0 || !hasJourneyPath) {
+              // No progress saved or missing journey path, try to recover from POLEN entries
+              const recovered = await recoverProgressFromPolen(userId, projectId);
+              const recoveredTotal = Object.values(recovered.progress)
                 .reduce((sum, set) => sum + set.size, 0);
               
               if (recoveredTotal > 0) {
-                loadedState.seasonProgress = recoveredProgress;
+                loadedState.seasonProgress = recovered.progress;
+                if (!hasJourneyPath && recovered.journeyPath.length > 0) {
+                  loadedState.journeyPath = recovered.journeyPath;
+                  loadedState.journeyStarted = true;
+                }
                 // Save recovered progress
                 await supabase
                   .from('project_season_progress')
@@ -286,19 +311,24 @@ export const useSeasonPersistence = (projectId: string | null = null) => {
           const localState = getProjectSeasonProgress(projectId);
           
           // Also try to recover from POLEN entries
-          const recoveredProgress = await recoverProgressFromPolen(userId, projectId);
-          const recoveredTotal = Object.values(recoveredProgress)
+          const recovered = await recoverProgressFromPolen(userId, projectId);
+          const recoveredTotal = Object.values(recovered.progress)
             .reduce((sum, set) => sum + set.size, 0);
           
           // Merge local state with recovered progress
-          const mergedState: SeasonPersistenceState = localState || defaultState;
+          const mergedState: SeasonPersistenceState = localState || { ...defaultState };
           if (recoveredTotal > 0) {
-            Object.keys(recoveredProgress).forEach(key => {
+            Object.keys(recovered.progress).forEach(key => {
               const season = key as Season;
-              recoveredProgress[season].forEach(tile => {
+              recovered.progress[season].forEach(tile => {
                 mergedState.seasonProgress[season].add(tile);
               });
             });
+            // Use recovered journey path if local doesn't have one
+            if (mergedState.journeyPath.length === 0 && recovered.journeyPath.length > 0) {
+              mergedState.journeyPath = recovered.journeyPath;
+              mergedState.journeyStarted = true;
+            }
           }
           
           // Create record in Supabase
@@ -420,18 +450,24 @@ export const useSeasonPersistence = (projectId: string | null = null) => {
     if (!projectId || !userId) return;
     
     setIsLoading(true);
-    const recoveredProgress = await recoverProgressFromPolen(userId, projectId);
+    const recovered = await recoverProgressFromPolen(userId, projectId);
     
     setState(prev => {
       const mergedProgress = { ...prev.seasonProgress };
-      Object.keys(recoveredProgress).forEach(key => {
+      Object.keys(recovered.progress).forEach(key => {
         const season = key as Season;
-        recoveredProgress[season].forEach(tile => {
+        recovered.progress[season].forEach(tile => {
           mergedProgress[season].add(tile);
         });
       });
       
-      const newState = { ...prev, seasonProgress: mergedProgress };
+      const newState = { 
+        ...prev, 
+        seasonProgress: mergedProgress,
+        // Use recovered journey path if current is empty
+        journeyPath: prev.journeyPath.length > 0 ? prev.journeyPath : recovered.journeyPath,
+        journeyStarted: prev.journeyStarted || recovered.journeyPath.length > 0,
+      };
       saveToLocalStorage(newState);
       saveToSupabase(newState);
       return newState;
