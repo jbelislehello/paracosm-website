@@ -73,9 +73,9 @@ serve(async (req) => {
       });
     }
 
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!openAIApiKey) {
-      throw new Error('OPENAI_API_KEY not configured');
+    const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
+    if (!lovableApiKey) {
+      throw new Error('LOVABLE_API_KEY not configured');
     }
 
     // Build context from POLLEN entries
@@ -206,31 +206,38 @@ Return JSON with these exact keys:
 Integration time. What we learn flows back into POLLENS for the next cycle.`
     };
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: layerPrompts[layer] }
+          { role: 'user', content: layerPrompts[layer] + '\n\nIMPORTANT: Return ONLY valid JSON, no markdown code blocks.' }
         ],
-        max_tokens: 3000,
-        response_format: { type: "json_object" }
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('OpenAI API error:', errorText);
+      console.error('Lovable AI Gateway error:', errorText);
+      if (response.status === 429) {
+        throw new Error('Rate limit exceeded, please try again later');
+      }
+      if (response.status === 402) {
+        throw new Error('Payment required, please add credits to your Lovable workspace');
+      }
       throw new Error('Failed to generate content');
     }
 
     const data = await response.json();
-    const content = JSON.parse(data.choices[0].message.content);
+    const rawContent = data.choices[0].message.content;
+    // Clean up any markdown code blocks that might wrap the JSON
+    const cleanedContent = rawContent.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    const content = JSON.parse(cleanedContent);
 
     console.log(`Generated content for layer ${layer}:`, Object.keys(content));
 
