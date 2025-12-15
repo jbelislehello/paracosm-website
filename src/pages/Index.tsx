@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import HeroSection from "@/components/HeroSection";
 import NetworkVisualization from "@/components/NetworkVisualization";
 import FeatureCard from "@/components/FeatureCard";
@@ -18,11 +18,38 @@ const Index = () => {
   const [showAgentDemo, setShowAgentDemo] = useState(false);
   const [showFrameworkPanel, setShowFrameworkPanel] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [headerVisible, setHeaderVisible] = useState(true);
+  const lastScrollY = useRef(0);
   const { t } = useLanguage();
+
+  // Smart header hide/show on scroll
+  const handleScroll = useCallback(() => {
+    const currentScrollY = window.scrollY;
+    const scrollDelta = currentScrollY - lastScrollY.current;
+    
+    // Only hide/show after scrolling past header height (60px)
+    if (currentScrollY > 60) {
+      if (scrollDelta > 5) {
+        // Scrolling down - hide header
+        setHeaderVisible(false);
+      } else if (scrollDelta < -5) {
+        // Scrolling up - show header
+        setHeaderVisible(true);
+      }
+    } else {
+      // At top - always show header
+      setHeaderVisible(true);
+    }
+    
+    lastScrollY.current = currentScrollY;
+  }, []);
 
   useEffect(() => {
     document.title = "Paracosm - AI Leadership & Innovation";
-  }, []);
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
 
   const handleDiscoverFramework = () => {
     setShowAgentDemo(true);
@@ -37,7 +64,11 @@ const Index = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       {/* Navigation */}
-      <header className="fixed w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
+      <header 
+        className={`fixed w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md transition-transform duration-300 ${
+          headerVisible ? 'translate-y-0' : '-translate-y-full'
+        }`}
+      >
         <div className="container flex items-center justify-between py-3 px-4 md:py-4">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-md flex items-center justify-center">
