@@ -96,7 +96,7 @@ const MinimalistTileMatrix = ({
 
   // Row labels - left axis (from top to bottom visually)
   const rowLabels = [
-    { letter: 'P', name: 'PROTOCOLS & Architectures' },
+    { letter: 'A + P', name: 'Architectures & Protocols' },
     { letter: 'S', name: 'SYNERGIES' },
     { letter: 'N', name: 'NORMS' },
     { letter: 'C', name: 'COMPASSES' },
@@ -108,7 +108,7 @@ const MinimalistTileMatrix = ({
 
   // Stage groups with their row ranges (visual indices, top to bottom)
   const stageGroups = [
-    { name: 'A + P', startRow: 0, rowCount: 2 },   // Architectures & Protocols
+    { name: 'MAPS', startRow: 0, rowCount: 2 },   // P+A, Synergies
     { name: 'LENS', startRow: 2, rowCount: 3 },   // Norms, Compasses, Intuition
     { name: 'AGENDAS', startRow: 5, rowCount: 3 }, // Goals, Agilities, Mindsets
   ];
