@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
-import { X, Send, Sparkles, ArrowRight, Loader2, Check, ArrowLeft } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { X, Send, Sparkles, ArrowRight, Loader2, Check, ArrowLeft, Maximize2, Minimize2, Save, MessageSquare } from 'lucide-react';
 import { TILE_CONTENTS } from '@/data/tileContents';
 import { useAgentTileConversation } from '@/hooks/useAgentTileConversation';
 import { cn } from '@/lib/utils';
+import { toast } from '@/hooks/use-toast';
 
 interface MinimalistTileCardProps {
   selectedTile: { row: number; col: number };
@@ -55,8 +57,11 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
   const [currentStep, setCurrentStep] = useState(1);
   const [quickMode, setQuickMode] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [showConversationHistory, setShowConversationHistory] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const { messages, isLoading, sendResponse } = useAgentTileConversation(
+  const { messages, isLoading, sendResponse, saveConversationAsPolen } = useAgentTileConversation(
     selectedTile,
     currentSeason || 'POLLENS',
     true
@@ -65,6 +70,33 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
   const latestQuestion = messages.filter(m => m.role === 'assistant').pop()?.content || 
     tileContent?.glitchQuestion || 
     "What's alive for you here?";
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  // Handle saving entire conversation
+  const handleSaveConversation = async () => {
+    if (messages.length < 2) {
+      toast({ description: "Have a conversation first before saving." });
+      return;
+    }
+    const saved = await saveConversationAsPolen();
+    if (saved) {
+      toast({ 
+        title: "💾 Conversation saved",
+        description: "Your dialogue has been captured as a fragment." 
+      });
+    } else {
+      toast({ 
+        variant: "destructive",
+        description: "Failed to save conversation." 
+      });
+    }
+  };
 
   const handleSubmit = async () => {
     if (!response.trim()) return;
@@ -356,17 +388,65 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
         </div>
       </div>
 
+      {/* Conversation History Toggle */}
+      {messages.length > 1 && (
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setShowConversationHistory(!showConversationHistory)}
+          className="w-full gap-2 text-xs text-muted-foreground"
+        >
+          <MessageSquare className="w-3 h-3" />
+          {showConversationHistory ? 'Hide' : 'Show'} conversation ({messages.length} messages)
+        </Button>
+      )}
+
+      {/* Expandable Conversation History */}
+      {showConversationHistory && messages.length > 0 && (
+        <ScrollArea className={cn(
+          "border rounded-lg bg-muted/20",
+          isExpanded ? "h-[300px]" : "h-[150px]"
+        )} ref={scrollRef}>
+          <div className="p-3 space-y-3">
+            {messages.map((msg, idx) => (
+              <div 
+                key={idx}
+                className={cn(
+                  "flex gap-2 text-sm",
+                  msg.role === 'user' ? "justify-end" : "justify-start"
+                )}
+              >
+                <div className={cn(
+                  "max-w-[85%] rounded-lg px-3 py-2",
+                  msg.role === 'user' 
+                    ? "bg-primary text-primary-foreground" 
+                    : "bg-muted"
+                )}>
+                  <span className="text-xs opacity-70 block mb-1">
+                    {msg.role === 'assistant' ? '🧭 Guide' : '💭 You'}
+                  </span>
+                  <p className="whitespace-pre-wrap">{msg.content}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
+      )}
+
       {/* Response Input */}
       <div className="space-y-3">
         <Textarea
           value={response}
           onChange={(e) => setResponse(e.target.value)}
           placeholder="What emerges for you?"
-          className="min-h-[100px] resize-none border-border/50 focus:border-primary/50"
+          className={cn(
+            "resize-y border-border/50 focus:border-primary/50",
+            isExpanded ? "min-h-[150px] max-h-[300px]" : "min-h-[100px] max-h-[200px]"
+          )}
         />
         
         <div className="flex items-center justify-between">
-          <div className="flex gap-1">
+          <div className="flex gap-2">
             {selectedPosture && (
               <Badge variant="secondary" className="text-xs">
                 {POSTURES.find(p => p.id === selectedPosture)?.label}
@@ -379,18 +459,31 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
             )}
           </div>
           
-          <Button 
-            onClick={handleSubmit} 
-            disabled={!response.trim() || isSaving}
-            className="gap-2"
-          >
-            {isSaving ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Send className="w-4 h-4" />
+          <div className="flex gap-2">
+            {messages.length >= 2 && (
+              <Button 
+                variant="outline"
+                size="sm"
+                onClick={handleSaveConversation}
+                className="gap-1"
+              >
+                <Save className="w-3 h-3" />
+                Save
+              </Button>
             )}
-            Capture
-          </Button>
+            <Button 
+              onClick={handleSubmit} 
+              disabled={!response.trim() || isSaving}
+              className="gap-2"
+            >
+              {isSaving ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )}
+              Capture
+            </Button>
+          </div>
         </div>
       </div>
     </div>
@@ -398,7 +491,12 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
-      <div className="w-full max-w-2xl bg-background border border-border rounded-2xl shadow-2xl overflow-hidden">
+      <div className={cn(
+        "bg-background border border-border rounded-2xl shadow-2xl overflow-hidden transition-all duration-300",
+        isExpanded 
+          ? "w-full max-w-4xl h-[90vh]" 
+          : "w-full max-w-2xl"
+      )}>
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border/50">
           <div className="flex items-center gap-3">
@@ -414,6 +512,15 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
             </div>
           </div>
           <div className="flex items-center gap-3">
+            {/* Expand/Collapse Toggle */}
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="h-8 w-8"
+            >
+              {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+            </Button>
             {/* Quick Mode Toggle */}
             <div className="flex items-center gap-2">
               <span className="text-xs text-muted-foreground">Quick</span>
@@ -438,7 +545,10 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
         {!quickMode && renderStepIndicator()}
 
         {/* Content */}
-        <div className="p-6">
+        <div className={cn(
+          "p-6 overflow-y-auto",
+          isExpanded ? "max-h-[calc(90vh-140px)]" : ""
+        )}>
           {quickMode ? renderQuickMode() : renderStepContent()}
         </div>
 
