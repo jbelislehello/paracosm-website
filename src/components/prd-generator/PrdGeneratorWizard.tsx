@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Loader2, Sparkles, ArrowRight, ArrowLeft, Check, Edit3, FileText, Sprout, Gem, BookOpen, Landmark, Music, CheckCircle2, Circle, Download, Shield, AlertCircle } from 'lucide-react';
+import { Loader2, Sparkles, ArrowRight, ArrowLeft, Check, Edit3, FileText, Sprout, Gem, BookOpen, Landmark, Music, CheckCircle2, Circle, Download, Shield, AlertCircle, Eye, Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import PrdStageProgress, { PrdLayer } from './PrdStageProgress';
@@ -179,8 +180,31 @@ const PrdGeneratorWizard = ({
   const [content, setContent] = useState<GeneratedContent>({});
   const [editingField, setEditingField] = useState<string | null>(null);
   const [showQualityReview, setShowQualityReview] = useState(false);
+  const [showFullPreview, setShowFullPreview] = useState(false);
   
   const { toast } = useToast();
+
+  const hasAnyContent = LAYERS.some(layer => 
+    LAYER_FIELDS[layer].some(field => content[field]?.trim())
+  );
+
+  const handleCopyPreview = () => {
+    const markdown = LAYERS.map(layer => {
+      const LayerIcon = LAYER_ICONS[layer];
+      const layerContent = LAYER_FIELDS[layer]
+        .filter(field => content[field])
+        .map(field => `### ${FIELD_LABELS[field].label}\n${content[field]}`)
+        .join('\n\n');
+      
+      return layerContent ? `## ${layer}\n\n${layerContent}` : `## ${layer}\n\n*Not generated yet*`;
+    }).join('\n\n---\n\n');
+
+    navigator.clipboard.writeText(`# ${title}\n\n${markdown}`);
+    toast({
+      title: 'Copied to clipboard',
+      description: 'PRD preview copied as markdown.'
+    });
+  };
 
   const currentIndex = LAYERS.indexOf(currentLayer);
   const isFirstLayer = currentIndex === 0;
@@ -347,6 +371,16 @@ const PrdGeneratorWizard = ({
                 <Sprout className="w-3 h-3 mr-1" />
                 {polenEntries.length} fragment{polenEntries.length !== 1 ? 's' : ''} available
               </Badge>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setShowFullPreview(true)}
+                disabled={!hasAnyContent}
+                className="ml-2"
+              >
+                <Eye className="w-4 h-4 mr-1" />
+                Preview PRD
+              </Button>
             </DialogTitle>
             
             <div className="flex items-center gap-1">
@@ -520,6 +554,62 @@ const PrdGeneratorWizard = ({
           </div>
         </div>
       </DialogContent>
+
+      <Sheet open={showFullPreview} onOpenChange={setShowFullPreview}>
+        <SheetContent className="w-full max-w-2xl overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle className="flex items-center gap-2">
+              <Eye className="w-5 h-5" />
+              PRD Preview (Work in Progress)
+            </SheetTitle>
+          </SheetHeader>
+          
+          <ScrollArea className="h-[calc(100vh-150px)] pr-4">
+            <div className="space-y-6 py-4">
+              {LAYERS.map(layer => {
+                const LayerIcon = LAYER_ICONS[layer];
+                const isCompleted = completedLayers.includes(layer);
+                const layerFields = LAYER_FIELDS[layer].filter(f => !f.startsWith('stack_') && !f.startsWith('prompt_'));
+                const hasContent = layerFields.some(f => content[f]);
+                
+                return (
+                  <div key={layer} className="space-y-3">
+                    <h3 className="font-semibold flex items-center gap-2 text-lg border-b pb-2">
+                      <LayerIcon className="w-5 h-5" />
+                      {layer}
+                      {isCompleted && <Check className="w-4 h-4 text-emerald-500" />}
+                    </h3>
+                    
+                    {hasContent ? (
+                      layerFields.map(field => {
+                        const value = content[field];
+                        if (!value) return null;
+                        return (
+                          <div key={field} className="bg-muted/30 p-3 rounded-lg text-sm">
+                            <p className="font-medium text-xs text-muted-foreground mb-1">
+                              {FIELD_LABELS[field].label}
+                            </p>
+                            <p className="whitespace-pre-wrap">{value}</p>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <p className="text-sm text-muted-foreground italic py-2">Not generated yet</p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </ScrollArea>
+          
+          <div className="flex gap-2 pt-4 border-t mt-4">
+            <Button variant="outline" onClick={handleCopyPreview} className="flex-1">
+              <Copy className="w-4 h-4 mr-2" />
+              Copy as Markdown
+            </Button>
+          </div>
+        </SheetContent>
+      </Sheet>
     </Dialog>
   );
 };
