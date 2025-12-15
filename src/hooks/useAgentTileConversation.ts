@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { TILE_CONTENTS, getRowKey, getColKey } from '@/data/tileContents';
 
@@ -38,6 +38,8 @@ export const useAgentTileConversation = (
   const [error, setError] = useState<string | null>(null);
   const [completedTiles, setCompletedTiles] = useState<CompletedTile[]>([]);
   const [currentQuestion, setCurrentQuestion] = useState<string>('');
+  const autoSaveTriggered = useRef(false);
+  const previousTile = useRef<{ row: number; col: number } | null>(null);
 
   // Get tile content from our data
   const getTileContent = useCallback((row: number, col: number) => {
@@ -262,6 +264,30 @@ export const useAgentTileConversation = (
     setCurrentQuestion('');
     setError(null);
   }, []);
+
+  // Auto-save conversation when tile changes (cleanup effect)
+  useEffect(() => {
+    // Check if we're changing tiles and have a conversation to save
+    const shouldAutoSave = 
+      previousTile.current && 
+      tile && 
+      (previousTile.current.row !== tile.row || previousTile.current.col !== tile.col) &&
+      messages.length >= 2 &&
+      isAuthenticated &&
+      !autoSaveTriggered.current;
+
+    if (shouldAutoSave) {
+      autoSaveTriggered.current = true;
+      saveConversationAsPolen().then(saved => {
+        if (saved) {
+          console.log('Auto-saved conversation from tile navigation');
+        }
+        autoSaveTriggered.current = false;
+      });
+    }
+
+    previousTile.current = tile;
+  }, [tile?.row, tile?.col]);
 
   // Effects
   useEffect(() => {

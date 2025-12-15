@@ -15,8 +15,11 @@ import {
   ChevronDown,
   ChevronRight,
   Sparkles,
-  AlertCircle
+  AlertCircle,
+  Maximize2,
+  Minimize2
 } from 'lucide-react';
+import { toast } from '@/hooks/use-toast';
 import { useAssistantChat, ChatMessage, GlitchOutput, DriftOutput, GlitchItem, FutureVignette } from '@/hooks/useAssistantChat';
 import { cn } from '@/lib/utils';
 
@@ -304,6 +307,7 @@ export default function AssistantChatPanel({
   selectedTile,
 }: AssistantChatPanelProps) {
   const [input, setInput] = useState('');
+  const [isMaximized, setIsMaximized] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -350,10 +354,31 @@ export default function AssistantChatPanel({
     }
   };
 
+  const handleSaveFullConversation = () => {
+    if (messages.length < 2) {
+      toast({ description: "Have a conversation first before saving." });
+      return;
+    }
+    const fullConversation = messages.map(m => 
+      `${m.role === 'user' ? '💭 User' : '🧭 Assistant'}: ${m.content}`
+    ).join('\n\n---\n\n');
+    
+    onSaveAsPolen(fullConversation);
+    toast({ 
+      title: "💾 Full conversation saved",
+      description: "Your entire dialogue has been captured as a fragment." 
+    });
+  };
+
   if (!isOpen) return null;
 
   return (
-    <Card className="fixed bottom-20 right-6 w-[400px] h-[600px] max-h-[80vh] flex flex-col shadow-2xl z-50 animate-in slide-in-from-bottom-4 fade-in duration-300">
+    <Card className={cn(
+      "fixed flex flex-col shadow-2xl z-50 animate-in slide-in-from-bottom-4 fade-in duration-300 transition-all",
+      isMaximized 
+        ? "bottom-4 right-4 w-[600px] h-[85vh]" 
+        : "bottom-20 right-6 w-[400px] h-[600px] max-h-[80vh]"
+    )}>
       {/* Header */}
       <div className="flex items-center justify-between p-3 border-b">
         <div className="flex items-center gap-2">
@@ -373,6 +398,14 @@ export default function AssistantChatPanel({
           )}
         </div>
         <div className="flex items-center gap-1">
+          {messages.length >= 2 && (
+            <Button size="icon" variant="ghost" className="h-7 w-7" onClick={handleSaveFullConversation} title="Save full conversation">
+              <Save className="h-3.5 w-3.5" />
+            </Button>
+          )}
+          <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => setIsMaximized(!isMaximized)} title={isMaximized ? "Minimize" : "Maximize"}>
+            {isMaximized ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+          </Button>
           <Button size="icon" variant="ghost" className="h-7 w-7" onClick={clearChat}>
             <Trash2 className="h-3.5 w-3.5" />
           </Button>
@@ -457,7 +490,10 @@ export default function AssistantChatPanel({
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Share tensions, ideas, or futures..."
-            className="min-h-[60px] max-h-[120px] resize-none text-sm"
+            className={cn(
+              "resize-y text-sm",
+              isMaximized ? "min-h-[80px] max-h-[200px]" : "min-h-[60px] max-h-[120px]"
+            )}
           />
           <Button 
             size="icon" 
