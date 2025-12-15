@@ -2,8 +2,8 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Link2, Wand2, Moon, BookOpen, ScrollText, Focus, Bot } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Wand2, Moon, BookOpen, ScrollText, Focus, Layers } from 'lucide-react';
 import { MinimalistTileCard } from '@/components/calm-magic/MinimalistTileCard';
 import { useState, useEffect, useRef } from 'react';
 import { getTileStage, getStageById } from '@/types/journal-expansion';
@@ -75,11 +75,10 @@ const TileDetailPanel = ({
   onEmotionalCheckin,
   emotionalCheckins = [],
   visitedTiles = new Set<number>(),
-  onOpenAssistant,
 }: TileDetailPanelProps) => {
   const [userInput, setUserInput] = useState('');
   const [conversationSaved, setConversationSaved] = useState(false);
-  const [activeTab, setActiveTab] = useState('chat');
+  const [showManifolds, setShowManifolds] = useState(false);
   const [showMeditationMode, setShowMeditationMode] = useState(false);
   const [highlightedTile, setHighlightedTile] = useState<number | null>(null);
   const [showFocusMode, setShowFocusMode] = useState(false);
@@ -160,6 +159,15 @@ const TileDetailPanel = ({
     const success = await saveConversationAsPolen();
     if (success) {
       setConversationSaved(true);
+      // Prompt user to try Focus Mode
+      toast.success('Fragment saved!', {
+        description: 'Ready to go deeper? Try Focus Mode for guided exploration.',
+        action: {
+          label: 'Focus Mode',
+          onClick: () => setShowFocusMode(true),
+        },
+        duration: 5000,
+      });
     }
   };
 
@@ -193,7 +201,7 @@ const TileDetailPanel = ({
   useEffect(() => {
     setConversationSaved(false);
     setUserInput('');
-    setActiveTab('chat');
+    setShowManifolds(false);
   }, [selectedTile.row, selectedTile.col]);
 
   return (
@@ -231,18 +239,6 @@ const TileDetailPanel = ({
           </div>
         </div>
         <div className="flex items-center gap-1">
-          {onOpenAssistant && (
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={onOpenAssistant}
-              className="gap-1"
-              title="Open AI Assistant"
-            >
-              <Bot className="w-3 h-3" />
-              Assistant
-            </Button>
-          )}
           <Button 
             variant="outline" 
             size="sm" 
@@ -259,282 +255,289 @@ const TileDetailPanel = ({
         </div>
       </div>
 
-      {/* Stage Context & Principles */}
-      {stageDefinition && (
-        <div className="px-4 py-2 bg-muted/30 border-b border-border/30 shrink-0">
-          <p className="text-[10px] text-muted-foreground mb-1">
-            <span className="font-medium">Stage Themes:</span> {stageDefinition.themes.slice(0, 4).join(' • ')}
-          </p>
-          <div className="flex flex-wrap gap-1">
-            {stagePrinciples.slice(0, 2).map(principle => (
-              <span 
-                key={principle.id}
-                className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary flex items-center gap-1"
-                title={principle.designCue}
-              >
-                <span>{principle.icon}</span>
-                {principle.name}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Expected Deliverable */}
+      {/* Expected Deliverable - Compact */}
       <div className="px-4 py-2 bg-primary/5 border-b border-border/30 shrink-0">
         <div className="flex items-center gap-2">
           <Sparkles className="w-3 h-3 text-primary" />
           <span className="text-xs text-muted-foreground">Expected:</span>
           <span className="text-xs font-medium text-primary">{tileContent?.deliverable || 'Tile insight'}</span>
         </div>
-        <p className="text-[10px] text-muted-foreground mt-1 flex items-center gap-1">
-          <Heart className="w-3 h-3" />
-          Contributes to: {tileStage === 'real-intelligence' ? 'Ontology & Concepts' : tileStage === 'knowledge-objects' ? 'Data Nodes & API' : 'Graphs & Processes'}
-        </p>
       </div>
 
-      {/* Emotional Check-in Section */}
-      {onEmotionalCheckin && (
-        <div className="border-b border-border/30 shrink-0">
-          <EmotionalCheckIn
-            tileId={tileId}
-            onCheckin={(feltState, axes, note) => onEmotionalCheckin(tileId, feltState, axes, note)}
-            previousCheckins={emotionalCheckins.filter(c => c.tile_id === tileId)}
-          />
-        </div>
-      )}
+      {/* Main Chat Area - Default Primary View */}
+      <div className="flex-1 flex flex-col min-h-0">
+        <ScrollArea className="flex-1">
+          <div className="px-4 py-3 space-y-3">
+            {/* Season Context */}
+            <div className="text-xs text-muted-foreground text-center py-2 border-b border-dashed border-border/50">
+              <span className="font-medium">{currentSeason}</span> season exploration
+            </div>
 
-      {/* Add-ons Tabs - Main scrollable area */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
-        <div className="px-2 pt-2 shrink-0">
-          <TabsList className="w-full grid grid-cols-6 h-8">
-            <TabsTrigger value="chat" className="text-xs gap-1">
-              <MessageCircle className="w-3 h-3" />
-              Chat
-            </TabsTrigger>
-            <TabsTrigger value="wild-guess" className="text-xs gap-1">
-              <Wand2 className="w-3 h-3" />
-              Wild
-            </TabsTrigger>
-            <TabsTrigger value="oracle" className="text-xs gap-1">
-              <BookOpen className="w-3 h-3" />
-              Oracle
-            </TabsTrigger>
-            <TabsTrigger value="journal" className="text-xs gap-1">
-              <ScrollText className="w-3 h-3" />
-              Journal
-            </TabsTrigger>
-            <TabsTrigger value="sketch" className="text-xs gap-1">
-              <Pencil className="w-3 h-3" />
-              Sketch
-            </TabsTrigger>
-            <TabsTrigger value="diagram" className="text-xs gap-1">
-              <GitBranch className="w-3 h-3" />
-              Diagram
-            </TabsTrigger>
-          </TabsList>
-        </div>
-
-        {/* Chat Tab */}
-        <TabsContent value="chat" className="flex-1 flex flex-col min-h-0 m-0 mt-0 data-[state=inactive]:hidden" forceMount>
-          <ScrollArea className="flex-1 max-h-[calc(100vh-450px)] min-h-[200px]">
-            <div className="px-4 py-3 space-y-3">
-              {/* Season Context */}
-              <div className="text-xs text-muted-foreground text-center py-2 border-b border-dashed border-border/50">
-                <span className="font-medium">{currentSeason}</span> season exploration
-              </div>
-
-              {/* Messages */}
-              {messages.map((message, index) => (
+            {/* Messages */}
+            {messages.map((message, index) => (
+              <div
+                key={index}
+                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
                 <div
-                  key={index}
-                  className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  className={`max-w-[85%] rounded-lg px-3 py-2 ${
+                    message.role === 'user'
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted border border-border/50'
+                  }`}
                 >
-                  <div
-                    className={`max-w-[85%] rounded-lg px-3 py-2 ${
-                      message.role === 'user'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted border border-border/50'
-                    }`}
-                  >
-                    {message.role === 'assistant' && (
-                      <div className="flex items-center gap-1 mb-1 text-[10px] text-muted-foreground">
-                        <MessageCircle className="w-3 h-3" />
-                        Guide
-                      </div>
-                    )}
-                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                  </div>
-                </div>
-              ))}
-
-              {/* Loading indicator */}
-              {isLoading && (
-                <div className="flex justify-start">
-                  <div className="bg-muted rounded-lg px-3 py-2 border border-border/50">
-                    <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
-                  </div>
-                </div>
-              )}
-
-              {/* Error message */}
-              {error && (
-                <div className="text-xs text-destructive text-center py-2">
-                  {error}
-                  <Button variant="ghost" size="sm" onClick={fetchInitialQuestion} className="ml-2">
-                    <RefreshCw className="w-3 h-3 mr-1" />
-                    Retry
-                  </Button>
-                </div>
-              )}
-              
-              {/* Scroll anchor */}
-              <div ref={messagesEndRef} />
-            </div>
-          </ScrollArea>
-
-          {/* Input Area */}
-          <div className="p-3 border-t border-border/50 bg-background/80 space-y-2 shrink-0">
-            <div className="flex gap-2">
-              {/* Voice button */}
-              {voiceSupported && (
-                <Button
-                  variant={isListening ? "default" : "ghost"}
-                  size="icon"
-                  onClick={handleVoiceToggle}
-                  disabled={!isAuthenticated}
-                  className={`shrink-0 h-[60px] w-10 ${isListening ? 'animate-pulse bg-destructive' : ''}`}
-                >
-                  {isListening ? (
-                    <MicOff className="w-4 h-4" />
-                  ) : (
-                    <Mic className="w-4 h-4" />
+                  {message.role === 'assistant' && (
+                    <div className="flex items-center gap-1 mb-1 text-[10px] text-muted-foreground">
+                      <MessageCircle className="w-3 h-3" />
+                      Guide
+                    </div>
                   )}
+                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                </div>
+              </div>
+            ))}
+
+            {/* Loading indicator */}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="bg-muted rounded-lg px-3 py-2 border border-border/50">
+                  <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                </div>
+              </div>
+            )}
+
+            {/* Error message */}
+            {error && (
+              <div className="text-xs text-destructive text-center py-2">
+                {error}
+                <Button variant="ghost" size="sm" onClick={fetchInitialQuestion} className="ml-2">
+                  <RefreshCw className="w-3 h-3 mr-1" />
+                  Retry
                 </Button>
-              )}
-              
-              <Textarea
-                value={userInput + (interimTranscript ? ` ${interimTranscript}` : '')}
-                onChange={(e) => setUserInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={isListening ? "Listening..." : "Share your thoughts..."}
-                className={`min-h-[60px] resize-none text-sm ${isListening ? 'border-destructive' : ''}`}
-                disabled={isLoading || !isAuthenticated}
-              />
-              <Button
-                size="icon"
-                onClick={handleSendResponse}
-                disabled={!userInput.trim() || isLoading || !isAuthenticated}
-                className="shrink-0 h-[60px] w-10"
-              >
-                {isLoading ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Send className="w-4 h-4" />
-                )}
-              </Button>
-            </div>
-
-            {/* Auth warning */}
-            {!isAuthenticated && (
-              <p className="text-xs text-muted-foreground flex items-center gap-1">
-                <LogIn className="w-3 h-3" />
-                Log in to engage with tiles
-              </p>
+              </div>
             )}
-
-            {/* Save conversation button */}
-            {messages.length >= 2 && isAuthenticated && (
-              <Button
-                variant={conversationSaved ? "secondary" : "outline"}
-                size="sm"
-                onClick={handleSaveConversation}
-                disabled={saving || conversationSaved}
-                className="w-full"
-              >
-                {saving ? (
-                  <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                ) : conversationSaved ? (
-                  <>✓ Saved as Polen</>
-                ) : (
-                  <>
-                    <Save className="w-3 h-3 mr-1" />
-                    Save conversation as Polen
-                  </>
-                )}
-              </Button>
-            )}
+            
+            {/* Scroll anchor */}
+            <div ref={messagesEndRef} />
           </div>
-        </TabsContent>
+        </ScrollArea>
 
-        {/* Wild Guess Tab - Cosmological Context & Resonance */}
-        <TabsContent value="wild-guess" className="flex-1 min-h-0 p-2 m-0">
-          <ScrollArea className="max-h-[calc(100vh-450px)] min-h-[200px]">
-            <div className="space-y-4 pb-4">
-              {/* Meditation Mode Button */}
-              {resonanceResult && resonanceResult.topMatches.length > 0 && (
-                <Button 
-                  variant="outline" 
-                  className="w-full gap-2"
-                  onClick={() => setShowMeditationMode(true)}
-                >
-                  <Moon className="w-4 h-4" />
-                  Enter Meditation Mode ({resonanceResult.topMatches.length} resonating tiles)
-                </Button>
-              )}
-              
-              <TzolkinResonancePanel 
-                season={currentSeason as 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS'}
-                onTileSelect={(id) => {
-                  const row = Math.floor((id - 1) / 8);
-                  const col = (id - 1) % 8;
-                  onNavigate(row, col);
-                }}
-              />
-              <CosmologicalContextTab 
-                tileId={tileId}
-                season={currentSeason as 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS'}
-                onDiagonalMove={(toRow, toCol) => onNavigate(toRow, toCol)}
-              />
-            </div>
-          </ScrollArea>
-        </TabsContent>
-
-        {/* Oracle Tab - Hexagram I Ching */}
-        <TabsContent value="oracle" className="flex-1 min-h-0 p-2 m-0">
-          <ScrollArea className="max-h-[calc(100vh-450px)] min-h-[200px]">
-            <HexagramOracle
-              currentTileId={tileId}
-              visitedTiles={visitedTiles}
-              emotionalState={emotionalCheckins.length > 0 ? {
-                feltState: emotionalCheckins[emotionalCheckins.length - 1]?.felt_state || 'flowing',
-                vitality: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.love || 50,
-                spaciousness: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.magic || 50,
-                wholeness: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.calm || 50,
-                openness: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.open || 50,
-                expansion: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.free || 50,
-              } : undefined}
+        {/* Input Area */}
+        <div className="p-3 border-t border-border/50 bg-background/80 space-y-2 shrink-0">
+          <div className="flex gap-2">
+            {/* Voice button */}
+            {voiceSupported && (
+              <Button
+                variant={isListening ? "default" : "ghost"}
+                size="icon"
+                onClick={handleVoiceToggle}
+                disabled={!isAuthenticated}
+                className={`shrink-0 h-[60px] w-10 ${isListening ? 'animate-pulse bg-destructive' : ''}`}
+              >
+                {isListening ? (
+                  <MicOff className="w-4 h-4" />
+                ) : (
+                  <Mic className="w-4 h-4" />
+                )}
+              </Button>
+            )}
+            
+            <Textarea
+              value={userInput + (interimTranscript ? ` ${interimTranscript}` : '')}
+              onChange={(e) => setUserInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={isListening ? "Listening..." : "Share your thoughts..."}
+              className={`min-h-[60px] resize-none text-sm ${isListening ? 'border-destructive' : ''}`}
+              disabled={isLoading || !isAuthenticated}
             />
-          </ScrollArea>
-        </TabsContent>
+            <Button
+              size="icon"
+              onClick={handleSendResponse}
+              disabled={!userInput.trim() || isLoading || !isAuthenticated}
+              className="shrink-0 h-[60px] w-10"
+            >
+              {isLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )}
+            </Button>
+          </div>
 
-        {/* Journal Tab - Hexagram Reading History */}
-        <TabsContent value="journal" className="flex-1 min-h-0 p-2 m-0">
-          <ScrollArea className="max-h-[calc(100vh-450px)] min-h-[200px]">
-            <HexagramJournal />
-          </ScrollArea>
-        </TabsContent>
+          {/* Auth warning */}
+          {!isAuthenticated && (
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
+              <LogIn className="w-3 h-3" />
+              Log in to engage with tiles
+            </p>
+          )}
 
-        {/* Sketch Tab */}
-        <TabsContent value="sketch" className="flex-1 min-h-0 p-2 m-0 overflow-auto">
-          <SketchPad onSave={handleSketchSave} />
-        </TabsContent>
+          {/* Save conversation button */}
+          {messages.length >= 2 && isAuthenticated && (
+            <Button
+              variant={conversationSaved ? "secondary" : "outline"}
+              size="sm"
+              onClick={handleSaveConversation}
+              disabled={saving || conversationSaved}
+              className="w-full"
+            >
+              {saving ? (
+                <Loader2 className="w-3 h-3 mr-1 animate-spin" />
+              ) : conversationSaved ? (
+                <>✓ Saved as Fragment</>
+              ) : (
+                <>
+                  <Save className="w-3 h-3 mr-1" />
+                  Save as Fragment
+                </>
+              )}
+            </Button>
+          )}
+        </div>
+      </div>
 
-        {/* Diagram Tab */}
-        <TabsContent value="diagram" className="flex-1 min-h-0 p-2 m-0 overflow-auto">
-          <DiagramBuilder onSave={handleDiagramSave} />
-        </TabsContent>
-      </Tabs>
+      {/* Manifolds Accordion - Collapsible Tools Section */}
+      <div className="border-t border-border/50 shrink-0">
+        <Button
+          variant="ghost"
+          className="w-full flex items-center justify-between p-3 h-auto"
+          onClick={() => setShowManifolds(!showManifolds)}
+        >
+          <div className="flex items-center gap-2">
+            <Layers className="w-4 h-4 text-primary" />
+            <span className="text-sm font-medium">Manifolds</span>
+            <span className="text-xs text-muted-foreground">(Tools & Exploration)</span>
+          </div>
+          <span className="text-xs text-muted-foreground">{showManifolds ? '▼' : '▶'}</span>
+        </Button>
+        
+        {showManifolds && (
+          <div className="px-2 pb-3">
+            <ScrollArea className="max-h-[300px]">
+              <Accordion type="single" collapsible className="w-full">
+                {/* Emotional Check-in */}
+                {onEmotionalCheckin && (
+                  <AccordionItem value="emotional">
+                    <AccordionTrigger className="text-sm py-2">
+                      <div className="flex items-center gap-2">
+                        <Heart className="w-4 h-4 text-rose-500" />
+                        Emotional Check-in
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <EmotionalCheckIn
+                        tileId={tileId}
+                        onCheckin={(feltState, axes, note) => onEmotionalCheckin(tileId, feltState, axes, note)}
+                        previousCheckins={emotionalCheckins.filter(c => c.tile_id === tileId)}
+                      />
+                    </AccordionContent>
+                  </AccordionItem>
+                )}
+
+                {/* Wild Guess - Cosmological */}
+                <AccordionItem value="wild-guess">
+                  <AccordionTrigger className="text-sm py-2">
+                    <div className="flex items-center gap-2">
+                      <Wand2 className="w-4 h-4 text-purple-500" />
+                      Wild Guess (Tzolkin)
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className="space-y-4">
+                      {resonanceResult && resonanceResult.topMatches.length > 0 && (
+                        <Button 
+                          variant="outline" 
+                          className="w-full gap-2"
+                          onClick={() => setShowMeditationMode(true)}
+                        >
+                          <Moon className="w-4 h-4" />
+                          Meditation Mode ({resonanceResult.topMatches.length} tiles)
+                        </Button>
+                      )}
+                      <TzolkinResonancePanel 
+                        season={currentSeason as 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS'}
+                        onTileSelect={(id) => {
+                          const row = Math.floor((id - 1) / 8);
+                          const col = (id - 1) % 8;
+                          onNavigate(row, col);
+                        }}
+                      />
+                      <CosmologicalContextTab 
+                        tileId={tileId}
+                        season={currentSeason as 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS'}
+                        onDiagonalMove={(toRow, toCol) => onNavigate(toRow, toCol)}
+                      />
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                {/* Oracle - I Ching */}
+                <AccordionItem value="oracle">
+                  <AccordionTrigger className="text-sm py-2">
+                    <div className="flex items-center gap-2">
+                      <BookOpen className="w-4 h-4 text-amber-500" />
+                      Oracle (I Ching)
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <HexagramOracle
+                      currentTileId={tileId}
+                      visitedTiles={visitedTiles}
+                      emotionalState={emotionalCheckins.length > 0 ? {
+                        feltState: emotionalCheckins[emotionalCheckins.length - 1]?.felt_state || 'flowing',
+                        vitality: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.love || 50,
+                        spaciousness: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.magic || 50,
+                        wholeness: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.calm || 50,
+                        openness: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.open || 50,
+                        expansion: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.free || 50,
+                      } : undefined}
+                    />
+                  </AccordionContent>
+                </AccordionItem>
+
+                {/* Journal - Hexagram History */}
+                <AccordionItem value="journal">
+                  <AccordionTrigger className="text-sm py-2">
+                    <div className="flex items-center gap-2">
+                      <ScrollText className="w-4 h-4 text-blue-500" />
+                      Journal (Readings)
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <HexagramJournal />
+                  </AccordionContent>
+                </AccordionItem>
+
+                {/* Sketch */}
+                <AccordionItem value="sketch">
+                  <AccordionTrigger className="text-sm py-2">
+                    <div className="flex items-center gap-2">
+                      <Pencil className="w-4 h-4 text-green-500" />
+                      Sketch
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <SketchPad onSave={handleSketchSave} />
+                  </AccordionContent>
+                </AccordionItem>
+
+                {/* Diagram */}
+                <AccordionItem value="diagram">
+                  <AccordionTrigger className="text-sm py-2">
+                    <div className="flex items-center gap-2">
+                      <GitBranch className="w-4 h-4 text-cyan-500" />
+                      Diagram
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <DiagramBuilder onSave={handleDiagramSave} />
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </ScrollArea>
+          </div>
+        )}
+      </div>
 
       {/* Navigation Buttons */}
       <div className="p-3 border-t border-border/50 bg-muted/30 shrink-0">
