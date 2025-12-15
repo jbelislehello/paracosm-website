@@ -631,12 +631,15 @@ const PrdGeneratorWizard = ({
                       layerFields.map(field => {
                         const value = content[field];
                         if (!value) return null;
+                        const displayValue = typeof value === 'string' 
+                          ? value 
+                          : JSON.stringify(value, null, 2);
                         return (
                           <div key={field} className="bg-muted/30 p-3 rounded-lg text-sm">
                             <p className="font-medium text-xs text-muted-foreground mb-1">
                               {FIELD_LABELS[field].label}
                             </p>
-                            <p className="whitespace-pre-wrap">{value}</p>
+                            <p className="whitespace-pre-wrap">{displayValue}</p>
                           </div>
                         );
                       })
