@@ -88,10 +88,11 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY not configured');
     }
 
-    // Build context from POLLEN entries
-    const polenContext = polenEntries.map(p => 
-      `- [Tile ${p.tile_id || 'free'}] ${p.content} ${p.tags.length ? `(tags: ${p.tags.join(', ')})` : ''}`
-    ).join('\n');
+    // Build context from POLLEN entries (truncate to keep prompts stable)
+    const polenContext = polenEntries.map(p => {
+      const snippet = (p.content || '').slice(0, 700);
+      return `- [Tile ${p.tile_id || 'free'}] ${snippet}${p.content && p.content.length > 700 ? '…' : ''} ${p.tags.length ? `(tags: ${p.tags.join(', ')})` : ''}`;
+    }).join('\n');
 
     const existingContext = existingContent 
       ? Object.entries(existingContent)
@@ -216,42 +217,48 @@ Return JSON with these exact keys:
 Integration time. What we learn flows back into POLLENS for the next cycle.`
     };
 
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${lovableApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: layerPrompts[layerNormalized] + '\n\nIMPORTANT: Return ONLY valid JSON object (no arrays at root level), no markdown code blocks, no extra text. Each value must be a string, not an array.' }
-        ],
-        max_tokens: 4096,
-      }),
-    });
+    const callGateway = async (userPrompt: string) => {
+      const resp = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${lovableApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash',
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt },
+          ],
+          // Ask the gateway to enforce a JSON object response when supported
+          response_format: { type: 'json_object' },
+          max_tokens: 4096,
+        }),
+      });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Lovable AI Gateway error:', errorText);
-      if (response.status === 429) {
-        throw new Error('Rate limit exceeded, please try again later');
+      if (!resp.ok) {
+        const errorText = await resp.text();
+        console.error('Lovable AI Gateway error:', errorText);
+        if (resp.status === 429) throw new Error('Rate limit exceeded, please try again later');
+        if (resp.status === 402) throw new Error('Payment required, please add credits to your Lovable workspace');
+        throw new Error('Failed to generate content');
       }
-      if (response.status === 402) {
-        throw new Error('Payment required, please add credits to your Lovable workspace');
+
+      const data = await resp.json();
+      const content = data?.choices?.[0]?.message?.content as string | undefined;
+      if (!content) {
+        console.error('AI gateway returned unexpected payload:', JSON.stringify(data)?.slice(0, 1200));
+        throw new Error('AI gateway returned an unexpected response');
       }
-      throw new Error('Failed to generate content');
-    }
+      return content;
+    };
 
-    const data = await response.json();
+    const basePrompt =
+      layerPrompts[layerNormalized] +
+      '\n\nIMPORTANT: Return ONLY a valid JSON object, no markdown code blocks, no extra text.' +
+      ' Each value must be a string (use \"\\n\" to format lists).';
 
-    if (!data?.choices?.[0]?.message?.content) {
-      console.error('AI gateway returned unexpected payload:', JSON.stringify(data)?.slice(0, 1200));
-      throw new Error('AI gateway returned an unexpected response');
-    }
-
-    const rawContent = data.choices[0].message.content as string;
+    let rawContent = await callGateway(basePrompt);
     
     // Clean up any markdown code blocks that might wrap the JSON - more robust regex
     let cleanedContent = rawContent.trim();
@@ -272,10 +279,33 @@ Integration time. What we learn flows back into POLLENS for the next cycle.`
     try {
       content = JSON.parse(cleanedContent);
     } catch (e) {
-      console.error('Failed to parse AI JSON. Raw (first 1500 chars):', rawContent.slice(0, 1500));
+      console.error('Failed to parse AI JSON (first attempt). Raw (first 1500 chars):', rawContent.slice(0, 1500));
       console.error('Cleaned content (first 500 chars):', cleanedContent.slice(0, 500));
       console.error('Parse error:', e);
-      throw new Error('AI returned invalid JSON - response may have been truncated');
+
+      // Retry once with a stronger instruction (models occasionally return truncated "{" responses)
+      rawContent = await callGateway(
+        basePrompt +
+          `\n\nYour last response was invalid or incomplete. Re-output the FULL JSON object for layer ${layerNormalized} with the exact keys. JSON only.`
+      );
+
+      cleanedContent = rawContent.trim();
+      cleanedContent = cleanedContent.replace(/^```(?:json)?\s*/i, '');
+      cleanedContent = cleanedContent.replace(/\s*```\s*$/i, '');
+      cleanedContent = cleanedContent.trim();
+
+      const rs = cleanedContent.indexOf('{');
+      const re = cleanedContent.lastIndexOf('}');
+      if (rs !== -1 && re !== -1 && re > rs) cleanedContent = cleanedContent.slice(rs, re + 1);
+
+      try {
+        content = JSON.parse(cleanedContent);
+      } catch (e2) {
+        console.error('Failed to parse AI JSON (retry). Raw (first 1500 chars):', rawContent.slice(0, 1500));
+        console.error('Cleaned content (first 500 chars):', cleanedContent.slice(0, 500));
+        console.error('Parse error:', e2);
+        throw new Error('AI returned invalid JSON');
+      }
     }
 
     if (typeof content === 'object' && content && 'error' in content && Object.keys(content).length === 1) {
