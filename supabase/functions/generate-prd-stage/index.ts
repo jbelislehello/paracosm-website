@@ -226,8 +226,9 @@ Integration time. What we learn flows back into POLLENS for the next cycle.`
         model: 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: layerPrompts[layerNormalized] + '\n\nIMPORTANT: Return ONLY valid JSON, no markdown code blocks.' }
+          { role: 'user', content: layerPrompts[layerNormalized] + '\n\nIMPORTANT: Return ONLY valid JSON object (no arrays at root level), no markdown code blocks, no extra text. Each value must be a string, not an array.' }
         ],
+        max_tokens: 4096,
       }),
     });
 
@@ -251,15 +252,30 @@ Integration time. What we learn flows back into POLLENS for the next cycle.`
     }
 
     const rawContent = data.choices[0].message.content as string;
-    // Clean up any markdown code blocks that might wrap the JSON
-    const cleanedContent = rawContent.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+    
+    // Clean up any markdown code blocks that might wrap the JSON - more robust regex
+    let cleanedContent = rawContent.trim();
+    // Remove opening ```json or ``` at start
+    cleanedContent = cleanedContent.replace(/^```(?:json)?\s*/i, '');
+    // Remove closing ``` at end
+    cleanedContent = cleanedContent.replace(/\s*```\s*$/i, '');
+    cleanedContent = cleanedContent.trim();
+    
+    // Try to find JSON object boundaries if there's extra text
+    const jsonStart = cleanedContent.indexOf('{');
+    const jsonEnd = cleanedContent.lastIndexOf('}');
+    if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+      cleanedContent = cleanedContent.slice(jsonStart, jsonEnd + 1);
+    }
 
     let content: Record<string, unknown>;
     try {
       content = JSON.parse(cleanedContent);
     } catch (e) {
-      console.error('Failed to parse AI JSON. Raw (first 1200 chars):', rawContent.slice(0, 1200));
-      throw new Error('AI returned invalid JSON');
+      console.error('Failed to parse AI JSON. Raw (first 1500 chars):', rawContent.slice(0, 1500));
+      console.error('Cleaned content (first 500 chars):', cleanedContent.slice(0, 500));
+      console.error('Parse error:', e);
+      throw new Error('AI returned invalid JSON - response may have been truncated');
     }
 
     if (typeof content === 'object' && content && 'error' in content && Object.keys(content).length === 1) {
