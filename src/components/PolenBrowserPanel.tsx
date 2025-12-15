@@ -13,6 +13,7 @@ import {
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics' | 'general';
 type FragmentType = 'text' | 'quote' | 'image' | 'voice' | 'screenshot' | 'link';
+type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 
 interface PolenEntry {
   id: string;
@@ -23,7 +24,16 @@ interface PolenEntry {
   tags: string[];
   created_at: string;
   source_reference: string | null;
+  season_context: string | null;
 }
+
+const SEASONS: { id: Season; name: string; color: string }[] = [
+  { id: 'POLLENS', name: 'Pollens', color: 'bg-rose-500' },
+  { id: 'NOEMS', name: 'Noems', color: 'bg-purple-500' },
+  { id: 'POEMS', name: 'Poems', color: 'bg-blue-500' },
+  { id: 'TOTEMS', name: 'Totems', color: 'bg-green-500' },
+  { id: 'ANTHEMS', name: 'Anthems', color: 'bg-amber-500' },
+];
 
 const COMPASS_OPTIONS: { id: CompassType; name: string; icon: React.ElementType; color: string }[] = [
   { id: 'narrative', name: 'Narrative', icon: BookOpen, color: 'bg-rose-500' },
@@ -69,6 +79,8 @@ const PolenBrowserPanel = ({ onClose, onTileClick }: PolenBrowserPanelProps) => 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCompass, setSelectedCompass] = useState<CompassType | null>(null);
   const [selectedFragmentType, setSelectedFragmentType] = useState<FragmentType | null>(null);
+  const [selectedSeason, setSelectedSeason] = useState<Season | null>(null);
+  const [selectedTileId, setSelectedTileId] = useState<number | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [recentlySyncedIds, setRecentlySyncedIds] = useState<Set<string>>(new Set());
   const [userId, setUserId] = useState<string | null>(null);
@@ -203,9 +215,12 @@ const PolenBrowserPanel = ({ onClose, onTileClick }: PolenBrowserPanelProps) => 
 
   // Filter entries
   const filteredEntries = polenEntries.filter(entry => {
-    // Search filter
-    if (searchQuery && !entry.content.toLowerCase().includes(searchQuery.toLowerCase())) {
-      return false;
+    // Search filter - now also searches tags
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      const contentMatch = entry.content.toLowerCase().includes(query);
+      const tagMatch = entry.tags.some(tag => tag.toLowerCase().includes(query));
+      if (!contentMatch && !tagMatch) return false;
     }
     // Compass filter (check tags)
     if (selectedCompass && !entry.tags.includes(selectedCompass)) {
@@ -213,6 +228,14 @@ const PolenBrowserPanel = ({ onClose, onTileClick }: PolenBrowserPanelProps) => 
     }
     // Fragment type filter
     if (selectedFragmentType && entry.fragment_type !== selectedFragmentType) {
+      return false;
+    }
+    // Season filter
+    if (selectedSeason && entry.season_context !== selectedSeason) {
+      return false;
+    }
+    // Tile filter
+    if (selectedTileId !== null && entry.tile_id !== selectedTileId) {
       return false;
     }
     return true;
@@ -236,13 +259,24 @@ const PolenBrowserPanel = ({ onClose, onTileClick }: PolenBrowserPanelProps) => 
     });
   });
 
+  // Get unique seasons used
+  const usedSeasons = new Set<string>();
+  polenEntries.forEach(entry => {
+    if (entry.season_context) usedSeasons.add(entry.season_context);
+  });
+
+  // Get unique tiles used
+  const usedTiles = [...new Set(polenEntries.filter(e => e.tile_id).map(e => e.tile_id!))].sort((a, b) => a - b);
+
   const clearFilters = () => {
     setSearchQuery('');
     setSelectedCompass(null);
     setSelectedFragmentType(null);
+    setSelectedSeason(null);
+    setSelectedTileId(null);
   };
 
-  const hasActiveFilters = searchQuery || selectedCompass || selectedFragmentType;
+  const hasActiveFilters = searchQuery || selectedCompass || selectedFragmentType || selectedSeason || selectedTileId !== null;
 
   if (!isAuthenticated) {
     return (
@@ -345,6 +379,53 @@ const PolenBrowserPanel = ({ onClose, onTileClick }: PolenBrowserPanelProps) => 
             );
           })}
         </div>
+
+        {/* Season Filter */}
+        <div className="flex items-center gap-2 flex-wrap">
+          <Calendar className="w-4 h-4 text-muted-foreground" />
+          <span className="text-xs text-muted-foreground">Season:</span>
+          {SEASONS.map((season) => {
+            const isActive = selectedSeason === season.id;
+            const count = polenEntries.filter(e => e.season_context === season.id).length;
+            return (
+              <button
+                key={season.id}
+                onClick={() => setSelectedSeason(isActive ? null : season.id)}
+                disabled={count === 0 && !isActive}
+                className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs transition-all ${
+                  isActive
+                    ? `${season.color} text-white`
+                    : count > 0
+                      ? 'bg-muted hover:bg-muted/80'
+                      : 'bg-muted/50 opacity-50 cursor-not-allowed'
+                }`}
+              >
+                {season.name}
+                {count > 0 && <span className="text-[10px]">({count})</span>}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Tile Filter */}
+        {usedTiles.length > 0 && (
+          <div className="flex items-center gap-2 flex-wrap">
+            <MapPin className="w-4 h-4 text-muted-foreground" />
+            <span className="text-xs text-muted-foreground">Tile:</span>
+            <select
+              value={selectedTileId ?? ''}
+              onChange={(e) => setSelectedTileId(e.target.value ? Number(e.target.value) : null)}
+              className="px-2 py-1 rounded text-xs bg-muted border-0 focus:ring-1 focus:ring-primary"
+            >
+              <option value="">All tiles</option>
+              {usedTiles.map((tileId) => (
+                <option key={tileId} value={tileId}>
+                  {getTileLabel(tileId)} ({polenEntries.filter(e => e.tile_id === tileId).length})
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {hasActiveFilters && (
           <Button variant="ghost" size="sm" onClick={clearFilters} className="text-xs">
