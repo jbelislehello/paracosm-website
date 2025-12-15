@@ -1,11 +1,13 @@
-import React from 'react';
-import { Flower2, Lightbulb, BookOpen, Landmark, Music } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Flower2, Lightbulb, BookOpen, Landmark, Music, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getProjectSeasonProgress, Season } from '@/hooks/useSeasonPersistence';
+import { getProjectSeasonProgressAsync, SeasonPersistenceState, Season } from '@/hooks/useSeasonPersistence';
+import { supabase } from '@/integrations/supabase/client';
 
 interface SeasonProgressIndicatorProps {
   projectId: string;
   compact?: boolean;
+  showRecoveryHint?: boolean;
 }
 
 const SEASONS: Season[] = ['POLLENS', 'NOEMS', 'POEMS', 'TOTEMS', 'ANTHEMS'];
@@ -52,12 +54,50 @@ const TILES_PER_SEASON = 64;
 
 export const SeasonProgressIndicator: React.FC<SeasonProgressIndicatorProps> = ({ 
   projectId,
-  compact = false 
+  compact = false,
+  showRecoveryHint = false
 }) => {
-  const progress = getProjectSeasonProgress(projectId);
+  const [progress, setProgress] = useState<SeasonPersistenceState | null>(null);
+  const [polenCount, setPolenCount] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadProgress = async () => {
+      setIsLoading(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      const loadedProgress = await getProjectSeasonProgressAsync(projectId, user?.id);
+      setProgress(loadedProgress);
+      
+      // Also get POLEN count for this user
+      if (user?.id) {
+        const { count } = await supabase
+          .from('polen_entries')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id);
+        setPolenCount(count || 0);
+      }
+      
+      setIsLoading(false);
+    };
+    loadProgress();
+  }, [projectId]);
   
-  if (!progress) {
-    // No progress yet - show empty state
+  if (isLoading) {
+    return (
+      <div className="flex items-center gap-1">
+        <RefreshCw className="w-3 h-3 animate-spin text-muted-foreground" />
+        <span className="text-xs text-muted-foreground">Loading...</span>
+      </div>
+    );
+  }
+  
+  // Calculate total tiles from progress
+  const totalTiles = progress 
+    ? SEASONS.reduce((acc, season) => acc + (progress.seasonProgress[season]?.size || 0), 0)
+    : 0;
+  
+  if (!progress || totalTiles === 0) {
+    // No progress yet - show empty state with POLEN hint
     return (
       <div className="flex items-center gap-1">
         {SEASONS.map((season, idx) => (
@@ -73,17 +113,17 @@ export const SeasonProgressIndicator: React.FC<SeasonProgressIndicatorProps> = (
             )}
           </React.Fragment>
         ))}
-        <span className="ml-2 text-xs text-muted-foreground">Not started</span>
+        <span className="ml-2 text-xs text-muted-foreground">
+          {showRecoveryHint && polenCount > 0 
+            ? `${polenCount} fragments saved`
+            : 'Not started'
+          }
+        </span>
       </div>
     );
   }
 
   const { currentSeason, completedSeasons, seasonProgress } = progress;
-  
-  // Calculate overall progress
-  const totalTiles = SEASONS.reduce((acc, season) => {
-    return acc + (seasonProgress[season]?.size || 0);
-  }, 0);
   const totalPossible = SEASONS.length * TILES_PER_SEASON;
   const overallPercentage = Math.round((totalTiles / totalPossible) * 100);
 

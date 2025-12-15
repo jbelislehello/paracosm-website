@@ -486,7 +486,7 @@ const ProjectsDashboard: React.FC = () => {
                     
                     {/* Season Progress */}
                     <div className="pt-2 border-t border-border/50">
-                      <SeasonProgressIndicator projectId={project.id} compact />
+                      <SeasonProgressIndicator projectId={project.id} compact showRecoveryHint />
                     </div>
                     
                     <div className="text-xs text-muted-foreground">
