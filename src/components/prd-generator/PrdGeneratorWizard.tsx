@@ -186,7 +186,10 @@ const PrdGeneratorWizard = ({
   const { toast } = useToast();
 
   const hasAnyContent = LAYERS.some(layer => 
-    LAYER_FIELDS[layer].some(field => content[field]?.trim())
+    LAYER_FIELDS[layer].some(field => {
+      const value = content[field];
+      return typeof value === 'string' && value.trim();
+    })
   );
 
   // Progress calculations
@@ -194,12 +197,18 @@ const PrdGeneratorWizard = ({
     LAYER_FIELDS[layer].filter(f => !f.startsWith('stack_') && !f.startsWith('prompt_'))
   );
   const totalFields = contentFields.length;
-  const filledFields = contentFields.filter(field => content[field]?.trim()).length;
+  const filledFields = contentFields.filter(field => {
+    const value = content[field];
+    return typeof value === 'string' && value.trim();
+  }).length;
   const progressPercentage = totalFields > 0 ? Math.round((filledFields / totalFields) * 100) : 0;
 
   const layerProgress = LAYERS.map(layer => {
     const layerContentFields = LAYER_FIELDS[layer].filter(f => !f.startsWith('stack_') && !f.startsWith('prompt_'));
-    const filled = layerContentFields.filter(f => content[f]?.trim()).length;
+    const filled = layerContentFields.filter(f => {
+      const value = content[f];
+      return typeof value === 'string' && value.trim();
+    }).length;
     const total = layerContentFields.length;
     return { layer, filled, total, percentage: total > 0 ? Math.round((filled / total) * 100) : 0 };
   });
