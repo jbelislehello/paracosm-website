@@ -8,11 +8,20 @@ import AgentInteractionDemo from "@/components/AgentInteractionDemo";
 import ProductDevelopmentAssistant from "@/components/ProductDevelopmentAssistant";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
+import MobileSectionNav from "@/components/MobileSectionNav";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Bot, Brain, TrendingUp, Target, Cog, Compass, Zap, Heart, Users, Menu, X } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+
+const MOBILE_NAV_SECTIONS = [
+  { id: "hero", label: "Home" },
+  { id: "ai-leadership", label: "AI Leadership" },
+  { id: "living-prd", label: "Living PRD" },
+  { id: "relational", label: "Relational Innovation" },
+  { id: "contact", label: "Contact" },
+];
 
 const Index = () => {
   const [showAgentDemo, setShowAgentDemo] = useState(false);
@@ -138,9 +147,13 @@ const Index = () => {
         isOpen={showFrameworkPanel} 
         onOpenChange={setShowFrameworkPanel} 
       />
+      {/* Mobile Section Navigation Dots */}
+      <MobileSectionNav sections={MOBILE_NAV_SECTIONS} />
       
       {/* Hero Section - Paracosm Focus */}
-      <HeroSection onDiscoverFramework={handleDiscoverFramework} />
+      <section id="hero">
+        <HeroSection onDiscoverFramework={handleDiscoverFramework} />
+      </section>
       
       {/* AI Leadership Section */}
       <section id="ai-leadership" className="py-12 md:py-20 px-4 bg-gradient-to-r from-blue-50 via-purple-50 to-slate-50 dark:from-blue-950/20 dark:via-purple-950/20">
@@ -363,7 +376,7 @@ const Index = () => {
       </section>
 
       {/* Living PRD Section */}
-      <section className="py-12 md:py-16 px-4 bg-gradient-to-r from-blue-50 via-purple-50 to-rose-50 dark:from-blue-950/20 dark:via-purple-950/20 dark:to-rose-950/20">
+      <section id="living-prd" className="py-12 md:py-16 px-4 bg-gradient-to-r from-blue-50 via-purple-50 to-rose-50 dark:from-blue-950/20 dark:via-purple-950/20 dark:to-rose-950/20">
         <div className="container max-w-6xl mx-auto">
           <div className="text-center mb-8 md:mb-12">
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-rose-600">
@@ -420,7 +433,7 @@ const Index = () => {
       </section>
 
       {/* Relational Innovation Bridge Section */}
-      <section className="py-12 md:py-16 px-4 bg-gradient-to-r from-rose-50 to-purple-50 dark:from-rose-950/20 dark:to-purple-950/20">
+      <section id="relational" className="py-12 md:py-16 px-4 bg-gradient-to-r from-rose-50 to-purple-50 dark:from-rose-950/20 dark:to-purple-950/20">
         <div className="container max-w-6xl mx-auto text-center">
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-purple-600">
             Bridge to Relational Innovation
@@ -447,7 +460,9 @@ const Index = () => {
       </section>
       
       {/* Contact Section */}
-      <ContactSection />
+      <section id="contact">
+        <ContactSection />
+      </section>
       
       {/* Footer */}
       <Footer />
