@@ -4,11 +4,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { X, Send, Sparkles, ArrowRight, Loader2, Check, ArrowLeft, Maximize2, Minimize2, Save, MessageSquare } from 'lucide-react';
+import { X, Send, Sparkles, ArrowRight, Loader2, Check, ArrowLeft, Maximize2, Minimize2, Save, MessageSquare, GitBranch } from 'lucide-react';
 import { TILE_CONTENTS } from '@/data/tileContents';
 import { useAgentTileConversation } from '@/hooks/useAgentTileConversation';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
+import { BranchNavigator } from './BranchNavigator';
 
 interface MinimalistTileCardProps {
   selectedTile: { row: number; col: number };
@@ -59,9 +60,19 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
   const [isSaving, setIsSaving] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [showConversationHistory, setShowConversationHistory] = useState(false);
+  const [branchFromMessageId, setBranchFromMessageId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const { messages, isLoading, sendResponse, saveConversationAsPolen } = useAgentTileConversation(
+  const { 
+    messages, 
+    branches,
+    currentBranchId,
+    isLoading, 
+    sendResponse, 
+    saveConversationAsPolen,
+    createBranch,
+    switchBranch
+  } = useAgentTileConversation(
     selectedTile,
     currentSeason || 'POLLENS',
     true
@@ -95,6 +106,18 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
         variant: "destructive",
         description: "Failed to save conversation." 
       });
+    }
+  };
+
+  // Handle creating a branch from a specific message
+  const handleCreateBranch = (messageId: string) => {
+    const branchId = createBranch(messageId);
+    if (branchId) {
+      toast({ 
+        title: "🌿 Branch created",
+        description: "Explore a new path from this point." 
+      });
+      setBranchFromMessageId(null);
     }
   };
 
@@ -388,20 +411,29 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
         </div>
       </div>
 
-      {/* Conversation History Toggle */}
-      {messages.length > 1 && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setShowConversationHistory(!showConversationHistory)}
-          className="w-full gap-2 text-xs text-muted-foreground"
-        >
-          <MessageSquare className="w-3 h-3" />
-          {showConversationHistory ? 'Hide' : 'Show'} conversation ({messages.length} messages)
-        </Button>
-      )}
+      {/* Branch Navigator & Conversation History Toggle */}
+      <div className="flex items-center justify-between gap-2">
+        {branches.length > 1 && (
+          <BranchNavigator 
+            branches={branches}
+            currentBranchId={currentBranchId}
+            onSwitchBranch={switchBranch}
+          />
+        )}
+        {messages.length > 1 && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowConversationHistory(!showConversationHistory)}
+            className="gap-2 text-xs text-muted-foreground ml-auto"
+          >
+            <MessageSquare className="w-3 h-3" />
+            {showConversationHistory ? 'Hide' : 'Show'} ({messages.length})
+          </Button>
+        )}
+      </div>
 
-      {/* Expandable Conversation History */}
+      {/* Expandable Conversation History with Branch Points */}
       {showConversationHistory && messages.length > 0 && (
         <ScrollArea className={cn(
           "border rounded-lg bg-muted/20",
@@ -410,21 +442,35 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
           <div className="p-3 space-y-3">
             {messages.map((msg, idx) => (
               <div 
-                key={idx}
+                key={msg.id || idx}
                 className={cn(
-                  "flex gap-2 text-sm",
+                  "group flex gap-2 text-sm",
                   msg.role === 'user' ? "justify-end" : "justify-start"
                 )}
               >
                 <div className={cn(
-                  "max-w-[85%] rounded-lg px-3 py-2",
+                  "max-w-[85%] rounded-lg px-3 py-2 relative",
                   msg.role === 'user' 
                     ? "bg-primary text-primary-foreground" 
                     : "bg-muted"
                 )}>
-                  <span className="text-xs opacity-70 block mb-1">
-                    {msg.role === 'assistant' ? '🧭 Guide' : '💭 You'}
-                  </span>
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <span className="text-xs opacity-70">
+                      {msg.role === 'assistant' ? '🧭 Guide' : '💭 You'}
+                    </span>
+                    {/* Branch button on assistant messages */}
+                    {msg.role === 'assistant' && msg.id && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => handleCreateBranch(msg.id)}
+                        title="Create branch from here"
+                      >
+                        <GitBranch className="w-3 h-3" />
+                      </Button>
+                    )}
+                  </div>
                   <p className="whitespace-pre-wrap">{msg.content}</p>
                 </div>
               </div>
