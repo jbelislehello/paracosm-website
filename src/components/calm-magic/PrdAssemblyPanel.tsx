@@ -5,14 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
 import { 
   X, 
   FileText, 
-  ChevronDown, 
-  ChevronRight,
   Flower2,
   Lightbulb,
   PenTool,
@@ -29,7 +28,14 @@ import {
   Briefcase,
   Zap,
   Lock,
-  Copy
+  Copy,
+  Edit3,
+  ArrowLeft,
+  ArrowRight,
+  Shield,
+  CheckCircle2,
+  Circle,
+  AlertCircle
 } from 'lucide-react';
 import { downloadMarkdown, exportPrdAsPdf } from '@/utils/prdExport';
 import { toast } from 'sonner';
@@ -46,55 +52,134 @@ import { PrdEducationPanel } from './PrdEducationPanel';
 import { PrdDimensionalView } from './PrdDimensionalView';
 import CSuiteDashboard from './CSuiteDashboard';
 import CompilationTab from '@/components/prd-generator/CompilationTab';
+import PrdStageProgress from '@/components/prd-generator/PrdStageProgress';
+import StackFormation from '@/components/prd-generator/StackFormation';
+import { FeminineSafePRD } from '@/components/journal/FeminineSafePRD';
 import { useMode } from './context/ModeContext';
 import { useSubscription } from '@/hooks/useSubscription';
-import { hasFeatureAccess, PremiumFeature } from '@/data/subscriptionTiers';
+import { hasFeatureAccess } from '@/data/subscriptionTiers';
 import FeatureGate from '@/components/FeatureGate';
 import PremiumBadge from '@/components/PremiumBadge';
+import { PrdLayer } from '@/components/prd-generator/PrdStageProgress';
+import { PRD_STAGES, PrdStage } from '@/types/journal-expansion';
 
-// Human-readable field labels
-const FIELD_LABELS: Record<string, string> = {
-  love_signals_summary: 'Signals Summary',
-  love_decision_to_exist: 'Decision to Exist',
-  magic_storyworld: 'Storyworld',
-  magic_prd_outline: 'PRD Outline',
-  magic_hypotheses: 'Hypotheses',
-  magic_patterns: 'Patterns',
-  calm_requirements: 'Requirements',
-  calm_risks_and_limits: 'Risks & Limits',
-  open_ontology_and_graph: 'Ontology & Graph',
-  open_real_workflow: 'Real Workflow',
-  open_adjustment_plan: 'Adjustment Plan',
-  free_first_poem_description: 'First Poem Description',
-  free_totem_anthem: 'Totem Anthem',
-  free_success_criteria: 'Success Criteria',
-  free_next_cycle_hooks: 'Next Cycle Hooks',
+// Wizard-specific types and constants
+interface GeneratedContent {
+  pollens_observations?: string;
+  pollens_biases?: string;
+  pollens_cultural_issues?: string;
+  pollens_prd_shadows?: string;
+  pollens_constraints?: string;
+  pollens_stakes?: string;
+  noems_concepts?: string;
+  noems_shared_ideas?: string;
+  noems_intuitions?: string;
+  poems_narratives?: string;
+  poems_content_sources?: string;
+  poems_data_nodes?: string;
+  totems_processes?: string;
+  totems_maps?: string;
+  totems_three_graph?: string;
+  totems_semantic_notes?: string;
+  anthems_alignment?: string;
+  anthems_success_signals?: string;
+  anthems_guardrails?: string;
+  anthems_roadmap?: string;
+  anthems_feminine_quality?: string;
+  anthems_learning_cadence?: string;
+  stack_implications_pollens?: string;
+  stack_implications_noems?: string;
+  stack_implications_poems?: string;
+  stack_implications_totems?: string;
+  stack_implications_anthems?: string;
+  prompt_hooks_pollens?: string;
+  prompt_hooks_noems?: string;
+  prompt_hooks_poems?: string;
+  prompt_hooks_totems?: string;
+  prompt_hooks_anthems?: string;
+}
+
+const LAYER_FIELDS: Record<PrdLayer, (keyof GeneratedContent)[]> = {
+  POLLENS: ['pollens_observations', 'pollens_biases', 'pollens_cultural_issues', 'pollens_prd_shadows', 'pollens_constraints', 'pollens_stakes', 'stack_implications_pollens', 'prompt_hooks_pollens'],
+  NOEMS: ['noems_concepts', 'noems_shared_ideas', 'noems_intuitions', 'stack_implications_noems', 'prompt_hooks_noems'],
+  POEMS: ['poems_narratives', 'poems_content_sources', 'poems_data_nodes', 'stack_implications_poems', 'prompt_hooks_poems'],
+  TOTEMS: ['totems_processes', 'totems_maps', 'totems_three_graph', 'totems_semantic_notes', 'stack_implications_totems', 'prompt_hooks_totems'],
+  ANTHEMS: ['anthems_alignment', 'anthems_success_signals', 'anthems_guardrails', 'anthems_roadmap', 'anthems_feminine_quality', 'anthems_learning_cadence', 'stack_implications_anthems', 'prompt_hooks_anthems']
 };
-interface PrdAssemblyPanelProps {
-  isOpen: boolean;
-  onClose: () => void;
-  currentSeason: Season;
-  seasonProgress: Record<Season, Set<string>>;
-  completedSeasons: Season[];
-  prdId: string | null;
-  onGenerateLayer: (season: Season) => Promise<void>;
-}
 
-interface LayerData {
-  season: Season;
-  layerName: string;
-  fields: string[];
-  readiness: number;
-  isComplete: boolean;
-  content: Record<string, string | null>;
-}
+const WIZARD_FIELD_LABELS: Record<string, { label: string; description: string }> = {
+  pollens_observations: { label: 'Raw Observations & Glitches', description: 'Tensions, complaints, weird use cases, emotional texture' },
+  pollens_biases: { label: 'Biases Surfaced', description: 'Cognitive, cultural, institutional biases noticed' },
+  pollens_cultural_issues: { label: 'Cultural Issues', description: 'Systemic and cultural patterns' },
+  pollens_prd_shadows: { label: 'PRD Shadows', description: 'What the PRD might be hiding or avoiding' },
+  pollens_constraints: { label: 'Constraints', description: 'Legal, ethical, financial, technical barriers' },
+  pollens_stakes: { label: 'Stakes', description: 'What happens if nothing changes' },
+  noems_concepts: { label: 'Crystallized Concepts', description: 'Emerging concepts with maturity levels' },
+  noems_shared_ideas: { label: 'Shared Ideas', description: 'Ideas emerging from multiple tensions' },
+  noems_intuitions: { label: 'Intuitions', description: 'Gut feelings worth tracking' },
+  poems_narratives: { label: 'User Narratives', description: 'Before → during → after journeys' },
+  poems_content_sources: { label: 'Content Sources', description: 'What content/data powers narratives' },
+  poems_data_nodes: { label: 'Data Nodes', description: 'Key entities and relationships' },
+  totems_processes: { label: 'Processes & Flows', description: 'Service blueprints, what people touch' },
+  totems_maps: { label: 'Relationship Maps', description: 'Conceptual architecture, boundaries' },
+  totems_three_graph: { label: 'Three Graph Model', description: 'Subject, Lexical, Domain graphs' },
+  totems_semantic_notes: { label: 'Semantic Notes', description: 'RDF/OWL patterns emerging' },
+  anthems_alignment: { label: 'Strategic Alignment', description: 'How this supports the larger story' },
+  anthems_success_signals: { label: 'Success Signals', description: 'Qualitative and quantitative indicators' },
+  anthems_guardrails: { label: 'Guardrails', description: 'Ethics, compliance, social impact' },
+  anthems_roadmap: { label: 'Roadmap', description: 'Now/next/later with owners' },
+  anthems_feminine_quality: { label: 'Feminine Quality Review', description: 'Which principles honored/at risk' },
+  anthems_learning_cadence: { label: 'Learning Cadence', description: 'How we build in Drift time' },
+  stack_implications_pollens: { label: '🔧 Stack Implications', description: 'Constraints, integrations, latency requirements' },
+  stack_implications_noems: { label: '🔧 Stack Implications', description: 'Data types, capabilities, candidate components' },
+  stack_implications_poems: { label: '🔧 Stack Implications', description: 'UX surface, adapters, session model' },
+  stack_implications_totems: { label: '🔧 Stack Implications', description: 'Logging, access control, monitoring' },
+  stack_implications_anthems: { label: '🔧 Stack Implications', description: 'MVP vs V2/V3, cost tradeoffs, licensing' },
+  prompt_hooks_pollens: { label: '🤖 Prompt Hooks', description: 'Purpose, vibe, user archetypes' },
+  prompt_hooks_noems: { label: '🤖 Prompt Hooks', description: 'Ontology, entities, relationships' },
+  prompt_hooks_poems: { label: '🤖 Prompt Hooks', description: 'Canonical flows, error states, guardrails' },
+  prompt_hooks_totems: { label: '🤖 Prompt Hooks', description: 'Rules, never/always constraints' },
+  prompt_hooks_anthems: { label: '🤖 Prompt Hooks', description: 'Phase capabilities, feature flags' }
+};
 
-const SEASON_ICONS: Record<Season, React.ReactNode> = {
-  POLLENS: <Flower2 className="h-4 w-4" />,
-  NOEMS: <Lightbulb className="h-4 w-4" />,
-  POEMS: <PenTool className="h-4 w-4" />,
-  TOTEMS: <Gem className="h-4 w-4" />,
-  ANTHEMS: <Music className="h-4 w-4" />,
+const LAYER_CHECKLIST: Record<PrdLayer, { label: string; check: (content: GeneratedContent) => boolean }[]> = {
+  POLLENS: [
+    { label: '5–15 tensions/glitches captured', check: (c) => (c.pollens_observations?.length || 0) > 100 },
+    { label: 'Biases and shadows surfaced', check: (c) => !!(c.pollens_biases || c.pollens_prd_shadows) }
+  ],
+  NOEMS: [
+    { label: 'Concepts crystallized with maturity', check: (c) => (c.noems_concepts?.length || 0) > 50 },
+    { label: 'Intuitions captured', check: (c) => !!(c.noems_intuitions) }
+  ],
+  POEMS: [
+    { label: '1–3 narrative arcs described', check: (c) => (c.poems_narratives?.length || 0) > 100 },
+    { label: 'Data nodes identified', check: (c) => !!(c.poems_data_nodes) }
+  ],
+  TOTEMS: [
+    { label: 'Processes mapped', check: (c) => (c.totems_processes?.length || 0) > 50 },
+    { label: 'Three Graph Model hints', check: (c) => (c.totems_three_graph?.length || 0) > 30 }
+  ],
+  ANTHEMS: [
+    { label: 'Success signals defined', check: (c) => (c.anthems_success_signals?.length || 0) > 50 },
+    { label: 'Guardrails defined', check: (c) => (c.anthems_guardrails?.length || 0) > 50 },
+    { label: 'Feminine quality reviewed', check: (c) => (c.anthems_feminine_quality?.length || 0) > 30 }
+  ]
+};
+
+const LAYERS: PrdLayer[] = ['POLLENS', 'NOEMS', 'POEMS', 'TOTEMS', 'ANTHEMS'];
+
+const LAYER_ICONS: Record<PrdLayer, React.ElementType> = {
+  POLLENS: Flower2,
+  NOEMS: Lightbulb,
+  POEMS: PenTool,
+  TOTEMS: Gem,
+  ANTHEMS: Music
+};
+
+const getStageForLayer = (layer: PrdLayer): PrdStage => {
+  if (layer === 'POLLENS' || layer === 'NOEMS') return 'real-intelligence';
+  if (layer === 'POEMS') return 'knowledge-objects';
+  return 'understanding';
 };
 
 const SEASON_COLORS: Record<Season, string> = {
@@ -104,6 +189,24 @@ const SEASON_COLORS: Record<Season, string> = {
   TOTEMS: 'bg-chart-4/10 border-chart-4/30 text-chart-4',
   ANTHEMS: 'bg-chart-5/10 border-chart-5/30 text-chart-5',
 };
+
+const SEASON_ICONS: Record<Season, React.ReactNode> = {
+  POLLENS: <Flower2 className="h-4 w-4" />,
+  NOEMS: <Lightbulb className="h-4 w-4" />,
+  POEMS: <PenTool className="h-4 w-4" />,
+  TOTEMS: <Gem className="h-4 w-4" />,
+  ANTHEMS: <Music className="h-4 w-4" />,
+};
+
+interface PrdAssemblyPanelProps {
+  isOpen: boolean;
+  onClose: () => void;
+  currentSeason: Season;
+  seasonProgress: Record<Season, Set<string>>;
+  completedSeasons: Season[];
+  prdId: string | null;
+  onGenerateLayer: (season: Season) => Promise<void>;
+}
 
 export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   isOpen,
@@ -117,13 +220,20 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   const navigate = useNavigate();
   const { mode } = useMode();
   const [prdData, setPrdData] = useState<Record<string, any> | null>(null);
-  const [polenCounts, setPolenCounts] = useState<Record<Season, number>>({} as Record<Season, number>);
+  const [polenEntries, setPolenEntries] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [expandedLayers, setExpandedLayers] = useState<Set<Season>>(new Set([currentSeason]));
-  const [generatingLayer, setGeneratingLayer] = useState<Season | null>(null);
   const [activeTab, setActiveTab] = useState<'layers' | 'dimensions' | 'csuite' | 'compilation'>('layers');
   const [showFullPreview, setShowFullPreview] = useState(false);
-  const [isGeneratingAll, setIsGeneratingAll] = useState(false);
+  
+  // Wizard state
+  const [currentLayer, setCurrentLayer] = useState<PrdLayer>(currentSeason as PrdLayer);
+  const [completedLayers, setCompletedLayers] = useState<PrdLayer[]>([]);
+  const [generatingLayer, setGeneratingLayer] = useState<PrdLayer | null>(null);
+  const [content, setContent] = useState<GeneratedContent>({});
+  const [editingField, setEditingField] = useState<string | null>(null);
+  const [showQualityReview, setShowQualityReview] = useState(false);
+  const [title, setTitle] = useState(`Calm Magic PRD — ${new Date().toLocaleDateString()}`);
+  const [saving, setSaving] = useState(false);
   
   const { tier } = useSubscription();
   const canAccessCSuite = hasFeatureAccess(tier, 'csuite_dashboard');
@@ -132,14 +242,66 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   
   const isPersonal = mode === 'personal';
   const documentName = isPersonal ? 'RRD' : 'PRD';
-  const documentFullName = isPersonal ? 'Relational Requirements Document' : 'Product Requirements Document';
 
   useEffect(() => {
     if (isOpen) {
       fetchPrdData();
-      fetchPolenCounts();
+      fetchPolenEntries();
     }
   }, [isOpen, prdId]);
+
+  // Update title from prdData
+  useEffect(() => {
+    if (prdData?.title) {
+      setTitle(prdData.title);
+    }
+  }, [prdData]);
+
+  // Map PRD data to wizard content format
+  useEffect(() => {
+    if (prdData) {
+      const mapped: GeneratedContent = {
+        pollens_observations: prdData.love_signals_summary || '',
+        pollens_biases: '',
+        pollens_prd_shadows: '',
+        pollens_stakes: prdData.love_decision_to_exist || '',
+        noems_concepts: prdData.magic_prd_outline || '',
+        noems_shared_ideas: prdData.magic_hypotheses || '',
+        noems_intuitions: prdData.magic_patterns || '',
+        poems_narratives: prdData.magic_storyworld || '',
+        poems_content_sources: prdData.open_real_workflow || '',
+        poems_data_nodes: '',
+        totems_processes: prdData.calm_requirements || '',
+        totems_maps: prdData.open_ontology_and_graph || '',
+        totems_three_graph: '',
+        totems_semantic_notes: prdData.calm_risks_and_limits || '',
+        anthems_alignment: prdData.free_totem_anthem || '',
+        anthems_success_signals: prdData.free_success_criteria || '',
+        anthems_guardrails: prdData.open_adjustment_plan || '',
+        anthems_roadmap: prdData.free_first_poem_description || '',
+        anthems_learning_cadence: prdData.free_next_cycle_hooks || '',
+        stack_implications_pollens: prdData.stack_implications_pollens || '',
+        stack_implications_noems: prdData.stack_implications_noems || '',
+        stack_implications_poems: prdData.stack_implications_poems || '',
+        stack_implications_totems: prdData.stack_implications_totems || '',
+        stack_implications_anthems: prdData.stack_implications_anthems || '',
+        prompt_hooks_pollens: prdData.prompt_hooks_pollens || '',
+        prompt_hooks_noems: prdData.prompt_hooks_noems || '',
+        prompt_hooks_poems: prdData.prompt_hooks_poems || '',
+        prompt_hooks_totems: prdData.prompt_hooks_totems || '',
+        prompt_hooks_anthems: prdData.prompt_hooks_anthems || '',
+      };
+      setContent(mapped);
+      
+      // Mark layers with content as completed
+      const completed: PrdLayer[] = [];
+      LAYERS.forEach(layer => {
+        const hasContent = LAYER_FIELDS[layer].some(f => mapped[f] && String(mapped[f]).trim().length > 0);
+        if (hasContent) completed.push(layer);
+      });
+      setCompletedLayers(completed);
+    }
+  }, [prdData]);
 
   const fetchPrdData = async () => {
     if (!prdId) {
@@ -164,478 +326,499 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
     }
   };
 
-  const fetchPolenCounts = async () => {
+  const fetchPolenEntries = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
       const { data, error } = await supabase
         .from('polen_entries')
-        .select('season_context, tags')
-        .eq('user_id', user.id);
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setPolenEntries(data || []);
+    } catch (err) {
+      console.error('Failed to fetch polen entries:', err);
+    }
+  };
+
+  // Wizard navigation helpers
+  const currentIndex = LAYERS.indexOf(currentLayer);
+  const isFirstLayer = currentIndex === 0;
+  const isLastLayer = currentIndex === LAYERS.length - 1;
+  const CurrentIcon = LAYER_ICONS[currentLayer];
+  const currentStage = getStageForLayer(currentLayer);
+
+  const layerHasContent = () => {
+    const fields = LAYER_FIELDS[currentLayer];
+    return fields.some(field => content[field] && String(content[field]).trim().length > 0);
+  };
+
+  // Generate content for current layer
+  const generateLayerContent = async () => {
+    setGeneratingLayer(currentLayer);
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-prd-stage', {
+        body: {
+          layer: currentLayer,
+          polenEntries: polenEntries.map(p => ({
+            content: p.content,
+            tile_id: p.tile_id,
+            tags: p.tags
+          })),
+          board: currentLayer,
+          existingContent: content
+        }
+      });
 
       if (error) throw error;
 
-      const counts: Record<Season, number> = {
-        POLLENS: 0,
-        NOEMS: 0,
-        POEMS: 0,
-        TOTEMS: 0,
-        ANTHEMS: 0,
+      setContent(prev => ({ ...prev, ...data.content }));
+      toast.success(`${currentLayer} layer content generated`);
+    } catch (error) {
+      console.error('Generation error:', error);
+      toast.error('Could not generate content. Please try again.');
+    } finally {
+      setGeneratingLayer(null);
+    }
+  };
+
+  const handleNext = () => {
+    if (!layerHasContent()) {
+      toast.error('Please generate or add content before proceeding');
+      return;
+    }
+    if (!completedLayers.includes(currentLayer)) {
+      setCompletedLayers(prev => [...prev, currentLayer]);
+    }
+    if (!isLastLayer) {
+      setCurrentLayer(LAYERS[currentIndex + 1]);
+    }
+  };
+
+  const handleBack = () => {
+    if (!isFirstLayer) {
+      setCurrentLayer(LAYERS[currentIndex - 1]);
+    }
+  };
+
+  const updateField = (field: keyof GeneratedContent, value: string) => {
+    setContent(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSavePrd = async () => {
+    setSaving(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      const prdPayload = {
+        owner_id: user.id,
+        title,
+        status: 'draft',
+        prototype_stage: 'B_DIEGETIC',
+        love_signals_summary: content.pollens_observations,
+        love_decision_to_exist: `Biases: ${content.pollens_biases || ''}\n\nShadows: ${content.pollens_prd_shadows || ''}\n\nStakes: ${content.pollens_stakes || ''}`,
+        magic_storyworld: content.poems_narratives,
+        magic_prd_outline: content.noems_concepts,
+        magic_hypotheses: content.noems_shared_ideas,
+        magic_patterns: content.noems_intuitions,
+        calm_requirements: content.totems_processes,
+        calm_risks_and_limits: `Three Graph: ${content.totems_three_graph || ''}\n\nSemantic: ${content.totems_semantic_notes || ''}`,
+        open_ontology_and_graph: content.totems_maps,
+        open_real_workflow: content.poems_content_sources,
+        open_adjustment_plan: content.anthems_guardrails,
+        free_first_poem_description: content.anthems_roadmap,
+        free_totem_anthem: content.anthems_alignment,
+        free_success_criteria: content.anthems_success_signals,
+        free_next_cycle_hooks: content.anthems_learning_cadence,
+        stack_implications_pollens: content.stack_implications_pollens,
+        stack_implications_noems: content.stack_implications_noems,
+        stack_implications_poems: content.stack_implications_poems,
+        stack_implications_totems: content.stack_implications_totems,
+        stack_implications_anthems: content.stack_implications_anthems,
+        prompt_hooks_pollens: content.prompt_hooks_pollens,
+        prompt_hooks_noems: content.prompt_hooks_noems,
+        prompt_hooks_poems: content.prompt_hooks_poems,
+        prompt_hooks_totems: content.prompt_hooks_totems,
+        prompt_hooks_anthems: content.prompt_hooks_anthems,
       };
 
-      data?.forEach(entry => {
-        const season = entry.season_context as Season || 
-          entry.tags?.find((t: string) => SEASON_ORDER.includes(t as Season)) as Season;
-        if (season && counts[season] !== undefined) {
-          counts[season]++;
-        }
-      });
-
-      setPolenCounts(counts);
-    } catch (err) {
-      console.error('Failed to fetch polen counts:', err);
-    }
-  };
-
-  const handleGenerateLayer = async (season: Season) => {
-    setGeneratingLayer(season);
-    try {
-      await onGenerateLayer(season);
-      await fetchPrdData();
-      toast.success(`${SEASON_LABELS[season]} layer generated!`);
-    } catch (err) {
-      toast.error('Failed to generate layer');
-    } finally {
-      setGeneratingLayer(null);
-    }
-  };
-
-  const handleGenerateAllLayers = async () => {
-    setIsGeneratingAll(true);
-    let successCount = 0;
-    
-    try {
-      for (const season of SEASON_ORDER) {
-        const tilesVisited = seasonProgress[season]?.size || 0;
-        if (tilesVisited >= 8) {
-          setGeneratingLayer(season);
-          try {
-            await onGenerateLayer(season);
-            successCount++;
-          } catch (err) {
-            console.error(`Failed to generate ${season}:`, err);
-          }
-        }
+      if (prdId) {
+        await supabase.from('prds').update(prdPayload).eq('id', prdId);
+        toast.success('PRD updated successfully');
+      } else {
+        const { data: newPrd, error } = await supabase
+          .from('prds')
+          .insert(prdPayload as any)
+          .select()
+          .single();
+        if (error) throw error;
+        toast.success('Calm Magic PRD Created!');
       }
       
       await fetchPrdData();
-      
-      if (successCount > 0) {
-        toast.success(`Generated ${successCount} PRD layer${successCount > 1 ? 's' : ''}!`);
-      } else {
-        toast.info('Visit more tiles to unlock PRD generation');
-      }
+    } catch (error) {
+      console.error('Save error:', error);
+      toast.error('Could not save PRD. Please try again.');
     } finally {
-      setGeneratingLayer(null);
-      setIsGeneratingAll(false);
+      setSaving(false);
     }
   };
 
-  const toggleLayer = (season: Season) => {
-    setExpandedLayers(prev => {
-      const next = new Set(prev);
-      if (next.has(season)) {
-        next.delete(season);
-      } else {
-        next.add(season);
-      }
-      return next;
-    });
-  };
+  // Progress calculations
+  const contentFields = LAYERS.flatMap(layer => 
+    LAYER_FIELDS[layer].filter(f => !f.startsWith('stack_') && !f.startsWith('prompt_'))
+  );
+  const totalFields = contentFields.length;
+  const filledFields = contentFields.filter(field => {
+    const value = content[field];
+    return typeof value === 'string' && value.trim();
+  }).length;
+  const progressPercentage = totalFields > 0 ? Math.round((filledFields / totalFields) * 100) : 0;
 
-  const getLayerData = (season: Season): LayerData => {
-    const layerName = SEASON_PRD_LAYER[season];
-    const fields = PRD_LAYER_FIELDS[layerName] || [];
-    const tilesVisited = seasonProgress[season]?.size || 0;
-    const polenCount = polenCounts[season] || 0;
-    const isComplete = completedSeasons.includes(season);
-    const readiness = getLayerReadiness(season, tilesVisited, polenCount, isComplete);
+  const checklistItems = LAYER_CHECKLIST[currentLayer];
 
-    const content: Record<string, string | null> = {};
-    fields.forEach(field => {
-      content[field] = prdData?.[field] || null;
-    });
-
-    return {
-      season,
-      layerName,
-      fields,
-      readiness,
-      isComplete,
-      content,
-    };
-  };
-
-  const hasContent = (layer: LayerData): boolean => {
-    return Object.values(layer.content).some(v => v && v.trim().length > 0);
-  };
-
-  // Calculate overall progress
-  const progressStats = useMemo(() => {
-    let totalFields = 0;
-    let filledFields = 0;
-    const layerProgress: { season: Season; filled: number; total: number; percentage: number }[] = [];
-
-    SEASON_ORDER.forEach(season => {
-      const layerName = SEASON_PRD_LAYER[season];
-      const fields = PRD_LAYER_FIELDS[layerName] || [];
-      const filled = fields.filter(f => prdData?.[f] && String(prdData[f]).trim().length > 0).length;
-      
-      totalFields += fields.length;
-      filledFields += filled;
-      
-      layerProgress.push({
-        season,
-        filled,
-        total: fields.length,
-        percentage: fields.length > 0 ? Math.round((filled / fields.length) * 100) : 0
-      });
-    });
-
-    const overallPercentage = totalFields > 0 ? Math.round((filledFields / totalFields) * 100) : 0;
-    const completedLayerCount = layerProgress.filter(l => l.percentage === 100).length;
-
-    return { totalFields, filledFields, overallPercentage, layerProgress, completedLayerCount };
-  }, [prdData]);
-
-  // Copy preview as markdown
   const handleCopyPreview = () => {
-    if (!prdData) return;
-
-    let markdown = `# ${prdData.title || 'Untitled'} - ${documentName}\n\n`;
-    markdown += `**Progress:** ${progressStats.filledFields}/${progressStats.totalFields} fields (${progressStats.overallPercentage}%)\n\n`;
-    markdown += `---\n\n`;
-
-    SEASON_ORDER.forEach(season => {
-      const layerName = SEASON_PRD_LAYER[season];
-      const fields = PRD_LAYER_FIELDS[layerName] || [];
-      const layerStat = progressStats.layerProgress.find(l => l.season === season);
+    const markdown = LAYERS.map(layer => {
+      const layerContent = LAYER_FIELDS[layer]
+        .filter(field => content[field])
+        .map(field => `### ${WIZARD_FIELD_LABELS[field]?.label || field}\n${content[field]}`)
+        .join('\n\n');
       
-      markdown += `## ${SEASON_LABELS[season]} (${layerName}) - ${layerStat?.percentage || 0}%\n\n`;
-      
-      fields.forEach(field => {
-        const value = prdData[field];
-        const label = FIELD_LABELS[field] || field.replace(/_/g, ' ');
-        markdown += `### ${label}\n`;
-        markdown += value ? `${value}\n\n` : `*Not generated yet*\n\n`;
-      });
-    });
+      return layerContent ? `## ${layer}\n\n${layerContent}` : `## ${layer}\n\n*Not generated yet*`;
+    }).join('\n\n---\n\n');
 
-    navigator.clipboard.writeText(markdown);
-    toast.success('PRD copied to clipboard');
+    navigator.clipboard.writeText(`# ${title}\n\n${markdown}`);
+    toast.success(`${documentName} copied to clipboard`);
   };
+
+  // Get filtered Polen for current layer
+  const currentLayerPolen = polenEntries.filter(p => 
+    p.season_context === currentLayer || p.tags?.includes(currentLayer)
+  );
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
-      <div className="fixed inset-y-0 right-0 w-full max-w-2xl bg-background border-l border-border shadow-2xl flex flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-border shrink-0">
-          <div className="flex items-center gap-3">
-            <FileText className="h-5 w-5 text-primary" />
-            <div>
-              <h2 className="text-lg font-semibold">Living {documentName} Assembly</h2>
-              <p className="text-xs text-muted-foreground">
-                The {documentName} is an organism, not a document
-              </p>
-            </div>
+    <div className="h-full flex flex-col bg-background rounded-lg border border-border shadow-lg overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between p-4 border-b border-border shrink-0">
+        <div className="flex items-center gap-3">
+          <FileText className="h-5 w-5 text-primary" />
+          <div>
+            <h2 className="text-lg font-semibold">Living {documentName} Assembly</h2>
+            <p className="text-xs text-muted-foreground">
+              {completedLayers.length}/{LAYERS.length} layers • {progressPercentage}% complete
+            </p>
           </div>
-          <div className="flex items-center gap-2">
-            <Button 
-              variant="default" 
-              size="sm"
-              onClick={handleGenerateAllLayers}
-              disabled={isGeneratingAll || progressStats.overallPercentage === 100}
-            >
-              {isGeneratingAll ? (
-                <Loader2 className="h-3.5 w-3.5 mr-1 animate-spin" />
-              ) : (
-                <Sparkles className="h-3.5 w-3.5 mr-1" />
-              )}
-              {isGeneratingAll ? 'Generating...' : 'Generate PRD'}
-            </Button>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => setShowFullPreview(true)}
+            disabled={filledFields === 0}
+          >
+            <Eye className="h-3.5 w-3.5 mr-1" />
+            Preview
+          </Button>
+          {prdId && (
             <Button 
               variant="outline" 
               size="sm"
-              onClick={() => setShowFullPreview(true)}
-              disabled={!prdData}
+              onClick={() => navigate(`/prds/${prdId}`)}
             >
-              <Eye className="h-3.5 w-3.5 mr-1" />
-              Preview
+              <ExternalLink className="h-3.5 w-3.5 mr-1" />
+              Editor
             </Button>
-            {prdId && (
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => navigate(`/prds/${prdId}`)}
-              >
-                <ExternalLink className="h-3.5 w-3.5 mr-1" />
-                Open Editor
-              </Button>
-            )}
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-
-        {/* Content */}
-        <ScrollArea className="flex-1 p-4">
-          {/* Educational Panel */}
-          <PrdEducationPanel />
-
-          {isLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-          ) : (
-            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'layers' | 'dimensions' | 'csuite' | 'compilation')}>
-              <TabsList className="w-full justify-start mb-4 flex-wrap">
-                <TabsTrigger value="layers" className="text-xs">
-                  <Layers className="h-3.5 w-3.5 mr-1" />
-                  5 Layers
-                </TabsTrigger>
-                <TabsTrigger value="dimensions" className="text-xs">
-                  <Eye className="h-3.5 w-3.5 mr-1" />
-                  Dimensions
-                </TabsTrigger>
-                <TabsTrigger value="csuite" className="text-xs relative">
-                  <Briefcase className="h-3.5 w-3.5 mr-1" />
-                  C-Suite
-                  {!canAccessCSuite && <Lock className="h-3 w-3 ml-1 text-amber-500" />}
-                </TabsTrigger>
-                <TabsTrigger value="compilation" className="text-xs relative">
-                  <Zap className="h-3.5 w-3.5 mr-1" />
-                  Compilation
-                  {!canAccessCompilation && <Lock className="h-3 w-3 ml-1 text-amber-500" />}
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="layers" className="space-y-3">
-                {SEASON_ORDER.map(season => {
-                  const layer = getLayerData(season);
-                  const isExpanded = expandedLayers.has(season);
-                  const isCurrent = season === currentSeason;
-                  const isGenerating = generatingLayer === season;
-                  
-                  return (
-                    <Card 
-                      key={season}
-                      className={`border ${isCurrent ? 'border-primary/50 ring-1 ring-primary/20' : 'border-border/50'}`}
-                    >
-                      <Collapsible open={isExpanded} onOpenChange={() => toggleLayer(season)}>
-                        <CollapsibleTrigger asChild>
-                          <CardHeader className="py-3 px-4 cursor-pointer hover:bg-muted/30 transition-colors">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-3">
-                                <div className={`p-1.5 rounded ${SEASON_COLORS[season]}`}>
-                                  {SEASON_ICONS[season]}
-                                </div>
-                                <div>
-                                  <CardTitle className="text-sm flex items-center gap-2">
-                                    {SEASON_LABELS[season]}
-                                    <Badge variant="outline" className="text-xs font-normal">
-                                      {layer.layerName}
-                                    </Badge>
-                                    {layer.isComplete && (
-                                      <Check className="h-3.5 w-3.5 text-green-500" />
-                                    )}
-                                  </CardTitle>
-                                  <div className="flex items-center gap-2 mt-1">
-                                    <Progress value={layer.readiness} className="h-1.5 w-20" />
-                                    <span className="text-xs text-muted-foreground">
-                                      {layer.readiness}%
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                              {isExpanded ? (
-                                <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                              ) : (
-                                <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                              )}
-                            </div>
-                          </CardHeader>
-                        </CollapsibleTrigger>
-
-                        <CollapsibleContent>
-                          <CardContent className="pt-0 pb-4 px-4 space-y-3">
-                            {/* Stats */}
-                            <div className="flex gap-4 text-xs text-muted-foreground">
-                              <span>{seasonProgress[season]?.size || 0}/64 tiles</span>
-                              <span>{polenCounts[season] || 0} fragments</span>
-                            </div>
-
-                            {/* Content Preview */}
-                            {hasContent(layer) ? (
-                              <div className="space-y-2">
-                                {layer.fields.map(field => {
-                                  const value = layer.content[field];
-                                  if (!value) return null;
-                                  
-                                  return (
-                                    <div key={field} className="bg-muted/30 rounded p-2">
-                                      <p className="text-xs font-medium text-muted-foreground mb-1">
-                                        {field.replace(/_/g, ' ').replace(/^\w/, c => c.toUpperCase())}
-                                      </p>
-                                      <p className="text-sm line-clamp-3">{value}</p>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            ) : (
-                              <p className="text-sm text-muted-foreground italic">
-                                No content generated yet
-                              </p>
-                            )}
-
-                            {/* Actions */}
-                            <div className="flex gap-2 pt-2">
-                              <Button
-                                size="sm"
-                                variant={hasContent(layer) ? "outline" : "default"}
-                                onClick={() => handleGenerateLayer(season)}
-                                disabled={isGenerating || (seasonProgress[season]?.size || 0) < 8}
-                                className="text-xs"
-                              >
-                                {isGenerating ? (
-                                  <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                                ) : (
-                                  <Sparkles className="h-3 w-3 mr-1" />
-                                )}
-                                {hasContent(layer) ? 'Regenerate' : 'Generate'} Layer
-                              </Button>
-                              {prdId && hasContent(layer) && (
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  onClick={() => navigate(`/prds/${prdId}`)}
-                                  className="text-xs"
-                                >
-                                  Edit
-                                </Button>
-                              )}
-                            </div>
-                          </CardContent>
-                        </CollapsibleContent>
-                      </Collapsible>
-                    </Card>
-                  );
-                })}
-              </TabsContent>
-
-              <TabsContent value="dimensions">
-                <PrdDimensionalView
-                  seasonProgress={seasonProgress as Record<string, Set<string>>}
-                  completedSeasons={completedSeasons}
-                  prdData={prdData}
-                />
-              </TabsContent>
-
-              <TabsContent value="csuite">
-                <FeatureGate feature="csuite_dashboard">
-                  <CSuiteDashboard
-                    seasonProgress={Object.fromEntries(
-                      Object.entries(seasonProgress).map(([k, v]) => [k, new Set([...v].map(Number))])
-                    ) as Record<string, Set<number>>}
-                    prdData={prdData}
-                    currentSeason={currentSeason}
-                  />
-                </FeatureGate>
-              </TabsContent>
-
-              <TabsContent value="compilation">
-                <FeatureGate feature="compilation_tab">
-                  <CompilationTab
-                    projectName={prdData?.title || 'Untitled Project'}
-                    stackImplications={{
-                      stack_implications_pollens: prdData?.stack_implications_pollens || '',
-                      stack_implications_noems: prdData?.stack_implications_noems || '',
-                      stack_implications_poems: prdData?.stack_implications_poems || '',
-                      stack_implications_totems: prdData?.stack_implications_totems || '',
-                      stack_implications_anthems: prdData?.stack_implications_anthems || '',
-                    }}
-                    promptHooks={{
-                      prompt_hooks_pollens: prdData?.prompt_hooks_pollens || '',
-                      prompt_hooks_noems: prdData?.prompt_hooks_noems || '',
-                      prompt_hooks_poems: prdData?.prompt_hooks_poems || '',
-                      prompt_hooks_totems: prdData?.prompt_hooks_totems || '',
-                      prompt_hooks_anthems: prdData?.prompt_hooks_anthems || '',
-                    }}
-                    completedLayers={completedSeasons}
-                    onNavigateToLayer={(season) => {
-                      setActiveTab('layers');
-                      setExpandedLayers(prev => new Set([...prev, season]));
-                    }}
-                  />
-                </FeatureGate>
-              </TabsContent>
-            </Tabs>
           )}
-        </ScrollArea>
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
 
-        {/* Footer */}
-        <div className="p-4 border-t border-border shrink-0 bg-muted/30">
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">
-              {completedSeasons.length}/5 layers complete
-            </span>
-            <div className="flex items-center gap-2">
-              {completedSeasons.length >= 5 && prdData && (
-                <>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => downloadMarkdown(prdData as any)}
-                    className="text-xs"
+      {/* Main Content */}
+      <div className="flex-1 overflow-hidden">
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="h-full flex flex-col">
+          <TabsList className="w-full justify-start px-4 pt-2 shrink-0">
+            <TabsTrigger value="layers" className="text-xs">
+              <Layers className="h-3.5 w-3.5 mr-1" />
+              Wizard
+            </TabsTrigger>
+            <TabsTrigger value="dimensions" className="text-xs">
+              <Eye className="h-3.5 w-3.5 mr-1" />
+              Dimensions
+            </TabsTrigger>
+            <TabsTrigger value="csuite" className="text-xs relative">
+              <Briefcase className="h-3.5 w-3.5 mr-1" />
+              C-Suite
+              {!canAccessCSuite && <Lock className="h-3 w-3 ml-1 text-amber-500" />}
+            </TabsTrigger>
+            <TabsTrigger value="compilation" className="text-xs relative">
+              <Zap className="h-3.5 w-3.5 mr-1" />
+              Compilation
+              {!canAccessCompilation && <Lock className="h-3 w-3 ml-1 text-amber-500" />}
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="layers" className="flex-1 overflow-hidden p-0 m-0">
+            <div className="h-full flex flex-col">
+              {/* Wizard Header: Layer Navigation */}
+              <div className="p-4 border-b border-border/50 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CurrentIcon className="w-5 h-5 text-primary" />
+                    <span className="font-semibold">{currentLayer}</span>
+                    <Badge variant="outline" className="text-xs">
+                      {currentLayerPolen.length} fragments
+                    </Badge>
+                  </div>
+                  
+                  {/* Layer Pills */}
+                  <div className="flex items-center gap-1">
+                    {LAYERS.map((layer, idx) => {
+                      const isCompleted = completedLayers.includes(layer);
+                      const isCurrent = layer === currentLayer;
+                      const LayerIcon = LAYER_ICONS[layer];
+                      const canNavigate = isCompleted || isCurrent || idx <= completedLayers.length;
+                      
+                      return (
+                        <button
+                          key={layer}
+                          onClick={() => canNavigate && setCurrentLayer(layer)}
+                          disabled={!canNavigate}
+                          className={`flex items-center justify-center w-7 h-7 rounded-full transition-all ${
+                            isCompleted ? 'bg-emerald-500 text-white hover:bg-emerald-600' 
+                              : isCurrent ? 'bg-primary text-primary-foreground ring-2 ring-primary/30' 
+                              : canNavigate ? 'bg-muted text-muted-foreground hover:bg-muted/80'
+                              : 'bg-muted/50 text-muted-foreground/50 cursor-not-allowed'
+                          }`}
+                          title={layer}
+                        >
+                          {isCompleted ? <Check className="w-3.5 h-3.5" /> : <LayerIcon className="w-3.5 h-3.5" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+                
+                {/* Title Input */}
+                <Input
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="font-medium"
+                  placeholder={`${documentName} Title...`}
+                />
+                
+                {/* Progress Bar */}
+                <div className="space-y-1">
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>Overall Progress</span>
+                    <span>{progressPercentage}%</span>
+                  </div>
+                  <Progress value={progressPercentage} className="h-1.5" />
+                </div>
+              </div>
+              
+              {/* Main Wizard Content */}
+              <div className="flex-1 flex min-h-0 overflow-hidden">
+                {/* Left: Fields */}
+                <ScrollArea className="flex-1 p-4">
+                  <div className="space-y-4 pr-2">
+                    {/* Polen Preview for POLLENS layer */}
+                    {currentLayer === 'POLLENS' && !layerHasContent() && currentLayerPolen.length > 0 && (
+                      <Card className="p-4 bg-amber-500/10 border-amber-500/30">
+                        <h4 className="font-semibold text-sm mb-2 flex items-center gap-2">
+                          <FileText className="w-4 h-4" />
+                          Raw signals from your journey ({currentLayerPolen.length} entries)
+                        </h4>
+                        <div className="space-y-2 max-h-32 overflow-y-auto">
+                          {currentLayerPolen.slice(0, 5).map(polen => (
+                            <div key={polen.id} className="text-xs p-2 bg-background rounded border">
+                              {polen.content.slice(0, 100)}...
+                            </div>
+                          ))}
+                          {currentLayerPolen.length > 5 && (
+                            <div className="text-xs text-muted-foreground">+{currentLayerPolen.length - 5} more</div>
+                          )}
+                        </div>
+                      </Card>
+                    )}
+
+                    {polenEntries.length === 0 && (
+                      <Card className="p-3 bg-amber-500/10 border-amber-500/30">
+                        <p className="text-sm text-amber-600 flex items-center gap-2">
+                          <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                          No fragments captured yet. Visit tiles and capture insights first for richer {documentName} generation.
+                        </p>
+                      </Card>
+                    )}
+
+                    {/* Field Cards */}
+                    {LAYER_FIELDS[currentLayer].map(field => {
+                      const fieldInfo = WIZARD_FIELD_LABELS[field] || { label: field, description: '' };
+                      const value = content[field] || '';
+                      const isEditing = editingField === field;
+
+                      return (
+                        <Card key={field} className="p-4">
+                          <div className="flex items-center justify-between mb-2">
+                            <div>
+                              <h4 className="font-semibold text-sm">{fieldInfo.label}</h4>
+                              <p className="text-xs text-muted-foreground">{fieldInfo.description}</p>
+                            </div>
+                            {value && (
+                              <Button size="sm" variant="ghost" onClick={() => setEditingField(isEditing ? null : field)}>
+                                {isEditing ? <Check className="w-4 h-4" /> : <Edit3 className="w-4 h-4" />}
+                              </Button>
+                            )}
+                          </div>
+                          
+                          {value ? (
+                            isEditing ? (
+                              <Textarea value={value} onChange={(e) => updateField(field, e.target.value)} className="min-h-[100px]" />
+                            ) : (
+                              <div className="text-sm whitespace-pre-wrap bg-muted/50 p-3 rounded-lg">{value}</div>
+                            )
+                          ) : (
+                            <div className="text-sm text-muted-foreground italic p-3 bg-muted/30 rounded-lg border-2 border-dashed">
+                              Content will be generated...
+                            </div>
+                          )}
+                        </Card>
+                      );
+                    })}
+
+                    {/* Checklist */}
+                    <Card className="p-4 border-dashed">
+                      <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4" />
+                        {currentLayer} Checklist
+                      </h4>
+                      <div className="space-y-2">
+                        {checklistItems.map((item, idx) => {
+                          const isChecked = item.check(content);
+                          return (
+                            <div key={idx} className="flex items-center gap-2 text-sm">
+                              {isChecked ? <CheckCircle2 className="w-4 h-4 text-emerald-500" /> : <Circle className="w-4 h-4 text-muted-foreground" />}
+                              <span className={isChecked ? 'text-foreground' : 'text-muted-foreground'}>{item.label}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </Card>
+                  </div>
+                </ScrollArea>
+                
+                {/* Right: Stack + Quality */}
+                <div className="w-64 shrink-0 border-l border-border/50 p-4 space-y-4 overflow-y-auto hidden lg:block">
+                  <PrdEducationPanel />
+                  <StackFormation completedLayers={completedLayers} currentLayer={currentLayer} />
+                  
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full"
+                    onClick={() => setShowQualityReview(!showQualityReview)}
                   >
-                    <FileDown className="h-3.5 w-3.5 mr-1" />
-                    Markdown
+                    <Shield className="w-4 h-4 mr-2" />
+                    {showQualityReview ? 'Hide' : 'Show'} Quality Review
                   </Button>
-                  {canExportPdf ? (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => exportPrdAsPdf(prdData as any)}
-                      className="text-xs"
-                    >
-                      <Printer className="h-3.5 w-3.5 mr-1" />
-                      PDF
+                  
+                  {showQualityReview && (
+                    <FeminineSafePRD reviewMode currentStage={currentStage} showAntiPatterns={false} />
+                  )}
+                </div>
+              </div>
+              
+              {/* Footer: Navigation */}
+              <div className="p-4 border-t border-border shrink-0 flex items-center justify-between">
+                <Button variant="outline" onClick={handleBack} disabled={isFirstLayer}>
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back
+                </Button>
+
+                <div className="flex items-center gap-2">
+                  <Button 
+                    onClick={generateLayerContent} 
+                    disabled={generatingLayer !== null} 
+                    variant="outline"
+                  >
+                    {generatingLayer === currentLayer ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Sparkles className="mr-2 h-4 w-4" />
+                    )}
+                    Generate {currentLayer}
+                  </Button>
+
+                  {isLastLayer && completedLayers.length === LAYERS.length - 1 ? (
+                    <Button onClick={handleSavePrd} disabled={saving || !layerHasContent()}>
+                      {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                      Save {documentName}
                     </Button>
                   ) : (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-xs opacity-60"
-                      disabled
-                    >
-                      <Lock className="h-3.5 w-3.5 mr-1" />
-                      PDF
-                      <PremiumBadge feature="pdf_export" className="ml-1" />
+                    <Button onClick={handleNext} disabled={!layerHasContent()}>
+                      Next
+                      <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   )}
-                </>
-              )}
-              {completedSeasons.length >= 5 && (
-                <Badge className="bg-green-500/20 text-green-500 border-green-500/30">
-                  Ready
-                </Badge>
-              )}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </TabsContent>
+
+          <TabsContent value="dimensions" className="flex-1 overflow-auto p-4">
+            <PrdDimensionalView
+              seasonProgress={seasonProgress as Record<string, Set<string>>}
+              completedSeasons={completedSeasons}
+              prdData={prdData}
+            />
+          </TabsContent>
+
+          <TabsContent value="csuite" className="flex-1 overflow-auto p-4">
+            <FeatureGate feature="csuite_dashboard">
+              <CSuiteDashboard
+                seasonProgress={Object.fromEntries(
+                  Object.entries(seasonProgress).map(([k, v]) => [k, new Set([...v].map(Number))])
+                ) as Record<string, Set<number>>}
+                prdData={prdData}
+                currentSeason={currentSeason}
+              />
+            </FeatureGate>
+          </TabsContent>
+
+          <TabsContent value="compilation" className="flex-1 overflow-auto p-4">
+            <FeatureGate feature="compilation_tab">
+              <CompilationTab
+                projectName={title}
+                stackImplications={{
+                  stack_implications_pollens: content.stack_implications_pollens || '',
+                  stack_implications_noems: content.stack_implications_noems || '',
+                  stack_implications_poems: content.stack_implications_poems || '',
+                  stack_implications_totems: content.stack_implications_totems || '',
+                  stack_implications_anthems: content.stack_implications_anthems || '',
+                }}
+                promptHooks={{
+                  prompt_hooks_pollens: content.prompt_hooks_pollens || '',
+                  prompt_hooks_noems: content.prompt_hooks_noems || '',
+                  prompt_hooks_poems: content.prompt_hooks_poems || '',
+                  prompt_hooks_totems: content.prompt_hooks_totems || '',
+                  prompt_hooks_anthems: content.prompt_hooks_anthems || '',
+                }}
+                completedLayers={completedLayers as Season[]}
+                onNavigateToLayer={(season) => {
+                  setActiveTab('layers');
+                  setCurrentLayer(season as PrdLayer);
+                }}
+              />
+            </FeatureGate>
+          </TabsContent>
+        </Tabs>
       </div>
 
       {/* Full Preview Sheet */}
@@ -644,101 +827,62 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
           <SheetHeader className="p-4 border-b border-border shrink-0">
             <SheetTitle className="flex items-center gap-2">
               <FileText className="h-5 w-5 text-primary" />
-              {prdData?.title || 'Untitled'} - Full {documentName}
+              {title} - Full {documentName}
             </SheetTitle>
             <div className="space-y-2 pt-2">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">
-                  {progressStats.filledFields} of {progressStats.totalFields} fields • {progressStats.completedLayerCount} of 5 layers
+                  {filledFields} of {totalFields} fields • {completedLayers.length} of {LAYERS.length} layers
                 </span>
                 <Badge 
                   variant="outline" 
                   className={
-                    progressStats.overallPercentage >= 100 
+                    progressPercentage >= 100 
                       ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30' 
-                      : progressStats.overallPercentage >= 50 
+                      : progressPercentage >= 50 
                         ? 'bg-blue-500/10 text-blue-500 border-blue-500/30'
                         : 'bg-amber-500/10 text-amber-500 border-amber-500/30'
                   }
                 >
-                  {progressStats.overallPercentage}%
+                  {progressPercentage}%
                 </Badge>
               </div>
-              <Progress 
-                value={progressStats.overallPercentage} 
-                className={`h-2 ${
-                  progressStats.overallPercentage >= 100 
-                    ? '[&>div]:bg-emerald-500' 
-                    : progressStats.overallPercentage >= 50 
-                      ? '[&>div]:bg-blue-500'
-                      : '[&>div]:bg-amber-500'
-                }`}
-              />
+              <Progress value={progressPercentage} className="h-2" />
             </div>
           </SheetHeader>
 
           <ScrollArea className="flex-1 p-4">
             <div className="space-y-6">
-              {SEASON_ORDER.map(season => {
-                const layerName = SEASON_PRD_LAYER[season];
-                const fields = PRD_LAYER_FIELDS[layerName] || [];
-                const layerStat = progressStats.layerProgress.find(l => l.season === season);
+              {LAYERS.map(layer => {
+                const LayerIcon = LAYER_ICONS[layer];
+                const isCompleted = completedLayers.includes(layer);
+                const layerFields = LAYER_FIELDS[layer].filter(f => !f.startsWith('stack_') && !f.startsWith('prompt_'));
+                const hasContent = layerFields.some(f => content[f]);
                 
                 return (
-                  <div key={season} className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className={`p-1.5 rounded ${SEASON_COLORS[season]}`}>
-                          {SEASON_ICONS[season]}
-                        </div>
-                        <h3 className="font-semibold">{SEASON_LABELS[season]}</h3>
-                        <Badge variant="outline" className="text-xs font-normal">
-                          {layerName}
-                        </Badge>
-                      </div>
-                      <Badge 
-                        variant="outline"
-                        className={
-                          layerStat?.percentage === 100 
-                            ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30' 
-                            : layerStat?.percentage && layerStat.percentage > 0
-                              ? 'bg-blue-500/10 text-blue-500 border-blue-500/30'
-                              : 'bg-muted text-muted-foreground'
-                        }
-                      >
-                        {layerStat?.percentage || 0}%
-                      </Badge>
-                    </div>
-
-                    <div className="space-y-2 pl-8">
-                      {fields.map(field => {
-                        const value = prdData?.[field];
-                        const label = FIELD_LABELS[field] || field.replace(/_/g, ' ');
-                        const hasValue = value && String(value).trim().length > 0;
-                        
+                  <div key={layer} className="space-y-3">
+                    <h3 className="font-semibold flex items-center gap-2 text-lg border-b pb-2">
+                      <LayerIcon className="w-5 h-5" />
+                      {layer}
+                      {isCompleted && <Check className="w-4 h-4 text-emerald-500 ml-auto" />}
+                    </h3>
+                    
+                    {hasContent ? (
+                      layerFields.map(field => {
+                        const value = content[field];
+                        if (!value) return null;
                         return (
-                          <div key={field} className="bg-muted/30 rounded-lg p-3">
-                            <div className="flex items-center gap-2 mb-1">
-                              {hasValue ? (
-                                <Check className="h-3.5 w-3.5 text-emerald-500" />
-                              ) : (
-                                <div className="h-3.5 w-3.5 rounded-full border border-muted-foreground/30" />
-                              )}
-                              <p className="text-sm font-medium">{label}</p>
-                            </div>
-                            {hasValue ? (
-                              <p className="text-sm text-muted-foreground pl-5 whitespace-pre-wrap">
-                                {String(value)}
-                              </p>
-                            ) : (
-                              <p className="text-sm text-muted-foreground/50 italic pl-5">
-                                Not generated yet
-                              </p>
-                            )}
+                          <div key={field} className="bg-muted/30 p-3 rounded-lg text-sm">
+                            <p className="font-medium text-xs text-muted-foreground mb-1">
+                              {WIZARD_FIELD_LABELS[field]?.label || field}
+                            </p>
+                            <p className="whitespace-pre-wrap">{value}</p>
                           </div>
                         );
-                      })}
-                    </div>
+                      })
+                    ) : (
+                      <p className="text-sm text-muted-foreground italic py-2">Not generated yet</p>
+                    )}
                   </div>
                 );
               })}

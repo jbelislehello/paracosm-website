@@ -880,7 +880,11 @@ const CalmMagicBoard = () => {
               Window of Tolerance
             </TabsTrigger>
             <TabsTrigger value="prd-assembly" className="text-xs gap-1.5 px-3">
-              <Layers className="w-3.5 h-3.5" />
+              {visitedTiles.size >= 32 && polenEntries.length >= 5 ? (
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              ) : (
+                <Layers className="w-3.5 h-3.5" />
+              )}
               PRD Assembly
             </TabsTrigger>
           </TabsList>
@@ -908,7 +912,11 @@ const CalmMagicBoard = () => {
               <span className="hidden xs:inline">Tolerance</span>
             </TabsTrigger>
             <TabsTrigger value="prd-assembly" className="text-[10px] gap-1 px-1.5">
-              <Layers className="w-3 h-3" />
+              {visitedTiles.size >= 32 && polenEntries.length >= 5 ? (
+                <Sparkles className="w-3 h-3 text-amber-500" />
+              ) : (
+                <Layers className="w-3 h-3" />
+              )}
               <span className="hidden xs:inline">PRD</span>
             </TabsTrigger>
           </TabsList>
