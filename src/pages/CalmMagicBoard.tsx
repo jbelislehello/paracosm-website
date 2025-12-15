@@ -5,7 +5,9 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Wand2, Globe, Donut } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Wand2, Globe, Donut, Menu } from 'lucide-react';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { getTerminology } from '@/data/modeAwareTerminology';
 import { toast } from 'sonner';
 import MinimalistTileMatrix from '@/components/MinimalistTileMatrix';
@@ -127,8 +129,9 @@ const CalmMagicBoard = () => {
   const [showCosmologyOverlay, setShowCosmologyOverlay] = useState(false);
   const [show3DManifold, setShow3DManifold] = useState(false);
   const [showTorusManifold, setShowTorusManifold] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   
-  
+  const isMobile = useIsMobile();
   
   // Subscription state for feature gating
   const { tier } = useSubscription();
@@ -607,17 +610,17 @@ const CalmMagicBoard = () => {
         </div>
       )}
 
-      <header className="shrink-0 px-6 py-3 border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="max-w-[1800px] mx-auto flex items-center justify-between gap-4">
+      <header className="shrink-0 px-4 md:px-6 py-3 border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="max-w-[1800px] mx-auto flex items-center justify-between gap-2 md:gap-4">
           {/* Logo/Title - Single line */}
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold tracking-tight bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent whitespace-nowrap">
+          <div className="flex items-center gap-2 min-w-0">
+            <h1 className="text-lg md:text-xl font-bold tracking-tight bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent whitespace-nowrap truncate">
               Calm Magic Board
             </h1>
           </div>
           
-          {/* Season Navigation - Center */}
-          <div data-tour="seasons">
+          {/* Season Navigation - Center (hidden on mobile, shown in menu) */}
+          <div data-tour="seasons" className="hidden md:block">
             <SeasonProgressBar
               currentSeason={currentSeason}
               seasonProgress={seasonProgress}
@@ -625,8 +628,18 @@ const CalmMagicBoard = () => {
             />
           </div>
 
-          {/* Journey Controls */}
-          <div className="flex items-center gap-2">
+          {/* Mobile Menu Button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="md:hidden"
+            onClick={() => setShowMobileMenu(true)}
+          >
+            <Menu className="w-5 h-5" />
+          </Button>
+
+          {/* Journey Controls - Desktop */}
+          <div className="hidden md:flex items-center gap-2">
             {!journeyStarted ? (
               <Button 
                 onClick={handleStartJourney} 
@@ -765,8 +778,130 @@ const CalmMagicBoard = () => {
         </div>
       </header>
 
-      {/* Sub Navigation */}
-      <div className="shrink-0 px-6 py-2 border-b border-border/30 bg-background/80 flex items-center justify-between gap-4">
+      {/* Mobile Menu Sheet */}
+      <Sheet open={showMobileMenu} onOpenChange={setShowMobileMenu}>
+        <SheetContent side="right" className="w-[300px] overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle>Menu</SheetTitle>
+          </SheetHeader>
+          <div className="mt-6 space-y-6">
+            {/* Season Progress */}
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">Season Progress</p>
+              <SeasonProgressBar
+                currentSeason={currentSeason}
+                seasonProgress={seasonProgress}
+                completedSeasons={completedSeasons}
+              />
+            </div>
+
+            {/* Journey Actions */}
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">Journey</p>
+              {!journeyStarted ? (
+                <Button 
+                  onClick={() => { handleStartJourney(); setShowMobileMenu(false); }} 
+                  size="sm" 
+                  className={`w-full bg-gradient-to-r ${SEASON_COLORS[currentSeason]}`}
+                >
+                  <Play className="w-4 h-4 mr-2" />
+                  Start Innovating
+                </Button>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="text-sm px-2 py-0.5">
+                    {visitedTiles.size}/64 tiles
+                  </Badge>
+                  <Button variant="ghost" size="sm" onClick={() => { handleResetJourney(); setShowMobileMenu(false); }}>
+                    <RotateCcw className="w-3 h-3 mr-1" />
+                    Reset
+                  </Button>
+                </div>
+              )}
+            </div>
+
+            {/* Quick Actions */}
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">Quick Actions</p>
+              <div className="grid grid-cols-2 gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="justify-start"
+                  onClick={() => { setShowJourneySummary(true); setShowMobileMenu(false); }}
+                >
+                  <MapPin className="w-4 h-4 mr-2" />
+                  Summary
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="justify-start"
+                  onClick={() => { setShowPolenBrowser(!showPolenBrowser); setShowMobileMenu(false); }}
+                >
+                  <Library className="w-4 h-4 mr-2" />
+                  Library
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="justify-start"
+                  onClick={() => { setShowCosmologyOverlay(!showCosmologyOverlay); setShowMobileMenu(false); }}
+                >
+                  <Wand2 className="w-4 h-4 mr-2" />
+                  Oracle
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="justify-start"
+                  onClick={() => { startTour(); setShowMobileMenu(false); }}
+                >
+                  <HelpCircle className="w-4 h-4 mr-2" />
+                  Tour
+                </Button>
+              </div>
+            </div>
+
+            {/* View Navigation */}
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">Views</p>
+              <div className="space-y-1">
+                <Button 
+                  variant={activeView === 'matrix' ? "default" : "ghost"} 
+                  size="sm"
+                  className="w-full justify-start"
+                  onClick={() => { setActiveView('matrix'); setShowMobileMenu(false); }}
+                >
+                  <Grid3X3 className="w-4 h-4 mr-2" />
+                  Matrix
+                </Button>
+                <Button 
+                  variant={activeView === 'window-of-tolerance' ? "default" : "ghost"} 
+                  size="sm"
+                  className="w-full justify-start"
+                  onClick={() => { setActiveView('window-of-tolerance'); setShowMobileMenu(false); }}
+                >
+                  <CircleDot className="w-4 h-4 mr-2" />
+                  Window of Tolerance
+                </Button>
+                <Button 
+                  variant={activeView === 'prd-assembly' ? "default" : "ghost"} 
+                  size="sm"
+                  className="w-full justify-start"
+                  onClick={() => { setActiveView('prd-assembly'); setShowMobileMenu(false); }}
+                >
+                  <Layers className="w-4 h-4 mr-2" />
+                  PRD Assembly
+                </Button>
+              </div>
+            </div>
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      {/* Sub Navigation - Desktop only */}
+      <div className="hidden md:flex shrink-0 px-6 py-2 border-b border-border/30 bg-background/80 items-center justify-between gap-4">
         <Tabs value={activeView} onValueChange={(v) => setActiveView(v as ViewTab)}>
           <TabsList className="h-8">
             <TabsTrigger value="matrix" className="text-xs gap-1.5 px-3">
@@ -792,33 +927,58 @@ const CalmMagicBoard = () => {
         />
       </div>
 
+      {/* Mobile Sub Navigation - Compact tabs */}
+      <div className="md:hidden shrink-0 px-3 py-2 border-b border-border/30 bg-background/80 flex items-center justify-between gap-2">
+        <Tabs value={activeView} onValueChange={(v) => setActiveView(v as ViewTab)} className="flex-1">
+          <TabsList className="h-8 w-full grid grid-cols-3">
+            <TabsTrigger value="matrix" className="text-[10px] gap-1 px-1.5">
+              <Grid3X3 className="w-3 h-3" />
+              <span className="hidden xs:inline">Matrix</span>
+            </TabsTrigger>
+            <TabsTrigger value="window-of-tolerance" className="text-[10px] gap-1 px-1.5">
+              <CircleDot className="w-3 h-3" />
+              <span className="hidden xs:inline">Tolerance</span>
+            </TabsTrigger>
+            <TabsTrigger value="prd-assembly" className="text-[10px] gap-1 px-1.5">
+              <Layers className="w-3 h-3" />
+              <span className="hidden xs:inline">PRD</span>
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+        
+        {/* Mobile progress indicator - compact */}
+        <Badge variant="outline" className="text-[10px] px-1.5 py-0.5 shrink-0">
+          {visitedTiles.size}/64
+        </Badge>
+      </div>
+
       {/* Main Content: Split Layout */}
-      <div className="flex-1 min-h-0 flex">
+      <div className="flex-1 min-h-0 flex overflow-hidden">
         {/* Matrix View */}
         {activeView === 'matrix' && (
           <>
-            {/* Left Panel: Tile Matrix - Always visible, scrollable */}
+            {/* Tile Matrix - Full width on mobile, split on desktop */}
             <div 
-              className={`${selectedTile || showPolenBrowser ? 'flex-1' : 'w-full'} p-8 overflow-auto transition-all duration-300 flex items-center justify-center`}
+              className={`${(selectedTile || showPolenBrowser) && !isMobile ? 'flex-1' : 'w-full'} p-4 md:p-8 overflow-auto transition-all duration-300 flex items-center justify-center`}
               data-tour="matrix"
             >
-              <div className="pl-32">
-            <MinimalistTileMatrix 
-              board={SEASON_TO_BOARD[currentSeason]}
-              selectedTile={selectedTile}
-              visitedTiles={visitedTiles}
-              journeyPath={journeyPath}
-              onTileClick={handleTileClick}
-              cycleNumber={currentCycleNumber}
-              showToleranceOverlay={true}
-              onZoneChange={setCurrentZone}
-              completedSeasons={completedSeasons as string[]}
-            />
-          </div>
-        </div>
+              <div className="md:pl-32 w-full max-w-full overflow-x-auto">
+                <MinimalistTileMatrix 
+                  board={SEASON_TO_BOARD[currentSeason]}
+                  selectedTile={selectedTile}
+                  visitedTiles={visitedTiles}
+                  journeyPath={journeyPath}
+                  onTileClick={handleTileClick}
+                  cycleNumber={currentCycleNumber}
+                  showToleranceOverlay={true}
+                  onZoneChange={setCurrentZone}
+                  completedSeasons={completedSeasons as string[]}
+                />
+              </div>
+            </div>
 
-        {/* Fragment Browser Panel */}
-        {showPolenBrowser && !selectedTile && (
+        {/* Fragment Browser Panel - Desktop only */}
+        {showPolenBrowser && !selectedTile && !isMobile && (
           <div className="w-[400px] max-w-[40vw] shrink-0 border-l border-border/50 animate-in slide-in-from-right duration-300 p-4">
             <FragmentBrowser 
               currentSeason={currentSeason as PrdSeason}
@@ -834,8 +994,8 @@ const CalmMagicBoard = () => {
           </div>
         )}
 
-            {/* Right Panel: Tile Detail - Slides in when tile selected */}
-            {selectedTile && (
+            {/* Right Panel: Tile Detail - Desktop side panel */}
+            {selectedTile && !isMobile && (
               <div 
                 className="w-[400px] max-w-[40vw] h-full shrink-0 border-l border-border/50 animate-in slide-in-from-right duration-300"
                 data-tour="detail-panel"
@@ -863,7 +1023,7 @@ const CalmMagicBoard = () => {
 
         {/* Window of Tolerance View */}
         {activeView === 'window-of-tolerance' && (
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-auto p-4 md:p-0">
             <QuadrantDynamicsPanel
               seasonQualities={seasonQualities}
               shadowPosition={shadowPosition}
@@ -880,7 +1040,7 @@ const CalmMagicBoard = () => {
 
         {/* PRD Assembly View */}
         {activeView === 'prd-assembly' && (
-          <div className="flex-1 overflow-hidden p-6">
+          <div className="flex-1 overflow-auto p-4 md:p-6">
             <PrdAssemblyPanel
               isOpen={true}
               onClose={() => setActiveView('matrix')}
@@ -943,6 +1103,51 @@ const CalmMagicBoard = () => {
         )}
       </div>
 
+      {/* Mobile Tile Detail Sheet */}
+      {isMobile && (
+        <Sheet open={!!selectedTile} onOpenChange={(open) => !open && setSelectedTile(null)}>
+          <SheetContent side="bottom" className="h-[85vh] p-0 rounded-t-xl overflow-hidden">
+            <div className="h-full overflow-y-auto">
+              {selectedTile && (
+                <TileDetailPanel
+                  selectedTile={selectedTile}
+                  activeCompass={activeCompass}
+                  board={SEASON_TO_BOARD[currentSeason]}
+                  isAuthenticated={isAuthenticated}
+                  saving={saving}
+                  onClose={() => setSelectedTile(null)}
+                  onSavePolen={handleSavePolen}
+                  onNavigate={handleNavigate}
+                  onCompassChange={handleCompassChange}
+                  currentSeason={currentSeason}
+                  onEmotionalCheckin={handleEmotionalCheckin}
+                  emotionalCheckins={getAllCheckins()}
+                />
+              )}
+            </div>
+          </SheetContent>
+        </Sheet>
+      )}
+
+      {/* Mobile Fragment Browser Sheet */}
+      {isMobile && (
+        <Sheet open={showPolenBrowser} onOpenChange={setShowPolenBrowser}>
+          <SheetContent side="bottom" className="h-[75vh] p-4 rounded-t-xl">
+            <FragmentBrowser 
+              currentSeason={currentSeason as PrdSeason}
+              onEntrySelect={(entry) => {
+                if (entry.tile_id) {
+                  const row = Math.floor((entry.tile_id - 1) / 8);
+                  const col = (entry.tile_id - 1) % 8;
+                  setSelectedTile({ row, col });
+                  setShowPolenBrowser(false);
+                }
+              }}
+            />
+          </SheetContent>
+        </Sheet>
+      )}
+
       {/* Season Completion Modal */}
       <SeasonCompletionModal
         isOpen={showSeasonModal}
@@ -973,7 +1178,7 @@ const CalmMagicBoard = () => {
       />
 
       {/* Assistant Chat */}
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50">
         <AssistantChatButton
           onClick={() => setShowAssistantChat(true)}
           isOpen={showAssistantChat}
