@@ -1,9 +1,31 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Lock, Unlock, FileText, Sparkles } from 'lucide-react';
 import { shouldTriggerPrdGeneration } from '@/utils/prdAccessLevel';
 import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/hooks/use-toast';
+
+const CONFETTI_COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))', 'hsl(var(--chart-5))'];
+
+const Confetti = () => (
+  <div className="fixed inset-0 pointer-events-none z-50 overflow-hidden">
+    {[...Array(25)].map((_, i) => (
+      <div
+        key={i}
+        className="absolute rounded-sm animate-confetti-fall"
+        style={{
+          left: `${Math.random() * 100}%`,
+          backgroundColor: CONFETTI_COLORS[i % 5],
+          width: `${8 + Math.random() * 8}px`,
+          height: `${8 + Math.random() * 8}px`,
+          animationDelay: `${Math.random() * 0.5}s`,
+          animationDuration: `${2 + Math.random()}s`,
+        }}
+      />
+    ))}
+  </div>
+);
 
 interface PrdUnlockProgressProps {
   tilesVisited: number;
@@ -20,6 +42,9 @@ export const PrdUnlockProgress = ({
   userId 
 }: PrdUnlockProgressProps) => {
   const [polenCount, setPolenCount] = useState(0);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const prevUnlocked = useRef(false);
+  const hasShownCelebration = useRef(false);
 
   // Fetch polen count for current season
   useEffect(() => {
@@ -43,6 +68,21 @@ export const PrdUnlockProgress = ({
     [currentSeason, tilesVisited, polenCount]
   );
 
+  // Celebration effect when unlocked
+  useEffect(() => {
+    if (isUnlocked && !prevUnlocked.current && !hasShownCelebration.current) {
+      toast({
+        title: "🎉 PRD Generation Unlocked!",
+        description: "You've captured enough insights to generate your first PRD.",
+      });
+      
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 3000);
+      hasShownCelebration.current = true;
+    }
+    prevUnlocked.current = isUnlocked;
+  }, [isUnlocked]);
+
   const tilesProgress = Math.min((tilesVisited / TILES_THRESHOLD) * 100, 100);
   const fragmentsProgress = Math.min((polenCount / FRAGMENTS_THRESHOLD) * 100, 100);
   
@@ -55,11 +95,14 @@ export const PrdUnlockProgress = ({
 
   if (isUnlocked || seasonComplete) {
     return (
-      <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/30">
-        <Unlock className="w-3.5 h-3.5 text-primary" />
-        <span className="text-xs font-medium text-primary">PRD Generation Ready</span>
-        <Sparkles className="w-3 h-3 text-primary animate-pulse" />
-      </div>
+      <>
+        {showConfetti && <Confetti />}
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/30">
+          <Unlock className="w-3.5 h-3.5 text-primary" />
+          <span className="text-xs font-medium text-primary">PRD Generation Ready</span>
+          <Sparkles className="w-3 h-3 text-primary animate-pulse" />
+        </div>
+      </>
     );
   }
 
