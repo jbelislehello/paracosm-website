@@ -25,10 +25,10 @@ interface PolenEntry {
 interface PrdGeneratorWizardProps {
   isOpen: boolean;
   onClose: () => void;
-  cycleId: string;
+  cycleId?: string;
   polenEntries: PolenEntry[];
   board: string;
-  onPrdCreated: (prdId: string) => void;
+  onPrdCreated?: (prdId: string) => void;
 }
 
 interface GeneratedContent {
@@ -307,7 +307,7 @@ const PrdGeneratorWizard = ({
         description: 'Your 5-layer PRD has been saved.'
       });
 
-      onPrdCreated(prd.id);
+      onPrdCreated?.(prd.id);
       onClose();
     } catch (error) {
       console.error('Save error:', error);
