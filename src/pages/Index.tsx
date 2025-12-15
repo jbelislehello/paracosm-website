@@ -9,13 +9,15 @@ import ProductDevelopmentAssistant from "@/components/ProductDevelopmentAssistan
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Bot, Brain, TrendingUp, Target, Cog, Compass, Zap, Heart, Users } from 'lucide-react';
+import { ArrowRight, Sparkles, Bot, Brain, TrendingUp, Target, Cog, Compass, Zap, Heart, Users, Menu, X } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const Index = () => {
   const [showAgentDemo, setShowAgentDemo] = useState(false);
   const [showFrameworkPanel, setShowFrameworkPanel] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { t } = useLanguage();
 
   useEffect(() => {
@@ -27,27 +29,75 @@ const Index = () => {
     setShowFrameworkPanel(true);
   };
 
+  const navLinks = [
+    { href: "#ai-leadership", label: t("navigation.ai_leadership") },
+    { href: "/calm-magic-assistant", label: t("navigation.relational_innovation"), isLink: true },
+  ];
+
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       {/* Navigation */}
       <header className="fixed w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
-        <div className="container flex items-center justify-between py-4">
+        <div className="container flex items-center justify-between py-3 px-4 md:py-4">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-md flex items-center justify-center">
-              <span className="text-white font-bold">P</span>
+              <span className="text-white font-bold text-sm">P</span>
             </div>
-            <span className="font-bold text-lg">Paracosm</span>
+            <span className="font-bold text-base md:text-lg">Paracosm</span>
           </div>
-          <nav className="hidden md:flex gap-6">
+          
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-6">
             <a href="#ai-leadership" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.ai_leadership")}</a>
             <Link to="/calm-magic-assistant" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.relational_innovation")}</Link>
             <LanguageSwitcher />
           </nav>
-          <Link to="/">
-            <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300">
-              Explore Coaching
-            </Button>
-          </Link>
+          
+          {/* Desktop CTA */}
+          <div className="hidden md:block">
+            <Link to="/">
+              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300">
+                Explore Coaching
+              </Button>
+            </Link>
+          </div>
+          
+          {/* Mobile Menu */}
+          <div className="flex items-center gap-2 md:hidden">
+            <LanguageSwitcher />
+            <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="h-10 w-10">
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Toggle menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[280px] sm:w-[320px]">
+                <nav className="flex flex-col gap-4 mt-8">
+                  <a 
+                    href="#ai-leadership" 
+                    className="text-lg font-medium hover:text-purple-600 transition-colors py-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {t("navigation.ai_leadership")}
+                  </a>
+                  <Link 
+                    to="/calm-magic-assistant" 
+                    className="text-lg font-medium hover:text-purple-600 transition-colors py-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {t("navigation.relational_innovation")}
+                  </Link>
+                  <div className="h-px bg-border my-2" />
+                  <Link to="/" onClick={() => setMobileMenuOpen(false)}>
+                    <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300">
+                      Explore Coaching
+                    </Button>
+                  </Link>
+                </nav>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </header>
       
@@ -62,30 +112,30 @@ const Index = () => {
       <HeroSection onDiscoverFramework={handleDiscoverFramework} />
       
       {/* AI Leadership Section */}
-      <section id="ai-leadership" className="py-20 px-4 bg-gradient-to-r from-blue-50 via-purple-50 to-slate-50 dark:from-blue-950/20 dark:via-purple-950/20">
+      <section id="ai-leadership" className="py-12 md:py-20 px-4 bg-gradient-to-r from-blue-50 via-purple-50 to-slate-50 dark:from-blue-950/20 dark:via-purple-950/20">
         <div className="container max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600">
+          <div className="text-center mb-10 md:mb-16">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600">
               AI Leadership Excellence
             </h2>
-            <p className="text-xl text-slate-600 dark:text-slate-300 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-4xl mx-auto leading-relaxed px-2">
               Master the integration of AI systems and technical leadership through our comprehensive framework 
               that bridges creative vision with engineering implementation.
             </p>
           </div>
 
           {/* Framework Overview */}
-          <div className="mb-16">
-            <h3 className="text-3xl md:text-4xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600">
+          <div className="mb-12 md:mb-16">
+            <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600">
               {t("framework.imagineering_to_engineering")}
             </h3>
-            <p className="text-xl text-slate-600 dark:text-slate-300 max-w-4xl mx-auto leading-relaxed text-center mb-12">
+            <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-4xl mx-auto leading-relaxed text-center mb-8 md:mb-12 px-2">
               Bridge the gap between creative vision and technical implementation with our comprehensive 
               two-phase framework that preserves innovation through the entire development lifecycle.
             </p>
 
             {/* Phase Overview Cards */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-8 md:mb-12">
               {/* Phase 1 Card */}
               <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-blue-200 dark:border-blue-800 overflow-hidden">
                 <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-white">
@@ -176,19 +226,19 @@ const Index = () => {
             </div>
 
             {/* Framework Benefits */}
-            <div className="bg-gradient-to-r from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 rounded-2xl p-8 shadow-lg">
-              <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold mb-4 flex items-center justify-center gap-2">
-                  <Zap className="w-6 h-6 text-yellow-500" />
+            <div className="bg-gradient-to-r from-slate-50 to-white dark:from-slate-800 dark:to-slate-700 rounded-xl md:rounded-2xl p-6 md:p-8 shadow-lg">
+              <div className="text-center mb-6 md:mb-8">
+                <h3 className="text-xl md:text-2xl font-bold mb-3 md:mb-4 flex items-center justify-center gap-2">
+                  <Zap className="w-5 h-5 md:w-6 md:h-6 text-yellow-500" />
                   Why This Framework Prevents Project Failure
                 </h3>
-                <p className="text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
+                <p className="text-sm md:text-base text-slate-600 dark:text-slate-300 max-w-3xl mx-auto px-2">
                   Most projects fail because there's a gap between "good idea" and "working product." 
                   Our framework creates a bridge that preserves innovation through implementation.
                 </p>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
                 <div className="text-center p-4">
                   <div className="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mx-auto mb-3">
                     <Sparkles className="w-6 h-6 text-green-600" />
@@ -216,19 +266,19 @@ const Index = () => {
             </div>
 
             {/* CTA */}
-            <div className="text-center mt-12">
-              <Button onClick={handleDiscoverFramework} size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 text-lg px-8 py-6">
+            <div className="text-center mt-8 md:mt-12">
+              <Button onClick={handleDiscoverFramework} size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 text-base md:text-lg px-6 md:px-8 py-5 md:py-6 w-full sm:w-auto">
                 <Sparkles className="w-5 h-5 mr-2" />
-                Explore the Framework in Detail
+                Explore the Framework
               </Button>
             </div>
           </div>
 
           {/* Agent Interaction Demo */}
           {showAgentDemo && (
-            <div className="mb-16">
-              <h3 className="text-3xl md:text-4xl font-bold text-center mb-4">Experience Agentic Intelligence</h3>
-              <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
+            <div className="mb-12 md:mb-16">
+              <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-3 md:mb-4">Experience Agentic Intelligence</h3>
+              <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-10 md:mb-16 px-2 text-sm md:text-base">
                 Interact with specialized AI agents that collaborate to solve complex problems. 
                 Watch how they coordinate, learn, and adapt to create innovative solutions.
               </p>
@@ -238,9 +288,9 @@ const Index = () => {
           )}
           
           {/* Network Visualization - Agentic Context */}
-          <div className="mb-16">
-            <h3 className="text-3xl md:text-4xl font-bold text-center mb-4">Visualize Your Agentic Network</h3>
-            <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
+          <div className="mb-12 md:mb-16">
+            <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-3 md:mb-4">Visualize Your Agentic Network</h3>
+            <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-10 md:mb-16 px-2 text-sm md:text-base">
               See how AI agents interconnect, share knowledge, and collaborate to create emergent intelligence 
               that goes beyond individual capabilities.
             </p>
@@ -251,10 +301,10 @@ const Index = () => {
           </div>
           
           {/* Key Features */}
-          <div className="mb-16">
-            <h3 className="text-3xl md:text-4xl font-bold text-center mb-16">Agentic UX Capabilities</h3>
+          <div className="mb-12 md:mb-16">
+            <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-10 md:mb-16">Agentic UX Capabilities</h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
               <FeatureCard 
                 title="Multi-Agent Orchestration"
                 description="Coordinate multiple specialized AI agents to tackle complex, multi-faceted challenges"
@@ -282,19 +332,19 @@ const Index = () => {
       </section>
 
       {/* Living PRD Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-blue-50 via-purple-50 to-rose-50 dark:from-blue-950/20 dark:via-purple-950/20 dark:to-rose-950/20">
+      <section className="py-12 md:py-16 px-4 bg-gradient-to-r from-blue-50 via-purple-50 to-rose-50 dark:from-blue-950/20 dark:via-purple-950/20 dark:to-rose-950/20">
         <div className="container max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-rose-600">
+          <div className="text-center mb-8 md:mb-12">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-rose-600">
               From Vision to Living PRD
             </h2>
-            <p className="text-xl text-slate-600 dark:text-slate-300 mb-4 max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-4 max-w-3xl mx-auto px-2">
               The Calm Magic Board transforms your Imagineering insights into actionable Living PRDs 
               that evolve with your product journey.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mb-8">
             <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg border border-blue-200 dark:border-blue-800">
               <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mx-auto mb-4">
                 <Target className="w-6 h-6 text-blue-600" />
@@ -328,7 +378,7 @@ const Index = () => {
 
           <div className="text-center">
             <Link to="/calm-magic-board?mode=professional">
-              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 text-lg px-8 py-6">
+              <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 text-base md:text-lg px-6 md:px-8 py-5 md:py-6 w-full sm:w-auto">
                 <Sparkles className="w-5 h-5 mr-2" />
                 Open Calm Magic Board
                 <ArrowRight className="w-5 h-5 ml-2" />
@@ -339,24 +389,24 @@ const Index = () => {
       </section>
 
       {/* Relational Innovation Bridge Section */}
-      <section className="py-16 px-4 bg-gradient-to-r from-rose-50 to-purple-50 dark:from-rose-950/20 dark:to-purple-950/20">
+      <section className="py-12 md:py-16 px-4 bg-gradient-to-r from-rose-50 to-purple-50 dark:from-rose-950/20 dark:to-purple-950/20">
         <div className="container max-w-6xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-purple-600">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-purple-600">
             Bridge to Relational Innovation
           </h2>
-          <p className="text-xl text-slate-600 dark:text-slate-300 mb-8 max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 mb-6 md:mb-8 max-w-3xl mx-auto px-2">
             Technical excellence requires human excellence. Discover how individual coaching and team learning 
             skills amplify your AI leadership capabilities.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/calm-magic-assistant">
-              <Button className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4">
+            <Link to="/calm-magic-assistant" className="w-full sm:w-auto">
+              <Button className="w-full sm:w-auto bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 flex items-center justify-center gap-2 py-5">
                 <Heart className="w-4 h-4" />
                 Explore Relational Innovation
               </Button>
             </Link>
-            <Link to="/calm-magic-board?mode=personal">
-              <Button variant="outline" className="flex items-center gap-2 border-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/20">
+            <Link to="/calm-magic-board?mode=personal" className="w-full sm:w-auto">
+              <Button variant="outline" className="w-full sm:w-auto flex items-center justify-center gap-2 border-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/20 py-5">
                 <Compass className="w-4 h-4" />
                 Personal Expansion Journal
               </Button>
