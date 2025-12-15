@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,6 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
 import { 
   X, 
   FileText, 
@@ -27,7 +28,8 @@ import {
   Eye,
   Briefcase,
   Zap,
-  Lock
+  Lock,
+  Copy
 } from 'lucide-react';
 import { downloadMarkdown, exportPrdAsPdf } from '@/utils/prdExport';
 import { toast } from 'sonner';
@@ -49,6 +51,25 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { hasFeatureAccess, PremiumFeature } from '@/data/subscriptionTiers';
 import FeatureGate from '@/components/FeatureGate';
 import PremiumBadge from '@/components/PremiumBadge';
+
+// Human-readable field labels
+const FIELD_LABELS: Record<string, string> = {
+  love_signals_summary: 'Signals Summary',
+  love_decision_to_exist: 'Decision to Exist',
+  magic_storyworld: 'Storyworld',
+  magic_prd_outline: 'PRD Outline',
+  magic_hypotheses: 'Hypotheses',
+  magic_patterns: 'Patterns',
+  calm_requirements: 'Requirements',
+  calm_risks_and_limits: 'Risks & Limits',
+  open_ontology_and_graph: 'Ontology & Graph',
+  open_real_workflow: 'Real Workflow',
+  open_adjustment_plan: 'Adjustment Plan',
+  free_first_poem_description: 'First Poem Description',
+  free_totem_anthem: 'Totem Anthem',
+  free_success_criteria: 'Success Criteria',
+  free_next_cycle_hooks: 'Next Cycle Hooks',
+};
 interface PrdAssemblyPanelProps {
   isOpen: boolean;
   onClose: () => void;
@@ -101,6 +122,7 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   const [expandedLayers, setExpandedLayers] = useState<Set<Season>>(new Set([currentSeason]));
   const [generatingLayer, setGeneratingLayer] = useState<Season | null>(null);
   const [activeTab, setActiveTab] = useState<'layers' | 'dimensions' | 'csuite' | 'compilation'>('layers');
+  const [showFullPreview, setShowFullPreview] = useState(false);
   
   const { tier } = useSubscription();
   const canAccessCSuite = hasFeatureAccess(tier, 'csuite_dashboard');
@@ -227,6 +249,61 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
     return Object.values(layer.content).some(v => v && v.trim().length > 0);
   };
 
+  // Calculate overall progress
+  const progressStats = useMemo(() => {
+    let totalFields = 0;
+    let filledFields = 0;
+    const layerProgress: { season: Season; filled: number; total: number; percentage: number }[] = [];
+
+    SEASON_ORDER.forEach(season => {
+      const layerName = SEASON_PRD_LAYER[season];
+      const fields = PRD_LAYER_FIELDS[layerName] || [];
+      const filled = fields.filter(f => prdData?.[f] && String(prdData[f]).trim().length > 0).length;
+      
+      totalFields += fields.length;
+      filledFields += filled;
+      
+      layerProgress.push({
+        season,
+        filled,
+        total: fields.length,
+        percentage: fields.length > 0 ? Math.round((filled / fields.length) * 100) : 0
+      });
+    });
+
+    const overallPercentage = totalFields > 0 ? Math.round((filledFields / totalFields) * 100) : 0;
+    const completedLayerCount = layerProgress.filter(l => l.percentage === 100).length;
+
+    return { totalFields, filledFields, overallPercentage, layerProgress, completedLayerCount };
+  }, [prdData]);
+
+  // Copy preview as markdown
+  const handleCopyPreview = () => {
+    if (!prdData) return;
+
+    let markdown = `# ${prdData.title || 'Untitled'} - ${documentName}\n\n`;
+    markdown += `**Progress:** ${progressStats.filledFields}/${progressStats.totalFields} fields (${progressStats.overallPercentage}%)\n\n`;
+    markdown += `---\n\n`;
+
+    SEASON_ORDER.forEach(season => {
+      const layerName = SEASON_PRD_LAYER[season];
+      const fields = PRD_LAYER_FIELDS[layerName] || [];
+      const layerStat = progressStats.layerProgress.find(l => l.season === season);
+      
+      markdown += `## ${SEASON_LABELS[season]} (${layerName}) - ${layerStat?.percentage || 0}%\n\n`;
+      
+      fields.forEach(field => {
+        const value = prdData[field];
+        const label = FIELD_LABELS[field] || field.replace(/_/g, ' ');
+        markdown += `### ${label}\n`;
+        markdown += value ? `${value}\n\n` : `*Not generated yet*\n\n`;
+      });
+    });
+
+    navigator.clipboard.writeText(markdown);
+    toast.success('PRD copied to clipboard');
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -244,6 +321,15 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setShowFullPreview(true)}
+              disabled={!prdData}
+            >
+              <Eye className="h-3.5 w-3.5 mr-1" />
+              Preview
+            </Button>
             {prdId && (
               <Button 
                 variant="outline" 
@@ -506,6 +592,122 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Full Preview Sheet */}
+      <Sheet open={showFullPreview} onOpenChange={setShowFullPreview}>
+        <SheetContent side="right" className="w-full max-w-2xl sm:max-w-xl flex flex-col p-0">
+          <SheetHeader className="p-4 border-b border-border shrink-0">
+            <SheetTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-primary" />
+              {prdData?.title || 'Untitled'} - Full {documentName}
+            </SheetTitle>
+            <div className="space-y-2 pt-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">
+                  {progressStats.filledFields} of {progressStats.totalFields} fields • {progressStats.completedLayerCount} of 5 layers
+                </span>
+                <Badge 
+                  variant="outline" 
+                  className={
+                    progressStats.overallPercentage >= 100 
+                      ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30' 
+                      : progressStats.overallPercentage >= 50 
+                        ? 'bg-blue-500/10 text-blue-500 border-blue-500/30'
+                        : 'bg-amber-500/10 text-amber-500 border-amber-500/30'
+                  }
+                >
+                  {progressStats.overallPercentage}%
+                </Badge>
+              </div>
+              <Progress 
+                value={progressStats.overallPercentage} 
+                className={`h-2 ${
+                  progressStats.overallPercentage >= 100 
+                    ? '[&>div]:bg-emerald-500' 
+                    : progressStats.overallPercentage >= 50 
+                      ? '[&>div]:bg-blue-500'
+                      : '[&>div]:bg-amber-500'
+                }`}
+              />
+            </div>
+          </SheetHeader>
+
+          <ScrollArea className="flex-1 p-4">
+            <div className="space-y-6">
+              {SEASON_ORDER.map(season => {
+                const layerName = SEASON_PRD_LAYER[season];
+                const fields = PRD_LAYER_FIELDS[layerName] || [];
+                const layerStat = progressStats.layerProgress.find(l => l.season === season);
+                
+                return (
+                  <div key={season} className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className={`p-1.5 rounded ${SEASON_COLORS[season]}`}>
+                          {SEASON_ICONS[season]}
+                        </div>
+                        <h3 className="font-semibold">{SEASON_LABELS[season]}</h3>
+                        <Badge variant="outline" className="text-xs font-normal">
+                          {layerName}
+                        </Badge>
+                      </div>
+                      <Badge 
+                        variant="outline"
+                        className={
+                          layerStat?.percentage === 100 
+                            ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/30' 
+                            : layerStat?.percentage && layerStat.percentage > 0
+                              ? 'bg-blue-500/10 text-blue-500 border-blue-500/30'
+                              : 'bg-muted text-muted-foreground'
+                        }
+                      >
+                        {layerStat?.percentage || 0}%
+                      </Badge>
+                    </div>
+
+                    <div className="space-y-2 pl-8">
+                      {fields.map(field => {
+                        const value = prdData?.[field];
+                        const label = FIELD_LABELS[field] || field.replace(/_/g, ' ');
+                        const hasValue = value && String(value).trim().length > 0;
+                        
+                        return (
+                          <div key={field} className="bg-muted/30 rounded-lg p-3">
+                            <div className="flex items-center gap-2 mb-1">
+                              {hasValue ? (
+                                <Check className="h-3.5 w-3.5 text-emerald-500" />
+                              ) : (
+                                <div className="h-3.5 w-3.5 rounded-full border border-muted-foreground/30" />
+                              )}
+                              <p className="text-sm font-medium">{label}</p>
+                            </div>
+                            {hasValue ? (
+                              <p className="text-sm text-muted-foreground pl-5 whitespace-pre-wrap">
+                                {String(value)}
+                              </p>
+                            ) : (
+                              <p className="text-sm text-muted-foreground/50 italic pl-5">
+                                Not generated yet
+                              </p>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </ScrollArea>
+
+          <SheetFooter className="p-4 border-t border-border shrink-0 bg-muted/30">
+            <Button variant="outline" onClick={handleCopyPreview} className="w-full">
+              <Copy className="h-4 w-4 mr-2" />
+              Copy as Markdown
+            </Button>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };
