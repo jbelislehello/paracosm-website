@@ -21,18 +21,28 @@ serve(async (req) => {
 
   try {
     const { layer, polenEntries, board, existingContent, glitchData, driftData } = await req.json() as {
-      layer: PrdLayer;
+      layer: PrdLayer | 'love' | 'magic' | 'calm' | 'open' | 'free' | 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
       polenEntries: PolenEntry[];
       board: string;
-      existingContent: Record<string, string>;
+      existingContent?: Record<string, string> | null;
       glitchData?: any;
       driftData?: any;
     };
 
-    console.log(`Generating Calm Magic PRD content for layer: ${layer}, ${polenEntries.length} polen entries`);
-    
+    const layerNormalized: PrdLayer = (() => {
+      if (layer === 'POLLENS' || layer === 'NOEMS' || layer === 'POEMS' || layer === 'TOTEMS' || layer === 'ANTHEMS') return layer;
+      const lower = String(layer).toLowerCase();
+      if (lower === 'love') return 'POLLENS';
+      if (lower === 'magic') return 'NOEMS';
+      if (lower === 'calm') return 'POEMS';
+      if (lower === 'open') return 'TOTEMS';
+      if (lower === 'free') return 'ANTHEMS';
+      throw new Error(`Invalid layer: ${String(layer)}`);
+    })();
+
+    console.log(`Generating Calm Magic PRD content for layer: ${layerNormalized}, ${polenEntries.length} polen entries (incoming: ${layer})`);
     // If we have structured data from the assistant, use it directly
-    if (layer === 'POLLENS' && glitchData?.pollens) {
+    if (layerNormalized === 'POLLENS' && glitchData?.pollens) {
       const pollens = glitchData.pollens;
       const content = {
         pollens_observations: pollens.glitches?.map((g: any) => `• **${g.title}**: ${g.description}`).join('\n') || '',
@@ -47,7 +57,7 @@ serve(async (req) => {
       });
     }
 
-    if (layer === 'NOEMS' && (glitchData?.noems || driftData?.noems)) {
+    if (layerNormalized === 'NOEMS' && (glitchData?.noems || driftData?.noems)) {
       const noems = driftData?.noems || glitchData?.noems;
       const content = {
         noems_concepts: noems.concepts?.map((c: any) => `• **${c.title}**: ${c.insight} (${c.maturity})`).join('\n') || '',
@@ -58,11 +68,11 @@ serve(async (req) => {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
-    
-    if (layer === 'POEMS' && driftData?.poems) {
+
+    if (layerNormalized === 'POEMS' && driftData?.poems) {
       const poems = driftData.poems;
       const content = {
-        poems_narratives: poems.futures?.map((f: any) => 
+        poems_narratives: poems.futures?.map((f: any) =>
           `**${f.title}** (${f.persona})\n\n*Before:* ${f.scenario.before}\n*During:* ${f.scenario.during}\n*After:* ${f.scenario.after}`
         ).join('\n\n---\n\n') || '',
         poems_content_sources: poems.primary_narrative?.content_sources?.join('\n• ') || '',
@@ -216,7 +226,7 @@ Integration time. What we learn flows back into POLLENS for the next cycle.`
         model: 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: systemPrompt },
-          { role: 'user', content: layerPrompts[layer] + '\n\nIMPORTANT: Return ONLY valid JSON, no markdown code blocks.' }
+          { role: 'user', content: layerPrompts[layerNormalized] + '\n\nIMPORTANT: Return ONLY valid JSON, no markdown code blocks.' }
         ],
       }),
     });
@@ -234,12 +244,30 @@ Integration time. What we learn flows back into POLLENS for the next cycle.`
     }
 
     const data = await response.json();
-    const rawContent = data.choices[0].message.content;
+
+    if (!data?.choices?.[0]?.message?.content) {
+      console.error('AI gateway returned unexpected payload:', JSON.stringify(data)?.slice(0, 1200));
+      throw new Error('AI gateway returned an unexpected response');
+    }
+
+    const rawContent = data.choices[0].message.content as string;
     // Clean up any markdown code blocks that might wrap the JSON
     const cleanedContent = rawContent.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-    const content = JSON.parse(cleanedContent);
 
-    console.log(`Generated content for layer ${layer}:`, Object.keys(content));
+    let content: Record<string, unknown>;
+    try {
+      content = JSON.parse(cleanedContent);
+    } catch (e) {
+      console.error('Failed to parse AI JSON. Raw (first 1200 chars):', rawContent.slice(0, 1200));
+      throw new Error('AI returned invalid JSON');
+    }
+
+    if (typeof content === 'object' && content && 'error' in content && Object.keys(content).length === 1) {
+      const msg = (content as any).error;
+      throw new Error(typeof msg === 'string' ? msg : 'AI returned an error');
+    }
+
+    console.log(`Generated content for layer ${layerNormalized}:`, Object.keys(content));
 
     return new Response(JSON.stringify({ content }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
