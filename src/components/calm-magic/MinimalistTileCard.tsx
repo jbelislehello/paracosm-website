@@ -4,13 +4,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { X, Send, Sparkles, ArrowRight, Loader2, Check, ArrowLeft, Maximize2, Minimize2, Save, MessageSquare, GitBranch, Network } from 'lucide-react';
+import { X, Send, Sparkles, ArrowRight, Loader2, Check, ArrowLeft, Maximize2, Minimize2, Save, MessageSquare, GitBranch, Network, GitMerge } from 'lucide-react';
 import { TILE_CONTENTS } from '@/data/tileContents';
 import { useAgentTileConversation } from '@/hooks/useAgentTileConversation';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
 import { BranchNavigator } from './BranchNavigator';
 import { BranchTreeDiagram } from './BranchTreeDiagram';
+import { BranchMergeDialog } from './BranchMergeDialog';
 
 interface MinimalistTileCardProps {
   selectedTile: { row: number; col: number };
@@ -62,11 +63,13 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
   const [isExpanded, setIsExpanded] = useState(false);
   const [showConversationHistory, setShowConversationHistory] = useState(false);
   const [showBranchTree, setShowBranchTree] = useState(false);
+  const [showMergeDialog, setShowMergeDialog] = useState(false);
   const [branchFromMessageId, setBranchFromMessageId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const { 
     messages, 
+    allMessages,
     branches,
     currentBranchId,
     isLoading, 
@@ -424,18 +427,29 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
         )}
         <div className="flex gap-2 ml-auto">
           {branches.length > 1 && (
-            <Button
-              variant={showBranchTree ? "secondary" : "ghost"}
-              size="sm"
-              onClick={() => {
-                setShowBranchTree(!showBranchTree);
-                if (!showBranchTree) setShowConversationHistory(false);
-              }}
-              className="gap-2 text-xs text-muted-foreground"
-            >
-              <Network className="w-3 h-3" />
-              Tree
-            </Button>
+            <>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowMergeDialog(true)}
+                className="gap-2 text-xs text-muted-foreground"
+              >
+                <GitMerge className="w-3 h-3" />
+                Merge
+              </Button>
+              <Button
+                variant={showBranchTree ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => {
+                  setShowBranchTree(!showBranchTree);
+                  if (!showBranchTree) setShowConversationHistory(false);
+                }}
+                className="gap-2 text-xs text-muted-foreground"
+              >
+                <Network className="w-3 h-3" />
+                Tree
+              </Button>
+            </>
           )}
           {messages.length > 1 && (
             <Button
@@ -453,6 +467,23 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
           )}
         </div>
       </div>
+
+      {/* Branch Merge Dialog */}
+      <BranchMergeDialog
+        open={showMergeDialog}
+        onOpenChange={setShowMergeDialog}
+        branches={branches}
+        allMessages={allMessages}
+        tileId={tileId}
+        tileName={tileContent?.name || 'Unknown Tile'}
+        season={currentSeason || 'POLLENS'}
+        onMergeComplete={() => {
+          toast({
+            title: "✨ Merge complete",
+            description: "Your unified insights have been saved."
+          });
+        }}
+      />
 
       {/* Branch Tree Diagram */}
       {showBranchTree && branches.length > 1 && (
