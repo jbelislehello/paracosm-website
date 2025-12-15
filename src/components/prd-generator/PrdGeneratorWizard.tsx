@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import PrdStageProgress, { PrdLayer } from './PrdStageProgress';
 import StackFormation from './StackFormation';
+import { Progress } from '@/components/ui/progress';
 import { FeminineSafePRD } from '@/components/journal/FeminineSafePRD';
 import { PRD_STAGES, PrdStage } from '@/types/journal-expansion';
 
@@ -187,6 +188,21 @@ const PrdGeneratorWizard = ({
   const hasAnyContent = LAYERS.some(layer => 
     LAYER_FIELDS[layer].some(field => content[field]?.trim())
   );
+
+  // Progress calculations
+  const contentFields = LAYERS.flatMap(layer => 
+    LAYER_FIELDS[layer].filter(f => !f.startsWith('stack_') && !f.startsWith('prompt_'))
+  );
+  const totalFields = contentFields.length;
+  const filledFields = contentFields.filter(field => content[field]?.trim()).length;
+  const progressPercentage = totalFields > 0 ? Math.round((filledFields / totalFields) * 100) : 0;
+
+  const layerProgress = LAYERS.map(layer => {
+    const layerContentFields = LAYER_FIELDS[layer].filter(f => !f.startsWith('stack_') && !f.startsWith('prompt_'));
+    const filled = layerContentFields.filter(f => content[f]?.trim()).length;
+    const total = layerContentFields.length;
+    return { layer, filled, total, percentage: total > 0 ? Math.round((filled / total) * 100) : 0 };
+  });
 
   const handleCopyPreview = () => {
     const markdown = LAYERS.map(layer => {
@@ -557,11 +573,27 @@ const PrdGeneratorWizard = ({
 
       <Sheet open={showFullPreview} onOpenChange={setShowFullPreview}>
         <SheetContent className="w-full max-w-2xl overflow-y-auto">
-          <SheetHeader>
+          <SheetHeader className="space-y-4">
             <SheetTitle className="flex items-center gap-2">
               <Eye className="w-5 h-5" />
               PRD Preview (Work in Progress)
             </SheetTitle>
+            
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Overall Completion</span>
+                <span className={`font-semibold ${
+                  progressPercentage === 100 ? 'text-emerald-600' : 
+                  progressPercentage >= 50 ? 'text-blue-600' : 'text-amber-600'
+                }`}>
+                  {progressPercentage}%
+                </span>
+              </div>
+              <Progress value={progressPercentage} className="h-2" />
+              <p className="text-xs text-muted-foreground">
+                {filledFields} of {totalFields} fields completed • {completedLayers.length} of {LAYERS.length} layers
+              </p>
+            </div>
           </SheetHeader>
           
           <ScrollArea className="h-[calc(100vh-150px)] pr-4">
@@ -577,6 +609,12 @@ const PrdGeneratorWizard = ({
                     <h3 className="font-semibold flex items-center gap-2 text-lg border-b pb-2">
                       <LayerIcon className="w-5 h-5" />
                       {layer}
+                      <span className={`text-xs ml-auto ${
+                        layerProgress.find(lp => lp.layer === layer)?.percentage === 100 ? 'text-emerald-600' :
+                        (layerProgress.find(lp => lp.layer === layer)?.percentage || 0) > 0 ? 'text-blue-600' : 'text-muted-foreground'
+                      }`}>
+                        {layerProgress.find(lp => lp.layer === layer)?.percentage || 0}%
+                      </span>
                       {isCompleted && <Check className="w-4 h-4 text-emerald-500" />}
                     </h3>
                     
