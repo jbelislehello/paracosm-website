@@ -5,7 +5,7 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe, Eye, EyeOff } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { getTerminology } from '@/data/modeAwareTerminology';
@@ -132,7 +132,7 @@ const CalmMagicBoard = () => {
   const [detectedPatterns, setDetectedPatterns] = useState<DetectedPattern[]>([]);
   const [patternHistory, setPatternHistory] = useState<PatternHistoryEntry[]>([]);
   const [highlightedPattern, setHighlightedPattern] = useState<DetectedPattern | null>(null);
-  
+  const [cleanMatrixView, setCleanMatrixView] = useState(false);
   
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   
@@ -1022,8 +1022,26 @@ const CalmMagicBoard = () => {
           </TabsList>
         </Tabs>
         
-        {/* PRD Unlock Progress Indicator - moved to Encyclopedia only */}
-        <div className="flex items-center gap-3">
+        {/* Clean View Toggle + Encyclopedia */}
+        <div className="flex items-center gap-2">
+          {activeView === 'matrix' && (
+            <Button
+              variant={cleanMatrixView ? "secondary" : "ghost"}
+              size="sm"
+              className="gap-1.5 h-8 px-2"
+              onClick={() => setCleanMatrixView(!cleanMatrixView)}
+              title={cleanMatrixView ? "Show paths & connections" : "Clean view (tiles only)"}
+            >
+              {cleanMatrixView ? (
+                <Eye className="w-4 h-4" />
+              ) : (
+                <EyeOff className="w-4 h-4" />
+              )}
+              <span className="hidden lg:inline text-xs">
+                {cleanMatrixView ? "Show Paths" : "Clean View"}
+              </span>
+            </Button>
+          )}
           <Button
             variant="ghost"
             size="sm"
@@ -1090,11 +1108,12 @@ const CalmMagicBoard = () => {
                     journeyPath={journeyPath}
                     onTileClick={handleTileClick}
                     cycleNumber={currentCycleNumber}
-                    showToleranceOverlay={true}
+                    showToleranceOverlay={!cleanMatrixView}
                     onZoneChange={setCurrentZone}
                     completedSeasons={completedSeasons as string[]}
                     highlightedPattern={highlightedPattern}
-                    showPatternOverlay={true}
+                    showPatternOverlay={!cleanMatrixView}
+                    cleanView={cleanMatrixView}
                   />
                 </div>
               </div>

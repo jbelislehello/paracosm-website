@@ -30,6 +30,7 @@ interface MinimalistTileMatrixProps {
   showPatternOverlay?: boolean;
   unlockedRing?: RingLevel;
   onRingUnlock?: (ring: RingLevel, pattern: DetectedPattern) => void;
+  cleanView?: boolean;
 }
 
 // Board color system using HSL values
@@ -100,6 +101,7 @@ const MinimalistTileMatrix = ({
   showPatternOverlay = true,
   unlockedRing,
   onRingUnlock,
+  cleanView = false,
 }: MinimalistTileMatrixProps) => {
   // Calculate current unlocked ring from visited tiles if not provided
   const currentUnlockedRing = unlockedRing ?? getCurrentUnlockedRing(visitedTiles);
@@ -443,8 +445,8 @@ const MinimalistTileMatrix = ({
 
       {/* Main Grid Container */}
       <div className="relative bg-background border border-border/50 rounded-lg p-4">
-        {/* Window of Tolerance Overlay */}
-        {showToleranceOverlay && (
+        {/* Window of Tolerance Overlay - hidden in clean view */}
+        {showToleranceOverlay && !cleanView && (
           <div 
             className="absolute inset-4 pointer-events-none z-5"
             style={{ width: TOTAL_SIZE, height: TOTAL_SIZE }}
@@ -457,36 +459,40 @@ const MinimalistTileMatrix = ({
           </div>
         )}
 
-        {/* Enhanced Ring Tolerance Visualization with breathing, pulses, and philosophy */}
-        <div className="absolute inset-4 pointer-events-none" style={{ width: TOTAL_SIZE, height: TOTAL_SIZE }}>
-          <RingToleranceVisualization
-            ringStates={ringStates}
-            currentUnlockedRing={currentUnlockedRing}
-            totalSize={TOTAL_SIZE}
-            tileSize={TILE_SIZE}
-            gap={GAP}
-          />
-        </div>
+        {/* Enhanced Ring Tolerance Visualization - hidden in clean view */}
+        {!cleanView && (
+          <div className="absolute inset-4 pointer-events-none" style={{ width: TOTAL_SIZE, height: TOTAL_SIZE }}>
+            <RingToleranceVisualization
+              ringStates={ringStates}
+              currentUnlockedRing={currentUnlockedRing}
+              totalSize={TOTAL_SIZE}
+              tileSize={TILE_SIZE}
+              gap={GAP}
+            />
+          </div>
+        )}
 
-        {/* SVG Overlay for diagonals, journey path, and pattern overlay */}
-        <svg 
-          className="absolute inset-4 pointer-events-none"
-          width={TOTAL_SIZE}
-          height={TOTAL_SIZE}
-          viewBox={`0 0 ${TOTAL_SIZE} ${TOTAL_SIZE}`}
-        >
-          {/* Diagonal lines */}
-          {diagonalLines}
-          
-          {/* Journey path lines - drawn above diagonals */}
-          {generateJourneyPathLines()}
-          
-          {/* Pattern overlay - glow and connecting lines */}
-          {generatePatternOverlay()}
-          
-          {/* Dots at intersections */}
-          {tileDots}
-        </svg>
+        {/* SVG Overlay for diagonals, journey path, and pattern overlay - hidden in clean view */}
+        {!cleanView && (
+          <svg 
+            className="absolute inset-4 pointer-events-none"
+            width={TOTAL_SIZE}
+            height={TOTAL_SIZE}
+            viewBox={`0 0 ${TOTAL_SIZE} ${TOTAL_SIZE}`}
+          >
+            {/* Diagonal lines */}
+            {diagonalLines}
+            
+            {/* Journey path lines - drawn above diagonals */}
+            {generateJourneyPathLines()}
+            
+            {/* Pattern overlay - glow and connecting lines */}
+            {generatePatternOverlay()}
+            
+            {/* Dots at intersections */}
+            {tileDots}
+          </svg>
+        )}
 
         {/* Tile Grid */}
         <div 
@@ -570,8 +576,8 @@ const MinimalistTileMatrix = ({
                     </span>
                   )}
                   
-                  {/* Step number badge for visited tiles */}
-                  {stepNumber && !isLocked && (
+                  {/* Step number badge for visited tiles - hidden in clean view */}
+                  {stepNumber && !isLocked && !cleanView && (
                     <div 
                       className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold text-white"
                       style={{ backgroundColor: colors.primary }}
@@ -580,8 +586,8 @@ const MinimalistTileMatrix = ({
                     </div>
                   )}
                   
-                  {/* Ring indicator for corner tiles (Ring 4) */}
-                  {tileRing === 4 && !isLocked && (
+                  {/* Ring indicator for corner tiles (Ring 4) - hidden in clean view */}
+                  {tileRing === 4 && !isLocked && !cleanView && (
                     <div 
                       className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full flex items-center justify-center text-[8px]"
                       style={{ backgroundColor: 'hsl(280 70% 50%)', color: 'white' }}
