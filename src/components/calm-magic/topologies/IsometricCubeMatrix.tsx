@@ -55,8 +55,9 @@ export function IsometricCubeMatrix({
   const [foldProgress, setFoldProgress] = useState(0);
   const [hoverTile, setHoverTile] = useState<{ row: number; col: number } | null>(null);
   
-  // Camera controls
-  const rotationRef = useRef({ x: -0.5, y: -0.4 }); // Adjusted for bottom-left view
+  // Camera controls - turntable style
+  // x = tilt angle (looking down), y = rotation around vertical axis (turntable spin)
+  const rotationRef = useRef({ x: -0.75, y: 0.6 }); // Looking down at ~43°, angled view
   const panRef = useRef({ x: 0, y: 0 });
   const zoomRef = useRef(1);
   const isDraggingRef = useRef(false);
@@ -90,21 +91,23 @@ export function IsometricCubeMatrix({
     return { row, col, isVisited, isSelected, isAccessible, ring, density, stepNumber };
   }, [visitedTiles, selectedTile, currentUnlockedRing, densityMap, journeyPath]);
 
-  // Convert grid position to isometric screen coordinates
-  // FIXED: Row 0, Col 0 now at bottom-left
-  const gridToIsometric = useCallback((row: number, col: number, elevation: number = 0): { x: number; y: number } => {
-    // Flip row so row 0 is at bottom, row 7 at top
-    const flippedRow = 7 - row;
+  // Convert grid position to 3D coordinates on flat plane (turntable layout)
+  // X = horizontal (columns), Z = depth (rows), Y = up (elevation)
+  // Row 0, Col 0 at front-left corner of the turntable
+  const gridTo3D = useCallback((row: number, col: number, elevation: number = 0): { x: number; y: number; z: number } => {
+    // Center the grid so it rotates around its center
+    const gridCenter = 3.5; // Center of 0-7 range
     
-    // Standard isometric projection
-    const x = (col - flippedRow) * cubeSize * COS_ISO;
-    const y = (col + flippedRow) * cubeSize * SIN_ISO - elevation;
+    // X axis: columns (left to right)
+    const x = (col - gridCenter) * cubeSize * 1.1;
     
-    // Offset to position origin (0,0) at bottom-left of view
-    const offsetX = -cubeSize * 3;
-    const offsetY = cubeSize * 2;
+    // Z axis: rows (front to back) - row 0 at front
+    const z = (row - gridCenter) * cubeSize * 1.1;
     
-    return { x: x + offsetX, y: y + offsetY };
+    // Y axis: elevation (up)
+    const y = -elevation;
+    
+    return { x, y, z };
   }, [cubeSize]);
 
   // Convert grid position to torus 3D coordinates
@@ -115,23 +118,23 @@ export function IsometricCubeMatrix({
     return { x: tx * scale, y: ty * scale, z: tz * scale };
   }, [season]);
 
-  // Interpolate between isometric and torus positions
+  // Interpolate between flat 3D and torus positions
   const getInterpolatedPosition = useCallback((
     row: number, 
     col: number, 
     progress: number,
     density: number = 0
   ): { x: number; y: number; z: number } => {
-    const iso = gridToIsometric(row, col, 0);
+    const flat = gridTo3D(row, col, 0);
     const torus = gridToTorus(row, col, density);
     
     // Lerp between positions
     return {
-      x: iso.x + (torus.x - iso.x) * progress,
-      y: iso.y + (torus.y - iso.y) * progress,
-      z: (torus.z) * progress
+      x: flat.x + (torus.x - flat.x) * progress,
+      y: flat.y + (torus.y - flat.y) * progress,
+      z: flat.z + (torus.z - flat.z) * progress
     };
-  }, [gridToIsometric, gridToTorus]);
+  }, [gridTo3D, gridToTorus]);
 
   // Get season color
   const getSeasonColor = useCallback((p: p5, ring: RingLevel): p5.Color => {
@@ -337,11 +340,11 @@ export function IsometricCubeMatrix({
           for (let col = 0; col < 8; col++) {
             const state = getCubeState(row, col);
             if (state.isVisited || state.isSelected) {
-              const iso = gridToIsometric(row, col);
-              // Shadow ellipse
+              const pos3d = gridTo3D(row, col);
+              // Shadow ellipse on the floor
               const shadowOpacity = state.isSelected ? 0.25 : 0.15;
               p.fill(0, 0, 0, shadowOpacity * opacity);
-              p.ellipse(iso.x, iso.y * 0.5, cubeSize * 0.9, cubeSize * 0.5);
+              p.ellipse(pos3d.x, pos3d.z, cubeSize * 0.9, cubeSize * 0.9);
             }
           }
         }
@@ -554,82 +557,84 @@ export function IsometricCubeMatrix({
         p.push();
         p.colorMode(p.RGB, 255);
         
-        // Column labels (LONGEVITY HORIZON) - along bottom edge
+        // Column labels (LONGEVITY HORIZON) - along front edge (row 0)
         const colLabels = ['C', 'H', 'O', 'R', 'D', 'S', 'M', 'Σ'];
         p.fill(150, 180, 200, opacity * 255);
-        p.textSize(14);
+        p.textSize(12);
         p.textAlign(p.CENTER, p.CENTER);
 
         for (let col = 0; col < 8; col++) {
-          // Labels below the matrix at row -1
-          const pos = gridToIsometric(-1, col);
+          const pos3d = gridTo3D(-0.8, col);
           p.push();
-          p.translate(pos.x, pos.y + cubeSize * 0.5, 0);
+          p.translate(pos3d.x, 2, pos3d.z);
+          p.rotateX(-Math.PI / 2); // Make text face up
           p.text(colLabels[col], 0, 0);
           p.pop();
         }
 
-        // Row labels (VELOCITY) - along left edge
-        // FIXED: Labels now match visual order with origin at bottom-left
+        // Row labels (VELOCITY) - along left edge (col 0)
         const rowLabels = ['M', 'A', 'G', 'I', 'C', 'N', 'S', 'P']; // Row 0 = M (Mindsets)
         for (let row = 0; row < 8; row++) {
-          const pos = gridToIsometric(row, -1);
+          const pos3d = gridTo3D(row, -0.8);
           p.push();
-          p.translate(pos.x - cubeSize * 0.5, pos.y, 0);
+          p.translate(pos3d.x, 2, pos3d.z);
+          p.rotateX(-Math.PI / 2);
           p.text(rowLabels[row], 0, 0);
           p.pop();
         }
 
-        // Origin label - Mindsets × Chances at bottom-left
-        const originPos = gridToIsometric(0, 0);
+        // Origin label - Mindsets × Chances at front-left
+        const originPos = gridTo3D(0, 0);
         p.fill(255, 220, 100, opacity * 200);
         p.textSize(10);
         p.push();
-        p.translate(originPos.x - cubeSize * 1.5, originPos.y + cubeSize * 0.8, 0);
+        p.translate(originPos.x - cubeSize * 1.2, 5, originPos.z - cubeSize * 0.8);
+        p.rotateX(-Math.PI / 2);
         p.text('ORIGIN', 0, 0);
-        p.text('(0,0)', 0, 12);
+        p.text('(0,0)', 0, 10);
         p.pop();
 
-        // Axis arrows
+        // Axis arrows on the ground plane
         p.stroke(100, 130, 160, opacity * 200);
         p.strokeWeight(2);
 
-        // Longevity arrow (horizontal, pointing right along cols)
-        const longevityStart = gridToIsometric(-0.5, -0.5);
-        const longevityEnd = gridToIsometric(-0.5, 8.5);
-        p.line(longevityStart.x, longevityStart.y, 0, longevityEnd.x, longevityEnd.y, 0);
+        // Longevity arrow (along columns, X direction)
+        const longevityStart = gridTo3D(0, -0.5);
+        const longevityEnd = gridTo3D(0, 8.5);
+        p.line(longevityStart.x, 1, longevityStart.z, longevityEnd.x, 1, longevityEnd.z);
         // Arrow head
         p.push();
-        p.translate(longevityEnd.x, longevityEnd.y, 0);
+        p.translate(longevityEnd.x, 1, longevityEnd.z);
+        p.rotateY(Math.PI / 2);
         p.fill(100, 130, 160, opacity * 200);
         p.noStroke();
-        p.rotate(-ISO_ANGLE);
-        p.triangle(0, 0, -12, -5, -12, 5);
+        p.triangle(0, 0, -10, -4, -10, 4);
         p.pop();
 
-        // Velocity arrow (vertical, pointing up along rows)
-        const velocityStart = gridToIsometric(-0.5, -0.5);
-        const velocityEnd = gridToIsometric(8.5, -0.5);
-        p.line(velocityStart.x, velocityStart.y, 0, velocityEnd.x, velocityEnd.y, 0);
+        // Velocity arrow (along rows, Z direction)
+        const velocityStart = gridTo3D(-0.5, 0);
+        const velocityEnd = gridTo3D(8.5, 0);
+        p.line(velocityStart.x, 1, velocityStart.z, velocityEnd.x, 1, velocityEnd.z);
         // Arrow head
         p.push();
-        p.translate(velocityEnd.x, velocityEnd.y, 0);
+        p.translate(velocityEnd.x, 1, velocityEnd.z);
         p.fill(100, 130, 160, opacity * 200);
         p.noStroke();
-        p.rotate(ISO_ANGLE + Math.PI);
-        p.triangle(0, 0, -12, -5, -12, 5);
+        p.triangle(0, 0, -10, -4, -10, 4);
         p.pop();
 
-        // Axis labels
+        // Axis labels on ground
         p.fill(120, 150, 180, opacity * 200);
-        p.textSize(10);
+        p.textSize(9);
         p.push();
-        p.translate(longevityEnd.x + 15, longevityEnd.y - 5, 0);
+        p.translate(longevityEnd.x + 10, 2, longevityEnd.z);
+        p.rotateX(-Math.PI / 2);
         p.text('LONGEVITY →', 0, 0);
         p.pop();
 
         p.push();
-        p.translate(velocityEnd.x - 15, velocityEnd.y - 10, 0);
+        p.translate(velocityEnd.x, 2, velocityEnd.z + 15);
+        p.rotateX(-Math.PI / 2);
         p.text('↑ VELOCITY', 0, 0);
         p.pop();
 
@@ -918,33 +923,38 @@ export function IsometricCubeMatrix({
         }
       };
 
-      // ENHANCED: Double-click to reset view
+      // ENHANCED: Double-click to reset view (turntable default)
       p.doubleClicked = () => {
         if (p.mouseX > 0 && p.mouseX < width && p.mouseY > 0 && p.mouseY < height) {
-          rotationRef.current = { x: -0.5, y: -0.4 };
+          rotationRef.current = { x: -0.75, y: 0.6 }; // Look down at ~43°, angled view
           panRef.current = { x: 0, y: 0 };
           zoomRef.current = 1;
         }
       };
 
       p.mouseMoved = () => {
-        // Approximate hover detection with fixed orientation
+        // Simplified hover detection for 3D turntable view
+        // Uses approximate projection based on camera angle
         const centerX = width / 2 + panRef.current.x;
         const centerY = height / 2 + panRef.current.y;
         const relX = (p.mouseX - centerX) / zoomRef.current;
         const relY = (p.mouseY - centerY) / zoomRef.current;
 
-        // Reverse isometric projection (accounting for flipped rows)
-        const isoScale = cubeSize * COS_ISO;
-        const isoSinScale = cubeSize * SIN_ISO;
+        // Account for camera rotation to project back to grid
+        const cosY = Math.cos(-rotationRef.current.y);
+        const sinY = Math.sin(-rotationRef.current.y);
+        const tiltFactor = Math.cos(rotationRef.current.x);
         
-        // Adjust for offset
-        const adjX = relX + cubeSize * 3;
-        const adjY = relY - cubeSize * 2;
+        // Transform mouse position back to grid coordinates
+        const gridScale = cubeSize * 1.1;
+        const gridCenter = 3.5;
         
-        const flippedRow = Math.round((adjY / isoSinScale - adjX / isoScale) / 2);
-        const col = Math.round((adjX / isoScale + adjY / isoSinScale) / 2);
-        const row = 7 - flippedRow; // Un-flip to get actual row
+        // Reverse the rotation and project onto the grid plane
+        const projX = relX * cosY - relY * sinY / Math.max(0.3, tiltFactor);
+        const projZ = relX * sinY + relY * cosY / Math.max(0.3, tiltFactor);
+        
+        const col = Math.round(projX / gridScale + gridCenter);
+        const row = Math.round(projZ / gridScale + gridCenter);
 
         if (row >= 0 && row < 8 && col >= 0 && col < 8) {
           setHoverTile({ row, col });
@@ -961,17 +971,21 @@ export function IsometricCubeMatrix({
         const relX = (mouseX - centerX) / zoomRef.current;
         const relY = (mouseY - centerY) / zoomRef.current;
 
-        // Reverse isometric projection (accounting for flipped rows)
-        const isoScale = cubeSize * COS_ISO;
-        const isoSinScale = cubeSize * SIN_ISO;
+        // Account for camera rotation to project back to grid
+        const cosY = Math.cos(-rotationRef.current.y);
+        const sinY = Math.sin(-rotationRef.current.y);
+        const tiltFactor = Math.cos(rotationRef.current.x);
         
-        // Adjust for offset
-        const adjX = relX + cubeSize * 3;
-        const adjY = relY - cubeSize * 2;
+        // Transform mouse position back to grid coordinates
+        const gridScale = cubeSize * 1.1;
+        const gridCenter = 3.5;
         
-        const flippedRow = Math.round((adjY / isoSinScale - adjX / isoScale) / 2);
-        const col = Math.round((adjX / isoScale + adjY / isoSinScale) / 2);
-        const row = 7 - flippedRow; // Un-flip to get actual row
+        // Reverse the rotation and project onto the grid plane
+        const projX = relX * cosY - relY * sinY / Math.max(0.3, tiltFactor);
+        const projZ = relX * sinY + relY * cosY / Math.max(0.3, tiltFactor);
+        
+        const col = Math.round(projX / gridScale + gridCenter);
+        const row = Math.round(projZ / gridScale + gridCenter);
 
         if (row >= 0 && row < 8 && col >= 0 && col < 8) {
           const state = getCubeState(row, col);
@@ -992,7 +1006,7 @@ export function IsometricCubeMatrix({
     selectedTile, season, visitedTiles, journeyPath, currentUnlockedRing,
     onTileClick, densityMap, viewMode, showHorizonGrid, showDepthFog,
     cubeSize, isAnimating, getCubeState, getInterpolatedPosition, 
-    gridToIsometric, getSeasonColor, getSeasonHue, getDepthFog, foldProgress, hoverTile
+    gridTo3D, getSeasonColor, getSeasonHue, getDepthFog, foldProgress, hoverTile
   ]);
 
   return (
