@@ -298,3 +298,34 @@ export function getWindowOpenness(visitedTiles: Set<string>): number {
   const accessibleTiles = visitedTiles.size;
   return Math.round((accessibleTiles / totalTiles) * 100);
 }
+
+// Ring → Quadrant Tendency Mapping
+// Each ring activation tends to pull toward a specific quadrant
+export interface QuadrantTendency {
+  primary: 'IM' | 'IN' | 'SN' | 'SM';
+  pull: { x: number; y: number }; // Position pull vector
+  reason: string;
+}
+
+export const RING_QUADRANT_TENDENCY: Record<RingLevel, QuadrantTendency> = {
+  1: { 
+    primary: 'IM', 
+    pull: { x: -0.3, y: -0.3 },
+    reason: 'Inner Core = safety + continuity → Intimacy + Memory' 
+  },
+  2: { 
+    primary: 'IN', 
+    pull: { x: 0.2, y: -0.2 },
+    reason: 'Stretch Zone = connection + experimentation → Intimacy + Novelty' 
+  },
+  3: { 
+    primary: 'SN', 
+    pull: { x: 0.4, y: 0.3 },
+    reason: 'Edge Zone = independence + exploration → Sovereignty + Novelty' 
+  },
+  4: { 
+    primary: 'SM', 
+    pull: { x: -0.2, y: 0.4 },
+    reason: 'Corners = anchoring + transcendence → Sovereignty + Memory' 
+  }
+};

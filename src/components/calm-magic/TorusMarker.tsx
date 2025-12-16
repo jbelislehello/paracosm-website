@@ -4,8 +4,10 @@ interface TorusMarkerProps {
   cx: number;
   cy: number;
   size?: number;
-  type: 'shadow' | 'higherSelf';
+  type: 'shadow' | 'higherSelf' | 'inferred';
   animated?: boolean;
+  variant?: 'solid' | 'outline';
+  label?: string;
 }
 
 /**
@@ -19,8 +21,12 @@ export const TorusMarker: React.FC<TorusMarkerProps> = ({
   size = 8,
   type,
   animated = true,
+  variant = 'solid',
+  label,
 }) => {
   const isShadow = type === 'shadow';
+  const isInferred = type === 'inferred';
+  const isOutline = variant === 'outline';
   
   // Torus dimensions
   const outerRx = size;
@@ -29,24 +35,43 @@ export const TorusMarker: React.FC<TorusMarkerProps> = ({
   const innerRy = size * 0.15;
   
   // Color based on type
-  const primaryColor = isShadow 
-    ? 'hsl(var(--foreground))' 
-    : 'hsl(var(--primary))';
-  const glowColor = isShadow 
-    ? 'hsl(var(--foreground) / 0.3)' 
-    : 'hsl(var(--primary) / 0.4)';
-  const innerGlow = isShadow 
-    ? 'hsl(var(--foreground) / 0.6)' 
-    : 'hsl(var(--primary) / 0.7)';
+  let primaryColor: string;
+  let glowColor: string;
+  let innerGlow: string;
+  
+  if (isInferred) {
+    primaryColor = 'hsl(var(--chart-2))'; // Distinct color for inferred
+    glowColor = 'hsl(var(--chart-2) / 0.3)';
+    innerGlow = 'hsl(var(--chart-2) / 0.5)';
+  } else if (isShadow) {
+    primaryColor = 'hsl(var(--foreground))';
+    glowColor = 'hsl(var(--foreground) / 0.3)';
+    innerGlow = 'hsl(var(--foreground) / 0.6)';
+  } else {
+    primaryColor = 'hsl(var(--primary))';
+    glowColor = 'hsl(var(--primary) / 0.4)';
+    innerGlow = 'hsl(var(--primary) / 0.7)';
+  }
+  
+  // Outline variant uses lower opacity
+  const fillOpacity = isOutline ? 0.2 : 1;
   
   const uniqueId = `torus-${type}-${cx}-${cy}`;
   
+  // Animation class based on type
+  const animationClass = animated 
+    ? (isInferred ? '' : (isShadow ? 'animate-torus-breathe' : 'animate-torus-pulse')) 
+    : '';
+  
+  // Display label
+  const displayLabel = label || (isShadow ? 'shadow' : isInferred ? 'inferred' : 'higher self');
+
   return (
-    <g className={animated ? (isShadow ? 'animate-torus-breathe' : 'animate-torus-pulse') : ''}>
+    <g className={animationClass} style={{ opacity: isOutline ? 0.6 : 1 }}>
       {/* Glow effect */}
       <defs>
         <radialGradient id={`${uniqueId}-glow`} cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor={glowColor} stopOpacity="0.8" />
+          <stop offset="0%" stopColor={glowColor} stopOpacity={isOutline ? 0.4 : 0.8} />
           <stop offset="100%" stopColor={glowColor} stopOpacity="0" />
         </radialGradient>
         <linearGradient id={`${uniqueId}-surface`} x1="0%" y1="0%" x2="0%" y2="100%">
@@ -146,7 +171,7 @@ export const TorusMarker: React.FC<TorusMarkerProps> = ({
         fillOpacity="0.7"
         className="font-medium"
       >
-        {isShadow ? 'shadow' : 'higher self'}
+        {displayLabel}
       </text>
     </g>
   );

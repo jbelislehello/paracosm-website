@@ -2,6 +2,51 @@
 
 export type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 
+// Quadrant theme scores from semantic analysis (0-1 each)
+export interface QuadrantThemes {
+  intimacy: number;    // Connection, vulnerability, closeness, relationship
+  sovereignty: number; // Independence, self-direction, boundaries, autonomy
+  memory: number;      // Continuity, heritage, patterns, anchoring
+  novelty: number;     // Exploration, innovation, risk, newness
+}
+
+// Individual POLEN entry sentiment result
+export interface PolenSentiment {
+  polenId: string;
+  themes: QuadrantThemes;
+  dominantTheme: keyof QuadrantThemes;
+  emotionalValence: 'positive' | 'negative' | 'neutral' | 'ambivalent';
+  keywords: string[];
+}
+
+// Dissonance between behavior and prophecy
+export type DissonanceType = 'aligned' | 'divergent' | 'contradictory' | null;
+
+// Full topological signature combining structural + semantic analysis
+export interface TopologicalSignature {
+  // Structural factors (from coherence analysis)
+  structural: ShadowFactors;
+  
+  // Semantic factors (from AI analysis of POLEN content)
+  semantic: QuadrantThemes;
+  
+  // Combined inference
+  inferredPosition: QuadrantPosition;
+  inferredQuadrant: 'SN' | 'IN' | 'IM' | 'SM';
+  confidence: number; // 0-1
+  
+  // Dissonance detection (the "trap" detector)
+  dissonanceFromProphecy: number; // 0-1, gap between behavior and stated goal
+  dissonanceType: DissonanceType;
+  
+  // AI-generated nudge suggestion
+  aiNudge?: string;
+  
+  // Analysis metadata
+  analyzedAt: string;
+  polenCount: number;
+}
+
 export interface SeasonQualities {
   vitality: number;      // LOVE/POLLENS - 0-100
   spaciousness: number;  // MAGIC/NOEMS - 0-100
