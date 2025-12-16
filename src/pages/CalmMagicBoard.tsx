@@ -944,7 +944,11 @@ const CalmMagicBoard = () => {
             userId={user?.id}
             visitedTiles={visitedTiles}
             onPatternDetected={handlePatternDetected}
-            onOpenPatternJournal={() => setShowPatternJournal(true)}
+            onPatternClick={(pattern) => {
+              setHighlightedPattern(pattern);
+              toast.info(`Highlighting ${pattern.name} on matrix`);
+              setTimeout(() => setHighlightedPattern(null), 5000);
+            }}
           />
         </div>
       </div>
