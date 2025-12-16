@@ -1,5 +1,5 @@
 import { useRef, useCallback, useEffect, useState } from 'react';
-import { getTileCosmology } from '@/data/cosmologicalMapping';
+import { getTileCosmology, TRIGRAMS, Trigram, Hexagram } from '@/data/cosmologicalMapping';
 
 type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 
@@ -55,6 +55,31 @@ const SEASON_CHARACTERISTICS: Record<Season, { filterFreq: number; reverbMix: nu
   POEMS: { filterFreq: 4000, reverbMix: 0.4, waveform: 'sine' },
   TOTEMS: { filterFreq: 2500, reverbMix: 0.6, waveform: 'triangle' },
   ANTHEMS: { filterFreq: 5000, reverbMix: 0.7, waveform: 'sine' },
+};
+
+// Trigram sound profiles - 3-note arpeggios with characteristic shapes
+const TRIGRAM_SOUNDS: Record<string, { frequencies: number[]; character: 'ascending' | 'descending' | 'stable' }> = {
+  'Heaven': { frequencies: [523.25, 659.25, 783.99], character: 'ascending' },   // C5-E5-G5 - bright, rising
+  'Earth': { frequencies: [261.63, 220.00, 196.00], character: 'descending' },   // C4-A3-G3 - grounding
+  'Water': { frequencies: [293.66, 329.63, 293.66], character: 'stable' },       // D4-E4-D4 - flowing
+  'Fire': { frequencies: [440.00, 523.25, 659.25], character: 'ascending' },     // A4-C5-E5 - bright, intense
+  'Thunder': { frequencies: [130.81, 196.00, 261.63], character: 'ascending' },  // C3-G3-C4 - rumbling rise
+  'Mountain': { frequencies: [329.63, 329.63, 293.66], character: 'stable' },    // E4-E4-D4 - still, solid
+  'Wind': { frequencies: [392.00, 440.00, 523.25], character: 'ascending' },     // G4-A4-C5 - gentle lift
+  'Lake': { frequencies: [523.25, 440.00, 392.00], character: 'descending' },    // C5-A4-G4 - reflective descent
+};
+
+// Geometric pattern sound profiles
+const GEOMETRIC_SOUND_PROFILES: Record<string, { type: string; frequencies: number[]; timing: number[] }> = {
+  'cross': { type: 'chord', frequencies: [261.63, 329.63, 392.00, 523.25], timing: [0, 0, 0, 0] },
+  'tower': { type: 'ascending', frequencies: [196.00, 220.00, 261.63, 293.66, 329.63, 392.00], timing: [0, 100, 200, 300, 400, 500] },
+  'bridge': { type: 'sweep', frequencies: [261.63, 293.66, 329.63, 369.99, 392.00, 440.00], timing: [0, 80, 160, 240, 320, 400] },
+  'garden': { type: 'ambient', frequencies: [261.63, 329.63, 392.00], timing: [0, 0, 0] },
+  'web': { type: 'rapid', frequencies: [440.00, 523.25, 659.25, 783.99], timing: [0, 50, 100, 150] },
+  'spiral': { type: 'circular', frequencies: [261.63, 329.63, 392.00, 523.25, 392.00, 329.63], timing: [0, 150, 300, 450, 600, 750] },
+  'diamond': { type: 'mirror', frequencies: [261.63, 329.63, 440.00, 329.63, 261.63], timing: [0, 100, 200, 300, 400] },
+  'scatter': { type: 'random', frequencies: [293.66, 369.99, 440.00, 523.25], timing: [0, 120, 80, 200] },
+  'frame': { type: 'edge', frequencies: [196.00, 261.63, 329.63, 261.63], timing: [0, 100, 200, 300] },
 };
 
 export const useCosmologicalAudio = () => {
@@ -213,6 +238,126 @@ export const useCosmologicalAudio = () => {
     });
   }, [initAudio]);
 
+  // Play trigram sound - 3-note arpeggio with characteristic shape
+  const playTrigramSound = useCallback((trigramName: string) => {
+    const ctx = initAudio();
+    if (!ctx) return;
+
+    const config = TRIGRAM_SOUNDS[trigramName];
+    if (!config) return;
+
+    const now = ctx.currentTime;
+    const masterGain = ctx.createGain();
+    masterGain.gain.value = 0.4;
+    masterGain.connect(gainNodeRef.current!);
+
+    // Create filter for shimmer
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 3000;
+    filter.connect(masterGain);
+
+    config.frequencies.forEach((freq, index) => {
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+
+      // Add slight detune for richness
+      const osc2 = ctx.createOscillator();
+      osc2.type = 'sine';
+      osc2.frequency.value = freq * 1.002;
+
+      const oscGain = ctx.createGain();
+      const startTime = now + index * 0.15;
+      
+      oscGain.gain.setValueAtTime(0, startTime);
+      oscGain.gain.linearRampToValueAtTime(0.5, startTime + 0.05);
+      oscGain.gain.linearRampToValueAtTime(0.3, startTime + 0.2);
+      oscGain.gain.linearRampToValueAtTime(0, startTime + 0.8);
+
+      osc.connect(oscGain);
+      osc2.connect(oscGain);
+      oscGain.connect(filter);
+
+      osc.start(startTime);
+      osc2.start(startTime);
+      osc.stop(startTime + 1);
+      osc2.stop(startTime + 1);
+    });
+  }, [initAudio]);
+
+  // Play hexagram sound - 6-part harmony based on lines
+  const playHexagramSound = useCallback((hexagram: Hexagram) => {
+    const ctx = initAudio();
+    if (!ctx) return;
+
+    const now = ctx.currentTime;
+    const masterGain = ctx.createGain();
+    masterGain.gain.value = 0.35;
+    masterGain.connect(gainNodeRef.current!);
+
+    // Map lines to frequencies: yang (solid) = higher, yin (broken) = lower
+    const baseFreq = 220; // A3
+    const yangFreqs = [440, 493.88, 523.25, 587.33, 659.25, 783.99]; // Higher octave
+    const yinFreqs = [220, 246.94, 261.63, 293.66, 329.63, 392.00];   // Lower octave
+
+    hexagram.lines.forEach((isYang, index) => {
+      const freq = isYang ? yangFreqs[index] : yinFreqs[index];
+      
+      const osc = ctx.createOscillator();
+      osc.type = isYang ? 'sine' : 'triangle';
+      osc.frequency.value = freq;
+
+      const oscGain = ctx.createGain();
+      const startTime = now + index * 0.1;
+      
+      oscGain.gain.setValueAtTime(0, startTime);
+      oscGain.gain.linearRampToValueAtTime(0.4, startTime + 0.15);
+      oscGain.gain.linearRampToValueAtTime(0.25, startTime + 0.5);
+      oscGain.gain.linearRampToValueAtTime(0, startTime + 2);
+
+      osc.connect(oscGain);
+      oscGain.connect(masterGain);
+
+      osc.start(startTime);
+      osc.stop(startTime + 2.5);
+    });
+  }, [initAudio]);
+
+  // Play geometric pattern sound
+  const playGeometricPatternSound = useCallback((patternType: string) => {
+    const ctx = initAudio();
+    if (!ctx) return;
+
+    const config = GEOMETRIC_SOUND_PROFILES[patternType];
+    if (!config) return;
+
+    const now = ctx.currentTime;
+    const masterGain = ctx.createGain();
+    masterGain.gain.value = 0.4;
+    masterGain.connect(gainNodeRef.current!);
+
+    config.frequencies.forEach((freq, index) => {
+      const osc = ctx.createOscillator();
+      osc.type = config.type === 'ambient' ? 'sine' : 'triangle';
+      osc.frequency.value = freq;
+
+      const oscGain = ctx.createGain();
+      const startTime = now + (config.timing[index] || 0) / 1000;
+      
+      oscGain.gain.setValueAtTime(0, startTime);
+      oscGain.gain.linearRampToValueAtTime(0.5, startTime + 0.05);
+      oscGain.gain.linearRampToValueAtTime(0.3, startTime + 0.3);
+      oscGain.gain.linearRampToValueAtTime(0, startTime + 1.2);
+
+      osc.connect(oscGain);
+      oscGain.connect(masterGain);
+
+      osc.start(startTime);
+      osc.stop(startTime + 1.5);
+    });
+  }, [initAudio]);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
@@ -226,6 +371,9 @@ export const useCosmologicalAudio = () => {
     playTileSound,
     playTilePath,
     playResonanceChord,
+    playTrigramSound,
+    playHexagramSound,
+    playGeometricPatternSound,
     initAudio,
     isInitialized
   };
