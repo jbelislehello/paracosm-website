@@ -233,9 +233,14 @@ const TileDetailPanel = ({
     <div className="h-full flex flex-col bg-gradient-to-br from-background to-muted/30">
       {/* Prominent Simple Title */}
       <div className="px-5 py-3 border-b border-border/30 flex items-center justify-between shrink-0">
-        <h2 className="text-lg font-semibold">
-          {rowLabels[selectedTile.row].name} × {colLabels[selectedTile.col].name}
-        </h2>
+        <div>
+          <h2 className="text-lg font-semibold">
+            {tileContent?.name || `${rowLabels[selectedTile.row].name} × ${colLabels[selectedTile.col].name}`}
+          </h2>
+          <p className="text-xs text-muted-foreground font-mono">
+            {rowLabels[selectedTile.row].letter} × {colLabels[selectedTile.col].letter}
+          </p>
+        </div>
         <Button variant="ghost" size="icon" onClick={handleClose} className="shrink-0 h-8 w-8">
           <X className="w-4 h-4" />
         </Button>
