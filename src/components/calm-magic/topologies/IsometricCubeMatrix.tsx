@@ -54,7 +54,11 @@ export function IsometricCubeMatrix({
   const p5Ref = useRef<p5 | null>(null);
   const [foldProgress, setFoldProgress] = useState(0);
   const [hoverTile, setHoverTile] = useState<{ row: number; col: number } | null>(null);
-  const rotationRef = useRef({ x: -0.4, y: 0.2 });
+  
+  // Camera controls
+  const rotationRef = useRef({ x: -0.5, y: -0.4 }); // Adjusted for bottom-left view
+  const panRef = useRef({ x: 0, y: 0 });
+  const zoomRef = useRef(1);
   const isDraggingRef = useRef(false);
   const lastMouseRef = useRef({ x: 0, y: 0 });
 
@@ -87,10 +91,20 @@ export function IsometricCubeMatrix({
   }, [visitedTiles, selectedTile, currentUnlockedRing, densityMap, journeyPath]);
 
   // Convert grid position to isometric screen coordinates
+  // FIXED: Row 0, Col 0 now at bottom-left
   const gridToIsometric = useCallback((row: number, col: number, elevation: number = 0): { x: number; y: number } => {
-    const x = (col - row) * cubeSize * COS_ISO;
-    const y = (col + row) * cubeSize * SIN_ISO - elevation;
-    return { x, y };
+    // Flip row so row 0 is at bottom, row 7 at top
+    const flippedRow = 7 - row;
+    
+    // Standard isometric projection
+    const x = (col - flippedRow) * cubeSize * COS_ISO;
+    const y = (col + flippedRow) * cubeSize * SIN_ISO - elevation;
+    
+    // Offset to position origin (0,0) at bottom-left of view
+    const offsetX = -cubeSize * 3;
+    const offsetY = cubeSize * 2;
+    
+    return { x: x + offsetX, y: y + offsetY };
   }, [cubeSize]);
 
   // Convert grid position to torus 3D coordinates
@@ -132,11 +146,13 @@ export function IsometricCubeMatrix({
   }, [season]);
 
   // Calculate depth fog based on distance from camera
+  // FIXED: Fog increases toward top-right (away from bottom-left camera position)
   const getDepthFog = useCallback((row: number, col: number): number => {
-    // Tiles further from camera (higher row, lower col) are more fogged
-    const distanceFromCamera = row * 0.8 + (7 - col) * 0.4;
+    // With origin at bottom-left, fog increases for higher rows and higher cols
+    const flippedRow = 7 - row; // Flip to match visual position
+    const distanceFromCamera = flippedRow * 0.5 + col * 0.6;
     const normalizedDistance = distanceFromCamera / 10;
-    return Math.min(0.65, normalizedDistance * 0.45);
+    return Math.min(0.6, normalizedDistance * 0.4);
   }, []);
 
   useEffect(() => {
@@ -170,7 +186,13 @@ export function IsometricCubeMatrix({
 
         p.push();
         
-        // Apply rotation for 3D view - adjusted for horizon perspective
+        // Apply pan
+        p.translate(panRef.current.x, panRef.current.y, 0);
+        
+        // Apply zoom
+        p.scale(zoomRef.current);
+        
+        // Apply rotation for 3D view
         p.rotateX(rotationRef.current.x);
         p.rotateY(rotationRef.current.y);
 
@@ -185,16 +207,19 @@ export function IsometricCubeMatrix({
         }
 
         // Draw all 64 cubes - sorted by depth for proper rendering
+        // FIXED: Depth sorting for bottom-left origin perspective
         const cubesWithDepth: Array<{ row: number; col: number; depth: number }> = [];
         for (let row = 0; row < 8; row++) {
           for (let col = 0; col < 8; col++) {
-            // Depth based on position - further cubes rendered first
-            const depth = row + col;
+            // With bottom-left origin, depth = flippedRow + col
+            // Back cubes (high flippedRow, high col) should render first
+            const flippedRow = 7 - row;
+            const depth = flippedRow + col;
             cubesWithDepth.push({ row, col, depth });
           }
         }
-        // Sort by depth (back to front)
-        cubesWithDepth.sort((a, b) => a.depth - b.depth);
+        // Sort back-to-front (higher depth = further back = render first)
+        cubesWithDepth.sort((a, b) => b.depth - a.depth);
         
         for (const { row, col } of cubesWithDepth) {
           const state = getCubeState(row, col);
@@ -529,67 +554,83 @@ export function IsometricCubeMatrix({
         p.push();
         p.colorMode(p.RGB, 255);
         
-        // Column labels (LONGEVITY HORIZON)
+        // Column labels (LONGEVITY HORIZON) - along bottom edge
         const colLabels = ['C', 'H', 'O', 'R', 'D', 'S', 'M', 'Σ'];
         p.fill(150, 180, 200, opacity * 255);
         p.textSize(14);
         p.textAlign(p.CENTER, p.CENTER);
 
         for (let col = 0; col < 8; col++) {
-          const pos = gridToIsometric(-1.5, col);
+          // Labels below the matrix at row -1
+          const pos = gridToIsometric(-1, col);
           p.push();
-          p.translate(pos.x, pos.y - cubeSize * 1.2, 0);
+          p.translate(pos.x, pos.y + cubeSize * 0.5, 0);
           p.text(colLabels[col], 0, 0);
           p.pop();
         }
 
-        // Row labels (VELOCITY)
-        const rowLabels = ['M', 'A', 'G', 'I', 'C', 'N', 'S', 'P'];
+        // Row labels (VELOCITY) - along left edge
+        // FIXED: Labels now match visual order with origin at bottom-left
+        const rowLabels = ['M', 'A', 'G', 'I', 'C', 'N', 'S', 'P']; // Row 0 = M (Mindsets)
         for (let row = 0; row < 8; row++) {
-          const pos = gridToIsometric(row, -1.5);
+          const pos = gridToIsometric(row, -1);
           p.push();
-          p.translate(pos.x - cubeSize * 0.8, pos.y - cubeSize * 0.4, 0);
+          p.translate(pos.x - cubeSize * 0.5, pos.y, 0);
           p.text(rowLabels[row], 0, 0);
           p.pop();
         }
+
+        // Origin label - Mindsets × Chances at bottom-left
+        const originPos = gridToIsometric(0, 0);
+        p.fill(255, 220, 100, opacity * 200);
+        p.textSize(10);
+        p.push();
+        p.translate(originPos.x - cubeSize * 1.5, originPos.y + cubeSize * 0.8, 0);
+        p.text('ORIGIN', 0, 0);
+        p.text('(0,0)', 0, 12);
+        p.pop();
 
         // Axis arrows
         p.stroke(100, 130, 160, opacity * 200);
         p.strokeWeight(2);
 
-        // Longevity arrow (horizontal)
-        const longevityStart = gridToIsometric(-1, -1);
-        const longevityEnd = gridToIsometric(-1, 9);
-        p.line(longevityStart.x, longevityStart.y - cubeSize * 0.5, 0, longevityEnd.x, longevityEnd.y - cubeSize * 0.5, 0);
+        // Longevity arrow (horizontal, pointing right along cols)
+        const longevityStart = gridToIsometric(-0.5, -0.5);
+        const longevityEnd = gridToIsometric(-0.5, 8.5);
+        p.line(longevityStart.x, longevityStart.y, 0, longevityEnd.x, longevityEnd.y, 0);
+        // Arrow head
         p.push();
-        p.translate(longevityEnd.x, longevityEnd.y - cubeSize * 0.5, 0);
+        p.translate(longevityEnd.x, longevityEnd.y, 0);
         p.fill(100, 130, 160, opacity * 200);
         p.noStroke();
-        p.triangle(0, 0, -10, -5, -10, 5);
+        p.rotate(-ISO_ANGLE);
+        p.triangle(0, 0, -12, -5, -12, 5);
         p.pop();
 
-        // Velocity arrow (vertical)
-        const velocityStart = gridToIsometric(-1, -1);
-        const velocityEnd = gridToIsometric(9, -1);
-        p.line(velocityStart.x, velocityStart.y - cubeSize * 0.5, 0, velocityEnd.x, velocityEnd.y - cubeSize * 0.5, 0);
+        // Velocity arrow (vertical, pointing up along rows)
+        const velocityStart = gridToIsometric(-0.5, -0.5);
+        const velocityEnd = gridToIsometric(8.5, -0.5);
+        p.line(velocityStart.x, velocityStart.y, 0, velocityEnd.x, velocityEnd.y, 0);
+        // Arrow head
         p.push();
-        p.translate(velocityEnd.x, velocityEnd.y - cubeSize * 0.5, 0);
+        p.translate(velocityEnd.x, velocityEnd.y, 0);
         p.fill(100, 130, 160, opacity * 200);
         p.noStroke();
-        p.triangle(0, 0, -5, -10, 5, -10);
+        p.rotate(ISO_ANGLE + Math.PI);
+        p.triangle(0, 0, -12, -5, -12, 5);
         p.pop();
 
         // Axis labels
         p.fill(120, 150, 180, opacity * 200);
         p.textSize(10);
         p.push();
-        p.translate(longevityEnd.x + 25, longevityEnd.y - cubeSize * 0.5, 0);
+        p.translate(longevityEnd.x + 15, longevityEnd.y - 5, 0);
         p.text('LONGEVITY →', 0, 0);
         p.pop();
 
         p.push();
-        p.translate(velocityEnd.x, velocityEnd.y - cubeSize * 0.3 + 20, 0);
-        p.text('↓ VELOCITY', 0, 0);
+        p.translate(velocityEnd.x - 15, velocityEnd.y - 10, 0);
+        p.text('↑ VELOCITY', 0, 0);
         p.pop();
 
         p.colorMode(p.HSB, 360, 100, 100, 1);
@@ -606,7 +647,7 @@ export function IsometricCubeMatrix({
         // View mode indicator with subtle background
         p.fill(0, 0, 0, 120);
         p.noStroke();
-        p.rect(-width/2 + 10, -height/2 + 10, 130, 45, 6);
+        p.rect(-width/2 + 10, -height/2 + 10, 160, 60, 6);
         
         p.fill(255, 255, 255, 200);
         p.textSize(11);
@@ -619,7 +660,13 @@ export function IsometricCubeMatrix({
         // Season indicator
         const seasonHex = SEASON_HEX_COLORS[season];
         p.fill((seasonHex >> 16) & 255, (seasonHex >> 8) & 255, seasonHex & 255, 220);
-        p.text(season, -width/2 + 18, -height/2 + 34);
+        p.text(season, -width/2 + 18, -height/2 + 32);
+        
+        // Controls hint
+        p.fill(180, 180, 180, 180);
+        p.textSize(9);
+        p.text('Drag: Rotate | Shift+Drag: Pan', -width/2 + 18, -height/2 + 48);
+        p.text('Scroll: Zoom | Dbl-click: Reset', -width/2 + 18, -height/2 + 58);
 
         // Hover info
         if (hoverTile) {
@@ -659,28 +706,69 @@ export function IsometricCubeMatrix({
         isDraggingRef.current = false;
       };
 
+      // ENHANCED: Full 360° rotation + pan with shift
       p.mouseDragged = () => {
         if (isDraggingRef.current) {
           const dx = p.mouseX - lastMouseRef.current.x;
           const dy = p.mouseY - lastMouseRef.current.y;
-          rotationRef.current.y += dx * 0.005;
-          rotationRef.current.x += dy * 0.005;
-          rotationRef.current.x = Math.max(-Math.PI/2, Math.min(Math.PI/4, rotationRef.current.x));
+          
+          if (p.keyIsDown(p.SHIFT)) {
+            // Pan mode when shift is held
+            panRef.current.x += dx;
+            panRef.current.y += dy;
+          } else {
+            // Rotate mode - full 360° allowed
+            rotationRef.current.y += dx * 0.008;
+            rotationRef.current.x += dy * 0.008;
+            
+            // Wrap Y rotation for continuous spinning
+            if (rotationRef.current.y > Math.PI * 2) rotationRef.current.y -= Math.PI * 2;
+            if (rotationRef.current.y < -Math.PI * 2) rotationRef.current.y += Math.PI * 2;
+            
+            // No clamping on X - allow full vertical rotation
+          }
+          
           lastMouseRef.current = { x: p.mouseX, y: p.mouseY };
         }
       };
 
-      p.mouseMoved = () => {
-        // Approximate hover detection
-        const centerX = width / 2;
-        const centerY = height / 2;
-        const relX = p.mouseX - centerX;
-        const relY = p.mouseY - centerY;
+      // ENHANCED: Zoom with mouse wheel
+      p.mouseWheel = (event: WheelEvent) => {
+        if (p.mouseX > 0 && p.mouseX < width && p.mouseY > 0 && p.mouseY < height) {
+          const delta = event.deltaY > 0 ? 0.92 : 1.08;
+          zoomRef.current *= delta;
+          zoomRef.current = Math.max(0.3, Math.min(3, zoomRef.current));
+          return false; // Prevent page scroll
+        }
+      };
 
-        // Reverse isometric projection (approximate)
+      // ENHANCED: Double-click to reset view
+      p.doubleClicked = () => {
+        if (p.mouseX > 0 && p.mouseX < width && p.mouseY > 0 && p.mouseY < height) {
+          rotationRef.current = { x: -0.5, y: -0.4 };
+          panRef.current = { x: 0, y: 0 };
+          zoomRef.current = 1;
+        }
+      };
+
+      p.mouseMoved = () => {
+        // Approximate hover detection with fixed orientation
+        const centerX = width / 2 + panRef.current.x;
+        const centerY = height / 2 + panRef.current.y;
+        const relX = (p.mouseX - centerX) / zoomRef.current;
+        const relY = (p.mouseY - centerY) / zoomRef.current;
+
+        // Reverse isometric projection (accounting for flipped rows)
         const isoScale = cubeSize * COS_ISO;
-        const col = Math.round((relX / isoScale + relY / (cubeSize * SIN_ISO)) / 2);
-        const row = Math.round((relY / (cubeSize * SIN_ISO) - relX / isoScale) / 2);
+        const isoSinScale = cubeSize * SIN_ISO;
+        
+        // Adjust for offset
+        const adjX = relX + cubeSize * 3;
+        const adjY = relY - cubeSize * 2;
+        
+        const flippedRow = Math.round((adjY / isoSinScale - adjX / isoScale) / 2);
+        const col = Math.round((adjX / isoScale + adjY / isoSinScale) / 2);
+        const row = 7 - flippedRow; // Un-flip to get actual row
 
         if (row >= 0 && row < 8 && col >= 0 && col < 8) {
           setHoverTile({ row, col });
@@ -692,15 +780,22 @@ export function IsometricCubeMatrix({
       const handleTileClick = (mouseX: number, mouseY: number) => {
         if (!onTileClick || foldProgress > 0.5) return;
 
-        const centerX = width / 2;
-        const centerY = height / 2;
-        const relX = mouseX - centerX;
-        const relY = mouseY - centerY;
+        const centerX = width / 2 + panRef.current.x;
+        const centerY = height / 2 + panRef.current.y;
+        const relX = (mouseX - centerX) / zoomRef.current;
+        const relY = (mouseY - centerY) / zoomRef.current;
 
-        // Reverse isometric projection
+        // Reverse isometric projection (accounting for flipped rows)
         const isoScale = cubeSize * COS_ISO;
-        const col = Math.round((relX / isoScale + relY / (cubeSize * SIN_ISO)) / 2);
-        const row = Math.round((relY / (cubeSize * SIN_ISO) - relX / isoScale) / 2);
+        const isoSinScale = cubeSize * SIN_ISO;
+        
+        // Adjust for offset
+        const adjX = relX + cubeSize * 3;
+        const adjY = relY - cubeSize * 2;
+        
+        const flippedRow = Math.round((adjY / isoSinScale - adjX / isoScale) / 2);
+        const col = Math.round((adjX / isoScale + adjY / isoSinScale) / 2);
+        const row = 7 - flippedRow; // Un-flip to get actual row
 
         if (row >= 0 && row < 8 && col >= 0 && col < 8) {
           const state = getCubeState(row, col);
