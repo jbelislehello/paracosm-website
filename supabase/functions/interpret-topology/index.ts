@@ -371,9 +371,15 @@ Be SPECIFIC. Reference their actual data. Make surprising connections. Create WO
 
     let parsed;
     try {
-      parsed = JSON.parse(content);
-    } catch {
+      // Sanitize content: replace literal newlines within strings that break JSON
+      const sanitizedContent = content
+        .replace(/\n/g, ' ')  // Replace all newlines with spaces
+        .replace(/\r/g, '')   // Remove carriage returns
+        .replace(/\s+/g, ' '); // Normalize multiple spaces
+      parsed = JSON.parse(sanitizedContent);
+    } catch (parseError) {
       console.error('[interpret-topology] Failed to parse JSON:', content);
+      console.error('[interpret-topology] Parse error:', parseError);
       throw new Error('Invalid JSON response from AI');
     }
 
