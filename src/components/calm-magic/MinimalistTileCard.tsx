@@ -20,6 +20,7 @@ interface MinimalistTileCardProps {
   onClose: () => void;
   onSavePolen: (content: string, tileId: number) => Promise<void>;
   onExpandToFull?: () => void;
+  embedded?: boolean;
 }
 
 const POSTURES = [
@@ -50,6 +51,7 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
   onClose,
   onSavePolen,
   onExpandToFull,
+  embedded = false,
 }) => {
   const tileId = selectedTile.row * 8 + selectedTile.col + 1;
   const tileContent = TILE_CONTENTS.find(t => t.id === tileId);
@@ -621,12 +623,19 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
   );
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
+    <div className={cn(
+      embedded 
+        ? "h-full flex flex-col"
+        : "fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4"
+    )}>
       <div className={cn(
-        "bg-background border border-border rounded-2xl shadow-2xl overflow-hidden transition-all duration-300",
-        isExpanded 
-          ? "w-full max-w-4xl h-[90vh]" 
-          : "w-full max-w-2xl"
+        "bg-background overflow-hidden transition-all duration-300 flex flex-col",
+        embedded 
+          ? "h-full border-0 rounded-none shadow-none"
+          : cn(
+            "border border-border rounded-2xl shadow-2xl",
+            isExpanded ? "w-full max-w-4xl h-[90vh]" : "w-full max-w-2xl"
+          )
       )}>
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border/50">

@@ -2,8 +2,9 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Wand2, Moon, BookOpen, ScrollText, Focus, Layers } from 'lucide-react';
+import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, ArrowUpLeft, ArrowUpRight, ArrowDownLeft, ArrowDownRight, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Wand2, Moon, BookOpen, ScrollText, Focus, Layers } from 'lucide-react';
 import { MinimalistTileCard } from '@/components/calm-magic/MinimalistTileCard';
 import { useState, useEffect, useRef } from 'react';
 import { getTileStage, getStageById } from '@/types/journal-expansion';
@@ -78,10 +79,9 @@ const TileDetailPanel = ({
 }: TileDetailPanelProps) => {
   const [userInput, setUserInput] = useState('');
   const [conversationSaved, setConversationSaved] = useState(false);
-  const [showManifolds, setShowManifolds] = useState(false);
   const [showMeditationMode, setShowMeditationMode] = useState(false);
   const [highlightedTile, setHighlightedTile] = useState<number | null>(null);
-  const [showFocusMode, setShowFocusMode] = useState(false);
+  const [activeTab, setActiveTab] = useState<'chat' | 'focus' | 'manifolds'>('chat');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // Tzolkin resonance for meditation mode
@@ -166,7 +166,7 @@ const TileDetailPanel = ({
         description: 'Ready to go deeper? Try Focus Mode for guided exploration.',
         action: {
           label: 'Focus Mode',
-          onClick: () => setShowFocusMode(true),
+          onClick: () => setActiveTab('focus'),
         },
         duration: 5000,
       });
@@ -211,241 +211,189 @@ const TileDetailPanel = ({
   useEffect(() => {
     setConversationSaved(false);
     setUserInput('');
-    setShowManifolds(false);
+    setActiveTab('chat');
   }, [selectedTile.row, selectedTile.col]);
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-background to-muted/30">
-      {/* Living Organism Header */}
-      <div className="px-4 py-2 bg-gradient-to-r from-amber-500/10 to-rose-500/10 border-b border-amber-500/20 shrink-0">
-        <div className="flex items-center gap-2 text-xs">
-          <Leaf className="w-3 h-3 text-amber-500" />
-          <span className="text-amber-700 dark:text-amber-300 italic">
-            This tile is a living organism — treat your insights as organisms, not artifacts
-          </span>
-        </div>
-      </div>
-
       {/* Header */}
-      <div className="p-4 border-b border-border/50 flex items-start justify-between bg-background/80 backdrop-blur-sm shrink-0">
-        <div>
-          <div className="flex items-center gap-2">
-            <Badge className={`bg-gradient-to-r ${getBoardColor(board)} text-white`}>
-              {rowLabels[selectedTile.row].letter}{colLabels[selectedTile.col].letter}
-            </Badge>
-            <h3 className="font-bold text-lg">
+      <div className="p-3 border-b border-border/50 flex items-center justify-between bg-background/80 backdrop-blur-sm shrink-0">
+        <div className="flex items-center gap-2">
+          <Badge className={`bg-gradient-to-r ${getBoardColor(board)} text-white`}>
+            {rowLabels[selectedTile.row].letter}{colLabels[selectedTile.col].letter}
+          </Badge>
+          <div>
+            <h3 className="font-bold text-sm">
               {tileContent?.name || `${rowLabels[selectedTile.row].name} × ${colLabels[selectedTile.col].name}`}
             </h3>
-          </div>
-          <div className="flex items-center gap-2 mt-1">
-            <p className="text-sm text-muted-foreground">
-              {rowLabels[selectedTile.row].name} × {colLabels[selectedTile.col].name}
+            <p className="text-xs text-muted-foreground">
+              {currentSeason} • {stageDefinition?.name || 'Exploration'}
             </p>
-            {stageDefinition && (
-              <Badge variant="outline" className="text-[10px]">
-                {stageDefinition.icon} {stageDefinition.name}
-              </Badge>
-            )}
           </div>
         </div>
-        <div className="flex items-center gap-1">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={() => setShowFocusMode(true)}
-            className="gap-1"
-            title="Focus Mode"
-          >
-            <Focus className="w-3 h-3" />
-            Focus
-          </Button>
-          <Button variant="ghost" size="icon" onClick={handleClose} className="shrink-0">
-            <X className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-
-      {/* Expected Deliverable - Compact */}
-      <div className="px-4 py-2 bg-primary/5 border-b border-border/30 shrink-0">
-        <div className="flex items-center gap-2">
-          <Sparkles className="w-3 h-3 text-primary" />
-          <span className="text-xs text-muted-foreground">Expected:</span>
-          <span className="text-xs font-medium text-primary">{tileContent?.deliverable || 'Tile insight'}</span>
-        </div>
-      </div>
-
-      {/* Main Chat Area - Default Primary View */}
-      <div className="flex-1 flex flex-col min-h-0">
-        <ScrollArea className="flex-1">
-          <div className="px-4 py-3 space-y-3">
-            {/* Season Context */}
-            <div className="text-xs text-muted-foreground text-center py-2 border-b border-dashed border-border/50">
-              <span className="font-medium">{currentSeason}</span> season exploration
-            </div>
-
-            {/* Messages */}
-            {messages.map((message, index) => (
-              <div
-                key={index}
-                className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`max-w-[85%] rounded-lg px-3 py-2 ${
-                    message.role === 'user'
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted border border-border/50'
-                  }`}
-                >
-                  {message.role === 'assistant' && (
-                    <div className="flex items-center gap-1 mb-1 text-[10px] text-muted-foreground">
-                      <MessageCircle className="w-3 h-3" />
-                      Guide
-                    </div>
-                  )}
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                </div>
-              </div>
-            ))}
-
-            {/* Loading indicator */}
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="bg-muted rounded-lg px-3 py-2 border border-border/50">
-                  <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
-                </div>
-              </div>
-            )}
-
-            {/* Error message */}
-            {error && (
-              <div className="text-xs text-destructive text-center py-2">
-                {error}
-                <Button variant="ghost" size="sm" onClick={fetchInitialQuestion} className="ml-2">
-                  <RefreshCw className="w-3 h-3 mr-1" />
-                  Retry
-                </Button>
-              </div>
-            )}
-            
-            {/* Scroll anchor */}
-            <div ref={messagesEndRef} />
-          </div>
-        </ScrollArea>
-
-        {/* Input Area */}
-        <div className="p-3 border-t border-border/50 bg-background/80 space-y-2 shrink-0">
-          <div className="flex gap-2">
-            {/* Voice button */}
-            {voiceSupported && (
-              <Button
-                variant={isListening ? "default" : "ghost"}
-                size="icon"
-                onClick={handleVoiceToggle}
-                disabled={!isAuthenticated}
-                className={`shrink-0 h-[60px] w-10 ${isListening ? 'animate-pulse bg-destructive' : ''}`}
-              >
-                {isListening ? (
-                  <MicOff className="w-4 h-4" />
-                ) : (
-                  <Mic className="w-4 h-4" />
-                )}
-              </Button>
-            )}
-            
-            <Textarea
-              value={userInput + (interimTranscript ? ` ${interimTranscript}` : '')}
-              onChange={(e) => setUserInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder={isListening ? "Listening..." : "Share your thoughts..."}
-              className={`min-h-[60px] resize-none text-sm ${isListening ? 'border-destructive' : ''}`}
-              disabled={isLoading || !isAuthenticated}
-            />
-            <Button
-              size="icon"
-              onClick={handleSendResponse}
-              disabled={!userInput.trim() || isLoading || !isAuthenticated}
-              className="shrink-0 h-[60px] w-10"
-            >
-              {isLoading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Send className="w-4 h-4" />
-              )}
-            </Button>
-          </div>
-
-          {/* Auth warning */}
-          {!isAuthenticated && (
-            <p className="text-xs text-muted-foreground flex items-center gap-1">
-              <LogIn className="w-3 h-3" />
-              Log in to engage with tiles
-            </p>
-          )}
-
-          {/* Save status indicator */}
-          {isAuthenticated && (
-            <div className="flex items-center justify-between">
-              {conversationSaving && (
-                <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Loader2 className="w-3 h-3 animate-spin" />
-                  Auto-saving...
-                </div>
-              )}
-              {lastSavedAt && !conversationSaving && (
-                <div className="text-xs text-muted-foreground">
-                  Saved {lastSavedAt.toLocaleTimeString()}
-                </div>
-              )}
-              {!lastSavedAt && !conversationSaving && messages.length >= 2 && (
-                <div className="text-xs text-muted-foreground opacity-50">
-                  Unsaved changes
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Save conversation button */}
-          {messages.length >= 2 && isAuthenticated && (
-            <Button
-              variant={conversationSaved ? "secondary" : "outline"}
-              size="sm"
-              onClick={handleSaveConversation}
-              disabled={saving || conversationSaved || conversationSaving}
-              className="w-full"
-            >
-              {saving || conversationSaving ? (
-                <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-              ) : conversationSaved || lastSavedAt ? (
-                <>✓ Saved as Fragment</>
-              ) : (
-                <>
-                  <Save className="w-3 h-3 mr-1" />
-                  Save as Fragment
-                </>
-              )}
-            </Button>
-          )}
-        </div>
-      </div>
-
-      {/* Manifolds Accordion - Collapsible Tools Section */}
-      <div className="border-t border-border/50 shrink-0">
-        <Button
-          variant="ghost"
-          className="w-full flex items-center justify-between p-3 h-auto"
-          onClick={() => setShowManifolds(!showManifolds)}
-        >
-          <div className="flex items-center gap-2">
-            <Layers className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium">Manifolds</span>
-            <span className="text-xs text-muted-foreground">(Tools & Exploration)</span>
-          </div>
-          <span className="text-xs text-muted-foreground">{showManifolds ? '▼' : '▶'}</span>
+        <Button variant="ghost" size="icon" onClick={handleClose} className="shrink-0">
+          <X className="w-4 h-4" />
         </Button>
-        
-        {showManifolds && (
-          <div className="px-2 pb-3">
-            <ScrollArea className="max-h-[300px]">
+      </div>
+
+      {/* Tabs Navigation */}
+      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)} className="flex-1 flex flex-col min-h-0">
+        <TabsList className="w-full justify-start rounded-none border-b border-border/50 bg-transparent h-auto p-0 shrink-0">
+          <TabsTrigger 
+            value="chat" 
+            className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-2 text-xs font-semibold uppercase tracking-wider"
+          >
+            <MessageCircle className="w-3 h-3 mr-1" />
+            Chat
+          </TabsTrigger>
+          <TabsTrigger 
+            value="focus" 
+            className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-2 text-xs font-semibold uppercase tracking-wider"
+          >
+            <Focus className="w-3 h-3 mr-1" />
+            Focus
+          </TabsTrigger>
+          <TabsTrigger 
+            value="manifolds" 
+            className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-2 text-xs font-semibold uppercase tracking-wider"
+          >
+            <Layers className="w-3 h-3 mr-1" />
+            Manifolds
+          </TabsTrigger>
+        </TabsList>
+
+        {/* CHAT Tab */}
+        <TabsContent value="chat" className="flex-1 flex flex-col m-0 min-h-0">
+          {/* Question Banner */}
+          {messages.length > 0 && messages[0].role === 'assistant' && (
+            <div className="px-4 py-3 bg-gradient-to-r from-primary/5 to-primary/10 border-b border-primary/20">
+              <p className="text-lg font-medium text-foreground leading-relaxed">
+                {messages[0].content}
+              </p>
+            </div>
+          )}
+
+          <ScrollArea className="flex-1">
+            <div className="px-4 py-3 space-y-3">
+              {/* Messages (skip first if it's the main question) */}
+              {messages.slice(messages.length > 0 && messages[0].role === 'assistant' ? 1 : 0).map((message, index) => (
+                <div
+                  key={index}
+                  className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div
+                    className={`max-w-[85%] rounded-lg px-3 py-2 ${
+                      message.role === 'user'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-muted border border-border/50'
+                    }`}
+                  >
+                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  </div>
+                </div>
+              ))}
+
+              {isLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-muted rounded-lg px-3 py-2 border border-border/50">
+                    <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                  </div>
+                </div>
+              )}
+
+              {error && (
+                <div className="text-xs text-destructive text-center py-2">
+                  {error}
+                  <Button variant="ghost" size="sm" onClick={fetchInitialQuestion} className="ml-2">
+                    <RefreshCw className="w-3 h-3 mr-1" />
+                    Retry
+                  </Button>
+                </div>
+              )}
+              
+              <div ref={messagesEndRef} />
+            </div>
+          </ScrollArea>
+
+          {/* Input Area */}
+          <div className="p-3 border-t border-border/50 bg-background/80 shrink-0">
+            <div className="flex gap-2">
+              {voiceSupported && (
+                <Button
+                  variant={isListening ? "default" : "ghost"}
+                  size="icon"
+                  onClick={handleVoiceToggle}
+                  disabled={!isAuthenticated}
+                  className={`shrink-0 h-10 w-10 ${isListening ? 'animate-pulse bg-destructive' : ''}`}
+                >
+                  {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                </Button>
+              )}
+              
+              <Textarea
+                value={userInput + (interimTranscript ? ` ${interimTranscript}` : '')}
+                onChange={(e) => setUserInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder={isListening ? "Listening..." : "Share your thoughts..."}
+                className={`min-h-[40px] max-h-[80px] resize-none text-sm ${isListening ? 'border-destructive' : ''}`}
+                disabled={isLoading || !isAuthenticated}
+              />
+              <Button
+                size="icon"
+                onClick={handleSendResponse}
+                disabled={!userInput.trim() || isLoading || !isAuthenticated}
+                className="shrink-0 h-10 w-10"
+              >
+                {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+              </Button>
+            </div>
+
+            {!isAuthenticated && (
+              <p className="text-xs text-muted-foreground flex items-center gap-1 mt-2">
+                <LogIn className="w-3 h-3" />
+                Log in to engage
+              </p>
+            )}
+
+            {/* Save status */}
+            {isAuthenticated && messages.length >= 2 && (
+              <div className="flex items-center justify-between mt-2">
+                <div className="text-xs text-muted-foreground">
+                  {conversationSaving ? (
+                    <span className="flex items-center gap-1"><Loader2 className="w-3 h-3 animate-spin" />Saving...</span>
+                  ) : lastSavedAt ? (
+                    <span>✓ Saved</span>
+                  ) : (
+                    <span className="opacity-50">Unsaved</span>
+                  )}
+                </div>
+                {!conversationSaved && !lastSavedAt && (
+                  <Button variant="ghost" size="sm" onClick={handleSaveConversation} disabled={conversationSaving} className="h-6 text-xs">
+                    <Save className="w-3 h-3 mr-1" />Save
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+        </TabsContent>
+
+        {/* FOCUS Tab */}
+        <TabsContent value="focus" className="flex-1 m-0 min-h-0 overflow-auto">
+          <MinimalistTileCard
+            selectedTile={selectedTile}
+            board={board}
+            currentSeason={currentSeason}
+            onClose={() => setActiveTab('chat')}
+            onSavePolen={onSavePolen}
+            onExpandToFull={() => setActiveTab('chat')}
+            embedded={true}
+          />
+        </TabsContent>
+
+        {/* MANIFOLDS Tab */}
+        <TabsContent value="manifolds" className="flex-1 m-0 min-h-0">
+          <ScrollArea className="h-full">
+            <div className="p-3">
               <Accordion type="single" collapsible className="w-full">
                 {/* Emotional Check-in */}
                 {onEmotionalCheckin && (
@@ -527,7 +475,7 @@ const TileDetailPanel = ({
                   </AccordionContent>
                 </AccordionItem>
 
-                {/* Journal - Hexagram History */}
+                {/* Journal */}
                 <AccordionItem value="journal">
                   <AccordionTrigger className="text-sm py-2">
                     <div className="flex items-center gap-2">
@@ -566,62 +514,93 @@ const TileDetailPanel = ({
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
-            </ScrollArea>
-          </div>
-        )}
-      </div>
+            </div>
+          </ScrollArea>
+        </TabsContent>
+      </Tabs>
 
-      {/* Navigation Buttons */}
-      <div className="p-3 border-t border-border/50 bg-muted/30 shrink-0">
-        <div className="flex flex-col items-center gap-2">
-          <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Navigate</span>
-          
-          {/* Up */}
+      {/* 8-Directional Navigation */}
+      <div className="p-2 border-t border-border/50 bg-muted/30 shrink-0">
+        <div className="grid grid-cols-3 gap-1 max-w-[140px] mx-auto">
+          {/* Top row: ↖ ↑ ↗ */}
           <Button
             variant="ghost"
-            size="sm"
+            size="icon"
+            disabled={!canGlitch || !canDriftLeft}
+            onClick={() => onNavigate(selectedTile.row + 1, selectedTile.col - 1)}
+            className="h-8 w-8 disabled:opacity-20"
+          >
+            <ArrowUpLeft className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
             disabled={!canGlitch}
             onClick={() => onNavigate(selectedTile.row + 1, selectedTile.col)}
-            className="w-full h-7 text-xs disabled:opacity-30"
+            className="h-8 w-8 disabled:opacity-20"
           >
-            <ArrowUp className="w-3 h-3 mr-1" />
-            {canGlitch ? rowLabels[selectedTile.row + 1].name : 'Edge'}
+            <ArrowUp className="w-4 h-4" />
           </Button>
-          
-          {/* Left/Right */}
-          <div className="flex gap-1 w-full">
-            <Button
-              variant="ghost"
-              size="sm"
-              disabled={!canDriftLeft}
-              onClick={() => onNavigate(selectedTile.row, selectedTile.col - 1)}
-              className="flex-1 h-7 text-xs disabled:opacity-30"
-            >
-              <ArrowLeft className="w-3 h-3 mr-1" />
-              {canDriftLeft ? colLabels[selectedTile.col - 1].name : 'Edge'}
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              disabled={!canDriftRight}
-              onClick={() => onNavigate(selectedTile.row, selectedTile.col + 1)}
-              className="flex-1 h-7 text-xs disabled:opacity-30"
-            >
-              {canDriftRight ? colLabels[selectedTile.col + 1].name : 'Edge'}
-              <ArrowRight className="w-3 h-3 ml-1" />
-            </Button>
-          </div>
-          
-          {/* Down */}
           <Button
             variant="ghost"
-            size="sm"
+            size="icon"
+            disabled={!canGlitch || !canDriftRight}
+            onClick={() => onNavigate(selectedTile.row + 1, selectedTile.col + 1)}
+            className="h-8 w-8 disabled:opacity-20"
+          >
+            <ArrowUpRight className="w-4 h-4" />
+          </Button>
+
+          {/* Middle row: ← · → */}
+          <Button
+            variant="ghost"
+            size="icon"
+            disabled={!canDriftLeft}
+            onClick={() => onNavigate(selectedTile.row, selectedTile.col - 1)}
+            className="h-8 w-8 disabled:opacity-20"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <div className="h-8 w-8 flex items-center justify-center">
+            <div className="w-2 h-2 rounded-full bg-primary/50" />
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            disabled={!canDriftRight}
+            onClick={() => onNavigate(selectedTile.row, selectedTile.col + 1)}
+            className="h-8 w-8 disabled:opacity-20"
+          >
+            <ArrowRight className="w-4 h-4" />
+          </Button>
+
+          {/* Bottom row: ↙ ↓ ↘ */}
+          <Button
+            variant="ghost"
+            size="icon"
+            disabled={!canTune || !canDriftLeft}
+            onClick={() => onNavigate(selectedTile.row - 1, selectedTile.col - 1)}
+            className="h-8 w-8 disabled:opacity-20"
+          >
+            <ArrowDownLeft className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
             disabled={!canTune}
             onClick={() => onNavigate(selectedTile.row - 1, selectedTile.col)}
-            className="w-full h-7 text-xs disabled:opacity-30"
+            className="h-8 w-8 disabled:opacity-20"
           >
-            <ArrowDown className="w-3 h-3 mr-1" />
-            {canTune ? rowLabels[selectedTile.row - 1].name : 'Edge'}
+            <ArrowDown className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            disabled={!canTune || !canDriftRight}
+            onClick={() => onNavigate(selectedTile.row - 1, selectedTile.col + 1)}
+            className="h-8 w-8 disabled:opacity-20"
+          >
+            <ArrowDownRight className="w-4 h-4" />
           </Button>
         </div>
       </div>
@@ -643,18 +622,6 @@ const TileDetailPanel = ({
             }
           }}
           onClose={() => setShowMeditationMode(false)}
-        />
-      )}
-
-      {/* Focus Mode Overlay */}
-      {showFocusMode && (
-        <MinimalistTileCard
-          selectedTile={selectedTile}
-          board={board}
-          currentSeason={currentSeason}
-          onClose={() => setShowFocusMode(false)}
-          onSavePolen={onSavePolen}
-          onExpandToFull={() => setShowFocusMode(false)}
         />
       )}
     </div>
