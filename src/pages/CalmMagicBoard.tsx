@@ -5,7 +5,7 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe, Eye, EyeOff } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe, Eye, EyeOff, Moon, Sun } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { getTerminology } from '@/data/modeAwareTerminology';
@@ -49,6 +49,8 @@ import { ManifoldSeason } from '@/utils/torusManifoldMath';
 import { getCurrentUnlockedRing } from '@/utils/ringToleranceSystem';
 import { getHexagramDataForSummary } from '@/components/calm-magic/topologies/TopologicalMetricsPanel';
 import { calculateConsciousnessGeometryFromTiles } from '@/utils/consciousnessGeometry';
+import { useWeavingConnections } from '@/hooks/useWeavingConnections';
+import { cn } from '@/lib/utils';
 
 const ROW_LABELS = ['Mindsets', 'Agilities', 'Goals', 'Intuition', 'Compasses', 'Norms', 'Synergies', 'Protocols & Architectures'];
 const COL_LABELS = ['Chances', 'Heart', 'Observer', 'Reversal', 'Design', 'Seeds', 'Methods', 'Systems'];
@@ -101,7 +103,7 @@ type ViewTab = 'matrix' | 'window-of-tolerance' | 'topologies' | 'prd-assembly';
 const CalmMagicBoard = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { mode, setMode } = useMode();
+  const { mode, setMode, sanctuaryMode, toggleSanctuary } = useMode();
   const { 
     projectContext, 
     setActiveProject, 
@@ -218,6 +220,9 @@ const CalmMagicBoard = () => {
     savePolenEntry,
     polenEntries,
   } = useTileMatrixPersistence(todayTile?.board || SEASON_TO_BOARD[currentSeason]);
+
+  // Weaving connections - semantic threads between tiles
+  const { threads: weavingThreads } = useWeavingConnections(user?.id);
 
   // Extract density map from polen entries per tile (shared across components)
   const densityMap = useMemo(() => {
@@ -952,6 +957,16 @@ const CalmMagicBoard = () => {
               <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
             </Button>
             
+            {/* Sanctuary Mode Toggle */}
+            <Button 
+              variant={sanctuaryMode ? "default" : "ghost"} 
+              size="icon"
+              onClick={toggleSanctuary}
+              title={sanctuaryMode ? "Exit Sanctuary (⌘⇧S)" : "Enter Sanctuary (⌘⇧S)"}
+            >
+              {sanctuaryMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </Button>
+            
             {/* Help / Tour */}
             <Button 
               variant="ghost" 
@@ -1245,6 +1260,8 @@ const CalmMagicBoard = () => {
                     highlightedPattern={highlightedPattern}
                     showPatternOverlay={!cleanMatrixView}
                     cleanView={cleanMatrixView}
+                    weavingThreads={weavingThreads}
+                    showWeaving={!sanctuaryMode}
                   />
                 </div>
               </div>

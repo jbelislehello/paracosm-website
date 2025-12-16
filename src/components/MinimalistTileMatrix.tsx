@@ -13,6 +13,7 @@ import {
   RING_PHILOSOPHY
 } from '@/utils/ringToleranceSystem';
 import { RingToleranceVisualization } from '@/components/calm-magic/RingToleranceVisualization';
+import { WeavingVisualization, WeavingThread } from '@/components/calm-magic/WeavingVisualization';
 
 type BoardType = 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
 
@@ -31,7 +32,11 @@ interface MinimalistTileMatrixProps {
   unlockedRing?: RingLevel;
   onRingUnlock?: (ring: RingLevel, pattern: DetectedPattern) => void;
   cleanView?: boolean;
+  // Weaving visualization props
+  weavingThreads?: WeavingThread[];
+  showWeaving?: boolean;
 }
+
 
 // Board color system using HSL values
 const getBoardColors = (board: BoardType) => {
@@ -102,6 +107,8 @@ const MinimalistTileMatrix = ({
   unlockedRing,
   onRingUnlock,
   cleanView = false,
+  weavingThreads = [],
+  showWeaving = true,
 }: MinimalistTileMatrixProps) => {
   // Calculate current unlocked ring from visited tiles if not provided
   const currentUnlockedRing = unlockedRing ?? getCurrentUnlockedRing(visitedTiles);
@@ -492,6 +499,18 @@ const MinimalistTileMatrix = ({
           {/* Dots at intersections */}
           {tileDots}
         </svg>
+
+        {/* Weaving Visualization - semantic connections between tiles */}
+        {showWeaving && weavingThreads.length > 0 && !cleanView && (
+          <div className="absolute inset-4 pointer-events-none transition-opacity duration-500">
+            <WeavingVisualization
+              threads={weavingThreads}
+              tileSize={TILE_SIZE}
+              gridGap={GAP}
+              seasonColor={colors.primary}
+            />
+          </div>
+        )}
 
         {/* Tile Grid */}
         <div 
