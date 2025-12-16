@@ -288,6 +288,74 @@ const TileDetailPanel = ({
             </div>
           )}
 
+          {/* Context Accordion */}
+          <Accordion type="single" collapsible className="px-3 py-2 border-b border-border/30 shrink-0">
+            <AccordionItem value="context" className="border-none">
+              <AccordionTrigger className="py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:no-underline">
+                <span className="flex items-center gap-2">
+                  <BookOpen className="w-3 h-3" />
+                  Tile Context & Guidance
+                </span>
+              </AccordionTrigger>
+              <AccordionContent className="pt-2 pb-3">
+                <div className="space-y-3 text-xs">
+                  {/* Stage Info */}
+                  <div className="p-2 rounded-md bg-muted/50 border border-border/30">
+                    <h4 className="font-semibold text-foreground mb-1 flex items-center gap-1">
+                      <Layers className="w-3 h-3" />
+                      {stageDefinition?.name || 'Stage'}
+                    </h4>
+                    <p className="text-muted-foreground leading-relaxed">
+                      {stageDefinition?.description || `${rowLabels[selectedTile.row].name} × ${colLabels[selectedTile.col].name}`}
+                    </p>
+                  </div>
+
+                  {/* Tile Description */}
+                  {tileContent?.deliverable && (
+                    <div className="p-2 rounded-md bg-muted/50 border border-border/30">
+                      <h4 className="font-semibold text-foreground mb-1 flex items-center gap-1">
+                        <Sparkles className="w-3 h-3" />
+                        Tile Focus
+                      </h4>
+                      <p className="text-muted-foreground leading-relaxed">{tileContent.deliverable}</p>
+                    </div>
+                  )}
+
+                  {/* Feminine Principles */}
+                  {stagePrinciples && stagePrinciples.length > 0 && (
+                    <div className="p-2 rounded-md bg-muted/50 border border-border/30">
+                      <h4 className="font-semibold text-foreground mb-1 flex items-center gap-1">
+                        <Heart className="w-3 h-3" />
+                        Guiding Principles
+                      </h4>
+                      <ul className="space-y-1 text-muted-foreground">
+                        {stagePrinciples.slice(0, 3).map((principle, idx) => (
+                          <li key={idx} className="flex items-start gap-1.5">
+                            <span className="text-primary">•</span>
+                            <span>{principle.name}: {principle.essence}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Cosmological Context */}
+                  {isCurrentPortalDay && (
+                    <div className="p-2 rounded-md bg-primary/10 border border-primary/20">
+                      <h4 className="font-semibold text-primary mb-1 flex items-center gap-1">
+                        <Hexagon className="w-3 h-3" />
+                        Portal Day Active
+                      </h4>
+                      <p className="text-primary/80 leading-relaxed">
+                        Diagonal navigation unlocked. This is a day of heightened resonance—follow your intuition.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+
           <ScrollArea className="flex-1">
             <div className="px-4 py-3 space-y-3">
               {/* Messages (skip first if it's the main question) */}
