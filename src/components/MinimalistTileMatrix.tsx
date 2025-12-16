@@ -1,7 +1,16 @@
-import { ArrowUp, ArrowRight } from 'lucide-react';
+import { ArrowUp, ArrowRight, Lock } from 'lucide-react';
 import { WindowOfToleranceOverlay } from '@/components/journal/WindowOfToleranceOverlay';
 import { CycleNumber } from '@/types/journal-expansion';
 import { DetectedPattern, getPatternColor } from '@/utils/patternDetection';
+import { 
+  RING_DEFINITIONS, 
+  getTileRing, 
+  canAccessTile, 
+  calculateRingStates,
+  getCurrentUnlockedRing,
+  RingLevel,
+  RingState
+} from '@/utils/ringToleranceSystem';
 
 type BoardType = 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
 
@@ -17,6 +26,8 @@ interface MinimalistTileMatrixProps {
   completedSeasons?: string[];
   highlightedPattern?: DetectedPattern | null;
   showPatternOverlay?: boolean;
+  unlockedRing?: RingLevel;
+  onRingUnlock?: (ring: RingLevel, pattern: DetectedPattern) => void;
 }
 
 // Board color system using HSL values
@@ -85,7 +96,14 @@ const MinimalistTileMatrix = ({
   completedSeasons = [],
   highlightedPattern = null,
   showPatternOverlay = true,
+  unlockedRing,
+  onRingUnlock,
 }: MinimalistTileMatrixProps) => {
+  // Calculate current unlocked ring from visited tiles if not provided
+  const currentUnlockedRing = unlockedRing ?? getCurrentUnlockedRing(visitedTiles);
+  
+  // Calculate ring states for visual feedback
+  const ringStates = calculateRingStates(visitedTiles, currentUnlockedRing);
   const colors = getBoardColors(board);
   // Column labels - bottom axis (CHORDS + MAPS)
   const colLabels = [
@@ -260,36 +278,107 @@ const MinimalistTileMatrix = ({
 
   const { lines: diagonalLines, dots: tileDots } = generateDiagonals();
 
-  // Generate concentric rectangles for tolerance passes
+  // Generate concentric rectangles for tolerance passes + 4th integrator ring
   const generateConcentricRects = () => {
-    const rects = [];
-    const passes = [
-      { inset: 2, color: 'hsl(142 71% 45%)', label: 'Inner' }, // green
-      { inset: 1, color: 'hsl(217 91% 60%)', label: 'Stretch' }, // blue
-      { inset: 0, color: 'hsl(38 92% 50%)', label: 'Edge' }, // amber
+    const elements: JSX.Element[] = [];
+    
+    // Get ring states for visual opacity based on unlock status
+    const getRingOpacity = (ring: number) => {
+      const state = ringStates.find(s => s.ring === ring);
+      if (!state) return 0.3;
+      if (state.patternDetected || state.status === 'unlocked') return 0.9;
+      if (state.status === 'in-progress') return 0.6;
+      return 0.3;
+    };
+    
+    // Ring rectangles (3 concentric)
+    const rectPasses = [
+      { inset: 2, ring: 1 }, // Inner Core (green)
+      { inset: 1, ring: 2 }, // Stretch Zone (blue)
+      { inset: 0, ring: 3 }, // Edge Zone (amber)
     ];
 
-    passes.forEach((pass, idx) => {
+    rectPasses.forEach((pass) => {
+      const ringDef = RING_DEFINITIONS.find(r => r.ring === pass.ring);
+      if (!ringDef) return;
+      
       const insetPx = pass.inset * (TILE_SIZE + GAP);
       const size = TOTAL_SIZE - 2 * insetPx;
+      const opacity = getRingOpacity(pass.ring);
       
-      rects.push(
+      elements.push(
         <rect
-          key={`pass-${idx}`}
+          key={`ring-${pass.ring}`}
           x={insetPx}
           y={insetPx}
           width={size}
           height={size}
           fill="none"
-          stroke={pass.color}
+          stroke={ringDef.color}
           strokeWidth="2.5"
           strokeDasharray="8,4"
-          opacity="0.75"
+          opacity={opacity}
         />
       );
     });
+    
+    // Ring 4: Corner integrators (purple circles at corners)
+    const ring4Def = RING_DEFINITIONS.find(r => r.ring === 4);
+    const ring4Opacity = getRingOpacity(4);
+    if (ring4Def) {
+      const cornerPositions = [
+        { x: TILE_SIZE / 2, y: TILE_SIZE / 2 }, // top-left (0-0)
+        { x: TOTAL_SIZE - TILE_SIZE / 2, y: TILE_SIZE / 2 }, // top-right (0-7)
+        { x: TILE_SIZE / 2, y: TOTAL_SIZE - TILE_SIZE / 2 }, // bottom-left (7-0)
+        { x: TOTAL_SIZE - TILE_SIZE / 2, y: TOTAL_SIZE - TILE_SIZE / 2 }, // bottom-right (7-7)
+      ];
+      
+      cornerPositions.forEach((pos, idx) => {
+        elements.push(
+          <circle
+            key={`integrator-${idx}`}
+            cx={pos.x}
+            cy={pos.y}
+            r={TILE_SIZE / 2 + 6}
+            fill="none"
+            stroke={ring4Def.color}
+            strokeWidth="3"
+            strokeDasharray="6,3"
+            opacity={ring4Opacity}
+          />
+        );
+      });
+      
+      // Add diagonal lines connecting corners if ring 4 is in progress
+      if (ring4Opacity > 0.3) {
+        elements.push(
+          <line
+            key="integrator-diag-1"
+            x1={TILE_SIZE / 2}
+            y1={TILE_SIZE / 2}
+            x2={TOTAL_SIZE - TILE_SIZE / 2}
+            y2={TOTAL_SIZE - TILE_SIZE / 2}
+            stroke={ring4Def.color}
+            strokeWidth="1.5"
+            strokeDasharray="4,4"
+            opacity={ring4Opacity * 0.5}
+          />,
+          <line
+            key="integrator-diag-2"
+            x1={TOTAL_SIZE - TILE_SIZE / 2}
+            y1={TILE_SIZE / 2}
+            x2={TILE_SIZE / 2}
+            y2={TOTAL_SIZE - TILE_SIZE / 2}
+            stroke={ring4Def.color}
+            strokeWidth="1.5"
+            strokeDasharray="4,4"
+            opacity={ring4Opacity * 0.5}
+          />
+        );
+      }
+    }
 
-    return rects;
+    return elements;
   };
 
   // Generate pattern overlay (glow circles and connecting lines)
@@ -502,30 +591,43 @@ const MinimalistTileMatrix = ({
         >
           {Array.from({ length: GRID_SIZE }).map((_, visualRow) =>
             Array.from({ length: GRID_SIZE }).map((_, col) => {
+              const actualRow = getActualRow(visualRow);
               const selected = isSelected(visualRow, col);
               const visited = isVisited(visualRow, col);
               const stepNumber = getStepNumber(visualRow, col);
               const rowInfo = rowLabels[visualRow];
               const colInfo = colLabels[col];
+              
+              // Check if tile is accessible based on current unlocked ring
+              const tileRing = getTileRing(actualRow, col);
+              const isAccessible = canAccessTile(actualRow, col, currentUnlockedRing);
+              const isLocked = !isAccessible && !visited;
 
               return (
                 <button
                   key={`tile-${visualRow}-${col}`}
-                  onClick={() => handleTileClick(visualRow, col)}
+                  onClick={() => {
+                    if (isAccessible || visited) {
+                      handleTileClick(visualRow, col);
+                    }
+                  }}
+                  disabled={isLocked}
                   className={`
                     relative rounded-sm transition-all duration-200
                     border border-dashed flex items-center justify-center
-                    ${selected 
-                      ? 'border-solid ring-2 ring-offset-1' 
-                      : visited
-                        ? 'border-solid border-foreground/50 bg-foreground/10'
-                        : 'border-muted-foreground/30 hover:border-foreground/50 hover:bg-muted/30'
+                    ${isLocked
+                      ? 'border-muted-foreground/20 bg-muted/20 cursor-not-allowed opacity-50'
+                      : selected 
+                        ? 'border-solid ring-2 ring-offset-1' 
+                        : visited
+                          ? 'border-solid border-foreground/50 bg-foreground/10'
+                          : 'border-muted-foreground/30 hover:border-foreground/50 hover:bg-muted/30'
                     }
                   `}
                   style={{ 
                     width: TILE_SIZE, 
                     height: TILE_SIZE,
-                    ...(selected ? {
+                    ...(isLocked ? {} : selected ? {
                       borderColor: colors.border,
                       backgroundColor: colors.bg,
                       boxShadow: `0 0 0 2px ${colors.ring}`,
@@ -534,23 +636,41 @@ const MinimalistTileMatrix = ({
                       backgroundColor: colors.bg,
                     } : {})
                   }}
-                  title={`${rowInfo.letter} × ${colInfo.letter}: ${rowInfo.name} × ${colInfo.name}`}
+                  title={isLocked 
+                    ? `🔒 Expand your window of tolerance to access Ring ${tileRing}` 
+                    : `${rowInfo.letter} × ${colInfo.letter}: ${rowInfo.name} × ${colInfo.name}`
+                  }
                 >
-                  {/* Tile label */}
-                  <span 
-                    className="text-[10px] font-medium"
-                    style={{ color: selected || visited ? colors.text : undefined }}
-                  >
-                    {rowInfo.letter}{colInfo.letter}
-                  </span>
+                  {/* Lock icon for locked tiles */}
+                  {isLocked ? (
+                    <Lock className="w-3 h-3 text-muted-foreground/50" />
+                  ) : (
+                    /* Tile label */
+                    <span 
+                      className="text-[10px] font-medium"
+                      style={{ color: selected || visited ? colors.text : undefined }}
+                    >
+                      {rowInfo.letter}{colInfo.letter}
+                    </span>
+                  )}
                   
                   {/* Step number badge for visited tiles */}
-                  {stepNumber && (
+                  {stepNumber && !isLocked && (
                     <div 
                       className="absolute -top-1 -right-1 w-4 h-4 rounded-full flex items-center justify-center text-[8px] font-bold text-white"
                       style={{ backgroundColor: colors.primary }}
                     >
                       {stepNumber}
+                    </div>
+                  )}
+                  
+                  {/* Ring indicator for corner tiles (Ring 4) */}
+                  {tileRing === 4 && !isLocked && (
+                    <div 
+                      className="absolute -bottom-1 -right-1 w-3 h-3 rounded-full flex items-center justify-center text-[8px]"
+                      style={{ backgroundColor: 'hsl(280 70% 50%)', color: 'white' }}
+                    >
+                      ✧
                     </div>
                   )}
                 </button>
