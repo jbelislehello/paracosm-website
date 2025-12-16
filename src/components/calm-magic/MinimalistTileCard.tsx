@@ -637,42 +637,66 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
             isExpanded ? "w-full max-w-4xl h-[90vh]" : "w-full max-w-2xl"
           )
       )}>
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-border/50">
-          <div className="flex items-center gap-3">
-            <div className={cn(
-              "w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold",
-              "bg-gradient-to-br from-primary/20 to-primary/5 text-primary"
-            )}>
-              {tileId}
-            </div>
-            <div>
-              <h2 className="font-semibold text-sm">{tileContent?.name || 'Dialogical Cue'}</h2>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                <span>{currentSeason} · Focus Mode</span>
-                {conversationSaving && (
-                  <span className="flex items-center gap-1 text-primary">
-                    <Loader2 className="w-2 h-2 animate-spin" />
-                    saving
-                  </span>
-                )}
-                {lastSavedAt && !conversationSaving && (
-                  <span className="text-green-600 dark:text-green-400">✓ saved</span>
-                )}
+        {/* Header - only show when not embedded */}
+        {!embedded && (
+          <div className="flex items-center justify-between p-4 border-b border-border/50">
+            <div className="flex items-center gap-3">
+              <div className={cn(
+                "w-10 h-10 rounded-xl flex items-center justify-center text-lg font-bold",
+                "bg-gradient-to-br from-primary/20 to-primary/5 text-primary"
+              )}>
+                {tileId}
+              </div>
+              <div>
+                <h2 className="font-semibold text-sm">{tileContent?.name || 'Dialogical Cue'}</h2>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <span>{currentSeason} · Focus Mode</span>
+                  {conversationSaving && (
+                    <span className="flex items-center gap-1 text-primary">
+                      <Loader2 className="w-2 h-2 animate-spin" />
+                      saving
+                    </span>
+                  )}
+                  {lastSavedAt && !conversationSaving && (
+                    <span className="text-green-600 dark:text-green-400">✓ saved</span>
+                  )}
+                </div>
               </div>
             </div>
+            <div className="flex items-center gap-3">
+              {/* Expand/Collapse Toggle */}
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="h-8 w-8"
+              >
+                {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+              </Button>
+              {/* Quick Mode Toggle */}
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">Quick</span>
+                <Switch 
+                  checked={quickMode} 
+                  onCheckedChange={setQuickMode}
+                  className="scale-75"
+                />
+              </div>
+              {onExpandToFull && (
+                <Button variant="ghost" size="sm" onClick={onExpandToFull} className="text-xs">
+                  Full View
+                </Button>
+              )}
+              <Button variant="ghost" size="icon" onClick={handleClose}>
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            {/* Expand/Collapse Toggle */}
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="h-8 w-8"
-            >
-              {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-            </Button>
-            {/* Quick Mode Toggle */}
+        )}
+        
+        {/* Embedded compact controls */}
+        {embedded && (
+          <div className="flex items-center justify-end gap-2 px-3 py-2 border-b border-border/30">
             <div className="flex items-center gap-2">
               <span className="text-xs text-muted-foreground">Quick</span>
               <Switch 
@@ -681,34 +705,29 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
                 className="scale-75"
               />
             </div>
-            {onExpandToFull && (
-              <Button variant="ghost" size="sm" onClick={onExpandToFull} className="text-xs">
-                Full View
-              </Button>
-            )}
-            <Button variant="ghost" size="icon" onClick={handleClose}>
-              <X className="w-4 h-4" />
-            </Button>
           </div>
-        </div>
+        )}
 
         {/* Step Indicator (only in guided mode) */}
         {!quickMode && renderStepIndicator()}
 
         {/* Content */}
         <div className={cn(
-          "p-6 overflow-y-auto",
+          "overflow-y-auto flex-1",
+          embedded ? "p-3" : "p-6",
           isExpanded ? "max-h-[calc(90vh-140px)]" : ""
         )}>
           {quickMode ? renderQuickMode() : renderStepContent()}
         </div>
 
-        {/* Footer */}
-        <div className="px-6 py-3 bg-muted/30 border-t border-border/50">
-          <p className="text-[10px] text-center text-muted-foreground italic">
-            Transform wild guesses into statistical success through deliberate dialogue
-          </p>
-        </div>
+        {/* Footer - hide when embedded */}
+        {!embedded && (
+          <div className="px-6 py-3 bg-muted/30 border-t border-border/50">
+            <p className="text-[10px] text-center text-muted-foreground italic">
+              Transform wild guesses into statistical success through deliberate dialogue
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

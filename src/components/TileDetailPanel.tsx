@@ -393,7 +393,7 @@ const TileDetailPanel = ({
         {/* MANIFOLDS Tab */}
         <TabsContent value="manifolds" className="flex-1 m-0 min-h-0">
           <ScrollArea className="h-full">
-            <div className="p-3">
+            <div className="p-2">
               <Accordion type="single" collapsible className="w-full">
                 {/* Emotional Check-in */}
                 {onEmotionalCheckin && (
