@@ -650,7 +650,27 @@ const CalmMagicBoard = () => {
     }
   }, [user?.id, analyzeTopology, allCheckins, currentSeason]);
 
-  // Get Polen count for current season
+  // Apply AI insight to shadow as a special nudge
+  const handleApplyInsightToShadow = useCallback((
+    position: { x: number; y: number }, 
+    insightNote: string
+  ) => {
+    applyShadowNudge(position, 'breakthrough', `[AI Insight] ${insightNote}`);
+    toast.success('Applied AI insight to Shadow position', {
+      description: `Position updated based on journey analysis`,
+    });
+  }, [applyShadowNudge]);
+
+  // Suggest updating prophecy based on where patterns point
+  const handleSuggestProphecyFromInsight = useCallback((
+    position: { x: number; y: number },
+    suggestion: string
+  ) => {
+    setProphecy(position, `[Pattern-Informed] ${suggestion}`);
+    toast.success('Prophecy updated based on journey patterns', {
+      description: `Higher Self destination refined`,
+    });
+  }, [setProphecy]);
   const getCurrentSeasonPolenCount = () => {
     // This would ideally come from the persistence hook
     return 0; // Placeholder - will be populated from actual data
@@ -1146,6 +1166,8 @@ const CalmMagicBoard = () => {
               onApplyShadowNudge={applyShadowNudge}
               onResetShadowNudge={resetShadowNudge}
               onAnalyzeJourney={handleAnalyzeJourney}
+              onApplyInsightToShadow={handleApplyInsightToShadow}
+              onSuggestProphecyFromInsight={handleSuggestProphecyFromInsight}
             />
           </div>
         )}
