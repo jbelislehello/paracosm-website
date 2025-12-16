@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { SeasonQualities, QuadrantPosition, TrajectoryEvent, QUADRANT_LABELS, ShadowFactors, FeltState } from '@/types/trajectory';
+import { SeasonQualities, QuadrantPosition, TrajectoryEvent, QUADRANT_LABELS, ShadowFactors, FeltState, TopologicalSignature } from '@/types/trajectory';
 import { GapInfo } from '@/utils/coherenceAnalysis';
 import { TrajectoryVisualization } from './TrajectoryVisualization';
 import { SeasonQualityBars } from './SeasonQualityBars';
@@ -12,7 +12,8 @@ import { TrajectoryLog } from './TrajectoryLog';
 import { HigherSelfProphecyModal } from './HigherSelfProphecyModal';
 import { ShadowFactorsDisplay } from './ShadowFactorsDisplay';
 import { ShadowNudgePanel } from './ShadowNudgePanel';
-import { Target, RotateCcw, Sparkles, ChevronDown, Sliders } from 'lucide-react';
+import { TopologicalInsightsPanel } from './TopologicalInsightsPanel';
+import { Target, RotateCcw, Sparkles, ChevronDown, Sliders, Brain } from 'lucide-react';
 
 interface QuadrantDynamicsPanelProps {
   seasonQualities: SeasonQualities;
@@ -25,10 +26,13 @@ interface QuadrantDynamicsPanelProps {
   shadowFactors?: ShadowFactors;
   gaps?: GapInfo[];
   shadowNudge?: { position: QuadrantPosition; felt_state: FeltState; note: string | null } | null;
+  topologicalSignature?: TopologicalSignature | null;
+  isAnalyzingTopology?: boolean;
   onSetProphecy: (position: QuadrantPosition, reflection?: string) => void;
   onResetTrajectory: () => void;
   onApplyShadowNudge?: (position: QuadrantPosition, feltState: FeltState, note: string | null) => void;
   onResetShadowNudge?: () => void;
+  onAnalyzeJourney?: () => void;
 }
 
 export const QuadrantDynamicsPanel: React.FC<QuadrantDynamicsPanelProps> = ({
@@ -42,13 +46,17 @@ export const QuadrantDynamicsPanel: React.FC<QuadrantDynamicsPanelProps> = ({
   shadowFactors,
   gaps = [],
   shadowNudge,
+  topologicalSignature,
+  isAnalyzingTopology,
   onSetProphecy,
   onResetTrajectory,
   onApplyShadowNudge,
   onResetShadowNudge,
+  onAnalyzeJourney,
 }) => {
   const [showProphecyModal, setShowProphecyModal] = useState(false);
   const [showNudgePanel, setShowNudgePanel] = useState(false);
+  const [showInsights, setShowInsights] = useState(false);
 
   return (
     <div className="h-full overflow-auto p-6 space-y-6">
@@ -203,6 +211,46 @@ export const QuadrantDynamicsPanel: React.FC<QuadrantDynamicsPanelProps> = ({
           </CardContent>
         </Card>
       )}
+
+      {/* Topological Insights */}
+      <Collapsible open={showInsights} onOpenChange={setShowInsights}>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <Brain className="w-4 h-4 text-primary" />
+                Topological Insights
+              </span>
+              <div className="flex items-center gap-2">
+                {onAnalyzeJourney && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-7 px-2 text-xs"
+                    onClick={onAnalyzeJourney}
+                    disabled={isAnalyzingTopology}
+                  >
+                    {isAnalyzingTopology ? 'Analyzing...' : 'Analyze Journey'}
+                  </Button>
+                )}
+                <CollapsibleTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-7 w-7">
+                    <ChevronDown className={`w-4 h-4 transition-transform ${showInsights ? 'rotate-180' : ''}`} />
+                  </Button>
+                </CollapsibleTrigger>
+              </div>
+            </CardTitle>
+          </CardHeader>
+          <CollapsibleContent>
+            <CardContent className="pt-0">
+              <TopologicalInsightsPanel
+                signature={topologicalSignature ?? null}
+                isAnalyzing={isAnalyzingTopology}
+              />
+            </CardContent>
+          </CollapsibleContent>
+        </Card>
+      </Collapsible>
 
       <Separator />
 
