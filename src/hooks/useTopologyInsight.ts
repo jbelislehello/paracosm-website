@@ -16,15 +16,27 @@ export interface ConcreteInsight {
   celebrationSignal: string | null;
 }
 
+// Wonder-inducing insight structure
+export interface WonderInsight {
+  opening_wonder: string;
+  shadow_higher_self_insight: string;
+  tile_position_meaning: string;
+  prd_connection: string;
+  invitation_to_wonder: string;
+}
+
 export interface TopologyStory {
   viewMode: TopologyViewMode;
   storyTitle: string;
   mysteryType: string;
   concreteInsight: ConcreteInsight;
-  opening_mystery: string;
-  chapters: StoryChapter[];
-  key_revelation: string;
-  invitation: string;
+  // Wonder-inducing fields
+  wonderInsight?: WonderInsight;
+  // Legacy fields (still supported)
+  opening_mystery?: string;
+  chapters?: StoryChapter[];
+  key_revelation?: string;
+  invitation?: string;
   stats: {
     coverage: number;
     visitedCount: number;
@@ -45,6 +57,14 @@ interface UseTopologyInsightProps {
   higherSelfPosition?: { x: number; y: number };
   currentSeason?: string;
   currentUnlockedRing?: number;
+  // Wonder-inducing context
+  currentTileRow?: number;
+  currentTileCol?: number;
+  tileName?: string;
+  rowLabel?: string;
+  colLabel?: string;
+  completedSeasons?: string[];
+  prdId?: string | null;
 }
 
 export function useTopologyInsight() {
@@ -61,7 +81,15 @@ export function useTopologyInsight() {
       shadowPosition, 
       higherSelfPosition,
       currentSeason,
-      currentUnlockedRing
+      currentUnlockedRing,
+      // Wonder-inducing context
+      currentTileRow,
+      currentTileCol,
+      tileName,
+      rowLabel,
+      colLabel,
+      completedSeasons,
+      prdId
     } = props;
 
     // Don't fetch if no tiles visited
@@ -90,7 +118,15 @@ export function useTopologyInsight() {
           shadowPosition,
           higherSelfPosition,
           currentSeason,
-          currentUnlockedRing
+          currentUnlockedRing,
+          // Wonder-inducing context
+          currentTileRow,
+          currentTileCol,
+          tileName,
+          rowLabel,
+          colLabel,
+          completedSeasons,
+          prdId
         }
       });
 

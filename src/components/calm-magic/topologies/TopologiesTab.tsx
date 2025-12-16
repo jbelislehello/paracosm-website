@@ -41,6 +41,9 @@ interface TopologiesTabProps {
   shadowPosition?: { x: number; y: number };
   higherSelfPosition?: { x: number; y: number };
   currentSeason?: string;
+  // Wonder-inducing context props
+  completedSeasons?: string[];
+  prdId?: string | null;
   // Topological insights props
   topologicalSignature?: TopologicalSignature | null;
   isAnalyzingTopology?: boolean;
@@ -52,6 +55,9 @@ export function TopologiesTab({
   row,
   col,
   season,
+  tileName,
+  rowLabel,
+  colLabel,
   journeyPath = [],
   visitedTiles = new Set(),
   currentUnlockedRing = 1,
@@ -60,6 +66,8 @@ export function TopologiesTab({
   shadowPosition,
   higherSelfPosition,
   currentSeason,
+  completedSeasons = [],
+  prdId,
   topologicalSignature,
   isAnalyzingTopology,
   onAnalyzeTopology,
@@ -72,7 +80,7 @@ export function TopologiesTab({
 
   const { story, isLoading, error, fetchStory, clearStory } = useTopologyInsight();
 
-  // Fetch story when view mode changes
+  // Fetch story when view mode changes - now with wonder-inducing context
   const handleFetchStory = useCallback(() => {
     fetchStory({
       viewMode,
@@ -82,9 +90,17 @@ export function TopologiesTab({
       shadowPosition,
       higherSelfPosition,
       currentSeason,
-      currentUnlockedRing
+      currentUnlockedRing,
+      // Wonder-inducing context
+      currentTileRow: row,
+      currentTileCol: col,
+      tileName,
+      rowLabel,
+      colLabel,
+      completedSeasons,
+      prdId
     });
-  }, [viewMode, journeyPath, visitedTiles, densityMap, shadowPosition, higherSelfPosition, currentSeason, currentUnlockedRing, fetchStory]);
+  }, [viewMode, journeyPath, visitedTiles, densityMap, shadowPosition, higherSelfPosition, currentSeason, currentUnlockedRing, row, col, tileName, rowLabel, colLabel, completedSeasons, prdId, fetchStory]);
 
   // Fetch story on mount and when view mode changes (but don't auto-reveal)
   useEffect(() => {

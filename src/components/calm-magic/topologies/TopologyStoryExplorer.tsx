@@ -625,8 +625,91 @@ ${story.invitation}
                   isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
                 )}>
                   <div className="px-4 pb-4 space-y-4">
-                    {/* AI STORY FIRST - for surprise and wonder */}
-                    {story ? (
+                    {/* WONDER INSIGHTS - New wonder-inducing format */}
+                    {story?.wonderInsight ? (
+                      <div className="space-y-4">
+                        <h4 className="text-sm font-semibold flex items-center gap-2">
+                          <Sparkles className="w-4 h-4 text-violet-500" />
+                          {story.storyTitle}
+                        </h4>
+                        
+                        {/* Opening Wonder */}
+                        <div className="p-4 bg-gradient-to-r from-violet-500/10 to-primary/10 rounded-lg border border-violet-500/20">
+                          <div className="flex items-start gap-3">
+                            <Sparkles className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-xs uppercase tracking-wider text-violet-500/80 mb-1">
+                                The Revelation
+                              </p>
+                              <p className="text-base font-medium leading-relaxed text-foreground">
+                                {story.wonderInsight.opening_wonder}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Shadow & Higher Self Insight */}
+                        <div className="p-4 bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-lg border border-amber-500/20">
+                          <div className="flex items-start gap-3">
+                            <Target className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-xs uppercase tracking-wider text-amber-500/80 mb-1">
+                                The Gap Between Shadow & Higher Self
+                              </p>
+                              <p className="text-sm leading-relaxed text-foreground/90">
+                                {story.wonderInsight.shadow_higher_self_insight}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Tile Position Meaning */}
+                        <div className="p-4 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 rounded-lg border border-emerald-500/20">
+                          <div className="flex items-start gap-3">
+                            <Map className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-xs uppercase tracking-wider text-emerald-500/80 mb-1">
+                                Where You Stand
+                              </p>
+                              <p className="text-sm leading-relaxed text-foreground/90">
+                                {story.wonderInsight.tile_position_meaning}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* PRD Connection */}
+                        <div className="p-4 bg-gradient-to-r from-blue-500/10 to-indigo-500/10 rounded-lg border border-blue-500/20">
+                          <div className="flex items-start gap-3">
+                            <Layers className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-xs uppercase tracking-wider text-blue-500/80 mb-1">
+                                What You're Building
+                              </p>
+                              <p className="text-sm leading-relaxed text-foreground/90">
+                                {story.wonderInsight.prd_connection}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Invitation to Wonder */}
+                        <div className="p-4 bg-muted/30 rounded-lg border border-primary/20">
+                          <div className="flex items-start gap-3">
+                            <MessageCircleQuestion className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                            <div>
+                              <p className="text-xs uppercase tracking-wider text-primary/80 mb-1">
+                                Sit With This Question
+                              </p>
+                              <p className="text-base font-medium italic leading-relaxed text-foreground">
+                                "{story.wonderInsight.invitation_to_wonder}"
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : story ? (
+                      /* LEGACY CHAPTER-BASED STORY - Fallback for old responses */
                       <div className="space-y-4">
                         <h4 className="text-sm font-semibold flex items-center gap-2">
                           <BookOpen className="w-4 h-4 text-violet-500" />
@@ -634,69 +717,75 @@ ${story.invitation}
                         </h4>
                         
                         {/* Opening Mystery */}
-                        <div className="p-4 bg-gradient-to-r from-violet-500/10 to-primary/10 rounded-lg border border-violet-500/20">
-                          <div className="flex items-start gap-3">
-                            <Sparkles className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" />
-                            <div>
-                              <p className="text-xs uppercase tracking-wider text-violet-500/80 mb-1">
-                                Opening Mystery
-                              </p>
-                              <p className="text-base font-medium leading-relaxed italic text-foreground">
-                                "{story.opening_mystery}"
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Chapters */}
-                        <div className="space-y-4">
-                          {story.chapters.map((chapter, index) => (
-                            <StoryChapter
-                              key={index}
-                              chapter={chapter}
-                              index={index}
-                              isRevealed={revealedChapters.has(index)}
-                              onReveal={() => handleRevealChapter(index)}
-                              isLast={index === story.chapters.length - 1}
-                            />
-                          ))}
-                        </div>
-
-                        {/* Key Revelation */}
-                        <div className={cn(
-                          "relative p-4 rounded-lg border-2 transition-all duration-500",
-                          showRevelation && allChaptersRevealed
-                            ? "bg-gradient-to-br from-amber-500/15 to-primary/10 border-amber-500/40"
-                            : "bg-muted/20 border-dashed border-muted-foreground/20"
-                        )}>
-                          {!showRevelation || !allChaptersRevealed ? (
-                            <div className="flex items-center justify-center gap-2 py-2 text-muted-foreground">
-                              <Lock className="w-4 h-4" />
-                              <span className="text-sm">
-                                Reveal all chapters to unlock the key revelation
-                              </span>
-                            </div>
-                          ) : (
-                            <div className="animate-fade-in">
-                              <div className="flex items-start gap-3">
-                                <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
-                                  <Lightbulb className="w-4 h-4 text-amber-500" />
-                                </div>
-                                <div>
-                                  <p className="text-xs uppercase tracking-wider text-amber-500/80 mb-1">
-                                    Key Revelation
-                                  </p>
-                                  <p className="text-base font-semibold leading-relaxed text-foreground">
-                                    {story.key_revelation}
-                                  </p>
-                                </div>
+                        {story.opening_mystery && (
+                          <div className="p-4 bg-gradient-to-r from-violet-500/10 to-primary/10 rounded-lg border border-violet-500/20">
+                            <div className="flex items-start gap-3">
+                              <Sparkles className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" />
+                              <div>
+                                <p className="text-xs uppercase tracking-wider text-violet-500/80 mb-1">
+                                  Opening Mystery
+                                </p>
+                                <p className="text-base font-medium leading-relaxed italic text-foreground">
+                                  "{story.opening_mystery}"
+                                </p>
                               </div>
                             </div>
-                          )}
-                        </div>
+                          </div>
+                        )}
+
+                        {/* Chapters */}
+                        {story.chapters && (
+                          <div className="space-y-4">
+                            {story.chapters.map((chapter, index) => (
+                              <StoryChapter
+                                key={index}
+                                chapter={chapter}
+                                index={index}
+                                isRevealed={revealedChapters.has(index)}
+                                onReveal={() => handleRevealChapter(index)}
+                                isLast={index === story.chapters!.length - 1}
+                              />
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Key Revelation */}
+                        {story.key_revelation && (
+                          <div className={cn(
+                            "relative p-4 rounded-lg border-2 transition-all duration-500",
+                            showRevelation && allChaptersRevealed
+                              ? "bg-gradient-to-br from-amber-500/15 to-primary/10 border-amber-500/40"
+                              : "bg-muted/20 border-dashed border-muted-foreground/20"
+                          )}>
+                            {!showRevelation || !allChaptersRevealed ? (
+                              <div className="flex items-center justify-center gap-2 py-2 text-muted-foreground">
+                                <Lock className="w-4 h-4" />
+                                <span className="text-sm">
+                                  Reveal all chapters to unlock the key revelation
+                                </span>
+                              </div>
+                            ) : (
+                              <div className="animate-fade-in">
+                                <div className="flex items-start gap-3">
+                                  <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+                                    <Lightbulb className="w-4 h-4 text-amber-500" />
+                                  </div>
+                                  <div>
+                                    <p className="text-xs uppercase tracking-wider text-amber-500/80 mb-1">
+                                      Key Revelation
+                                    </p>
+                                    <p className="text-base font-semibold leading-relaxed text-foreground">
+                                      {story.key_revelation}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
 
                         {/* Invitation */}
-                        {showRevelation && allChaptersRevealed && (
+                        {showRevelation && allChaptersRevealed && story.invitation && (
                           <div className="p-4 bg-muted/30 rounded-lg animate-fade-in">
                             <div className="flex items-start gap-3">
                               <MessageCircleQuestion className="w-5 h-5 text-primary shrink-0 mt-0.5" />
@@ -711,47 +800,39 @@ ${story.invitation}
                             </div>
                           </div>
                         )}
+                      </div>
+                    ) : null}
 
-                        {/* Story Actions */}
-                        <div className="flex items-center justify-between pt-3 border-t border-border/50">
-                          <div className="flex gap-4 text-xs text-muted-foreground">
-                            <span>{story.stats.coverage}% explored</span>
-                            <span>Ring {story.stats.currentRing}</span>
-                            <span>{story.stats.pathLength} steps</span>
-                          </div>
-                          <div className="flex gap-2">
-                            {onSaveToJournal && showRevelation && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={handleSave}
-                                className="h-7 text-xs gap-1"
-                              >
-                                <Save className="w-3 h-3" />
-                                Save
-                              </Button>
-                            )}
+                    {/* Story Actions */}
+                    {story && (
+                      <div className="flex items-center justify-between pt-3 border-t border-border/50">
+                        <div className="flex gap-4 text-xs text-muted-foreground">
+                          <span>{story.stats.coverage}% explored</span>
+                          <span>Ring {story.stats.currentRing}</span>
+                          <span>{story.stats.pathLength} steps</span>
+                        </div>
+                        <div className="flex gap-2">
+                          {onSaveToJournal && (
                             <Button
-                              variant="ghost"
+                              variant="outline"
                               size="sm"
-                              onClick={onRegenerate}
+                              onClick={handleSave}
                               className="h-7 text-xs gap-1"
                             >
-                              <RefreshCw className="w-3 h-3" />
-                              New Story
+                              <Save className="w-3 h-3" />
+                              Save
                             </Button>
-                          </div>
+                          )}
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={onRegenerate}
+                            className="h-7 text-xs gap-1"
+                          >
+                            <RefreshCw className="w-3 h-3" />
+                            New Insight
+                          </Button>
                         </div>
-                      </div>
-                    ) : (
-                      <div className="px-4 py-5 bg-muted/20 border border-border/50 rounded-lg text-center">
-                        <BookOpen className="w-8 h-8 text-muted-foreground/50 mx-auto mb-2" />
-                        <p className="text-sm font-medium text-muted-foreground">
-                          Begin your journey to unlock hidden stories
-                        </p>
-                        <p className="text-xs text-muted-foreground/60 mt-1">
-                          Each topology view reveals different mysteries about your exploration
-                        </p>
                       </div>
                     )}
 
