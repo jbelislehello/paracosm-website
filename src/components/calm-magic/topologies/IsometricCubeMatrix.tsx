@@ -177,8 +177,8 @@ export function IsometricCubeMatrix({
       };
 
       p.draw = () => {
-        // Draw horizon background gradient
-        drawHorizonBackground(p, seasonHue);
+        // Clear with transparent background
+        p.clear();
 
         // Camera/view rotation
         if (isAnimating && viewMode === 'torus') {
@@ -202,10 +202,7 @@ export function IsometricCubeMatrix({
         const currentFold = foldProgress + (targetFold - foldProgress) * 0.05;
         setFoldProgress(currentFold);
 
-        // Draw solid ground plane first (behind cubes)
-        if (currentFold < 0.5) {
-          drawGroundPlane(p, seasonHue, currentFold);
-        }
+        // Ground plane removed - cubes float on transparent background
 
         // Draw all 64 cubes - sorted by depth for proper rendering
         // FIXED: Depth sorting for bottom-left origin perspective
@@ -243,91 +240,7 @@ export function IsometricCubeMatrix({
         draw2DOverlay(p, seasonHue);
       };
 
-      const drawHorizonBackground = (p: p5, hue: number) => {
-        // Create gradient background from top (dark) to horizon (lighter)
-        p.push();
-        p.resetMatrix();
-        p.camera();
-        p.noStroke();
-        
-        const gradientSteps = 30;
-        const stepHeight = height / gradientSteps;
-        
-        for (let i = 0; i < gradientSteps; i++) {
-          const t = i / gradientSteps;
-          // Dark at top, slightly lighter toward middle
-          const brightness = 6 + t * 12;
-          const saturation = 25 - t * 10;
-          p.fill(hue, saturation, brightness);
-          p.rect(-width/2, -height/2 + i * stepHeight, width, stepHeight + 1);
-        }
-        
-        // Horizon glow band
-        const horizonY = height * 0.35 - height/2;
-        for (let i = 0; i < 8; i++) {
-          const glowOpacity = (8 - i) / 25;
-          p.fill(hue, 40, 35, glowOpacity);
-          p.rect(-width/2, horizonY + i * 8, width, 10);
-        }
-        
-        p.pop();
-      };
-
-      const drawGroundPlane = (p: p5, hue: number, fold: number) => {
-        const opacity = 1 - fold * 2;
-        if (opacity <= 0) return;
-
-        p.push();
-        
-        // Position floor plane below cubes
-        const floorY = cubeSize * 4.5;
-        p.translate(0, floorY, 0);
-        
-        // Rotate to make it horizontal
-        p.rotateX(p.HALF_PI);
-        
-        // Draw expanding floor rings with fade
-        const maxRings = 18;
-        const baseSize = cubeSize * 10;
-        
-        for (let ring = maxRings; ring >= 0; ring--) {
-          const ringProgress = ring / maxRings;
-          const size = baseSize + ring * cubeSize * 2.5;
-          
-          // Floor color with fade toward edges
-          const brightness = 12 - ringProgress * 8;
-          const saturation = 30 - ringProgress * 15;
-          const alpha = opacity * (1 - ringProgress * 0.7);
-          
-          p.fill(hue, saturation, brightness, alpha);
-          p.noStroke();
-          
-          // Draw as quad for better perspective
-          p.beginShape();
-          p.vertex(-size/2, -size/2);
-          p.vertex(size/2, -size/2);
-          p.vertex(size/2, size/2);
-          p.vertex(-size/2, size/2);
-          p.endShape(p.CLOSE);
-        }
-        
-        // Draw ground shadows under cube positions
-        p.noStroke();
-        for (let row = 0; row < 8; row++) {
-          for (let col = 0; col < 8; col++) {
-            const state = getCubeState(row, col);
-            if (state.isVisited || state.isSelected) {
-              const pos3d = gridTo3D(row, col);
-              // Shadow ellipse on the floor
-              const shadowOpacity = state.isSelected ? 0.25 : 0.15;
-              p.fill(0, 0, 0, shadowOpacity * opacity);
-              p.ellipse(pos3d.x, pos3d.z, cubeSize * 0.9, cubeSize * 0.9);
-            }
-          }
-        }
-        
-        p.pop();
-      };
+      // Background and ground plane functions removed - transparent background
 
       const drawCube = (p: p5, state: CubeState, fold: number, hue: number) => {
         const { row, col, isVisited, isSelected, isAccessible, ring, density, stepNumber } = state;
