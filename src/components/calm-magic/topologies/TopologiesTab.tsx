@@ -3,6 +3,11 @@ import { ManifoldSeason } from '@/utils/torusManifoldMath';
 import { IsometricCubeMatrix } from './IsometricCubeMatrix';
 import { DoubleDiamondLayout } from './DoubleDiamondLayout';
 import { SpiralLayout } from './SpiralLayout';
+import { ManifoldChartView } from './ManifoldChartView';
+import { TorusCoordinateReference } from './TorusCoordinateReference';
+import { FundamentalCyclesOverlay } from './FundamentalCyclesOverlay';
+import { ToroidalFlowField } from './ToroidalFlowField';
+import { UnfoldedChartProjection } from './UnfoldedChartProjection';
 import { ViewModeSelector, TopologyViewMode } from './ViewModeSelector';
 import { RingLevel } from '@/utils/ringToleranceSystem';
 import { Button } from '@/components/ui/button';
@@ -65,6 +70,16 @@ export function TopologiesTab({
         return <DoubleDiamondLayout {...layoutProps} />;
       case 'spiral':
         return <SpiralLayout {...layoutProps} />;
+      case 'charts':
+        return <ManifoldChartView selectedTile={{ row, col }} season={season} visitedTiles={visitedTiles} densityMap={densityMap} onTileClick={onTileSelect} />;
+      case 'coordinates':
+        return <TorusCoordinateReference selectedTile={{ row, col }} season={season} densityMap={densityMap} />;
+      case 'cycles':
+        return <FundamentalCyclesOverlay selectedTile={{ row, col }} season={season} journeyPath={journeyPath} visitedTiles={visitedTiles} />;
+      case 'flow':
+        return <ToroidalFlowField selectedTile={{ row, col }} season={season} journeyPath={journeyPath} visitedTiles={visitedTiles} densityMap={densityMap} onTileClick={onTileSelect} />;
+      case 'projection':
+        return <UnfoldedChartProjection selectedTile={{ row, col }} season={season} journeyPath={journeyPath} visitedTiles={visitedTiles} densityMap={densityMap} onTileClick={onTileSelect} />;
       case 'isometric':
       default:
         return (
