@@ -13,6 +13,31 @@ import { toast } from '@/hooks/use-toast';
 import { BranchNavigator } from './BranchNavigator';
 import { BranchTreeDiagram } from './BranchTreeDiagram';
 import { BranchMergeDialog } from './BranchMergeDialog';
+import { getSemanticMeaning, ROW_MEANINGS, COL_MEANINGS, SEASON_MEANINGS } from '@/utils/tileSemanticMeaning';
+
+// Poetic greeting component for tile intersections
+const PoeticTileGreeting: React.FC<{ row: number; col: number; season?: string }> = ({ row, col, season }) => {
+  const semanticMeaning = getSemanticMeaning(row, col);
+  const rowDeep = ROW_MEANINGS[row]?.deep || 'the unknown';
+  const colDeep = COL_MEANINGS[col]?.deep || 'mystery';
+  const seasonEssence = season ? SEASON_MEANINGS[season]?.essence : null;
+  
+  return (
+    <div className="text-center py-4 px-6 bg-gradient-to-b from-primary/5 to-transparent rounded-xl mb-4 animate-fade-in">
+      <p className="text-xs uppercase tracking-widest text-muted-foreground/70 mb-2">
+        You have arrived at
+      </p>
+      <p className="text-sm italic text-foreground/80 leading-relaxed">
+        {semanticMeaning}
+      </p>
+      {seasonEssence && (
+        <p className="text-xs text-muted-foreground mt-3 pt-3 border-t border-border/30">
+          In this season of <span className="text-primary/80">{seasonEssence}</span>
+        </p>
+      )}
+    </div>
+  );
+};
 
 interface MinimalistTileCardProps {
   selectedTile: { row: number; col: number };
@@ -215,6 +240,11 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
     
     return (
       <div className="space-y-4">
+        {/* Poetic Greeting on first step */}
+        {currentStep === 1 && (
+          <PoeticTileGreeting row={selectedTile.row} col={selectedTile.col} season={currentSeason} />
+        )}
+        
         {/* Step instruction */}
         <div className="text-center">
           <p className="text-sm font-medium text-primary">{currentStepData?.instruction}</p>
@@ -368,6 +398,9 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
 
   const renderQuickMode = () => (
     <div className="space-y-6">
+      {/* Poetic Greeting */}
+      <PoeticTileGreeting row={selectedTile.row} col={selectedTile.col} season={currentSeason} />
+      
       {/* Core Question as conversational bubble */}
       <div className="flex justify-start">
         <div className="bg-muted/60 rounded-2xl rounded-tl-sm px-4 py-3 max-w-[90%] shadow-sm">
