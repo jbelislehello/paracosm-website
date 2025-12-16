@@ -219,6 +219,28 @@ const CalmMagicBoard = () => {
     completeTour,
   } = useOnboardingTour({ projectId: projectContext?.id, autoStart: true });
 
+  // Keyboard shortcut for clean view toggle (C key)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.isContentEditable
+      ) {
+        return;
+      }
+      
+      if (e.key.toLowerCase() === 'c' && activeView === 'matrix') {
+        e.preventDefault();
+        setCleanMatrixView(prev => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeView]);
+
   // Apply URL parameters on mount (once)
   useEffect(() => {
     if (hasAppliedUrlParams.current || progressLoading || projectLoading) return;
@@ -1030,7 +1052,7 @@ const CalmMagicBoard = () => {
               size="sm"
               className="gap-1.5 h-8 px-2"
               onClick={() => setCleanMatrixView(!cleanMatrixView)}
-              title={cleanMatrixView ? "Show paths & connections" : "Clean view (tiles only)"}
+              title={cleanMatrixView ? "Show paths & connections (C)" : "Clean view - tiles only (C)"}
             >
               {cleanMatrixView ? (
                 <Eye className="w-4 h-4" />
