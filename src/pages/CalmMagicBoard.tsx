@@ -1324,7 +1324,7 @@ const CalmMagicBoard = () => {
               colLabel={COL_LABELS[selectedTile?.col ?? 0]}
               journeyPath={journeyPath}
               polenDensity={polenEntries.length}
-              visitedTiles={new Set(Array.from(visitedTiles).map(id => `${Math.floor((Number(id) - 1) / 8)}-${(Number(id) - 1) % 8}`))}
+              visitedTiles={visitedTiles}
               onTileSelect={(row, col) => {
                 handleNavigate(row, col);
                 setActiveView('matrix');
