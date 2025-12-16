@@ -40,12 +40,11 @@ import { getPrdAccessLevel, Season as PrdSeason } from '@/utils/prdAccessLevel';
 import { parseBoardEntryParams, getAssessmentContextDescription } from '@/utils/parseBoardEntryParams';
 import { getGardenByType } from '@/data/gardens';
 import ProjectTitleBar from '@/components/calm-magic/ProjectTitleBar';
-import { PrdUnlockProgress } from '@/components/calm-magic/PrdUnlockProgress';
-// PatternDetectionBadge merged into PrdUnlockProgress
 import PatternJournal from '@/components/calm-magic/PatternJournal';
 import { DetectedPattern, PatternHistoryEntry } from '@/utils/patternDetection';
 import { TopologiesTab } from '@/components/calm-magic/topologies/TopologiesTab';
 import { ManifoldSeason } from '@/utils/torusManifoldMath';
+import { getCurrentUnlockedRing } from '@/utils/ringToleranceSystem';
 
 const ROW_LABELS = ['Mindsets', 'Agilities', 'Goals', 'Intuition', 'Compasses', 'Norms', 'Synergies', 'Protocols & Architectures'];
 const COL_LABELS = ['Chances', 'Heart', 'Observer', 'Reversal', 'Design', 'Seeds', 'Methods', 'Systems'];
@@ -170,7 +169,9 @@ const CalmMagicBoard = () => {
   // Convert journeyPath to Set for matrix visualization (within current season)
   // Fallback to empty Set if season data not yet loaded
   const visitedTiles = seasonProgress[currentSeason] || new Set<string>();
-
+  
+  // Calculate current unlocked ring based on visited tiles
+  const currentUnlockedRing = getCurrentUnlockedRing(visitedTiles);
   // Quadrant dynamics hook
   const {
     seasonQualities,
@@ -943,7 +944,7 @@ const CalmMagicBoard = () => {
           </TabsList>
         </Tabs>
         
-        {/* PRD Unlock Progress Indicator */}
+        {/* PRD Unlock Progress Indicator - moved to Encyclopedia only */}
         <div className="flex items-center gap-3">
           <Button
             variant="ghost"
@@ -955,18 +956,6 @@ const CalmMagicBoard = () => {
             <BookOpen className="w-4 h-4" />
             <span className="hidden lg:inline text-xs">Encyclopedia</span>
           </Button>
-          <PrdUnlockProgress 
-            tilesVisited={visitedTiles.size}
-            currentSeason={currentSeason}
-            userId={user?.id}
-            visitedTiles={visitedTiles}
-            onPatternDetected={handlePatternDetected}
-            onPatternClick={(pattern) => {
-              setHighlightedPattern(pattern);
-              toast.info(`Highlighting ${pattern.name} on matrix`);
-              setTimeout(() => setHighlightedPattern(null), 5000);
-            }}
-          />
         </div>
       </div>
 
@@ -1103,6 +1092,11 @@ const CalmMagicBoard = () => {
               completedSeasons={completedSeasons as PrdSeason[]}
               prdId={prdId}
               onPrdCreated={(newPrdId) => updateProgress({ prdId: newPrdId })}
+              visitedTiles={visitedTiles}
+              polenCount={polenEntries.length}
+              userId={user?.id}
+              currentUnlockedRing={currentUnlockedRing}
+              onPatternDetected={handlePatternDetected}
               onGenerateLayer={async (season) => {
                 // Fetch Polen entries for this season
                 const { data: polenEntries, error } = await supabase

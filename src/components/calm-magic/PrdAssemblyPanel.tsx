@@ -24,6 +24,9 @@ import {
   FileDown,
   Printer,
   Layers,
+  Search,
+  Hexagon,
+  Target,
   Eye,
   Briefcase,
   Zap,
@@ -63,6 +66,9 @@ import { hasFeatureAccess } from '@/data/subscriptionTiers';
 import FeatureGate from '@/components/FeatureGate';
 import PremiumBadge from '@/components/PremiumBadge';
 import { PrdLayer } from '@/components/prd-generator/PrdStageProgress';
+import { detectPatterns, DetectedPattern, getPatternColor } from '@/utils/patternDetection';
+import { RING_DEFINITIONS } from '@/utils/ringToleranceSystem';
+import { useHapticFeedback } from '@/hooks/useHapticFeedback';
 import { PRD_STAGES, PrdStage } from '@/types/journal-expansion';
 
 // Wizard-specific types and constants
@@ -200,6 +206,155 @@ const SEASON_ICONS: Record<Season, React.ReactNode> = {
   ANTHEMS: <Music className="h-4 w-4" />,
 };
 
+const TILES_THRESHOLD = 32;
+const FRAGMENTS_THRESHOLD = 5;
+
+const RING_PATTERN_HINTS: Record<number, { type: string; hint: string }> = {
+  1: { type: 'trigram', hint: 'Vertical trigrams form in the inner core' },
+  2: { type: 'hexagram', hint: 'Horizontal patterns emerge in the stretch zone' },
+  3: { type: 'geometric', hint: 'Geometric shapes crystallize at the edge' },
+  4: { type: 'sequence', hint: 'Corner constellations complete the journey' }
+};
+
+// Unlock Progress Card Component
+interface UnlockProgressCardProps {
+  visitedTiles: Set<string>;
+  polenCount: number;
+  documentName: string;
+  currentUnlockedRing: number;
+  onPatternDetected?: (patterns: DetectedPattern[]) => void;
+}
+
+const UnlockProgressCard: React.FC<UnlockProgressCardProps> = ({
+  visitedTiles,
+  polenCount,
+  documentName,
+  currentUnlockedRing,
+  onPatternDetected
+}) => {
+  const [detectedPatterns, setDetectedPatterns] = useState<DetectedPattern[]>([]);
+  const [isScanning, setIsScanning] = useState(false);
+  const { triggerCelebrationHaptic } = useHapticFeedback();
+  
+  const tilesCount = visitedTiles.size;
+  const isUnlocked = tilesCount >= TILES_THRESHOLD && polenCount >= FRAGMENTS_THRESHOLD;
+  const tilesProgress = Math.min((tilesCount / TILES_THRESHOLD) * 100, 100);
+  const fragmentsProgress = Math.min((polenCount / FRAGMENTS_THRESHOLD) * 100, 100);
+  const tilesRemaining = Math.max(TILES_THRESHOLD - tilesCount, 0);
+  const fragmentsRemaining = Math.max(FRAGMENTS_THRESHOLD - polenCount, 0);
+  
+  const ringHint = RING_PATTERN_HINTS[currentUnlockedRing] || RING_PATTERN_HINTS[1];
+  
+  const handleScanPatterns = useCallback(() => {
+    setIsScanning(true);
+    
+    setTimeout(() => {
+      const patterns = detectPatterns(visitedTiles, 0); // No threshold for detection
+      setDetectedPatterns(patterns);
+      
+      if (patterns.length > 0) {
+        triggerCelebrationHaptic();
+        try {
+          const audio = new Audio('/sounds/pattern-discovered.mp3');
+          audio.volume = 0.3;
+          audio.play().catch(() => {});
+        } catch {}
+        
+        toast.success(`✨ ${patterns.length} pattern${patterns.length > 1 ? 's' : ''} detected!`);
+      } else {
+        toast.info('No patterns detected yet. Keep exploring!');
+      }
+      
+      onPatternDetected?.(patterns);
+      setIsScanning(false);
+    }, 500);
+  }, [visitedTiles, onPatternDetected, triggerCelebrationHaptic]);
+  
+  return (
+    <Card className="mx-4 mt-3 mb-1 border-dashed">
+      <CardContent className="p-3">
+        <div className="flex items-center gap-3">
+          {isUnlocked ? (
+            <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0" />
+          ) : (
+            <Lock className="w-5 h-5 text-muted-foreground shrink-0" />
+          )}
+          
+          <div className="flex-1 min-w-0 space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <span className="text-sm font-medium">
+                {documentName} {isUnlocked ? 'Unlocked' : 'Progress'}
+              </span>
+              <Badge variant={isUnlocked ? 'default' : 'outline'} className="text-xs shrink-0">
+                {tilesCount}/{TILES_THRESHOLD} tiles • {polenCount}/{FRAGMENTS_THRESHOLD} fragments
+              </Badge>
+            </div>
+            
+            {!isUnlocked && (
+              <>
+                <div className="flex gap-2">
+                  <Progress value={tilesProgress} className="h-1.5 flex-1" />
+                  <Progress value={fragmentsProgress} className="h-1.5 flex-1" />
+                </div>
+                <p className="text-[10px] text-muted-foreground">
+                  {tilesRemaining > 0 && fragmentsRemaining > 0 && (
+                    <>Visit {tilesRemaining} more tile{tilesRemaining !== 1 ? 's' : ''} and capture {fragmentsRemaining} more fragment{fragmentsRemaining !== 1 ? 's' : ''}</>
+                  )}
+                  {tilesRemaining > 0 && fragmentsRemaining === 0 && (
+                    <>Visit {tilesRemaining} more tile{tilesRemaining !== 1 ? 's' : ''} to unlock</>
+                  )}
+                  {tilesRemaining === 0 && fragmentsRemaining > 0 && (
+                    <>Capture {fragmentsRemaining} more fragment{fragmentsRemaining !== 1 ? 's' : ''} to unlock</>
+                  )}
+                </p>
+              </>
+            )}
+          </div>
+          
+          {/* Pattern Detection - Always visible */}
+          <div className="flex items-center gap-2 shrink-0">
+            <Button 
+              size="sm" 
+              variant="outline" 
+              onClick={handleScanPatterns}
+              disabled={isScanning}
+              className="h-7 text-xs gap-1.5"
+              title={`Ring ${currentUnlockedRing}: ${ringHint.hint}`}
+            >
+              {isScanning ? (
+                <Loader2 className="w-3 h-3 animate-spin" />
+              ) : (
+                <Search className="w-3 h-3" />
+              )}
+              Detect Patterns
+            </Button>
+            
+            {detectedPatterns.length > 0 && (
+              <Badge 
+                variant="secondary" 
+                className="px-2 py-1 text-xs cursor-pointer hover:opacity-80"
+                style={{ 
+                  backgroundColor: `${getPatternColor(detectedPatterns[0].type)}20`,
+                  borderColor: getPatternColor(detectedPatterns[0].type),
+                  color: getPatternColor(detectedPatterns[0].type)
+                }}
+              >
+                {detectedPatterns[0].icon} {detectedPatterns[0].name}
+              </Badge>
+            )}
+          </div>
+        </div>
+        
+        {/* Ring-aware pattern hint */}
+        <div className="mt-2 flex items-center gap-2 text-[10px] text-muted-foreground">
+          <Hexagon className="w-3 h-3" />
+          <span>Ring {currentUnlockedRing}: {ringHint.hint}</span>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
 interface PrdAssemblyPanelProps {
   isOpen: boolean;
   onClose: () => void;
@@ -209,6 +364,12 @@ interface PrdAssemblyPanelProps {
   prdId: string | null;
   onGenerateLayer: (season: Season) => Promise<void>;
   onPrdCreated?: (prdId: string) => void;
+  // New props for unlock progress
+  visitedTiles?: Set<string>;
+  polenCount?: number;
+  userId?: string;
+  currentUnlockedRing?: number;
+  onPatternDetected?: (patterns: any[]) => void;
 }
 
 export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
@@ -219,7 +380,12 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   completedSeasons,
   prdId,
   onGenerateLayer,
-  onPrdCreated
+  onPrdCreated,
+  visitedTiles = new Set(),
+  polenCount = 0,
+  userId,
+  currentUnlockedRing = 1,
+  onPatternDetected
 }) => {
   const navigate = useNavigate();
   const { mode } = useMode();
@@ -732,6 +898,15 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
               {!canAccessCompilation && <Lock className="h-3 w-3 ml-1 text-amber-500" />}
             </TabsTrigger>
           </TabsList>
+
+          {/* Unlock Progress Card - Always visible */}
+          <UnlockProgressCard 
+            visitedTiles={visitedTiles}
+            polenCount={polenCount}
+            documentName={documentName}
+            currentUnlockedRing={currentUnlockedRing}
+            onPatternDetected={onPatternDetected}
+          />
 
           <TabsContent value="layers" className="flex-1 overflow-hidden p-0 m-0">
             <div className="h-full flex flex-col">
