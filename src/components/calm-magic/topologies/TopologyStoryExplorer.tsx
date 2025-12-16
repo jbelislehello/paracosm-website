@@ -531,25 +531,9 @@ ${story.invitation}
         isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
       )}>
         <div className="px-4 pb-4 space-y-4">
-          {/* View Significance */}
-          <ViewSignificanceSection viewMode={viewMode} />
-          
-          {/* Journey Interpretation */}
-          <JourneyInterpretationSection 
-            visitedTiles={visitedTiles}
-            currentUnlockedRing={currentUnlockedRing}
-            journeyPath={journeyPath}
-          />
-          
-          {/* Suggested Next Steps */}
-          <SuggestedNextSteps
-            visitedTiles={visitedTiles}
-            currentUnlockedRing={currentUnlockedRing}
-          />
-
-          {/* Story Section - Always visible when there's a story */}
-          {story && (
-            <div className="space-y-4 pt-4 border-t border-border/50">
+          {/* AI STORY FIRST - for surprise and wonder */}
+          {story ? (
+            <div className="space-y-4">
               <h4 className="text-sm font-semibold flex items-center gap-2">
                 <BookOpen className="w-4 h-4 text-violet-500" />
                 {story.storyTitle}
@@ -665,10 +649,7 @@ ${story.invitation}
                 </div>
               </div>
             </div>
-          )}
-
-          {/* Empty state when no story */}
-          {!story && (
+          ) : (
             <div className="px-4 py-5 bg-muted/20 border border-border/50 rounded-lg text-center">
               <BookOpen className="w-8 h-8 text-muted-foreground/50 mx-auto mb-2" />
               <p className="text-sm font-medium text-muted-foreground">
@@ -679,6 +660,25 @@ ${story.invitation}
               </p>
             </div>
           )}
+
+          {/* Analytics sections below the story */}
+          <div className="pt-4 border-t border-border/50 space-y-4">
+            {/* View Significance */}
+            <ViewSignificanceSection viewMode={viewMode} />
+            
+            {/* Journey Interpretation */}
+            <JourneyInterpretationSection 
+              visitedTiles={visitedTiles}
+              currentUnlockedRing={currentUnlockedRing}
+              journeyPath={journeyPath}
+            />
+            
+            {/* Suggested Next Steps */}
+            <SuggestedNextSteps
+              visitedTiles={visitedTiles}
+              currentUnlockedRing={currentUnlockedRing}
+            />
+          </div>
         </div>
       </div>
     </div>
