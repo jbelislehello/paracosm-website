@@ -231,24 +231,24 @@ const TileDetailPanel = ({
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-background to-muted/30">
-      {/* Header */}
-      <div className="p-3 border-b border-border/50 flex items-center justify-between bg-background/80 backdrop-blur-sm shrink-0">
-        <div className="flex items-center gap-2">
-          <Badge className={`bg-gradient-to-r ${getBoardColor(board)} text-white`}>
-            {rowLabels[selectedTile.row].letter}{colLabels[selectedTile.col].letter}
+      {/* Compact Tile Identity Header */}
+      <div className="px-3 py-1.5 border-b border-border/30 bg-muted/30 flex items-center justify-between shrink-0">
+        <span className="text-xs font-mono flex items-center gap-1.5">
+          <span className="text-muted-foreground">Tile {tileId}</span>
+          <span className="text-foreground">=</span>
+          <Badge variant="outline" className={`text-[10px] px-1.5 py-0 bg-gradient-to-r ${getBoardColor(board)} text-white border-0`}>
+            {rowLabels[selectedTile.row].letter} × {colLabels[selectedTile.col].letter}
           </Badge>
-          <div>
-            <h3 className="font-bold text-sm">
-              {tileContent?.name || `${rowLabels[selectedTile.row].name} × ${colLabels[selectedTile.col].name}`}
-            </h3>
-            <p className="text-xs text-muted-foreground">
-              {currentSeason} • {stageDefinition?.name || 'Exploration'}
-            </p>
-          </div>
+          <span className="text-muted-foreground hidden sm:inline">
+            ({rowLabels[selectedTile.row].name} × {colLabels[selectedTile.col].name})
+          </span>
+        </span>
+        <div className="flex items-center gap-1.5">
+          <Badge variant="outline" className="text-[10px]">{currentSeason}</Badge>
+          <Button variant="ghost" size="icon" onClick={handleClose} className="shrink-0 h-6 w-6">
+            <X className="w-3 h-3" />
+          </Button>
         </div>
-        <Button variant="ghost" size="icon" onClick={handleClose} className="shrink-0">
-          <X className="w-4 h-4" />
-        </Button>
       </div>
 
       {/* Tabs Navigation */}
@@ -256,21 +256,21 @@ const TileDetailPanel = ({
         <TabsList className="w-full justify-start rounded-none border-b border-border/50 bg-transparent h-auto p-0 shrink-0">
           <TabsTrigger 
             value="chat" 
-            className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-2 text-xs font-semibold uppercase tracking-wider"
+            className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-1.5 text-xs font-semibold uppercase tracking-wider"
           >
             <MessageCircle className="w-3 h-3 mr-1" />
             Chat
           </TabsTrigger>
           <TabsTrigger 
             value="focus" 
-            className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-2 text-xs font-semibold uppercase tracking-wider"
+            className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-1.5 text-xs font-semibold uppercase tracking-wider"
           >
             <Focus className="w-3 h-3 mr-1" />
             Focus
           </TabsTrigger>
           <TabsTrigger 
             value="manifolds" 
-            className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-2 text-xs font-semibold uppercase tracking-wider"
+            className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-1.5 text-xs font-semibold uppercase tracking-wider"
           >
             <Layers className="w-3 h-3 mr-1" />
             Manifolds
@@ -279,77 +279,32 @@ const TileDetailPanel = ({
 
         {/* CHAT Tab */}
         <TabsContent value="chat" className="flex-1 flex flex-col m-0 min-h-0">
-          {/* Question Banner */}
-          {messages.length > 0 && messages[0].role === 'assistant' && (
-            <div className="px-4 py-3 bg-gradient-to-r from-primary/5 to-primary/10 border-b border-primary/20">
-              <p className="text-lg font-medium text-foreground leading-relaxed">
-                {messages[0].content}
-              </p>
-            </div>
-          )}
-
-          {/* Context Accordion */}
-          <Accordion type="single" collapsible className="px-3 py-2 border-b border-border/30 shrink-0">
+          {/* Compact Context Accordion - closed by default */}
+          <Accordion type="single" collapsible className="border-b border-border/30 shrink-0">
             <AccordionItem value="context" className="border-none">
-              <AccordionTrigger className="py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:no-underline">
+              <AccordionTrigger className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:no-underline">
                 <span className="flex items-center gap-2">
                   <BookOpen className="w-3 h-3" />
-                  Tile Context & Guidance
+                  {stageDefinition?.name || 'Stage'} • {tileContent?.deliverable ? 'View guidance' : 'Meta rules'}
                 </span>
               </AccordionTrigger>
-              <AccordionContent className="pt-2 pb-3">
-                <div className="space-y-3 text-xs">
-                  {/* Stage Info */}
-                  <div className="p-2 rounded-md bg-muted/50 border border-border/30">
-                    <h4 className="font-semibold text-foreground mb-1 flex items-center gap-1">
-                      <Layers className="w-3 h-3" />
-                      {stageDefinition?.name || 'Stage'}
-                    </h4>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {stageDefinition?.description || `${rowLabels[selectedTile.row].name} × ${colLabels[selectedTile.col].name}`}
-                    </p>
-                  </div>
-
-                  {/* Tile Description */}
+              <AccordionContent className="px-3 pt-1 pb-2">
+                <div className="space-y-2 text-xs">
                   {tileContent?.deliverable && (
-                    <div className="p-2 rounded-md bg-muted/50 border border-border/30">
-                      <h4 className="font-semibold text-foreground mb-1 flex items-center gap-1">
-                        <Sparkles className="w-3 h-3" />
-                        Tile Focus
-                      </h4>
-                      <p className="text-muted-foreground leading-relaxed">{tileContent.deliverable}</p>
-                    </div>
+                    <p className="text-muted-foreground leading-relaxed">{tileContent.deliverable}</p>
                   )}
-
-                  {/* Feminine Principles */}
                   {stagePrinciples && stagePrinciples.length > 0 && (
-                    <div className="p-2 rounded-md bg-muted/50 border border-border/30">
-                      <h4 className="font-semibold text-foreground mb-1 flex items-center gap-1">
-                        <Heart className="w-3 h-3" />
-                        Guiding Principles
-                      </h4>
-                      <ul className="space-y-1 text-muted-foreground">
-                        {stagePrinciples.slice(0, 3).map((principle, idx) => (
-                          <li key={idx} className="flex items-start gap-1.5">
-                            <span className="text-primary">•</span>
-                            <span>{principle.name}: {principle.essence}</span>
-                          </li>
-                        ))}
-                      </ul>
+                    <div className="flex flex-wrap gap-1">
+                      {stagePrinciples.slice(0, 3).map((principle, idx) => (
+                        <Badge key={idx} variant="outline" className="text-[10px]">{principle.name}</Badge>
+                      ))}
                     </div>
                   )}
-
-                  {/* Cosmological Context */}
                   {isCurrentPortalDay && (
-                    <div className="p-2 rounded-md bg-primary/10 border border-primary/20">
-                      <h4 className="font-semibold text-primary mb-1 flex items-center gap-1">
-                        <Hexagon className="w-3 h-3" />
-                        Portal Day Active
-                      </h4>
-                      <p className="text-primary/80 leading-relaxed">
-                        Diagonal navigation unlocked. This is a day of heightened resonance—follow your intuition.
-                      </p>
-                    </div>
+                    <Badge className="text-[10px] bg-amber-500/20 text-amber-400 border-amber-500/30 gap-1">
+                      <Hexagon className="w-3 h-3" />
+                      Portal Day — Diagonals Active
+                    </Badge>
                   )}
                 </div>
               </AccordionContent>
@@ -357,28 +312,32 @@ const TileDetailPanel = ({
           </Accordion>
 
           <ScrollArea className="flex-1">
-            <div className="px-4 py-3 space-y-3">
-              {/* Messages (skip first if it's the main question) */}
-              {messages.slice(messages.length > 0 && messages[0].role === 'assistant' ? 1 : 0).map((message, index) => (
+            <div className="px-3 py-2 space-y-2">
+              {/* All messages including first question as bubble */}
+              {messages.map((message, index) => (
                 <div
                   key={index}
                   className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[85%] rounded-lg px-3 py-2 ${
-                      message.role === 'user'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted border border-border/50'
+                    className={`max-w-[90%] rounded-2xl px-3 py-2 ${
+                      message.role === 'assistant' && index === 0
+                        ? 'bg-muted/60 rounded-tl-sm shadow-sm border border-border/30'
+                        : message.role === 'user'
+                          ? 'bg-primary text-primary-foreground rounded-tr-sm'
+                          : 'bg-muted border border-border/50 rounded-tl-sm'
                     }`}
                   >
-                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                    <p className={`text-sm whitespace-pre-wrap leading-relaxed ${
+                      message.role === 'assistant' && index === 0 ? 'font-medium' : ''
+                    }`}>{message.content}</p>
                   </div>
                 </div>
               ))}
 
               {isLoading && (
                 <div className="flex justify-start">
-                  <div className="bg-muted rounded-lg px-3 py-2 border border-border/50">
+                  <div className="bg-muted/60 rounded-2xl rounded-tl-sm px-3 py-2 border border-border/30">
                     <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
                   </div>
                 </div>
@@ -474,131 +433,127 @@ const TileDetailPanel = ({
         </TabsContent>
 
         {/* MANIFOLDS Tab */}
-        <TabsContent value="manifolds" className="flex-1 m-0 min-h-0 flex flex-col">
-          <ScrollArea className="flex-1">
-            <div className="p-2">
-              <Accordion type="single" collapsible className="w-full">
-                {/* Emotional Check-in */}
-                {onEmotionalCheckin && (
-                  <AccordionItem value="emotional">
-                    <AccordionTrigger className="text-sm py-2">
-                      <div className="flex items-center gap-2">
-                        <Heart className="w-4 h-4 text-rose-500" />
-                        Emotional Check-in
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <EmotionalCheckIn
-                        tileId={tileId}
-                        onCheckin={(feltState, axes, note) => onEmotionalCheckin(tileId, feltState, axes, note)}
-                        previousCheckins={emotionalCheckins.filter(c => c.tile_id === tileId)}
-                      />
-                    </AccordionContent>
-                  </AccordionItem>
-                )}
+        <TabsContent value="manifolds" className="flex-1 m-0 min-h-0 overflow-y-auto">
+          <Accordion type="single" collapsible className="w-full p-2">
+            {/* Emotional Check-in */}
+            {onEmotionalCheckin && (
+              <AccordionItem value="emotional">
+                <AccordionTrigger className="text-sm py-2">
+                  <div className="flex items-center gap-2">
+                    <Heart className="w-4 h-4 text-rose-500" />
+                    Emotional Check-in
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <EmotionalCheckIn
+                    tileId={tileId}
+                    onCheckin={(feltState, axes, note) => onEmotionalCheckin(tileId, feltState, axes, note)}
+                    previousCheckins={emotionalCheckins.filter(c => c.tile_id === tileId)}
+                  />
+                </AccordionContent>
+              </AccordionItem>
+            )}
 
-                {/* Wild Guess - Cosmological */}
-                <AccordionItem value="wild-guess">
-                  <AccordionTrigger className="text-sm py-2">
-                    <div className="flex items-center gap-2">
-                      <Wand2 className="w-4 h-4 text-purple-500" />
-                      Wild Guess (Tzolkin)
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="space-y-4">
-                      {resonanceResult && resonanceResult.topMatches.length > 0 && (
-                        <Button 
-                          variant="outline" 
-                          className="w-full gap-2"
-                          onClick={() => setShowMeditationMode(true)}
-                        >
-                          <Moon className="w-4 h-4" />
-                          Meditation Mode ({resonanceResult.topMatches.length} tiles)
-                        </Button>
-                      )}
-                      <TzolkinResonancePanel 
-                        season={currentSeason as 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS'}
-                        onTileSelect={(id) => {
-                          const row = Math.floor((id - 1) / 8);
-                          const col = (id - 1) % 8;
-                          onNavigate(row, col);
-                        }}
-                      />
-                      <CosmologicalContextTab 
-                        tileId={tileId}
-                        season={currentSeason as 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS'}
-                        onDiagonalMove={(toRow, toCol) => onNavigate(toRow, toCol)}
-                      />
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
+            {/* Wild Guess - Cosmological */}
+            <AccordionItem value="wild-guess">
+              <AccordionTrigger className="text-sm py-2">
+                <div className="flex items-center gap-2">
+                  <Wand2 className="w-4 h-4 text-purple-500" />
+                  Wild Guess (Tzolkin)
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="space-y-4">
+                  {resonanceResult && resonanceResult.topMatches.length > 0 && (
+                    <Button 
+                      variant="outline" 
+                      className="w-full gap-2"
+                      onClick={() => setShowMeditationMode(true)}
+                    >
+                      <Moon className="w-4 h-4" />
+                      Meditation Mode ({resonanceResult.topMatches.length} tiles)
+                    </Button>
+                  )}
+                  <TzolkinResonancePanel 
+                    season={currentSeason as 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS'}
+                    onTileSelect={(id) => {
+                      const row = Math.floor((id - 1) / 8);
+                      const col = (id - 1) % 8;
+                      onNavigate(row, col);
+                    }}
+                  />
+                  <CosmologicalContextTab 
+                    tileId={tileId}
+                    season={currentSeason as 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS'}
+                    onDiagonalMove={(toRow, toCol) => onNavigate(toRow, toCol)}
+                  />
+                </div>
+              </AccordionContent>
+            </AccordionItem>
 
-                {/* Oracle - I Ching */}
-                <AccordionItem value="oracle">
-                  <AccordionTrigger className="text-sm py-2">
-                    <div className="flex items-center gap-2">
-                      <BookOpen className="w-4 h-4 text-amber-500" />
-                      Oracle (I Ching)
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <HexagramOracle
-                      currentTileId={tileId}
-                      visitedTiles={visitedTiles}
-                      emotionalState={emotionalCheckins.length > 0 ? {
-                        feltState: emotionalCheckins[emotionalCheckins.length - 1]?.felt_state || 'flowing',
-                        vitality: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.love || 50,
-                        spaciousness: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.magic || 50,
-                        wholeness: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.calm || 50,
-                        openness: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.open || 50,
-                        expansion: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.free || 50,
-                      } : undefined}
-                    />
-                  </AccordionContent>
-                </AccordionItem>
+            {/* Oracle - I Ching */}
+            <AccordionItem value="oracle">
+              <AccordionTrigger className="text-sm py-2">
+                <div className="flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-amber-500" />
+                  Oracle (I Ching)
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <HexagramOracle
+                  currentTileId={tileId}
+                  visitedTiles={visitedTiles}
+                  emotionalState={emotionalCheckins.length > 0 ? {
+                    feltState: emotionalCheckins[emotionalCheckins.length - 1]?.felt_state || 'flowing',
+                    vitality: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.love || 50,
+                    spaciousness: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.magic || 50,
+                    wholeness: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.calm || 50,
+                    openness: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.open || 50,
+                    expansion: emotionalCheckins[emotionalCheckins.length - 1]?.axes?.free || 50,
+                  } : undefined}
+                />
+              </AccordionContent>
+            </AccordionItem>
 
-                {/* Journal */}
-                <AccordionItem value="journal">
-                  <AccordionTrigger className="text-sm py-2">
-                    <div className="flex items-center gap-2">
-                      <ScrollText className="w-4 h-4 text-blue-500" />
-                      Journal (Readings)
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <HexagramJournal />
-                  </AccordionContent>
-                </AccordionItem>
+            {/* Journal */}
+            <AccordionItem value="journal">
+              <AccordionTrigger className="text-sm py-2">
+                <div className="flex items-center gap-2">
+                  <ScrollText className="w-4 h-4 text-blue-500" />
+                  Journal (Readings)
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <HexagramJournal />
+              </AccordionContent>
+            </AccordionItem>
 
-                {/* Sketch */}
-                <AccordionItem value="sketch">
-                  <AccordionTrigger className="text-sm py-2">
-                    <div className="flex items-center gap-2">
-                      <Pencil className="w-4 h-4 text-green-500" />
-                      Sketch
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <SketchPad onSave={handleSketchSave} />
-                  </AccordionContent>
-                </AccordionItem>
+            {/* Sketch */}
+            <AccordionItem value="sketch">
+              <AccordionTrigger className="text-sm py-2">
+                <div className="flex items-center gap-2">
+                  <Pencil className="w-4 h-4 text-green-500" />
+                  Sketch
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <SketchPad onSave={handleSketchSave} />
+              </AccordionContent>
+            </AccordionItem>
 
-                {/* Diagram */}
-                <AccordionItem value="diagram">
-                  <AccordionTrigger className="text-sm py-2">
-                    <div className="flex items-center gap-2">
-                      <GitBranch className="w-4 h-4 text-cyan-500" />
-                      Diagram
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <DiagramBuilder onSave={handleDiagramSave} />
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </div>
-          </ScrollArea>
+            {/* Diagram */}
+            <AccordionItem value="diagram">
+              <AccordionTrigger className="text-sm py-2">
+                <div className="flex items-center gap-2">
+                  <GitBranch className="w-4 h-4 text-cyan-500" />
+                  Diagram
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <DiagramBuilder onSave={handleDiagramSave} />
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </TabsContent>
       </Tabs>
 
