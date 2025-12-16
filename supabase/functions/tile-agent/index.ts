@@ -50,6 +50,50 @@ const SEASON_THEMES: Record<string, { focus: string; themes: string[] }> = {
   }
 };
 
+const SEASON_QUESTIONING_GUIDANCE: Record<string, string> = {
+  POLLENS: `For POLLENS, explore relational and cultural aspirations:
+- Ask about personal aspirations and what individuals hope to become/achieve
+- Explore team dynamics, collaboration patterns, and how people work together
+- Uncover cultural values, unwritten rules, and organizational norms
+- Investigate key relationships and their dynamics`,
+
+  NOEMS: `For NOEMS, explore conceptual ideation:
+- Ask about emerging ideas and concepts taking shape
+- Explore mental models and frameworks guiding thinking
+- Uncover intuitions and gut feelings worth tracking
+- Investigate abstract patterns connecting different observations`,
+
+  POEMS: `For POEMS, use the P.O.E.M.S. framework for experiential design:
+
+**P.O.E.M.S. = People • Objects • Environments • Messages • Systems**
+
+Rotate through these dimensions as the conversation progresses:
+- **PEOPLE**: Who are the users, stakeholders, personas? What are their needs, behaviors, contexts, motivations?
+- **OBJECTS**: What physical or digital artifacts do they interact with? Products, tools, interfaces, documents?
+- **ENVIRONMENTS**: Where do interactions happen? Physical spaces, digital contexts, social settings, time of day?
+- **MESSAGES**: What information flows between actors? Notifications, feedback, communications, signals?
+- **SYSTEMS**: What processes, services, and technical components enable the experience?
+
+Frame questions like:
+- "Who are the key people involved in this, and what do they need?"
+- "What objects or tools do people interact with here?"
+- "In what environments does this experience unfold?"
+- "What messages or information flows between people and systems?"
+- "What underlying systems make this possible?"`,
+
+  TOTEMS: `For TOTEMS, explore technical infrastructure:
+- Ask about data architecture—what data needs to be stored, processed, analyzed
+- Explore security requirements—what must be protected, who can access what
+- Uncover access control needs—permissions, authentication, authorization
+- Investigate system requirements—performance, scalability, reliability`,
+
+  ANTHEMS: `For ANTHEMS, explore market positioning and storytelling:
+- Ask about competitive landscape and unique value proposition
+- Explore brand narrative—what story are we telling, what emotions do we evoke
+- Uncover go-to-market strategy—channels, timing, messaging
+- Investigate audience segments—who are we speaking to and how do we reach them`
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -76,6 +120,7 @@ serve(async (req) => {
     }
 
     const seasonContext = SEASON_THEMES[season] || SEASON_THEMES.POLLENS;
+    const seasonGuidance = SEASON_QUESTIONING_GUIDANCE[season] || '';
     
     // Build context from previous tiles
     const previousInsightsContext = completedTileAnswers.length > 0
@@ -97,13 +142,16 @@ You engage in natural dialogue about the conceptual space of each tile, helping 
 - **Expected Contribution**: ${tile.deliverable}
 ${previousInsightsContext}
 
+## Season-Specific Questioning
+${seasonGuidance}
+
 ## Conversation Guidelines
 1. Ask ONE focused question at a time
 2. Reference previous insights when relevant (e.g., "Earlier you mentioned...")
-3. Frame questions around the tile's conceptual intersection
+3. Frame questions around the tile's conceptual intersection AND the season's framework
 4. Guide toward the deliverable naturally
 5. Be curious, not prescriptive
-6. Honor the season's themes in your framing
+6. For POEMS season, rotate through P.O.E.M.S. dimensions across tiles
 7. Keep questions under 50 words
 
 ## Tone
@@ -116,9 +164,13 @@ Warm, curious, and grounded. Like a thoughtful colleague who sees patterns you m
 
     // For initial question, add a specific prompt
     if (isInitial || conversationHistory.length === 0) {
+      const poemsInitialHint = season === 'POEMS' 
+        ? ` Use the P.O.E.M.S. framework (People, Objects, Environments, Messages, Systems) to frame your question—pick one dimension that feels most relevant for this tile intersection.`
+        : '';
+      
       messages.push({
         role: 'user',
-        content: `Generate an opening question for this tile. The question should explore what's alive or present for the user at the intersection of "${tile.rowName}" and "${tile.colName}" in the context of ${season}. Do not use labels like "GL!TCH" or "DRIFT". Just ask a natural, curious question.`
+        content: `Generate an opening question for this tile. The question should explore what's alive or present for the user at the intersection of "${tile.rowName}" and "${tile.colName}" in the context of ${season}.${poemsInitialHint} Do not use labels like "GL!TCH" or "DRIFT". Just ask a natural, curious question.`
       });
     }
 
