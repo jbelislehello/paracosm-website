@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 
 export type ModeType = 'personal' | 'professional';
 export type LeadershipCompetency = 'authentic' | 'creative' | 'systems' | 'collaborative' | 'visionary';
@@ -11,6 +11,10 @@ interface ModeContextType {
   setCompetencyFocus: (competency: LeadershipCompetency | null) => void;
   coherenceLevel: number;
   personalToProRatio: number;
+  // Sanctuary Mode
+  sanctuaryMode: boolean;
+  setSanctuaryMode: (enabled: boolean) => void;
+  toggleSanctuary: () => void;
 }
 
 const ModeContext = createContext<ModeContextType | undefined>(undefined);
@@ -20,9 +24,24 @@ export const ModeProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [competencyFocus, setCompetencyFocus] = useState<LeadershipCompetency | null>(null);
   const [coherenceLevel, setCoherenceLevel] = useState(50);
   const [personalToProRatio, setPersonalToProRatio] = useState(0.5);
+  const [sanctuaryMode, setSanctuaryMode] = useState(false);
   
-  // Calculate coherence level based on emotional states and mode
-  // This would be updated based on user interactions
+  const toggleSanctuary = useCallback(() => {
+    setSanctuaryMode(prev => !prev);
+  }, []);
+
+  // Keyboard shortcut for sanctuary mode: Cmd/Ctrl + Shift + S
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        toggleSanctuary();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [toggleSanctuary]);
   
   const value = {
     mode,
@@ -30,7 +49,10 @@ export const ModeProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     competencyFocus,
     setCompetencyFocus,
     coherenceLevel,
-    personalToProRatio
+    personalToProRatio,
+    sanctuaryMode,
+    setSanctuaryMode,
+    toggleSanctuary,
   };
   
   return (
