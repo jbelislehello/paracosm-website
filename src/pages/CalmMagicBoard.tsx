@@ -5,7 +5,7 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { getTerminology } from '@/data/modeAwareTerminology';
@@ -44,7 +44,11 @@ import { PrdUnlockProgress } from '@/components/calm-magic/PrdUnlockProgress';
 // PatternDetectionBadge merged into PrdUnlockProgress
 import PatternJournal from '@/components/calm-magic/PatternJournal';
 import { DetectedPattern, PatternHistoryEntry } from '@/utils/patternDetection';
+import { TopologiesTab } from '@/components/calm-magic/topologies/TopologiesTab';
+import { ManifoldSeason } from '@/utils/torusManifoldMath';
 
+const ROW_LABELS = ['Mindsets', 'Agilities', 'Goals', 'Intuition', 'Compasses', 'Norms', 'Synergies', 'Protocols & Architectures'];
+const COL_LABELS = ['Chances', 'Heart', 'Observer', 'Reversal', 'Design', 'Seeds', 'Methods', 'Systems'];
 
 
 type CompassType = 'narrative' | 'workflow' | 'inquiry' | 'playground' | 'human-dynamics';
@@ -86,7 +90,7 @@ const COMPASS_MAP: Record<string, CompassType> = {
   'Human Dynamics & Systems': 'human-dynamics',
 };
 
-type ViewTab = 'matrix' | 'window-of-tolerance' | 'prd-assembly';
+type ViewTab = 'matrix' | 'window-of-tolerance' | 'topologies' | 'prd-assembly';
 
 // Cosmological overlay state
 
@@ -897,6 +901,15 @@ const CalmMagicBoard = () => {
                   <Layers className="w-4 h-4 mr-2" />
                   PRD Assembly
                 </Button>
+                <Button 
+                  variant={activeView === 'topologies' ? "default" : "ghost"} 
+                  size="sm"
+                  className="w-full justify-start"
+                  onClick={() => { setActiveView('topologies'); setShowMobileMenu(false); }}
+                >
+                  <Globe className="w-4 h-4 mr-2" />
+                  Topologies
+                </Button>
               </div>
             </div>
           </div>
@@ -922,6 +935,10 @@ const CalmMagicBoard = () => {
                 <Layers className="w-3.5 h-3.5" />
               )}
               PRD Assembly
+            </TabsTrigger>
+            <TabsTrigger value="topologies" className="text-xs gap-1.5 px-3">
+              <Globe className="w-3.5 h-3.5" />
+              Topologies
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -956,7 +973,7 @@ const CalmMagicBoard = () => {
       {/* Mobile Sub Navigation - Compact tabs */}
       <div className="md:hidden shrink-0 px-3 py-2 border-b border-border/30 bg-background/80 flex items-center justify-between gap-2">
         <Tabs value={activeView} onValueChange={(v) => setActiveView(v as ViewTab)} className="flex-1">
-          <TabsList className="h-8 w-full grid grid-cols-3">
+          <TabsList className="h-8 w-full grid grid-cols-4">
             <TabsTrigger value="matrix" className="text-[10px] gap-1 px-1.5">
               <Grid3X3 className="w-3 h-3" />
               <span className="hidden xs:inline">Matrix</span>
@@ -972,6 +989,10 @@ const CalmMagicBoard = () => {
                 <Layers className="w-3 h-3" />
               )}
               <span className="hidden xs:inline">PRD</span>
+            </TabsTrigger>
+            <TabsTrigger value="topologies" className="text-[10px] gap-1 px-1.5">
+              <Globe className="w-3 h-3" />
+              <span className="hidden xs:inline">Torus</span>
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -1131,6 +1152,27 @@ const CalmMagicBoard = () => {
                 }
 
                 logTrajectoryEvent('prd_generated', undefined, `Generated ${season} PRD layer`);
+              }}
+            />
+          </div>
+        )}
+
+        {/* Topologies View */}
+        {activeView === 'topologies' && (
+          <div className="flex-1 overflow-hidden p-4 md:p-6">
+            <TopologiesTab
+              row={selectedTile?.row ?? 0}
+              col={selectedTile?.col ?? 0}
+              season={(currentSeason as ManifoldSeason) || 'POLLENS'}
+              tileName={selectedTile ? `${ROW_LABELS[selectedTile.row]} × ${COL_LABELS[selectedTile.col]}` : 'Overview'}
+              rowLabel={ROW_LABELS[selectedTile?.row ?? 0]}
+              colLabel={COL_LABELS[selectedTile?.col ?? 0]}
+              journeyPath={journeyPath}
+              polenDensity={polenEntries.length}
+              visitedTiles={new Set(Array.from(visitedTiles).map(id => `${Math.floor((Number(id) - 1) / 8)}-${(Number(id) - 1) % 8}`))}
+              onTileSelect={(row, col) => {
+                handleNavigate(row, col);
+                setActiveView('matrix');
               }}
             />
           </div>
