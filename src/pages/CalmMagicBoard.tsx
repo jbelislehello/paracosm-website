@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from 'react';
+import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Tile } from '@/types/glitch';
@@ -46,7 +46,7 @@ import { TopologiesTab } from '@/components/calm-magic/topologies/TopologiesTab'
 import { ManifoldSeason } from '@/utils/torusManifoldMath';
 import { getCurrentUnlockedRing } from '@/utils/ringToleranceSystem';
 import { getHexagramDataForSummary } from '@/components/calm-magic/topologies/TopologicalMetricsPanel';
-
+import { calculateConsciousnessGeometryFromTiles } from '@/utils/consciousnessGeometry';
 
 const ROW_LABELS = ['Mindsets', 'Agilities', 'Goals', 'Intuition', 'Compasses', 'Norms', 'Synergies', 'Protocols & Architectures'];
 const COL_LABELS = ['Chances', 'Heart', 'Observer', 'Reversal', 'Design', 'Seeds', 'Methods', 'Systems'];
@@ -214,6 +214,22 @@ const CalmMagicBoard = () => {
     polenEntries,
   } = useTileMatrixPersistence(todayTile?.board || SEASON_TO_BOARD[currentSeason]);
 
+  // Calculate consciousness geometry for the AI oracle
+  const consciousnessGeometry = useMemo(() => {
+    // Create density map from polen entries per tile
+    const densityMap = new Map<string, number>();
+    polenEntries.forEach(entry => {
+      if (entry.tile_id !== null && entry.tile_id !== undefined) {
+        // Convert tile_id to row,col format
+        const row = Math.floor(entry.tile_id / 8);
+        const col = entry.tile_id % 8;
+        const key = `${row},${col}`;
+        densityMap.set(key, (densityMap.get(key) || 0) + 1);
+      }
+    });
+    
+    return calculateConsciousnessGeometryFromTiles(visitedTiles, journeyPath, densityMap);
+  }, [visitedTiles, journeyPath, polenEntries]);
   // Onboarding tour
   const {
     isOpen: showTour,
@@ -1340,6 +1356,7 @@ const CalmMagicBoard = () => {
               isAnalyzingTopology={isAnalyzing}
               onAnalyzeTopology={() => analyzeTopology(polenEntries)}
               onApplyInsightToShadow={handleApplyInsightToShadow}
+              consciousnessGeometry={consciousnessGeometry}
             />
           </div>
         )}

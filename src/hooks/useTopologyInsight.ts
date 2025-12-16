@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { TopologyViewMode } from '@/components/calm-magic/topologies/ViewModeSelector';
+import { ConsciousnessGeometryExport } from '@/utils/consciousnessGeometry';
 
 export interface StoryChapter {
   title: string;
@@ -65,6 +66,8 @@ interface UseTopologyInsightProps {
   colLabel?: string;
   completedSeasons?: string[];
   prdId?: string | null;
+  // Consciousness geometry data
+  consciousnessGeometry?: ConsciousnessGeometryExport | null;
 }
 
 export function useTopologyInsight() {
@@ -142,7 +145,9 @@ export function useTopologyInsight() {
           rowLabel,
           colLabel,
           completedSeasons,
-          prdId
+          prdId,
+          // Consciousness geometry data
+          consciousnessGeometry: props.consciousnessGeometry
         }
       });
 

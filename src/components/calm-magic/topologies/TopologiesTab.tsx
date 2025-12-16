@@ -13,6 +13,7 @@ import { TopologyStoryExplorer } from './TopologyStoryExplorer';
 import { useTopologyInsight } from '@/hooks/useTopologyInsight';
 import { RingLevel } from '@/utils/ringToleranceSystem';
 import { TopologicalSignature, QuadrantPosition } from '@/types/trajectory';
+import { ConsciousnessGeometryExport } from '@/utils/consciousnessGeometry';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
@@ -49,6 +50,8 @@ interface TopologiesTabProps {
   isAnalyzingTopology?: boolean;
   onAnalyzeTopology?: () => void;
   onApplyInsightToShadow?: (position: QuadrantPosition, insightNote: string) => void;
+  // Consciousness geometry data
+  consciousnessGeometry?: ConsciousnessGeometryExport | null;
 }
 
 export function TopologiesTab({
@@ -71,7 +74,8 @@ export function TopologiesTab({
   topologicalSignature,
   isAnalyzingTopology,
   onAnalyzeTopology,
-  onApplyInsightToShadow
+  onApplyInsightToShadow,
+  consciousnessGeometry
 }: TopologiesTabProps) {
   const [viewMode, setViewMode] = useState<TopologyViewMode>('isometric');
   const [cubeSize, setCubeSize] = useState(32);
@@ -81,7 +85,7 @@ export function TopologiesTab({
 
   const { story, isLoading, error, fetchStory, clearStory } = useTopologyInsight();
 
-  // Fetch story when view mode changes - now with wonder-inducing context
+  // Fetch story when view mode changes - now with wonder-inducing context and consciousness geometry
   const handleFetchStory = useCallback(() => {
     fetchStory({
       viewMode,
@@ -99,9 +103,11 @@ export function TopologiesTab({
       rowLabel,
       colLabel,
       completedSeasons,
-      prdId
+      prdId,
+      // Consciousness geometry data
+      consciousnessGeometry
     });
-  }, [viewMode, journeyPath, visitedTiles, densityMap, shadowPosition, higherSelfPosition, currentSeason, currentUnlockedRing, row, col, tileName, rowLabel, colLabel, completedSeasons, prdId, fetchStory]);
+  }, [viewMode, journeyPath, visitedTiles, densityMap, shadowPosition, higherSelfPosition, currentSeason, currentUnlockedRing, row, col, tileName, rowLabel, colLabel, completedSeasons, prdId, consciousnessGeometry, fetchStory]);
 
   // Fetch story on mount and when view mode changes
   useEffect(() => {
