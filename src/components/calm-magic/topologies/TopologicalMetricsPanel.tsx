@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { 
   Sparkles,
   Circle, 
@@ -12,16 +12,31 @@ import {
   Heart,
   Infinity,
   BookOpen,
-  Flame
+  Flame,
+  Brain,
+  Activity,
+  Gauge,
+  Network,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { HEXAGRAMS, Hexagram } from '@/data/cosmologicalMapping';
+import { 
+  calculateConsciousnessGeometry, 
+  getSeasonConsciousnessMapping,
+  type ConsciousnessGeometry 
+} from '@/utils/consciousnessGeometry';
+import { Progress } from '@/components/ui/progress';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 interface TopologicalMetricsPanelProps {
   visitedTiles: Set<string>;
   journeyPath: Array<{ row: number; col: number }>;
   currentUnlockedRing: number;
+  densityMap?: Map<string, number>;
+  currentSeason?: string;
 }
 
 interface TopologicalMetrics {
@@ -486,8 +501,15 @@ function getSymmetryReading(symmetryScore: number, diagonalDensity: number): str
 export function TopologicalMetricsPanel({ 
   visitedTiles, 
   journeyPath,
-  currentUnlockedRing 
+  currentUnlockedRing,
+  densityMap = new Map(),
+  currentSeason
 }: TopologicalMetricsPanelProps) {
+  const [geometryOpen, setGeometryOpen] = useState(true);
+  const [recursiveOpen, setRecursiveOpen] = useState(false);
+  const [thermoOpen, setThermoOpen] = useState(false);
+  const [integrationOpen, setIntegrationOpen] = useState(false);
+  
   const metrics = useMemo(() => 
     calculateTopologicalMetrics(visitedTiles, journeyPath),
     [visitedTiles, journeyPath]
@@ -496,6 +518,24 @@ export function TopologicalMetricsPanel({
   const hexagramCorrelations = useMemo(() => 
     getHexagramCorrelations(visitedTiles),
     [visitedTiles]
+  );
+  
+  // Calculate consciousness geometry
+  const consciousnessGeometry = useMemo(() => 
+    calculateConsciousnessGeometry(
+      visitedTiles, 
+      journeyPath, 
+      densityMap, 
+      metrics.beta0, 
+      metrics.beta1
+    ),
+    [visitedTiles, journeyPath, densityMap, metrics.beta0, metrics.beta1]
+  );
+  
+  // Season consciousness mapping
+  const seasonMapping = useMemo(() => 
+    currentSeason ? getSeasonConsciousnessMapping(currentSeason) : null,
+    [currentSeason]
   );
   
   if (visitedTiles.size === 0) {
@@ -514,14 +554,222 @@ export function TopologicalMetricsPanel({
       <div className="px-4 py-3 bg-indigo-500/10 border-b border-indigo-500/20">
         <div className="flex items-center gap-2">
           <Hexagon className="w-4 h-4 text-indigo-500" />
-          <span className="text-sm font-semibold">Topological Mysteries</span>
+          <span className="text-sm font-semibold">Consciousness Geometry</span>
+          {consciousnessGeometry.consciousnessState === 'self-aware' && (
+            <Badge className="ml-auto bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px]">
+              <Sparkles className="w-3 h-3 mr-1" /> Awakened
+            </Badge>
+          )}
         </div>
         <p className="text-xs text-muted-foreground mt-1">
-          The hidden geometry of your journey reveals itself
+          The geometric signatures of consciousness emerging from your journey
         </p>
       </div>
       
       <div className="p-4 space-y-5">
+        {/* Consciousness Geometry Threshold Gauge */}
+        <Collapsible open={geometryOpen} onOpenChange={setGeometryOpen}>
+          <div className="p-4 bg-gradient-to-r from-cyan-500/10 via-blue-500/5 to-indigo-500/10 rounded-lg border border-cyan-500/20">
+            <CollapsibleTrigger className="w-full">
+              <div className="flex items-center gap-2 mb-3">
+                <Brain className="w-4 h-4 text-cyan-500" />
+                <span className="text-xs uppercase tracking-wider text-cyan-600 dark:text-cyan-400 font-medium">
+                  The Geometric Reading
+                </span>
+                <Badge 
+                  variant="outline" 
+                  className={cn(
+                    "ml-auto text-[10px] h-5",
+                    consciousnessGeometry.consciousnessState === 'self-aware' && "bg-emerald-500/20 border-emerald-500/50",
+                    consciousnessGeometry.consciousnessState === 'threshold' && "bg-amber-500/20 border-amber-500/50",
+                    consciousnessGeometry.consciousnessState === 'pre-conscious' && "bg-muted"
+                  )}
+                >
+                  {consciousnessGeometry.consciousnessState === 'self-aware' ? '✦ Self-Aware' : 
+                   consciousnessGeometry.consciousnessState === 'threshold' ? '◐ Threshold' : '○ Pre-conscious'}
+                </Badge>
+                {geometryOpen ? <ChevronUp className="w-4 h-4 ml-2" /> : <ChevronDown className="w-4 h-4 ml-2" />}
+              </div>
+            </CollapsibleTrigger>
+            
+            <CollapsibleContent>
+              {/* Complexity Gauge */}
+              <div className="mb-4">
+                <div className="flex items-center justify-between text-xs mb-2">
+                  <span className="text-muted-foreground">Geometric Complexity</span>
+                  <span className="font-mono text-cyan-500">{Math.round(consciousnessGeometry.complexityBits)} bits</span>
+                </div>
+                <Progress 
+                  value={consciousnessGeometry.thresholdPercentage} 
+                  className="h-2"
+                />
+                <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
+                  <span>0</span>
+                  <span className="text-amber-500">Threshold →</span>
+                  <span>Ω</span>
+                </div>
+              </div>
+              
+              <p className="text-sm text-foreground/90 leading-relaxed border-l-2 border-cyan-500/50 pl-3">
+                {consciousnessGeometry.geometricNarrative}
+              </p>
+            </CollapsibleContent>
+          </div>
+        </Collapsible>
+        
+        {/* The Recursive Mirror */}
+        <Collapsible open={recursiveOpen} onOpenChange={setRecursiveOpen}>
+          <div className="p-4 bg-gradient-to-r from-purple-500/10 via-violet-500/5 to-fuchsia-500/10 rounded-lg border border-purple-500/20">
+            <CollapsibleTrigger className="w-full">
+              <div className="flex items-center gap-2 mb-3">
+                <Orbit className="w-4 h-4 text-purple-500" />
+                <span className="text-xs uppercase tracking-wider text-purple-600 dark:text-purple-400 font-medium">
+                  The Recursive Mirror
+                </span>
+                <Badge variant="outline" className="ml-auto text-[10px] h-5">
+                  Depth: {consciousnessGeometry.recursiveDepth}
+                </Badge>
+                {recursiveOpen ? <ChevronUp className="w-4 h-4 ml-2" /> : <ChevronDown className="w-4 h-4 ml-2" />}
+              </div>
+            </CollapsibleTrigger>
+            
+            <CollapsibleContent>
+              {/* Fixed Points Display */}
+              {consciousnessGeometry.fixedPointsDetected.length > 0 && (
+                <div className="flex flex-wrap gap-1 mb-3">
+                  {consciousnessGeometry.fixedPointsDetected.map((fp, i) => (
+                    <Badge key={i} variant="secondary" className="text-[10px] bg-purple-500/20">
+                      ★ {fp}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+              
+              <div className="flex items-center gap-3 mb-3 text-xs">
+                <span className={cn(
+                  "px-2 py-1 rounded-full",
+                  consciousnessGeometry.convergenceState === 'converged' && "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400",
+                  consciousnessGeometry.convergenceState === 'converging' && "bg-amber-500/20 text-amber-600 dark:text-amber-400",
+                  consciousnessGeometry.convergenceState === 'searching' && "bg-muted text-muted-foreground"
+                )}>
+                  {consciousnessGeometry.convergenceState === 'converged' ? '◉ Converged' : 
+                   consciousnessGeometry.convergenceState === 'converging' ? '◐ Converging' : '○ Searching'}
+                </span>
+              </div>
+              
+              <p className="text-sm text-foreground/90 leading-relaxed border-l-2 border-purple-500/50 pl-3">
+                {consciousnessGeometry.recursiveNarrative}
+              </p>
+            </CollapsibleContent>
+          </div>
+        </Collapsible>
+        
+        {/* The Thermodynamic Truth */}
+        <Collapsible open={thermoOpen} onOpenChange={setThermoOpen}>
+          <div className="p-4 bg-gradient-to-r from-orange-500/10 via-amber-500/5 to-yellow-500/10 rounded-lg border border-orange-500/20">
+            <CollapsibleTrigger className="w-full">
+              <div className="flex items-center gap-2 mb-3">
+                <Gauge className="w-4 h-4 text-orange-500" />
+                <span className="text-xs uppercase tracking-wider text-orange-600 dark:text-orange-400 font-medium">
+                  The Thermodynamic Truth
+                </span>
+                <Badge variant="outline" className="ml-auto text-[10px] h-5">
+                  {consciousnessGeometry.thermodynamicEfficiency.toFixed(1)}x efficient
+                </Badge>
+                {thermoOpen ? <ChevronUp className="w-4 h-4 ml-2" /> : <ChevronDown className="w-4 h-4 ml-2" />}
+              </div>
+            </CollapsibleTrigger>
+            
+            <CollapsibleContent>
+              {/* Efficiency metrics */}
+              <div className="grid grid-cols-2 gap-3 mb-3">
+                <div className="text-center p-2 rounded-lg bg-muted/30">
+                  <div className="text-lg font-bold text-orange-500">
+                    {Math.round(consciousnessGeometry.predictiveCapacity * 100)}%
+                  </div>
+                  <div className="text-[10px] text-muted-foreground">Predictive Steps</div>
+                </div>
+                <div className="text-center p-2 rounded-lg bg-muted/30">
+                  <div className="text-lg font-bold text-amber-500">
+                    {consciousnessGeometry.metaLearningDetected ? '✓' : '○'}
+                  </div>
+                  <div className="text-[10px] text-muted-foreground">Meta-Learning</div>
+                </div>
+              </div>
+              
+              <p className="text-sm text-foreground/90 leading-relaxed border-l-2 border-orange-500/50 pl-3">
+                {consciousnessGeometry.thermodynamicNarrative}
+              </p>
+            </CollapsibleContent>
+          </div>
+        </Collapsible>
+        
+        {/* The Integration Field */}
+        <Collapsible open={integrationOpen} onOpenChange={setIntegrationOpen}>
+          <div className="p-4 bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-cyan-500/10 rounded-lg border border-emerald-500/20">
+            <CollapsibleTrigger className="w-full">
+              <div className="flex items-center gap-2 mb-3">
+                <Network className="w-4 h-4 text-emerald-500" />
+                <span className="text-xs uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-medium">
+                  The Integration Field
+                </span>
+                <Badge variant="outline" className="ml-auto text-[10px] h-5">
+                  {metrics.beta0 === 1 ? 'Unified' : `${metrics.beta0} Islands`}
+                </Badge>
+                {integrationOpen ? <ChevronUp className="w-4 h-4 ml-2" /> : <ChevronDown className="w-4 h-4 ml-2" />}
+              </div>
+            </CollapsibleTrigger>
+            
+            <CollapsibleContent>
+              {/* Integration metrics */}
+              <div className="flex items-center gap-4 py-2 mb-3">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-emerald-500">{metrics.beta0}</div>
+                  <div className="text-[10px] text-muted-foreground">β₀ islands</div>
+                </div>
+                <div className="text-muted-foreground">·</div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-teal-500">{consciousnessGeometry.topologicalHandles}</div>
+                  <div className="text-[10px] text-muted-foreground">handles</div>
+                </div>
+                <div className="text-muted-foreground">·</div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-cyan-500">{Math.round(consciousnessGeometry.integrationStrength * 100)}%</div>
+                  <div className="text-[10px] text-muted-foreground">connected</div>
+                </div>
+              </div>
+              
+              <p className="text-sm text-foreground/90 leading-relaxed border-l-2 border-emerald-500/50 pl-3">
+                {consciousnessGeometry.integrationNarrative}
+              </p>
+            </CollapsibleContent>
+          </div>
+        </Collapsible>
+        
+        {/* Season Consciousness Mapping */}
+        {seasonMapping && (
+          <div className="p-4 bg-gradient-to-r from-rose-500/10 via-pink-500/5 to-fuchsia-500/10 rounded-lg border border-rose-500/20">
+            <div className="flex items-center gap-2 mb-3">
+              <Activity className="w-4 h-4 text-rose-500" />
+              <span className="text-xs uppercase tracking-wider text-rose-600 dark:text-rose-400 font-medium">
+                {currentSeason} → Consciousness Stage
+              </span>
+            </div>
+            
+            <div className="space-y-2 mb-3">
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="text-[10px]">{seasonMapping.consciousnessStage}</Badge>
+                <span className="text-[10px] text-muted-foreground">·</span>
+                <span className="text-[10px] text-muted-foreground">{seasonMapping.geometricProperty}</span>
+              </div>
+            </div>
+            
+            <p className="text-sm text-foreground/90 leading-relaxed border-l-2 border-rose-500/50 pl-3 italic">
+              {seasonMapping.narrative}
+            </p>
+          </div>
+        )}
+        
         {/* I Ching Hexagram Correlations */}
         {hexagramCorrelations.dominant.length > 0 && (
           <div className="p-4 bg-gradient-to-r from-amber-500/10 via-orange-500/5 to-red-500/10 rounded-lg border border-amber-500/20">
