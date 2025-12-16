@@ -2,18 +2,28 @@ import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { TopologyViewMode } from '@/components/calm-magic/topologies/ViewModeSelector';
 
-export interface TopologyInsight {
+export interface StoryChapter {
+  title: string;
+  content: string;
+  discovery_type: 'pattern' | 'strength' | 'shadow' | 'gap';
+}
+
+export interface TopologyStory {
   viewMode: TopologyViewMode;
-  metaphor: string;
-  insight: string;
-  question: string;
-  recommendation: string | null;
+  storyTitle: string;
+  mysteryType: string;
+  opening_mystery: string;
+  chapters: StoryChapter[];
+  key_revelation: string;
+  invitation: string;
   stats: {
     coverage: number;
     visitedCount: number;
     totalTiles: number;
     currentRing: number;
     pathLength: number;
+    gaps?: string[];
+    clusters?: string[];
   };
 }
 
@@ -29,11 +39,11 @@ interface UseTopologyInsightProps {
 }
 
 export function useTopologyInsight() {
-  const [insight, setInsight] = useState<TopologyInsight | null>(null);
+  const [story, setStory] = useState<TopologyStory | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchInsight = useCallback(async (props: UseTopologyInsightProps) => {
+  const fetchStory = useCallback(async (props: UseTopologyInsightProps) => {
     const { 
       viewMode, 
       journeyPath, 
@@ -47,7 +57,7 @@ export function useTopologyInsight() {
 
     // Don't fetch if no tiles visited
     if (visitedTiles.size === 0) {
-      setInsight(null);
+      setStory(null);
       return;
     }
 
@@ -83,26 +93,26 @@ export function useTopologyInsight() {
         throw new Error(data.error);
       }
 
-      setInsight(data as TopologyInsight);
+      setStory(data as TopologyStory);
     } catch (err) {
       console.error('[useTopologyInsight] Error:', err);
-      setError(err instanceof Error ? err.message : 'Failed to generate insight');
-      setInsight(null);
+      setError(err instanceof Error ? err.message : 'Failed to generate story');
+      setStory(null);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  const clearInsight = useCallback(() => {
-    setInsight(null);
+  const clearStory = useCallback(() => {
+    setStory(null);
     setError(null);
   }, []);
 
   return {
-    insight,
+    story,
     isLoading,
     error,
-    fetchInsight,
-    clearInsight
+    fetchStory,
+    clearStory
   };
 }
