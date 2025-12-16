@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { TopologyStory } from '@/hooks/useTopologyInsight';
 import { StoryChapter } from './StoryChapter';
 import { TopologyViewMode } from './ViewModeSelector';
+import { ConcreteInsightCard } from './ConcreteInsightCard';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
@@ -462,20 +463,26 @@ ${story.invitation}
 
   if (isLoading) {
     return (
-      <div className="px-4 py-5 bg-gradient-to-br from-primary/5 via-background to-accent/5 border border-border rounded-lg">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-primary animate-pulse" />
+      <div className="space-y-4">
+        {/* Concrete Insight Card - Loading State */}
+        <ConcreteInsightCard insight={null} isLoading={true} />
+        
+        {/* Story Loading State */}
+        <div className="px-4 py-5 bg-gradient-to-br from-primary/5 via-background to-accent/5 border border-border rounded-lg">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-primary animate-pulse" />
+            </div>
+            <div>
+              <p className="text-sm font-medium">Uncovering hidden patterns...</p>
+              <p className="text-xs text-muted-foreground">Reading the topology of your journey</p>
+            </div>
           </div>
-          <div>
-            <p className="text-sm font-medium">Uncovering hidden patterns...</p>
-            <p className="text-xs text-muted-foreground">Reading the topology of your journey</p>
+          <div className="space-y-3">
+            <div className="h-4 bg-muted/50 rounded animate-pulse w-full" />
+            <div className="h-4 bg-muted/30 rounded animate-pulse w-3/4" />
+            <div className="h-4 bg-muted/20 rounded animate-pulse w-1/2" />
           </div>
-        </div>
-        <div className="space-y-3">
-          <div className="h-4 bg-muted/50 rounded animate-pulse w-full" />
-          <div className="h-4 bg-muted/30 rounded animate-pulse w-3/4" />
-          <div className="h-4 bg-muted/20 rounded animate-pulse w-1/2" />
         </div>
       </div>
     );
@@ -486,44 +493,49 @@ ${story.invitation}
     : 0;
 
   return (
-    <div className="bg-gradient-to-br from-primary/5 via-background to-accent/5 border border-border rounded-lg overflow-hidden">
-      {/* Header */}
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full px-4 py-3 flex items-center justify-between hover:bg-muted/20 transition-colors"
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-            <Map className="w-4 h-4 text-primary" />
-          </div>
-          <div className="text-left">
-            <span className="text-sm font-semibold block">Journey Insights</span>
-            <span className="text-xs text-muted-foreground">
-              {visitedTiles.size} tiles • Ring {currentUnlockedRing}
-            </span>
-          </div>
-        </div>
-        <div className="flex items-center gap-3">
-          {story && (
-            <div className="text-right">
-              <span className="text-xs text-muted-foreground block">
-                {revealedChapters.size}/{story.chapters.length} chapters
-              </span>
-              <div className="w-16 h-1.5 bg-muted rounded-full mt-1 overflow-hidden">
-                <div 
-                  className="h-full bg-primary rounded-full transition-all duration-500"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
+    <div className="space-y-4">
+      {/* CONCRETE INSIGHT CARD - AT THE TOP for immediate practical value */}
+      <ConcreteInsightCard insight={story?.concreteInsight || null} isLoading={false} />
+      
+      {/* AI STORY - Expandable section below */}
+      <div className="bg-gradient-to-br from-primary/5 via-background to-accent/5 border border-border rounded-lg overflow-hidden">
+        {/* Header */}
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="w-full px-4 py-3 flex items-center justify-between hover:bg-muted/20 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+              <Map className="w-4 h-4 text-primary" />
             </div>
-          )}
-          {isExpanded ? (
-            <ChevronUp className="w-4 h-4 text-muted-foreground" />
-          ) : (
-            <ChevronDown className="w-4 h-4 text-muted-foreground" />
-          )}
-        </div>
-      </button>
+            <div className="text-left">
+              <span className="text-sm font-semibold block">Journey Insights</span>
+              <span className="text-xs text-muted-foreground">
+                {visitedTiles.size} tiles • Ring {currentUnlockedRing}
+              </span>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            {story && (
+              <div className="text-right">
+                <span className="text-xs text-muted-foreground block">
+                  {revealedChapters.size}/{story.chapters.length} chapters
+                </span>
+                <div className="w-16 h-1.5 bg-muted rounded-full mt-1 overflow-hidden">
+                  <div 
+                    className="h-full bg-primary rounded-full transition-all duration-500"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+              </div>
+            )}
+            {isExpanded ? (
+              <ChevronUp className="w-4 h-4 text-muted-foreground" />
+            ) : (
+              <ChevronDown className="w-4 h-4 text-muted-foreground" />
+            )}
+          </div>
+        </button>
 
       {/* Content */}
       <div className={cn(
@@ -681,6 +693,9 @@ ${story.invitation}
           </div>
         </div>
       </div>
+      {/* Close AI Story div */}
     </div>
+    {/* Close outer wrapper div */}
+  </div>
   );
 }
