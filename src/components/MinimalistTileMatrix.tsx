@@ -1,6 +1,7 @@
 import { ArrowUp, ArrowRight } from 'lucide-react';
 import { WindowOfToleranceOverlay } from '@/components/journal/WindowOfToleranceOverlay';
 import { CycleNumber } from '@/types/journal-expansion';
+import { DetectedPattern, getPatternColor } from '@/utils/patternDetection';
 
 type BoardType = 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
 
@@ -14,6 +15,8 @@ interface MinimalistTileMatrixProps {
   showToleranceOverlay?: boolean;
   onZoneChange?: (zone: 'safe' | 'stretch' | 'edge' | 'unexplored') => void;
   completedSeasons?: string[];
+  highlightedPattern?: DetectedPattern | null;
+  showPatternOverlay?: boolean;
 }
 
 // Board color system using HSL values
@@ -80,6 +83,8 @@ const MinimalistTileMatrix = ({
   showToleranceOverlay = true,
   onZoneChange,
   completedSeasons = [],
+  highlightedPattern = null,
+  showPatternOverlay = true,
 }: MinimalistTileMatrixProps) => {
   const colors = getBoardColors(board);
   // Column labels - bottom axis (CHORDS + MAPS)
@@ -287,6 +292,114 @@ const MinimalistTileMatrix = ({
     return rects;
   };
 
+  // Generate pattern overlay (glow circles and connecting lines)
+  const generatePatternOverlay = () => {
+    if (!highlightedPattern || !showPatternOverlay) return null;
+    
+    const patternColor = getPatternColor(highlightedPattern.type);
+    const elements: JSX.Element[] = [];
+    
+    // Parse tile keys to coordinates
+    const tileCoords = highlightedPattern.tiles.map(key => {
+      const [row, col] = key.split('-').map(Number);
+      return { row, col, key };
+    });
+
+    // Draw connecting lines between pattern tiles
+    for (let i = 0; i < tileCoords.length - 1; i++) {
+      const from = tileCoords[i];
+      const to = tileCoords[i + 1];
+      
+      // Convert to visual coordinates (flip rows)
+      const fromVisualRow = getVisualRow(from.row);
+      const toVisualRow = getVisualRow(to.row);
+      
+      const x1 = from.col * (TILE_SIZE + GAP) + TILE_SIZE / 2;
+      const y1 = fromVisualRow * (TILE_SIZE + GAP) + TILE_SIZE / 2;
+      const x2 = to.col * (TILE_SIZE + GAP) + TILE_SIZE / 2;
+      const y2 = toVisualRow * (TILE_SIZE + GAP) + TILE_SIZE / 2;
+
+      elements.push(
+        <line
+          key={`pattern-line-${i}`}
+          x1={x1}
+          y1={y1}
+          x2={x2}
+          y2={y2}
+          stroke={patternColor}
+          strokeWidth="3"
+          strokeLinecap="round"
+          opacity="0.8"
+          className="animate-pattern-draw"
+          style={{
+            strokeDasharray: '100',
+            strokeDashoffset: '100',
+            animation: 'pattern-draw 0.5s ease-out forwards',
+            animationDelay: `${i * 0.1}s`,
+          }}
+        />
+      );
+    }
+
+    // Draw glow circles behind each pattern tile
+    tileCoords.forEach((coord, idx) => {
+      const visualRow = getVisualRow(coord.row);
+      const cx = coord.col * (TILE_SIZE + GAP) + TILE_SIZE / 2;
+      const cy = visualRow * (TILE_SIZE + GAP) + TILE_SIZE / 2;
+
+      elements.push(
+        <circle
+          key={`pattern-glow-${idx}`}
+          cx={cx}
+          cy={cy}
+          r={TILE_SIZE / 2 + 4}
+          fill="none"
+          stroke={patternColor}
+          strokeWidth="2"
+          opacity="0.6"
+          className="animate-pattern-pulse"
+          style={{
+            animation: 'pattern-pulse 2s ease-in-out infinite',
+            animationDelay: `${idx * 0.15}s`,
+          }}
+        />
+      );
+    });
+
+    // Add pattern icon at centroid
+    if (tileCoords.length > 0) {
+      const avgRow = tileCoords.reduce((sum, t) => sum + getVisualRow(t.row), 0) / tileCoords.length;
+      const avgCol = tileCoords.reduce((sum, t) => sum + t.col, 0) / tileCoords.length;
+      const cx = avgCol * (TILE_SIZE + GAP) + TILE_SIZE / 2;
+      const cy = avgRow * (TILE_SIZE + GAP) + TILE_SIZE / 2;
+
+      elements.push(
+        <g key="pattern-icon" className="pointer-events-none">
+          <circle
+            cx={cx}
+            cy={cy}
+            r="16"
+            fill={patternColor}
+            opacity="0.9"
+            className="animate-pattern-pulse"
+          />
+          <text
+            x={cx}
+            y={cy}
+            textAnchor="middle"
+            dominantBaseline="central"
+            fontSize="14"
+            fill="white"
+          >
+            {highlightedPattern.icon}
+          </text>
+        </g>
+      );
+    }
+
+    return elements;
+  };
+
   return (
     <div className="relative inline-block">
       {/* VELOCITY Arrow - Far left side */}
@@ -354,7 +467,7 @@ const MinimalistTileMatrix = ({
           </div>
         )}
 
-        {/* SVG Overlay for diagonals, concentric rectangles, and journey path */}
+        {/* SVG Overlay for diagonals, concentric rectangles, journey path, and pattern overlay */}
         <svg 
           className="absolute inset-4 pointer-events-none"
           width={TOTAL_SIZE}
@@ -366,6 +479,9 @@ const MinimalistTileMatrix = ({
           
           {/* Journey path lines - drawn above diagonals */}
           {generateJourneyPathLines()}
+          
+          {/* Pattern overlay - glow and connecting lines */}
+          {generatePatternOverlay()}
           
           {/* Dots at intersections */}
           {tileDots}

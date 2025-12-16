@@ -17,6 +17,35 @@
   animation: confetti-fall 3s ease-out forwards;
 }
 
+/* Pattern overlay animations */
+@keyframes pattern-draw {
+  from {
+    stroke-dashoffset: 100;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes pattern-pulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+.animate-pattern-draw {
+  animation: pattern-draw 0.5s ease-out forwards;
+}
+
+.animate-pattern-pulse {
+  animation: pattern-pulse 2s ease-in-out infinite;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

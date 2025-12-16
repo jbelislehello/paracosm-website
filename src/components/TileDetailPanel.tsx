@@ -4,7 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, ArrowUpLeft, ArrowUpRight, ArrowDownLeft, ArrowDownRight, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Wand2, Moon, BookOpen, ScrollText, Focus, Layers } from 'lucide-react';
+import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, ArrowUpLeft, ArrowUpRight, ArrowDownLeft, ArrowDownRight, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Wand2, Moon, BookOpen, ScrollText, Focus, Layers, Hexagon } from 'lucide-react';
+import { canMoveDiagonally, isPortalDay, getKinForTile } from '@/data/cosmologicalMapping';
 import { MinimalistTileCard } from '@/components/calm-magic/MinimalistTileCard';
 import { useState, useEffect, useRef } from 'react';
 import { getTileStage, getStageById } from '@/types/journal-expansion';
@@ -123,9 +124,24 @@ const TileDetailPanel = ({
 
   // Edge detection for navigation
   const canGlitch = selectedTile.row < 7;
-  const canDriftLeft = selectedTile.col > 0;
-  const canDriftRight = selectedTile.col < 7;
   const canTune = selectedTile.row > 0;
+  
+  // Get tile ID first (needed for cosmological calculations)
+  const tileId = selectedTile.row * 8 + selectedTile.col + 1;
+  
+  // PURE HORIZONTAL DRIFT IS DISABLED - navigation only via GL!TCH (up), TUNE (down), or diagonals on Portal Days
+  const canDriftLeft = false;  // Pure horizontal movement disabled
+  const canDriftRight = false; // Pure horizontal movement disabled
+  
+  // Diagonal movement - only on Portal Days or high resonance (52 magic days per 260-day cycle)
+  const seasonMapping: Record<string, 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS'> = {
+    'POLLENS': 'POLLENS', 'NOEMS': 'NOEMS', 'POEMS': 'POEMS', 'TOTEMS': 'TOTEMS', 'ANTHEMS': 'ANTHEMS'
+  };
+  const mappedSeason = seasonMapping[currentSeason] || 'POLLENS';
+  const resonanceScore = resonanceResult?.topMatches?.[0]?.resonanceScore ? resonanceResult.topMatches[0].resonanceScore / 100 : 0;
+  const canDiagonal = canMoveDiagonally(tileId, mappedSeason, resonanceScore);
+  const currentKin = getKinForTile(tileId, mappedSeason);
+  const isCurrentPortalDay = isPortalDay(currentKin);
 
   // Get tile's stage and principles
   const tileStage = getTileStage(selectedTile.row);
@@ -133,7 +149,6 @@ const TileDetailPanel = ({
   const stagePrinciples = getPrinciplesByStage(tileStage);
 
   // Get tile content
-  const tileId = selectedTile.row * 8 + selectedTile.col + 1;
   const tileContent = TILE_CONTENTS.find(t => t.id === tileId);
 
   const getBoardColor = (board: string) => {
@@ -521,14 +536,25 @@ const TileDetailPanel = ({
 
       {/* 8-Directional Navigation */}
       <div className="p-2 border-t border-border/50 bg-muted/30 shrink-0">
+        {/* Portal Day Indicator */}
+        {canDiagonal && (
+          <div className="flex justify-center mb-2">
+            <Badge className="text-[10px] bg-amber-500/20 text-amber-400 border-amber-500/30 gap-1">
+              <Hexagon className="w-3 h-3" />
+              {isCurrentPortalDay ? 'Portal Day' : 'High Resonance'} — Diagonals Active
+            </Badge>
+          </div>
+        )}
+        
         <div className="grid grid-cols-3 gap-1 max-w-[140px] mx-auto">
           {/* Top row: ↖ ↑ ↗ */}
           <Button
             variant="ghost"
             size="icon"
-            disabled={!canGlitch || !canDriftLeft}
+            disabled={!canGlitch || selectedTile.col <= 0 || !canDiagonal}
             onClick={() => onNavigate(selectedTile.row + 1, selectedTile.col - 1)}
-            className="h-8 w-8 disabled:opacity-20"
+            className={`h-8 w-8 disabled:opacity-20 ${canDiagonal && canGlitch && selectedTile.col > 0 ? 'text-amber-500 hover:text-amber-400' : ''}`}
+            title={canDiagonal ? 'GL!TCH + DRIFT (diagonal)' : 'Diagonals only on Portal Days or high resonance'}
           >
             <ArrowUpLeft className="w-4 h-4" />
           </Button>
@@ -538,26 +564,28 @@ const TileDetailPanel = ({
             disabled={!canGlitch}
             onClick={() => onNavigate(selectedTile.row + 1, selectedTile.col)}
             className="h-8 w-8 disabled:opacity-20"
+            title="GL!TCH (up)"
           >
             <ArrowUp className="w-4 h-4" />
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            disabled={!canGlitch || !canDriftRight}
+            disabled={!canGlitch || selectedTile.col >= 7 || !canDiagonal}
             onClick={() => onNavigate(selectedTile.row + 1, selectedTile.col + 1)}
-            className="h-8 w-8 disabled:opacity-20"
+            className={`h-8 w-8 disabled:opacity-20 ${canDiagonal && canGlitch && selectedTile.col < 7 ? 'text-amber-500 hover:text-amber-400' : ''}`}
+            title={canDiagonal ? 'GL!TCH + DRIFT (diagonal)' : 'Diagonals only on Portal Days or high resonance'}
           >
             <ArrowUpRight className="w-4 h-4" />
           </Button>
 
-          {/* Middle row: ← · → */}
+          {/* Middle row: ← · → (DISABLED - pure horizontal) */}
           <Button
             variant="ghost"
             size="icon"
-            disabled={!canDriftLeft}
-            onClick={() => onNavigate(selectedTile.row, selectedTile.col - 1)}
-            className="h-8 w-8 disabled:opacity-20"
+            disabled={true}
+            className="h-8 w-8 opacity-20 cursor-not-allowed"
+            title="Pure horizontal DRIFT disabled - use GL!TCH/TUNE with diagonals"
           >
             <ArrowLeft className="w-4 h-4" />
           </Button>
@@ -567,9 +595,9 @@ const TileDetailPanel = ({
           <Button
             variant="ghost"
             size="icon"
-            disabled={!canDriftRight}
-            onClick={() => onNavigate(selectedTile.row, selectedTile.col + 1)}
-            className="h-8 w-8 disabled:opacity-20"
+            disabled={true}
+            className="h-8 w-8 opacity-20 cursor-not-allowed"
+            title="Pure horizontal DRIFT disabled - use GL!TCH/TUNE with diagonals"
           >
             <ArrowRight className="w-4 h-4" />
           </Button>
@@ -578,9 +606,10 @@ const TileDetailPanel = ({
           <Button
             variant="ghost"
             size="icon"
-            disabled={!canTune || !canDriftLeft}
+            disabled={!canTune || selectedTile.col <= 0 || !canDiagonal}
             onClick={() => onNavigate(selectedTile.row - 1, selectedTile.col - 1)}
-            className="h-8 w-8 disabled:opacity-20"
+            className={`h-8 w-8 disabled:opacity-20 ${canDiagonal && canTune && selectedTile.col > 0 ? 'text-amber-500 hover:text-amber-400' : ''}`}
+            title={canDiagonal ? 'TUNE + DRIFT (diagonal)' : 'Diagonals only on Portal Days or high resonance'}
           >
             <ArrowDownLeft className="w-4 h-4" />
           </Button>
@@ -590,15 +619,17 @@ const TileDetailPanel = ({
             disabled={!canTune}
             onClick={() => onNavigate(selectedTile.row - 1, selectedTile.col)}
             className="h-8 w-8 disabled:opacity-20"
+            title="TUNE (down)"
           >
             <ArrowDown className="w-4 h-4" />
           </Button>
           <Button
             variant="ghost"
             size="icon"
-            disabled={!canTune || !canDriftRight}
+            disabled={!canTune || selectedTile.col >= 7 || !canDiagonal}
             onClick={() => onNavigate(selectedTile.row - 1, selectedTile.col + 1)}
-            className="h-8 w-8 disabled:opacity-20"
+            className={`h-8 w-8 disabled:opacity-20 ${canDiagonal && canTune && selectedTile.col < 7 ? 'text-amber-500 hover:text-amber-400' : ''}`}
+            title={canDiagonal ? 'TUNE + DRIFT (diagonal)' : 'Diagonals only on Portal Days or high resonance'}
           >
             <ArrowDownRight className="w-4 h-4" />
           </Button>

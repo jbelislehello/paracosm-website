@@ -5,7 +5,7 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { getTerminology } from '@/data/modeAwareTerminology';
@@ -128,6 +128,7 @@ const CalmMagicBoard = () => {
   const [showPatternJournal, setShowPatternJournal] = useState(false);
   const [detectedPatterns, setDetectedPatterns] = useState<DetectedPattern[]>([]);
   const [patternHistory, setPatternHistory] = useState<PatternHistoryEntry[]>([]);
+  const [highlightedPattern, setHighlightedPattern] = useState<DetectedPattern | null>(null);
   
   
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -853,6 +854,15 @@ const CalmMagicBoard = () => {
                   <RefreshCw className={`w-4 h-4 mr-2 ${isSyncing ? 'animate-spin' : ''}`} />
                   Sync
                 </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="justify-start"
+                  onClick={() => { navigate('/pattern-encyclopedia'); setShowMobileMenu(false); }}
+                >
+                  <BookOpen className="w-4 h-4 mr-2" />
+                  Encyclopedia
+                </Button>
               </div>
             </div>
 
@@ -918,6 +928,16 @@ const CalmMagicBoard = () => {
         
         {/* PRD Unlock Progress Indicator */}
         <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1.5 h-8 px-2"
+            onClick={() => navigate('/pattern-encyclopedia')}
+            title="Pattern Encyclopedia"
+          >
+            <BookOpen className="w-4 h-4" />
+            <span className="hidden lg:inline text-xs">Encyclopedia</span>
+          </Button>
           <PatternDetectionBadge
             visitedTiles={visitedTiles}
             season={currentSeason}
@@ -982,6 +1002,8 @@ const CalmMagicBoard = () => {
                   showToleranceOverlay={true}
                   onZoneChange={setCurrentZone}
                   completedSeasons={completedSeasons as string[]}
+                  highlightedPattern={highlightedPattern}
+                  showPatternOverlay={true}
                 />
               </div>
             </div>
@@ -1238,8 +1260,11 @@ const CalmMagicBoard = () => {
               patterns={detectedPatterns}
               patternHistory={patternHistory}
               onPatternClick={(pattern) => {
-                // Could highlight pattern on matrix
-                toast.info(`${pattern.icon} ${pattern.name}: ${pattern.meaning}`);
+                setHighlightedPattern(pattern);
+                setShowPatternJournal(false);
+                toast.info(`${pattern.icon} Highlighting ${pattern.name} on matrix`);
+                // Clear highlight after 5 seconds
+                setTimeout(() => setHighlightedPattern(null), 5000);
               }}
             />
           </div>
