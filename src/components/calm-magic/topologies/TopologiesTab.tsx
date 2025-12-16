@@ -325,6 +325,8 @@ export function TopologiesTab({
           onApplyInsightToShadow={onApplyInsightToShadow}
           secretsRevealed={secretsRevealed}
           onToggleSecrets={() => setSecretsRevealed(!secretsRevealed)}
+          consciousnessGeometry={consciousnessGeometry}
+          densityMap={densityMap}
         />
       </div>
 
