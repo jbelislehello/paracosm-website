@@ -8,10 +8,19 @@ export interface StoryChapter {
   discovery_type: 'pattern' | 'strength' | 'shadow' | 'gap';
 }
 
+export interface ConcreteInsight {
+  dailyQuestion: string;
+  viewPurpose: string;
+  actionableInsight: string;
+  warningSignal: string | null;
+  celebrationSignal: string | null;
+}
+
 export interface TopologyStory {
   viewMode: TopologyViewMode;
   storyTitle: string;
   mysteryType: string;
+  concreteInsight: ConcreteInsight;
   opening_mystery: string;
   chapters: StoryChapter[];
   key_revelation: string;
