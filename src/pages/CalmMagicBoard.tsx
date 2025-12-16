@@ -228,7 +228,7 @@ const CalmMagicBoard = () => {
         // Convert tile_id to row,col format
         const row = Math.floor(entry.tile_id / 8);
         const col = entry.tile_id % 8;
-        const key = `${row},${col}`;
+        const key = `${row}-${col}`;
         densityMap.set(key, (densityMap.get(key) || 0) + 1);
       }
     });
@@ -375,7 +375,7 @@ const CalmMagicBoard = () => {
         if (entry.tile_id !== null && entry.tile_id !== undefined) {
           const row = Math.floor(entry.tile_id / 8);
           const col = entry.tile_id % 8;
-          const key = `${row},${col}`;
+          const key = `${row}-${col}`;
           densityMap.set(key, (densityMap.get(key) || 0) + 1);
         }
       });
