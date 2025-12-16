@@ -36,7 +36,7 @@ function calculateZones(config: MysteryZoneConfig): MysteryZone[] {
     SN: 0, IN: 0, IM: 0, SM: 0
   };
   visitedTiles.forEach(key => {
-    const [r, c] = key.split(',').map(Number);
+    const [r, c] = key.split('-').map(Number);
     if (r < 4 && c < 4) quadrantCoverage.SN++;
     else if (r < 4 && c >= 4) quadrantCoverage.IN++;
     else if (r >= 4 && c < 4) quadrantCoverage.SM++;
