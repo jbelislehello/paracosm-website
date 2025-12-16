@@ -41,7 +41,7 @@ import { parseBoardEntryParams, getAssessmentContextDescription } from '@/utils/
 import { getGardenByType } from '@/data/gardens';
 import ProjectTitleBar from '@/components/calm-magic/ProjectTitleBar';
 import { PrdUnlockProgress } from '@/components/calm-magic/PrdUnlockProgress';
-import PatternDetectionBadge from '@/components/calm-magic/PatternDetectionBadge';
+// PatternDetectionBadge merged into PrdUnlockProgress
 import PatternJournal from '@/components/calm-magic/PatternJournal';
 import { DetectedPattern, PatternHistoryEntry } from '@/utils/patternDetection';
 
@@ -938,16 +938,13 @@ const CalmMagicBoard = () => {
             <BookOpen className="w-4 h-4" />
             <span className="hidden lg:inline text-xs">Encyclopedia</span>
           </Button>
-          <PatternDetectionBadge
-            visitedTiles={visitedTiles}
-            season={currentSeason}
-            onPatternDetected={handlePatternDetected}
-            onOpenJournal={() => setShowPatternJournal(true)}
-          />
           <PrdUnlockProgress 
             tilesVisited={visitedTiles.size}
             currentSeason={currentSeason}
             userId={user?.id}
+            visitedTiles={visitedTiles}
+            onPatternDetected={handlePatternDetected}
+            onOpenPatternJournal={() => setShowPatternJournal(true)}
           />
         </div>
       </div>

@@ -1,10 +1,13 @@
-import { useMemo, useState, useEffect, useRef } from 'react';
+import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Lock, Unlock, FileText, Sparkles } from 'lucide-react';
+import { Lock, Unlock, FileText, Sparkles, Search, Loader2 } from 'lucide-react';
 import { shouldTriggerPrdGeneration } from '@/utils/prdAccessLevel';
+import { detectPatterns, DetectedPattern, getPatternColor } from '@/utils/patternDetection';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { useHapticFeedback } from '@/hooks/useHapticFeedback';
 
 const CONFETTI_COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))', 'hsl(var(--chart-5))'];
 
@@ -31,6 +34,9 @@ interface PrdUnlockProgressProps {
   tilesVisited: number;
   currentSeason: string;
   userId?: string;
+  visitedTiles?: Set<string>;
+  onPatternDetected?: (patterns: DetectedPattern[]) => void;
+  onOpenPatternJournal?: () => void;
 }
 
 const TILES_THRESHOLD = 32;
@@ -39,12 +45,20 @@ const FRAGMENTS_THRESHOLD = 5;
 export const PrdUnlockProgress = ({ 
   tilesVisited, 
   currentSeason,
-  userId
+  userId,
+  visitedTiles,
+  onPatternDetected,
+  onOpenPatternJournal
 }: PrdUnlockProgressProps) => {
   const [polenCount, setPolenCount] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
   const prevUnlocked = useRef(false);
   const hasShownCelebration = useRef(false);
+  
+  // Pattern detection state
+  const [detectedPatterns, setDetectedPatterns] = useState<DetectedPattern[]>([]);
+  const [isScanning, setIsScanning] = useState(false);
+  const { triggerCelebrationHaptic } = useHapticFeedback();
 
   // Fetch polen count for current season
   useEffect(() => {
@@ -83,6 +97,41 @@ export const PrdUnlockProgress = ({
     prevUnlocked.current = isUnlocked;
   }, [isUnlocked]);
 
+  const handleScanPatterns = useCallback(() => {
+    if (!visitedTiles || visitedTiles.size < TILES_THRESHOLD) return;
+    
+    setIsScanning(true);
+    
+    // Small delay for UI feedback
+    setTimeout(() => {
+      const patterns = detectPatterns(visitedTiles, TILES_THRESHOLD);
+      setDetectedPatterns(patterns);
+      
+      if (patterns.length > 0) {
+        triggerCelebrationHaptic();
+        // Play sound
+        try {
+          const audio = new Audio('/sounds/pattern-discovered.mp3');
+          audio.volume = 0.3;
+          audio.play().catch(() => {});
+        } catch {}
+        
+        toast({
+          title: `✨ ${patterns.length} Pattern${patterns.length > 1 ? 's' : ''} Detected!`,
+          description: patterns[0]?.name || 'New patterns found in your journey',
+        });
+      } else {
+        toast({
+          title: "No patterns detected yet",
+          description: "Keep exploring to form trigrams, hexagrams, or geometric patterns",
+        });
+      }
+      
+      onPatternDetected?.(patterns);
+      setIsScanning(false);
+    }, 500);
+  }, [visitedTiles, onPatternDetected, triggerCelebrationHaptic]);
+
   const tilesProgress = Math.min((tilesVisited / TILES_THRESHOLD) * 100, 100);
   const fragmentsProgress = Math.min((polenCount / FRAGMENTS_THRESHOLD) * 100, 100);
   
@@ -90,22 +139,70 @@ export const PrdUnlockProgress = ({
   const fragmentsRemaining = Math.max(FRAGMENTS_THRESHOLD - polenCount, 0);
 
   // Both conditions met or full season complete
-  const bothConditionsMet = tilesVisited >= TILES_THRESHOLD && polenCount >= FRAGMENTS_THRESHOLD;
   const seasonComplete = tilesVisited >= 64;
 
   if (isUnlocked || seasonComplete) {
     return (
-      <>
+      <div className="flex flex-col gap-2">
         {showConfetti && <Confetti />}
+        
+        {/* PRD Ready Badge */}
         <Badge 
           variant="outline" 
-          className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 border-primary/30 animate-prd-glow"
+          className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 border-primary/30 animate-prd-glow cursor-pointer"
+          onClick={onOpenPatternJournal}
         >
           <Unlock className="w-3.5 h-3.5 text-primary" />
           <span className="text-xs font-medium text-primary">PRD Ready</span>
           <Sparkles className="w-3 h-3 text-primary animate-pulse" />
         </Badge>
-      </>
+        
+        {/* Pattern Detection Button */}
+        <Button 
+          size="sm" 
+          variant="outline" 
+          onClick={handleScanPatterns} 
+          disabled={isScanning}
+          className="h-7 text-xs gap-1.5"
+        >
+          {isScanning ? (
+            <Loader2 className="w-3 h-3 animate-spin" />
+          ) : (
+            <Search className="w-3 h-3" />
+          )}
+          Detect Patterns
+        </Button>
+        
+        {/* Display Detected Patterns */}
+        {detectedPatterns.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {detectedPatterns.slice(0, 3).map((pattern, idx) => (
+              <Badge 
+                key={`${pattern.name}-${idx}`} 
+                variant="secondary" 
+                className="text-[10px] px-1.5 py-0.5 cursor-pointer hover:opacity-80"
+                style={{ 
+                  backgroundColor: `${getPatternColor(pattern.type)}20`,
+                  borderColor: getPatternColor(pattern.type),
+                  color: getPatternColor(pattern.type)
+                }}
+                onClick={onOpenPatternJournal}
+              >
+                {pattern.icon} {pattern.name}
+              </Badge>
+            ))}
+            {detectedPatterns.length > 3 && (
+              <Badge 
+                variant="outline" 
+                className="text-[10px] px-1.5 py-0.5 cursor-pointer"
+                onClick={onOpenPatternJournal}
+              >
+                +{detectedPatterns.length - 3} more
+              </Badge>
+            )}
+          </div>
+        )}
+      </div>
     );
   }
 
@@ -116,7 +213,7 @@ export const PrdUnlockProgress = ({
       <div className="flex flex-col gap-1.5 flex-1 min-w-0">
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <FileText className="w-3 h-3" />
-          <span>PRD Unlock Progress</span>
+          <span>PRD & Pattern Unlock</span>
         </div>
         
         <div className="flex items-center gap-3">
