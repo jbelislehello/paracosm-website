@@ -4,6 +4,7 @@ import { StoryChapter } from './StoryChapter';
 import { TopologyViewMode } from './ViewModeSelector';
 import { ConcreteInsightCard } from './ConcreteInsightCard';
 import { TopologicalInsightsPanel } from '@/components/calm-magic/TopologicalInsightsPanel';
+import { TopologicalMetricsPanel } from './TopologicalMetricsPanel';
 import { TopologicalSignature, QuadrantPosition } from '@/types/trajectory';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -629,6 +630,13 @@ ${story.invitation || ''}
             <>
               {/* CONCRETE INSIGHT CARD - AT THE TOP for immediate practical value */}
               <ConcreteInsightCard insight={story?.concreteInsight || null} isLoading={false} />
+              
+              {/* TOPOLOGICAL METRICS PANEL - Betti numbers, genus, structural analysis */}
+              <TopologicalMetricsPanel
+                visitedTiles={visitedTiles}
+                journeyPath={journeyPath}
+                currentUnlockedRing={currentUnlockedRing}
+              />
               
               {/* TOPOLOGICAL INSIGHTS PANEL - Sentiment analysis and fragment breakdown */}
               {(topologicalSignature || isAnalyzingTopology) && (
