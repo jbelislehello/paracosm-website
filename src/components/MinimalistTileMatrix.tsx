@@ -282,9 +282,9 @@ const MinimalistTileMatrix = ({
           height={size}
           fill="none"
           stroke={pass.color}
-          strokeWidth="1.5"
-          strokeDasharray="6,4"
-          opacity="0.5"
+          strokeWidth="2.5"
+          strokeDasharray="8,4"
+          opacity="0.75"
         />
       );
     });
