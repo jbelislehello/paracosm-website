@@ -4,11 +4,12 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Lock, Sparkles, Eye, Search } from 'lucide-react';
-import { detectPatterns, DetectedPattern, getPatternColor } from '@/utils/patternDetection';
+import { detectPatterns, DetectedPattern, getPatternColor, PatternHistoryEntry } from '@/utils/patternDetection';
 import { useCosmologicalAudio } from '@/hooks/useCosmologicalAudio';
 import { useHapticFeedback } from '@/hooks/useHapticFeedback';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
 
 interface PatternDetectionBadgeProps {
   visitedTiles: Set<string>;
@@ -26,7 +27,9 @@ const PatternDetectionBadge: React.FC<PatternDetectionBadgeProps> = ({
   const [patterns, setPatterns] = useState<DetectedPattern[]>([]);
   const [isScanning, setIsScanning] = useState(false);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [persistedHistory, setPersistedHistory] = useState<PatternHistoryEntry[]>([]);
   const previousPatternsRef = useRef<string[]>([]);
+  const hasLoadedRef = useRef(false);
   
   const { playTrigramSound, playHexagramSound, playGeometricPatternSound } = useCosmologicalAudio();
   const { triggerTrigramHaptic, triggerHexagramHaptic, triggerGeometricHaptic, triggerCelebrationHaptic } = useHapticFeedback();
@@ -34,6 +37,60 @@ const PatternDetectionBadge: React.FC<PatternDetectionBadgeProps> = ({
   const tilesCount = visitedTiles.size;
   const isUnlocked = tilesCount >= 40;
   const tilesToUnlock = 40 - tilesCount;
+
+  // Load persisted pattern history from trajectory_states on mount
+  useEffect(() => {
+    if (hasLoadedRef.current) return;
+    hasLoadedRef.current = true;
+
+    const loadPersistedPatterns = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data, error } = await supabase
+          .from('trajectory_states')
+          .select('trajectory_log')
+          .eq('user_id', user.id)
+          .maybeSingle();
+
+        if (error) throw error;
+
+        if (data?.trajectory_log && Array.isArray(data.trajectory_log)) {
+          // Filter for pattern_discovery events and convert to PatternHistoryEntry
+          const patternEvents = (data.trajectory_log as any[]).filter(
+            (event) => event.type === 'pattern_discovery'
+          );
+
+          const history: PatternHistoryEntry[] = patternEvents.map((event) => ({
+            pattern: event.details?.pattern || {
+              id: event.details?.patternId || 'unknown',
+              type: event.details?.patternType || 'geometric',
+              name: event.details?.patternName || 'Pattern',
+              icon: '✦',
+              tiles: [],
+              timestamp: new Date(event.timestamp),
+              meaning: '',
+              keywords: [],
+              insight: '',
+            },
+            discoveredAt: new Date(event.timestamp),
+            tilesAtDiscovery: event.details?.tilesAtDiscovery || 0,
+            seasonAtDiscovery: event.details?.season || season,
+          }));
+
+          setPersistedHistory(history);
+          
+          // Initialize previousPatternsRef with persisted pattern IDs
+          previousPatternsRef.current = history.map(h => h.pattern.id);
+        }
+      } catch (error) {
+        console.error('Error loading persisted patterns:', error);
+      }
+    };
+
+    loadPersistedPatterns();
+  }, [season]);
 
   useEffect(() => {
     if (!isUnlocked) {
