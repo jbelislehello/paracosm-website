@@ -4,15 +4,14 @@ import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { Grid3X3, Box, Circle, RotateCcw, Maximize2 } from 'lucide-react';
+import { Grid3X3, Box, RotateCcw, Maximize2, Settings2 } from 'lucide-react';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Settings2 } from 'lucide-react';
 
-type MatrixViewMode = 'flat' | 'isometric' | 'torus';
+type MatrixViewMode = 'flat' | 'isometric';
 
 interface MatrixViewControlsProps {
   viewMode: MatrixViewMode;
@@ -56,14 +55,10 @@ const MatrixViewControls: React.FC<MatrixViewControlsProps> = ({
           <Box className="w-3.5 h-3.5" />
           <span className="text-xs hidden sm:inline">2.5D</span>
         </ToggleGroupItem>
-        <ToggleGroupItem value="torus" size="sm" className="gap-1.5 px-2 h-7">
-          <Circle className="w-3.5 h-3.5" />
-          <span className="text-xs hidden sm:inline">Torus</span>
-        </ToggleGroupItem>
       </ToggleGroup>
 
-      {/* Settings Popover (only for 3D views) */}
-      {viewMode !== 'flat' && (
+      {/* Settings Popover (only for 3D view) */}
+      {viewMode === 'isometric' && (
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
@@ -83,8 +78,8 @@ const MatrixViewControls: React.FC<MatrixViewControlsProps> = ({
                 <Slider
                   value={[cubeSize]}
                   onValueChange={([v]) => onCubeSizeChange(v)}
-                  min={20}
-                  max={60}
+                  min={25}
+                  max={55}
                   step={5}
                   className="w-full"
                 />
@@ -124,7 +119,7 @@ const MatrixViewControls: React.FC<MatrixViewControlsProps> = ({
       )}
 
       {/* Fullscreen button */}
-      {onFullscreen && viewMode !== 'flat' && (
+      {onFullscreen && viewMode === 'isometric' && (
         <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={onFullscreen}>
           <Maximize2 className="w-4 h-4" />
         </Button>
