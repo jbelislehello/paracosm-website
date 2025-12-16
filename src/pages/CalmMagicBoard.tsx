@@ -307,6 +307,43 @@ const CalmMagicBoard = () => {
     }
   }, [searchParams, progressLoading, projectLoading, journeyStarted, visitedTiles.size]);
 
+  // Clean corrupted visitedTiles (like "NaN-NaN") on load - one-time cleanup
+  useEffect(() => {
+    let hasCorruptedData = false;
+    const cleanedProgress = { ...seasonProgress };
+    
+    Object.keys(cleanedProgress).forEach(season => {
+      const tiles = cleanedProgress[season as Season];
+      if (tiles && tiles.has('NaN-NaN')) {
+        tiles.delete('NaN-NaN');
+        hasCorruptedData = true;
+        console.warn(`Cleaned corrupted tile entry "NaN-NaN" from ${season}`);
+      }
+      // Also clean any other malformed entries
+      tiles?.forEach(tile => {
+        const parts = tile.split('-');
+        if (parts.length !== 2) {
+          tiles.delete(tile);
+          hasCorruptedData = true;
+          console.warn(`Cleaned malformed tile entry "${tile}" from ${season}`);
+          return;
+        }
+        const row = parseInt(parts[0], 10);
+        const col = parseInt(parts[1], 10);
+        if (isNaN(row) || isNaN(col) || row < 0 || row > 7 || col < 0 || col > 7) {
+          tiles.delete(tile);
+          hasCorruptedData = true;
+          console.warn(`Cleaned invalid tile entry "${tile}" from ${season}`);
+        }
+      });
+    });
+    
+    if (hasCorruptedData) {
+      updateProgress({ seasonProgress: cleanedProgress });
+      toast.info('Cleaned up corrupted journey data');
+    }
+  }, []); // Run once on mount
+
   useEffect(() => {
     checkAuth();
     loadTodayTile();
