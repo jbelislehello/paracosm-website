@@ -102,16 +102,22 @@ export function TopologiesTab({
     });
   }, [viewMode, journeyPath, visitedTiles, densityMap, shadowPosition, higherSelfPosition, currentSeason, currentUnlockedRing, row, col, tileName, rowLabel, colLabel, completedSeasons, prdId, fetchStory]);
 
-  // Fetch story on mount and when view mode changes (but don't auto-reveal)
+  // Fetch story on mount and when view mode changes
   useEffect(() => {
     if (visitedTiles.size > 0) {
       handleFetchStory();
     } else {
       clearStory();
+      setSecretsRevealed(false); // Only close when no tiles
     }
-    // Close secrets when view mode changes
-    setSecretsRevealed(false);
   }, [viewMode, visitedTiles.size]);
+
+  // Auto-reveal accordion when story loads successfully
+  useEffect(() => {
+    if (story && !isLoading && !error) {
+      setSecretsRevealed(true);
+    }
+  }, [story, isLoading, error]);
 
   // Handler for revealing secrets
   const handleRevealSecrets = useCallback(() => {
