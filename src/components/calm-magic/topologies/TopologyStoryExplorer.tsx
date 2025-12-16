@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { TopologyStory } from '@/hooks/useTopologyInsight';
 import { StoryChapter } from './StoryChapter';
-import { MysteryZone } from '@/hooks/useMysteryZones';
 import { TopologyViewMode } from './ViewModeSelector';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -33,11 +32,7 @@ interface TopologyStoryExplorerProps {
   error: string | null;
   onRegenerate: () => void;
   onSaveToJournal?: (content: string) => void;
-  // New props for enhanced experience
   viewMode?: TopologyViewMode;
-  revealedMysteries?: MysteryZone[];
-  savedMysteryIds?: Set<string>;
-  onSaveMystery?: (zone: MysteryZone) => Promise<void>;
   visitedTiles?: Set<string>;
   currentUnlockedRing?: number;
   journeyPath?: Array<{ row: number; col: number }>;
@@ -185,15 +180,14 @@ function JourneyInterpretationSection({
   
   // Calculate ring progress
   const ringProgress: Record<number, { visited: number; total: number }> = {
-    1: { visited: 0, total: 16 }, // 4x4 inner
-    2: { visited: 0, total: 20 }, // next ring
-    3: { visited: 0, total: 20 }, // edge ring
-    4: { visited: 0, total: 8 }   // corners
+    1: { visited: 0, total: 16 },
+    2: { visited: 0, total: 20 },
+    3: { visited: 0, total: 20 },
+    4: { visited: 0, total: 8 }
   };
   
   visitedTiles.forEach(key => {
     const [r, c] = key.split(',').map(Number);
-    // Simple ring calculation
     const distFromCenter = Math.max(Math.abs(r - 3.5), Math.abs(c - 3.5));
     if (distFromCenter <= 1.5) ringProgress[1].visited++;
     else if (distFromCenter <= 2.5) ringProgress[2].visited++;
@@ -318,100 +312,16 @@ function JourneyInterpretationSection({
   );
 }
 
-function DiscoveredMysteriesSection({
-  mysteries,
-  savedIds,
-  onSave
-}: {
-  mysteries: MysteryZone[];
-  savedIds: Set<string>;
-  onSave?: (zone: MysteryZone) => Promise<void>;
-}) {
-  const [savingId, setSavingId] = useState<string | null>(null);
-  
-  if (mysteries.length === 0) return null;
-  
-  const handleSave = async (zone: MysteryZone) => {
-    if (!onSave) return;
-    setSavingId(zone.id);
-    try {
-      await onSave(zone);
-    } finally {
-      setSavingId(null);
-    }
-  };
-  
-  return (
-    <div className="space-y-3">
-      <h4 className="text-sm font-semibold flex items-center gap-2">
-        <Sparkles className="w-4 h-4 text-violet-500" />
-        Discovered Mysteries ({mysteries.length})
-      </h4>
-      
-      <div className="space-y-2">
-        {mysteries.map(zone => (
-          <div 
-            key={zone.id}
-            className="p-3 bg-gradient-to-r from-violet-500/10 to-primary/5 rounded-lg border border-violet-500/20"
-          >
-            <div className="flex items-start justify-between gap-2">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium">{zone.label}</span>
-                  <Badge variant="outline" className="text-[10px] h-4">
-                    {zone.zoneType}
-                  </Badge>
-                </div>
-                {zone.fragment && (
-                  <p className="text-xs text-muted-foreground mt-1 italic leading-relaxed">
-                    "{zone.fragment}"
-                  </p>
-                )}
-              </div>
-              
-              {onSave && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleSave(zone)}
-                  disabled={savedIds.has(zone.id) || savingId === zone.id}
-                  className="h-7 text-xs shrink-0"
-                >
-                  {savedIds.has(zone.id) ? (
-                    <>
-                      <CheckCircle2 className="w-3 h-3 mr-1 text-green-500" />
-                      Saved
-                    </>
-                  ) : savingId === zone.id ? (
-                    <RefreshCw className="w-3 h-3 animate-spin" />
-                  ) : (
-                    <>
-                      <Save className="w-3 h-3 mr-1" />
-                      Save
-                    </>
-                  )}
-                </Button>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 function SuggestedNextSteps({
   visitedTiles,
-  currentUnlockedRing,
-  revealedMysteries
+  currentUnlockedRing
 }: {
   visitedTiles: Set<string>;
   currentUnlockedRing: number;
-  revealedMysteries: MysteryZone[];
 }) {
   const suggestions: Array<{ icon: React.ReactNode; title: string; description: string }> = [];
   
-  // Calculate quadrant coverage for suggestions
+  // Calculate quadrant coverage
   const quadrants: Record<string, number> = { SN: 0, IN: 0, IM: 0, SM: 0 };
   visitedTiles.forEach(key => {
     const [r, c] = key.split(',').map(Number);
@@ -424,42 +334,32 @@ function SuggestedNextSteps({
   const minQuadrant = Object.entries(quadrants).reduce((a, b) => a[1] < b[1] ? a : b);
   const maxQuadrant = Math.max(...Object.values(quadrants));
   
-  // Suggestion 1: Balance quadrants
+  // Balance quadrants
   if (minQuadrant[1] < maxQuadrant * 0.4 && visitedTiles.size > 8) {
     const qInfo = QUADRANT_INFO[minQuadrant[0]];
     suggestions.push({
       icon: <Compass className="w-4 h-4 text-primary" />,
       title: "Balance your exploration",
-      description: `The ${minQuadrant[0]} quadrant (${qInfo.meaning}) has fewer visits. Consider tiles in that region.`
+      description: `The ${minQuadrant[0]} quadrant (${qInfo.meaning}) has fewer visits.`
     });
   }
   
-  // Suggestion 2: Unlock next ring
+  // Unlock next ring
   if (currentUnlockedRing < 4) {
     const nextRing = RING_INFO[currentUnlockedRing + 1];
     suggestions.push({
       icon: <Layers className="w-4 h-4 text-primary" />,
       title: `Unlock ${nextRing.name}`,
-      description: `Complete more tiles in your current ring to expand into the ${nextRing.quality} zone.`
+      description: `Complete more tiles to expand into the ${nextRing.quality} zone.`
     });
   }
   
-  // Suggestion 3: Explore unrevealed mysteries
-  const unrevealedCount = revealedMysteries.filter(m => !m.isRevealed).length;
-  if (unrevealedCount > 0) {
-    suggestions.push({
-      icon: <Sparkles className="w-4 h-4 text-violet-500" />,
-      title: "Discover hidden mysteries",
-      description: `${unrevealedCount} mystery zone${unrevealedCount > 1 ? 's' : ''} await${unrevealedCount === 1 ? 's' : ''} discovery. Reveal them in the Mysteries panel.`
-    });
-  }
-  
-  // Suggestion 4: Deepen engagement
+  // Deepen engagement
   if (visitedTiles.size > 16 && visitedTiles.size < 48) {
     suggestions.push({
       icon: <TrendingUp className="w-4 h-4 text-primary" />,
       title: "Deepen your engagement",
-      description: "Return to previously visited tiles with new questions. Depth often reveals more than breadth."
+      description: "Return to visited tiles with new questions."
     });
   }
   
@@ -496,9 +396,6 @@ export function TopologyStoryExplorer({
   onRegenerate,
   onSaveToJournal,
   viewMode = 'isometric',
-  revealedMysteries = [],
-  savedMysteryIds = new Set(),
-  onSaveMystery,
   visitedTiles = new Set(),
   currentUnlockedRing = 1,
   journeyPath = []
@@ -506,9 +403,7 @@ export function TopologyStoryExplorer({
   const [isExpanded, setIsExpanded] = useState(true);
   const [revealedChapters, setRevealedChapters] = useState<Set<number>>(new Set());
   const [showRevelation, setShowRevelation] = useState(false);
-  const [activeSection, setActiveSection] = useState<'story' | 'journey' | 'mysteries'>('journey');
 
-  // Reset revealed chapters when story changes
   useEffect(() => {
     setRevealedChapters(new Set());
     setShowRevelation(false);
@@ -517,7 +412,6 @@ export function TopologyStoryExplorer({
   const handleRevealChapter = (index: number) => {
     setRevealedChapters(prev => new Set([...prev, index]));
     
-    // If all chapters revealed, unlock the key revelation
     if (story?.chapters && revealedChapters.size + 1 >= story.chapters.length) {
       setTimeout(() => setShowRevelation(true), 600);
     }
@@ -587,7 +481,6 @@ ${story.invitation}
     );
   }
 
-  const revealedCount = revealedMysteries.filter(m => m.isRevealed).length;
   const progress = story?.chapters?.length 
     ? Math.round((revealedChapters.size / story.chapters.length) * 100) 
     : 0;
@@ -606,11 +499,24 @@ ${story.invitation}
           <div className="text-left">
             <span className="text-sm font-semibold block">Journey Insights</span>
             <span className="text-xs text-muted-foreground">
-              {visitedTiles.size} tiles • Ring {currentUnlockedRing} • {revealedCount} mysteries
+              {visitedTiles.size} tiles • Ring {currentUnlockedRing}
             </span>
           </div>
         </div>
         <div className="flex items-center gap-3">
+          {story && (
+            <div className="text-right">
+              <span className="text-xs text-muted-foreground block">
+                {revealedChapters.size}/{story.chapters.length} chapters
+              </span>
+              <div className="w-16 h-1.5 bg-muted rounded-full mt-1 overflow-hidden">
+                <div 
+                  className="h-full bg-primary rounded-full transition-all duration-500"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+          )}
           {isExpanded ? (
             <ChevronUp className="w-4 h-4 text-muted-foreground" />
           ) : (
@@ -622,83 +528,33 @@ ${story.invitation}
       {/* Content */}
       <div className={cn(
         "overflow-hidden transition-all duration-300",
-        isExpanded ? "max-h-[1200px] opacity-100" : "max-h-0 opacity-0"
+        isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
       )}>
         <div className="px-4 pb-4 space-y-4">
-          {/* Section Tabs */}
-          <div className="flex gap-1 p-1 bg-muted/50 rounded-lg">
-            <button
-              onClick={() => setActiveSection('journey')}
-              className={cn(
-                "flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors",
-                activeSection === 'journey' 
-                  ? "bg-background text-foreground shadow-sm" 
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <Map className="w-3 h-3 inline mr-1" />
-              Journey
-            </button>
-            <button
-              onClick={() => setActiveSection('mysteries')}
-              className={cn(
-                "flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors",
-                activeSection === 'mysteries' 
-                  ? "bg-background text-foreground shadow-sm" 
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              <Sparkles className="w-3 h-3 inline mr-1" />
-              Mysteries {revealedCount > 0 && `(${revealedCount})`}
-            </button>
-            {story && (
-              <button
-                onClick={() => setActiveSection('story')}
-                className={cn(
-                  "flex-1 px-3 py-1.5 text-xs font-medium rounded-md transition-colors",
-                  activeSection === 'story' 
-                    ? "bg-background text-foreground shadow-sm" 
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-              >
-                <BookOpen className="w-3 h-3 inline mr-1" />
-                Story
-              </button>
-            )}
-          </div>
-          
-          {/* View Significance (always shown) */}
+          {/* View Significance */}
           <ViewSignificanceSection viewMode={viewMode} />
           
-          {/* Journey Section */}
-          {activeSection === 'journey' && (
-            <>
-              <JourneyInterpretationSection 
-                visitedTiles={visitedTiles}
-                currentUnlockedRing={currentUnlockedRing}
-                journeyPath={journeyPath}
-              />
+          {/* Journey Interpretation */}
+          <JourneyInterpretationSection 
+            visitedTiles={visitedTiles}
+            currentUnlockedRing={currentUnlockedRing}
+            journeyPath={journeyPath}
+          />
+          
+          {/* Suggested Next Steps */}
+          <SuggestedNextSteps
+            visitedTiles={visitedTiles}
+            currentUnlockedRing={currentUnlockedRing}
+          />
+
+          {/* Story Section - Always visible when there's a story */}
+          {story && (
+            <div className="space-y-4 pt-4 border-t border-border/50">
+              <h4 className="text-sm font-semibold flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-violet-500" />
+                {story.storyTitle}
+              </h4>
               
-              <SuggestedNextSteps
-                visitedTiles={visitedTiles}
-                currentUnlockedRing={currentUnlockedRing}
-                revealedMysteries={revealedMysteries}
-              />
-            </>
-          )}
-          
-          {/* Mysteries Section */}
-          {activeSection === 'mysteries' && (
-            <DiscoveredMysteriesSection
-              mysteries={revealedMysteries.filter(m => m.isRevealed)}
-              savedIds={savedMysteryIds}
-              onSave={onSaveMystery}
-            />
-          )}
-          
-          {/* Story Section */}
-          {activeSection === 'story' && story && (
-            <div className="space-y-4">
               {/* Opening Mystery */}
               <div className="p-4 bg-gradient-to-r from-violet-500/10 to-primary/10 rounded-lg border border-violet-500/20">
                 <div className="flex items-start gap-3">
@@ -808,6 +664,19 @@ ${story.invitation}
                   </Button>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Empty state when no story */}
+          {!story && (
+            <div className="px-4 py-5 bg-muted/20 border border-border/50 rounded-lg text-center">
+              <BookOpen className="w-8 h-8 text-muted-foreground/50 mx-auto mb-2" />
+              <p className="text-sm font-medium text-muted-foreground">
+                Begin your journey to unlock hidden stories
+              </p>
+              <p className="text-xs text-muted-foreground/60 mt-1">
+                Each topology view reveals different mysteries about your exploration
+              </p>
             </div>
           )}
         </div>
