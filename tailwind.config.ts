@@ -140,6 +140,10 @@ export default {
                         borderColor: 'hsl(var(--primary) / 0.5)'
                     }
                 },
+                'scale-in': {
+                    '0%': { transform: 'scale(0.9)', opacity: '0' },
+                    '100%': { transform: 'scale(1)', opacity: '1' }
+                },
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
@@ -152,6 +156,7 @@ export default {
                 'draw-path': 'draw-path 0.6s ease-out forwards',
                 'shadow-pulse': 'shadow-pulse 0.6s ease-out',
                 'prd-glow': 'prd-glow 2s ease-in-out infinite',
+                'scale-in': 'scale-in 0.5s ease-out',
 			}
 		}
 	},
