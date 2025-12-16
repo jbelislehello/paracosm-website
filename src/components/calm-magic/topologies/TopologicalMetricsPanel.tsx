@@ -10,10 +10,13 @@ import {
   Orbit,
   Zap,
   Heart,
-  Infinity
+  Infinity,
+  BookOpen,
+  Flame
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { HEXAGRAMS, Hexagram } from '@/data/cosmologicalMapping';
 
 interface TopologicalMetricsPanelProps {
   visitedTiles: Set<string>;
@@ -32,10 +35,158 @@ interface TopologicalMetrics {
   gapCount: number;
   densityVariance: number;
   coverage: number;
-  // New narrative metrics
   symmetryScore: number;
   spiralAlignment: number;
   diagonalDensity: number;
+}
+
+interface HexagramCorrelation {
+  hexagram: Hexagram;
+  tileCount: number;
+  percentage: number;
+  narrative: string;
+}
+
+// Map tile position to hexagram number (1-64)
+function getTileHexagram(row: number, col: number): Hexagram | null {
+  const hexagramNumber = row * 8 + col + 1;
+  return HEXAGRAMS.find(h => h.number === hexagramNumber) || null;
+}
+
+// Get dominant hexagrams from visited tiles
+function getHexagramCorrelations(visitedTiles: Set<string>): {
+  dominant: HexagramCorrelation[];
+  trigramBalance: { upper: Record<string, number>; lower: Record<string, number> };
+  narrative: string;
+  cosmicPattern: string | null;
+} {
+  const hexagramCounts: Map<number, { hexagram: Hexagram; count: number }> = new Map();
+  const upperTrigrams: Record<string, number> = {};
+  const lowerTrigrams: Record<string, number> = {};
+  
+  visitedTiles.forEach(key => {
+    const [r, c] = key.split(',').map(Number);
+    const hexagram = getTileHexagram(r, c);
+    if (hexagram) {
+      const current = hexagramCounts.get(hexagram.number);
+      if (current) {
+        current.count++;
+      } else {
+        hexagramCounts.set(hexagram.number, { hexagram, count: 1 });
+      }
+      
+      upperTrigrams[hexagram.upperTrigram] = (upperTrigrams[hexagram.upperTrigram] || 0) + 1;
+      lowerTrigrams[hexagram.lowerTrigram] = (lowerTrigrams[hexagram.lowerTrigram] || 0) + 1;
+    }
+  });
+  
+  const total = visitedTiles.size;
+  const sorted = Array.from(hexagramCounts.values())
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 3);
+  
+  const dominant: HexagramCorrelation[] = sorted.map(({ hexagram, count }) => ({
+    hexagram,
+    tileCount: count,
+    percentage: Math.round((count / Math.max(total, 1)) * 100),
+    narrative: getHexagramNarrative(hexagram, count, total)
+  }));
+  
+  // Generate overall narrative based on trigram balance
+  const dominantUpper = Object.entries(upperTrigrams).sort((a, b) => b[1] - a[1])[0];
+  const dominantLower = Object.entries(lowerTrigrams).sort((a, b) => b[1] - a[1])[0];
+  
+  let narrative = '';
+  if (dominantUpper && dominantLower && total > 3) {
+    narrative = `Your journey resonates with ${dominantUpper[0]} above and ${dominantLower[0]} below—a dynamic of ${getTrigramInteraction(dominantUpper[0], dominantLower[0])}.`;
+  }
+  
+  const cosmicPattern = detectCosmicPattern(Array.from(hexagramCounts.values()).map(v => v.hexagram.number));
+  
+  return {
+    dominant,
+    trigramBalance: { upper: upperTrigrams, lower: lowerTrigrams },
+    narrative,
+    cosmicPattern
+  };
+}
+
+function getHexagramNarrative(hexagram: Hexagram, count: number, total: number): string {
+  const intensity = count / Math.max(total, 1);
+  
+  if (intensity > 0.3) {
+    return `${hexagram.name} (${hexagram.chineseName}) dominates your topology: ${hexagram.meaning}. This archetype shapes your entire journey.`;
+  }
+  if (intensity > 0.15) {
+    return `${hexagram.name} emerges as a significant force: ${hexagram.meaning}. Keywords: ${hexagram.keywords.slice(0, 2).join(', ')}.`;
+  }
+  return `${hexagram.name} whispers: "${hexagram.meaning}."`;
+}
+
+function getTrigramInteraction(upper: string, lower: string): string {
+  const interactions: Record<string, string> = {
+    'Heaven-Earth': 'cosmic unity—the creative meeting the receptive',
+    'Earth-Heaven': 'reversal and stagnation needing movement',
+    'Fire-Water': 'steam and transformation—opposites alchemizing',
+    'Water-Fire': 'hidden clarity emerging from depth',
+    'Thunder-Wind': 'movement with gentleness—the arousing softened',
+    'Mountain-Lake': 'stillness meeting joy—the hermit and the dancer',
+    'Wind-Thunder': 'duration through change—perseverance',
+    'Lake-Mountain': 'influence and attraction—the courtship of opposites',
+    'Heaven-Heaven': 'pure creative force doubled—tremendous power',
+    'Earth-Earth': 'pure receptivity—infinite capacity to receive',
+    'Water-Water': 'danger upon danger—the abyss requires careful navigation',
+    'Fire-Fire': 'clarity doubled—brilliant awareness',
+    'Thunder-Thunder': 'shock upon shock—awakening',
+    'Mountain-Mountain': 'stillness deepened—meditation',
+    'Wind-Wind': 'gentleness permeating—subtle influence',
+    'Lake-Lake': 'joy shared—celebration and connection'
+  };
+  
+  return interactions[`${upper}-${lower}`] || `the interplay of ${upper.toLowerCase()} and ${lower.toLowerCase()}`;
+}
+
+function detectCosmicPattern(hexagramNumbers: number[]): string | null {
+  // Detect special I Ching patterns
+  if (hexagramNumbers.includes(1) && hexagramNumbers.includes(2)) {
+    return "The Primordial Pair: Creative (1) and Receptive (2) both present—you're working with the fundamental polarity of existence.";
+  }
+  
+  if (hexagramNumbers.includes(63) && hexagramNumbers.includes(64)) {
+    return "After Completion (63) meets Before Completion (64)—you stand at the threshold where endings birth beginnings.";
+  }
+  
+  if (hexagramNumbers.includes(11) && hexagramNumbers.includes(12)) {
+    return "Peace (11) and Standstill (12) in dialogue—you're navigating the rhythm between flow and obstruction.";
+  }
+  
+  if (hexagramNumbers.includes(29) && hexagramNumbers.includes(30)) {
+    return "The Abysmal (29) meets The Clinging (30)—Water and Fire, danger and clarity in your journey.";
+  }
+  
+  // Check for sequential triplets (suggests linear exploration)
+  const sorted = [...hexagramNumbers].sort((a, b) => a - b);
+  for (let i = 0; i < sorted.length - 2; i++) {
+    if (sorted[i + 1] === sorted[i] + 1 && sorted[i + 2] === sorted[i] + 2) {
+      return `Sequential hexagrams ${sorted[i]}→${sorted[i + 1]}→${sorted[i + 2]} detected—your journey follows the natural unfolding of the I Ching's wisdom.`;
+    }
+  }
+  
+  // Check for nuclear family (same upper or lower trigram)
+  const trigramFamilies = hexagramNumbers.reduce((acc, num) => {
+    const hex = HEXAGRAMS.find(h => h.number === num);
+    if (hex) {
+      acc[hex.upperTrigram] = (acc[hex.upperTrigram] || 0) + 1;
+    }
+    return acc;
+  }, {} as Record<string, number>);
+  
+  const dominantFamily = Object.entries(trigramFamilies).find(([_, count]) => count >= 3);
+  if (dominantFamily) {
+    return `A ${dominantFamily[0]} family gathering—three or more hexagrams share this trigram above, weaving ${dominantFamily[0].toLowerCase()} energy throughout your exploration.`;
+  }
+  
+  return null;
 }
 
 function calculateTopologicalMetrics(
@@ -145,12 +296,11 @@ function calculateTopologicalMetrics(
     quadrantCounts.reduce((sum, c) => sum + Math.pow(c - avgQuadrant, 2), 0) / 4
   );
   
-  // Symmetry score (how symmetric is the exploration?)
+  // Symmetry score
   let symmetryMatches = 0;
   let symmetryTotal = 0;
   visited.forEach(key => {
     const [r, c] = key.split(',').map(Number);
-    // Check point symmetry around center (3.5, 3.5)
     const mirrorR = 7 - r;
     const mirrorC = 7 - c;
     symmetryTotal++;
@@ -158,16 +308,14 @@ function calculateTopologicalMetrics(
   });
   const symmetryScore = symmetryTotal > 0 ? symmetryMatches / symmetryTotal : 0;
   
-  // Spiral alignment (how much does the path follow a spiral pattern?)
+  // Spiral alignment
   let spiralScore = 0;
   journeyPath.forEach(({ row, col }, i) => {
     if (i === 0) return;
     const prev = journeyPath[i - 1];
     const distFromCenter = Math.sqrt(Math.pow(row - 3.5, 2) + Math.pow(col - 3.5, 2));
     const prevDist = Math.sqrt(Math.pow(prev.row - 3.5, 2) + Math.pow(prev.col - 3.5, 2));
-    // Reward outward movement from center
     if (distFromCenter > prevDist) spiralScore += 0.5;
-    // Reward circular movement
     const angle = Math.atan2(row - 3.5, col - 3.5);
     const prevAngle = Math.atan2(prev.row - 3.5, prev.col - 3.5);
     const angleDiff = Math.abs(angle - prevAngle);
@@ -175,7 +323,7 @@ function calculateTopologicalMetrics(
   });
   const spiralAlignment = journeyPath.length > 1 ? Math.min(1, spiralScore / (journeyPath.length - 1)) : 0;
   
-  // Diagonal density (how many tiles on diagonals?)
+  // Diagonal density
   let diagonalCount = 0;
   visited.forEach(key => {
     const [r, c] = key.split(',').map(Number);
@@ -307,6 +455,11 @@ export function TopologicalMetricsPanel({
     [visitedTiles, journeyPath]
   );
   
+  const hexagramCorrelations = useMemo(() => 
+    getHexagramCorrelations(visitedTiles),
+    [visitedTiles]
+  );
+  
   if (visitedTiles.size === 0) {
     return null;
   }
@@ -331,6 +484,95 @@ export function TopologicalMetricsPanel({
       </div>
       
       <div className="p-4 space-y-5">
+        {/* I Ching Hexagram Correlations */}
+        {hexagramCorrelations.dominant.length > 0 && (
+          <div className="p-4 bg-gradient-to-r from-amber-500/10 via-orange-500/5 to-red-500/10 rounded-lg border border-amber-500/20">
+            <div className="flex items-center gap-2 mb-3">
+              <BookOpen className="w-4 h-4 text-amber-500" />
+              <span className="text-xs uppercase tracking-wider text-amber-600 dark:text-amber-400 font-medium">
+                I Ching Correlations
+              </span>
+            </div>
+            
+            {/* Trigram Balance Narrative */}
+            {hexagramCorrelations.narrative && (
+              <p className="text-sm text-foreground/90 mb-4 leading-relaxed italic border-l-2 border-amber-500/50 pl-3">
+                {hexagramCorrelations.narrative}
+              </p>
+            )}
+            
+            {/* Dominant Hexagrams */}
+            <div className="space-y-3">
+              {hexagramCorrelations.dominant.map((correlation, idx) => (
+                <div 
+                  key={correlation.hexagram.number} 
+                  className={cn(
+                    "p-3 rounded-lg border",
+                    idx === 0 
+                      ? "bg-amber-500/10 border-amber-500/30" 
+                      : "bg-muted/20 border-border/50"
+                  )}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-lg font-bold text-amber-500">
+                        {correlation.hexagram.number}
+                      </span>
+                      <span className="font-medium text-sm">
+                        {correlation.hexagram.name}
+                      </span>
+                      <span className="text-muted-foreground text-sm">
+                        {correlation.hexagram.chineseName}
+                      </span>
+                    </div>
+                    <Badge 
+                      variant={idx === 0 ? "default" : "secondary"} 
+                      className="text-[10px] h-4"
+                    >
+                      {correlation.tileCount} tile{correlation.tileCount > 1 ? 's' : ''}
+                    </Badge>
+                  </div>
+                  
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {correlation.narrative}
+                  </p>
+                  
+                  {/* Trigram composition */}
+                  <div className="flex items-center gap-2 mt-2 text-[10px] text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <span className="opacity-60">☰</span> {correlation.hexagram.upperTrigram}
+                    </span>
+                    <span>over</span>
+                    <span className="flex items-center gap-1">
+                      <span className="opacity-60">☷</span> {correlation.hexagram.lowerTrigram}
+                    </span>
+                    <span className="ml-auto text-amber-500/70">
+                      {correlation.hexagram.keywords.slice(0, 2).join(' · ')}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {/* Cosmic Pattern Detection */}
+            {hexagramCorrelations.cosmicPattern && (
+              <div className="mt-4 p-3 bg-gradient-to-r from-violet-500/10 to-purple-500/10 rounded-lg border border-violet-500/30">
+                <div className="flex items-start gap-2">
+                  <Flame className="w-4 h-4 text-violet-500 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-xs uppercase tracking-wider text-violet-600 dark:text-violet-400 font-medium">
+                      Cosmic Pattern
+                    </span>
+                    <p className="text-sm text-foreground/90 mt-1 leading-relaxed">
+                      {hexagramCorrelations.cosmicPattern}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+        
         {/* Primary Metaphor - Surface Type */}
         <div className="p-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg border border-primary/20">
           <div className="flex items-start gap-3">
