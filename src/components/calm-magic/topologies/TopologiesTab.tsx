@@ -21,7 +21,7 @@ import {
   RotateCcw, 
   Maximize,
   Minimize,
-  Brain,
+  Sparkles,
   Loader2
 } from 'lucide-react';
 
@@ -68,6 +68,7 @@ export function TopologiesTab({
   const [viewMode, setViewMode] = useState<TopologyViewMode>('isometric');
   const [cubeSize, setCubeSize] = useState(32);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [secretsRevealed, setSecretsRevealed] = useState(false);
 
   const { story, isLoading, error, fetchStory, clearStory } = useTopologyInsight();
 
@@ -85,14 +86,25 @@ export function TopologiesTab({
     });
   }, [viewMode, journeyPath, visitedTiles, densityMap, shadowPosition, higherSelfPosition, currentSeason, currentUnlockedRing, fetchStory]);
 
-  // Fetch story on mount and when view mode changes
+  // Fetch story on mount and when view mode changes (but don't auto-reveal)
   useEffect(() => {
     if (visitedTiles.size > 0) {
       handleFetchStory();
     } else {
       clearStory();
     }
+    // Close secrets when view mode changes
+    setSecretsRevealed(false);
   }, [viewMode, visitedTiles.size]);
+
+  // Handler for revealing secrets
+  const handleRevealSecrets = useCallback(() => {
+    if (visitedTiles.size === 0) return;
+    
+    // Trigger a fresh fetch and reveal
+    handleFetchStory();
+    setSecretsRevealed(true);
+  }, [handleFetchStory, visitedTiles.size]);
 
   const handleReset = () => {
     setViewMode('isometric');
@@ -203,17 +215,17 @@ export function TopologiesTab({
           <Button
             variant="default"
             size="sm"
-            onClick={onAnalyzeTopology}
-            disabled={isAnalyzingTopology || visitedTiles.size === 0}
-            className="h-8 gap-1.5"
+            onClick={handleRevealSecrets}
+            disabled={isLoading || visitedTiles.size === 0}
+            className="h-8 gap-1.5 bg-gradient-to-r from-violet-600 to-primary hover:from-violet-500 hover:to-primary/90"
           >
-            {isAnalyzingTopology ? (
+            {isLoading ? (
               <Loader2 className="w-3 h-3 animate-spin" />
             ) : (
-              <Brain className="w-3 h-3" />
+              <Sparkles className="w-3 h-3" />
             )}
             <span className="hidden sm:inline">
-              {isAnalyzingTopology ? 'Analyzing...' : 'Analyze Journey'}
+              {isLoading ? 'Revealing...' : '✨ Reveal Secrets'}
             </span>
           </Button>
           <Button
@@ -257,6 +269,8 @@ export function TopologiesTab({
         isAnalyzingTopology={isAnalyzingTopology}
         onAnalyzeTopology={onAnalyzeTopology}
         onApplyInsightToShadow={onApplyInsightToShadow}
+        secretsRevealed={secretsRevealed}
+        onToggleSecrets={() => setSecretsRevealed(!secretsRevealed)}
       />
 
       {/* Legend */}

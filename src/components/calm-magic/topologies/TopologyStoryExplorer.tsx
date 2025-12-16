@@ -8,6 +8,7 @@ import { TopologicalSignature, QuadrantPosition } from '@/types/trajectory';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { 
   Sparkles, 
   RefreshCw, 
@@ -25,7 +26,9 @@ import {
   TrendingUp,
   AlertCircle,
   CheckCircle2,
-  Circle
+  Circle,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -44,6 +47,9 @@ interface TopologyStoryExplorerProps {
   isAnalyzingTopology?: boolean;
   onAnalyzeTopology?: () => void;
   onApplyInsightToShadow?: (position: QuadrantPosition, insightNote: string) => void;
+  // Secrets reveal props
+  secretsRevealed?: boolean;
+  onToggleSecrets?: () => void;
 }
 
 // View significance explanations
@@ -410,7 +416,9 @@ export function TopologyStoryExplorer({
   topologicalSignature,
   isAnalyzingTopology,
   onAnalyzeTopology,
-  onApplyInsightToShadow
+  onApplyInsightToShadow,
+  secretsRevealed = false,
+  onToggleSecrets
 }: TopologyStoryExplorerProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [revealedChapters, setRevealedChapters] = useState<Set<number>>(new Set());
@@ -504,218 +512,267 @@ ${story.invitation}
     : 0;
 
   return (
-    <div className="space-y-4">
-      {/* CONCRETE INSIGHT CARD - AT THE TOP for immediate practical value */}
-      <ConcreteInsightCard insight={story?.concreteInsight || null} isLoading={false} />
-      
-      {/* TOPOLOGICAL INSIGHTS PANEL - Sentiment analysis and fragment breakdown */}
-      {(topologicalSignature || isAnalyzingTopology) && (
-        <TopologicalInsightsPanel
-          signature={topologicalSignature || null}
-          isAnalyzing={isAnalyzingTopology}
-          onApplyInsightToShadow={onApplyInsightToShadow}
-        />
-      )}
-      
-      {/* AI STORY - Expandable section below */}
-      <div className="bg-gradient-to-br from-primary/5 via-background to-accent/5 border border-border rounded-lg overflow-hidden">
-        {/* Header */}
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full px-4 py-3 flex items-center justify-between hover:bg-muted/20 transition-colors"
-        >
+    <Collapsible open={secretsRevealed} onOpenChange={onToggleSecrets}>
+      {/* Secrets Header - Always Visible */}
+      <CollapsibleTrigger asChild>
+        <button className="w-full px-4 py-3 flex items-center justify-between bg-gradient-to-r from-violet-500/10 via-primary/5 to-accent/10 border border-violet-500/20 rounded-lg hover:from-violet-500/15 hover:to-accent/15 transition-all group">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-              <Map className="w-4 h-4 text-primary" />
+            <div className={cn(
+              "w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500",
+              secretsRevealed 
+                ? "bg-gradient-to-br from-violet-500 to-primary shadow-lg shadow-violet-500/30" 
+                : "bg-violet-500/20"
+            )}>
+              <Sparkles className={cn(
+                "w-5 h-5 transition-all",
+                secretsRevealed ? "text-white" : "text-violet-500 group-hover:animate-pulse"
+              )} />
             </div>
             <div className="text-left">
-              <span className="text-sm font-semibold block">Journey Insights</span>
+              <span className="text-sm font-semibold block">
+                {secretsRevealed ? '✨ Mysteries Revealed' : '🔮 Hidden Secrets'}
+              </span>
               <span className="text-xs text-muted-foreground">
-                {visitedTiles.size} tiles • Ring {currentUnlockedRing}
+                {viewMode === 'isometric' ? 'Spatial Territory' :
+                 viewMode === 'diamond' ? 'Design Thinking' :
+                 viewMode === 'spiral' ? 'Window of Tolerance' :
+                 viewMode === 'flow' ? 'Attention Flow' :
+                 viewMode === 'cycles' ? 'Recurring Patterns' :
+                 viewMode === 'projection' ? 'Hidden Connections' :
+                 viewMode === 'coordinates' ? 'Axis Position' :
+                 'Archive Density'} View
               </span>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            {story && (
-              <div className="text-right">
-                <span className="text-xs text-muted-foreground block">
-                  {revealedChapters.size}/{story.chapters.length} chapters
-                </span>
-                <div className="w-16 h-1.5 bg-muted rounded-full mt-1 overflow-hidden">
-                  <div 
-                    className="h-full bg-primary rounded-full transition-all duration-500"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-              </div>
-            )}
-            {isExpanded ? (
-              <ChevronUp className="w-4 h-4 text-muted-foreground" />
+          <div className="flex items-center gap-2">
+            {secretsRevealed ? (
+              <Eye className="w-4 h-4 text-violet-500" />
             ) : (
-              <ChevronDown className="w-4 h-4 text-muted-foreground" />
+              <EyeOff className="w-4 h-4 text-muted-foreground group-hover:text-violet-500 transition-colors" />
+            )}
+            {secretsRevealed ? (
+              <ChevronUp className="w-4 h-4 text-violet-500" />
+            ) : (
+              <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-violet-500 transition-colors" />
             )}
           </div>
         </button>
+      </CollapsibleTrigger>
 
-      {/* Content */}
-      <div className={cn(
-        "overflow-hidden transition-all duration-300",
-        isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
-      )}>
-        <div className="px-4 pb-4 space-y-4">
-          {/* AI STORY FIRST - for surprise and wonder */}
-          {story ? (
-            <div className="space-y-4">
-              <h4 className="text-sm font-semibold flex items-center gap-2">
-                <BookOpen className="w-4 h-4 text-violet-500" />
-                {story.storyTitle}
-              </h4>
-              
-              {/* Opening Mystery */}
-              <div className="p-4 bg-gradient-to-r from-violet-500/10 to-primary/10 rounded-lg border border-violet-500/20">
-                <div className="flex items-start gap-3">
-                  <Sparkles className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-xs uppercase tracking-wider text-violet-500/80 mb-1">
-                      Opening Mystery
-                    </p>
-                    <p className="text-base font-medium leading-relaxed italic text-foreground">
-                      "{story.opening_mystery}"
-                    </p>
-                  </div>
+      {/* Secrets Content - Collapsible */}
+      <CollapsibleContent className="overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
+        <div className="mt-4 space-y-4 animate-fade-in">
+          {/* CONCRETE INSIGHT CARD - AT THE TOP for immediate practical value */}
+          <ConcreteInsightCard insight={story?.concreteInsight || null} isLoading={isLoading} />
+          
+          {/* TOPOLOGICAL INSIGHTS PANEL - Sentiment analysis and fragment breakdown */}
+          {(topologicalSignature || isAnalyzingTopology) && (
+            <TopologicalInsightsPanel
+              signature={topologicalSignature || null}
+              isAnalyzing={isAnalyzingTopology}
+              onApplyInsightToShadow={onApplyInsightToShadow}
+            />
+          )}
+      
+          {/* AI STORY - Expandable section */}
+          <div className="bg-gradient-to-br from-primary/5 via-background to-accent/5 border border-border rounded-lg overflow-hidden">
+            {/* Header */}
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="w-full px-4 py-3 flex items-center justify-between hover:bg-muted/20 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                  <Map className="w-4 h-4 text-primary" />
+                </div>
+                <div className="text-left">
+                  <span className="text-sm font-semibold block">Journey Insights</span>
+                  <span className="text-xs text-muted-foreground">
+                    {visitedTiles.size} tiles • Ring {currentUnlockedRing}
+                  </span>
                 </div>
               </div>
-
-              {/* Chapters */}
-              <div className="space-y-4">
-                {story.chapters.map((chapter, index) => (
-                  <StoryChapter
-                    key={index}
-                    chapter={chapter}
-                    index={index}
-                    isRevealed={revealedChapters.has(index)}
-                    onReveal={() => handleRevealChapter(index)}
-                    isLast={index === story.chapters.length - 1}
-                  />
-                ))}
-              </div>
-
-              {/* Key Revelation */}
-              <div className={cn(
-                "relative p-4 rounded-lg border-2 transition-all duration-500",
-                showRevelation && allChaptersRevealed
-                  ? "bg-gradient-to-br from-amber-500/15 to-primary/10 border-amber-500/40"
-                  : "bg-muted/20 border-dashed border-muted-foreground/20"
-              )}>
-                {!showRevelation || !allChaptersRevealed ? (
-                  <div className="flex items-center justify-center gap-2 py-2 text-muted-foreground">
-                    <Lock className="w-4 h-4" />
-                    <span className="text-sm">
-                      Reveal all chapters to unlock the key revelation
+              <div className="flex items-center gap-3">
+                {story && (
+                  <div className="text-right">
+                    <span className="text-xs text-muted-foreground block">
+                      {revealedChapters.size}/{story.chapters.length} chapters
                     </span>
-                  </div>
-                ) : (
-                  <div className="animate-fade-in">
-                    <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
-                        <Lightbulb className="w-4 h-4 text-amber-500" />
-                      </div>
-                      <div>
-                        <p className="text-xs uppercase tracking-wider text-amber-500/80 mb-1">
-                          Key Revelation
-                        </p>
-                        <p className="text-base font-semibold leading-relaxed text-foreground">
-                          {story.key_revelation}
-                        </p>
-                      </div>
+                    <div className="w-16 h-1.5 bg-muted rounded-full mt-1 overflow-hidden">
+                      <div 
+                        className="h-full bg-primary rounded-full transition-all duration-500"
+                        style={{ width: `${progress}%` }}
+                      />
                     </div>
                   </div>
                 )}
+                {isExpanded ? (
+                  <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                )}
               </div>
+            </button>
 
-              {/* Invitation */}
-              {showRevelation && allChaptersRevealed && (
-                <div className="p-4 bg-muted/30 rounded-lg animate-fade-in">
-                  <div className="flex items-start gap-3">
-                    <MessageCircleQuestion className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">
-                        Your Invitation
-                      </p>
-                      <p className="text-sm text-foreground/90 leading-relaxed">
-                        {story.invitation}
-                      </p>
+            {/* Content */}
+            <div className={cn(
+              "overflow-hidden transition-all duration-300",
+              isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
+            )}>
+              <div className="px-4 pb-4 space-y-4">
+                {/* AI STORY FIRST - for surprise and wonder */}
+                {story ? (
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-semibold flex items-center gap-2">
+                      <BookOpen className="w-4 h-4 text-violet-500" />
+                      {story.storyTitle}
+                    </h4>
+                    
+                    {/* Opening Mystery */}
+                    <div className="p-4 bg-gradient-to-r from-violet-500/10 to-primary/10 rounded-lg border border-violet-500/20">
+                      <div className="flex items-start gap-3">
+                        <Sparkles className="w-5 h-5 text-violet-500 shrink-0 mt-0.5" />
+                        <div>
+                          <p className="text-xs uppercase tracking-wider text-violet-500/80 mb-1">
+                            Opening Mystery
+                          </p>
+                          <p className="text-base font-medium leading-relaxed italic text-foreground">
+                            "{story.opening_mystery}"
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Chapters */}
+                    <div className="space-y-4">
+                      {story.chapters.map((chapter, index) => (
+                        <StoryChapter
+                          key={index}
+                          chapter={chapter}
+                          index={index}
+                          isRevealed={revealedChapters.has(index)}
+                          onReveal={() => handleRevealChapter(index)}
+                          isLast={index === story.chapters.length - 1}
+                        />
+                      ))}
+                    </div>
+
+                    {/* Key Revelation */}
+                    <div className={cn(
+                      "relative p-4 rounded-lg border-2 transition-all duration-500",
+                      showRevelation && allChaptersRevealed
+                        ? "bg-gradient-to-br from-amber-500/15 to-primary/10 border-amber-500/40"
+                        : "bg-muted/20 border-dashed border-muted-foreground/20"
+                    )}>
+                      {!showRevelation || !allChaptersRevealed ? (
+                        <div className="flex items-center justify-center gap-2 py-2 text-muted-foreground">
+                          <Lock className="w-4 h-4" />
+                          <span className="text-sm">
+                            Reveal all chapters to unlock the key revelation
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="animate-fade-in">
+                          <div className="flex items-start gap-3">
+                            <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+                              <Lightbulb className="w-4 h-4 text-amber-500" />
+                            </div>
+                            <div>
+                              <p className="text-xs uppercase tracking-wider text-amber-500/80 mb-1">
+                                Key Revelation
+                              </p>
+                              <p className="text-base font-semibold leading-relaxed text-foreground">
+                                {story.key_revelation}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Invitation */}
+                    {showRevelation && allChaptersRevealed && (
+                      <div className="p-4 bg-muted/30 rounded-lg animate-fade-in">
+                        <div className="flex items-start gap-3">
+                          <MessageCircleQuestion className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                          <div>
+                            <p className="text-xs uppercase tracking-wider text-muted-foreground mb-1">
+                              Your Invitation
+                            </p>
+                            <p className="text-sm text-foreground/90 leading-relaxed">
+                              {story.invitation}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Story Actions */}
+                    <div className="flex items-center justify-between pt-3 border-t border-border/50">
+                      <div className="flex gap-4 text-xs text-muted-foreground">
+                        <span>{story.stats.coverage}% explored</span>
+                        <span>Ring {story.stats.currentRing}</span>
+                        <span>{story.stats.pathLength} steps</span>
+                      </div>
+                      <div className="flex gap-2">
+                        {onSaveToJournal && showRevelation && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleSave}
+                            className="h-7 text-xs gap-1"
+                          >
+                            <Save className="w-3 h-3" />
+                            Save
+                          </Button>
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={onRegenerate}
+                          className="h-7 text-xs gap-1"
+                        >
+                          <RefreshCw className="w-3 h-3" />
+                          New Story
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                ) : (
+                  <div className="px-4 py-5 bg-muted/20 border border-border/50 rounded-lg text-center">
+                    <BookOpen className="w-8 h-8 text-muted-foreground/50 mx-auto mb-2" />
+                    <p className="text-sm font-medium text-muted-foreground">
+                      Begin your journey to unlock hidden stories
+                    </p>
+                    <p className="text-xs text-muted-foreground/60 mt-1">
+                      Each topology view reveals different mysteries about your exploration
+                    </p>
+                  </div>
+                )}
 
-              {/* Story Actions */}
-              <div className="flex items-center justify-between pt-3 border-t border-border/50">
-                <div className="flex gap-4 text-xs text-muted-foreground">
-                  <span>{story.stats.coverage}% explored</span>
-                  <span>Ring {story.stats.currentRing}</span>
-                  <span>{story.stats.pathLength} steps</span>
-                </div>
-                <div className="flex gap-2">
-                  {onSaveToJournal && showRevelation && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleSave}
-                      className="h-7 text-xs gap-1"
-                    >
-                      <Save className="w-3 h-3" />
-                      Save
-                    </Button>
-                  )}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={onRegenerate}
-                    className="h-7 text-xs gap-1"
-                  >
-                    <RefreshCw className="w-3 h-3" />
-                    New Story
-                  </Button>
+                {/* Analytics sections below the story */}
+                <div className="pt-4 border-t border-border/50 space-y-4">
+                  {/* View Significance */}
+                  <ViewSignificanceSection viewMode={viewMode} />
+                  
+                  {/* Journey Interpretation */}
+                  <JourneyInterpretationSection 
+                    visitedTiles={visitedTiles}
+                    currentUnlockedRing={currentUnlockedRing}
+                    journeyPath={journeyPath}
+                  />
+                  
+                  {/* Suggested Next Steps */}
+                  <SuggestedNextSteps
+                    visitedTiles={visitedTiles}
+                    currentUnlockedRing={currentUnlockedRing}
+                  />
                 </div>
               </div>
             </div>
-          ) : (
-            <div className="px-4 py-5 bg-muted/20 border border-border/50 rounded-lg text-center">
-              <BookOpen className="w-8 h-8 text-muted-foreground/50 mx-auto mb-2" />
-              <p className="text-sm font-medium text-muted-foreground">
-                Begin your journey to unlock hidden stories
-              </p>
-              <p className="text-xs text-muted-foreground/60 mt-1">
-                Each topology view reveals different mysteries about your exploration
-              </p>
-            </div>
-          )}
-
-          {/* Analytics sections below the story */}
-          <div className="pt-4 border-t border-border/50 space-y-4">
-            {/* View Significance */}
-            <ViewSignificanceSection viewMode={viewMode} />
-            
-            {/* Journey Interpretation */}
-            <JourneyInterpretationSection 
-              visitedTiles={visitedTiles}
-              currentUnlockedRing={currentUnlockedRing}
-              journeyPath={journeyPath}
-            />
-            
-            {/* Suggested Next Steps */}
-            <SuggestedNextSteps
-              visitedTiles={visitedTiles}
-              currentUnlockedRing={currentUnlockedRing}
-            />
           </div>
         </div>
-      </div>
-      {/* Close AI Story div */}
-    </div>
-    {/* Close outer wrapper div */}
-  </div>
+      </CollapsibleContent>
+    </Collapsible>
   );
 }
