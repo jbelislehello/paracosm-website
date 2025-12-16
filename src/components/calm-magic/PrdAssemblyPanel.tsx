@@ -313,22 +313,6 @@ const UnlockProgressCard: React.FC<UnlockProgressCardProps> = ({
           
           {/* Pattern Detection - Always visible */}
           <div className="flex items-center gap-2 shrink-0">
-            <Button 
-              size="sm" 
-              variant="outline" 
-              onClick={handleScanPatterns}
-              disabled={isScanning}
-              className="h-7 text-xs gap-1.5"
-              title={`Ring ${currentUnlockedRing}: ${ringHint.hint}`}
-            >
-              {isScanning ? (
-                <Loader2 className="w-3 h-3 animate-spin" />
-              ) : (
-                <Search className="w-3 h-3" />
-              )}
-              Detect Patterns
-            </Button>
-            
             {detectedPatterns.length > 0 && (
               <Badge 
                 variant="secondary" 

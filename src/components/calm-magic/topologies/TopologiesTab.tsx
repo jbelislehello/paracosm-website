@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ManifoldSeason } from '@/utils/torusManifoldMath';
 import { IsometricCubeMatrix } from './IsometricCubeMatrix';
 import { DoubleDiamondLayout } from './DoubleDiamondLayout';
@@ -10,21 +10,16 @@ import { ToroidalFlowField } from './ToroidalFlowField';
 import { UnfoldedChartProjection } from './UnfoldedChartProjection';
 import { ViewModeSelector, TopologyViewMode } from './ViewModeSelector';
 import { TopologyStoryExplorer } from './TopologyStoryExplorer';
-import { MysteryZonesPanel } from './MysteryZonesPanel';
 import { useTopologyInsight } from '@/hooks/useTopologyInsight';
-import { useMysteryZones, MysteryZone } from '@/hooks/useMysteryZones';
 import { RingLevel } from '@/utils/ringToleranceSystem';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
 import { 
   RotateCcw, 
   Maximize,
-  Minimize,
-  Sparkles
+  Minimize
 } from 'lucide-react';
 
 interface TopologiesTabProps {
@@ -61,26 +56,8 @@ export function TopologiesTab({
   const [viewMode, setViewMode] = useState<TopologyViewMode>('isometric');
   const [cubeSize, setCubeSize] = useState(32);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [showMysteryPanel, setShowMysteryPanel] = useState(false);
 
   const { story, isLoading, error, fetchStory, clearStory } = useTopologyInsight();
-
-  // Memoize mystery zones config to prevent re-renders
-  const mysteryZonesConfig = useMemo(() => ({
-    viewMode,
-    visitedTiles,
-    journeyPath,
-    densityMap,
-    currentUnlockedRing
-  }), [viewMode, visitedTiles, journeyPath, densityMap, currentUnlockedRing]);
-
-  const { 
-    zones, 
-    loadingZoneId, 
-    revealZone, 
-    savedZones, 
-    markZoneAsSaved 
-  } = useMysteryZones(mysteryZonesConfig);
 
   // Fetch story when view mode changes
   const handleFetchStory = useCallback(() => {
@@ -117,36 +94,6 @@ export function TopologiesTab({
     });
   };
 
-  // Save mystery zone as POLEN entry
-  const handleSaveZoneAsPolen = async (zone: MysteryZone) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast.error('Please sign in to save mysteries');
-        return;
-      }
-
-      const content = `🔮 ${zone.label}\n\n"${zone.fragment}"\n\n---\nView: ${viewMode} | Type: ${zone.zoneType}`;
-
-      const { error } = await supabase.from('polen_entries').insert({
-        user_id: user.id,
-        content,
-        fragment_type: 'text',
-        tags: [viewMode, zone.zoneType, 'mystery-discovery', 'topology'],
-        source_reference: `mystery-zone:${zone.id}`,
-        season_context: currentSeason || 'POLLENS'
-      });
-
-      if (error) throw error;
-
-      markZoneAsSaved(zone.id);
-      toast.success('Mystery saved to your journey');
-    } catch (err) {
-      console.error('Failed to save zone:', err);
-      toast.error('Failed to save mystery');
-    }
-  };
 
   // Shared props for all layouts
   const layoutProps = {
@@ -213,7 +160,7 @@ export function TopologiesTab({
     ];
   };
 
-  const unrevealedCount = zones.filter(z => !z.isRevealed).length;
+  
 
   return (
     <div className={`flex flex-col gap-3 ${isFullscreen ? 'fixed inset-0 z-50 bg-background p-4' : ''}`}>
@@ -241,25 +188,6 @@ export function TopologiesTab({
 
         {/* Action buttons */}
         <div className="flex items-center gap-2">
-          {/* Mystery Zones Button */}
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowMysteryPanel(true)}
-            className="h-8 relative"
-          >
-            <Sparkles className="w-3 h-3 mr-1" />
-            Mysteries
-            {unrevealedCount > 0 && (
-              <Badge 
-                variant="secondary" 
-                className="ml-1.5 h-5 min-w-5 px-1.5 text-xs"
-              >
-                {unrevealedCount}
-              </Badge>
-            )}
-          </Button>
-          
           <Button
             variant="outline"
             size="sm"
@@ -286,7 +214,7 @@ export function TopologiesTab({
         {renderLayout()}
       </div>
 
-      {/* Interactive Story Explorer with Journey Insights */}
+      {/* Journey Insights & Story Explorer */}
       <TopologyStoryExplorer
         story={story}
         isLoading={isLoading}
@@ -294,9 +222,6 @@ export function TopologiesTab({
         onRegenerate={handleFetchStory}
         onSaveToJournal={handleSaveToJournal}
         viewMode={viewMode}
-        revealedMysteries={zones}
-        savedMysteryIds={savedZones}
-        onSaveMystery={handleSaveZoneAsPolen}
         visitedTiles={visitedTiles}
         currentUnlockedRing={currentUnlockedRing}
         journeyPath={journeyPath}
@@ -317,17 +242,6 @@ export function TopologiesTab({
         </span>
       </div>
 
-      {/* Mystery Zones Panel */}
-      <MysteryZonesPanel
-        open={showMysteryPanel}
-        onOpenChange={setShowMysteryPanel}
-        zones={zones}
-        viewMode={viewMode}
-        loadingZoneId={loadingZoneId}
-        savedZoneIds={savedZones}
-        onRevealZone={revealZone}
-        onSaveZone={handleSaveZoneAsPolen}
-      />
     </div>
   );
 }
