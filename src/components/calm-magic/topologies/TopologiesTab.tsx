@@ -21,11 +21,7 @@ export function TopologiesTab({
   row,
   col,
   season,
-  tileName,
-  rowLabel,
-  colLabel,
   journeyPath = [],
-  polenDensity = 0,
   visitedTiles = new Set(),
   currentUnlockedRing = 1,
   onTileSelect,
@@ -34,11 +30,11 @@ export function TopologiesTab({
   // Convert journey path to include seasons
   const journeyWithSeasons = journeyPath.map(p => ({
     ...p,
-    season // For now, assume same season - can be enhanced
+    season
   }));
   
   return (
-    <div className="w-full h-full min-h-[500px]">
+    <div className="w-full h-[calc(100vh-220px)] min-h-[450px] rounded-lg overflow-hidden border border-border bg-background">
       <EnhancedManifoldView
         selectedTile={{ row, col }}
         season={season}
