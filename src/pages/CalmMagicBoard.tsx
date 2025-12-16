@@ -135,8 +135,8 @@ const CalmMagicBoard = () => {
   const [patternHistory, setPatternHistory] = useState<PatternHistoryEntry[]>([]);
   const [highlightedPattern, setHighlightedPattern] = useState<DetectedPattern | null>(null);
   
-  // Matrix view mode state (2D flat, 2.5D isometric, or torus)
-  type MatrixViewMode = 'flat' | 'isometric' | 'torus';
+  // Matrix view mode state (2D flat or 2.5D isometric)
+  type MatrixViewMode = 'flat' | 'isometric';
   const [matrixViewMode, setMatrixViewMode] = useState<MatrixViewMode>('flat');
   const [showHorizonGrid, setShowHorizonGrid] = useState(true);
   const [showDepthFog, setShowDepthFog] = useState(true);
@@ -1029,7 +1029,7 @@ const CalmMagicBoard = () => {
                 />
               </div>
               
-              {/* Conditional Render: Flat 2D vs Isometric 2.5D/Torus */}
+              {/* Conditional Render: Flat 2D vs Isometric 2.5D */}
               <div className="flex-1 flex items-center justify-center">
                 {matrixViewMode === 'flat' ? (
                   <div className="md:pl-32 w-full max-w-full overflow-x-auto">
@@ -1059,7 +1059,6 @@ const CalmMagicBoard = () => {
                       completedSeasons={completedSeasons as string[]}
                       highlightedPattern={highlightedPattern}
                       showPatternOverlay={true}
-                      viewMode={matrixViewMode === 'torus' ? 'torus' : 'isometric'}
                       showHorizonGrid={showHorizonGrid}
                       showDepthFog={showDepthFog}
                       cubeSize={isoCubeSize}

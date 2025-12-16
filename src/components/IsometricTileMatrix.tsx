@@ -1,16 +1,14 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import p5 from 'p5';
 import { CycleNumber } from '@/types/journal-expansion';
-import { DetectedPattern, getPatternColor } from '@/utils/patternDetection';
+import { DetectedPattern } from '@/utils/patternDetection';
 import { 
   getTileRing, 
   canAccessTile, 
   RingLevel 
 } from '@/utils/ringToleranceSystem';
-import { interpolateIsometricToTorus, ManifoldSeason } from '@/utils/torusManifoldMath';
 
 type BoardType = 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
-type MatrixViewMode = 'isometric' | 'torus';
 
 interface IsometricTileMatrixProps {
   board?: BoardType;
@@ -23,8 +21,6 @@ interface IsometricTileMatrixProps {
   highlightedPattern?: DetectedPattern | null;
   showPatternOverlay?: boolean;
   unlockedRing?: RingLevel;
-  viewMode?: MatrixViewMode;
-  onViewModeChange?: (mode: MatrixViewMode) => void;
   showHorizonGrid?: boolean;
   showDepthFog?: boolean;
   cubeSize?: number;
@@ -70,8 +66,6 @@ const IsometricTileMatrix: React.FC<IsometricTileMatrixProps> = ({
   highlightedPattern = null,
   showPatternOverlay = true,
   unlockedRing = 1,
-  viewMode = 'isometric',
-  onViewModeChange,
   showHorizonGrid = true,
   showDepthFog = true,
   cubeSize: propCubeSize = 40,
@@ -79,11 +73,16 @@ const IsometricTileMatrix: React.FC<IsometricTileMatrixProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const p5Ref = useRef<p5 | null>(null);
-  const [foldProgress, setFoldProgress] = useState(0);
   const [hoverTile, setHoverTile] = useState<{ row: number; col: number } | null>(null);
   const rotationRef = useRef({ x: 0, y: 0 });
   const isDraggingRef = useRef(false);
   const lastMouseRef = useRef({ x: 0, y: 0 });
+  const cubeSizeRef = useRef(propCubeSize);
+
+  // Update ref when prop changes
+  useEffect(() => {
+    cubeSizeRef.current = propCubeSize;
+  }, [propCubeSize]);
 
   const patternTiles = useMemo(() => {
     if (!highlightedPattern || !showPatternOverlay) return new Set<string>();
@@ -111,24 +110,21 @@ const IsometricTileMatrix: React.FC<IsometricTileMatrixProps> = ({
     return [x, y, z];
   }, []);
 
-  const getSeasonColor = useCallback((p: p5, ringLevel: RingLevel): [number, number, number] => {
+  const getSeasonColor = useCallback((ringLevel: RingLevel): { h: number; s: number; l: number } => {
     const baseHSL = getBoardHSL(board);
     const darkenFactor = 1 - (ringLevel - 1) * 0.15;
-    return [baseHSL.h, baseHSL.s, baseHSL.l * darkenFactor];
+    return { h: baseHSL.h, s: baseHSL.s, l: baseHSL.l * darkenFactor };
   }, [board]);
 
   useEffect(() => {
     if (!containerRef.current) return;
 
     const sketch = (p: p5) => {
-      let cubeSize = propCubeSize;
       const particles: Array<{
         segment: number;
         progress: number;
         speed: number;
         size: number;
-        life: number;
-        maxLife: number;
         trail: Array<{ x: number; y: number; z: number }>;
       }> = [];
       
@@ -140,8 +136,6 @@ const IsometricTileMatrix: React.FC<IsometricTileMatrixProps> = ({
         );
         canvas.parent(containerRef.current!);
         p.colorMode(p.HSL, 360, 100, 100, 1);
-        p.textFont('Arial');
-        p.textAlign(p.CENTER, p.CENTER);
       };
 
       p.windowResized = () => {
@@ -153,178 +147,187 @@ const IsometricTileMatrix: React.FC<IsometricTileMatrixProps> = ({
       const drawCube = (
         x: number, y: number, z: number, 
         size: number, 
-        state: CubeState,
-        progress: number
+        state: CubeState
       ) => {
         p.push();
-        
-        // Interpolate position for torus fold
-        const season: ManifoldSeason = board.toLowerCase() as ManifoldSeason;
-        const torusPos = interpolateIsometricToTorus(state.row, state.col, season, progress, size, state.density);
-        p.translate(torusPos[0], torusPos[1], torusPos[2]);
+        p.translate(x, y, z);
         
         // Calculate elevation based on density and state
         let elevation = 0;
-        if (state.isSelected) elevation += size * 0.5;
+        if (state.isSelected) elevation += size * 0.6;
         if (state.isVisited) {
-          elevation += size * 0.2;
-          elevation += state.density * size * 0.15;
+          elevation += size * 0.15;
+          // Density-based elevation (0-10 scale → additional height)
+          elevation += state.density * size * 0.2;
         }
         p.translate(0, -elevation, 0);
         
-        const [h, s, l] = getSeasonColor(p, state.ringLevel);
+        const color = getSeasonColor(state.ringLevel);
         
-        // Cube styling based on state
-        if (state.isSelected) {
-          // Selected: bright glow
-          p.fill(h, s, l + 20, 1);
-          p.stroke(h, s, 90, 1);
-          p.strokeWeight(3);
-        } else if (state.isPatternTile) {
-          // Pattern tile: special highlight
-          const patternHue = highlightedPattern ? 280 : h;
-          p.fill(patternHue, 80, 60, 0.9);
-          p.stroke(patternHue, 90, 80, 1);
-          p.strokeWeight(2);
-        } else if (state.isVisited) {
-          // Visited: solid fill
-          p.fill(h, s, l, 0.9);
-          p.stroke(h, s, l + 20, 0.8);
-          p.strokeWeight(1.5);
-        } else if (state.isAccessible) {
-          // Accessible: semi-transparent
-          p.fill(h, s * 0.5, l, 0.4);
-          p.stroke(h, s * 0.3, l, 0.5);
-          p.strokeWeight(1);
-        } else {
-          // Locked: wireframe only
-          p.noFill();
-          p.stroke(0, 0, 40, 0.3);
-          p.strokeWeight(0.5);
-        }
-        
-        // Apply depth fog
-        if (showDepthFog && progress < 0.5) {
+        // Apply depth fog factor
+        let fogAlpha = 1;
+        if (showDepthFog) {
           const distFromCenter = Math.sqrt(
             Math.pow(state.row - 3.5, 2) + Math.pow(state.col - 3.5, 2)
           );
-          const fogFactor = Math.min(distFromCenter / 6, 0.5);
-          p.fill(h, s * (1 - fogFactor), l * (1 - fogFactor * 0.3), p.alpha(p.fill as any) * (1 - fogFactor * 0.3));
+          fogAlpha = Math.max(0.4, 1 - distFromCenter * 0.08);
         }
         
-        p.box(size * 0.9);
+        // Cube styling based on state
+        if (state.isSelected) {
+          p.fill(color.h, color.s, Math.min(color.l + 25, 85), fogAlpha);
+          p.stroke(color.h, color.s, 90, 1);
+          p.strokeWeight(3);
+        } else if (state.isPatternTile) {
+          p.fill(280, 80, 60, fogAlpha * 0.9);
+          p.stroke(280, 90, 80, 1);
+          p.strokeWeight(2);
+        } else if (state.isVisited) {
+          // Denser tiles are more saturated and brighter
+          const densityBoost = Math.min(state.density * 3, 20);
+          p.fill(color.h, Math.min(color.s + densityBoost, 100), Math.min(color.l + densityBoost * 0.5, 75), fogAlpha * 0.95);
+          p.stroke(color.h, color.s, color.l + 20, fogAlpha * 0.8);
+          p.strokeWeight(1.5);
+        } else if (state.isAccessible) {
+          p.fill(color.h, color.s * 0.4, color.l * 0.8, fogAlpha * 0.35);
+          p.stroke(color.h, color.s * 0.3, color.l, fogAlpha * 0.4);
+          p.strokeWeight(1);
+        } else {
+          p.noFill();
+          p.stroke(0, 0, 35, fogAlpha * 0.25);
+          p.strokeWeight(0.5);
+        }
+        
+        p.box(size * 0.88);
+        
+        // Draw density indicator ring on top of dense tiles
+        if (state.isVisited && state.density > 0) {
+          p.push();
+          p.translate(0, -size * 0.45, 0);
+          p.rotateX(p.HALF_PI);
+          p.noFill();
+          const ringIntensity = Math.min(state.density / 5, 1);
+          p.stroke(color.h, 90, 70, ringIntensity * 0.9);
+          p.strokeWeight(2 + state.density * 0.5);
+          p.ellipse(0, 0, size * 0.6 * (0.5 + ringIntensity * 0.5), size * 0.6 * (0.5 + ringIntensity * 0.5));
+          
+          // Inner glow for high density
+          if (state.density >= 3) {
+            p.stroke(color.h, 100, 80, ringIntensity * 0.5);
+            p.strokeWeight(1);
+            p.ellipse(0, 0, size * 0.4, size * 0.4);
+          }
+          p.pop();
+        }
         
         // Draw step number on visited tiles
         if (state.stepNumber !== null && state.isVisited) {
           p.push();
-          p.translate(0, -size * 0.5, 0);
-          p.rotateX(-Math.PI / 4);
+          p.translate(0, -size * 0.5, size * 0.3);
           p.fill(0, 0, 100);
           p.noStroke();
-          p.textSize(size * 0.3);
+          p.textSize(size * 0.28);
+          p.textAlign(p.CENTER, p.CENTER);
           p.text(state.stepNumber.toString(), 0, 0);
           p.pop();
         }
         
         // Draw tile acronym on top face
         p.push();
-        p.translate(0, -size * 0.45, 0);
-        p.rotateX(-Math.PI / 2);
-        p.fill(0, 0, state.isVisited ? 100 : 60);
+        p.translate(0, -size * 0.46, 0);
+        p.rotateX(-p.HALF_PI);
+        p.fill(0, 0, state.isVisited ? 100 : 55);
         p.noStroke();
-        p.textSize(size * 0.25);
+        p.textSize(size * 0.22);
+        p.textAlign(p.CENTER, p.CENTER);
         const acronym = `${ROW_LABELS[state.row]}${COL_LABELS[state.col]}`;
         p.text(acronym, 0, 0);
         p.pop();
         
-        // Draw elevation pillar for elevated cubes
-        if (elevation > 5) {
+        // Draw density bar/pillar for elevated cubes
+        if (elevation > size * 0.2) {
           p.push();
-          p.stroke(h, s * 0.5, l * 0.7, 0.4);
-          p.strokeWeight(1);
-          for (let i = 0; i < elevation; i += size * 0.2) {
-            const lineY = -elevation + i;
-            p.line(0, lineY, 0, 0, lineY + size * 0.1, 0);
-          }
+          p.stroke(color.h, color.s * 0.6, color.l * 0.6, 0.5);
+          p.strokeWeight(2);
+          p.line(0, 0, 0, 0, elevation, 0);
+          
+          // Ground shadow ring
+          p.translate(0, elevation + 1, 0);
+          p.rotateX(p.HALF_PI);
+          p.noStroke();
+          p.fill(0, 0, 0, 0.15);
+          p.ellipse(0, 0, size * 0.7, size * 0.4);
           p.pop();
         }
         
         p.pop();
       };
 
-      const drawHorizonGrid = (cubeSize: number, progress: number) => {
-        if (!showHorizonGrid || progress > 0.5) return;
+      const drawHorizonGrid = (cubeSize: number) => {
+        if (!showHorizonGrid) return;
         
         p.push();
-        const gridExtent = cubeSize * GRID_SIZE * 1.5;
-        p.stroke(0, 0, 40, 0.2);
+        const gridExtent = cubeSize * GRID_SIZE * 1.2;
+        const gridY = cubeSize * GRID_SIZE * 0.52;
+        
+        p.stroke(0, 0, 30, 0.15);
         p.strokeWeight(0.5);
         
-        // Draw grid lines
-        for (let i = -10; i <= 10; i++) {
-          const lineOffset = i * cubeSize;
-          // X-direction lines
-          p.line(-gridExtent, cubeSize * GRID_SIZE * 0.5, lineOffset, gridExtent, cubeSize * GRID_SIZE * 0.5, lineOffset);
-          // Z-direction lines
-          p.line(lineOffset, cubeSize * GRID_SIZE * 0.5, -gridExtent, lineOffset, cubeSize * GRID_SIZE * 0.5, gridExtent);
+        for (let i = -8; i <= 8; i++) {
+          const lineOffset = i * cubeSize * 0.866;
+          p.line(-gridExtent, gridY, lineOffset, gridExtent, gridY, lineOffset);
+          p.line(lineOffset, gridY, -gridExtent, lineOffset, gridY, gridExtent);
         }
         p.pop();
       };
 
-      const drawJourneyPath = (cubeSize: number, progress: number) => {
+      const drawJourneyPath = (cubeSize: number) => {
         if (journeyPath.length < 2) return;
         
         p.push();
         const baseHSL = getBoardHSL(board);
-        p.stroke(baseHSL.h, baseHSL.s, baseHSL.l + 10, 0.8);
+        p.stroke(baseHSL.h, baseHSL.s, baseHSL.l + 15, 0.85);
         p.strokeWeight(3);
         p.noFill();
         
         p.beginShape();
         journeyPath.forEach((tile) => {
           const state = getCubeState(tile.row, tile.col);
-          const season: ManifoldSeason = board.toLowerCase() as ManifoldSeason;
-          const pos = interpolateIsometricToTorus(tile.row, tile.col, season, progress, cubeSize, state.density);
+          const [px, py, pz] = gridToIsometric(tile.row, tile.col, cubeSize);
           
-          // Elevation based on state
-          let elevation = cubeSize * 0.2;
-          if (state.density > 0) elevation += state.density * cubeSize * 0.15;
+          let elevation = cubeSize * 0.15;
+          if (state.density > 0) elevation += state.density * cubeSize * 0.2;
           
-          p.vertex(pos[0], pos[1] - elevation, pos[2]);
+          p.vertex(px, py - elevation - cubeSize * 0.5, pz);
         });
         p.endShape();
         p.pop();
       };
 
       const spawnParticle = () => {
-        if (journeyPath.length < 2 || particles.length >= 50) return;
+        if (journeyPath.length < 2 || particles.length >= 40) return;
         
         particles.push({
           segment: 0,
           progress: 0,
-          speed: 0.015 + Math.random() * 0.015,
-          size: 4 + Math.random() * 4,
-          life: 1,
-          maxLife: 1,
+          speed: 0.012 + Math.random() * 0.012,
+          size: 3 + Math.random() * 3,
           trail: []
         });
       };
 
-      const updateAndDrawParticles = (cubeSize: number, progress: number) => {
+      const updateAndDrawParticles = (cubeSize: number) => {
         if (journeyPath.length < 2) return;
         
-        // Spawn new particles periodically
-        if (p.frameCount % 8 === 0) spawnParticle();
+        if (p.frameCount % 10 === 0) spawnParticle();
         
         const baseHSL = getBoardHSL(board);
         
         for (let i = particles.length - 1; i >= 0; i--) {
           const particle = particles[i];
           
-          // Update particle position
           particle.progress += particle.speed;
           
-          // Move to next segment if needed
           if (particle.progress >= 1) {
             particle.segment++;
             particle.progress = 0;
@@ -335,111 +338,100 @@ const IsometricTileMatrix: React.FC<IsometricTileMatrixProps> = ({
             }
           }
           
-          // Calculate current position along path
           const fromTile = journeyPath[particle.segment];
           const toTile = journeyPath[particle.segment + 1];
           
           const fromState = getCubeState(fromTile.row, fromTile.col);
           const toState = getCubeState(toTile.row, toTile.col);
-          const season: ManifoldSeason = board.toLowerCase() as ManifoldSeason;
           
-          const fromPos = interpolateIsometricToTorus(fromTile.row, fromTile.col, season, progress, cubeSize, fromState.density);
-          const toPos = interpolateIsometricToTorus(toTile.row, toTile.col, season, progress, cubeSize, toState.density);
+          const [fx, fy] = gridToIsometric(fromTile.row, fromTile.col, cubeSize);
+          const [tx, ty] = gridToIsometric(toTile.row, toTile.col, cubeSize);
           
-          // Interpolate position with easing
+          const fromElev = cubeSize * 0.15 + fromState.density * cubeSize * 0.2 + cubeSize * 0.5;
+          const toElev = cubeSize * 0.15 + toState.density * cubeSize * 0.2 + cubeSize * 0.5;
+          
           const t = particle.progress;
-          const easeT = t * t * (3 - 2 * t); // Smoothstep
+          const easeT = t * t * (3 - 2 * t);
           
           const currentPos = {
-            x: fromPos[0] + (toPos[0] - fromPos[0]) * easeT,
-            y: fromPos[1] + (toPos[1] - fromPos[1]) * easeT - cubeSize * 0.3,
-            z: fromPos[2] + (toPos[2] - fromPos[2]) * easeT
+            x: fx + (tx - fx) * easeT,
+            y: fy - fromElev + ((ty - toElev) - (fy - fromElev)) * easeT,
+            z: 0
           };
           
-          // Add to trail
           particle.trail.push({ ...currentPos });
-          if (particle.trail.length > 8) particle.trail.shift();
+          if (particle.trail.length > 6) particle.trail.shift();
           
           // Draw trail
           p.push();
           p.noFill();
-          particle.trail.forEach((pos, idx) => {
-            const alpha = (idx / particle.trail.length) * 0.5;
-            p.stroke(baseHSL.h, baseHSL.s, 70, alpha);
-            p.strokeWeight(particle.size * (idx / particle.trail.length));
-            if (idx > 0) {
-              const prev = particle.trail[idx - 1];
-              p.line(prev.x, prev.y, prev.z, pos.x, pos.y, pos.z);
-            }
-          });
+          for (let j = 1; j < particle.trail.length; j++) {
+            const alpha = (j / particle.trail.length) * 0.6;
+            p.stroke(baseHSL.h, baseHSL.s, 75, alpha);
+            p.strokeWeight(particle.size * (j / particle.trail.length));
+            const prev = particle.trail[j - 1];
+            const curr = particle.trail[j];
+            p.line(prev.x, prev.y, prev.z, curr.x, curr.y, curr.z);
+          }
           p.pop();
           
-          // Draw particle core
+          // Draw particle
           p.push();
           p.translate(currentPos.x, currentPos.y, currentPos.z);
           p.noStroke();
-          p.fill(baseHSL.h, baseHSL.s, 80, 0.9);
-          p.sphere(particle.size * 0.5);
-          
-          // Glow effect
-          p.fill(baseHSL.h, baseHSL.s, 90, 0.3);
-          p.sphere(particle.size);
+          p.fill(baseHSL.h, baseHSL.s, 85, 0.95);
+          p.sphere(particle.size * 0.4);
+          p.fill(baseHSL.h, baseHSL.s, 95, 0.35);
+          p.sphere(particle.size * 0.8);
           p.pop();
         }
       };
 
-      const drawAxisLabels = (cubeSize: number, progress: number) => {
-        if (progress > 0.3) return;
-        
+      const drawAxisLabels = (cubeSize: number) => {
         p.push();
         
-        // Longevity axis label (columns - horizontal)
-        const longevityX = cubeSize * GRID_SIZE * 0.5;
-        const longevityY = cubeSize * GRID_SIZE * 0.55 + cubeSize;
+        // Longevity label
         p.push();
-        p.translate(longevityX, longevityY, 0);
-        p.rotateX(-Math.PI / 4);
-        p.fill(0, 0, 70);
+        p.translate(cubeSize * GRID_SIZE * 0.4, cubeSize * GRID_SIZE * 0.6, 0);
+        p.fill(0, 0, 65);
         p.noStroke();
-        p.textSize(14);
+        p.textSize(13);
+        p.textAlign(p.CENTER, p.CENTER);
         p.text('LONGEVITY →', 0, 0);
         p.pop();
         
-        // Velocity axis label (rows - vertical)
-        const velocityX = -cubeSize * 1.5;
-        const velocityY = cubeSize * GRID_SIZE * 0.3;
+        // Velocity label
         p.push();
-        p.translate(velocityX, velocityY, 0);
-        p.rotateX(-Math.PI / 4);
-        p.rotateZ(-Math.PI / 2);
-        p.fill(0, 0, 70);
+        p.translate(-cubeSize * 1.8, cubeSize * GRID_SIZE * 0.25, 0);
+        p.fill(0, 0, 65);
         p.noStroke();
-        p.textSize(14);
+        p.textSize(13);
+        p.textAlign(p.CENTER, p.CENTER);
         p.text('↑ VELOCITY', 0, 0);
         p.pop();
         
-        // Column labels at bottom
+        // Column labels
         for (let col = 0; col < GRID_SIZE; col++) {
           const [x, y] = gridToIsometric(GRID_SIZE, col, cubeSize);
           p.push();
-          p.translate(x, y + cubeSize * 0.8, 0);
-          p.rotateX(-Math.PI / 4);
-          p.fill(0, 0, 60);
+          p.translate(x, y + cubeSize * 0.7, 0);
+          p.fill(0, 0, 55);
           p.noStroke();
-          p.textSize(12);
+          p.textSize(11);
+          p.textAlign(p.CENTER, p.CENTER);
           p.text(COL_LABELS[col], 0, 0);
           p.pop();
         }
         
-        // Row labels on left
+        // Row labels
         for (let row = 0; row < GRID_SIZE; row++) {
           const [x, y] = gridToIsometric(row, -1, cubeSize);
           p.push();
-          p.translate(x - cubeSize * 0.3, y, 0);
-          p.rotateX(-Math.PI / 4);
-          p.fill(0, 0, 60);
+          p.translate(x - cubeSize * 0.4, y, 0);
+          p.fill(0, 0, 55);
           p.noStroke();
-          p.textSize(12);
+          p.textSize(11);
+          p.textAlign(p.CENTER, p.CENTER);
           p.text(ROW_LABELS[row], 0, 0);
           p.pop();
         }
@@ -447,74 +439,93 @@ const IsometricTileMatrix: React.FC<IsometricTileMatrixProps> = ({
         p.pop();
       };
 
+      const drawDensityLegend = (cubeSize: number) => {
+        p.push();
+        p.resetMatrix();
+        
+        // Legend background
+        p.fill(0, 0, 15, 0.85);
+        p.noStroke();
+        p.rect(p.width / 2 - 110, -p.height / 2 + 10, 100, 70, 6);
+        
+        p.fill(0, 0, 75);
+        p.textSize(10);
+        p.textAlign(p.LEFT, p.TOP);
+        p.text('Density Legend', -p.width / 2 + 20, -p.height / 2 + 18);
+        
+        const baseHSL = getBoardHSL(board);
+        
+        // Low density
+        p.fill(baseHSL.h, baseHSL.s * 0.6, baseHSL.l * 0.8);
+        p.rect(-p.width / 2 + 20, -p.height / 2 + 35, 12, 12, 2);
+        p.fill(0, 0, 65);
+        p.text('Low', -p.width / 2 + 38, -p.height / 2 + 36);
+        
+        // High density
+        p.fill(baseHSL.h, Math.min(baseHSL.s + 15, 100), Math.min(baseHSL.l + 15, 75));
+        p.rect(-p.width / 2 + 20, -p.height / 2 + 52, 12, 12, 2);
+        p.fill(0, 0, 65);
+        p.text('High (elevated)', -p.width / 2 + 38, -p.height / 2 + 53);
+        
+        p.pop();
+      };
+
       p.draw = () => {
-        p.background(0, 0, 10);
+        p.background(0, 0, 8);
         
-        // Update fold progress
-        const targetProgress = viewMode === 'torus' ? 1 : 0;
-        const currentProgress = foldProgress;
-        const newProgress = p.lerp(currentProgress, targetProgress, 0.05);
-        if (Math.abs(newProgress - currentProgress) > 0.001) {
-          setFoldProgress(newProgress);
-        }
+        const cubeSize = cubeSizeRef.current;
         
-        // Camera setup
-        p.rotateX(Math.PI / 6 + rotationRef.current.y * 0.01);
-        p.rotateY(rotationRef.current.x * 0.01);
+        // Camera
+        p.rotateX(p.PI / 6 + rotationRef.current.y * 0.008);
+        p.rotateY(rotationRef.current.x * 0.008);
         
-        // Center the grid
+        // Center
         const gridOffset = cubeSize * GRID_SIZE * 0.5;
-        p.translate(-gridOffset * 0.5, -gridOffset * 0.3, 0);
+        p.translate(-gridOffset * 0.4, -gridOffset * 0.2, 0);
         
-        // Ambient lighting
-        p.ambientLight(60);
-        p.directionalLight(255, 255, 255, 0.5, 1, -0.5);
-        p.pointLight(255, 255, 255, 0, -200, 200);
+        // Lighting
+        p.ambientLight(55);
+        p.directionalLight(255, 255, 255, 0.4, 0.8, -0.5);
+        p.pointLight(255, 255, 255, 0, -250, 250);
         
-        // Draw horizon grid
-        drawHorizonGrid(cubeSize, currentProgress);
+        drawHorizonGrid(cubeSize);
         
-        // Draw all cubes
-        for (let row = 0; row < GRID_SIZE; row++) {
+        // Draw cubes back-to-front for proper depth
+        for (let row = GRID_SIZE - 1; row >= 0; row--) {
           for (let col = 0; col < GRID_SIZE; col++) {
             const state = getCubeState(row, col);
             const [x, y, z] = gridToIsometric(row, col, cubeSize);
-            drawCube(x, y, z, cubeSize, state, currentProgress);
+            drawCube(x, y, z, cubeSize, state);
           }
         }
         
-        // Draw journey path
-        drawJourneyPath(cubeSize, currentProgress);
+        drawJourneyPath(cubeSize);
+        updateAndDrawParticles(cubeSize);
+        drawAxisLabels(cubeSize);
         
-        // Draw energy particles
-        updateAndDrawParticles(cubeSize, currentProgress);
-        
-        // Draw axis labels
-        drawAxisLabels(cubeSize, currentProgress);
-        
-        // Draw 2D overlay
+        // 2D overlay info
         p.push();
         p.resetMatrix();
-        p.fill(0, 0, 80);
+        p.fill(0, 0, 75);
         p.noStroke();
-        p.textSize(12);
+        p.textSize(11);
         p.textAlign(p.LEFT, p.TOP);
-        const modeText = currentProgress > 0.5 ? 'Torus Manifold' : 'Isometric 2.5D';
-        p.text(modeText, -p.width / 2 + 20, -p.height / 2 + 20);
-        p.text(`${board} Season`, -p.width / 2 + 20, -p.height / 2 + 40);
-        p.text(`${visitedTiles.size}/64 tiles`, -p.width / 2 + 20, -p.height / 2 + 60);
+        p.text('Isometric 2.5D', -p.width / 2 + 16, -p.height / 2 + 16);
+        p.text(`${board} Season`, -p.width / 2 + 16, -p.height / 2 + 32);
+        p.text(`${visitedTiles.size}/64 tiles`, -p.width / 2 + 16, -p.height / 2 + 48);
         
         if (hoverTile) {
           const state = getCubeState(hoverTile.row, hoverTile.col);
           p.text(
-            `${ROW_LABELS[hoverTile.row]}${COL_LABELS[hoverTile.col]} - Ring ${state.ringLevel}`,
-            -p.width / 2 + 20, -p.height / 2 + 80
+            `${ROW_LABELS[hoverTile.row]}${COL_LABELS[hoverTile.col]} - Ring ${state.ringLevel}${state.density > 0 ? ` - Density: ${state.density}` : ''}`,
+            -p.width / 2 + 16, -p.height / 2 + 64
           );
         }
         p.pop();
+        
+        drawDensityLegend(cubeSize);
       };
 
-      // Mouse interaction
       p.mousePressed = () => {
         if (p.mouseX > 0 && p.mouseX < p.width && p.mouseY > 0 && p.mouseY < p.height) {
           isDraggingRef.current = true;
@@ -524,7 +535,6 @@ const IsometricTileMatrix: React.FC<IsometricTileMatrixProps> = ({
 
       p.mouseReleased = () => {
         if (!isDraggingRef.current) {
-          // Handle click - find clicked tile
           handleTileClick(p);
         }
         isDraggingRef.current = false;
@@ -541,9 +551,9 @@ const IsometricTileMatrix: React.FC<IsometricTileMatrixProps> = ({
       };
 
       p.mouseMoved = () => {
-        // Simple hover detection (approximate)
-        const normalizedX = (p.mouseX - p.width / 2) / (cubeSize * 2);
-        const normalizedY = (p.mouseY - p.height / 2) / (cubeSize * 2);
+        const cubeSize = cubeSizeRef.current;
+        const normalizedX = (p.mouseX - p.width / 2) / (cubeSize * 1.8);
+        const normalizedY = (p.mouseY - p.height / 2) / (cubeSize * 1.8);
         
         const approxCol = Math.floor((normalizedX + normalizedY + GRID_SIZE) / 2);
         const approxRow = Math.floor((-normalizedX + normalizedY + GRID_SIZE) / 2);
@@ -558,9 +568,9 @@ const IsometricTileMatrix: React.FC<IsometricTileMatrixProps> = ({
       const handleTileClick = (p: p5) => {
         if (!onTileClick) return;
         
-        // Convert screen coordinates to grid (approximate)
-        const normalizedX = (p.mouseX - p.width / 2) / (cubeSize * 2);
-        const normalizedY = (p.mouseY - p.height / 2) / (cubeSize * 2);
+        const cubeSize = cubeSizeRef.current;
+        const normalizedX = (p.mouseX - p.width / 2) / (cubeSize * 1.8);
+        const normalizedY = (p.mouseY - p.height / 2) / (cubeSize * 1.8);
         
         const approxCol = Math.floor((normalizedX + normalizedY + GRID_SIZE) / 2);
         const approxRow = Math.floor((-normalizedX + normalizedY + GRID_SIZE) / 2);
@@ -574,7 +584,7 @@ const IsometricTileMatrix: React.FC<IsometricTileMatrixProps> = ({
       };
 
       p.mouseWheel = (event: any) => {
-        cubeSize = Math.max(20, Math.min(60, cubeSize - event.delta * 0.05));
+        cubeSizeRef.current = Math.max(25, Math.min(55, cubeSizeRef.current - event.delta * 0.04));
         return false;
       };
     };
@@ -586,8 +596,8 @@ const IsometricTileMatrix: React.FC<IsometricTileMatrixProps> = ({
     };
   }, [
     board, selectedTile, visitedTiles, journeyPath, onTileClick, unlockedRing,
-    viewMode, showHorizonGrid, showDepthFog, propCubeSize, densityMap,
-    getCubeState, gridToIsometric, getSeasonColor, highlightedPattern, foldProgress
+    showHorizonGrid, showDepthFog, densityMap,
+    getCubeState, gridToIsometric, getSeasonColor, highlightedPattern
   ]);
 
   return (
