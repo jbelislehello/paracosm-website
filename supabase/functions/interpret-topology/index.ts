@@ -383,6 +383,7 @@ Be SPECIFIC. Reference their actual consciousness geometry data. Frame everythin
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
+        max_tokens: 2000,
         response_format: { type: "json_object" }
       }),
     });
@@ -402,16 +403,30 @@ Be SPECIFIC. Reference their actual consciousness geometry data. Frame everythin
 
     let parsed;
     try {
-      // Sanitize content: replace literal newlines within strings that break JSON
-      const sanitizedContent = content
-        .replace(/\n/g, ' ')  // Replace all newlines with spaces
-        .replace(/\r/g, '')   // Remove carriage returns
-        .replace(/\s+/g, ' '); // Normalize multiple spaces
-      parsed = JSON.parse(sanitizedContent);
+      // Try to extract JSON from markdown code blocks if present
+      let jsonContent = content;
+      const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
+      if (jsonMatch) {
+        jsonContent = jsonMatch[1].trim();
+      }
+      // Also handle cases where JSON is wrapped in other text
+      const bracketMatch = jsonContent.match(/\{[\s\S]*\}/);
+      if (bracketMatch) {
+        jsonContent = bracketMatch[0];
+      }
+      parsed = JSON.parse(jsonContent);
     } catch (parseError) {
-      console.error('[interpret-topology] Failed to parse JSON:', content);
+      console.error('[interpret-topology] Failed to parse JSON:', content.substring(0, 200));
       console.error('[interpret-topology] Parse error:', parseError);
-      throw new Error('Invalid JSON response from AI');
+      // Provide fallback content instead of failing
+      parsed = {
+        opening_wonder: `Your journey across ${stats.visitedCount} tiles reveals a pattern of ${stats.coverage}% exploration—each step adding to the geometric complexity of your awareness.`,
+        shadow_higher_self_insight: `The distance between your Shadow (${shadowQuadrant}) and Higher Self (${higherSelfQuadrant}) defines the creative tension driving your PRD forward.`,
+        consciousness_emergence: `With ${cg?.topologicalHandles || 0} topological handles in your exploration, information is beginning to loop back on itself—the first signs of self-reference emerging.`,
+        tile_position_meaning: `Standing at ${tileName || 'this position'}, you occupy a crossroads where ${rowLabel || 'discovery'} meets ${colLabel || 'understanding'}.`,
+        prd_connection: `Your ${currentSeason || 'current'} season is weaving together the threads of your exploration into something tangible—a living document of emergence.`,
+        invitation_to_wonder: `What pattern might reveal itself if you traced the gaps in your exploration?`
+      };
     }
 
     console.log(`[interpret-topology] Successfully generated wonder insight for ${viewMode}`);
