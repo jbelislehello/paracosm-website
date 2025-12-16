@@ -895,7 +895,6 @@ const CalmMagicBoard = () => {
           tilesVisited={visitedTiles.size}
           currentSeason={currentSeason}
           userId={user?.id}
-          onGeneratePrd={() => setActiveView('prd-assembly')}
         />
       </div>
 
