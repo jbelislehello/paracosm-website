@@ -55,7 +55,7 @@ export function IsometricCubeMatrix({
   
   // Camera controls - turntable style
   // x = tilt angle (looking down), y = rotation around vertical axis (turntable spin)
-  const rotationRef = useRef({ x: -0.75, y: 0.6 }); // Looking down at ~43°, angled view
+  const rotationRef = useRef({ x: -1.45, y: 0 }); // Top-down view (~83°), grid aligned
   const panRef = useRef({ x: 0, y: 0 });
   const zoomRef = useRef(1);
   const isDraggingRef = useRef(false);
@@ -816,7 +816,7 @@ export function IsometricCubeMatrix({
       // ENHANCED: Double-click to reset view (turntable default)
       p.doubleClicked = () => {
         if (p.mouseX > 0 && p.mouseX < width && p.mouseY > 0 && p.mouseY < height) {
-          rotationRef.current = { x: -0.75, y: 0.6 }; // Look down at ~43°, angled view
+          rotationRef.current = { x: -1.45, y: 0 }; // Top-down view (~83°), grid aligned
           panRef.current = { x: 0, y: 0 };
           zoomRef.current = 1;
         }
