@@ -92,11 +92,11 @@ const QUADRANT_MEANINGS: Record<string, { name: string; essence: string; shadow:
 };
 
 const SEASON_MEANINGS: Record<string, { essence: string; prdLayer: string }> = {
-  'POLLENS': { essence: 'gathering raw signals and tensions', prdLayer: 'Infrastructure foundations' },
-  'NOEMS': { essence: 'distilling concepts from fragments', prdLayer: 'Memory/Cognition structures' },
-  'POEMS': { essence: 'weaving narratives and metaphors', prdLayer: 'Application interfaces' },
-  'TOTEMS': { essence: 'crystallizing form and structure', prdLayer: 'Protocol definitions' },
-  'ANTHEMS': { essence: 'orchestrating purpose and impact', prdLayer: 'Full integration' }
+  'POLLENS': { essence: 'exploring relational aspirations and cultural elements', prdLayer: 'Relational/Cultural foundations' },
+  'NOEMS': { essence: 'crystallizing concepts and ideas', prdLayer: 'Conceptual structures' },
+  'POEMS': { essence: 'designing experiences (People, Objects, Environments, Messages, Systems)', prdLayer: 'Experiential design & prototypes' },
+  'TOTEMS': { essence: 'defining infrastructure and security', prdLayer: 'Technical & data architecture' },
+  'ANTHEMS': { essence: 'crafting market narrative and positioning', prdLayer: 'Market & storytelling' }
 };
 
 const VIEW_DESCRIPTIONS: Record<ViewMode, string> = {

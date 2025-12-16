@@ -153,29 +153,29 @@ export function describeVisualShape(stats: {
 
 export const SEASON_MEANINGS: Record<string, { essence: string; prdLayer: string; question: string }> = {
   'POLLENS': {
-    essence: 'gathering raw signals and tensions',
-    prdLayer: 'Infrastructure/Governance foundations',
-    question: 'What is really happening?'
+    essence: 'exploring relational aspirations and cultural elements',
+    prdLayer: 'Relational/Cultural foundations',
+    question: 'What aspirations exist for self, team, and culture?'
   },
   'NOEMS': {
-    essence: 'distilling concepts from fragments',
-    prdLayer: 'Memory/Cognition structures',
-    question: 'What patterns emerge?'
+    essence: 'crystallizing concepts and ideas',
+    prdLayer: 'Conceptual structures',
+    question: 'What concepts and ideas are emerging?'
   },
   'POEMS': {
-    essence: 'weaving narratives and metaphors',
-    prdLayer: 'Application/Tooling interfaces',
-    question: 'What story wants to be told?'
+    essence: 'designing experiences (People, Objects, Environments, Messages, Systems)',
+    prdLayer: 'Experiential design & prototypes',
+    question: 'How do people, objects, environments, messages, and systems interact?'
   },
   'TOTEMS': {
-    essence: 'crystallizing form and structure',
-    prdLayer: 'Protocol/Agent Internet definitions',
-    question: 'What shape does this take?'
+    essence: 'defining infrastructure and security',
+    prdLayer: 'Technical & data architecture',
+    question: 'What technical infrastructure and policies are needed?'
   },
   'ANTHEMS': {
-    essence: 'orchestrating purpose and impact',
-    prdLayer: 'Full 8-layer integration',
-    question: 'What does this stand for?'
+    essence: 'crafting market narrative and positioning',
+    prdLayer: 'Market & storytelling',
+    question: 'What story are we telling to the market?'
   }
 };
 

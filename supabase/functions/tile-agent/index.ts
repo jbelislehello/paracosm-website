@@ -29,24 +29,24 @@ interface Message {
 
 const SEASON_THEMES: Record<string, { focus: string; themes: string[] }> = {
   POLLENS: { 
-    focus: 'Real Intelligence - capturing raw signals and tensions',
-    themes: ['Intuitions', 'Shared Ideas', 'PRD Shadows', 'Cultural Issues', 'Relational Intelligence Feedback', 'Biases']
+    focus: 'Relational & Cultural Aspirations - exploring self, teams, and organizational culture',
+    themes: ['Self Aspirations', 'Team Dynamics', 'Organizational Culture', 'Relational Elements', 'Cultural Values', 'Collective Identity']
   },
   NOEMS: { 
-    focus: 'Knowledge Objects - crystallizing concepts and structures',
-    themes: ['Content Sources', 'Data Nodes', 'API patterns', 'Conceptual atoms']
+    focus: 'Conceptual Ideation - crystallizing ideas and abstract thinking',
+    themes: ['Ideas', 'Concepts', 'Abstract Patterns', 'Conceptual Frameworks', 'Mental Models', 'Theoretical Structures']
   },
   POEMS: { 
-    focus: 'Understanding - building narratives and meaning',
-    themes: ['Processes', 'Journeys', 'Story arcs', 'Experience frames']
+    focus: 'Experiential Design - UI, IXD, Prototypes & Ontological (People, Objects, Environments, Messages, Systems)',
+    themes: ['People', 'Objects', 'Environments', 'Messages', 'Systems', 'UI Design', 'Interaction Design', 'Prototypes']
   },
   TOTEMS: { 
-    focus: 'Understanding - creating forms and interfaces',
-    themes: ['Maps', 'Three Graph Model', 'Subject Graph', 'Lexical Graph', 'Domain Graph']
+    focus: 'Technical Infrastructure - data, security, and access policies',
+    themes: ['Infrastructure', 'Technical Data', 'Access Policies', 'Security', 'Data Architecture', 'System Requirements']
   },
   ANTHEMS: { 
-    focus: 'Integration - alignment and activation',
-    themes: ['RDF', 'OWL', 'Semantic connections', 'Orchestration']
+    focus: 'Market & Storytelling - positioning, narrative, and market fit',
+    themes: ['Markets', 'Storytelling', 'Brand Narrative', 'Market Positioning', 'Go-to-Market', 'Audience']
   }
 };
 
