@@ -474,6 +474,9 @@ const MinimalistTileMatrix = ({
           height={TOTAL_SIZE}
           viewBox={`0 0 ${TOTAL_SIZE} ${TOTAL_SIZE}`}
         >
+          {/* Concentric tolerance expansion rings */}
+          {generateConcentricRects()}
+          
           {/* Diagonal lines */}
           {diagonalLines}
           
