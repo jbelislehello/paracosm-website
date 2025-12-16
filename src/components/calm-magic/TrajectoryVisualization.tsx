@@ -25,12 +25,13 @@ const QUADRANT_COLORS = {
   IN: { bg: 'hsla(142, 71%, 45%, 0.15)', border: 'hsla(142, 71%, 45%, 0.4)' }, // Green
 };
 
-// Ring colors matching RING_DEFINITIONS from ringToleranceSystem.ts
+// Ring colors matching RING_DEFINITIONS and Quality mapping
+// Ring 1=Calmness(Blue), Ring 2=Spaciousness(Purple), Ring 3=Openness(Green), Ring 4=Freedom(Amber)
 const RING_COLORS = {
-  1: { stroke: 'hsla(142, 71%, 45%, 0.6)', fill: 'hsla(142, 71%, 45%, 0.08)', label: 'Inner Core' },    // Green
-  2: { stroke: 'hsla(217, 91%, 60%, 0.6)', fill: 'hsla(217, 91%, 60%, 0.08)', label: 'Stretch' },       // Blue
-  3: { stroke: 'hsla(38, 92%, 50%, 0.6)', fill: 'hsla(38, 92%, 50%, 0.08)', label: 'Edge' },            // Amber
-  4: { stroke: 'hsla(280, 70%, 50%, 0.6)', fill: 'hsla(280, 70%, 50%, 0.08)', label: 'Integrator' },    // Purple
+  1: { stroke: 'hsla(210, 70%, 50%, 0.6)', fill: 'hsla(210, 70%, 50%, 0.08)', label: 'Calmness' },      // Blue
+  2: { stroke: 'hsla(270, 60%, 50%, 0.6)', fill: 'hsla(270, 60%, 50%, 0.08)', label: 'Spaciousness' },  // Purple
+  3: { stroke: 'hsla(142, 71%, 45%, 0.6)', fill: 'hsla(142, 71%, 45%, 0.08)', label: 'Openness' },      // Green
+  4: { stroke: 'hsla(45, 93%, 47%, 0.6)', fill: 'hsla(45, 93%, 47%, 0.08)', label: 'Freedom' },         // Amber
 };
 
 export const TrajectoryVisualization: React.FC<TrajectoryVisualizationProps> = ({
@@ -145,22 +146,22 @@ export const TrajectoryVisualization: React.FC<TrajectoryVisualizationProps> = (
         onClick={handleClick}
       >
         <defs>
-          {/* Gradients for ring fills */}
+          {/* Gradients for ring fills - matching Quality colors */}
           <radialGradient id="ring1-gradient" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="hsla(142, 71%, 45%, 0.15)" />
-            <stop offset="100%" stopColor="hsla(142, 71%, 45%, 0.03)" />
+            <stop offset="0%" stopColor="hsla(210, 70%, 50%, 0.15)" />
+            <stop offset="100%" stopColor="hsla(210, 70%, 50%, 0.03)" />
           </radialGradient>
           <radialGradient id="ring2-gradient" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="hsla(217, 91%, 60%, 0.12)" />
-            <stop offset="100%" stopColor="hsla(217, 91%, 60%, 0.02)" />
+            <stop offset="0%" stopColor="hsla(270, 60%, 50%, 0.12)" />
+            <stop offset="100%" stopColor="hsla(270, 60%, 50%, 0.02)" />
           </radialGradient>
           <radialGradient id="ring3-gradient" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="hsla(38, 92%, 50%, 0.10)" />
-            <stop offset="100%" stopColor="hsla(38, 92%, 50%, 0.02)" />
+            <stop offset="0%" stopColor="hsla(142, 71%, 45%, 0.10)" />
+            <stop offset="100%" stopColor="hsla(142, 71%, 45%, 0.02)" />
           </radialGradient>
           <radialGradient id="ring4-gradient" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="hsla(280, 70%, 50%, 0.08)" />
-            <stop offset="100%" stopColor="hsla(280, 70%, 50%, 0.01)" />
+            <stop offset="0%" stopColor="hsla(45, 93%, 47%, 0.08)" />
+            <stop offset="100%" stopColor="hsla(45, 93%, 47%, 0.01)" />
           </radialGradient>
         </defs>
 

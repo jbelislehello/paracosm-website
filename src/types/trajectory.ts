@@ -48,11 +48,11 @@ export interface TopologicalSignature {
 }
 
 export interface SeasonQualities {
-  vitality: number;      // LOVE/POLLENS - 0-100
-  spaciousness: number;  // MAGIC/NOEMS - 0-100
-  wholeness: number;     // CALM/POEMS - 0-100
-  openness: number;      // OPEN/TOTEMS - 0-100
-  expansion: number;     // FREE/ANTHEMS - 0-100
+  vitality: number;      // LOVE/POLLENS - 0-100 (foundational)
+  calmness: number;      // Ring 1: Inner Core - 0-100
+  spaciousness: number;  // Ring 2: Stretch Zone - 0-100
+  openness: number;      // Ring 3: Edge Zone - 0-100
+  freedom: number;       // Ring 4: Integrator - 0-100
 }
 
 export interface QuadrantPosition {
@@ -136,9 +136,9 @@ export const QUADRANT_LABELS = {
 export const SEASON_QUALITY_MAP: Record<Season, keyof SeasonQualities> = {
   POLLENS: 'vitality',
   NOEMS: 'spaciousness',
-  POEMS: 'wholeness',
+  POEMS: 'calmness',
   TOTEMS: 'openness',
-  ANTHEMS: 'expansion',
+  ANTHEMS: 'freedom',
 };
 
 export const QUALITY_LABELS: Record<keyof SeasonQualities, { 
@@ -146,10 +146,11 @@ export const QUALITY_LABELS: Record<keyof SeasonQualities, {
   icon: string; 
   color: string;
   season: Season;
+  ring?: 1 | 2 | 3 | 4;
 }> = {
   vitality: { label: 'Vitality', icon: '❤️', color: 'hsl(var(--chart-1))', season: 'POLLENS' },
-  spaciousness: { label: 'Spaciousness', icon: '✨', color: 'hsl(var(--chart-2))', season: 'NOEMS' },
-  wholeness: { label: 'Wholeness', icon: '🧘', color: 'hsl(var(--chart-3))', season: 'POEMS' },
-  openness: { label: 'Openness', icon: '🌿', color: 'hsl(var(--chart-4))', season: 'TOTEMS' },
-  expansion: { label: 'Expansion', icon: '🧠', color: 'hsl(var(--chart-5))', season: 'ANTHEMS' },
+  calmness: { label: 'Calmness', icon: '🧘', color: 'hsl(210 70% 50%)', season: 'POEMS', ring: 1 },
+  spaciousness: { label: 'Spaciousness', icon: '✨', color: 'hsl(270 60% 50%)', season: 'NOEMS', ring: 2 },
+  openness: { label: 'Openness', icon: '🌿', color: 'hsl(142 71% 45%)', season: 'TOTEMS', ring: 3 },
+  freedom: { label: 'Freedom', icon: '🦅', color: 'hsl(45 93% 47%)', season: 'ANTHEMS', ring: 4 },
 };
