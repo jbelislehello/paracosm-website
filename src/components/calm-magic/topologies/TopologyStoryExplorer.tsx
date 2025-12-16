@@ -569,21 +569,56 @@ ${story.invitation || ''}
           {/* LOADING STATE - Inside collapsible */}
           {isLoading && !error && (
             <div className="space-y-4">
+              {/* Concrete Insight Card Skeleton */}
               <ConcreteInsightCard insight={null} isLoading={true} />
+              
+              {/* Topological Analysis Skeleton */}
+              <div className="bg-muted/20 rounded-lg border border-border p-4 space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-violet-500/20 flex items-center justify-center">
+                    <Sparkles className="w-4 h-4 text-violet-500 animate-pulse" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="h-4 bg-muted/50 rounded animate-pulse w-48 mb-1" />
+                    <div className="h-3 bg-muted/30 rounded animate-pulse w-32" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3 mt-4">
+                  <div className="p-3 bg-muted/30 rounded-lg">
+                    <div className="h-3 bg-muted/50 rounded animate-pulse w-16 mb-2" />
+                    <div className="h-5 bg-muted/40 rounded animate-pulse w-full" />
+                  </div>
+                  <div className="p-3 bg-muted/30 rounded-lg">
+                    <div className="h-3 bg-muted/50 rounded animate-pulse w-16 mb-2" />
+                    <div className="h-5 bg-muted/40 rounded animate-pulse w-full" />
+                  </div>
+                </div>
+              </div>
+              
+              {/* Journey Insights Skeleton */}
               <div className="px-4 py-5 bg-gradient-to-br from-primary/5 via-background to-accent/5 border border-border rounded-lg">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                    <Sparkles className="w-4 h-4 text-primary animate-pulse" />
+                    <Map className="w-4 h-4 text-primary animate-pulse" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium">Uncovering hidden patterns...</p>
-                    <p className="text-xs text-muted-foreground">Reading the topology of your journey</p>
+                    <p className="text-sm font-medium">Analyzing your journey topology...</p>
+                    <p className="text-xs text-muted-foreground">Discovering patterns and insights</p>
                   </div>
                 </div>
                 <div className="space-y-3">
                   <div className="h-4 bg-muted/50 rounded animate-pulse w-full" />
+                  <div className="h-4 bg-muted/40 rounded animate-pulse w-11/12" />
                   <div className="h-4 bg-muted/30 rounded animate-pulse w-3/4" />
                   <div className="h-4 bg-muted/20 rounded animate-pulse w-1/2" />
+                </div>
+                
+                {/* Progress indicator */}
+                <div className="mt-4 pt-4 border-t border-border/50">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <RefreshCw className="w-3 h-3 animate-spin" />
+                    <span>Processing topological analysis...</span>
+                  </div>
                 </div>
               </div>
             </div>
