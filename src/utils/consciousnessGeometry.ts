@@ -438,6 +438,11 @@ export interface ConsciousnessGeometryExport {
   topologicalHandles: number;
   integrationStrength: number;
   fixedPointCount: number;
+  // Narratives
+  geometricNarrative: string;
+  recursiveNarrative: string;
+  thermodynamicNarrative: string;
+  integrationNarrative: string;
 }
 
 export function exportForOracle(geometry: ConsciousnessGeometry): ConsciousnessGeometryExport {
@@ -453,7 +458,12 @@ export function exportForOracle(geometry: ConsciousnessGeometry): ConsciousnessG
     fragmentationScore: parseFloat(geometry.fragmentationScore.toFixed(2)),
     topologicalHandles: geometry.topologicalHandles,
     integrationStrength: parseFloat(geometry.integrationStrength.toFixed(2)),
-    fixedPointCount: geometry.fixedPointsDetected.length
+    fixedPointCount: geometry.fixedPointsDetected.length,
+    // Narratives
+    geometricNarrative: geometry.geometricNarrative,
+    recursiveNarrative: geometry.recursiveNarrative,
+    thermodynamicNarrative: geometry.thermodynamicNarrative,
+    integrationNarrative: geometry.integrationNarrative
   };
 }
 

@@ -6,6 +6,7 @@ import { ConcreteInsightCard } from './ConcreteInsightCard';
 import { TopologicalInsightsPanel } from '@/components/calm-magic/TopologicalInsightsPanel';
 import { TopologicalMetricsPanel } from './TopologicalMetricsPanel';
 import { TopologicalSignature, QuadrantPosition } from '@/types/trajectory';
+import { ConsciousnessGeometryExport } from '@/utils/consciousnessGeometry';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
@@ -30,7 +31,10 @@ import {
   Circle,
   Eye,
   EyeOff,
-  Brain
+  Brain,
+  Hexagon,
+  Zap,
+  Activity
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -52,6 +56,9 @@ interface TopologyStoryExplorerProps {
   // Secrets reveal props
   secretsRevealed?: boolean;
   onToggleSecrets?: () => void;
+  // Consciousness geometry data
+  consciousnessGeometry?: ConsciousnessGeometryExport | null;
+  densityMap?: Map<string, number>;
 }
 
 // View significance explanations
@@ -420,7 +427,9 @@ export function TopologyStoryExplorer({
   onAnalyzeTopology,
   onApplyInsightToShadow,
   secretsRevealed = false,
-  onToggleSecrets
+  onToggleSecrets,
+  consciousnessGeometry,
+  densityMap
 }: TopologyStoryExplorerProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [revealedChapters, setRevealedChapters] = useState<Set<number>>(new Set());
@@ -558,7 +567,7 @@ ${story.invitation || ''}
       </CollapsibleTrigger>
 
       {/* Secrets Content - Collapsible */}
-      <CollapsibleContent className="overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up">
+      <CollapsibleContent className="overflow-visible data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up">
         <div className="mt-4 space-y-4 animate-fade-in">
           
           {/* ERROR STATE - Inside collapsible */}
@@ -646,7 +655,82 @@ ${story.invitation || ''}
                 visitedTiles={visitedTiles}
                 journeyPath={journeyPath}
                 currentUnlockedRing={currentUnlockedRing}
+                densityMap={densityMap}
               />
+              
+              {/* CONSCIOUSNESS GEOMETRY - The geometric reading, recursive mirror, etc. */}
+              {consciousnessGeometry && (
+                <div className="bg-gradient-to-br from-violet-500/10 via-background to-indigo-500/10 border border-violet-500/20 rounded-lg p-4 space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Brain className="w-5 h-5 text-violet-500" />
+                    <h3 className="text-sm font-semibold">Consciousness Geometry</h3>
+                    <Badge variant="outline" className="text-xs">
+                      {consciousnessGeometry.consciousnessState}
+                    </Badge>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {/* The Geometric Reading */}
+                    <div className="p-3 bg-background/50 rounded-lg border border-border/50">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Hexagon className="w-4 h-4 text-emerald-500" />
+                        <span className="text-xs font-medium text-emerald-600">The Geometric Reading</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {consciousnessGeometry.geometricNarrative}
+                      </p>
+                      <div className="mt-2 flex items-center gap-2">
+                        <Progress value={consciousnessGeometry.thresholdPercentage} className="flex-1 h-1.5" />
+                        <span className="text-xs text-muted-foreground">
+                          {consciousnessGeometry.thresholdPercentage}%
+                        </span>
+                      </div>
+                    </div>
+                    
+                    {/* The Recursive Mirror */}
+                    <div className="p-3 bg-background/50 rounded-lg border border-border/50">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Activity className="w-4 h-4 text-amber-500" />
+                        <span className="text-xs font-medium text-amber-600">The Recursive Mirror</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {consciousnessGeometry.recursiveNarrative}
+                      </p>
+                      <div className="mt-2 text-xs text-muted-foreground">
+                        Depth: {consciousnessGeometry.recursiveDepth} • {consciousnessGeometry.convergenceState}
+                      </div>
+                    </div>
+                    
+                    {/* The Thermodynamic Truth */}
+                    <div className="p-3 bg-background/50 rounded-lg border border-border/50">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Zap className="w-4 h-4 text-blue-500" />
+                        <span className="text-xs font-medium text-blue-600">The Thermodynamic Truth</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {consciousnessGeometry.thermodynamicNarrative}
+                      </p>
+                      <div className="mt-2 text-xs text-muted-foreground">
+                        Efficiency: {Math.round(consciousnessGeometry.thermodynamicEfficiency * 100)}%
+                      </div>
+                    </div>
+                    
+                    {/* The Integration Field */}
+                    <div className="p-3 bg-background/50 rounded-lg border border-border/50">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Layers className="w-4 h-4 text-rose-500" />
+                        <span className="text-xs font-medium text-rose-600">The Integration Field</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {consciousnessGeometry.integrationNarrative}
+                      </p>
+                      <div className="mt-2 text-xs text-muted-foreground">
+                        Handles: {consciousnessGeometry.topologicalHandles} • Integration: {Math.round(consciousnessGeometry.integrationStrength * 100)}%
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
               
               {/* TOPOLOGICAL INSIGHTS PANEL - Sentiment analysis and fragment breakdown */}
               {(topologicalSignature || isAnalyzingTopology) && (
@@ -699,8 +783,8 @@ ${story.invitation || ''}
 
                 {/* Content */}
                 <div className={cn(
-                  "overflow-hidden transition-all duration-300",
-                  isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"
+                  "transition-all duration-300",
+                  isExpanded ? "max-h-none opacity-100" : "max-h-0 opacity-0 overflow-hidden"
                 )}>
                   <div className="px-4 pb-4 space-y-4">
                     {/* WONDER INSIGHTS - New wonder-inducing format */}
