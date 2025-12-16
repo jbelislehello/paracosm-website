@@ -1,4 +1,4 @@
-import { ArrowUp, ArrowRight, Lock } from 'lucide-react';
+import { ArrowUp, ArrowRight, Sparkles } from 'lucide-react';
 import { WindowOfToleranceOverlay } from '@/components/journal/WindowOfToleranceOverlay';
 import { CycleNumber } from '@/types/journal-expansion';
 import { DetectedPattern, getPatternColor } from '@/utils/patternDetection';
@@ -9,8 +9,10 @@ import {
   calculateRingStates,
   getCurrentUnlockedRing,
   RingLevel,
-  RingState
+  RingState,
+  RING_PHILOSOPHY
 } from '@/utils/ringToleranceSystem';
+import { RingToleranceVisualization } from '@/components/calm-magic/RingToleranceVisualization';
 
 type BoardType = 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
 
@@ -278,108 +280,7 @@ const MinimalistTileMatrix = ({
 
   const { lines: diagonalLines, dots: tileDots } = generateDiagonals();
 
-  // Generate concentric rectangles for tolerance passes + 4th integrator ring
-  const generateConcentricRects = () => {
-    const elements: JSX.Element[] = [];
-    
-    // Get ring states for visual opacity based on unlock status
-    const getRingOpacity = (ring: number) => {
-      const state = ringStates.find(s => s.ring === ring);
-      if (!state) return 0.3;
-      if (state.patternDetected || state.status === 'unlocked') return 0.9;
-      if (state.status === 'in-progress') return 0.6;
-      return 0.3;
-    };
-    
-    // Ring rectangles (3 concentric)
-    const rectPasses = [
-      { inset: 2, ring: 1 }, // Inner Core (green)
-      { inset: 1, ring: 2 }, // Stretch Zone (blue)
-      { inset: 0, ring: 3 }, // Edge Zone (amber)
-    ];
-
-    rectPasses.forEach((pass) => {
-      const ringDef = RING_DEFINITIONS.find(r => r.ring === pass.ring);
-      if (!ringDef) return;
-      
-      const insetPx = pass.inset * (TILE_SIZE + GAP);
-      const size = TOTAL_SIZE - 2 * insetPx;
-      const opacity = getRingOpacity(pass.ring);
-      
-      elements.push(
-        <rect
-          key={`ring-${pass.ring}`}
-          x={insetPx}
-          y={insetPx}
-          width={size}
-          height={size}
-          fill="none"
-          stroke={ringDef.color}
-          strokeWidth="2.5"
-          strokeDasharray="8,4"
-          opacity={opacity}
-        />
-      );
-    });
-    
-    // Ring 4: Corner integrators (purple circles at corners)
-    const ring4Def = RING_DEFINITIONS.find(r => r.ring === 4);
-    const ring4Opacity = getRingOpacity(4);
-    if (ring4Def) {
-      const cornerPositions = [
-        { x: TILE_SIZE / 2, y: TILE_SIZE / 2 }, // top-left (0-0)
-        { x: TOTAL_SIZE - TILE_SIZE / 2, y: TILE_SIZE / 2 }, // top-right (0-7)
-        { x: TILE_SIZE / 2, y: TOTAL_SIZE - TILE_SIZE / 2 }, // bottom-left (7-0)
-        { x: TOTAL_SIZE - TILE_SIZE / 2, y: TOTAL_SIZE - TILE_SIZE / 2 }, // bottom-right (7-7)
-      ];
-      
-      cornerPositions.forEach((pos, idx) => {
-        elements.push(
-          <circle
-            key={`integrator-${idx}`}
-            cx={pos.x}
-            cy={pos.y}
-            r={TILE_SIZE / 2 + 6}
-            fill="none"
-            stroke={ring4Def.color}
-            strokeWidth="3"
-            strokeDasharray="6,3"
-            opacity={ring4Opacity}
-          />
-        );
-      });
-      
-      // Add diagonal lines connecting corners if ring 4 is in progress
-      if (ring4Opacity > 0.3) {
-        elements.push(
-          <line
-            key="integrator-diag-1"
-            x1={TILE_SIZE / 2}
-            y1={TILE_SIZE / 2}
-            x2={TOTAL_SIZE - TILE_SIZE / 2}
-            y2={TOTAL_SIZE - TILE_SIZE / 2}
-            stroke={ring4Def.color}
-            strokeWidth="1.5"
-            strokeDasharray="4,4"
-            opacity={ring4Opacity * 0.5}
-          />,
-          <line
-            key="integrator-diag-2"
-            x1={TOTAL_SIZE - TILE_SIZE / 2}
-            y1={TILE_SIZE / 2}
-            x2={TILE_SIZE / 2}
-            y2={TOTAL_SIZE - TILE_SIZE / 2}
-            stroke={ring4Def.color}
-            strokeWidth="1.5"
-            strokeDasharray="4,4"
-            opacity={ring4Opacity * 0.5}
-          />
-        );
-      }
-    }
-
-    return elements;
-  };
+  // generateConcentricRects removed - now using RingToleranceVisualization component
 
   // Generate pattern overlay (glow circles and connecting lines)
   const generatePatternOverlay = () => {
@@ -556,16 +457,24 @@ const MinimalistTileMatrix = ({
           </div>
         )}
 
-        {/* SVG Overlay for diagonals, concentric rectangles, journey path, and pattern overlay */}
+        {/* Enhanced Ring Tolerance Visualization with breathing, pulses, and philosophy */}
+        <div className="absolute inset-4 pointer-events-none" style={{ width: TOTAL_SIZE, height: TOTAL_SIZE }}>
+          <RingToleranceVisualization
+            ringStates={ringStates}
+            currentUnlockedRing={currentUnlockedRing}
+            totalSize={TOTAL_SIZE}
+            tileSize={TILE_SIZE}
+            gap={GAP}
+          />
+        </div>
+
+        {/* SVG Overlay for diagonals, journey path, and pattern overlay */}
         <svg 
           className="absolute inset-4 pointer-events-none"
           width={TOTAL_SIZE}
           height={TOTAL_SIZE}
           viewBox={`0 0 ${TOTAL_SIZE} ${TOTAL_SIZE}`}
         >
-          {/* Concentric tolerance expansion rings */}
-          {generateConcentricRects()}
-          
           {/* Diagonal lines */}
           {diagonalLines}
           
@@ -613,21 +522,28 @@ const MinimalistTileMatrix = ({
                   }}
                   disabled={isLocked}
                   className={`
-                    relative rounded-sm transition-all duration-200
-                    border border-dashed flex items-center justify-center
+                    relative rounded-sm transition-all duration-300
+                    border flex items-center justify-center
                     ${isLocked
-                      ? 'border-muted-foreground/20 bg-muted/20 cursor-not-allowed opacity-50'
+                      ? 'border-dashed border-muted-foreground/15 bg-muted/10 cursor-not-allowed animate-shimmer-locked'
                       : selected 
                         ? 'border-solid ring-2 ring-offset-1' 
                         : visited
                           ? 'border-solid border-foreground/50 bg-foreground/10'
-                          : 'border-muted-foreground/30 hover:border-foreground/50 hover:bg-muted/30'
+                          : 'border-dashed border-muted-foreground/30 hover:border-foreground/50 hover:bg-muted/30'
                     }
                   `}
                   style={{ 
                     width: TILE_SIZE, 
                     height: TILE_SIZE,
-                    ...(isLocked ? {} : selected ? {
+                    ...(isLocked ? {
+                      // Subtle shimmer effect for locked tiles
+                      background: `linear-gradient(90deg, 
+                        hsl(var(--muted) / 0.1), 
+                        hsl(var(--muted) / 0.15), 
+                        hsl(var(--muted) / 0.1))`,
+                      backgroundSize: '200% 100%',
+                    } : selected ? {
                       borderColor: colors.border,
                       backgroundColor: colors.bg,
                       boxShadow: `0 0 0 2px ${colors.ring}`,
@@ -637,13 +553,13 @@ const MinimalistTileMatrix = ({
                     } : {})
                   }}
                   title={isLocked 
-                    ? `🔒 Expand your window of tolerance to access Ring ${tileRing}` 
+                    ? `✨ ${RING_PHILOSOPHY[tileRing as RingLevel]?.invitation || 'Expand your window to explore'}`
                     : `${rowInfo.letter} × ${colInfo.letter}: ${rowInfo.name} × ${colInfo.name}`
                   }
                 >
-                  {/* Lock icon for locked tiles */}
+                  {/* Sparkle icon for locked tiles (softer than lock) */}
                   {isLocked ? (
-                    <Lock className="w-3 h-3 text-muted-foreground/50" />
+                    <Sparkles className="w-3 h-3 text-muted-foreground/30" />
                   ) : (
                     /* Tile label */
                     <span 
