@@ -24,10 +24,43 @@ interface ConcreteInsightCardProps {
 export function ConcreteInsightCard({ insight, isLoading }: ConcreteInsightCardProps) {
   if (isLoading) {
     return (
-      <div className="bg-gradient-to-r from-primary/10 via-background to-accent/10 rounded-xl border border-primary/20 p-4 space-y-3 animate-pulse">
-        <div className="h-5 bg-muted/50 rounded w-2/3" />
-        <div className="h-4 bg-muted/30 rounded w-1/2" />
-        <div className="h-12 bg-muted/30 rounded w-full" />
+      <div className="bg-gradient-to-r from-primary/10 via-background to-accent/10 rounded-xl border border-primary/20 overflow-hidden">
+        {/* Header skeleton */}
+        <div className="bg-primary/20 px-4 py-3 border-b border-primary/20">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-4 h-4 rounded bg-primary/30 animate-pulse" />
+            <div className="h-3 w-24 bg-primary/30 rounded animate-pulse" />
+          </div>
+          <div className="space-y-2">
+            <div className="h-5 bg-primary/30 rounded animate-pulse w-full" />
+            <div className="h-5 bg-primary/20 rounded animate-pulse w-3/4" />
+          </div>
+        </div>
+        
+        {/* Content skeleton */}
+        <div className="p-4 space-y-3">
+          {/* View purpose skeleton */}
+          <div className="flex items-start gap-2">
+            <div className="w-4 h-4 rounded bg-muted/50 animate-pulse shrink-0" />
+            <div className="flex-1 space-y-2">
+              <div className="h-4 bg-muted/40 rounded animate-pulse w-full" />
+              <div className="h-4 bg-muted/30 rounded animate-pulse w-4/5" />
+            </div>
+          </div>
+          
+          {/* Actionable insight skeleton */}
+          <div className="p-3 bg-primary/5 border border-primary/10 rounded-lg space-y-2">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded bg-primary/30 animate-pulse" />
+              <div className="h-3 w-20 bg-primary/30 rounded animate-pulse" />
+            </div>
+            <div className="space-y-2">
+              <div className="h-4 bg-muted/40 rounded animate-pulse w-full" />
+              <div className="h-4 bg-muted/30 rounded animate-pulse w-5/6" />
+              <div className="h-4 bg-muted/20 rounded animate-pulse w-2/3" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
