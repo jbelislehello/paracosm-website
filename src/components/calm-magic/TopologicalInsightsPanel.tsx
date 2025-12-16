@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Skeleton } from '@/components/ui/skeleton';
-import { TopologicalSignature, PolenSentiment, QuadrantThemes } from '@/types/trajectory';
+import { TopologicalSignature, PolenSentiment, QuadrantThemes, QuadrantPosition } from '@/types/trajectory';
 import { 
   RadarChart, 
   PolarGrid, 
@@ -29,7 +29,9 @@ import {
   Minus,
   ThumbsUp,
   ThumbsDown,
-  HelpCircle
+  HelpCircle,
+  Target,
+  ArrowRight
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
@@ -38,7 +40,17 @@ interface TopologicalInsightsPanelProps {
   signature: TopologicalSignature | null;
   isAnalyzing?: boolean;
   onClose?: () => void;
+  onApplyInsightToShadow?: (position: QuadrantPosition, insightNote: string) => void;
+  onSuggestProphecy?: (position: QuadrantPosition, suggestion: string) => void;
 }
+
+// Helper to get quadrant label from position
+const getQuadrantFromPosition = (pos: QuadrantPosition): 'SN' | 'IN' | 'IM' | 'SM' => {
+  if (pos.x >= 0 && pos.y >= 0) return 'SN';
+  if (pos.x < 0 && pos.y >= 0) return 'IN';
+  if (pos.x < 0 && pos.y < 0) return 'IM';
+  return 'SM';
+};
 
 // Theme colors matching quadrant philosophy
 const THEME_COLORS: Record<keyof QuadrantThemes, string> = {
@@ -307,7 +319,9 @@ const SentimentAccordion: React.FC<{ sentiments?: PolenSentiment[] }> = ({ senti
 export const TopologicalInsightsPanel: React.FC<TopologicalInsightsPanelProps> = ({
   signature,
   isAnalyzing,
-  onClose
+  onClose,
+  onApplyInsightToShadow,
+  onSuggestProphecy
 }) => {
   // Loading state
   if (isAnalyzing) {
@@ -416,6 +430,52 @@ export const TopologicalInsightsPanel: React.FC<TopologicalInsightsPanelProps> =
           </div>
         </div>
       </div>
+
+      {/* Apply Insight Actions */}
+      {signature.inferredPosition && (onApplyInsightToShadow || onSuggestProphecy) && (
+        <Card className="bg-gradient-to-r from-primary/5 to-purple-500/5 border-primary/20">
+          <CardContent className="p-3 space-y-2">
+            <p className="text-[10px] font-medium text-muted-foreground">Apply Insight</p>
+            
+            {/* Apply to Shadow */}
+            {onApplyInsightToShadow && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full justify-start h-8 text-xs"
+                onClick={() => onApplyInsightToShadow(
+                  signature.inferredPosition!,
+                  signature.aiNudge || `AI detected ${signature.inferredQuadrant} tendency`
+                )}
+              >
+                <Target className="w-3 h-3 mr-2" />
+                Apply to Shadow
+                <Badge variant="secondary" className="ml-auto font-mono text-[10px]">
+                  {signature.inferredQuadrant || getQuadrantFromPosition(signature.inferredPosition!)}
+                </Badge>
+              </Button>
+            )}
+            
+            {/* Suggest as Prophecy (only if divergent/contradictory) */}
+            {onSuggestProphecy && 
+             (signature.dissonanceType === 'divergent' || signature.dissonanceType === 'contradictory') && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="w-full justify-start h-8 text-xs text-primary hover:text-primary"
+                onClick={() => onSuggestProphecy(
+                  signature.inferredPosition!,
+                  signature.aiNudge || 'Journey patterns suggest this direction'
+                )}
+              >
+                <Sparkles className="w-3 h-3 mr-2" />
+                Update Prophecy to Match Patterns
+                <ArrowRight className="w-3 h-3 ml-auto" />
+              </Button>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Theme Distribution Radar */}
       <Card>

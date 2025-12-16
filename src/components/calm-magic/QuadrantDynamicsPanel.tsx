@@ -33,6 +33,8 @@ interface QuadrantDynamicsPanelProps {
   onApplyShadowNudge?: (position: QuadrantPosition, feltState: FeltState, note: string | null) => void;
   onResetShadowNudge?: () => void;
   onAnalyzeJourney?: () => void;
+  onApplyInsightToShadow?: (position: QuadrantPosition, insightNote: string) => void;
+  onSuggestProphecyFromInsight?: (position: QuadrantPosition, suggestion: string) => void;
 }
 
 export const QuadrantDynamicsPanel: React.FC<QuadrantDynamicsPanelProps> = ({
@@ -53,6 +55,8 @@ export const QuadrantDynamicsPanel: React.FC<QuadrantDynamicsPanelProps> = ({
   onApplyShadowNudge,
   onResetShadowNudge,
   onAnalyzeJourney,
+  onApplyInsightToShadow,
+  onSuggestProphecyFromInsight,
 }) => {
   const [showProphecyModal, setShowProphecyModal] = useState(false);
   const [showNudgePanel, setShowNudgePanel] = useState(false);
@@ -246,6 +250,8 @@ export const QuadrantDynamicsPanel: React.FC<QuadrantDynamicsPanelProps> = ({
               <TopologicalInsightsPanel
                 signature={topologicalSignature ?? null}
                 isAnalyzing={isAnalyzingTopology}
+                onApplyInsightToShadow={onApplyInsightToShadow}
+                onSuggestProphecy={onSuggestProphecyFromInsight}
               />
             </CardContent>
           </CollapsibleContent>
