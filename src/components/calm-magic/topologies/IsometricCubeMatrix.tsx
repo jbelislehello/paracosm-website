@@ -246,18 +246,18 @@ export function IsometricCubeMatrix({
         const { row, col, isVisited, isSelected, isAccessible, ring, density, stepNumber } = state;
         const pos = getInterpolatedPosition(row, col, fold, density);
         
-        // Ring-based brightness (dark center to light edges)
-        const getRingBrightness = (ringLevel: RingLevel): number => {
+        // Ring-based HSL colors (matching RING_DEFINITIONS)
+        const getRingHSL = (ringLevel: RingLevel): { h: number; s: number; b: number } => {
           switch (ringLevel) {
-            case 1: return 18;  // Inner Core - very dark
-            case 2: return 32;  // Stretch - dark gray
-            case 3: return 48;  // Edge - medium gray
-            case 4: return 65;  // Integrator - light gray
-            default: return 30;
+            case 1: return { h: 142, s: 35, b: 28 };  // Green - Inner Core
+            case 2: return { h: 217, s: 45, b: 38 };  // Blue - Stretch
+            case 3: return { h: 38, s: 50, b: 45 };   // Amber - Edge
+            case 4: return { h: 280, s: 40, b: 50 };  // Purple - Integrator
+            default: return { h: 0, s: 0, b: 30 };
           }
         };
         
-        const ringBrightness = getRingBrightness(ring);
+        const ringHSL = getRingHSL(ring);
         
         // Elevation for selected/visited cubes - sitting ON the ground
         let elevation = 0;
@@ -285,10 +285,10 @@ export function IsometricCubeMatrix({
         let strokeAlpha: number;
 
         if (!isAccessible) {
-          // Locked - very faint gray based on ring
-          topH = 0; topS = 0; topB = ringBrightness * 0.4;
-          frontH = 0; frontS = 0; frontB = ringBrightness * 0.35;
-          sideH = 0; sideS = 0; sideB = ringBrightness * 0.3;
+          // Locked - desaturated version of ring color
+          topH = ringHSL.h; topS = ringHSL.s * 0.2; topB = ringHSL.b * 0.4;
+          frontH = ringHSL.h; frontS = ringHSL.s * 0.15; frontB = ringHSL.b * 0.35;
+          sideH = ringHSL.h; sideS = ringHSL.s * 0.1; sideB = ringHSL.b * 0.3;
           strokeAlpha = 0.15;
         } else if (isSelected) {
           // Selected - bright glow with season hue
@@ -306,17 +306,17 @@ export function IsometricCubeMatrix({
           p.box(size * 1.15);
           p.pop();
         } else if (isVisited) {
-          // Visited - season color accent on ring base
-          topH = hue; topS = 50; topB = ringBrightness + 35;
-          frontH = hue; frontS = 55; frontB = ringBrightness + 25;
-          sideH = hue; sideS = 60; sideB = ringBrightness + 15;
+          // Visited - blend ring color with season hue
+          topH = (ringHSL.h + hue) / 2; topS = ringHSL.s + 20; topB = ringHSL.b + 35;
+          frontH = (ringHSL.h + hue) / 2; frontS = ringHSL.s + 15; frontB = ringHSL.b + 25;
+          sideH = (ringHSL.h + hue) / 2; sideS = ringHSL.s + 10; sideB = ringHSL.b + 15;
           strokeAlpha = 0.7;
         } else {
-          // Accessible but not visited - gray based on ring level
-          topH = 0; topS = 0; topB = ringBrightness + 8;
-          frontH = 0; frontS = 0; frontB = ringBrightness + 3;
-          sideH = 0; sideS = 0; sideB = ringBrightness;
-          strokeAlpha = 0.4;
+          // Accessible but not visited - ring color at base saturation
+          topH = ringHSL.h; topS = ringHSL.s; topB = ringHSL.b + 12;
+          frontH = ringHSL.h; frontS = ringHSL.s * 0.9; frontB = ringHSL.b + 5;
+          sideH = ringHSL.h; sideS = ringHSL.s * 0.8; sideB = ringHSL.b;
+          strokeAlpha = 0.5;
         }
 
         // Draw cube faces

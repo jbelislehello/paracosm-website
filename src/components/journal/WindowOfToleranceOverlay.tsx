@@ -56,11 +56,11 @@ export const WindowOfToleranceOverlay: React.FC<WindowOfToleranceOverlayProps> =
   const getZoneColor = (cycle: CycleNumber, isCurrentCycle: boolean) => {
     if (cycle > cycleNumber) return 'hsl(var(--muted) / 0.05)';
     
-    const baseOpacity = isCurrentCycle ? 0.15 : 0.08;
+    const baseOpacity = isCurrentCycle ? 0.25 : 0.15;
     const ringDef = RING_DEFINITIONS.find(r => r.ring === cycleToRing(cycle));
     if (!ringDef) return `hsl(var(--muted) / ${baseOpacity})`;
     
-    // Extract HSL components and apply opacity
+    // Extract HSL components and apply opacity - more visible fills
     return ringDef.color.replace(')', ` / ${baseOpacity})`).replace('hsl(', 'hsla(');
   };
 
@@ -70,7 +70,8 @@ export const WindowOfToleranceOverlay: React.FC<WindowOfToleranceOverlayProps> =
     const ringDef = RING_DEFINITIONS.find(r => r.ring === cycleToRing(cycle));
     if (!ringDef) return 'hsl(var(--muted-foreground) / 0.3)';
     
-    const opacity = cycle === cycleNumber ? 0.7 : 0.4;
+    // More prominent borders
+    const opacity = cycle === cycleNumber ? 0.9 : 0.6;
     return ringDef.color.replace(')', ` / ${opacity})`).replace('hsl(', 'hsla(');
   };
 
@@ -133,7 +134,7 @@ export const WindowOfToleranceOverlay: React.FC<WindowOfToleranceOverlayProps> =
               className={isCurrentCycle ? 'animate-ring-breathe' : ''}
             />
             
-            {/* Ring border with glow */}
+            {/* Ring border with glow - more prominent */}
             <rect
               x={center - size / 2}
               y={center - size / 2}
@@ -141,12 +142,26 @@ export const WindowOfToleranceOverlay: React.FC<WindowOfToleranceOverlayProps> =
               height={size}
               fill="none"
               stroke={getZoneBorderColor(cycle)}
-              strokeWidth={isCurrentCycle ? 0.6 : 0.35}
+              strokeWidth={isCurrentCycle ? 1.2 : 0.7}
               strokeDasharray={isUnlocked ? 'none' : '2,2'}
               rx="1"
               filter={isUnlocked ? `url(#glow-filter-${cycle})` : undefined}
               className={isCurrentCycle ? 'animate-ring-breathe' : isNextRing ? 'animate-invitation-pulse' : ''}
             />
+            
+            {/* Ring label on right side */}
+            {isUnlocked && (
+              <text
+                x={center + size / 2 + 2}
+                y={center - size / 2 + 3}
+                fontSize="2"
+                fill={getRingColor(cycle)}
+                opacity="0.8"
+                fontWeight="500"
+              >
+                {RING_DEFINITIONS.find(r => r.ring === cycleToRing(cycle))?.name || ''}
+              </text>
+            )}
             
             {/* Ring icon and label in corner */}
             <g transform={`translate(${center - size / 2 + 1.5}, ${center - size / 2 + 1.5})`}>
