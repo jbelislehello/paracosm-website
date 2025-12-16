@@ -43,6 +43,8 @@ import ProjectTitleBar from '@/components/calm-magic/ProjectTitleBar';
 import PatternJournal from '@/components/calm-magic/PatternJournal';
 import { DetectedPattern, PatternHistoryEntry } from '@/utils/patternDetection';
 import { TopologiesTab } from '@/components/calm-magic/topologies/TopologiesTab';
+import { TopologyInsightIndicator } from '@/components/calm-magic/topologies/TopologyInsightIndicator';
+import { useTopologyInsight } from '@/hooks/useTopologyInsight';
 import { ManifoldSeason } from '@/utils/torusManifoldMath';
 import { getCurrentUnlockedRing } from '@/utils/ringToleranceSystem';
 import { getHexagramDataForSummary } from '@/components/calm-magic/topologies/TopologicalMetricsPanel';
@@ -135,9 +137,12 @@ const CalmMagicBoard = () => {
   const [patternHistory, setPatternHistory] = useState<PatternHistoryEntry[]>([]);
   const [highlightedPattern, setHighlightedPattern] = useState<DetectedPattern | null>(null);
   const [cleanMatrixView, setCleanMatrixView] = useState(false);
-  
+  const [insightIndicatorDismissed, setInsightIndicatorDismissed] = useState(false);
   
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  
+  // Topology insight hook for floating indicator
+  const { story: topologyStory, fetchStory: fetchTopologyStory } = useTopologyInsight();
   
   const isMobile = useIsMobile();
   
@@ -360,6 +365,45 @@ const CalmMagicBoard = () => {
       toast.info('Cleaned up corrupted journey data');
     }
   }, []); // Run once on mount
+
+  // Fetch topology story for floating indicator (when not on topologies tab)
+  useEffect(() => {
+    if (activeView !== 'topologies' && visitedTiles.size > 0 && !topologyStory) {
+      // Create density map for fetch
+      const densityMap = new Map<string, number>();
+      polenEntries.forEach(entry => {
+        if (entry.tile_id !== null && entry.tile_id !== undefined) {
+          const row = Math.floor(entry.tile_id / 8);
+          const col = entry.tile_id % 8;
+          const key = `${row},${col}`;
+          densityMap.set(key, (densityMap.get(key) || 0) + 1);
+        }
+      });
+      
+      fetchTopologyStory({
+        viewMode: 'isometric',
+        journeyPath,
+        visitedTiles,
+        densityMap,
+        shadowPosition,
+        higherSelfPosition,
+        currentSeason,
+        currentUnlockedRing,
+        currentTileRow: selectedTile?.row,
+        currentTileCol: selectedTile?.col,
+        completedSeasons,
+        prdId,
+        consciousnessGeometry
+      });
+    }
+  }, [visitedTiles.size, activeView]); // Only refetch when tiles change or view changes
+
+  // Reset indicator dismissed state when switching to topologies tab
+  useEffect(() => {
+    if (activeView === 'topologies') {
+      setInsightIndicatorDismissed(false);
+    }
+  }, [activeView]);
 
   useEffect(() => {
     checkAuth();
@@ -1083,9 +1127,16 @@ const CalmMagicBoard = () => {
               )}
               PRD Assembly
             </TabsTrigger>
-            <TabsTrigger value="topologies" className="text-xs gap-1.5 px-3">
-              <Globe className="w-3.5 h-3.5" />
+            <TabsTrigger value="topologies" className="text-xs gap-1.5 px-3 relative">
+              {topologyStory && visitedTiles.size > 0 ? (
+                <Sparkles className="w-3.5 h-3.5 text-violet-500" />
+              ) : (
+                <Globe className="w-3.5 h-3.5" />
+              )}
               Topologies
+              {topologyStory && activeView !== 'topologies' && (
+                <span className="absolute -top-1 -right-1 w-2 h-2 bg-violet-500 rounded-full animate-pulse" />
+              )}
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -1143,9 +1194,16 @@ const CalmMagicBoard = () => {
               )}
               <span className="hidden xs:inline">PRD</span>
             </TabsTrigger>
-            <TabsTrigger value="topologies" className="text-[10px] gap-1 px-1.5">
-              <Globe className="w-3 h-3" />
+            <TabsTrigger value="topologies" className="text-[10px] gap-1 px-1.5 relative">
+              {topologyStory && visitedTiles.size > 0 ? (
+                <Sparkles className="w-3 h-3 text-violet-500" />
+              ) : (
+                <Globe className="w-3 h-3" />
+              )}
               <span className="hidden xs:inline">Torus</span>
+              {topologyStory && activeView !== 'topologies' && (
+                <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-violet-500 rounded-full animate-pulse" />
+              )}
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -1437,6 +1495,17 @@ const CalmMagicBoard = () => {
       <InsightConnectionsGraph
         isOpen={showInsightsGraph}
         onClose={() => setShowInsightsGraph(false)}
+      />
+
+      {/* Floating Topology Insight Indicator (when not on Topologies tab) */}
+      <TopologyInsightIndicator
+        story={topologyStory}
+        isVisible={activeView !== 'topologies' && visitedTiles.size > 0 && !insightIndicatorDismissed}
+        onNavigateToTopologies={() => {
+          setActiveView('topologies');
+          setInsightIndicatorDismissed(true);
+        }}
+        onDismiss={() => setInsightIndicatorDismissed(true)}
       />
 
       {/* Assistant Chat */}

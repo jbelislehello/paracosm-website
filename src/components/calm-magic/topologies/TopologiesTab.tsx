@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { ManifoldSeason } from '@/utils/torusManifoldMath';
 import { IsometricCubeMatrix } from './IsometricCubeMatrix';
 import { DoubleDiamondLayout } from './DoubleDiamondLayout';
@@ -25,6 +25,7 @@ import {
   Sparkles,
   Loader2
 } from 'lucide-react';
+import { TopologyHeaderInsight } from './TopologyHeaderInsight';
 
 interface TopologiesTabProps {
   row: number;
@@ -82,6 +83,9 @@ export function TopologiesTab({
   const [isFullscreen, setIsFullscreen] = useState(false);
   // Start revealed if user already has visited tiles
   const [secretsRevealed, setSecretsRevealed] = useState(visitedTiles.size > 0);
+  
+  // Ref for scrolling to details
+  const detailsRef = useRef<HTMLDivElement>(null);
 
   const { story, isLoading, error, fetchStory, clearStory } = useTopologyInsight();
 
@@ -119,10 +123,22 @@ export function TopologiesTab({
     }
   }, [viewMode, visitedTiles.size]);
 
-  // Auto-reveal accordion when story loads successfully
+  // Auto-reveal accordion when story loads successfully + show toast
   useEffect(() => {
     if (story && !isLoading && !error) {
       setSecretsRevealed(true);
+      // Show toast notification
+      const insightCount = (story.chapters?.length || 0) + 
+        (story.concreteInsight ? 1 : 0) + 
+        (story.wonderInsight ? 1 : 0);
+      if (insightCount > 0) {
+        toast.success('🔮 Topology insights revealed', {
+          description: story.concreteInsight?.actionableInsight || 
+            story.wonderInsight?.opening_wonder?.slice(0, 60) + '...' ||
+            `${insightCount} insights from your journey`,
+          duration: 5000,
+        });
+      }
     }
   }, [story, isLoading, error]);
 
@@ -213,10 +229,18 @@ export function TopologiesTab({
     ];
   };
 
-  
+  const scrollToDetails = useCallback(() => {
+    detailsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, []);
 
   return (
     <div className={`flex flex-col gap-3 ${isFullscreen ? 'fixed inset-0 z-50 bg-background p-4' : ''}`}>
+      {/* Header Insight Preview - visible above fold */}
+      <TopologyHeaderInsight 
+        story={story}
+        isLoading={isLoading}
+        onScrollToDetails={scrollToDetails}
+      />
       {/* Controls Bar */}
       <div className="flex items-center justify-between gap-4 px-2 flex-wrap">
         {/* View Mode Selector */}
@@ -284,23 +308,25 @@ export function TopologiesTab({
       </div>
 
       {/* Journey Insights & Story Explorer */}
-      <TopologyStoryExplorer
-        story={story}
-        isLoading={isLoading}
-        error={error}
-        onRegenerate={handleFetchStory}
-        onSaveToJournal={handleSaveToJournal}
-        viewMode={viewMode}
-        visitedTiles={visitedTiles}
-        currentUnlockedRing={currentUnlockedRing}
-        journeyPath={journeyPath}
-        topologicalSignature={topologicalSignature}
-        isAnalyzingTopology={isAnalyzingTopology}
-        onAnalyzeTopology={onAnalyzeTopology}
-        onApplyInsightToShadow={onApplyInsightToShadow}
-        secretsRevealed={secretsRevealed}
-        onToggleSecrets={() => setSecretsRevealed(!secretsRevealed)}
-      />
+      <div ref={detailsRef}>
+        <TopologyStoryExplorer
+          story={story}
+          isLoading={isLoading}
+          error={error}
+          onRegenerate={handleFetchStory}
+          onSaveToJournal={handleSaveToJournal}
+          viewMode={viewMode}
+          visitedTiles={visitedTiles}
+          currentUnlockedRing={currentUnlockedRing}
+          journeyPath={journeyPath}
+          topologicalSignature={topologicalSignature}
+          isAnalyzingTopology={isAnalyzingTopology}
+          onAnalyzeTopology={onAnalyzeTopology}
+          onApplyInsightToShadow={onApplyInsightToShadow}
+          secretsRevealed={secretsRevealed}
+          onToggleSecrets={() => setSecretsRevealed(!secretsRevealed)}
+        />
+      </div>
 
       {/* Legend */}
       <div className="flex items-center gap-6 px-2 text-xs text-muted-foreground flex-wrap">
