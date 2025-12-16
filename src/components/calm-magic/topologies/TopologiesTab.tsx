@@ -1,13 +1,6 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Maximize2 } from 'lucide-react';
-import { TileTorusPosition } from './TileTorusPosition';
-import { InformationFluxDiagram } from './InformationFluxDiagram';
-import { ToroidalCoordinates } from './ToroidalCoordinates';
-import { TorusManifoldP5 } from './TorusManifoldP5';
-import { ManifoldSeason, columnToTheta, rowSeasonToPhi } from '@/utils/torusManifoldMath';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { ManifoldSeason } from '@/utils/torusManifoldMath';
+import { EnhancedManifoldView } from './EnhancedManifoldView';
+import { RingLevel } from '@/utils/ringToleranceSystem';
 
 interface TopologiesTabProps {
   row: number;
@@ -19,7 +12,9 @@ interface TopologiesTabProps {
   journeyPath?: Array<{ row: number; col: number }>;
   polenDensity?: number;
   visitedTiles?: Set<string>;
+  currentUnlockedRing?: RingLevel;
   onTileSelect?: (row: number, col: number) => void;
+  densityMap?: Map<string, number>;
 }
 
 export function TopologiesTab({
@@ -32,95 +27,27 @@ export function TopologiesTab({
   journeyPath = [],
   polenDensity = 0,
   visitedTiles = new Set(),
-  onTileSelect
+  currentUnlockedRing = 1,
+  onTileSelect,
+  densityMap = new Map()
 }: TopologiesTabProps) {
-  const [showFullManifold, setShowFullManifold] = useState(false);
-  
-  const theta = columnToTheta(col);
-  const phi = rowSeasonToPhi(row, season);
-  
   // Convert journey path to include seasons
   const journeyWithSeasons = journeyPath.map(p => ({
     ...p,
     season // For now, assume same season - can be enhanced
   }));
   
-  const handleTileClick = (newRow: number, newCol: number) => {
-    if (onTileSelect) {
-      onTileSelect(newRow, newCol);
-      setShowFullManifold(false);
-    }
-  };
-  
   return (
-    <ScrollArea className="flex-1">
-      <div className="p-5 space-y-4">
-        {/* 2.5D Torus Position + Coordinates side by side on larger screens */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <TileTorusPosition
-            row={row}
-            col={col}
-            season={season}
-            journeyPath={journeyWithSeasons}
-            rowLabel={rowLabel}
-            colLabel={colLabel}
-          />
-          
-          <ToroidalCoordinates
-            row={row}
-            col={col}
-            season={season}
-            tileName={tileName}
-            rowLabel={rowLabel}
-            colLabel={colLabel}
-            polenDensity={polenDensity}
-          />
-        </div>
-        
-        {/* Information Flux Diagram */}
-        <InformationFluxDiagram
-          season={season}
-          currentPosition={{ theta, phi }}
-        />
-        
-        {/* Actions */}
-        <div className="flex gap-2 justify-center pt-2">
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={() => setShowFullManifold(true)}
-            className="text-xs"
-          >
-            <Maximize2 className="w-3 h-3 mr-1" />
-            Full 3D Manifold
-          </Button>
-        </div>
-        
-        {/* Legend */}
-        <div className="p-3 rounded-lg bg-muted/30 border border-border/30 text-[10px] text-muted-foreground">
-          <p className="font-medium mb-1">Torus Mapping:</p>
-          <ul className="space-y-0.5 list-disc list-inside">
-            <li>θ (toroidal): Column position around the central hole</li>
-            <li>φ (poloidal): Row × Season position around the tube</li>
-            <li>Positive K: Outer convex edge (expansion)</li>
-            <li>Negative K: Inner saddle edge (compression)</li>
-          </ul>
-        </div>
-      </div>
-      
-      {/* Full Manifold Dialog */}
-      <Dialog open={showFullManifold} onOpenChange={setShowFullManifold}>
-        <DialogContent className="max-w-5xl h-[85vh] p-0 overflow-hidden">
-          <TorusManifoldP5
-            selectedTile={{ row, col }}
-            season={season}
-            visitedTiles={visitedTiles}
-            journeyPath={journeyWithSeasons}
-            onTileClick={handleTileClick}
-            onClose={() => setShowFullManifold(false)}
-          />
-        </DialogContent>
-      </Dialog>
-    </ScrollArea>
+    <div className="w-full h-full min-h-[500px]">
+      <EnhancedManifoldView
+        selectedTile={{ row, col }}
+        season={season}
+        visitedTiles={visitedTiles}
+        journeyPath={journeyWithSeasons}
+        currentUnlockedRing={currentUnlockedRing}
+        onTileClick={onTileSelect}
+        densityMap={densityMap}
+      />
+    </div>
   );
 }
