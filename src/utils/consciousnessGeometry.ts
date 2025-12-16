@@ -466,7 +466,7 @@ function calculateBettiNumbers(visitedTiles: Set<string>): { beta0: number; beta
   const grid: boolean[][] = Array(gridSize).fill(null).map(() => Array(gridSize).fill(false));
   
   visitedTiles.forEach(key => {
-    const [r, c] = key.split(',').map(Number);
+    const [r, c] = key.split('-').map(Number);
     if (r >= 0 && r < gridSize && c >= 0 && c < gridSize) {
       grid[r][c] = true;
     }
@@ -480,7 +480,7 @@ function calculateBettiNumbers(visitedTiles: Set<string>): { beta0: number; beta
     const stack = [[startR, startC]];
     while (stack.length > 0) {
       const [r, c] = stack.pop()!;
-      const key = `${r},${c}`;
+      const key = `${r}-${c}`;
       if (componentVisited.has(key) || !grid[r]?.[c]) continue;
       componentVisited.add(key);
       [[0, 1], [0, -1], [1, 0], [-1, 0]].forEach(([dr, dc]) => {
@@ -493,8 +493,9 @@ function calculateBettiNumbers(visitedTiles: Set<string>): { beta0: number; beta
   };
   
   visitedTiles.forEach(key => {
-    if (!componentVisited.has(key)) {
-      const [r, c] = key.split(',').map(Number);
+    const dashKey = key.includes('-') ? key : key.replace(',', '-');
+    if (!componentVisited.has(dashKey)) {
+      const [r, c] = key.split('-').map(Number);
       if (!isNaN(r) && !isNaN(c)) {
         floodFill(r, c);
         beta0++;
@@ -508,10 +509,10 @@ function calculateBettiNumbers(visitedTiles: Set<string>): { beta0: number; beta
   let faces = 0;
   
   visitedTiles.forEach(key => {
-    const [r, c] = key.split(',').map(Number);
+    const [r, c] = key.split('-').map(Number);
     if (!isNaN(r) && !isNaN(c)) {
-      if (visitedTiles.has(`${r},${c + 1}`)) edges++;
-      if (visitedTiles.has(`${r + 1},${c}`)) edges++;
+      if (visitedTiles.has(`${r}-${c + 1}`)) edges++;
+      if (visitedTiles.has(`${r + 1}-${c}`)) edges++;
     }
   });
   

@@ -203,7 +203,7 @@ function JourneyInterpretationSection({
   };
   
   visitedTiles.forEach(key => {
-    const [r, c] = key.split(',').map(Number);
+    const [r, c] = key.split('-').map(Number);
     const distFromCenter = Math.max(Math.abs(r - 3.5), Math.abs(c - 3.5));
     if (distFromCenter <= 1.5) ringProgress[1].visited++;
     else if (distFromCenter <= 2.5) ringProgress[2].visited++;
