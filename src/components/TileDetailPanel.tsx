@@ -582,6 +582,8 @@ const TileDetailPanel = ({
               row: Math.floor((id - 1) / 8),
               col: (id - 1) % 8
             }))}
+            visitedTiles={new Set(Array.from(visitedTiles).map(id => `${Math.floor((id - 1) / 8)}-${(id - 1) % 8}`))}
+            onTileSelect={(row, col) => onNavigate(row, col)}
           />
         </TabsContent>
       </Tabs>

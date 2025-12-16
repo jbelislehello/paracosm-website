@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Maximize2, RotateCcw } from 'lucide-react';
+import { Maximize2 } from 'lucide-react';
 import { TileTorusPosition } from './TileTorusPosition';
 import { InformationFluxDiagram } from './InformationFluxDiagram';
 import { ToroidalCoordinates } from './ToroidalCoordinates';
+import { TorusManifoldP5 } from './TorusManifoldP5';
 import { ManifoldSeason, columnToTheta, rowSeasonToPhi } from '@/utils/torusManifoldMath';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface TopologiesTabProps {
@@ -17,6 +18,8 @@ interface TopologiesTabProps {
   colLabel: string;
   journeyPath?: Array<{ row: number; col: number }>;
   polenDensity?: number;
+  visitedTiles?: Set<string>;
+  onTileSelect?: (row: number, col: number) => void;
 }
 
 export function TopologiesTab({
@@ -27,7 +30,9 @@ export function TopologiesTab({
   rowLabel,
   colLabel,
   journeyPath = [],
-  polenDensity = 0
+  polenDensity = 0,
+  visitedTiles = new Set(),
+  onTileSelect
 }: TopologiesTabProps) {
   const [showFullManifold, setShowFullManifold] = useState(false);
   
@@ -39,6 +44,13 @@ export function TopologiesTab({
     ...p,
     season // For now, assume same season - can be enhanced
   }));
+  
+  const handleTileClick = (newRow: number, newCol: number) => {
+    if (onTileSelect) {
+      onTileSelect(newRow, newCol);
+      setShowFullManifold(false);
+    }
+  };
   
   return (
     <ScrollArea className="flex-1">
@@ -98,17 +110,15 @@ export function TopologiesTab({
       
       {/* Full Manifold Dialog */}
       <Dialog open={showFullManifold} onOpenChange={setShowFullManifold}>
-        <DialogContent className="max-w-4xl h-[80vh]">
-          <DialogHeader>
-            <DialogTitle>3D Torus Manifold</DialogTitle>
-          </DialogHeader>
-          <div className="flex-1 flex items-center justify-center text-muted-foreground">
-            <p className="text-sm">
-              Full 3D manifold visualization requires WebGL.
-              <br />
-              Navigate to the dedicated Manifold page for the full experience.
-            </p>
-          </div>
+        <DialogContent className="max-w-5xl h-[85vh] p-0 overflow-hidden">
+          <TorusManifoldP5
+            selectedTile={{ row, col }}
+            season={season}
+            visitedTiles={visitedTiles}
+            journeyPath={journeyWithSeasons}
+            onTileClick={handleTileClick}
+            onClose={() => setShowFullManifold(false)}
+          />
         </DialogContent>
       </Dialog>
     </ScrollArea>
