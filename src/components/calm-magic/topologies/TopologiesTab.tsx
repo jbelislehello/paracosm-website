@@ -12,7 +12,6 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { 
   RotateCcw, 
-  Grid3X3, 
   CloudFog,
   Maximize,
   Minimize
@@ -44,7 +43,6 @@ export function TopologiesTab({
   densityMap = new Map()
 }: TopologiesTabProps) {
   const [viewMode, setViewMode] = useState<TopologyViewMode>('isometric');
-  const [showHorizonGrid, setShowHorizonGrid] = useState(true);
   const [showDepthFog, setShowDepthFog] = useState(true);
   const [cubeSize, setCubeSize] = useState(32);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -52,7 +50,6 @@ export function TopologiesTab({
   const handleReset = () => {
     setViewMode('isometric');
     setCubeSize(32);
-    setShowHorizonGrid(true);
     setShowDepthFog(true);
   };
 
@@ -80,7 +77,6 @@ export function TopologiesTab({
         return (
           <IsometricCubeMatrix
             {...layoutProps}
-            showHorizonGrid={showHorizonGrid}
             showDepthFog={showDepthFog}
             cubeSize={cubeSize}
           />
@@ -123,19 +119,6 @@ export function TopologiesTab({
         {/* Visual Options (only for isometric view) */}
         {viewMode === 'isometric' && (
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Switch
-                id="horizon"
-                checked={showHorizonGrid}
-                onCheckedChange={setShowHorizonGrid}
-                className="scale-75"
-              />
-              <Label htmlFor="horizon" className="text-xs cursor-pointer flex items-center gap-1">
-                <Grid3X3 className="w-3 h-3" />
-                Grid
-              </Label>
-            </div>
-            
             <div className="flex items-center gap-2">
               <Switch
                 id="fog"
