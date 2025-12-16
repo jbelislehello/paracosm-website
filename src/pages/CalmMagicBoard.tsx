@@ -219,22 +219,25 @@ const CalmMagicBoard = () => {
     polenEntries,
   } = useTileMatrixPersistence(todayTile?.board || SEASON_TO_BOARD[currentSeason]);
 
-  // Calculate consciousness geometry for the AI oracle
-  const consciousnessGeometry = useMemo(() => {
-    // Create density map from polen entries per tile
-    const densityMap = new Map<string, number>();
+  // Extract density map from polen entries per tile (shared across components)
+  const densityMap = useMemo(() => {
+    const map = new Map<string, number>();
     polenEntries.forEach(entry => {
       if (entry.tile_id !== null && entry.tile_id !== undefined) {
-        // Convert tile_id to row,col format
+        // Convert 1-indexed tile_id to row,col format
         const row = Math.floor((entry.tile_id - 1) / 8);
         const col = (entry.tile_id - 1) % 8;
         const key = `${row}-${col}`;
-        densityMap.set(key, (densityMap.get(key) || 0) + 1);
+        map.set(key, (map.get(key) || 0) + 1);
       }
     });
-    
+    return map;
+  }, [polenEntries]);
+
+  // Calculate consciousness geometry for the AI oracle
+  const consciousnessGeometry = useMemo(() => {
     return calculateConsciousnessGeometryFromTiles(visitedTiles, journeyPath, densityMap);
-  }, [visitedTiles, journeyPath, polenEntries]);
+  }, [visitedTiles, journeyPath, densityMap]);
   // Onboarding tour
   const {
     isOpen: showTour,
@@ -369,17 +372,6 @@ const CalmMagicBoard = () => {
   // Fetch topology story for floating indicator (when not on topologies tab)
   useEffect(() => {
     if (activeView !== 'topologies' && visitedTiles.size > 0 && !topologyStory) {
-      // Create density map for fetch
-      const densityMap = new Map<string, number>();
-      polenEntries.forEach(entry => {
-        if (entry.tile_id !== null && entry.tile_id !== undefined) {
-          const row = Math.floor((entry.tile_id - 1) / 8);
-          const col = (entry.tile_id - 1) % 8;
-          const key = `${row}-${col}`;
-          densityMap.set(key, (densityMap.get(key) || 0) + 1);
-        }
-      });
-      
       fetchTopologyStory({
         viewMode: 'isometric',
         journeyPath,
@@ -396,7 +388,7 @@ const CalmMagicBoard = () => {
         consciousnessGeometry
       });
     }
-  }, [visitedTiles.size, activeView]); // Only refetch when tiles change or view changes
+  }, [visitedTiles.size, activeView, densityMap]); // Only refetch when tiles change or view changes
 
   // Reset indicator dismissed state when switching to topologies tab
   useEffect(() => {
@@ -1400,6 +1392,7 @@ const CalmMagicBoard = () => {
               journeyPath={journeyPath}
               polenDensity={polenEntries.length}
               visitedTiles={visitedTiles}
+              densityMap={densityMap}
               onTileSelect={(row, col) => {
                 handleNavigate(row, col);
                 setActiveView('matrix');
