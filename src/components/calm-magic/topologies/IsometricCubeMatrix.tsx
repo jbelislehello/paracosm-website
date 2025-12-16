@@ -637,6 +637,179 @@ export function IsometricCubeMatrix({
         p.pop();
       };
 
+      const drawMinimap = (p: p5, hue: number) => {
+        // Minimap configuration
+        const minimapSize = 90;
+        const padding = 12;
+        const cellSize = minimapSize / 8;
+        
+        // Position in bottom-right corner
+        const minimapX = width/2 - minimapSize - padding - 15;
+        const minimapY = height/2 - minimapSize - padding - 50;
+        
+        // Get season colors for visited tiles
+        const seasonHex = SEASON_HEX_COLORS[season];
+        const seasonR = (seasonHex >> 16) & 255;
+        const seasonG = (seasonHex >> 8) & 255;
+        const seasonB = seasonHex & 255;
+        
+        // Background panel
+        p.fill(0, 0, 0, 180);
+        p.stroke(60, 70, 90, 200);
+        p.strokeWeight(1);
+        p.rect(minimapX - padding, minimapY - padding - 18, 
+               minimapSize + padding * 2, minimapSize + padding * 2 + 48, 8);
+        
+        // Title
+        p.fill(180, 190, 200, 200);
+        p.noStroke();
+        p.textSize(9);
+        p.textAlign(p.LEFT, p.TOP);
+        p.text('MINIMAP', minimapX - padding + 8, minimapY - padding - 12);
+        
+        // Draw 8x8 grid cells (row 0 at bottom, matching main view)
+        for (let row = 0; row < 8; row++) {
+          for (let col = 0; col < 8; col++) {
+            const state = getCubeState(row, col);
+            // Row 0 at bottom, row 7 at top
+            const x = minimapX + col * cellSize;
+            const y = minimapY + (7 - row) * cellSize;
+            
+            // Color based on state
+            if (state.isSelected) {
+              p.fill(255, 220, 100, 255);  // Gold for selected
+            } else if (state.isVisited) {
+              p.fill(seasonR, seasonG, seasonB, 220); // Season color
+            } else if (state.isAccessible) {
+              p.fill(70, 80, 100, 150);   // Dim for accessible
+            } else {
+              p.fill(35, 40, 50, 100);    // Very dim for locked
+            }
+            
+            p.noStroke();
+            p.rect(x + 0.5, y + 0.5, cellSize - 1, cellSize - 1, 1);
+          }
+        }
+        
+        // Grid border
+        p.noFill();
+        p.stroke(100, 110, 130, 180);
+        p.strokeWeight(1);
+        p.rect(minimapX, minimapY, minimapSize, minimapSize);
+        
+        // Draw grid lines
+        p.stroke(70, 80, 100, 100);
+        p.strokeWeight(0.5);
+        for (let i = 1; i < 8; i++) {
+          // Vertical lines
+          p.line(minimapX + i * cellSize, minimapY, 
+                 minimapX + i * cellSize, minimapY + minimapSize);
+          // Horizontal lines
+          p.line(minimapX, minimapY + i * cellSize,
+                 minimapX + minimapSize, minimapY + i * cellSize);
+        }
+        
+        // Camera direction indicator
+        const centerX = minimapX + minimapSize / 2;
+        const centerY = minimapY + minimapSize / 2;
+        const cameraDistance = minimapSize * 0.58;
+        const cameraAngle = rotationRef.current.y;
+        
+        // Camera eye position (orbiting around center)
+        const eyeX = centerX + Math.sin(cameraAngle) * cameraDistance;
+        const eyeY = centerY - Math.cos(cameraAngle) * cameraDistance * 0.7;
+        
+        // Draw view cone from camera to grid
+        p.fill(255, 255, 255, 35);
+        p.noStroke();
+        const coneAngle = 0.4; // Field of view half-angle
+        p.beginShape();
+        p.vertex(eyeX, eyeY);
+        // Two edges of the cone toward the center
+        const coneReach = minimapSize * 0.65;
+        p.vertex(centerX + Math.sin(cameraAngle + coneAngle) * coneReach * 0.3,
+                 centerY - Math.cos(cameraAngle + coneAngle) * coneReach * 0.3);
+        p.vertex(centerX + Math.sin(cameraAngle - coneAngle) * coneReach * 0.3,
+                 centerY - Math.cos(cameraAngle - coneAngle) * coneReach * 0.3);
+        p.endShape(p.CLOSE);
+        
+        // View direction line
+        p.stroke(255, 255, 255, 80);
+        p.strokeWeight(1);
+        p.line(eyeX, eyeY, centerX, centerY);
+        
+        // Camera eye icon (outer)
+        p.fill(30, 40, 60, 230);
+        p.stroke(180, 190, 210, 200);
+        p.strokeWeight(1.5);
+        p.ellipse(eyeX, eyeY, 14, 10);
+        // Pupil
+        p.fill(seasonR, seasonG, seasonB, 255);
+        p.noStroke();
+        p.ellipse(eyeX, eyeY, 6, 5);
+        
+        // Pan offset indicator (crosshair that moves with pan)
+        const panScale = 0.04;
+        const panOffsetX = Math.max(-20, Math.min(20, panRef.current.x * panScale));
+        const panOffsetY = Math.max(-20, Math.min(20, panRef.current.y * panScale));
+        const crossX = centerX + panOffsetX;
+        const crossY = centerY + panOffsetY;
+        
+        p.stroke(255, 200, 100, 180);
+        p.strokeWeight(1);
+        p.line(crossX - 6, crossY, crossX + 6, crossY);
+        p.line(crossX, crossY - 6, crossX, crossY + 6);
+        // Small circle at center
+        p.noFill();
+        p.ellipse(crossX, crossY, 4, 4);
+        
+        // Axis labels
+        p.fill(150, 160, 180, 200);
+        p.noStroke();
+        p.textSize(8);
+        p.textAlign(p.CENTER, p.BOTTOM);
+        // M (Mindsets) at bottom-left origin
+        p.text('M', minimapX - 6, minimapY + minimapSize + 2);
+        // P (Protocols) at top-left
+        p.textAlign(p.CENTER, p.TOP);
+        p.text('P', minimapX - 6, minimapY - 4);
+        // Σ (Systems) at bottom-right
+        p.textAlign(p.CENTER, p.BOTTOM);
+        p.text('Σ', minimapX + minimapSize + 6, minimapY + minimapSize + 2);
+        
+        // Zoom level bar
+        const zoomBarWidth = 60;
+        const zoomBarHeight = 5;
+        const zoomBarX = minimapX + (minimapSize - zoomBarWidth) / 2;
+        const zoomBarY = minimapY + minimapSize + 14;
+        
+        // Background bar
+        p.fill(30, 35, 45, 200);
+        p.noStroke();
+        p.rect(zoomBarX, zoomBarY, zoomBarWidth, zoomBarHeight, 3);
+        
+        // Filled portion based on zoom (0.3 to 3.0 range)
+        const zoomNormalized = (zoomRef.current - 0.3) / (3 - 0.3);
+        p.fill(seasonR, seasonG, seasonB, 200);
+        p.rect(zoomBarX, zoomBarY, zoomBarWidth * zoomNormalized, zoomBarHeight, 3);
+        
+        // Zoom text
+        p.fill(180, 185, 195, 200);
+        p.textSize(8);
+        p.textAlign(p.CENTER, p.TOP);
+        p.text(`${zoomRef.current.toFixed(1)}x zoom`, minimapX + minimapSize/2, zoomBarY + 8);
+        
+        // Current tile indicator in minimap
+        if (selectedTile) {
+          const selX = minimapX + selectedTile.col * cellSize + cellSize / 2;
+          const selY = minimapY + (7 - selectedTile.row) * cellSize + cellSize / 2;
+          p.noFill();
+          p.stroke(255, 220, 100, 200);
+          p.strokeWeight(2);
+          p.ellipse(selX, selY, cellSize + 2, cellSize + 2);
+        }
+      };
+
       const draw2DOverlay = (p: p5, hue: number) => {
         // Reset to 2D for overlay
         p.push();
@@ -667,6 +840,9 @@ export function IsometricCubeMatrix({
         p.textSize(9);
         p.text('Drag: Rotate | Shift+Drag: Pan', -width/2 + 18, -height/2 + 48);
         p.text('Scroll: Zoom | Dbl-click: Reset', -width/2 + 18, -height/2 + 58);
+
+        // Draw minimap in bottom-right
+        drawMinimap(p, hue);
 
         // Hover info
         if (hoverTile) {
