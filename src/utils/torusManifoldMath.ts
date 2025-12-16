@@ -276,3 +276,104 @@ export function generateFlyThroughPath(
   
   return path;
 }
+
+// ============= Acronym-to-Coordinate Helpers =============
+
+export type ColumnKey = 'C' | 'H' | 'O' | 'R' | 'D' | 'S' | 'M' | 'Σ';
+export type RowKey = 'mindsets' | 'agilities' | 'goals' | 'intuition' | 'compasses' | 'norms' | 'synergies' | 'protocols';
+
+const COLUMN_ORDER: ColumnKey[] = ['C', 'H', 'O', 'R', 'D', 'S', 'M', 'Σ'];
+const ROW_ORDER: RowKey[] = ['mindsets', 'agilities', 'goals', 'intuition', 'compasses', 'norms', 'synergies', 'protocols'];
+
+/**
+ * Map column letter to θ angle
+ */
+export function columnLetterToTheta(letter: ColumnKey): number {
+  const colIndex = COLUMN_ORDER.indexOf(letter);
+  return columnToTheta(colIndex >= 0 ? colIndex : 0);
+}
+
+/**
+ * Map row name to φ base (before season offset)
+ */
+export function rowNameToPhiBase(rowKey: RowKey): number {
+  const rowIndex = ROW_ORDER.indexOf(rowKey);
+  return (rowIndex >= 0 ? rowIndex : 0) / 8 * (2 * Math.PI / 5);
+}
+
+/**
+ * Get row key from row index
+ */
+export function rowIndexToKey(row: number): RowKey {
+  return ROW_ORDER[row % 8];
+}
+
+/**
+ * Get column key from column index
+ */
+export function colIndexToKey(col: number): ColumnKey {
+  return COLUMN_ORDER[col % 8];
+}
+
+/**
+ * Full tile acronym to 3D torus position
+ */
+export function tileAcronymToPosition(
+  rowKey: RowKey, 
+  colKey: ColumnKey, 
+  season: ManifoldSeason,
+  polenDensity: number = 0
+): {
+  point: [number, number, number];
+  theta: number;
+  phi: number;
+  curvature: number;
+} {
+  const rowIndex = ROW_ORDER.indexOf(rowKey);
+  const colIndex = COLUMN_ORDER.indexOf(colKey);
+  
+  const theta = columnToTheta(colIndex);
+  const phi = rowSeasonToPhi(rowIndex, season);
+  const point = tileToTorusPoint(rowIndex, colIndex, season, polenDensity);
+  const localRadius = calculateLocalRadius(polenDensity);
+  const curvature = gaussianCurvature(phi, localRadius);
+  
+  return { point, theta, phi, curvature };
+}
+
+/**
+ * Get tile acronym string from position
+ */
+export function getTileAcronym(row: number, col: number): string {
+  const rowKey = ROW_ORDER[row % 8];
+  const colKey = COLUMN_ORDER[col % 8];
+  return `${rowKey.charAt(0).toUpperCase()}×${colKey}`;
+}
+
+/**
+ * Column labels mapping
+ */
+export const COLUMN_LABELS: Record<ColumnKey, { short: string; full: string }> = {
+  'C': { short: 'C', full: 'Chances' },
+  'H': { short: 'H', full: 'Heart' },
+  'O': { short: 'O', full: 'Observer' },
+  'R': { short: 'R', full: 'Reversal' },
+  'D': { short: 'D', full: 'Design' },
+  'S': { short: 'S', full: 'Seeds' },
+  'M': { short: 'M', full: 'Methods' },
+  'Σ': { short: 'Σ', full: 'Systems' }
+};
+
+/**
+ * Row labels mapping
+ */
+export const ROW_LABELS: Record<RowKey, { short: string; full: string; stage: string }> = {
+  'mindsets': { short: 'M', full: 'Mindsets', stage: 'AGENDAS' },
+  'agilities': { short: 'A', full: 'Agilities', stage: 'AGENDAS' },
+  'goals': { short: 'G', full: 'Goals', stage: 'AGENDAS' },
+  'intuition': { short: 'I', full: 'Intuition', stage: 'LENS' },
+  'compasses': { short: 'C', full: 'Compasses', stage: 'LENS' },
+  'norms': { short: 'N', full: 'Norms', stage: 'MAPS' },
+  'synergies': { short: 'S', full: 'Synergies', stage: 'MAPS' },
+  'protocols': { short: 'P', full: 'Protocols & Architectures', stage: 'MAPS' }
+};
