@@ -5,12 +5,14 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe, Box, Circle } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { getTerminology } from '@/data/modeAwareTerminology';
 import { toast } from 'sonner';
 import MinimalistTileMatrix from '@/components/MinimalistTileMatrix';
+import IsometricTileMatrix from '@/components/IsometricTileMatrix';
+import MatrixViewControls from '@/components/calm-magic/MatrixViewControls';
 import TileDetailPanel from '@/components/TileDetailPanel';
 import { FragmentBrowser } from '@/components/calm-magic/FragmentBrowser';
 import { useTileMatrixPersistence } from '@/hooks/useTileMatrixPersistence';
@@ -133,6 +135,12 @@ const CalmMagicBoard = () => {
   const [patternHistory, setPatternHistory] = useState<PatternHistoryEntry[]>([]);
   const [highlightedPattern, setHighlightedPattern] = useState<DetectedPattern | null>(null);
   
+  // Matrix view mode state (2D flat, 2.5D isometric, or torus)
+  type MatrixViewMode = 'flat' | 'isometric' | 'torus';
+  const [matrixViewMode, setMatrixViewMode] = useState<MatrixViewMode>('flat');
+  const [showHorizonGrid, setShowHorizonGrid] = useState(true);
+  const [showDepthFog, setShowDepthFog] = useState(true);
+  const [isoCubeSize, setIsoCubeSize] = useState(40);
   
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   
@@ -999,23 +1007,66 @@ const CalmMagicBoard = () => {
           <>
             {/* Tile Matrix - Full width on mobile, split on desktop */}
             <div 
-              className={`${(selectedTile || showPolenBrowser) && !isMobile ? 'flex-1' : 'w-full'} p-4 md:p-8 overflow-auto transition-all duration-300 flex items-center justify-center`}
+              className={`${(selectedTile || showPolenBrowser) && !isMobile ? 'flex-1' : 'w-full'} p-4 md:p-8 overflow-auto transition-all duration-300 flex flex-col`}
               data-tour="matrix"
             >
-              <div className="md:pl-32 w-full max-w-full overflow-x-auto">
-                <MinimalistTileMatrix 
-                  board={SEASON_TO_BOARD[currentSeason]}
-                  selectedTile={selectedTile}
-                  visitedTiles={visitedTiles}
-                  journeyPath={journeyPath}
-                  onTileClick={handleTileClick}
-                  cycleNumber={currentCycleNumber}
-                  showToleranceOverlay={true}
-                  onZoneChange={setCurrentZone}
-                  completedSeasons={completedSeasons as string[]}
-                  highlightedPattern={highlightedPattern}
-                  showPatternOverlay={true}
+              {/* Matrix View Mode Controls */}
+              <div className="flex items-center justify-center mb-4">
+                <MatrixViewControls
+                  viewMode={matrixViewMode}
+                  onViewModeChange={setMatrixViewMode}
+                  showHorizonGrid={showHorizonGrid}
+                  onShowHorizonGridChange={setShowHorizonGrid}
+                  showDepthFog={showDepthFog}
+                  onShowDepthFogChange={setShowDepthFog}
+                  cubeSize={isoCubeSize}
+                  onCubeSizeChange={setIsoCubeSize}
+                  onResetView={() => {
+                    setIsoCubeSize(40);
+                    setShowHorizonGrid(true);
+                    setShowDepthFog(true);
+                  }}
                 />
+              </div>
+              
+              {/* Conditional Render: Flat 2D vs Isometric 2.5D/Torus */}
+              <div className="flex-1 flex items-center justify-center">
+                {matrixViewMode === 'flat' ? (
+                  <div className="md:pl-32 w-full max-w-full overflow-x-auto">
+                    <MinimalistTileMatrix 
+                      board={SEASON_TO_BOARD[currentSeason]}
+                      selectedTile={selectedTile}
+                      visitedTiles={visitedTiles}
+                      journeyPath={journeyPath}
+                      onTileClick={handleTileClick}
+                      cycleNumber={currentCycleNumber}
+                      showToleranceOverlay={true}
+                      onZoneChange={setCurrentZone}
+                      completedSeasons={completedSeasons as string[]}
+                      highlightedPattern={highlightedPattern}
+                      showPatternOverlay={true}
+                    />
+                  </div>
+                ) : (
+                  <div className="w-full h-full min-h-[500px]">
+                    <IsometricTileMatrix 
+                      board={SEASON_TO_BOARD[currentSeason]}
+                      selectedTile={selectedTile}
+                      visitedTiles={visitedTiles}
+                      journeyPath={journeyPath}
+                      onTileClick={handleTileClick}
+                      cycleNumber={currentCycleNumber}
+                      completedSeasons={completedSeasons as string[]}
+                      highlightedPattern={highlightedPattern}
+                      showPatternOverlay={true}
+                      viewMode={matrixViewMode === 'torus' ? 'torus' : 'isometric'}
+                      showHorizonGrid={showHorizonGrid}
+                      showDepthFog={showDepthFog}
+                      cubeSize={isoCubeSize}
+                      unlockedRing={currentUnlockedRing}
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
