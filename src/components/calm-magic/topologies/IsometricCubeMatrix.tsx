@@ -449,8 +449,8 @@ export function IsometricCubeMatrix({
         
         // Column labels (LONGEVITY HORIZON) - along front edge (row 0)
         const colLabels = ['C', 'H', 'O', 'R', 'D', 'S', 'M', 'Σ'];
-        p.fill(150, 180, 200, opacity * 255);
-        p.textSize(12);
+        p.fill(180, 210, 240, opacity * 255); // Brighter
+        p.textSize(16); // Larger
         p.textAlign(p.CENTER, p.CENTER);
 
         for (let col = 0; col < 8; col++) {
@@ -484,11 +484,9 @@ export function IsometricCubeMatrix({
         p.text('(0,0)', 0, 10);
         p.pop();
 
-        // Axis arrows on the ground plane
-        p.stroke(100, 130, 160, opacity * 200);
-        p.strokeWeight(2);
-
-        // Longevity arrow (along columns, X direction)
+        // LONGEVITY arrow (along columns, X direction) - CYAN
+        p.stroke(100, 200, 255, opacity * 240); // Cyan lumineux
+        p.strokeWeight(4); // Plus épais
         const longevityStart = gridTo3D(0, -0.5);
         const longevityEnd = gridTo3D(0, 8.5);
         p.line(longevityStart.x, 1, longevityStart.z, longevityEnd.x, 1, longevityEnd.z);
@@ -496,32 +494,36 @@ export function IsometricCubeMatrix({
         p.push();
         p.translate(longevityEnd.x, 1, longevityEnd.z);
         p.rotateY(Math.PI / 2);
-        p.fill(100, 130, 160, opacity * 200);
+        p.fill(100, 200, 255, opacity * 240);
         p.noStroke();
-        p.triangle(0, 0, -10, -4, -10, 4);
+        p.triangle(0, 0, -15, -7, -15, 7); // Larger arrowhead
         p.pop();
 
-        // Velocity arrow (along rows, Z direction)
+        // VELOCITY arrow (along rows, Z direction) - AMBER
+        p.stroke(255, 200, 100, opacity * 240); // Ambre lumineux
+        p.strokeWeight(4); // Plus épais
         const velocityStart = gridTo3D(-0.5, 0);
         const velocityEnd = gridTo3D(8.5, 0);
         p.line(velocityStart.x, 1, velocityStart.z, velocityEnd.x, 1, velocityEnd.z);
         // Arrow head
         p.push();
         p.translate(velocityEnd.x, 1, velocityEnd.z);
-        p.fill(100, 130, 160, opacity * 200);
+        p.fill(255, 200, 100, opacity * 240);
         p.noStroke();
-        p.triangle(0, 0, -10, -4, -10, 4);
+        p.triangle(0, 0, -15, -7, -15, 7); // Larger arrowhead
         p.pop();
 
-        // Axis labels on ground
-        p.fill(120, 150, 180, opacity * 200);
-        p.textSize(9);
+        // Axis labels - LONGEVITY in cyan
+        p.textSize(14); // Larger labels
+        p.fill(100, 200, 255, opacity * 240);
         p.push();
         p.translate(longevityEnd.x + 10, 2, longevityEnd.z);
         p.rotateX(-Math.PI / 2);
         p.text('LONGEVITY →', 0, 0);
         p.pop();
 
+        // VELOCITY label in amber
+        p.fill(255, 200, 100, opacity * 240);
         p.push();
         p.translate(velocityEnd.x, 2, velocityEnd.z + 15);
         p.rotateX(-Math.PI / 2);
