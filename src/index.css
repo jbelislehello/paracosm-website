@@ -232,6 +232,22 @@
   animation: weave-pulse 4s ease-in-out infinite;
 }
 
+/* Ambient Soundscape Animations */
+@keyframes ambient-pulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% { 
+    transform: scale(1.4);
+    opacity: 1;
+  }
+}
+
+.animate-ambient-pulse {
+  animation: ambient-pulse 2s ease-in-out infinite;
+}
+
 /* Sanctuary Mode Animations */
 @keyframes sanctuary-breathe {
   0%, 100% { 

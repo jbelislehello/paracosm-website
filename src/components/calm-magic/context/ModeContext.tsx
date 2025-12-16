@@ -15,6 +15,9 @@ interface ModeContextType {
   sanctuaryMode: boolean;
   setSanctuaryMode: (enabled: boolean) => void;
   toggleSanctuary: () => void;
+  // Ambient Soundscape
+  ambientEnabled: boolean;
+  setAmbientEnabled: (enabled: boolean) => void;
 }
 
 const ModeContext = createContext<ModeContextType | undefined>(undefined);
@@ -25,6 +28,7 @@ export const ModeProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [coherenceLevel, setCoherenceLevel] = useState(50);
   const [personalToProRatio, setPersonalToProRatio] = useState(0.5);
   const [sanctuaryMode, setSanctuaryMode] = useState(false);
+  const [ambientEnabled, setAmbientEnabled] = useState(false);
   
   const toggleSanctuary = useCallback(() => {
     setSanctuaryMode(prev => !prev);
@@ -53,6 +57,8 @@ export const ModeProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     sanctuaryMode,
     setSanctuaryMode,
     toggleSanctuary,
+    ambientEnabled,
+    setAmbientEnabled,
   };
   
   return (

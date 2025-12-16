@@ -82,11 +82,65 @@ const GEOMETRIC_SOUND_PROFILES: Record<string, { type: string; frequencies: numb
   'frame': { type: 'edge', frequencies: [196.00, 261.63, 329.63, 261.63], timing: [0, 100, 200, 300] },
 };
 
+// Season-specific ambient profiles
+const AMBIENT_PROFILES: Record<Season, { 
+  baseFreqs: number[]; 
+  lfoRate: number; 
+  lfoDepth: number; 
+  filterFreq: number;
+  character: string;
+}> = {
+  POLLENS: { 
+    baseFreqs: [65.41, 98.00, 130.81], // C2, G2, C3 - earthy, grounding
+    lfoRate: 0.08, 
+    lfoDepth: 3,
+    filterFreq: 800,
+    character: 'Earthy drone'
+  },
+  NOEMS: { 
+    baseFreqs: [220.00, 277.18, 329.63], // A3, C#4, E4 - crystalline
+    lfoRate: 0.15, 
+    lfoDepth: 5,
+    filterFreq: 2000,
+    character: 'Crystalline shimmer'
+  },
+  POEMS: { 
+    baseFreqs: [146.83, 196.00, 246.94], // D3, G3, B3 - flowing, melodic
+    lfoRate: 0.12, 
+    lfoDepth: 4,
+    filterFreq: 1200,
+    character: 'Flowing melody'
+  },
+  TOTEMS: { 
+    baseFreqs: [82.41, 110.00, 164.81], // E2, A2, E3 - solid, foundational
+    lfoRate: 0.06, 
+    lfoDepth: 2,
+    filterFreq: 600,
+    character: 'Solid foundation'
+  },
+  ANTHEMS: { 
+    baseFreqs: [196.00, 293.66, 392.00], // G3, D4, G4 - soaring, triumphant
+    lfoRate: 0.1, 
+    lfoDepth: 6,
+    filterFreq: 2500,
+    character: 'Soaring harmony'
+  },
+};
+
 export const useCosmologicalAudio = () => {
   const audioContextRef = useRef<AudioContext | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
+  const ambientNodesRef = useRef<{
+    oscillators: OscillatorNode[];
+    lfos: OscillatorNode[];
+    gains: GainNode[];
+    masterGain: GainNode | null;
+  }>({ oscillators: [], lfos: [], gains: [], masterGain: null });
   const isPlayingRef = useRef(false);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isAmbientPlaying, setIsAmbientPlaying] = useState(false);
+  const [ambientVolume, setAmbientVolumeState] = useState(0.15);
+  const [currentAmbientSeason, setCurrentAmbientSeason] = useState<Season>('POLLENS');
 
   // Initialize audio context on first use
   const initAudio = useCallback(() => {
@@ -358,9 +412,135 @@ export const useCosmologicalAudio = () => {
     });
   }, [initAudio]);
 
+  // Start ambient soundscape
+  const startAmbientSoundscape = useCallback((season: Season = 'POLLENS') => {
+    const ctx = initAudio();
+    if (!ctx || isAmbientPlaying) return;
+
+    const profile = AMBIENT_PROFILES[season];
+    const now = ctx.currentTime;
+
+    // Create master gain for ambient with fade-in
+    const masterGain = ctx.createGain();
+    masterGain.gain.setValueAtTime(0, now);
+    masterGain.gain.linearRampToValueAtTime(ambientVolume, now + 2); // 2s fade-in
+    masterGain.connect(gainNodeRef.current!);
+    ambientNodesRef.current.masterGain = masterGain;
+
+    // Create filter
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = profile.filterFreq;
+    filter.Q.value = 1;
+    filter.connect(masterGain);
+
+    // Create oscillators for each base frequency
+    profile.baseFreqs.forEach((freq, index) => {
+      // Main oscillator
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+
+      // LFO for subtle movement
+      const lfo = ctx.createOscillator();
+      lfo.type = 'sine';
+      lfo.frequency.value = profile.lfoRate + (index * 0.02); // Slight offset per voice
+
+      const lfoGain = ctx.createGain();
+      lfoGain.gain.value = profile.lfoDepth;
+
+      // Connect LFO to oscillator frequency
+      lfo.connect(lfoGain);
+      lfoGain.connect(osc.frequency);
+
+      // Voice gain (stagger entry)
+      const voiceGain = ctx.createGain();
+      voiceGain.gain.setValueAtTime(0, now);
+      voiceGain.gain.linearRampToValueAtTime(0.3, now + 1 + (index * 0.5));
+
+      osc.connect(voiceGain);
+      voiceGain.connect(filter);
+
+      // Start
+      osc.start(now);
+      lfo.start(now);
+
+      // Store references
+      ambientNodesRef.current.oscillators.push(osc);
+      ambientNodesRef.current.lfos.push(lfo);
+      ambientNodesRef.current.gains.push(voiceGain);
+    });
+
+    setIsAmbientPlaying(true);
+    setCurrentAmbientSeason(season);
+  }, [initAudio, isAmbientPlaying, ambientVolume]);
+
+  // Stop ambient soundscape
+  const stopAmbientSoundscape = useCallback(() => {
+    if (!isAmbientPlaying || !audioContextRef.current) return;
+
+    const ctx = audioContextRef.current;
+    const now = ctx.currentTime;
+
+    // Fade out master gain
+    if (ambientNodesRef.current.masterGain) {
+      ambientNodesRef.current.masterGain.gain.linearRampToValueAtTime(0, now + 1.5);
+    }
+
+    // Stop all nodes after fade
+    setTimeout(() => {
+      ambientNodesRef.current.oscillators.forEach(osc => {
+        try { osc.stop(); } catch (e) { /* already stopped */ }
+      });
+      ambientNodesRef.current.lfos.forEach(lfo => {
+        try { lfo.stop(); } catch (e) { /* already stopped */ }
+      });
+      ambientNodesRef.current = { oscillators: [], lfos: [], gains: [], masterGain: null };
+      setIsAmbientPlaying(false);
+    }, 1600);
+  }, [isAmbientPlaying]);
+
+  // Change ambient season (crossfade)
+  const changeAmbientSeason = useCallback((newSeason: Season) => {
+    if (!isAmbientPlaying) {
+      startAmbientSoundscape(newSeason);
+      return;
+    }
+    
+    // Crossfade: stop current and start new
+    stopAmbientSoundscape();
+    setTimeout(() => {
+      startAmbientSoundscape(newSeason);
+    }, 1700); // Start after fade-out completes
+  }, [isAmbientPlaying, startAmbientSoundscape, stopAmbientSoundscape]);
+
+  // Set ambient volume
+  const setAmbientVolume = useCallback((volume: number) => {
+    const clampedVolume = Math.max(0, Math.min(1, volume));
+    setAmbientVolumeState(clampedVolume);
+    
+    if (ambientNodesRef.current.masterGain && audioContextRef.current) {
+      const now = audioContextRef.current.currentTime;
+      ambientNodesRef.current.masterGain.gain.linearRampToValueAtTime(clampedVolume, now + 0.1);
+    }
+  }, []);
+
+  // Get current ambient profile info
+  const getAmbientProfile = useCallback((season: Season) => {
+    return AMBIENT_PROFILES[season];
+  }, []);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {
+      // Stop ambient if playing
+      ambientNodesRef.current.oscillators.forEach(osc => {
+        try { osc.stop(); } catch (e) { /* ignore */ }
+      });
+      ambientNodesRef.current.lfos.forEach(lfo => {
+        try { lfo.stop(); } catch (e) { /* ignore */ }
+      });
+      
       if (audioContextRef.current) {
         audioContextRef.current.close();
       }
@@ -375,6 +555,15 @@ export const useCosmologicalAudio = () => {
     playHexagramSound,
     playGeometricPatternSound,
     initAudio,
-    isInitialized
+    isInitialized,
+    // Ambient soundscape
+    startAmbientSoundscape,
+    stopAmbientSoundscape,
+    changeAmbientSeason,
+    setAmbientVolume,
+    getAmbientProfile,
+    isAmbientPlaying,
+    ambientVolume,
+    currentAmbientSeason
   };
 };

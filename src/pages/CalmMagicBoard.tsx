@@ -50,6 +50,8 @@ import { getCurrentUnlockedRing } from '@/utils/ringToleranceSystem';
 import { getHexagramDataForSummary } from '@/components/calm-magic/topologies/TopologicalMetricsPanel';
 import { calculateConsciousnessGeometryFromTiles } from '@/utils/consciousnessGeometry';
 import { useWeavingConnections } from '@/hooks/useWeavingConnections';
+import { useCosmologicalAudio } from '@/hooks/useCosmologicalAudio';
+import { AmbientSoundscapeControl } from '@/components/calm-magic/AmbientSoundscapeControl';
 import { cn } from '@/lib/utils';
 
 const ROW_LABELS = ['Mindsets', 'Agilities', 'Goals', 'Intuition', 'Compasses', 'Norms', 'Synergies', 'Protocols & Architectures'];
@@ -103,7 +105,17 @@ type ViewTab = 'matrix' | 'window-of-tolerance' | 'topologies' | 'prd-assembly';
 const CalmMagicBoard = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { mode, setMode, sanctuaryMode, toggleSanctuary } = useMode();
+  const { mode, setMode, sanctuaryMode, toggleSanctuary, ambientEnabled, setAmbientEnabled } = useMode();
+  const { 
+    startAmbientSoundscape,
+    stopAmbientSoundscape,
+    changeAmbientSeason,
+    setAmbientVolume,
+    getAmbientProfile,
+    isAmbientPlaying,
+    ambientVolume,
+    currentAmbientSeason
+  } = useCosmologicalAudio();
   const { 
     projectContext, 
     setActiveProject, 
@@ -373,6 +385,33 @@ const CalmMagicBoard = () => {
       toast.info('Cleaned up corrupted journey data');
     }
   }, []); // Run once on mount
+
+  // Ambient soundscape integration with sanctuary mode and season changes
+  useEffect(() => {
+    // Auto-start ambient when sanctuary mode is enabled
+    if (sanctuaryMode && !isAmbientPlaying) {
+      startAmbientSoundscape(currentSeason);
+      setAmbientEnabled(true);
+    }
+  }, [sanctuaryMode]);
+
+  // Change ambient season when current season changes
+  useEffect(() => {
+    if (isAmbientPlaying && currentAmbientSeason !== currentSeason) {
+      changeAmbientSeason(currentSeason);
+    }
+  }, [currentSeason, isAmbientPlaying, currentAmbientSeason, changeAmbientSeason]);
+
+  // Handle ambient toggle
+  const handleAmbientToggle = useCallback(() => {
+    if (isAmbientPlaying) {
+      stopAmbientSoundscape();
+      setAmbientEnabled(false);
+    } else {
+      startAmbientSoundscape(currentSeason);
+      setAmbientEnabled(true);
+    }
+  }, [isAmbientPlaying, currentSeason, startAmbientSoundscape, stopAmbientSoundscape, setAmbientEnabled]);
 
   // Fetch topology story for floating indicator (when not on topologies tab)
   useEffect(() => {
@@ -956,6 +995,16 @@ const CalmMagicBoard = () => {
             >
               <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
             </Button>
+            
+            {/* Ambient Soundscape Control */}
+            <AmbientSoundscapeControl
+              isPlaying={isAmbientPlaying}
+              volume={ambientVolume}
+              currentSeason={currentSeason}
+              seasonCharacter={getAmbientProfile(currentSeason).character}
+              onToggle={handleAmbientToggle}
+              onVolumeChange={setAmbientVolume}
+            />
             
             {/* Sanctuary Mode Toggle */}
             <Button 
