@@ -129,9 +129,9 @@ const TileDetailPanel = ({
   // Get tile ID first (needed for cosmological calculations)
   const tileId = selectedTile.row * 8 + selectedTile.col + 1;
   
-  // PURE HORIZONTAL DRIFT IS DISABLED - navigation only via GL!TCH (up), TUNE (down), or diagonals on Portal Days
-  const canDriftLeft = false;  // Pure horizontal movement disabled
-  const canDriftRight = false; // Pure horizontal movement disabled
+  // Navigation law: GL!TCH up, DRIFT right only, TUNE down. Diagonals only on 52 Portal Days.
+  const canDriftLeft = false;  // DRIFT LEFT is NEVER allowed per navigation law
+  const canDriftRight = selectedTile.col < 7; // DRIFT RIGHT is always allowed (edge check only)
   
   // Diagonal movement - only on Portal Days or high resonance (52 magic days per 260-day cycle)
   const seasonMapping: Record<string, 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS'> = {
@@ -585,7 +585,7 @@ const TileDetailPanel = ({
             size="icon"
             disabled={true}
             className="h-8 w-8 opacity-20 cursor-not-allowed"
-            title="Pure horizontal DRIFT disabled - use GL!TCH/TUNE with diagonals"
+            title="DRIFT only moves RIGHT per navigation law"
           >
             <ArrowLeft className="w-4 h-4" />
           </Button>
@@ -595,9 +595,10 @@ const TileDetailPanel = ({
           <Button
             variant="ghost"
             size="icon"
-            disabled={true}
-            className="h-8 w-8 opacity-20 cursor-not-allowed"
-            title="Pure horizontal DRIFT disabled - use GL!TCH/TUNE with diagonals"
+            disabled={!canDriftRight}
+            onClick={() => onNavigate(selectedTile.row, selectedTile.col + 1)}
+            className="h-8 w-8 disabled:opacity-20"
+            title="DRIFT (right)"
           >
             <ArrowRight className="w-4 h-4" />
           </Button>
