@@ -4,7 +4,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { formatDistanceToNow } from 'date-fns';
 import { getQuadrantFromPosition } from '@/hooks/useQuadrantDynamics';
-import { Play, Check, Sparkles, FileText, Target, Sliders, Activity } from 'lucide-react';
+import { Play, Check, Sparkles, FileText, Target, Sliders, Activity, Hexagon } from 'lucide-react';
 
 interface TrajectoryLogProps {
   events: TrajectoryEvent[];
@@ -50,6 +50,11 @@ const EVENT_CONFIG: Record<TrajectoryEvent['event_type'], {
     icon: <Activity className="w-3 h-3" />,
     label: 'Emotional Check-in',
     color: 'bg-rose-500/10 text-rose-600',
+  },
+  pattern_discovery: {
+    icon: <Hexagon className="w-3 h-3" />,
+    label: 'Pattern Discovered',
+    color: 'bg-violet-500/10 text-violet-600',
   },
 };
 

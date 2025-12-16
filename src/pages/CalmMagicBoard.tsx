@@ -41,6 +41,9 @@ import { parseBoardEntryParams, getAssessmentContextDescription } from '@/utils/
 import { getGardenByType } from '@/data/gardens';
 import ProjectTitleBar from '@/components/calm-magic/ProjectTitleBar';
 import { PrdUnlockProgress } from '@/components/calm-magic/PrdUnlockProgress';
+import PatternDetectionBadge from '@/components/calm-magic/PatternDetectionBadge';
+import PatternJournal from '@/components/calm-magic/PatternJournal';
+import { DetectedPattern, PatternHistoryEntry } from '@/utils/patternDetection';
 
 
 
@@ -122,6 +125,9 @@ const CalmMagicBoard = () => {
   const [showInsightsGraph, setShowInsightsGraph] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeFeature, setUpgradeFeature] = useState<'insight_connections' | null>(null);
+  const [showPatternJournal, setShowPatternJournal] = useState(false);
+  const [detectedPatterns, setDetectedPatterns] = useState<DetectedPattern[]>([]);
+  const [patternHistory, setPatternHistory] = useState<PatternHistoryEntry[]>([]);
   
   
   const [showMobileMenu, setShowMobileMenu] = useState(false);
@@ -465,6 +471,26 @@ const CalmMagicBoard = () => {
     
     toast.success('Emotional check-in recorded');
   }, [addCheckin, applyShadowNudge, logTrajectoryEvent]);
+
+  // Handle pattern detection
+  const handlePatternDetected = useCallback((patterns: DetectedPattern[]) => {
+    setDetectedPatterns(patterns);
+    
+    // Add to pattern history
+    const newHistoryEntries: PatternHistoryEntry[] = patterns
+      .filter(p => !patternHistory.some(h => h.pattern.id === p.id))
+      .map(pattern => ({
+        pattern,
+        discoveredAt: new Date(),
+        tilesAtDiscovery: visitedTiles.size,
+        seasonAtDiscovery: currentSeason,
+      }));
+    
+    if (newHistoryEntries.length > 0) {
+      setPatternHistory(prev => [...prev, ...newHistoryEntries]);
+      logTrajectoryEvent('pattern_discovery', undefined, `Discovered ${newHistoryEntries.map(e => e.pattern.name).join(', ')}`);
+    }
+  }, [patternHistory, visitedTiles.size, currentSeason, logTrajectoryEvent]);
 
   // Handle season completion - continue to next season
   const handleSeasonContinue = () => {
@@ -891,11 +917,19 @@ const CalmMagicBoard = () => {
         </Tabs>
         
         {/* PRD Unlock Progress Indicator */}
-        <PrdUnlockProgress 
-          tilesVisited={visitedTiles.size}
-          currentSeason={currentSeason}
-          userId={user?.id}
-        />
+        <div className="flex items-center gap-3">
+          <PatternDetectionBadge
+            visitedTiles={visitedTiles}
+            season={currentSeason}
+            onPatternDetected={handlePatternDetected}
+            onOpenJournal={() => setShowPatternJournal(true)}
+          />
+          <PrdUnlockProgress 
+            tilesVisited={visitedTiles.size}
+            currentSeason={currentSeason}
+            userId={user?.id}
+          />
+        </div>
       </div>
 
       {/* Mobile Sub Navigation - Compact tabs */}
@@ -1189,7 +1223,28 @@ const CalmMagicBoard = () => {
         reason="feature_locked"
         feature={upgradeFeature || undefined}
       />
-      
+
+      {/* Pattern Journal */}
+      <Sheet open={showPatternJournal} onOpenChange={setShowPatternJournal}>
+        <SheetContent side="right" className="w-[400px] sm:w-[540px] overflow-y-auto">
+          <SheetHeader>
+            <SheetTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-violet-500" />
+              Pattern Journal
+            </SheetTitle>
+          </SheetHeader>
+          <div className="mt-4">
+            <PatternJournal
+              patterns={detectedPatterns}
+              patternHistory={patternHistory}
+              onPatternClick={(pattern) => {
+                // Could highlight pattern on matrix
+                toast.info(`${pattern.icon} ${pattern.name}: ${pattern.meaning}`);
+              }}
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
       
     </div>
   );
