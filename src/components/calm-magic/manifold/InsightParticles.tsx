@@ -166,26 +166,28 @@ export function ConnectionLines({ entries, showConnections }: ConnectionLinesPro
 
   return (
     <group>
-      {connections.map((conn, i) => (
-        <line key={i}>
-          <bufferGeometry>
-            <bufferAttribute
-              attach="attributes-position"
-              count={2}
-              array={new Float32Array([
-                conn.start.x, conn.start.y, conn.start.z,
-                conn.end.x, conn.end.y, conn.end.z
-              ])}
-              itemSize={3}
+      {connections.map((conn, i) => {
+        const positions = new Float32Array([
+          conn.start.x, conn.start.y, conn.start.z,
+          conn.end.x, conn.end.y, conn.end.z
+        ]);
+        
+        return (
+          <line key={i}>
+            <bufferGeometry>
+              <bufferAttribute
+                attach="attributes-position"
+                args={[positions, 3]}
+              />
+            </bufferGeometry>
+            <lineBasicMaterial
+              color={conn.color}
+              transparent
+              opacity={0.2}
             />
-          </bufferGeometry>
-          <lineBasicMaterial
-            color={conn.color}
-            transparent
-            opacity={0.2}
-          />
-        </line>
-      ))}
+          </line>
+        );
+      })}
     </group>
   );
 }
