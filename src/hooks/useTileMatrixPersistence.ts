@@ -32,6 +32,7 @@ interface PolenEntry {
   fragment_type: string;
   tags: string[];
   created_at: string;
+  season_context: string | null;
 }
 
 export const useTileMatrixPersistence = (board: Board = 'LOVE') => {

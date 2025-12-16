@@ -463,9 +463,15 @@ const CalmMagicBoard = () => {
     }
   };
 
-  // Check for season completion
-  const checkSeasonCompletion = useCallback((season: Season, tiles: Set<string>) => {
-    if (tiles.size >= 64 && !completedSeasons.includes(season)) {
+  // Get POLEN count for current season
+  const currentSeasonPolenCount = useMemo(() => {
+    return polenEntries.filter(entry => entry.season_context === currentSeason).length;
+  }, [polenEntries, currentSeason]);
+
+  // Check for season completion (32+ tiles AND 5+ fragments OR 64 tiles)
+  const checkSeasonCompletion = useCallback((season: Season, tiles: Set<string>, polenCount: number) => {
+    const canComplete = tiles.size >= 64 || (tiles.size >= 32 && polenCount >= 5);
+    if (canComplete && !completedSeasons.includes(season)) {
       setShowSeasonModal(true);
     }
   }, [completedSeasons]);
@@ -526,9 +532,10 @@ const CalmMagicBoard = () => {
         }
       });
       
-      // Check if season is complete
-      if (newSeasonTiles.size >= 64) {
-        setTimeout(() => checkSeasonCompletion(currentSeason, newSeasonTiles), 500);
+      // Check if season can be completed (32+ tiles AND 5+ fragments OR 64 tiles)
+      const canComplete = newSeasonTiles.size >= 64 || (newSeasonTiles.size >= 32 && currentSeasonPolenCount >= 5);
+      if (canComplete) {
+        setTimeout(() => checkSeasonCompletion(currentSeason, newSeasonTiles, currentSeasonPolenCount), 500);
       }
     }
   };
@@ -552,6 +559,13 @@ const CalmMagicBoard = () => {
     const tile = tileId ?? (selectedTile ? selectedTile.row * 8 + selectedTile.col + 1 : 1);
     await savePolenEntry(content, tile, 'text', [activeCompass || 'general', currentSeason], currentSeason as 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS');
     toast.success('Fragment saved successfully');
+    
+    // Check if saving this fragment triggers season completion (count +1 for the just-saved entry)
+    const newPolenCount = currentSeasonPolenCount + 1;
+    const canComplete = visitedTiles.size >= 64 || (visitedTiles.size >= 32 && newPolenCount >= 5);
+    if (canComplete && !completedSeasons.includes(currentSeason)) {
+      setTimeout(() => checkSeasonCompletion(currentSeason, visitedTiles, newPolenCount), 500);
+    }
   };
   
   // Handle assistant polen save
