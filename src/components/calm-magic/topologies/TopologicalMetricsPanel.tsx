@@ -40,21 +40,37 @@ interface TopologicalMetrics {
   diagonalDensity: number;
 }
 
-interface HexagramCorrelation {
+export interface HexagramCorrelation {
   hexagram: Hexagram;
   tileCount: number;
   percentage: number;
   narrative: string;
 }
 
+// Flattened hexagram data for JourneySummary
+export interface HexagramDataForSummary {
+  dominant: Array<{
+    number: number;
+    name: string;
+    chineseName: string;
+    meaning: string;
+    upperTrigram: string;
+    lowerTrigram: string;
+    tileCount: number;
+    keywords: string[];
+  }>;
+  trigramNarrative: string;
+  cosmicPattern: string | null;
+}
+
 // Map tile position to hexagram number (1-64)
-function getTileHexagram(row: number, col: number): Hexagram | null {
+export function getTileHexagram(row: number, col: number): Hexagram | null {
   const hexagramNumber = row * 8 + col + 1;
   return HEXAGRAMS.find(h => h.number === hexagramNumber) || null;
 }
 
 // Get dominant hexagrams from visited tiles
-function getHexagramCorrelations(visitedTiles: Set<string>): {
+export function getHexagramCorrelations(visitedTiles: Set<string>): {
   dominant: HexagramCorrelation[];
   trigramBalance: { upper: Record<string, number>; lower: Record<string, number> };
   narrative: string;
@@ -108,6 +124,28 @@ function getHexagramCorrelations(visitedTiles: Set<string>): {
     trigramBalance: { upper: upperTrigrams, lower: lowerTrigrams },
     narrative,
     cosmicPattern
+  };
+}
+
+// Transform hexagram correlations to format expected by JourneySummary
+export function getHexagramDataForSummary(visitedTiles: Set<string>): HexagramDataForSummary | undefined {
+  if (visitedTiles.size === 0) return undefined;
+  
+  const correlations = getHexagramCorrelations(visitedTiles);
+  
+  return {
+    dominant: correlations.dominant.map(d => ({
+      number: d.hexagram.number,
+      name: d.hexagram.name,
+      chineseName: d.hexagram.chineseName,
+      meaning: d.hexagram.meaning,
+      upperTrigram: d.hexagram.upperTrigram,
+      lowerTrigram: d.hexagram.lowerTrigram,
+      tileCount: d.tileCount,
+      keywords: d.hexagram.keywords
+    })),
+    trigramNarrative: correlations.narrative,
+    cosmicPattern: correlations.cosmicPattern
   };
 }
 

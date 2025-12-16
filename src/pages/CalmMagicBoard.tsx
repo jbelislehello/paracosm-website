@@ -45,6 +45,7 @@ import { DetectedPattern, PatternHistoryEntry } from '@/utils/patternDetection';
 import { TopologiesTab } from '@/components/calm-magic/topologies/TopologiesTab';
 import { ManifoldSeason } from '@/utils/torusManifoldMath';
 import { getCurrentUnlockedRing } from '@/utils/ringToleranceSystem';
+import { getHexagramDataForSummary } from '@/components/calm-magic/topologies/TopologicalMetricsPanel';
 
 
 const ROW_LABELS = ['Mindsets', 'Agilities', 'Goals', 'Intuition', 'Compasses', 'Norms', 'Synergies', 'Protocols & Architectures'];
@@ -1411,6 +1412,7 @@ const CalmMagicBoard = () => {
         prdId={prdId}
         onGeneratePrdLayer={handleGeneratePrdLayer}
         onViewPrd={prdId ? () => navigate(`/prds/${prdId}`) : undefined}
+        hexagramData={getHexagramDataForSummary(visitedTiles)}
       />
 
       {/* Insight Connections Graph */}
