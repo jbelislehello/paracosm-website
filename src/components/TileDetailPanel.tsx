@@ -461,7 +461,7 @@ const TileDetailPanel = ({
         </TabsContent>
 
         {/* FOCUS Tab */}
-        <TabsContent value="focus" className="flex-1 m-0 min-h-0 overflow-auto">
+        <TabsContent value="focus" className="flex-1 m-0 min-h-0">
           <MinimalistTileCard
             selectedTile={selectedTile}
             board={board}
@@ -474,8 +474,8 @@ const TileDetailPanel = ({
         </TabsContent>
 
         {/* MANIFOLDS Tab */}
-        <TabsContent value="manifolds" className="flex-1 m-0 min-h-0">
-          <ScrollArea className="h-full">
+        <TabsContent value="manifolds" className="flex-1 m-0 min-h-0 flex flex-col">
+          <ScrollArea className="flex-1">
             <div className="p-2">
               <Accordion type="single" collapsible className="w-full">
                 {/* Emotional Check-in */}
