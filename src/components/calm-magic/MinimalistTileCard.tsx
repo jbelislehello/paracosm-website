@@ -4,8 +4,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { X, Send, Sparkles, ArrowRight, Loader2, Check, ArrowLeft, Maximize2, Minimize2, Save, MessageSquare, GitBranch, Network, GitMerge } from 'lucide-react';
-import { TILE_CONTENTS } from '@/data/tileContents';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { X, Send, Sparkles, ArrowRight, Loader2, Check, ArrowLeft, Maximize2, Minimize2, Save, MessageSquare, GitBranch, Network, GitMerge, ChevronDown, MapPin } from 'lucide-react';
+import { TILE_CONTENTS, ROW_LABELS, COLUMN_LABELS } from '@/data/tileContents';
 import { useAgentTileConversation } from '@/hooks/useAgentTileConversation';
 import { cn } from '@/lib/utils';
 import { toast } from '@/hooks/use-toast';
@@ -373,16 +374,17 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
 
   const renderQuickMode = () => (
     <div className="space-y-6">
-      {/* Core Question */}
-      <div className="text-center space-y-2">
-        <Sparkles className="w-5 h-5 mx-auto text-primary/60" />
-        <p className="text-lg font-medium leading-relaxed">{latestQuestion}</p>
-        {isLoading && (
-          <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-            <Loader2 className="w-3 h-3 animate-spin" />
-            Thinking...
-          </div>
-        )}
+      {/* Core Question as conversational bubble */}
+      <div className="flex justify-start">
+        <div className="bg-muted/60 rounded-2xl rounded-tl-sm px-4 py-3 max-w-[90%] shadow-sm">
+          <p className="font-bold text-base leading-relaxed">{latestQuestion}</p>
+          {isLoading && (
+            <div className="flex items-center gap-2 text-xs text-muted-foreground mt-2">
+              <Loader2 className="w-3 h-3 animate-spin" />
+              Thinking...
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Posture Selection */}
@@ -694,17 +696,51 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
           </div>
         )}
         
-        {/* Embedded compact controls */}
+        {/* Embedded compact header with tile info */}
         {embedded && (
-          <div className="flex items-center justify-end gap-2 px-3 py-2 border-b border-border/30">
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">Quick</span>
-              <Switch 
-                checked={quickMode} 
-                onCheckedChange={setQuickMode}
-                className="scale-75"
-              />
+          <div className="border-b border-border/30">
+            {/* Compact tile header */}
+            <div className="flex items-center justify-between px-3 py-2">
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-primary" />
+                <span className="font-semibold text-sm">Tile {tileId}</span>
+                <span className="text-muted-foreground text-sm">·</span>
+                <span className="text-sm text-muted-foreground truncate max-w-[200px]">
+                  {tileContent && ROW_LABELS[tileContent.rowKey]?.full} × {tileContent && COLUMN_LABELS[tileContent.colKey]?.full}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted-foreground">Quick</span>
+                <Switch 
+                  checked={quickMode} 
+                  onCheckedChange={setQuickMode}
+                  className="scale-75"
+                />
+              </div>
             </div>
+            
+            {/* Collapsible extra tile info */}
+            <Collapsible>
+              <CollapsibleTrigger asChild>
+                <button className="w-full flex items-center justify-center gap-1 py-1 text-xs text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
+                  <span>More tile context</span>
+                  <ChevronDown className="w-3 h-3" />
+                </button>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <div className="px-3 py-2 bg-muted/30 text-xs space-y-1">
+                  {tileContent?.name && (
+                    <p className="text-muted-foreground font-medium">{tileContent.name}</p>
+                  )}
+                  {tileContent?.deliverable && (
+                    <p className="text-muted-foreground">Deliverable: {tileContent.deliverable}</p>
+                  )}
+                  <div className="flex flex-wrap gap-1 pt-1">
+                    <Badge variant="outline" className="text-[10px]">{tileContent?.phase}</Badge>
+                  </div>
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
           </div>
         )}
 
