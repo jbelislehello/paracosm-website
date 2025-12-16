@@ -94,12 +94,12 @@ export function TopologiesTab({
         { color: 'bg-amber-500/80', label: 'Ring 4: Full' }
       ];
     }
-    // Isometric view - show ring expansion pattern
+    // Isometric view - show ring expansion pattern with matching colors
     return [
-      { color: 'bg-gray-900', label: 'Ring 1: Inner Core' },
-      { color: 'bg-gray-700', label: 'Ring 2: Stretch' },
-      { color: 'bg-gray-500', label: 'Ring 3: Edge' },
-      { color: 'bg-gray-400', label: 'Ring 4: Integrator' },
+      { color: 'bg-[hsl(142_71%_45%)]', label: 'Ring 1: Inner Core' },
+      { color: 'bg-[hsl(217_91%_60%)]', label: 'Ring 2: Stretch' },
+      { color: 'bg-[hsl(38_92%_50%)]', label: 'Ring 3: Edge' },
+      { color: 'bg-[hsl(280_70%_50%)]', label: 'Ring 4: Integrator' },
       { color: 'bg-primary/70', label: 'Visited (path shown)' }
     ];
   };
