@@ -55,6 +55,7 @@ export const useAgentTileConversation = (
   const [currentQuestion, setCurrentQuestion] = useState<string>('');
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [pendingAutoSave, setPendingAutoSave] = useState(false);
   const autoSaveTriggered = useRef(false);
   const previousTile = useRef<{ row: number; col: number } | null>(null);
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -271,6 +272,11 @@ export const useAgentTileConversation = (
         }]);
       }
 
+      // Signal that auto-save should happen - conversation flows into ontology
+      if (isAuthenticated) {
+        setPendingAutoSave(true);
+      }
+
       return true;
 
     } catch (err) {
@@ -280,7 +286,7 @@ export const useAgentTileConversation = (
     } finally {
       setIsLoading(false);
     }
-  }, [tile, season, messages, completedTiles, buildTileContext, currentBranchId]);
+  }, [tile, season, messages, completedTiles, buildTileContext, currentBranchId, isAuthenticated]);
 
   // Save conversation as Polen entry (saves current branch)
   const saveConversationAsPolen = useCallback(async (silent: boolean = false): Promise<boolean> => {
@@ -345,24 +351,10 @@ export const useAgentTileConversation = (
     }
   }, [tile, isAuthenticated, messages, season, currentQuestion, buildTileContext, branches, currentBranchId]);
 
-  // Debounced auto-save after user response
+  // Auto-save is now immediate - this is kept for edge cases
   const scheduleAutoSave = useCallback(() => {
-    // Clear any existing timeout
-    if (autoSaveTimeoutRef.current) {
-      clearTimeout(autoSaveTimeoutRef.current);
-    }
-    
-    // Schedule save after 3 seconds of inactivity
-    autoSaveTimeoutRef.current = setTimeout(async () => {
-      const currentMessages = messages();
-      if (currentMessages.length >= 2 && isAuthenticated) {
-        const saved = await saveConversationAsPolen(true);
-        if (saved) {
-          console.log('Auto-saved conversation after response');
-        }
-      }
-    }, 3000);
-  }, [messages, isAuthenticated, saveConversationAsPolen]);
+    // No-op: auto-save is now immediate in sendResponse
+  }, []);
 
   // Reset conversation
   const resetConversation = useCallback(() => {
@@ -417,13 +409,19 @@ export const useAgentTileConversation = (
     };
   }, []);
 
-  // Schedule auto-save when messages change after user response
+  // Auto-save immediately when pendingAutoSave is set - conversation flows into ontology
   useEffect(() => {
-    const currentMessages = messages();
-    if (currentMessages.length >= 2 && isAuthenticated) {
-      scheduleAutoSave();
+    if (pendingAutoSave && isAuthenticated) {
+      const doSave = async () => {
+        const saved = await saveConversationAsPolen(true);
+        if (saved) {
+          console.log('Conversation woven into memory');
+        }
+        setPendingAutoSave(false);
+      };
+      doSave();
     }
-  }, [allMessages.length, isAuthenticated, scheduleAutoSave]);
+  }, [pendingAutoSave, isAuthenticated, saveConversationAsPolen]);
 
   return {
     messages: messages(),
