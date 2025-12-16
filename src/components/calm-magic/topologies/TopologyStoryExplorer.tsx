@@ -560,7 +560,7 @@ ${story.invitation}
       </CollapsibleTrigger>
 
       {/* Secrets Content - Collapsible */}
-      <CollapsibleContent className="overflow-hidden data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up">
+      <CollapsibleContent className="overflow-hidden data-[state=open]:animate-collapsible-down data-[state=closed]:animate-collapsible-up">
         <div className="mt-4 space-y-4 animate-fade-in">
           {/* CONCRETE INSIGHT CARD - AT THE TOP for immediate practical value */}
           <ConcreteInsightCard insight={story?.concreteInsight || null} isLoading={isLoading} />
