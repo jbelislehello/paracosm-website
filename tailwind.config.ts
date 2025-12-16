@@ -122,6 +122,16 @@ export default {
                     '0%, 100%': { transform: 'scale(1)', opacity: '1' },
                     '50%': { transform: 'scale(1.3)', opacity: '0.5' }
                 },
+                'prd-glow': {
+                    '0%, 100%': { 
+                        boxShadow: '0 0 8px hsl(var(--primary) / 0.3)',
+                        borderColor: 'hsl(var(--primary) / 0.3)'
+                    },
+                    '50%': { 
+                        boxShadow: '0 0 16px hsl(var(--primary) / 0.5)',
+                        borderColor: 'hsl(var(--primary) / 0.5)'
+                    }
+                },
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
@@ -131,6 +141,7 @@ export default {
                 'gradient-x': 'gradient-x 15s ease infinite',
                 'draw-path': 'draw-path 0.6s ease-out forwards',
                 'shadow-pulse': 'shadow-pulse 0.6s ease-out',
+                'prd-glow': 'prd-glow 2s ease-in-out infinite',
 			}
 		}
 	},
