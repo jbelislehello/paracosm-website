@@ -14,7 +14,6 @@ interface IsometricCubeMatrixProps {
   onTileClick?: (row: number, col: number) => void;
   densityMap?: Map<string, number>;
   viewMode?: IsometricViewMode;
-  showHorizonGrid?: boolean;
   showDepthFog?: boolean;
   cubeSize?: number;
   isAnimating?: boolean;
@@ -45,7 +44,6 @@ export function IsometricCubeMatrix({
   onTileClick,
   densityMap = new Map(),
   viewMode = 'isometric',
-  showHorizonGrid = true,
   showDepthFog = true,
   cubeSize = 32,
   isAnimating = false
@@ -311,27 +309,6 @@ export function IsometricCubeMatrix({
           p.vertex(size/2, size/2);
           p.vertex(-size/2, size/2);
           p.endShape(p.CLOSE);
-        }
-        
-        // Draw grid lines on the floor
-        if (showHorizonGrid) {
-          p.stroke(hue, 20, 25, opacity * 0.4);
-          p.strokeWeight(1);
-          
-          const gridExtent = cubeSize * 14;
-          const gridStep = cubeSize * 1.5;
-          
-          for (let i = -gridExtent; i <= gridExtent; i += gridStep) {
-            // Fade lines toward edges
-            const distFromCenter = Math.abs(i) / gridExtent;
-            const lineOpacity = opacity * 0.35 * (1 - distFromCenter * 0.7);
-            p.stroke(hue, 15, 30, lineOpacity);
-            
-            // X lines
-            p.line(i, -gridExtent, i, gridExtent);
-            // Y lines  
-            p.line(-gridExtent, i, gridExtent, i);
-          }
         }
         
         // Draw ground shadows under cube positions
@@ -1004,7 +981,7 @@ export function IsometricCubeMatrix({
     };
   }, [
     selectedTile, season, visitedTiles, journeyPath, currentUnlockedRing,
-    onTileClick, densityMap, viewMode, showHorizonGrid, showDepthFog,
+    onTileClick, densityMap, viewMode, showDepthFog,
     cubeSize, isAnimating, getCubeState, getInterpolatedPosition, 
     gridTo3D, getSeasonColor, getSeasonHue, getDepthFog, foldProgress, hoverTile
   ]);
