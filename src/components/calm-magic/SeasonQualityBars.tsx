@@ -6,13 +6,13 @@ interface SeasonQualityBarsProps {
   compact?: boolean;
 }
 
-// Explicit colors for each quality (matching chart colors)
+// Explicit colors for each quality (matching Ring → Quality mapping)
 const QUALITY_COLORS: Record<keyof SeasonQualities, string> = {
-  vitality: 'hsl(346, 77%, 49%)',      // Rose/Love
-  spaciousness: 'hsl(270, 60%, 50%)',  // Purple/Magic
-  wholeness: 'hsl(210, 70%, 50%)',     // Blue/Calm
-  openness: 'hsl(142, 71%, 45%)',      // Green/Open
-  expansion: 'hsl(45, 93%, 47%)',      // Amber/Free
+  vitality: 'hsl(346, 77%, 49%)',      // Rose/Love (foundational)
+  calmness: 'hsl(210, 70%, 50%)',      // Blue - Ring 1: Inner Core
+  spaciousness: 'hsl(270, 60%, 50%)',  // Purple - Ring 2: Stretch Zone
+  openness: 'hsl(142, 71%, 45%)',      // Green - Ring 3: Edge Zone
+  freedom: 'hsl(45, 93%, 47%)',        // Amber - Ring 4: Integrator
 };
 
 export const SeasonQualityBars: React.FC<SeasonQualityBarsProps> = ({ 

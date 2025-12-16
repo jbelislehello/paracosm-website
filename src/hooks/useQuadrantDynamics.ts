@@ -19,10 +19,10 @@ const STORAGE_KEY = 'calmMagicTrajectory';
 
 const defaultQualities: SeasonQualities = {
   vitality: 0,
+  calmness: 0,
   spaciousness: 0,
-  wholeness: 0,
   openness: 0,
-  expansion: 0,
+  freedom: 0,
 };
 
 const defaultShadowFactors: ShadowFactors = {
@@ -45,11 +45,11 @@ const defaultTrajectoryState: TrajectoryState = {
 
 // Calculate base shadow position from season qualities
 function calculateBasePosition(qualities: SeasonQualities): QuadrantPosition {
-  const noveltyWeight = (qualities.spaciousness + qualities.openness + qualities.expansion) / 3;
-  const memoryWeight = (qualities.vitality + qualities.wholeness) / 2;
+  const noveltyWeight = (qualities.spaciousness + qualities.openness + qualities.freedom) / 3;
+  const memoryWeight = (qualities.vitality + qualities.calmness) / 2;
   const x = ((noveltyWeight - memoryWeight) / 100) * 2;
   
-  const sovereigntyWeight = (qualities.wholeness + qualities.openness) / 2;
+  const sovereigntyWeight = (qualities.calmness + qualities.openness) / 2;
   const intimacyWeight = (qualities.vitality + qualities.spaciousness) / 2;
   const y = ((sovereigntyWeight - intimacyWeight) / 100) * 2;
   
@@ -203,10 +203,10 @@ export function useQuadrantDynamics(
   const seasonQualities = useMemo((): SeasonQualities => {
     return {
       vitality: Math.round((seasonProgress.POLLENS?.size || 0) / 64 * 100),
+      calmness: Math.round((seasonProgress.POEMS?.size || 0) / 64 * 100),
       spaciousness: Math.round((seasonProgress.NOEMS?.size || 0) / 64 * 100),
-      wholeness: Math.round((seasonProgress.POEMS?.size || 0) / 64 * 100),
       openness: Math.round((seasonProgress.TOTEMS?.size || 0) / 64 * 100),
-      expansion: Math.round((seasonProgress.ANTHEMS?.size || 0) / 64 * 100),
+      freedom: Math.round((seasonProgress.ANTHEMS?.size || 0) / 64 * 100),
     };
   }, [seasonProgress]);
 

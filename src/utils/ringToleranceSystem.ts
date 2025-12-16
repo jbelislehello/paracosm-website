@@ -10,6 +10,7 @@ export type RingLevel = 1 | 2 | 3 | 4;
 export interface RingDefinition {
   ring: RingLevel;
   name: string;
+  qualityKey: 'calmness' | 'spaciousness' | 'openness' | 'freedom';
   patternType: PatternType;
   tiles: string[]; // Tile keys for this ring
   color: string;
@@ -20,49 +21,54 @@ export interface RingDefinition {
 }
 
 // Define the 4 expansion rings with their tile mappings
+// Ring → Quality mapping: Inner=Calmness, Stretch=Spaciousness, Edge=Openness, Integrator=Freedom
 export const RING_DEFINITIONS: RingDefinition[] = [
   {
     ring: 1,
     name: 'Inner Core',
+    qualityKey: 'calmness',
     patternType: 'trigram',
     tiles: generateRingTiles(1), // Central 4×4 (16 tiles)
-    color: 'hsl(142 71% 45%)', // Green
-    icon: '☰',
+    color: 'hsl(210 70% 50%)', // Blue (Calmness)
+    icon: '🧘',
     unlockThreshold: 0.75,
-    wisdom: 'Ground your tolerance in triangular wisdom',
+    wisdom: 'Calmness grounds your tolerance in centered awareness',
     zone: 'inner'
   },
   {
     ring: 2,
     name: 'Stretch Zone',
+    qualityKey: 'spaciousness',
     patternType: 'hexagram',
     tiles: generateRingTiles(2), // 6×6 ring (20 tiles)
-    color: 'hsl(217 91% 60%)', // Blue
-    icon: '☯',
+    color: 'hsl(270 60% 50%)', // Purple (Spaciousness)
+    icon: '✨',
     unlockThreshold: 0.6,
-    wisdom: 'Hexagram echoes require stretch capacity',
+    wisdom: 'Spaciousness expands your capacity for new patterns',
     zone: 'stretch'
   },
   {
     ring: 3,
     name: 'Edge Zone',
+    qualityKey: 'openness',
     patternType: 'geometric',
     tiles: generateRingTiles(3), // 8×8 outer (24 tiles excluding corners)
-    color: 'hsl(38 92% 50%)', // Amber
-    icon: '◇',
+    color: 'hsl(142 71% 45%)', // Green (Openness)
+    icon: '🌿',
     unlockThreshold: 0.5,
-    wisdom: 'Geometric patterns emerge at boundaries',
+    wisdom: 'Openness emerges at boundaries where growth begins',
     zone: 'outer'
   },
   {
     ring: 4,
     name: 'Integrator',
+    qualityKey: 'freedom',
     patternType: 'sequence',
     tiles: ['0-0', '0-7', '7-0', '7-7'], // 4 corner anchors
-    color: 'hsl(280 70% 50%)', // Purple
-    icon: '✧',
+    color: 'hsl(45 93% 47%)', // Amber (Freedom)
+    icon: '🦅',
     unlockThreshold: 1.0, // All 4 corners required
-    wisdom: 'The corners anchor infinite patterns',
+    wisdom: 'Freedom integrates all patterns into transcendence',
     zone: 'integrator'
   }
 ];
@@ -311,21 +317,21 @@ export const RING_QUADRANT_TENDENCY: Record<RingLevel, QuadrantTendency> = {
   1: { 
     primary: 'IM', 
     pull: { x: -0.3, y: -0.3 },
-    reason: 'Inner Core = safety + continuity → Intimacy + Memory' 
+    reason: 'Calmness (Inner Core) = safety + continuity → Intimacy + Memory' 
   },
   2: { 
     primary: 'IN', 
     pull: { x: 0.2, y: -0.2 },
-    reason: 'Stretch Zone = connection + experimentation → Intimacy + Novelty' 
+    reason: 'Spaciousness (Stretch) = connection + experimentation → Intimacy + Novelty' 
   },
   3: { 
     primary: 'SN', 
     pull: { x: 0.4, y: 0.3 },
-    reason: 'Edge Zone = independence + exploration → Sovereignty + Novelty' 
+    reason: 'Openness (Edge) = independence + exploration → Sovereignty + Novelty' 
   },
   4: { 
     primary: 'SM', 
     pull: { x: -0.2, y: 0.4 },
-    reason: 'Corners = anchoring + transcendence → Sovereignty + Memory' 
+    reason: 'Freedom (Integrator) = anchoring + transcendence → Sovereignty + Memory' 
   }
 };
