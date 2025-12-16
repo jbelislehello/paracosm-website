@@ -42,6 +42,15 @@ export interface TopologicalSignature {
   // AI-generated nudge suggestion
   aiNudge?: string;
   
+  // Individual entry sentiments (from AI analysis)
+  sentiments?: PolenSentiment[];
+  
+  // AI-generated pattern insight
+  patternInsight?: string;
+  
+  // Overall valence summary
+  overallValence?: 'positive' | 'negative' | 'neutral' | 'ambivalent';
+  
   // Analysis metadata
   analyzedAt: string;
   polenCount: number;
