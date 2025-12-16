@@ -101,9 +101,9 @@ export function TopologiesTab({
   const handleRevealSecrets = useCallback(() => {
     if (visitedTiles.size === 0) return;
     
-    // Trigger a fresh fetch and reveal
-    handleFetchStory();
+    // Expand accordion first, then fetch (so loading appears inside expanded accordion)
     setSecretsRevealed(true);
+    handleFetchStory();
   }, [handleFetchStory, visitedTiles.size]);
 
   const handleReset = () => {
