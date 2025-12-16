@@ -172,27 +172,37 @@ const CalmMagicBoard = () => {
   
   // Calculate current unlocked ring based on visited tiles
   const currentUnlockedRing = getCurrentUnlockedRing(visitedTiles);
-  // Quadrant dynamics hook
-  const {
-    seasonQualities,
-    shadowPosition,
-    shadowQuadrant,
-    higherSelfPosition,
-    higherSelfQuadrant,
-    prophecyReflection,
-    trajectoryLog,
-    setProphecy,
-    applyShadowNudge,
-    logTrajectoryEvent,
-    resetTrajectory,
-  } = useQuadrantDynamics(seasonProgress, currentSeason);
-
   // Emotional check-ins hook
   const {
     checkins: emotionalCheckins,
     addCheckin,
     getAllCheckins,
   } = useTileEmotionalCheckins();
+
+  // Get all check-ins for quadrant dynamics
+  const allCheckins = getAllCheckins();
+
+  // Quadrant dynamics hook - pass emotional check-ins for 30% influence on shadow
+  const {
+    seasonQualities,
+    shadowPosition,
+    shadowQuadrant,
+    shadowFactors,
+    gaps,
+    shadowNudge,
+    higherSelfPosition,
+    higherSelfQuadrant,
+    prophecyReflection,
+    trajectoryLog,
+    topologicalSignature,
+    isAnalyzing,
+    setProphecy,
+    applyShadowNudge,
+    resetShadowNudge,
+    logTrajectoryEvent,
+    resetTrajectory,
+    analyzeTopology,
+  } = useQuadrantDynamics(seasonProgress, currentSeason, {}, journeyPath, allCheckins);
 
   const {
     isAuthenticated,
@@ -591,6 +601,54 @@ const CalmMagicBoard = () => {
       setIsGeneratingPrd(false);
     }
   };
+
+  // Handle journey topology analysis
+  const handleAnalyzeJourney = useCallback(async () => {
+    if (!user?.id) {
+      toast.error('Please sign in to analyze your journey');
+      return;
+    }
+    
+    // Fetch ALL POLEN entries for analysis
+    const { data: entries, error } = await supabase
+      .from('polen_entries')
+      .select('id, content, tile_id, season_context, tags')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: true });
+    
+    if (error) {
+      console.error('Failed to fetch POLEN entries:', error);
+      toast.error('Failed to load your journey entries');
+      return;
+    }
+    
+    // Also include emotional check-in notes as analyzable content
+    const checkinEntries = allCheckins
+      .filter(c => c.note)
+      .map(c => ({
+        id: c.id,
+        content: `[Emotional Check-in at tile ${c.tile_id}] Felt: ${c.felt_state || 'unspecified'}. ${c.note}`,
+        tile_id: c.tile_id,
+        season_context: currentSeason,
+        tags: ['manifold-note', 'emotional-checkin']
+      }));
+    
+    const combinedEntries = [...(entries || []), ...checkinEntries];
+    
+    if (combinedEntries.length === 0) {
+      toast.warning('No journey entries found. Complete some tiles first!');
+      return;
+    }
+    
+    const result = await analyzeTopology(combinedEntries);
+    
+    if (result) {
+      toast.success(`Analysis complete: ${result.inferredQuadrant} tendency detected`, {
+        description: result.aiNudge || `Confidence: ${Math.round(result.confidence * 100)}%`,
+        duration: 5000,
+      });
+    }
+  }, [user?.id, analyzeTopology, allCheckins, currentSeason]);
 
   // Get Polen count for current season
   const getCurrentSeasonPolenCount = () => {
@@ -1078,8 +1136,16 @@ const CalmMagicBoard = () => {
               higherSelfQuadrant={higherSelfQuadrant}
               prophecyReflection={prophecyReflection}
               trajectoryLog={trajectoryLog}
+              shadowFactors={shadowFactors}
+              gaps={gaps}
+              shadowNudge={shadowNudge}
+              topologicalSignature={topologicalSignature}
+              isAnalyzingTopology={isAnalyzing}
               onSetProphecy={setProphecy}
               onResetTrajectory={resetTrajectory}
+              onApplyShadowNudge={applyShadowNudge}
+              onResetShadowNudge={resetShadowNudge}
+              onAnalyzeJourney={handleAnalyzeJourney}
             />
           </div>
         )}
