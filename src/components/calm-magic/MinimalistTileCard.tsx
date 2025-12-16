@@ -749,8 +749,8 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
 
         {/* Content */}
         <div className={cn(
-          "overflow-y-auto",
-          embedded ? "p-3" : "p-6 flex-1",
+          "overflow-y-auto flex-1",
+          embedded ? "p-3" : "p-6",
           isExpanded ? "max-h-[calc(90vh-140px)]" : ""
         )}>
           {quickMode ? renderQuickMode() : renderStepContent()}
