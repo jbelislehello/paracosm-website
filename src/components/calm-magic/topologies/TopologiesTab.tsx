@@ -286,13 +286,20 @@ export function TopologiesTab({
         {renderLayout()}
       </div>
 
-      {/* Interactive Story Explorer */}
+      {/* Interactive Story Explorer with Journey Insights */}
       <TopologyStoryExplorer
         story={story}
         isLoading={isLoading}
         error={error}
         onRegenerate={handleFetchStory}
         onSaveToJournal={handleSaveToJournal}
+        viewMode={viewMode}
+        revealedMysteries={zones}
+        savedMysteryIds={savedZones}
+        onSaveMystery={handleSaveZoneAsPolen}
+        visitedTiles={visitedTiles}
+        currentUnlockedRing={currentUnlockedRing}
+        journeyPath={journeyPath}
       />
 
       {/* Legend */}
