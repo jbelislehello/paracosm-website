@@ -44,12 +44,14 @@ export function TopologyStoryExplorer({
     setRevealedChapters(prev => new Set([...prev, index]));
     
     // If all chapters revealed, unlock the key revelation
-    if (story && revealedChapters.size + 1 >= story.chapters.length) {
+    if (story?.chapters && revealedChapters.size + 1 >= story.chapters.length) {
       setTimeout(() => setShowRevelation(true), 600);
     }
   };
 
-  const allChaptersRevealed = story ? revealedChapters.size >= story.chapters.length : false;
+  const allChaptersRevealed = story?.chapters 
+    ? revealedChapters.size >= story.chapters.length 
+    : false;
 
   const handleSave = () => {
     if (!story || !onSaveToJournal) return;
@@ -125,7 +127,7 @@ ${story.invitation}
     );
   }
 
-  const progress = story.chapters.length > 0 
+  const progress = story?.chapters?.length 
     ? Math.round((revealedChapters.size / story.chapters.length) * 100) 
     : 0;
 
