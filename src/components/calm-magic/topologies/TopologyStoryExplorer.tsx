@@ -444,18 +444,43 @@ export function TopologyStoryExplorer({
   const handleSave = () => {
     if (!story || !onSaveToJournal) return;
     
-    const content = `## ${story.storyTitle}
+    // Handle new wonderInsight format
+    if (story.wonderInsight) {
+      const content = `## ${story.storyTitle}
 
-**Mystery**: ${story.opening_mystery}
+**The Revelation**: ${story.wonderInsight.opening_wonder}
 
-### Discoveries
-${story.chapters.map((ch, i) => `**${ch.title}**: ${ch.content}`).join('\n\n')}
+### The Gap Between Shadow & Higher Self
+${story.wonderInsight.shadow_higher_self_insight}
 
-### Key Revelation
-${story.key_revelation}
+### Where You Stand
+${story.wonderInsight.tile_position_meaning}
+
+### What You're Building
+${story.wonderInsight.prd_connection}
 
 ### Invitation
-${story.invitation}
+${story.wonderInsight.invitation_to_wonder}
+
+---
+*Coverage: ${story.stats.coverage}% | Ring: ${story.stats.currentRing} | Steps: ${story.stats.pathLength}*`;
+      onSaveToJournal(content);
+      return;
+    }
+    
+    // Legacy chapter-based format
+    const content = `## ${story.storyTitle}
+
+**Mystery**: ${story.opening_mystery || ''}
+
+### Discoveries
+${story.chapters?.map((ch, i) => `**${ch.title}**: ${ch.content}`).join('\n\n') || ''}
+
+### Key Revelation
+${story.key_revelation || ''}
+
+### Invitation
+${story.invitation || ''}
 
 ---
 *Coverage: ${story.stats.coverage}% | Ring: ${story.stats.currentRing} | Steps: ${story.stats.pathLength}*`;
@@ -598,7 +623,7 @@ ${story.invitation}
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    {story && (
+                    {story && story.chapters && story.chapters.length > 0 && (
                       <div className="text-right">
                         <span className="text-xs text-muted-foreground block">
                           {revealedChapters.size}/{story.chapters.length} chapters
