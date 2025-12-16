@@ -97,7 +97,10 @@ export const PrdUnlockProgress = ({
     return (
       <>
         {showConfetti && <Confetti />}
-        <Badge variant="outline" className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 border-primary/30">
+        <Badge 
+          variant="outline" 
+          className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 border-primary/30 animate-prd-glow"
+        >
           <Unlock className="w-3.5 h-3.5 text-primary" />
           <span className="text-xs font-medium text-primary">PRD Ready</span>
           <Sparkles className="w-3 h-3 text-primary animate-pulse" />
