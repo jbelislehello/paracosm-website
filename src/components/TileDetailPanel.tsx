@@ -233,14 +233,9 @@ const TileDetailPanel = ({
     <div className="h-full flex flex-col bg-gradient-to-br from-background to-muted/30">
       {/* Prominent Simple Title */}
       <div className="px-5 py-3 border-b border-border/30 flex items-center justify-between shrink-0">
-        <div>
-          <h2 className="text-lg font-semibold">
-            {tileContent?.name || `${rowLabels[selectedTile.row].name} × ${colLabels[selectedTile.col].name}`}
-          </h2>
-          <p className="text-xs text-muted-foreground font-mono">
-            {rowLabels[selectedTile.row].letter} × {colLabels[selectedTile.col].letter}
-          </p>
-        </div>
+        <h2 className="text-lg font-semibold">
+          {tileContent?.name || `${rowLabels[selectedTile.row].name} × ${colLabels[selectedTile.col].name}`}
+        </h2>
         <Button variant="ghost" size="icon" onClick={handleClose} className="shrink-0 h-8 w-8">
           <X className="w-4 h-4" />
         </Button>
@@ -252,7 +247,7 @@ const TileDetailPanel = ({
           <AccordionTrigger className="px-5 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:no-underline">
             <span className="flex items-center gap-2">
               <BookOpen className="w-3 h-3" />
-              Tile {tileId} = {rowLabels[selectedTile.row].letter} × {colLabels[selectedTile.col].letter} • {currentSeason}
+              {rowLabels[selectedTile.row].name} × {colLabels[selectedTile.col].name}
             </span>
           </AccordionTrigger>
           <AccordionContent className="px-5 pb-4">
