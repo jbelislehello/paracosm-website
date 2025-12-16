@@ -291,7 +291,7 @@ export function useMysteryZones(config: MysteryZoneConfig | null) {
     }
   });
 
-  // Calculate zones when config changes
+  // Calculate zones when config changes - use stable primitives for dependencies
   useEffect(() => {
     if (!config) return;
     
@@ -305,7 +305,14 @@ export function useMysteryZones(config: MysteryZoneConfig | null) {
     }));
     
     setZones(zonesWithState);
-  }, [config, revealedZones, fragments]);
+  }, [
+    config?.viewMode,
+    config?.visitedTiles?.size,
+    config?.journeyPath?.length,
+    config?.currentUnlockedRing,
+    revealedZones,
+    fragments
+  ]);
 
   // Persist revealed zones
   useEffect(() => {

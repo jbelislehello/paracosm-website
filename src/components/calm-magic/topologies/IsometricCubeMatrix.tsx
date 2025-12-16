@@ -50,8 +50,10 @@ export function IsometricCubeMatrix({
 }: IsometricCubeMatrixProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const p5Ref = useRef<p5 | null>(null);
-  const [foldProgress, setFoldProgress] = useState(0);
-  const [hoverTile, setHoverTile] = useState<{ row: number; col: number } | null>(null);
+  
+  // Use refs for animation state to avoid re-renders in draw loop
+  const foldProgressRef = useRef(0);
+  const hoverTileRef = useRef<{ row: number; col: number } | null>(null);
   
   // Camera controls - turntable style
   // x = tilt angle (looking down), y = rotation around vertical axis (turntable spin)
@@ -197,10 +199,10 @@ export function IsometricCubeMatrix({
         p.rotateX(rotationRef.current.x);
         p.rotateY(rotationRef.current.y);
 
-        // Calculate fold progress for animation
-        const targetFold = viewMode === 'torus' ? 1 : viewMode === 'isometric' ? 0 : foldProgress;
-        const currentFold = foldProgress + (targetFold - foldProgress) * 0.05;
-        setFoldProgress(currentFold);
+        // Calculate fold progress for animation using ref
+        const targetFold = viewMode === 'torus' ? 1 : viewMode === 'isometric' ? 0 : foldProgressRef.current;
+        const currentFold = foldProgressRef.current + (targetFold - foldProgressRef.current) * 0.05;
+        foldProgressRef.current = currentFold;
 
         // Ground plane removed - cubes float on transparent background
 
@@ -264,7 +266,7 @@ export function IsometricCubeMatrix({
         if (isSelected) elevation = cubeSize * 0.5;
         else if (isVisited) elevation = cubeSize * 0.15 + density * cubeSize * 0.08;
 
-        const isHovered = hoverTile?.row === row && hoverTile?.col === col;
+        const isHovered = hoverTileRef.current?.row === row && hoverTileRef.current?.col === col;
         if (isHovered && isAccessible) elevation += cubeSize * 0.12;
 
         p.push();
@@ -755,9 +757,9 @@ export function IsometricCubeMatrix({
         drawMinimap(p, hue);
 
         // Hover info
-        if (hoverTile) {
-          const state = getCubeState(hoverTile.row, hoverTile.col);
-          const acronym = getTileAcronym(hoverTile.row, hoverTile.col);
+        if (hoverTileRef.current) {
+          const state = getCubeState(hoverTileRef.current.row, hoverTileRef.current.col);
+          const acronym = getTileAcronym(hoverTileRef.current.row, hoverTileRef.current.col);
           const statusText = state.isVisited ? '✓ Visited' : 
                             state.isAccessible ? 'Available' : 
                             '🔒 Locked';
@@ -767,7 +769,7 @@ export function IsometricCubeMatrix({
           
           p.fill(255, 255, 255, 240);
           p.textSize(12);
-          p.text(`${acronym} (R${hoverTile.row}, C${hoverTile.col}) - ${statusText}`, 
+          p.text(`${acronym} (R${hoverTileRef.current.row}, C${hoverTileRef.current.col}) - ${statusText}`, 
                  -width/2 + 18, height/2 - 35);
         }
 
@@ -862,14 +864,14 @@ export function IsometricCubeMatrix({
         const row = Math.round(projZ / gridScale + gridCenter);
 
         if (row >= 0 && row < 8 && col >= 0 && col < 8) {
-          setHoverTile({ row, col });
+          hoverTileRef.current = { row, col };
         } else {
-          setHoverTile(null);
+          hoverTileRef.current = null;
         }
       };
 
       const handleTileClick = (mouseX: number, mouseY: number) => {
-        if (!onTileClick || foldProgress > 0.5) return;
+        if (!onTileClick || foldProgressRef.current > 0.5) return;
 
         const centerX = width / 2 + panRef.current.x;
         const centerY = height / 2 + panRef.current.y;
@@ -911,7 +913,7 @@ export function IsometricCubeMatrix({
     selectedTile, season, visitedTiles, journeyPath, currentUnlockedRing,
     onTileClick, densityMap, viewMode, showDepthFog,
     cubeSize, isAnimating, getCubeState, getInterpolatedPosition, 
-    gridTo3D, getSeasonColor, getSeasonHue, getDepthFog, foldProgress, hoverTile
+    gridTo3D, getSeasonColor, getSeasonHue, getDepthFog
   ]);
 
   return (

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { ManifoldSeason } from '@/utils/torusManifoldMath';
 import { IsometricCubeMatrix } from './IsometricCubeMatrix';
 import { DoubleDiamondLayout } from './DoubleDiamondLayout';
@@ -65,14 +65,14 @@ export function TopologiesTab({
 
   const { story, isLoading, error, fetchStory, clearStory } = useTopologyInsight();
 
-  // Mystery zones hook - no more position calculations needed
-  const mysteryZonesConfig = {
+  // Memoize mystery zones config to prevent re-renders
+  const mysteryZonesConfig = useMemo(() => ({
     viewMode,
     visitedTiles,
     journeyPath,
     densityMap,
     currentUnlockedRing
-  };
+  }), [viewMode, visitedTiles, journeyPath, densityMap, currentUnlockedRing]);
 
   const { 
     zones, 
