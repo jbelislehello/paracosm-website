@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { ManifoldSeason } from '@/utils/torusManifoldMath';
 import { IsometricCubeMatrix } from './IsometricCubeMatrix';
 import { DoubleDiamondLayout } from './DoubleDiamondLayout';
@@ -10,7 +10,9 @@ import { ToroidalFlowField } from './ToroidalFlowField';
 import { UnfoldedChartProjection } from './UnfoldedChartProjection';
 import { ViewModeSelector, TopologyViewMode } from './ViewModeSelector';
 import { TopologyStoryExplorer } from './TopologyStoryExplorer';
+import { MysteryZoneOverlay } from './MysteryZoneOverlay';
 import { useTopologyInsight } from '@/hooks/useTopologyInsight';
+import { useMysteryZones } from '@/hooks/useMysteryZones';
 import { RingLevel } from '@/utils/ringToleranceSystem';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
@@ -56,8 +58,44 @@ export function TopologiesTab({
   const [viewMode, setViewMode] = useState<TopologyViewMode>('isometric');
   const [cubeSize, setCubeSize] = useState(32);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 });
+  const visualizationRef = useRef<HTMLDivElement>(null);
 
   const { story, isLoading, error, fetchStory, clearStory } = useTopologyInsight();
+
+  // Mystery zones hook
+  const mysteryZonesConfig = containerDimensions.width > 0 ? {
+    viewMode,
+    visitedTiles,
+    journeyPath,
+    densityMap,
+    currentUnlockedRing,
+    containerWidth: containerDimensions.width,
+    containerHeight: containerDimensions.height
+  } : null;
+
+  const { zones, loadingZoneId, revealZone } = useMysteryZones(mysteryZonesConfig);
+
+  // Track visualization container dimensions
+  useEffect(() => {
+    const updateDimensions = () => {
+      if (visualizationRef.current) {
+        setContainerDimensions({
+          width: visualizationRef.current.clientWidth,
+          height: visualizationRef.current.clientHeight
+        });
+      }
+    };
+
+    updateDimensions();
+    
+    const resizeObserver = new ResizeObserver(updateDimensions);
+    if (visualizationRef.current) {
+      resizeObserver.observe(visualizationRef.current);
+    }
+    
+    return () => resizeObserver.disconnect();
+  }, [isFullscreen]);
 
   // Fetch story when view mode changes
   const handleFetchStory = useCallback(() => {
@@ -208,8 +246,19 @@ export function TopologiesTab({
       </div>
 
       {/* Main Visualization */}
-      <div className={`rounded-lg overflow-hidden border border-border bg-background ${isFullscreen ? 'flex-1' : 'h-[calc(100vh-280px)] min-h-[450px]'}`}>
+      <div 
+        ref={visualizationRef}
+        className={`relative rounded-lg overflow-hidden border border-border bg-background ${isFullscreen ? 'flex-1' : 'h-[calc(100vh-280px)] min-h-[450px]'}`}
+      >
         {renderLayout()}
+        
+        {/* Mystery Zone Overlay */}
+        <MysteryZoneOverlay
+          zones={zones}
+          loadingZoneId={loadingZoneId}
+          onRevealZone={revealZone}
+          containerRef={visualizationRef}
+        />
       </div>
 
       {/* Interactive Story Explorer */}
