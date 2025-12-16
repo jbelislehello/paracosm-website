@@ -1,6 +1,45 @@
 // I Ching + Tzolkin Cosmological Mapping for Calm Magic Board
 // Maps the 260-day Tzolkin cycle to the 64-tile board with Castle/Wavespell structure
 
+// 8 I Ching Trigrams (building blocks of hexagrams)
+export interface Trigram {
+  name: string;
+  chinese: string;
+  symbol: string;
+  lines: [boolean, boolean, boolean]; // bottom to top: true=yang (solid), false=yin (broken)
+  element: string;
+  quality: string;
+  direction: string;
+  season: string;
+  family: string;
+  bodyPart: string;
+}
+
+export const TRIGRAMS: Trigram[] = [
+  { name: 'Heaven', chinese: '乾', symbol: '☰', lines: [true, true, true], element: 'Sky', quality: 'Creative', direction: 'Northwest', season: 'Late Autumn', family: 'Father', bodyPart: 'Head' },
+  { name: 'Earth', chinese: '坤', symbol: '☷', lines: [false, false, false], element: 'Earth', quality: 'Receptive', direction: 'Southwest', season: 'Late Summer', family: 'Mother', bodyPart: 'Belly' },
+  { name: 'Water', chinese: '坎', symbol: '☵', lines: [false, true, false], element: 'Water', quality: 'Abysmal', direction: 'North', season: 'Winter', family: 'Middle Son', bodyPart: 'Ear' },
+  { name: 'Fire', chinese: '離', symbol: '☲', lines: [true, false, true], element: 'Fire', quality: 'Clinging', direction: 'South', season: 'Summer', family: 'Middle Daughter', bodyPart: 'Eye' },
+  { name: 'Thunder', chinese: '震', symbol: '☳', lines: [true, false, false], element: 'Thunder', quality: 'Arousing', direction: 'East', season: 'Spring', family: 'Eldest Son', bodyPart: 'Foot' },
+  { name: 'Mountain', chinese: '艮', symbol: '☶', lines: [false, false, true], element: 'Mountain', quality: 'Stillness', direction: 'Northeast', season: 'Late Winter', family: 'Youngest Son', bodyPart: 'Hand' },
+  { name: 'Wind', chinese: '巽', symbol: '☴', lines: [false, true, true], element: 'Wind/Wood', quality: 'Gentle', direction: 'Southeast', season: 'Late Spring', family: 'Eldest Daughter', bodyPart: 'Thigh' },
+  { name: 'Lake', chinese: '兌', symbol: '☱', lines: [true, true, false], element: 'Lake', quality: 'Joyous', direction: 'West', season: 'Autumn', family: 'Youngest Daughter', bodyPart: 'Mouth' },
+];
+
+// Get trigram by lines pattern
+export const getTrigramByLines = (lines: [boolean, boolean, boolean]): Trigram | null => {
+  return TRIGRAMS.find(t => 
+    t.lines[0] === lines[0] && 
+    t.lines[1] === lines[1] && 
+    t.lines[2] === lines[2]
+  ) || null;
+};
+
+// Get trigram by name
+export const getTrigramByName = (name: string): Trigram | null => {
+  return TRIGRAMS.find(t => t.name.toLowerCase() === name.toLowerCase()) || null;
+};
+
 // 20 Solar Seals (Day Signs)
 export const SOLAR_SEALS = [
   { id: 1, name: 'Dragon', glyph: '🐉', meaning: 'Nurtures Birth', color: 'red' },
