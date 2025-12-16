@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, ArrowUpLeft, ArrowUpRight, ArrowDownLeft, ArrowDownRight, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Wand2, Moon, BookOpen, ScrollText, Focus, Layers, Hexagon } from 'lucide-react';
+import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, ArrowUpLeft, ArrowUpRight, ArrowDownLeft, ArrowDownRight, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Wand2, Moon, BookOpen, ScrollText, Focus, Layers, Hexagon, Globe } from 'lucide-react';
 import { canMoveDiagonally, isPortalDay, getKinForTile } from '@/data/cosmologicalMapping';
 import { MinimalistTileCard } from '@/components/calm-magic/MinimalistTileCard';
 import { useState, useEffect, useRef } from 'react';
@@ -25,6 +25,8 @@ import { HexagramJournal } from '@/components/calm-magic/HexagramJournal';
 import { useTzolkinResonance } from '@/hooks/useTzolkinResonance';
 import { toast } from 'sonner';
 import { FeltState, EmotionalAxes, EmotionalCheckInData } from '@/types/trajectory';
+import { TopologiesTab } from '@/components/calm-magic/topologies/TopologiesTab';
+import { ManifoldSeason } from '@/utils/torusManifoldMath';
 
 const rowLabels = [
   { letter: 'M', name: 'Mindsets', stage: 'AGENDAS' },
@@ -82,7 +84,7 @@ const TileDetailPanel = ({
   const [conversationSaved, setConversationSaved] = useState(false);
   const [showMeditationMode, setShowMeditationMode] = useState(false);
   const [highlightedTile, setHighlightedTile] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState<'chat' | 'focus' | 'manifolds'>('chat');
+  const [activeTab, setActiveTab] = useState<'chat' | 'focus' | 'manifolds' | 'topologies'>('chat');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // Tzolkin resonance for meditation mode
@@ -309,6 +311,13 @@ const TileDetailPanel = ({
           >
             <Layers className="w-3 h-3 mr-1" />
             Manifolds
+          </TabsTrigger>
+          <TabsTrigger 
+            value="topologies" 
+            className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-1.5 text-xs font-semibold uppercase tracking-wider"
+          >
+            <Globe className="w-3 h-3 mr-1" />
+            Topologies
           </TabsTrigger>
         </TabsList>
 
@@ -558,6 +567,22 @@ const TileDetailPanel = ({
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+        </TabsContent>
+
+        {/* TOPOLOGIES Tab */}
+        <TabsContent value="topologies" className="flex-1 m-0 min-h-0">
+          <TopologiesTab
+            row={selectedTile.row}
+            col={selectedTile.col}
+            season={(currentSeason as ManifoldSeason) || 'POLLENS'}
+            tileName={tileContent?.name || `${rowLabels[selectedTile.row].name} × ${colLabels[selectedTile.col].name}`}
+            rowLabel={rowLabels[selectedTile.row].name}
+            colLabel={colLabels[selectedTile.col].name}
+            journeyPath={Array.from(visitedTiles).map(id => ({
+              row: Math.floor((id - 1) / 8),
+              col: (id - 1) % 8
+            }))}
+          />
         </TabsContent>
       </Tabs>
 
