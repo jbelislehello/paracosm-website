@@ -424,7 +424,7 @@ const TileDetailPanel = ({
         </TabsContent>
 
         {/* FOCUS Tab */}
-        <TabsContent value="focus" className="flex-1 m-0 min-h-0 p-5">
+        <TabsContent value="focus" className="flex-1 m-0 min-h-0 pt-2.5 px-5 pb-5">
           <MinimalistTileCard
             selectedTile={selectedTile}
             board={board}
