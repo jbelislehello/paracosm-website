@@ -24,6 +24,7 @@ export interface WonderInsight {
   tile_position_meaning: string;
   prd_connection: string;
   invitation_to_wonder: string;
+  consciousness_emergence?: string;
 }
 
 export interface TopologyStory {

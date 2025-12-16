@@ -29,7 +29,8 @@ import {
   CheckCircle2,
   Circle,
   Eye,
-  EyeOff
+  EyeOff,
+  Brain
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -182,7 +183,7 @@ function JourneyInterpretationSection({
   // Calculate quadrant distribution
   const quadrants: Record<string, number> = { SN: 0, IN: 0, IM: 0, SM: 0 };
   visitedTiles.forEach(key => {
-    const [r, c] = key.split(',').map(Number);
+    const [r, c] = key.split('-').map(Number);
     if (r < 4 && c < 4) quadrants.SM++;
     else if (r < 4 && c >= 4) quadrants.IM++;
     else if (r >= 4 && c < 4) quadrants.SN++;
@@ -339,7 +340,7 @@ function SuggestedNextSteps({
   // Calculate quadrant coverage
   const quadrants: Record<string, number> = { SN: 0, IN: 0, IM: 0, SM: 0 };
   visitedTiles.forEach(key => {
-    const [r, c] = key.split(',').map(Number);
+    const [r, c] = key.split('-').map(Number);
     if (r < 4 && c < 4) quadrants.SM++;
     else if (r < 4 && c >= 4) quadrants.IM++;
     else if (r >= 4 && c < 4) quadrants.SN++;
@@ -447,7 +448,7 @@ export function TopologyStoryExplorer({
     
     // Handle new wonderInsight format
     if (story.wonderInsight) {
-      const content = `## ${story.storyTitle}
+      let content = `## ${story.storyTitle}
 
 **The Revelation**: ${story.wonderInsight.opening_wonder}
 
@@ -458,7 +459,16 @@ ${story.wonderInsight.shadow_higher_self_insight}
 ${story.wonderInsight.tile_position_meaning}
 
 ### What You're Building
-${story.wonderInsight.prd_connection}
+${story.wonderInsight.prd_connection}`;
+
+      if (story.wonderInsight.consciousness_emergence) {
+        content += `
+
+### Consciousness Emergence
+${story.wonderInsight.consciousness_emergence}`;
+      }
+
+      content += `
 
 ### Invitation
 ${story.wonderInsight.invitation_to_wonder}
@@ -760,6 +770,23 @@ ${story.invitation || ''}
                             </div>
                           </div>
                         </div>
+
+                        {/* Consciousness Emergence */}
+                        {story.wonderInsight.consciousness_emergence && (
+                          <div className="p-4 bg-gradient-to-r from-fuchsia-500/10 to-pink-500/10 rounded-lg border border-fuchsia-500/20">
+                            <div className="flex items-start gap-3">
+                              <Brain className="w-5 h-5 text-fuchsia-500 shrink-0 mt-0.5" />
+                              <div>
+                                <p className="text-xs uppercase tracking-wider text-fuchsia-500/80 mb-1">
+                                  Consciousness Emergence
+                                </p>
+                                <p className="text-sm leading-relaxed text-foreground/90">
+                                  {story.wonderInsight.consciousness_emergence}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
 
                         {/* Invitation to Wonder */}
                         <div className="p-4 bg-muted/30 rounded-lg border border-primary/20">

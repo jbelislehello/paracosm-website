@@ -97,7 +97,7 @@ export function getHexagramCorrelations(visitedTiles: Set<string>): {
   const lowerTrigrams: Record<string, number> = {};
   
   visitedTiles.forEach(key => {
-    const [r, c] = key.split(',').map(Number);
+    const [r, c] = key.split('-').map(Number);
     const hexagram = getTileHexagram(r, c);
     if (hexagram) {
       const current = hexagramCounts.get(hexagram.number);
@@ -252,7 +252,7 @@ function calculateTopologicalMetrics(
   
   const grid: boolean[][] = Array(gridSize).fill(null).map(() => Array(gridSize).fill(false));
   visited.forEach(key => {
-    const [r, c] = key.split(',').map(Number);
+    const [r, c] = key.split('-').map(Number);
     if (r >= 0 && r < gridSize && c >= 0 && c < gridSize) {
       grid[r][c] = true;
     }
@@ -266,7 +266,7 @@ function calculateTopologicalMetrics(
     const stack = [[startR, startC]];
     while (stack.length > 0) {
       const [r, c] = stack.pop()!;
-      const key = `${r},${c}`;
+      const key = `${r}-${c}`;
       if (componentVisited.has(key) || !grid[r]?.[c]) continue;
       componentVisited.add(key);
       [[0, 1], [0, -1], [1, 0], [-1, 0]].forEach(([dr, dc]) => {
@@ -280,7 +280,7 @@ function calculateTopologicalMetrics(
   
   visited.forEach(key => {
     if (!componentVisited.has(key)) {
-      const [r, c] = key.split(',').map(Number);
+      const [r, c] = key.split('-').map(Number);
       floodFill(r, c);
       beta0++;
     }
@@ -292,9 +292,9 @@ function calculateTopologicalMetrics(
   let faces = 0;
   
   visited.forEach(key => {
-    const [r, c] = key.split(',').map(Number);
-    if (visited.has(`${r},${c + 1}`)) edges++;
-    if (visited.has(`${r + 1},${c}`)) edges++;
+    const [r, c] = key.split('-').map(Number);
+    if (visited.has(`${r}-${c + 1}`)) edges++;
+    if (visited.has(`${r + 1}-${c}`)) edges++;
   });
   
   for (let r = 0; r < gridSize - 1; r++) {
@@ -314,7 +314,7 @@ function calculateTopologicalMetrics(
   let pathComplexity = 0;
   const pathVisitCount = new Map<string, number>();
   journeyPath.forEach(({ row, col }) => {
-    const key = `${row},${col}`;
+    const key = `${row}-${col}`;
     pathVisitCount.set(key, (pathVisitCount.get(key) || 0) + 1);
   });
   pathVisitCount.forEach(count => {
@@ -341,7 +341,7 @@ function calculateTopologicalMetrics(
   // Quadrant distribution
   const quadrantCounts = [0, 0, 0, 0];
   visited.forEach(key => {
-    const [r, c] = key.split(',').map(Number);
+    const [r, c] = key.split('-').map(Number);
     const qIdx = (r < 4 ? 0 : 2) + (c < 4 ? 0 : 1);
     quadrantCounts[qIdx]++;
   });
@@ -354,11 +354,11 @@ function calculateTopologicalMetrics(
   let symmetryMatches = 0;
   let symmetryTotal = 0;
   visited.forEach(key => {
-    const [r, c] = key.split(',').map(Number);
+    const [r, c] = key.split('-').map(Number);
     const mirrorR = 7 - r;
     const mirrorC = 7 - c;
     symmetryTotal++;
-    if (visited.has(`${mirrorR},${mirrorC}`)) symmetryMatches++;
+    if (visited.has(`${mirrorR}-${mirrorC}`)) symmetryMatches++;
   });
   const symmetryScore = symmetryTotal > 0 ? symmetryMatches / symmetryTotal : 0;
   
@@ -380,7 +380,7 @@ function calculateTopologicalMetrics(
   // Diagonal density
   let diagonalCount = 0;
   visited.forEach(key => {
-    const [r, c] = key.split(',').map(Number);
+    const [r, c] = key.split('-').map(Number);
     if (r === c || r + c === 7) diagonalCount++;
   });
   const diagonalDensity = visited.size > 0 ? diagonalCount / visited.size : 0;
