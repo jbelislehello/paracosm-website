@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ManifoldSeason } from '@/utils/torusManifoldMath';
 import { IsometricCubeMatrix } from './IsometricCubeMatrix';
 import { DoubleDiamondLayout } from './DoubleDiamondLayout';
@@ -9,6 +9,8 @@ import { FundamentalCyclesOverlay } from './FundamentalCyclesOverlay';
 import { ToroidalFlowField } from './ToroidalFlowField';
 import { UnfoldedChartProjection } from './UnfoldedChartProjection';
 import { ViewModeSelector, TopologyViewMode } from './ViewModeSelector';
+import { TopologyInsightPanel } from './TopologyInsightPanel';
+import { useTopologyInsight } from '@/hooks/useTopologyInsight';
 import { RingLevel } from '@/utils/ringToleranceSystem';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
@@ -32,6 +34,9 @@ interface TopologiesTabProps {
   currentUnlockedRing?: RingLevel;
   onTileSelect?: (row: number, col: number) => void;
   densityMap?: Map<string, number>;
+  shadowPosition?: { x: number; y: number };
+  higherSelfPosition?: { x: number; y: number };
+  currentSeason?: string;
 }
 
 export function TopologiesTab({
@@ -42,11 +47,39 @@ export function TopologiesTab({
   visitedTiles = new Set(),
   currentUnlockedRing = 1,
   onTileSelect,
-  densityMap = new Map()
+  densityMap = new Map(),
+  shadowPosition,
+  higherSelfPosition,
+  currentSeason
 }: TopologiesTabProps) {
   const [viewMode, setViewMode] = useState<TopologyViewMode>('isometric');
   const [cubeSize, setCubeSize] = useState(32);
   const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const { insight, isLoading, error, fetchInsight, clearInsight } = useTopologyInsight();
+
+  // Fetch insight when view mode changes or journey updates significantly
+  const handleFetchInsight = useCallback(() => {
+    fetchInsight({
+      viewMode,
+      journeyPath,
+      visitedTiles,
+      densityMap,
+      shadowPosition,
+      higherSelfPosition,
+      currentSeason,
+      currentUnlockedRing
+    });
+  }, [viewMode, journeyPath, visitedTiles, densityMap, shadowPosition, higherSelfPosition, currentSeason, currentUnlockedRing, fetchInsight]);
+
+  // Fetch insight when view mode changes
+  useEffect(() => {
+    if (visitedTiles.size > 0) {
+      handleFetchInsight();
+    } else {
+      clearInsight();
+    }
+  }, [viewMode]); // Only re-fetch on view mode change, not on every data change
 
   const handleReset = () => {
     setViewMode('isometric');
@@ -169,6 +202,14 @@ export function TopologiesTab({
       <div className={`rounded-lg overflow-hidden border border-border bg-background ${isFullscreen ? 'flex-1' : 'h-[calc(100vh-280px)] min-h-[450px]'}`}>
         {renderLayout()}
       </div>
+
+      {/* AI Insight Panel */}
+      <TopologyInsightPanel
+        insight={insight}
+        isLoading={isLoading}
+        error={error}
+        onRegenerate={handleFetchInsight}
+      />
 
       {/* Legend */}
       <div className="flex items-center gap-6 px-2 text-xs text-muted-foreground flex-wrap">

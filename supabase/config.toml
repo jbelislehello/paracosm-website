@@ -41,3 +41,6 @@ verify_jwt = false
 
 [functions.analyze-resonance]
 verify_jwt = false
+
+[functions.interpret-topology]
+verify_jwt = false
