@@ -304,6 +304,21 @@ export function TopologiesTab({
         </span>
       </div>
 
+      {/* Debug Panel - Dev Only */}
+      {import.meta.env.DEV && (
+        <div className="fixed bottom-4 right-4 z-[100] bg-black/90 text-green-400 font-mono text-xs p-3 rounded-lg border border-green-500/50 max-w-[300px]">
+          <div className="font-bold text-green-300 mb-2">🔧 Debug: TopologiesTab</div>
+          <div className="space-y-1">
+            <div>visitedTiles.size: <span className={visitedTiles.size === 0 ? 'text-red-400' : 'text-green-400'}>{visitedTiles.size}</span></div>
+            <div>journeyPath.length: <span className={journeyPath.length === 0 ? 'text-red-400' : 'text-green-400'}>{journeyPath.length}</span></div>
+            <div>secretsRevealed: <span className={secretsRevealed ? 'text-green-400' : 'text-yellow-400'}>{String(secretsRevealed)}</span></div>
+            <div>story: {story ? '✅ exists' : '❌ null'}</div>
+            <div>isLoading: {isLoading ? '⏳ true' : 'false'}</div>
+            {error && <div className="text-red-400">error: {error}</div>}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
