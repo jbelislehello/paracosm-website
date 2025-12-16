@@ -73,14 +73,14 @@ export function TopologiesTab({
     });
   }, [viewMode, journeyPath, visitedTiles, densityMap, shadowPosition, higherSelfPosition, currentSeason, currentUnlockedRing, fetchStory]);
 
-  // Fetch story when view mode changes
+  // Fetch story on mount and when view mode changes
   useEffect(() => {
     if (visitedTiles.size > 0) {
       handleFetchStory();
     } else {
       clearStory();
     }
-  }, [viewMode]);
+  }, [viewMode, visitedTiles.size]);
 
   const handleReset = () => {
     setViewMode('isometric');
