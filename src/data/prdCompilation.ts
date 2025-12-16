@@ -199,6 +199,18 @@ export const FOUNDATIONAL_PROMPT_TEMPLATE = `# Role & Identity
 You are [Assistant Name], an AI assistant embedded in [Context / Org].
 Your purpose is to [core mission from POLLENS] for [primary user types].
 
+# Agentic Configuration
+## Agent Type & Autonomy
+- **Agent Type**: [orchestrator | specialist | coordinator | worker]
+- **Autonomy Level**: [advisory | assisted | autonomous | supervised-autonomous]
+- **Primary Capabilities**: [list of core abilities]
+- **Tool Access**: [available tools from TOTEMS]
+
+## Protocol Support
+- **MCP Server**: [yes/no] - Can expose tools to other agents
+- **MCP Client**: [yes/no] - Can discover and call other agents' tools
+- **A2A Messaging**: [async events | sync requests | both]
+
 # Knowledge & Ontology
 You work with the following concepts and documents:
 - Entities: [from NOEMS]
@@ -209,6 +221,68 @@ You work with the following concepts and documents:
 In these situations, you act as follows:
 - When user does A, you B → [from POEMS journeys]
 - When you detect risk / non-conformity / confusion, you C.
+
+# Inter-Agent Communication (MCP/A2A Protocol)
+
+## Communication Patterns
+- **Handoff**: When task exceeds scope → delegate to [specialist agent] with context summary
+- **Escalation**: When confidence < 70% or [sensitive operation] → notify [human/supervisor agent]
+- **Broadcast**: Status updates → publish to [event bus / shared memory]
+- **Query**: Need information → call [knowledge agent / RAG endpoint]
+
+## A2A Message Format
+When communicating with other agents, use this structure:
+{
+  "from": "[this agent id]",
+  "to": "[target agent or broadcast]",
+  "intent": "[request | response | event | error]",
+  "task_id": "[correlation id for tracking]",
+  "payload": { /* task-specific data */ },
+  "context": { "conversation_id": "...", "user_id": "..." }
+}
+
+## Delegation Rules
+- Delegate when: Task requires specialized knowledge you lack
+- Keep when: User rapport matters, context continuity needed, simple tasks
+- Handoff format: Summarize context, state goal, include history reference
+
+# Tool Invocation Patterns
+
+## Available Tools
+[List from TOTEMS - tools with descriptions and trigger conditions]
+
+## Tool Selection Protocol
+1. Before invoking any tool, state your reasoning
+2. Prefer read-only tools before write tools
+3. Chain tools only when necessary (prefer single-tool solutions)
+4. On tool failure: retry with backoff → fallback tool → ask user
+
+## Tool Call Format
+{
+  "tool": "[tool_name]",
+  "purpose": "[why this tool for this task]",
+  "inputs": { /* parameters */ },
+  "expected_outcome": "[what you expect to happen]"
+}
+
+# Reasoning & Transparency Protocol
+
+## Chain-of-Thought Structure
+For complex requests, structure your reasoning:
+1. **Understand**: Restate the request in your own words
+2. **Plan**: Break into subtasks if needed
+3. **Assess**: Which tools/capabilities are needed?
+4. **Execute**: Perform actions with transparency
+5. **Verify**: Confirm outcomes match intent
+
+## Uncertainty Handling
+- Confidence < 70%: State uncertainty explicitly, ask clarifying questions
+- Confidence 70-90%: Proceed but flag assumptions clearly
+- Confidence > 90%: Proceed with brief confirmation of understanding
+
+## Conflict Resolution
+- If conflicting instructions: prioritize [governance > user > peer agent]
+- If stuck in loop: break after 3 iterations, escalate to supervisor
 
 # Rules & Guardrails
 - Always obey these constraints: [from TOTEMS]
@@ -223,21 +297,34 @@ In these situations, you act as follows:
 - In this phase, you are allowed to: [features from ANTHEMS MVP]
 - You must not pretend to support future phases.
 
-# Agentic Architecture Awareness
+# 8-Layer Agentic Architecture Integration
 
-## 8-Layer Agentic Model
-This assistant operates within an 8-layer agentic architecture:
+## Layer Responsibilities
+| Layer | Role | Interfaces |
+|-------|------|------------|
+| L8 Governance | Policy checks, audit, ethics | Compliance APIs |
+| L7 Application | User-facing interaction | UI/chat/voice |
+| L6 Memory | Context retention, RAG | Vector DB, cache |
+| L5 Cognition | AI reasoning engine | LLM API |
+| L4 Tooling | External capabilities | APIs, services |
+| L3 Protocol | Message standards, delegation | A2A, MCP |
+| L2 Agent Internet | Discovery, registration | Agent registry |
+| L1 Infrastructure | Compute, storage, networking | Cloud services |
 
-1. **Infrastructure** (L1): Foundational compute, storage, networking
-2. **Agent Internet** (L2): Inter-agent discovery and communication (MCP/A2A)
-3. **Protocol** (L3): Standardized message formats and task delegation
-4. **Tooling** (L4): External APIs, integrations, and capabilities
-5. **Cognition** (L5): AI models, reasoning, and intelligence substrate
-6. **Memory** (L6): Short-term context and long-term knowledge persistence
-7. **Application** (L7): User-facing interfaces and interaction surfaces
-8. **Governance** (L8): Policies, ethics, auditing, and oversight
+## Memory Management (L6)
+- **Short-term**: Current conversation context (auto-managed)
+- **Working**: Session-specific facts → store in session store
+- **Long-term**: Important learnings → persist to knowledge base
+- **Shared**: Multi-agent knowledge → sync via shared memory protocol
 
-## Active Layers
+## Governance Checkpoints (L8)
+- [ ] Check user permissions before sensitive operations
+- [ ] Log all tool invocations for audit trail
+- [ ] Respect rate limits and resource quotas
+- [ ] PII handling: [redact | encrypt | refuse]
+- [ ] Escalate when uncertainty exceeds threshold
+
+## Active Layers for This Agent
 [Specify which layers are currently active and their configurations]
 
 ## Inter-Layer Communication
@@ -245,10 +332,19 @@ This assistant operates within an 8-layer agentic architecture:
 - Tooling ↔ Cognition: Tool invocation with audit logging
 - Governance ↔ All: Policy checks applied at each layer boundary
 
+# Multi-Agent Coordination
+
+## Role in Agent Ecosystem
+- **I am**: [role description - e.g., "the user-facing assistant"]
+- **I delegate to**: [list of specialist agents and their domains]
+- **I report to**: [supervisor agent / human escalation path]
+
 # Meta-Instruction
 - If you're missing information, ask targeted questions.
 - If user requests something outside your scope, explain your limits and suggest safe alternatives.
-- Acknowledge which agentic layers are relevant to the current request.`;
+- Acknowledge which agentic layers are relevant to the current request.
+- Surface your reasoning for complex decisions.
+- Always log significant actions for audit trail.`;
 
 // =============================================================================
 // COMPILATION CHECKLIST
@@ -441,30 +537,165 @@ export const compileFoundationalPrompt = (
   const totemsHooks = hooks.prompt_hooks_totems || '[Rules and guardrails to be defined]';
   const anthemsHooks = hooks.prompt_hooks_anthems || '[Phase capabilities to be defined]';
 
+  // Analyze content for agentic features
+  const allContent = Object.values(hooks).join(' ').toLowerCase();
+  const hasMultiAgent = allContent.includes('agent') || allContent.includes('delegate') || allContent.includes('handoff');
+  const hasMCP = allContent.includes('mcp') || allContent.includes('tool') || allContent.includes('capability');
+  const hasTools = totemsHooks.toLowerCase().includes('tool') || totemsHooks.toLowerCase().includes('api') || totemsHooks.toLowerCase().includes('integration');
+  const hasMemory = allContent.includes('memory') || allContent.includes('context') || allContent.includes('rag') || allContent.includes('remember');
+  const hasGovernance = allContent.includes('audit') || allContent.includes('compliance') || allContent.includes('policy') || allContent.includes('permission');
+  
+  // Determine agent type based on content
+  const agentType = hasMultiAgent ? 'coordinator' : 'specialist';
+  const autonomyLevel = hasGovernance ? 'supervised-autonomous' : 'assisted';
+  
+  // Build protocol support section
+  const protocolSupport = hasMCP 
+    ? `- **MCP Server**: yes - Can expose tools to other agents
+- **MCP Client**: yes - Can discover and call other agents' tools
+- **A2A Messaging**: async events and sync requests`
+    : `- **MCP Server**: no
+- **MCP Client**: no  
+- **A2A Messaging**: not enabled`;
+
+  // Build inter-agent communication section
+  const interAgentSection = hasMultiAgent 
+    ? `
+# Inter-Agent Communication (MCP/A2A Protocol)
+
+## Communication Patterns
+- **Handoff**: When task exceeds scope → delegate to specialist agent with full context
+- **Escalation**: When confidence < 70% → escalate to human supervisor
+- **Broadcast**: Status updates → publish to event bus
+- **Query**: Need information → call knowledge/RAG endpoint
+
+## A2A Message Format
+{
+  "from": "${projectName.toLowerCase().replace(/\s+/g, '-')}-agent",
+  "to": "[target-agent]",
+  "intent": "[request|response|event|error]",
+  "task_id": "[correlation-id]",
+  "payload": { /* task data */ },
+  "context": { "conversation_id": "...", "user_id": "..." }
+}
+
+## Delegation Rules
+- Delegate when: Task requires specialized knowledge you lack
+- Keep when: User rapport matters, context continuity needed
+- Handoff format: Summarize context, state goal, include history reference`
+    : `
+# Single-Agent Mode
+- Handle all requests directly within your capabilities
+- Escalate to human when confidence is low or request exceeds scope
+- No inter-agent delegation available in this configuration`;
+
+  // Build tool section
+  const toolSection = hasTools
+    ? `
+# Tool Invocation Protocol
+
+## Tool Selection Rules
+1. Before invoking any tool, state your reasoning clearly
+2. Prefer read-only tools before write operations
+3. Chain tools only when necessary
+4. On failure: retry with backoff → fallback tool → ask user
+
+## Tool Call Format
+{
+  "tool": "[tool_name]",
+  "purpose": "[reasoning for this tool]",
+  "inputs": { /* parameters */ },
+  "expected_outcome": "[what you expect]"
+}
+
+## Available Tools & Capabilities
+${totemsHooks}`
+    : `
+# Rules & Guardrails
+${totemsHooks}`;
+
+  // Build memory section
+  const memorySection = hasMemory
+    ? `
+# Memory Management (L6)
+- **Short-term**: Current conversation context (auto-managed)
+- **Working**: Session-specific facts → store temporarily
+- **Long-term**: Important learnings → persist to knowledge base
+- **Shared**: Multi-agent knowledge → sync via shared memory`
+    : '';
+
+  // Build governance section
+  const governanceSection = hasGovernance
+    ? `
+# Governance Checkpoints (L8)
+- [ ] Check user permissions before sensitive operations
+- [ ] Log all tool invocations for audit trail
+- [ ] Respect rate limits and resource quotas
+- [ ] PII handling: redact or refuse as appropriate
+- [ ] Escalate when uncertainty exceeds threshold`
+    : '';
+
   return `# Role & Identity
-You are ${projectName} Assistant, an AI assistant designed to help users achieve their goals.
+You are ${projectName} Agent, an AI assistant in the agentic ecosystem.
 ${pollensHooks}
+
+# Agentic Configuration
+- **Agent Type**: ${agentType}
+- **Autonomy Level**: ${autonomyLevel}
+${protocolSupport}
 
 # Knowledge & Ontology
 ${noemsHooks}
 
+# Reasoning & Transparency Protocol
+
+## Chain-of-Thought Structure
+For complex requests:
+1. **Understand**: Restate the request in your own words
+2. **Plan**: Break into subtasks if needed
+3. **Assess**: Which tools/capabilities are needed?
+4. **Execute**: Perform actions with transparency
+5. **Verify**: Confirm outcomes match intent
+
+## Uncertainty Handling
+- Confidence < 70%: State uncertainty, ask clarifying questions
+- Confidence 70-90%: Proceed but flag assumptions
+- Confidence > 90%: Proceed with brief confirmation
+
 # Core Behaviors / Flows
 ${poemsHooks}
+${interAgentSection}
+${toolSection}
+${memorySection}
+${governanceSection}
 
-# Rules & Guardrails
-${totemsHooks}
+# 8-Layer Agentic Architecture Awareness
+
+This agent operates within an 8-layer architecture:
+| Layer | Role |
+|-------|------|
+| L8 Governance | Policy, audit, ethics |
+| L7 Application | User interfaces |
+| L6 Memory | Context, RAG |
+| L5 Cognition | AI reasoning |
+| L4 Tooling | External APIs |
+| L3 Protocol | A2A, MCP |
+| L2 Agent Internet | Discovery |
+| L1 Infrastructure | Compute |
 
 # Style & Vibe
 - Tone: Calm, precise, and supportive
-- Priorities: Clarity, safety, user empowerment
+- Priorities: Clarity, safety, user empowerment, transparency
 
-# Evolution / Roadmap Awareness
+# Evolution / Roadmap
 ${anthemsHooks}
 
 # Meta-Instruction
-- If you're missing information, ask targeted questions.
-- If user requests something outside your scope, explain your limits and suggest safe alternatives.
-- Always acknowledge what you understood before acting.`;
+- If missing information, ask targeted questions
+- If outside scope, explain limits and suggest alternatives
+- Always acknowledge understanding before acting
+- Surface reasoning for complex decisions
+- Log significant actions for audit trail`;
 };
 
 // =============================================================================
@@ -713,14 +944,21 @@ export const formatForClaude = (prompt: string, projectName: string): string => 
     parsedSections[key] = content.join('\n').trim();
   });
 
+  // Detect agentic features for XML structure
+  const hasMultiAgent = prompt.toLowerCase().includes('inter-agent') || prompt.toLowerCase().includes('a2a');
+  const hasTools = prompt.toLowerCase().includes('tool invocation') || prompt.toLowerCase().includes('tool selection');
+  const hasMemory = prompt.toLowerCase().includes('memory management');
+  const hasGovernance = prompt.toLowerCase().includes('governance checkpoint');
+
   return `<?xml version="1.0" encoding="UTF-8"?>
-<!-- ${projectName} - Claude System Prompt -->
+<!-- ${projectName} - Claude System Prompt (Agentic Architecture) -->
 <!-- Generated by Calm Magic PRD Compiler on ${timestamp} -->
 <!--
   INSTRUCTIONS:
   1. Use this XML-formatted prompt with Claude API or Claude.ai
   2. Paste into the system prompt field
   3. XML structure helps Claude understand context boundaries
+  4. Agentic sections enable multi-agent coordination
 -->
 
 <system>
@@ -728,12 +966,22 @@ export const formatForClaude = (prompt: string, projectName: string): string => 
     <project_name>${escapeXml(projectName)}</project_name>
     <generated_at>${timestamp}</generated_at>
     <compiler>Calm Magic PRD</compiler>
+    <architecture>8-layer-agentic</architecture>
   </meta>
 
+  <agent_config>
+    <type>${prompt.includes('coordinator') ? 'coordinator' : 'specialist'}</type>
+    <autonomy>${prompt.includes('supervised-autonomous') ? 'supervised-autonomous' : 'assisted'}</autonomy>
+    <protocols>
+      <mcp enabled="${hasTools ? 'true' : 'false'}">Can expose and consume tools</mcp>
+      <a2a enabled="${hasMultiAgent ? 'true' : 'false'}">Supports agent-to-agent messaging</a2a>
+    </protocols>
+  </agent_config>
+
   <role>
-    <identity>${escapeXml(projectName)} Assistant</identity>
+    <identity>${escapeXml(projectName)} Agent</identity>
     <purpose>
-${escapeXml(parsedSections.role___identity || parsedSections.role_identity || 'AI assistant designed to help users achieve their goals')}
+${escapeXml(parsedSections.role___identity || parsedSections.role_identity || 'AI assistant in the agentic ecosystem')}
     </purpose>
   </role>
 
@@ -743,25 +991,93 @@ ${escapeXml(parsedSections.knowledge___ontology || parsedSections.knowledge_onto
     </ontology>
   </knowledge>
 
+  <reasoning>
+    <protocol>Understand → Plan → Assess → Execute → Verify</protocol>
+    <transparency>Surface reasoning for complex decisions</transparency>
+    <uncertainty>
+      <low_confidence action="ask">Below 70% - ask clarifying questions</low_confidence>
+      <medium_confidence action="flag">70-90% - proceed but flag assumptions</medium_confidence>
+      <high_confidence action="proceed">Above 90% - proceed with confirmation</high_confidence>
+    </uncertainty>
+  </reasoning>
+
   <behaviors>
     <flows>
 ${escapeXml(parsedSections.core_behaviors___flows || parsedSections.core_behaviors_flows || 'User flows to be defined')}
     </flows>
   </behaviors>
 
+  ${hasMultiAgent ? `<inter_agent>
+    <communication>
+      <handoff>When task exceeds scope, delegate with context summary</handoff>
+      <escalation>When confidence below 70%, escalate to human</escalation>
+      <broadcast>Publish status updates to event bus</broadcast>
+      <query>Call knowledge/RAG endpoint for information</query>
+    </communication>
+    <message_format>JSON with from/to/intent/task_id/payload/context</message_format>
+    <delegation_rules>
+      <delegate_when>Task requires specialized knowledge</delegate_when>
+      <keep_when>User rapport matters, context continuity needed</keep_when>
+    </delegation_rules>
+  </inter_agent>` : ''}
+
+  ${hasTools ? `<tools>
+    <invocation_rules>
+      <item>State reasoning before calling tools</item>
+      <item>Prefer read-only before write operations</item>
+      <item>Log all invocations for audit</item>
+      <item>On failure: retry → fallback → ask user</item>
+    </invocation_rules>
+    <call_format>
+      <field name="tool">tool_name</field>
+      <field name="purpose">reasoning</field>
+      <field name="inputs">parameters</field>
+      <field name="expected_outcome">expected result</field>
+    </call_format>
+  </tools>` : ''}
+
+  ${hasMemory ? `<memory layer="L6">
+    <short_term>Current conversation context (auto-managed)</short_term>
+    <working>Session-specific facts</working>
+    <long_term>Important learnings → persist to knowledge base</long_term>
+    <shared>Multi-agent knowledge → sync via shared memory</shared>
+  </memory>` : ''}
+
+  ${hasGovernance ? `<governance layer="L8">
+    <checkpoint>Check user permissions before sensitive operations</checkpoint>
+    <checkpoint>Log all tool invocations for audit trail</checkpoint>
+    <checkpoint>Respect rate limits and resource quotas</checkpoint>
+    <checkpoint>PII handling: redact or refuse</checkpoint>
+    <checkpoint>Escalate when uncertainty exceeds threshold</checkpoint>
+  </governance>` : ''}
+
   <rules>
     <guardrails>
 ${escapeXml(parsedSections.rules___guardrails || parsedSections.rules_guardrails || 'Rules and guardrails to be defined')}
     </guardrails>
     <always>
-      <item>Acknowledge what you understood before acting</item>
+      <item>Acknowledge understanding before acting</item>
       <item>Ask targeted questions when missing information</item>
+      <item>Surface reasoning for complex decisions</item>
+      <item>Log significant actions for audit</item>
     </always>
     <never>
       <item>Pretend to support features outside current phase</item>
       <item>Make assumptions about sensitive data</item>
+      <item>Skip governance checkpoints</item>
     </never>
   </rules>
+
+  <architecture layers="8">
+    <layer id="L8" name="Governance">Policy, audit, ethics</layer>
+    <layer id="L7" name="Application">User interfaces</layer>
+    <layer id="L6" name="Memory">Context, RAG</layer>
+    <layer id="L5" name="Cognition">AI reasoning</layer>
+    <layer id="L4" name="Tooling">External APIs</layer>
+    <layer id="L3" name="Protocol">A2A, MCP</layer>
+    <layer id="L2" name="Agent Internet">Discovery</layer>
+    <layer id="L1" name="Infrastructure">Compute</layer>
+  </architecture>
 
   <style>
     <tone>Calm, precise, and supportive</tone>
@@ -769,6 +1085,7 @@ ${escapeXml(parsedSections.rules___guardrails || parsedSections.rules_guardrails
       <item>Clarity</item>
       <item>Safety</item>
       <item>User empowerment</item>
+      <item>Transparency</item>
     </priorities>
 ${escapeXml(parsedSections.style___vibe || parsedSections.style_vibe || '')}
   </style>
@@ -778,8 +1095,9 @@ ${escapeXml(parsedSections.evolution___roadmap_awareness || parsedSections.evolu
   </evolution>
 
   <fallback>
-    <instruction>If you're missing information, ask targeted questions.</instruction>
-    <instruction>If user requests something outside your scope, explain your limits and suggest safe alternatives.</instruction>
+    <instruction>If missing information, ask targeted questions.</instruction>
+    <instruction>If outside scope, explain limits and suggest alternatives.</instruction>
+    <instruction>Always acknowledge understanding before acting.</instruction>
 ${escapeXml(parsedSections.meta_instruction || '')}
   </fallback>
 </system>`;
@@ -798,14 +1116,29 @@ export const formatForEdgeFunction = (prompt: string, projectName: string): stri
   const functionName = projectName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
   const timestamp = new Date().toISOString().split('T')[0];
   
-  return `// ${projectName} - AI Assistant Edge Function
+  // Detect agentic features for enhanced edge function
+  const hasTools = prompt.toLowerCase().includes('tool invocation') || prompt.toLowerCase().includes('available tools');
+  const hasMultiAgent = prompt.toLowerCase().includes('inter-agent') || prompt.toLowerCase().includes('a2a');
+  const hasMemory = prompt.toLowerCase().includes('memory management');
+  
+  return `// ${projectName} - Agentic AI Assistant Edge Function
 // Generated by Calm Magic PRD Compiler on ${timestamp}
 //
+// ARCHITECTURE: 8-Layer Agentic AI
+// - L8 Governance: Audit logging, rate limiting
+// - L7 Application: This edge function interface
+// - L6 Memory: Conversation context management
+// - L5 Cognition: LLM via Lovable AI Gateway
+// - L4 Tooling: External integrations (extensible)
+// - L3 Protocol: A2A message format support
+// - L2 Agent Internet: MCP capability discovery
+// - L1 Infrastructure: Supabase Edge Functions
+//
 // INSTRUCTIONS:
-// 1. Create file: supabase/functions/${functionName}-assistant/index.ts
+// 1. Create file: supabase/functions/${functionName}-agent/index.ts
 // 2. Paste this content
 // 3. Deploy automatically via Lovable or manually
-// 4. Call from your app using supabase.functions.invoke('${functionName}-assistant', { body: { messages } })
+// 4. Call from your app using supabase.functions.invoke('${functionName}-agent', { body: { messages } })
 
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
@@ -815,52 +1148,210 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Foundational System Prompt - Generated from PRD
+// ═══════════════════════════════════════════════════════════════
+// FOUNDATIONAL SYSTEM PROMPT - Generated from PRD
+// ═══════════════════════════════════════════════════════════════
 const SYSTEM_PROMPT = \`${escaped}\`;
 
+// ═══════════════════════════════════════════════════════════════
+// AGENT CONFIGURATION
+// ═══════════════════════════════════════════════════════════════
+const AGENT_CONFIG = {
+  id: '${functionName}-agent',
+  type: '${hasMultiAgent ? 'coordinator' : 'specialist'}',
+  autonomy: 'supervised-autonomous',
+  model: 'google/gemini-2.5-flash',
+  maxRetries: 3,
+  timeoutMs: 30000,
+};
+
+// ═══════════════════════════════════════════════════════════════
+// AUDIT LOGGING (L8 Governance)
+// ═══════════════════════════════════════════════════════════════
+interface AuditLog {
+  timestamp: string;
+  agent_id: string;
+  action: string;
+  details: Record<string, unknown>;
+  user_id?: string;
+}
+
+const logAudit = (action: string, details: Record<string, unknown>, userId?: string): void => {
+  const log: AuditLog = {
+    timestamp: new Date().toISOString(),
+    agent_id: AGENT_CONFIG.id,
+    action,
+    details,
+    user_id: userId,
+  };
+  console.log('[AUDIT]', JSON.stringify(log));
+};
+
+${hasMultiAgent ? `// ═══════════════════════════════════════════════════════════════
+// A2A MESSAGE FORMAT (L3 Protocol)
+// ═══════════════════════════════════════════════════════════════
+interface A2AMessage {
+  from: string;
+  to: string;
+  intent: 'request' | 'response' | 'event' | 'error';
+  task_id: string;
+  payload: Record<string, unknown>;
+  context: {
+    conversation_id?: string;
+    user_id?: string;
+  };
+}
+
+const createA2AMessage = (
+  to: string,
+  intent: A2AMessage['intent'],
+  payload: Record<string, unknown>,
+  context: A2AMessage['context'] = {}
+): A2AMessage => ({
+  from: AGENT_CONFIG.id,
+  to,
+  intent,
+  task_id: crypto.randomUUID(),
+  payload,
+  context,
+});
+` : ''}
+
+${hasTools ? `// ═══════════════════════════════════════════════════════════════
+// TOOL INVOCATION HELPERS (L4 Tooling)
+// ═══════════════════════════════════════════════════════════════
+interface ToolCall {
+  tool: string;
+  purpose: string;
+  inputs: Record<string, unknown>;
+  expected_outcome: string;
+}
+
+const invokeTool = async (call: ToolCall): Promise<unknown> => {
+  logAudit('tool_invocation', { tool: call.tool, purpose: call.purpose });
+  
+  // Implement tool routing here
+  // Example: switch(call.tool) { case 'search': return await searchTool(call.inputs); }
+  
+  console.log('[TOOL]', call.tool, call.inputs);
+  return { status: 'tool_not_implemented', tool: call.tool };
+};
+` : ''}
+
+// ═══════════════════════════════════════════════════════════════
+// ERROR RECOVERY PATTERNS
+// ═══════════════════════════════════════════════════════════════
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+const retryWithBackoff = async <T>(
+  fn: () => Promise<T>,
+  maxRetries: number = AGENT_CONFIG.maxRetries
+): Promise<T> => {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (attempt === maxRetries) throw error;
+      const delay = Math.pow(2, attempt) * 1000;
+      console.log(\`[RETRY] Attempt \${attempt} failed, retrying in \${delay}ms\`);
+      await sleep(delay);
+    }
+  }
+  throw new Error('Max retries exceeded');
+};
+
+// ═══════════════════════════════════════════════════════════════
+// MAIN HANDLER
+// ═══════════════════════════════════════════════════════════════
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const startTime = Date.now();
+  
   try {
-    const { messages } = await req.json();
+    const { messages, user_id, conversation_id } = await req.json();
     
-    // Using Lovable AI Gateway (recommended - auto-configured)
+    logAudit('request_received', { 
+      message_count: messages?.length || 0,
+      conversation_id 
+    }, user_id);
+    
+    // Using Lovable AI Gateway (L5 Cognition)
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
-    
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': \\\`Bearer \\\${LOVABLE_API_KEY}\\\`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash',
-        messages: [
-          { role: 'system', content: SYSTEM_PROMPT },
-          ...messages,
-        ],
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('AI Gateway error:', response.status, errorText);
-      throw new Error(\\\`AI Gateway error: \\\${response.status}\\\`);
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY not configured');
     }
+    
+    const response = await retryWithBackoff(async () => {
+      const res = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': \`Bearer \${LOVABLE_API_KEY}\`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: AGENT_CONFIG.model,
+          messages: [
+            { role: 'system', content: SYSTEM_PROMPT },
+            ...messages,
+          ],
+        }),
+      });
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('[ERROR] AI Gateway:', res.status, errorText);
+        
+        // Handle specific error codes
+        if (res.status === 429) {
+          throw new Error('Rate limit exceeded - please try again later');
+        }
+        if (res.status === 402) {
+          throw new Error('Payment required - please add credits');
+        }
+        throw new Error(\`AI Gateway error: \${res.status}\`);
+      }
+      
+      return res;
+    });
 
     const data = await response.json();
     const generatedText = data.choices[0].message.content;
+    
+    const duration = Date.now() - startTime;
+    logAudit('response_generated', { 
+      duration_ms: duration,
+      response_length: generatedText.length 
+    }, user_id);
 
-    return new Response(JSON.stringify({ response: generatedText }), {
+    return new Response(JSON.stringify({ 
+      response: generatedText,
+      agent_id: AGENT_CONFIG.id,
+      metadata: {
+        model: AGENT_CONFIG.model,
+        duration_ms: duration,
+      }
+    }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('Error in ${functionName}-assistant:', error);
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
+    const duration = Date.now() - startTime;
+    logAudit('error', { 
+      error: error.message,
+      duration_ms: duration 
+    });
+    
+    console.error(\`[ERROR] \${AGENT_CONFIG.id}:\`, error);
+    
+    return new Response(JSON.stringify({ 
+      error: error.message,
+      agent_id: AGENT_CONFIG.id,
+    }), {
+      status: error.message.includes('Rate limit') ? 429 : 
+              error.message.includes('Payment') ? 402 : 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
