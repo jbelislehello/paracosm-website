@@ -379,6 +379,46 @@ export const ROW_LABELS: Record<RowKey, { short: string; full: string; stage: st
 };
 
 /**
+ * Linear interpolation helper
+ */
+export function lerp(a: number, b: number, t: number): number {
+  return a + (b - a) * t;
+}
+
+/**
+ * Interpolate between isometric flat position and torus surface position
+ */
+export function interpolateIsometricToTorus(
+  row: number,
+  col: number,
+  season: ManifoldSeason,
+  progress: number,
+  cubeSize: number = 32,
+  polenDensity: number = 0
+): [number, number, number] {
+  // Isometric projection constants
+  const ISO_ANGLE = Math.PI / 6;
+  const COS_ISO = Math.cos(ISO_ANGLE);
+  const SIN_ISO = Math.sin(ISO_ANGLE);
+  
+  // Flat isometric position
+  const isoX = (col - row) * cubeSize * COS_ISO;
+  const isoY = (col + row) * cubeSize * SIN_ISO;
+  const isoZ = 0;
+  
+  // Torus surface position
+  const [torusX, torusY, torusZ] = tileToTorusPoint(row, col, season, polenDensity);
+  const torusScale = 60;
+  
+  // Interpolate
+  return [
+    lerp(isoX, torusX * torusScale, progress),
+    lerp(isoY, torusY * torusScale, progress),
+    lerp(isoZ, torusZ * torusScale, progress)
+  ];
+}
+
+/**
  * Convert matrix coordinates to isometric 3D projection
  */
 export function matrixToIsometric(row: number, col: number, scale: number = 20): [number, number, number] {
