@@ -7,11 +7,9 @@ import { ViewModeSelector, TopologyViewMode } from './ViewModeSelector';
 import { RingLevel } from '@/utils/ringToleranceSystem';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { 
   RotateCcw, 
-  CloudFog,
   Maximize,
   Minimize
 } from 'lucide-react';
@@ -42,14 +40,12 @@ export function TopologiesTab({
   densityMap = new Map()
 }: TopologiesTabProps) {
   const [viewMode, setViewMode] = useState<TopologyViewMode>('isometric');
-  const [showDepthFog, setShowDepthFog] = useState(true);
   const [cubeSize, setCubeSize] = useState(32);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   const handleReset = () => {
     setViewMode('isometric');
     setCubeSize(32);
-    setShowDepthFog(true);
   };
 
   // Shared props for all layouts
@@ -74,7 +70,7 @@ export function TopologiesTab({
         return (
           <IsometricCubeMatrix
             {...layoutProps}
-            showDepthFog={showDepthFog}
+            showDepthFog={false}
             cubeSize={cubeSize}
           />
         );
@@ -98,11 +94,13 @@ export function TopologiesTab({
         { color: 'bg-amber-500/80', label: 'Ring 4: Full' }
       ];
     }
+    // Isometric view - show ring expansion pattern
     return [
-      { color: 'bg-primary/80', label: 'Visited' },
-      { color: 'bg-muted/40 border border-muted-foreground/40', label: 'Available' },
-      { color: 'bg-muted/20 border border-muted-foreground/20', label: 'Locked' },
-      { color: 'bg-primary/20 border-2 border-primary', label: 'Selected' }
+      { color: 'bg-gray-900', label: 'Ring 1: Inner Core' },
+      { color: 'bg-gray-700', label: 'Ring 2: Stretch' },
+      { color: 'bg-gray-500', label: 'Ring 3: Edge' },
+      { color: 'bg-gray-400', label: 'Ring 4: Integrator' },
+      { color: 'bg-primary/70', label: 'Visited (path shown)' }
     ];
   };
 
@@ -116,19 +114,6 @@ export function TopologiesTab({
         {/* Visual Options (only for isometric view) */}
         {viewMode === 'isometric' && (
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Switch
-                id="fog"
-                checked={showDepthFog}
-                onCheckedChange={setShowDepthFog}
-                className="scale-75"
-              />
-              <Label htmlFor="fog" className="text-xs cursor-pointer flex items-center gap-1">
-                <CloudFog className="w-3 h-3" />
-                Fog
-              </Label>
-            </div>
-
             {/* Cube Size Slider */}
             <div className="flex items-center gap-2 min-w-[120px]">
               <Label className="text-xs text-muted-foreground whitespace-nowrap">Size</Label>

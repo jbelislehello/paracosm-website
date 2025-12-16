@@ -246,8 +246,18 @@ export function IsometricCubeMatrix({
         const { row, col, isVisited, isSelected, isAccessible, ring, density, stepNumber } = state;
         const pos = getInterpolatedPosition(row, col, fold, density);
         
-        // Calculate depth fog
-        const fogAmount = showDepthFog ? getDepthFog(row, col) : 0;
+        // Ring-based brightness (dark center to light edges)
+        const getRingBrightness = (ringLevel: RingLevel): number => {
+          switch (ringLevel) {
+            case 1: return 18;  // Inner Core - very dark
+            case 2: return 32;  // Stretch - dark gray
+            case 3: return 48;  // Edge - medium gray
+            case 4: return 65;  // Integrator - light gray
+            default: return 30;
+          }
+        };
+        
+        const ringBrightness = getRingBrightness(ring);
         
         // Elevation for selected/visited cubes - sitting ON the ground
         let elevation = 0;
@@ -268,23 +278,23 @@ export function IsometricCubeMatrix({
         const size = cubeSize * 0.82;
         const halfSize = size / 2;
 
-        // Determine colors based on state
+        // Determine colors based on state - ring-based coloring
         let topH: number, topS: number, topB: number;
         let frontH: number, frontS: number, frontB: number;
         let sideH: number, sideS: number, sideB: number;
         let strokeAlpha: number;
 
         if (!isAccessible) {
-          // Locked - very faint, foggy
-          topH = hue; topS = 10; topB = 15 - fogAmount * 10;
-          frontH = hue; frontS = 8; frontB = 12 - fogAmount * 8;
-          sideH = hue; sideS = 6; sideB = 10 - fogAmount * 6;
-          strokeAlpha = 0.2;
+          // Locked - very faint gray based on ring
+          topH = 0; topS = 0; topB = ringBrightness * 0.4;
+          frontH = 0; frontS = 0; frontB = ringBrightness * 0.35;
+          sideH = 0; sideS = 0; sideB = ringBrightness * 0.3;
+          strokeAlpha = 0.15;
         } else if (isSelected) {
-          // Selected - bright glow, less affected by fog
-          topH = hue; topS = 60; topB = 85 - fogAmount * 15;
-          frontH = hue; frontS = 70; frontB = 70 - fogAmount * 10;
-          sideH = hue; sideS = 75; sideB = 55 - fogAmount * 8;
+          // Selected - bright glow with season hue
+          topH = hue; topS = 60; topB = 85;
+          frontH = hue; frontS = 70; frontB = 70;
+          sideH = hue; sideS = 75; sideB = 55;
           strokeAlpha = 0.9;
           
           // Pulsing glow effect
@@ -296,25 +306,18 @@ export function IsometricCubeMatrix({
           p.box(size * 1.15);
           p.pop();
         } else if (isVisited) {
-          // Visited - solid fill with fog
-          const ringDarken = (ring - 1) * 8;
-          topH = hue; topS = 55; topB = 65 - ringDarken - fogAmount * 20;
-          frontH = hue; frontS = 60; frontB = 50 - ringDarken - fogAmount * 15;
-          sideH = hue; sideS = 65; sideB = 40 - ringDarken - fogAmount * 12;
-          strokeAlpha = 0.6 - fogAmount * 0.3;
+          // Visited - season color accent on ring base
+          topH = hue; topS = 50; topB = ringBrightness + 35;
+          frontH = hue; frontS = 55; frontB = ringBrightness + 25;
+          sideH = hue; sideS = 60; sideB = ringBrightness + 15;
+          strokeAlpha = 0.7;
         } else {
-          // Accessible but not visited - wireframe/transparent with fog
-          topH = hue; topS = 15; topB = 25 - fogAmount * 15;
-          frontH = hue; frontS = 12; frontB = 20 - fogAmount * 12;
-          sideH = hue; sideS = 10; sideB = 18 - fogAmount * 10;
-          strokeAlpha = 0.35 - fogAmount * 0.2;
+          // Accessible but not visited - gray based on ring level
+          topH = 0; topS = 0; topB = ringBrightness + 8;
+          frontH = 0; frontS = 0; frontB = ringBrightness + 3;
+          sideH = 0; sideS = 0; sideB = ringBrightness;
+          strokeAlpha = 0.4;
         }
-
-        // Apply fog to colors (blend toward background)
-        const fogBlend = fogAmount * 0.5;
-        topB = topB * (1 - fogBlend) + 10 * fogBlend;
-        frontB = frontB * (1 - fogBlend) + 8 * fogBlend;
-        sideB = sideB * (1 - fogBlend) + 6 * fogBlend;
 
         // Draw cube faces
         p.strokeWeight(isSelected ? 2 : 1);
@@ -368,7 +371,7 @@ export function IsometricCubeMatrix({
         // Draw tile acronym on top face
         if (isAccessible && fold < 0.7) {
           const acronym = getTileAcronym(row, col);
-          const textOpacity = (1 - fold) * (1 - fogAmount * 0.6);
+          const textOpacity = (1 - fold);
           p.push();
           p.translate(0, 0, halfSize + 1);
           p.rotateX(-Math.PI / 2);
@@ -395,11 +398,22 @@ export function IsometricCubeMatrix({
       const drawJourneyPath = (p: p5, fold: number) => {
         if (journeyPath.length < 2) return;
 
+        // Ring colors for path visualization
+        const getRingColor = (ringLevel: RingLevel): { h: number; s: number; b: number } => {
+          switch (ringLevel) {
+            case 1: return { h: 280, s: 70, b: 60 }; // Purple - Inner Core
+            case 2: return { h: 220, s: 65, b: 65 }; // Blue - Stretch
+            case 3: return { h: 160, s: 60, b: 65 }; // Teal - Edge
+            case 4: return { h: 40, s: 70, b: 75 };  // Amber - Integrator
+            default: return { h: 0, s: 0, b: 50 };
+          }
+        };
+
         p.push();
-        p.strokeWeight(2.5);
+        p.strokeWeight(3);
         p.noFill();
 
-        // Draw connecting lines between visited tiles
+        // Draw connecting lines between visited tiles - colored by ring
         for (let i = 0; i < journeyPath.length - 1; i++) {
           const from = journeyPath[i];
           const to = journeyPath[i + 1];
@@ -411,12 +425,11 @@ export function IsometricCubeMatrix({
           const fromY = fromPos.y - cubeSize * 0.5;
           const toY = toPos.y - cubeSize * 0.5;
 
-          // Gradient color along path
-          const progress = i / (journeyPath.length - 1);
-          const pathHue = p.lerp(200, 40, progress); // Blue to gold
-          const pathBrightness = 70 - getDepthFog(from.row, from.col) * 30;
+          // Color based on the ring being traversed
+          const toRing = getTileRing(to.row, to.col);
+          const ringColor = getRingColor(toRing);
           
-          p.stroke(pathHue, 60, pathBrightness, 0.7);
+          p.stroke(ringColor.h, ringColor.s, ringColor.b, 0.85);
 
           // Animated dashed line
           const dashOffset = (p.frameCount * 0.05) % 1;
