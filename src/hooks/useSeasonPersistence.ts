@@ -294,7 +294,17 @@ export const useSeasonPersistence = (projectId: string | null = null) => {
               .reduce((sum, set) => sum + set.size, 0);
             const hasJourneyPath = loadedState.journeyPath.length > 0;
             
-            if (totalTiles === 0 || !hasJourneyPath) {
+            // Distinguish between fresh season start vs corrupted/missing data
+            // Fresh season start: journeyStarted is false AND journeyPath is empty (intentional)
+            // Corrupted data: has some progress but missing journey path
+            const isFreshSeasonStart = !loadedState.journeyStarted && loadedState.journeyPath.length === 0;
+            const hasExistingProgress = totalTiles > 0;
+            
+            // Only recover if data seems corrupted (has progress but missing path)
+            // NOT when it's a fresh season start
+            const shouldRecover = !isFreshSeasonStart && (totalTiles === 0 || (!hasJourneyPath && hasExistingProgress));
+            
+            if (shouldRecover) {
               // No progress saved or missing journey path, try to recover from POLEN entries
               const recovered = await recoverProgressFromPolen(userId, projectId);
               const recoveredTotal = Object.values(recovered.progress)

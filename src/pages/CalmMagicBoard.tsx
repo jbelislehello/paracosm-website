@@ -800,8 +800,7 @@ const CalmMagicBoard = () => {
     });
   }, [setProphecy]);
   const getCurrentSeasonPolenCount = () => {
-    // This would ideally come from the persistence hook
-    return 0; // Placeholder - will be populated from actual data
+    return currentSeasonPolenCount;
   };
 
   // Handle project rename
