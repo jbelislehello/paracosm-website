@@ -8,6 +8,9 @@ import { useManifoldData, ManifoldEntry } from '@/hooks/useManifoldData';
 import { DistortedTorus } from './manifold/DistortedTorus';
 import { InsightParticles, ConnectionLines } from './manifold/InsightParticles';
 import { ManifoldControls } from './manifold/ManifoldControls';
+import { JourneyPathCamera, JourneyPathLine } from './manifold/JourneyPathCamera';
+import { SemanticConnectionLines } from './manifold/SemanticConnectionLines';
+import { useSemanticConnections, SemanticConnection } from '@/hooks/useSemanticConnections';
 import { ManifoldSeason, SEASON_COLORS } from '@/utils/torusManifoldMath';
 import { useCosmologicalAudio } from '@/hooks/useCosmologicalAudio';
 import { useMode } from './context/ModeContext';
@@ -94,11 +97,20 @@ function ManifoldScene({
   showWireframe,
   showParticles,
   showConnections,
+  showSemanticConnections,
+  showJourneyPath,
+  isJourneyPlaying,
+  journeySpeed,
   opacity,
   isAnimating,
   selectedEntry,
   setSelectedEntry,
-  audioEnabled
+  audioEnabled,
+  semanticConnections,
+  hoveredConnection,
+  setHoveredConnection,
+  onJourneyWaypoint,
+  onJourneyComplete
 }: {
   densityMap: Map<string, number>;
   entries: ManifoldEntry[];
@@ -107,16 +119,37 @@ function ManifoldScene({
   showWireframe: boolean;
   showParticles: boolean;
   showConnections: boolean;
+  showSemanticConnections: boolean;
+  showJourneyPath: boolean;
+  isJourneyPlaying: boolean;
+  journeySpeed: number;
   opacity: number;
   isAnimating: boolean;
   selectedEntry: ManifoldEntry | null;
   setSelectedEntry: (entry: ManifoldEntry | null) => void;
   audioEnabled: boolean;
+  semanticConnections: SemanticConnection[];
+  hoveredConnection: SemanticConnection | null;
+  setHoveredConnection: (conn: SemanticConnection | null) => void;
+  onJourneyWaypoint?: (entry: ManifoldEntry, index: number) => void;
+  onJourneyComplete?: () => void;
 }) {
   return (
     <>
       <ManifoldLighting />
-      <FlyThroughCamera isAnimating={isAnimating} />
+      
+      {/* Journey path camera (replaces orbit fly-through when playing) */}
+      {isJourneyPlaying ? (
+        <JourneyPathCamera
+          entries={entries}
+          isPlaying={isJourneyPlaying}
+          speed={journeySpeed}
+          onWaypoint={onJourneyWaypoint}
+          onComplete={onJourneyComplete}
+        />
+      ) : (
+        <FlyThroughCamera isAnimating={isAnimating} />
+      )}
 
       {/* The distorted torus surface */}
       <DistortedTorus
@@ -127,6 +160,11 @@ function ManifoldScene({
         wireframe={showWireframe}
       />
 
+      {/* Journey path visualization */}
+      {showJourneyPath && entries.length >= 2 && (
+        <JourneyPathLine entries={entries} color="#fbbf24" opacity={0.7} lineWidth={2} />
+      )}
+
       {/* Insight particles */}
       {showParticles && (
         <InsightParticles
@@ -136,8 +174,19 @@ function ManifoldScene({
         />
       )}
 
-      {/* Connection lines */}
+      {/* Tag-based connection lines */}
       <ConnectionLines entries={entries} showConnections={showConnections} />
+
+      {/* Semantic similarity connections */}
+      {showSemanticConnections && (
+        <SemanticConnectionLines
+          entries={entries}
+          connections={semanticConnections}
+          showConnections={showSemanticConnections}
+          hoveredConnection={hoveredConnection}
+          onConnectionHover={setHoveredConnection}
+        />
+      )}
 
       {/* Selected entry tooltip */}
       {selectedEntry && (
@@ -147,8 +196,8 @@ function ManifoldScene({
       {/* Background stars */}
       <Stars radius={100} depth={50} count={2000} factor={4} saturation={0} fade />
 
-      {/* Orbit controls when not animating */}
-      {!isAnimating && (
+      {/* Orbit controls when not animating or journey playing */}
+      {!isAnimating && !isJourneyPlaying && (
         <OrbitControls
           enablePan
           enableZoom
@@ -181,14 +230,32 @@ export function TorusManifoldVisualization({ onClose }: TorusManifoldVisualizati
   const [showWireframe, setShowWireframe] = useState(false);
   const [showParticles, setShowParticles] = useState(true);
   const [showConnections, setShowConnections] = useState(false);
+  const [showSemanticConnections, setShowSemanticConnections] = useState(false);
+  const [showJourneyPath, setShowJourneyPath] = useState(true);
+  const [isJourneyPlaying, setIsJourneyPlaying] = useState(false);
+  const [journeySpeed, setJourneySpeed] = useState(1);
   const [opacity, setOpacity] = useState(0.6);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<ManifoldEntry | null>(null);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [hoveredConnection, setHoveredConnection] = useState<SemanticConnection | null>(null);
+
+  // Semantic connections
+  const { connections: semanticConnections } = useSemanticConnections(entries, 0.3);
 
   const { playTileSound } = useCosmologicalAudio();
+
+  const handleJourneyWaypoint = (entry: ManifoldEntry, index: number) => {
+    // Audio feedback disabled for journey waypoints as playTileSound expects Season type
+    setSelectedEntry(entry);
+  };
+
+  const handleJourneyComplete = () => {
+    setIsJourneyPlaying(false);
+    setSelectedEntry(null);
+  };
 
   const handleReset = () => {
     setShowCurvature(false);
@@ -196,6 +263,10 @@ export function TorusManifoldVisualization({ onClose }: TorusManifoldVisualizati
     setShowWireframe(false);
     setShowParticles(true);
     setShowConnections(false);
+    setShowSemanticConnections(false);
+    setShowJourneyPath(true);
+    setIsJourneyPlaying(false);
+    setJourneySpeed(1);
     setOpacity(0.6);
     setIsAnimating(false);
     setSelectedEntry(null);
@@ -296,11 +367,20 @@ export function TorusManifoldVisualization({ onClose }: TorusManifoldVisualizati
               showWireframe={showWireframe}
               showParticles={showParticles}
               showConnections={showConnections}
+              showSemanticConnections={showSemanticConnections}
+              showJourneyPath={showJourneyPath}
+              isJourneyPlaying={isJourneyPlaying}
+              journeySpeed={journeySpeed}
               opacity={opacity}
               isAnimating={isAnimating}
               selectedEntry={selectedEntry}
               setSelectedEntry={setSelectedEntry}
               audioEnabled={audioEnabled}
+              semanticConnections={semanticConnections}
+              hoveredConnection={hoveredConnection}
+              setHoveredConnection={setHoveredConnection}
+              onJourneyWaypoint={handleJourneyWaypoint}
+              onJourneyComplete={handleJourneyComplete}
             />
           </Suspense>
         </Canvas>
@@ -317,6 +397,14 @@ export function TorusManifoldVisualization({ onClose }: TorusManifoldVisualizati
           setShowParticles={setShowParticles}
           showConnections={showConnections}
           setShowConnections={setShowConnections}
+          showSemanticConnections={showSemanticConnections}
+          setShowSemanticConnections={setShowSemanticConnections}
+          showJourneyPath={showJourneyPath}
+          setShowJourneyPath={setShowJourneyPath}
+          isJourneyPlaying={isJourneyPlaying}
+          setIsJourneyPlaying={setIsJourneyPlaying}
+          journeySpeed={journeySpeed}
+          setJourneySpeed={setJourneySpeed}
           isAnimating={isAnimating}
           setIsAnimating={setIsAnimating}
           opacity={opacity}
