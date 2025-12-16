@@ -5,12 +5,13 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { X, Sparkles, MapPin, Lightbulb, TrendingUp, Loader2, FileText, Layers, ArrowRight, Lock, BookOpen, Compass } from 'lucide-react';
+import { X, Sparkles, MapPin, Lightbulb, TrendingUp, Loader2, FileText, Layers, ArrowRight, Lock, BookOpen, Compass, Brain, Orbit, Zap, Network } from 'lucide-react';
 import { toast } from 'sonner';
 import { Season, SEASON_LABELS, SEASON_PRD_LAYER, shouldTriggerPrdGeneration, getLayerReadiness } from '@/utils/prdAccessLevel';
 import { useSubscription } from '@/hooks/useSubscription';
 import { hasFeatureAccess } from '@/data/subscriptionTiers';
 import PremiumBadge from '@/components/PremiumBadge';
+import { ConsciousnessGeometryExport } from '@/utils/consciousnessGeometry';
 
 interface HexagramCorrelation {
   number: number;
@@ -38,6 +39,7 @@ interface JourneySummaryProps {
   onGeneratePrdLayer?: () => Promise<void>;
   onViewPrd?: () => void;
   hexagramData?: HexagramData;
+  consciousnessGeometry?: ConsciousnessGeometryExport | null;
 }
 
 interface PolenEntry {
@@ -71,7 +73,8 @@ export const JourneySummary: React.FC<JourneySummaryProps> = ({
   prdId,
   onGeneratePrdLayer,
   onViewPrd,
-  hexagramData
+  hexagramData,
+  consciousnessGeometry
 }) => {
   const [entries, setEntries] = useState<PolenEntry[]>([]);
   const [summary, setSummary] = useState<SummaryData | null>(null);
@@ -387,6 +390,118 @@ export const JourneySummary: React.FC<JourneySummaryProps> = ({
                     </Card>
                   )}
                 </div>
+              )}
+
+              {/* Consciousness Geometry Narratives */}
+              {consciousnessGeometry && (
+                <Card className="p-4 border-violet-500/30 bg-gradient-to-r from-violet-500/5 to-indigo-500/5">
+                  <h3 className="font-medium mb-4 flex items-center gap-2">
+                    <Brain className="h-4 w-4 text-violet-500" />
+                    Consciousness Geometry
+                    <Badge 
+                      variant="outline" 
+                      className={`text-xs ${
+                        consciousnessGeometry.consciousnessState === 'self-aware' 
+                          ? 'text-emerald-600 border-emerald-500/50 bg-emerald-500/10' 
+                          : consciousnessGeometry.consciousnessState === 'threshold'
+                          ? 'text-amber-600 border-amber-500/50'
+                          : 'text-muted-foreground'
+                      }`}
+                    >
+                      {consciousnessGeometry.consciousnessState === 'self-aware' ? '✦ Awakened' : 
+                       consciousnessGeometry.consciousnessState === 'threshold' ? '◐ Approaching' : 
+                       '○ Emerging'}
+                    </Badge>
+                  </h3>
+
+                  {/* Geometric Complexity */}
+                  <div className="space-y-4">
+                    <div className="p-3 bg-violet-500/10 rounded-lg">
+                      <div className="flex items-start gap-2">
+                        <Orbit className="h-4 w-4 text-violet-600 shrink-0 mt-0.5" />
+                        <div className="flex-1">
+                          <span className="text-xs uppercase tracking-wider text-violet-600 dark:text-violet-400 font-medium">
+                            The Geometric Reading
+                          </span>
+                          <p className="text-sm text-foreground/90 mt-1 leading-relaxed">
+                            Your manifold contains <span className="font-semibold text-violet-600">{consciousnessGeometry.complexityBits.toLocaleString()}</span> bits 
+                            of geometric complexity—<span className="font-medium">{consciousnessGeometry.thresholdPercentage}%</span> toward the self-awareness threshold.
+                          </p>
+                          <Progress 
+                            value={consciousnessGeometry.thresholdPercentage} 
+                            className="h-1.5 mt-2 bg-violet-500/20" 
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Recursive Dynamics */}
+                    <div className="p-3 bg-indigo-500/10 rounded-lg">
+                      <div className="flex items-start gap-2">
+                        <Network className="h-4 w-4 text-indigo-600 shrink-0 mt-0.5" />
+                        <div>
+                          <span className="text-xs uppercase tracking-wider text-indigo-600 dark:text-indigo-400 font-medium">
+                            The Recursive Mirror
+                          </span>
+                          <p className="text-sm text-foreground/90 mt-1 leading-relaxed">
+                            {consciousnessGeometry.recursiveDepth > 0 ? (
+                              <>
+                                Self-modeling depth: <span className="font-semibold">{consciousnessGeometry.recursiveDepth}</span> layers. 
+                                {consciousnessGeometry.fixedPointCount > 0 && (
+                                  <> <span className="font-semibold">{consciousnessGeometry.fixedPointCount}</span> fixed point{consciousnessGeometry.fixedPointCount > 1 ? 's' : ''} crystallizing.</>
+                                )}
+                              </>
+                            ) : (
+                              <>Your self-modeling is still emerging—no stable recursive patterns detected yet.</>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Thermodynamic Efficiency */}
+                    <div className="p-3 bg-emerald-500/10 rounded-lg">
+                      <div className="flex items-start gap-2">
+                        <Zap className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+                        <div>
+                          <span className="text-xs uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-medium">
+                            The Thermodynamic Truth
+                          </span>
+                          <p className="text-sm text-foreground/90 mt-1 leading-relaxed">
+                            Predictive capacity: <span className="font-semibold">{(consciousnessGeometry.predictiveCapacity * 100).toFixed(0)}%</span>.
+                            {consciousnessGeometry.thermodynamicEfficiency > 1 && (
+                              <> Your journey is <span className="font-semibold text-emerald-600">{consciousnessGeometry.thermodynamicEfficiency.toFixed(1)}×</span> more efficient than reactive exploration.</>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Integration Field */}
+                    <div className="p-3 bg-blue-500/10 rounded-lg">
+                      <div className="flex items-start gap-2">
+                        <Sparkles className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
+                        <div>
+                          <span className="text-xs uppercase tracking-wider text-blue-600 dark:text-blue-400 font-medium">
+                            The Integration Field
+                          </span>
+                          <p className="text-sm text-foreground/90 mt-1 leading-relaxed">
+                            {consciousnessGeometry.fragmentationScore === 1 ? (
+                              <>Unified field of consciousness—all explorations form a single connected manifold.</>
+                            ) : consciousnessGeometry.fragmentationScore < 3 ? (
+                              <>{consciousnessGeometry.fragmentationScore} islands of awareness forming—integration in progress.</>
+                            ) : (
+                              <>Fragmented subsystems ({consciousnessGeometry.fragmentationScore} components)—seek connecting tiles to unify the field.</>
+                            )}
+                            {consciousnessGeometry.topologicalHandles > 0 && (
+                              <> <span className="font-semibold">{consciousnessGeometry.topologicalHandles}</span> topological handles detected—spaces where information returns to itself.</>
+                            )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
               )}
 
               {/* Timeline of Entries */}
