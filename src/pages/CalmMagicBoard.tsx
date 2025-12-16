@@ -1430,6 +1430,7 @@ const CalmMagicBoard = () => {
         onGeneratePrdLayer={handleGeneratePrdLayer}
         onViewPrd={prdId ? () => navigate(`/prds/${prdId}`) : undefined}
         hexagramData={getHexagramDataForSummary(visitedTiles)}
+        consciousnessGeometry={consciousnessGeometry}
       />
 
       {/* Insight Connections Graph */}
