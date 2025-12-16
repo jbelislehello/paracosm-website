@@ -5,12 +5,29 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { X, Sparkles, MapPin, Lightbulb, TrendingUp, Loader2, FileText, Layers, ArrowRight, Lock } from 'lucide-react';
+import { X, Sparkles, MapPin, Lightbulb, TrendingUp, Loader2, FileText, Layers, ArrowRight, Lock, BookOpen, Compass } from 'lucide-react';
 import { toast } from 'sonner';
 import { Season, SEASON_LABELS, SEASON_PRD_LAYER, shouldTriggerPrdGeneration, getLayerReadiness } from '@/utils/prdAccessLevel';
 import { useSubscription } from '@/hooks/useSubscription';
 import { hasFeatureAccess } from '@/data/subscriptionTiers';
 import PremiumBadge from '@/components/PremiumBadge';
+
+interface HexagramCorrelation {
+  number: number;
+  name: string;
+  chineseName: string;
+  meaning: string;
+  upperTrigram: string;
+  lowerTrigram: string;
+  tileCount: number;
+  keywords: string[];
+}
+
+interface HexagramData {
+  dominant: HexagramCorrelation[];
+  trigramNarrative: string;
+  cosmicPattern: string | null;
+}
 
 interface JourneySummaryProps {
   isOpen: boolean;
@@ -20,6 +37,7 @@ interface JourneySummaryProps {
   prdId?: string | null;
   onGeneratePrdLayer?: () => Promise<void>;
   onViewPrd?: () => void;
+  hexagramData?: HexagramData;
 }
 
 interface PolenEntry {
@@ -31,11 +49,18 @@ interface PolenEntry {
   season_context: string | null;
 }
 
+interface HexagramInterpretation {
+  narrative: string;
+  resonantHexagram: number;
+  guidance: string;
+}
+
 interface SummaryData {
   themes: string[];
   keyInsights: { text: string; importance: number }[];
   nextAreas: string[];
   connections: { from: string; to: string; relationship: string }[];
+  hexagramInterpretation?: HexagramInterpretation;
 }
 
 export const JourneySummary: React.FC<JourneySummaryProps> = ({
@@ -45,7 +70,8 @@ export const JourneySummary: React.FC<JourneySummaryProps> = ({
   seasonProgress,
   prdId,
   onGeneratePrdLayer,
-  onViewPrd
+  onViewPrd,
+  hexagramData
 }) => {
   const [entries, setEntries] = useState<PolenEntry[]>([]);
   const [summary, setSummary] = useState<SummaryData | null>(null);
@@ -117,7 +143,21 @@ export const JourneySummary: React.FC<JourneySummaryProps> = ({
             tile_id: e.tile_id,
             created_at: e.created_at
           })),
-          currentSeason 
+          currentSeason,
+          hexagramData: hexagramData ? {
+            dominant: hexagramData.dominant.map(h => ({
+              number: h.number,
+              name: h.name,
+              chineseName: h.chineseName,
+              meaning: h.meaning,
+              upperTrigram: h.upperTrigram,
+              lowerTrigram: h.lowerTrigram,
+              tileCount: h.tileCount,
+              keywords: h.keywords
+            })),
+            trigramNarrative: hexagramData.trigramNarrative,
+            cosmicPattern: hexagramData.cosmicPattern
+          } : undefined
         }
       });
 
@@ -310,6 +350,39 @@ export const JourneySummary: React.FC<JourneySummaryProps> = ({
                             <span className="text-xs italic">({conn.relationship})</span>
                           </div>
                         ))}
+                      </div>
+                    </Card>
+                  )}
+
+                  {/* I Ching Hexagram Interpretation */}
+                  {summary.hexagramInterpretation && (
+                    <Card className="p-4 border-amber-500/30 bg-gradient-to-r from-amber-500/5 to-orange-500/5">
+                      <h3 className="font-medium mb-3 flex items-center gap-2">
+                        <BookOpen className="h-4 w-4 text-amber-500" />
+                        I Ching Wisdom
+                        {summary.hexagramInterpretation.resonantHexagram && (
+                          <Badge variant="outline" className="text-amber-600 border-amber-500/50 text-xs">
+                            Hexagram {summary.hexagramInterpretation.resonantHexagram}
+                          </Badge>
+                        )}
+                      </h3>
+                      
+                      <p className="text-sm text-foreground/90 leading-relaxed mb-4 italic border-l-2 border-amber-500/50 pl-3">
+                        {summary.hexagramInterpretation.narrative}
+                      </p>
+                      
+                      <div className="p-3 bg-amber-500/10 rounded-lg">
+                        <div className="flex items-start gap-2">
+                          <Compass className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
+                          <div>
+                            <span className="text-xs uppercase tracking-wider text-amber-600 dark:text-amber-400 font-medium">
+                              Guidance
+                            </span>
+                            <p className="text-sm text-foreground/90 mt-1">
+                              {summary.hexagramInterpretation.guidance}
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </Card>
                   )}
