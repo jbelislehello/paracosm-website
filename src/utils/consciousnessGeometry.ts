@@ -456,3 +456,109 @@ export function exportForOracle(geometry: ConsciousnessGeometry): ConsciousnessG
     fixedPointCount: geometry.fixedPointsDetected.length
   };
 }
+
+/**
+ * Calculate Betti numbers from visited tiles
+ * β₀ = connected components, β₁ = holes
+ */
+function calculateBettiNumbers(visitedTiles: Set<string>): { beta0: number; beta1: number } {
+  const gridSize = 8;
+  const grid: boolean[][] = Array(gridSize).fill(null).map(() => Array(gridSize).fill(false));
+  
+  visitedTiles.forEach(key => {
+    const [r, c] = key.split(',').map(Number);
+    if (r >= 0 && r < gridSize && c >= 0 && c < gridSize) {
+      grid[r][c] = true;
+    }
+  });
+  
+  // β₀ calculation via flood fill
+  const componentVisited = new Set<string>();
+  let beta0 = 0;
+  
+  const floodFill = (startR: number, startC: number) => {
+    const stack = [[startR, startC]];
+    while (stack.length > 0) {
+      const [r, c] = stack.pop()!;
+      const key = `${r},${c}`;
+      if (componentVisited.has(key) || !grid[r]?.[c]) continue;
+      componentVisited.add(key);
+      [[0, 1], [0, -1], [1, 0], [-1, 0]].forEach(([dr, dc]) => {
+        const nr = r + dr, nc = c + dc;
+        if (nr >= 0 && nr < gridSize && nc >= 0 && nc < gridSize && grid[nr][nc]) {
+          stack.push([nr, nc]);
+        }
+      });
+    }
+  };
+  
+  visitedTiles.forEach(key => {
+    if (!componentVisited.has(key)) {
+      const [r, c] = key.split(',').map(Number);
+      if (!isNaN(r) && !isNaN(c)) {
+        floodFill(r, c);
+        beta0++;
+      }
+    }
+  });
+  
+  // Euler characteristic calculation
+  let vertices = visitedTiles.size;
+  let edges = 0;
+  let faces = 0;
+  
+  visitedTiles.forEach(key => {
+    const [r, c] = key.split(',').map(Number);
+    if (!isNaN(r) && !isNaN(c)) {
+      if (visitedTiles.has(`${r},${c + 1}`)) edges++;
+      if (visitedTiles.has(`${r + 1},${c}`)) edges++;
+    }
+  });
+  
+  for (let r = 0; r < gridSize - 1; r++) {
+    for (let c = 0; c < gridSize - 1; c++) {
+      if (grid[r][c] && grid[r][c + 1] && grid[r + 1][c] && grid[r + 1][c + 1]) {
+        faces++;
+      }
+    }
+  }
+  
+  const eulerCharacteristic = vertices - edges + faces;
+  const beta1 = Math.max(0, beta0 - eulerCharacteristic + 1);
+  
+  return { beta0: beta0 || 1, beta1 };
+}
+
+/**
+ * Convenience function: Calculate consciousness geometry from tiles only
+ * Computes Betti numbers and density map internally
+ */
+export function calculateConsciousnessGeometryFromTiles(
+  visitedTiles: Set<string>,
+  journeyPath: Array<{ row: number; col: number }>,
+  polenDensityMap?: Map<string, number>
+): ConsciousnessGeometryExport | null {
+  if (visitedTiles.size === 0) return null;
+  
+  // Create density map if not provided
+  const densityMap = polenDensityMap || new Map<string, number>();
+  visitedTiles.forEach(tile => {
+    if (!densityMap.has(tile)) {
+      densityMap.set(tile, 1);
+    }
+  });
+  
+  // Calculate Betti numbers
+  const { beta0, beta1 } = calculateBettiNumbers(visitedTiles);
+  
+  // Calculate full consciousness geometry
+  const geometry = calculateConsciousnessGeometry(
+    visitedTiles,
+    journeyPath,
+    densityMap,
+    beta0,
+    beta1
+  );
+  
+  return exportForOracle(geometry);
+}
