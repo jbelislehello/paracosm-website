@@ -12,6 +12,7 @@ import { ViewModeSelector, TopologyViewMode } from './ViewModeSelector';
 import { TopologyStoryExplorer } from './TopologyStoryExplorer';
 import { useTopologyInsight } from '@/hooks/useTopologyInsight';
 import { RingLevel } from '@/utils/ringToleranceSystem';
+import { TopologicalSignature, QuadrantPosition } from '@/types/trajectory';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
@@ -38,6 +39,11 @@ interface TopologiesTabProps {
   shadowPosition?: { x: number; y: number };
   higherSelfPosition?: { x: number; y: number };
   currentSeason?: string;
+  // Topological insights props
+  topologicalSignature?: TopologicalSignature | null;
+  isAnalyzingTopology?: boolean;
+  onAnalyzeTopology?: () => void;
+  onApplyInsightToShadow?: (position: QuadrantPosition, insightNote: string) => void;
 }
 
 export function TopologiesTab({
@@ -51,7 +57,11 @@ export function TopologiesTab({
   densityMap = new Map(),
   shadowPosition,
   higherSelfPosition,
-  currentSeason
+  currentSeason,
+  topologicalSignature,
+  isAnalyzingTopology,
+  onAnalyzeTopology,
+  onApplyInsightToShadow
 }: TopologiesTabProps) {
   const [viewMode, setViewMode] = useState<TopologyViewMode>('isometric');
   const [cubeSize, setCubeSize] = useState(32);
@@ -225,6 +235,10 @@ export function TopologiesTab({
         visitedTiles={visitedTiles}
         currentUnlockedRing={currentUnlockedRing}
         journeyPath={journeyPath}
+        topologicalSignature={topologicalSignature}
+        isAnalyzingTopology={isAnalyzingTopology}
+        onAnalyzeTopology={onAnalyzeTopology}
+        onApplyInsightToShadow={onApplyInsightToShadow}
       />
 
       {/* Legend */}

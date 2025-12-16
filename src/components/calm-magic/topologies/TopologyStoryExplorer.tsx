@@ -3,6 +3,8 @@ import { TopologyStory } from '@/hooks/useTopologyInsight';
 import { StoryChapter } from './StoryChapter';
 import { TopologyViewMode } from './ViewModeSelector';
 import { ConcreteInsightCard } from './ConcreteInsightCard';
+import { TopologicalInsightsPanel } from '@/components/calm-magic/TopologicalInsightsPanel';
+import { TopologicalSignature, QuadrantPosition } from '@/types/trajectory';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
@@ -37,6 +39,11 @@ interface TopologyStoryExplorerProps {
   visitedTiles?: Set<string>;
   currentUnlockedRing?: number;
   journeyPath?: Array<{ row: number; col: number }>;
+  // Topological insights props
+  topologicalSignature?: TopologicalSignature | null;
+  isAnalyzingTopology?: boolean;
+  onAnalyzeTopology?: () => void;
+  onApplyInsightToShadow?: (position: QuadrantPosition, insightNote: string) => void;
 }
 
 // View significance explanations
@@ -399,7 +406,11 @@ export function TopologyStoryExplorer({
   viewMode = 'isometric',
   visitedTiles = new Set(),
   currentUnlockedRing = 1,
-  journeyPath = []
+  journeyPath = [],
+  topologicalSignature,
+  isAnalyzingTopology,
+  onAnalyzeTopology,
+  onApplyInsightToShadow
 }: TopologyStoryExplorerProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [revealedChapters, setRevealedChapters] = useState<Set<number>>(new Set());
@@ -496,6 +507,15 @@ ${story.invitation}
     <div className="space-y-4">
       {/* CONCRETE INSIGHT CARD - AT THE TOP for immediate practical value */}
       <ConcreteInsightCard insight={story?.concreteInsight || null} isLoading={false} />
+      
+      {/* TOPOLOGICAL INSIGHTS PANEL - Sentiment analysis and fragment breakdown */}
+      {(topologicalSignature || isAnalyzingTopology) && (
+        <TopologicalInsightsPanel
+          signature={topologicalSignature || null}
+          isAnalyzing={isAnalyzingTopology}
+          onApplyInsightToShadow={onApplyInsightToShadow}
+        />
+      )}
       
       {/* AI STORY - Expandable section below */}
       <div className="bg-gradient-to-br from-primary/5 via-background to-accent/5 border border-border rounded-lg overflow-hidden">
