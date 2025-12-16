@@ -76,7 +76,8 @@ export function TopologiesTab({
   const [viewMode, setViewMode] = useState<TopologyViewMode>('isometric');
   const [cubeSize, setCubeSize] = useState(32);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [secretsRevealed, setSecretsRevealed] = useState(false);
+  // Start revealed if user already has visited tiles
+  const [secretsRevealed, setSecretsRevealed] = useState(visitedTiles.size > 0);
 
   const { story, isLoading, error, fetchStory, clearStory } = useTopologyInsight();
 
