@@ -7,11 +7,6 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Skeleton } from '@/components/ui/skeleton';
 import { TopologicalSignature, PolenSentiment, QuadrantThemes, QuadrantPosition } from '@/types/trajectory';
 import { 
-  RadarChart, 
-  PolarGrid, 
-  PolarAngleAxis, 
-  PolarRadiusAxis, 
-  Radar, 
   ResponsiveContainer,
   PieChart,
   Pie,
@@ -125,39 +120,119 @@ const EmptyState: React.FC = () => (
   </div>
 );
 
-// Theme radar chart
-const ThemeRadarChart: React.FC<{ themes: QuadrantThemes }> = ({ themes }) => {
-  const data = [
-    { theme: 'Intimacy', value: themes.intimacy * 100, fullMark: 100 },
-    { theme: 'Sovereignty', value: themes.sovereignty * 100, fullMark: 100 },
-    { theme: 'Novelty', value: themes.novelty * 100, fullMark: 100 },
-    { theme: 'Memory', value: themes.memory * 100, fullMark: 100 },
-  ];
+// Transform 4 themes to 2 bipolar axes
+const transformThemesToAxes = (themes: QuadrantThemes) => ({
+  // X-axis: -1 (Memory) to +1 (Novelty)
+  horizontal: themes.novelty - themes.memory,
+  // Y-axis: -1 (Intimacy) to +1 (Sovereignty)  
+  vertical: themes.sovereignty - themes.intimacy,
+});
 
+// Get quadrant from axis position
+const getQuadrantFromAxes = (horizontal: number, vertical: number): string => {
+  if (horizontal >= 0 && vertical >= 0) return 'SN'; // Sovereignty-Novelty
+  if (horizontal < 0 && vertical >= 0) return 'SM';  // Sovereignty-Memory
+  if (horizontal < 0 && vertical < 0) return 'IM';   // Intimacy-Memory
+  return 'IN'; // Intimacy-Novelty
+};
+
+// Bipolar axis position chart
+const AxisPositionChart: React.FC<{ themes: QuadrantThemes }> = ({ themes }) => {
+  const axes = transformThemesToAxes(themes);
+  const quadrant = getQuadrantFromAxes(axes.horizontal, axes.vertical);
+  
   return (
-    <ResponsiveContainer width="100%" height={180}>
-      <RadarChart data={data}>
-        <PolarGrid stroke="hsl(var(--border))" />
-        <PolarAngleAxis 
-          dataKey="theme" 
-          tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
-        />
-        <PolarRadiusAxis 
-          angle={45} 
-          domain={[0, 100]} 
-          tick={{ fontSize: 8 }}
-          tickCount={5}
-        />
-        <Radar
-          name="Themes"
-          dataKey="value"
-          stroke="hsl(var(--primary))"
-          fill="hsl(var(--primary))"
-          fillOpacity={0.3}
-          strokeWidth={2}
-        />
-      </RadarChart>
-    </ResponsiveContainer>
+    <div className="space-y-4">
+      {/* SVG Quadrant Visualization */}
+      <div className="relative aspect-square max-w-[200px] mx-auto">
+        <svg viewBox="-1.3 -1.3 2.6 2.6" className="w-full h-full">
+          {/* Quadrant backgrounds */}
+          <rect x="0" y="-1" width="1" height="1" fill="hsl(45 93% 47% / 0.08)" /> {/* SN - top right */}
+          <rect x="-1" y="-1" width="1" height="1" fill="hsl(45 93% 47% / 0.05)" /> {/* SM - top left */}
+          <rect x="-1" y="0" width="1" height="1" fill="hsl(340 82% 52% / 0.08)" /> {/* IM - bottom left */}
+          <rect x="0" y="0" width="1" height="1" fill="hsl(340 82% 52% / 0.05)" /> {/* IN - bottom right */}
+          
+          {/* Grid border */}
+          <rect x="-1" y="-1" width="2" height="2" fill="none" stroke="hsl(var(--border))" strokeWidth="0.02" />
+          
+          {/* Axis lines */}
+          <line x1="-1" y1="0" x2="1" y2="0" stroke="hsl(var(--border))" strokeWidth="0.02" />
+          <line x1="0" y1="-1" x2="0" y2="1" stroke="hsl(var(--border))" strokeWidth="0.02" />
+          
+          {/* Quadrant labels */}
+          <text x="0.5" y="-0.5" fontSize="0.15" textAnchor="middle" dominantBaseline="middle" fill="hsl(var(--muted-foreground))" opacity="0.5">SN</text>
+          <text x="-0.5" y="-0.5" fontSize="0.15" textAnchor="middle" dominantBaseline="middle" fill="hsl(var(--muted-foreground))" opacity="0.5">SM</text>
+          <text x="-0.5" y="0.5" fontSize="0.15" textAnchor="middle" dominantBaseline="middle" fill="hsl(var(--muted-foreground))" opacity="0.5">IM</text>
+          <text x="0.5" y="0.5" fontSize="0.15" textAnchor="middle" dominantBaseline="middle" fill="hsl(var(--muted-foreground))" opacity="0.5">IN</text>
+          
+          {/* Axis labels */}
+          <text x="0" y="-1.15" fontSize="0.11" textAnchor="middle" fill="hsl(45 93% 47%)">Sovereignty ↑</text>
+          <text x="0" y="1.2" fontSize="0.11" textAnchor="middle" fill="hsl(340 82% 52%)">↓ Intimacy</text>
+          <text x="-1.15" y="0" fontSize="0.11" textAnchor="middle" fill="hsl(210 70% 50%)" transform="rotate(-90 -1.15 0)">Memory ←</text>
+          <text x="1.15" y="0" fontSize="0.11" textAnchor="middle" fill="hsl(142 71% 45%)" transform="rotate(90 1.15 0)">→ Novelty</text>
+          
+          {/* Position marker */}
+          <circle 
+            cx={axes.horizontal} 
+            cy={-axes.vertical} 
+            r="0.08" 
+            fill="hsl(var(--primary))" 
+            stroke="hsl(var(--background))"
+            strokeWidth="0.02"
+          />
+          {/* Glow effect */}
+          <circle 
+            cx={axes.horizontal} 
+            cy={-axes.vertical} 
+            r="0.12" 
+            fill="none"
+            stroke="hsl(var(--primary))"
+            strokeWidth="0.02"
+            opacity="0.4"
+          />
+        </svg>
+      </div>
+      
+      {/* Axis Sliders */}
+      <div className="space-y-3 px-2">
+        {/* Memory ↔ Novelty axis */}
+        <div>
+          <div className="flex justify-between text-[10px] mb-1">
+            <span style={{ color: THEME_COLORS.memory }}>Memory</span>
+            <span className="font-mono text-muted-foreground">{axes.horizontal.toFixed(2)}</span>
+            <span style={{ color: THEME_COLORS.novelty }}>Novelty</span>
+          </div>
+          <div className="h-2 bg-gradient-to-r from-blue-500/20 via-muted to-green-500/20 rounded-full relative">
+            <div 
+              className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-primary rounded-full border-2 border-background shadow-sm"
+              style={{ left: `calc(${((axes.horizontal + 1) / 2) * 100}% - 6px)` }}
+            />
+          </div>
+        </div>
+        
+        {/* Intimacy ↔ Sovereignty axis */}
+        <div>
+          <div className="flex justify-between text-[10px] mb-1">
+            <span style={{ color: THEME_COLORS.intimacy }}>Intimacy</span>
+            <span className="font-mono text-muted-foreground">{axes.vertical.toFixed(2)}</span>
+            <span style={{ color: THEME_COLORS.sovereignty }}>Sovereignty</span>
+          </div>
+          <div className="h-2 bg-gradient-to-r from-rose-500/20 via-muted to-amber-500/20 rounded-full relative">
+            <div 
+              className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-primary rounded-full border-2 border-background shadow-sm"
+              style={{ left: `calc(${((axes.vertical + 1) / 2) * 100}% - 6px)` }}
+            />
+          </div>
+        </div>
+      </div>
+      
+      {/* Current quadrant badge */}
+      <div className="text-center">
+        <Badge variant="secondary" className="text-xs">
+          Journey tends toward <span className="font-bold ml-1">{quadrant}</span>
+        </Badge>
+      </div>
+    </div>
   );
 };
 
@@ -245,7 +320,7 @@ const ValencePieChart: React.FC<{ sentiments?: PolenSentiment[] }> = ({ sentimen
   );
 };
 
-// Individual sentiment accordion
+// Individual sentiment accordion with axis display
 const SentimentAccordion: React.FC<{ sentiments?: PolenSentiment[] }> = ({ sentiments }) => {
   if (!sentiments || sentiments.length === 0) {
     return <p className="text-xs text-muted-foreground">No entries analyzed</p>;
@@ -253,64 +328,70 @@ const SentimentAccordion: React.FC<{ sentiments?: PolenSentiment[] }> = ({ senti
 
   return (
     <Accordion type="single" collapsible className="w-full">
-      {sentiments.map((sentiment, index) => (
-        <AccordionItem key={sentiment.polenId} value={sentiment.polenId}>
-          <AccordionTrigger className="text-sm py-2 hover:no-underline">
-            <div className="flex items-center gap-2 flex-1">
-              <Badge variant="outline" className="font-mono text-[10px] px-1.5">
-                #{index + 1}
-              </Badge>
-              <span 
-                className="capitalize font-medium"
-                style={{ color: THEME_COLORS[sentiment.dominantTheme] }}
-              >
-                {sentiment.dominantTheme}
-              </span>
-              <ValenceIcon valence={sentiment.emotionalValence} />
-            </div>
-          </AccordionTrigger>
-          <AccordionContent>
-            <div className="space-y-3 pt-2">
-              {/* Theme bars */}
-              <div className="space-y-1.5">
-                {(Object.entries(sentiment.themes) as [keyof QuadrantThemes, number][]).map(([theme, value]) => (
-                  <div key={theme} className="flex items-center gap-2 text-xs">
-                    <span 
-                      className="w-20 capitalize"
-                      style={{ color: THEME_COLORS[theme] }}
-                    >
-                      {theme}
-                    </span>
-                    <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+      {sentiments.map((sentiment, index) => {
+        const axes = transformThemesToAxes(sentiment.themes);
+        const quadrant = getQuadrantFromAxes(axes.horizontal, axes.vertical);
+        
+        return (
+          <AccordionItem key={sentiment.polenId} value={sentiment.polenId}>
+            <AccordionTrigger className="text-sm py-2 hover:no-underline">
+              <div className="flex items-center gap-2 flex-1">
+                <Badge variant="outline" className="font-mono text-[10px] px-1.5">
+                  #{index + 1}
+                </Badge>
+                <Badge 
+                  variant="secondary" 
+                  className="font-mono text-[10px] px-1.5"
+                >
+                  {quadrant}
+                </Badge>
+                <ValenceIcon valence={sentiment.emotionalValence} />
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="space-y-3 pt-2">
+                {/* Axis position mini-display */}
+                <div className="space-y-2">
+                  {/* Memory ↔ Novelty */}
+                  <div className="flex items-center gap-2 text-[10px]">
+                    <span style={{ color: THEME_COLORS.memory }} className="w-14">Memory</span>
+                    <div className="flex-1 h-1.5 bg-gradient-to-r from-blue-500/20 via-muted to-green-500/20 rounded-full relative">
                       <div 
-                        className="h-full rounded-full transition-all"
-                        style={{ 
-                          width: `${value * 100}%`,
-                          backgroundColor: THEME_COLORS[theme]
-                        }}
+                        className="absolute top-1/2 -translate-y-1/2 w-2 h-2 bg-primary rounded-full"
+                        style={{ left: `calc(${((axes.horizontal + 1) / 2) * 100}% - 4px)` }}
                       />
                     </div>
-                    <span className="font-mono w-8 text-right text-muted-foreground">
-                      {Math.round(value * 100)}%
-                    </span>
+                    <span style={{ color: THEME_COLORS.novelty }} className="w-14 text-right">Novelty</span>
                   </div>
-                ))}
-              </div>
-              
-              {/* Keywords */}
-              {sentiment.keywords.length > 0 && (
-                <div className="flex flex-wrap gap-1">
-                  {sentiment.keywords.map(kw => (
-                    <Badge key={kw} variant="secondary" className="text-[10px] py-0">
-                      {kw}
-                    </Badge>
-                  ))}
+                  
+                  {/* Intimacy ↔ Sovereignty */}
+                  <div className="flex items-center gap-2 text-[10px]">
+                    <span style={{ color: THEME_COLORS.intimacy }} className="w-14">Intimacy</span>
+                    <div className="flex-1 h-1.5 bg-gradient-to-r from-rose-500/20 via-muted to-amber-500/20 rounded-full relative">
+                      <div 
+                        className="absolute top-1/2 -translate-y-1/2 w-2 h-2 bg-primary rounded-full"
+                        style={{ left: `calc(${((axes.vertical + 1) / 2) * 100}% - 4px)` }}
+                      />
+                    </div>
+                    <span style={{ color: THEME_COLORS.sovereignty }} className="w-14 text-right">Sovereignty</span>
+                  </div>
                 </div>
-              )}
-            </div>
-          </AccordionContent>
-        </AccordionItem>
-      ))}
+                
+                {/* Keywords */}
+                {sentiment.keywords.length > 0 && (
+                  <div className="flex flex-wrap gap-1">
+                    {sentiment.keywords.map(kw => (
+                      <Badge key={kw} variant="secondary" className="text-[10px] py-0">
+                        {kw}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        );
+      })}
     </Accordion>
   );
 };
@@ -477,13 +558,13 @@ export const TopologicalInsightsPanel: React.FC<TopologicalInsightsPanelProps> =
         </Card>
       )}
 
-      {/* Theme Distribution Radar */}
+      {/* Axis Position Chart */}
       <Card>
         <CardHeader className="pb-1 pt-3 px-3">
-          <CardTitle className="text-xs">Quadrant Themes</CardTitle>
+          <CardTitle className="text-xs">Memory ↔ Novelty · Intimacy ↔ Sovereignty</CardTitle>
         </CardHeader>
         <CardContent className="px-3 pb-3">
-          <ThemeRadarChart themes={signature.semantic} />
+          <AxisPositionChart themes={signature.semantic} />
         </CardContent>
       </Card>
 
