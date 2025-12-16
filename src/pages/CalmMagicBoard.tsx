@@ -1159,7 +1159,7 @@ const CalmMagicBoard = () => {
 
         {/* Topologies View */}
         {activeView === 'topologies' && (
-          <div className="flex-1 overflow-hidden p-4 md:p-6">
+          <div className="flex-1 flex flex-col overflow-hidden p-4 md:p-6">
             <TopologiesTab
               row={selectedTile?.row ?? 0}
               col={selectedTile?.col ?? 0}
