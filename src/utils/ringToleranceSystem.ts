@@ -237,3 +237,64 @@ export const RING_VISUAL_CONFIG = RING_DEFINITIONS.map(def => ({
   wisdom: def.wisdom,
   patternType: def.patternType
 }));
+
+// Philosophical messaging for Window of Tolerance visualization
+export interface RingPhilosophy {
+  secure: string;      // When ring is fully unlocked
+  invitation: string;  // When ring is in progress
+  locked: string;      // When ring is locked
+  essence: string;     // Core meaning of this ring
+}
+
+export const RING_PHILOSOPHY: Record<RingLevel, RingPhilosophy> = {
+  1: {
+    secure: "Your foundation is secure",
+    invitation: "Ground yourself in familiar patterns",
+    locked: "Begin your journey here",
+    essence: "Inner Security — The space where you feel safe to be yourself"
+  },
+  2: {
+    secure: "Curiosity extends your reach",
+    invitation: "Stretch into new territory",
+    locked: "Expand your inner core to reach here",
+    essence: "Gentle Expansion — Where safety meets curiosity"
+  },
+  3: {
+    secure: "Courage lives at the edge",
+    invitation: "Growth awaits at boundaries",
+    locked: "Master the stretch zone first",
+    essence: "Edge of Growth — Where comfort ends and transformation begins"
+  },
+  4: {
+    secure: "Integration anchors transcendence",
+    invitation: "The corners anchor infinite possibility",
+    locked: "Explore the edges to unlock integration",
+    essence: "Transcendent Integration — Where all paths converge into wisdom"
+  }
+};
+
+// Get philosophical message for a ring based on its current state
+export function getRingMessage(ring: RingLevel, state: RingState): string {
+  const philosophy = RING_PHILOSOPHY[ring];
+  if (state.patternDetected || state.status === 'unlocked') return philosophy.secure;
+  if (state.status === 'in-progress') return philosophy.invitation;
+  return philosophy.locked;
+}
+
+// Get invitation message for the next unlockable ring
+export function getNextRingInvitation(currentUnlockedRing: RingLevel): string | null {
+  const nextRing = Math.min(currentUnlockedRing + 1, 4) as RingLevel;
+  if (nextRing === currentUnlockedRing) return null; // All unlocked
+  
+  const philosophy = RING_PHILOSOPHY[nextRing];
+  const ringDef = RING_DEFINITIONS.find(r => r.ring === nextRing);
+  
+  return `✨ ${philosophy.invitation} — ${ringDef?.name || ''}`;
+}
+
+// Calculate overall window openness percentage
+export function getWindowOpenness(visitedTiles: Set<string>): number {
+  const totalTiles = 64;
+  const accessibleTiles = visitedTiles.size;
+  return Math.round((accessibleTiles / totalTiles) * 100);
+}
