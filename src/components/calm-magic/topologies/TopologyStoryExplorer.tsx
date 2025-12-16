@@ -565,7 +565,7 @@ ${story.invitation}
           )}
           
           {/* CONTENT STATE - Show when story is ready */}
-          {!isLoading && !error && (
+          {!isLoading && !error && story && (
             <>
               {/* CONCRETE INSIGHT CARD - AT THE TOP for immediate practical value */}
               <ConcreteInsightCard insight={story?.concreteInsight || null} isLoading={false} />
@@ -777,6 +777,22 @@ ${story.invitation}
                 </div>
               </div>
             </>
+          )}
+          
+          {/* Empty state when no story after loading */}
+          {!isLoading && !error && !story && (
+            <div className="px-4 py-6 text-center space-y-3">
+              <div className="w-12 h-12 mx-auto rounded-full bg-muted/50 flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-muted-foreground" />
+              </div>
+              <p className="text-sm text-muted-foreground">
+                No insights available yet. Click "Reveal Secrets" to analyze your journey.
+              </p>
+              <Button variant="outline" size="sm" onClick={onRegenerate}>
+                <RefreshCw className="w-3 h-3 mr-1.5" />
+                Generate Insights
+              </Button>
+            </div>
           )}
         </div>
       </CollapsibleContent>
