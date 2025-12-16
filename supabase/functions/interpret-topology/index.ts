@@ -241,6 +241,18 @@ serve(async (req) => {
       prdId
     } = request;
     
+    // Filter out invalid tile entries like "NaN-NaN" from visitedTiles
+    if (request.visitedTiles) {
+      request.visitedTiles = request.visitedTiles.filter((tile: string) => {
+        const parts = tile.split('-');
+        if (parts.length !== 2) return false;
+        const row = parseInt(parts[0], 10);
+        const col = parseInt(parts[1], 10);
+        return !isNaN(row) && !isNaN(col) && row >= 0 && row <= 7 && col >= 0 && col <= 7;
+      });
+      console.log(`[interpret-topology] Filtered visitedTiles count: ${request.visitedTiles.length}`);
+    }
+    
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY not configured');

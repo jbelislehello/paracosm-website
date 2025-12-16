@@ -150,8 +150,22 @@ async function recoverProgressFromPolen(userId: string, projectId: string): Prom
       if (entry.tile_id) {
         // Convert tile_id to row-col format (tile_id is 1-indexed, 8x8 grid)
         const tileId = Number(entry.tile_id);
+        
+        // Validate tileId is a valid number between 1-64
+        if (isNaN(tileId) || tileId < 1 || tileId > 64) {
+          console.warn('Invalid tile_id in POLEN entry, skipping:', entry.tile_id);
+          return; // Skip this entry
+        }
+        
         const row = Math.floor((tileId - 1) / 8);
         const col = (tileId - 1) % 8;
+        
+        // Extra validation for row/col bounds
+        if (row < 0 || row > 7 || col < 0 || col > 7) {
+          console.warn('Calculated row/col out of bounds, skipping:', { tileId, row, col });
+          return;
+        }
+        
         const tileKey = `${row}-${col}`; // FIX: Use row-col format to match MinimalistTileMatrix
         
         const seasonContext = entry.season_context?.toUpperCase() || 'POLLENS';

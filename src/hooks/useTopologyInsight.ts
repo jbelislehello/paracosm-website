@@ -102,11 +102,27 @@ export function useTopologyInsight() {
     setError(null);
 
     try {
-      // Convert Set and Map to serializable formats
-      const visitedArray = Array.from(visitedTiles);
+      // Convert Set and Map to serializable formats, filtering invalid entries
+      const visitedArray = Array.from(visitedTiles).filter(tile => {
+        // Validate tile format: should be "row-col" where both are 0-7
+        const parts = tile.split('-');
+        if (parts.length !== 2) return false;
+        const row = parseInt(parts[0], 10);
+        const col = parseInt(parts[1], 10);
+        return !isNaN(row) && !isNaN(col) && row >= 0 && row <= 7 && col >= 0 && col <= 7;
+      });
+      
       const densityObj: Record<string, number> = {};
       densityMap.forEach((value, key) => {
-        densityObj[key] = value;
+        // Also filter density map keys
+        const parts = key.split('-');
+        if (parts.length === 2) {
+          const row = parseInt(parts[0], 10);
+          const col = parseInt(parts[1], 10);
+          if (!isNaN(row) && !isNaN(col) && row >= 0 && row <= 7 && col >= 0 && col <= 7) {
+            densityObj[key] = value;
+          }
+        }
       });
 
       const { data, error: fnError } = await supabase.functions.invoke('interpret-topology', {
