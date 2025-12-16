@@ -2,7 +2,7 @@ import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Lock, Unlock, FileText, Sparkles, Search, Loader2 } from 'lucide-react';
+import { Lock, FileText, Search, Loader2 } from 'lucide-react';
 import { shouldTriggerPrdGeneration } from '@/utils/prdAccessLevel';
 import { detectPatterns, DetectedPattern, getPatternColor } from '@/utils/patternDetection';
 import { supabase } from '@/integrations/supabase/client';
@@ -36,7 +36,7 @@ interface PrdUnlockProgressProps {
   userId?: string;
   visitedTiles?: Set<string>;
   onPatternDetected?: (patterns: DetectedPattern[]) => void;
-  onOpenPatternJournal?: () => void;
+  onPatternClick?: (pattern: DetectedPattern) => void;
 }
 
 const TILES_THRESHOLD = 32;
@@ -48,7 +48,7 @@ export const PrdUnlockProgress = ({
   userId,
   visitedTiles,
   onPatternDetected,
-  onOpenPatternJournal
+  onPatternClick
 }: PrdUnlockProgressProps) => {
   const [polenCount, setPolenCount] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
@@ -142,65 +142,41 @@ export const PrdUnlockProgress = ({
   const seasonComplete = tilesVisited >= 64;
 
   if (isUnlocked || seasonComplete) {
+    const latestPattern = detectedPatterns[0];
+    
     return (
-      <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
         {showConfetti && <Confetti />}
         
-        {/* PRD Ready Badge */}
-        <Badge 
-          variant="outline" 
-          className="flex items-center gap-2 px-3 py-1.5 bg-primary/10 border-primary/30 animate-prd-glow cursor-pointer"
-          onClick={onOpenPatternJournal}
-        >
-          <Unlock className="w-3.5 h-3.5 text-primary" />
-          <span className="text-xs font-medium text-primary">PRD Ready</span>
-          <Sparkles className="w-3 h-3 text-primary animate-pulse" />
-        </Badge>
-        
-        {/* Pattern Detection Button */}
-        <Button 
-          size="sm" 
-          variant="outline" 
-          onClick={handleScanPatterns} 
-          disabled={isScanning}
-          className="h-7 text-xs gap-1.5"
-        >
-          {isScanning ? (
-            <Loader2 className="w-3 h-3 animate-spin" />
-          ) : (
-            <Search className="w-3 h-3" />
-          )}
-          Detect Patterns
-        </Button>
-        
-        {/* Display Detected Patterns */}
-        {detectedPatterns.length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {detectedPatterns.slice(0, 3).map((pattern, idx) => (
-              <Badge 
-                key={`${pattern.name}-${idx}`} 
-                variant="secondary" 
-                className="text-[10px] px-1.5 py-0.5 cursor-pointer hover:opacity-80"
-                style={{ 
-                  backgroundColor: `${getPatternColor(pattern.type)}20`,
-                  borderColor: getPatternColor(pattern.type),
-                  color: getPatternColor(pattern.type)
-                }}
-                onClick={onOpenPatternJournal}
-              >
-                {pattern.icon} {pattern.name}
-              </Badge>
-            ))}
-            {detectedPatterns.length > 3 && (
-              <Badge 
-                variant="outline" 
-                className="text-[10px] px-1.5 py-0.5 cursor-pointer"
-                onClick={onOpenPatternJournal}
-              >
-                +{detectedPatterns.length - 3} more
-              </Badge>
+        {/* Show most recent pattern OR detect button */}
+        {latestPattern ? (
+          <Badge 
+            variant="secondary" 
+            className="px-3 py-1.5 cursor-pointer hover:opacity-80 transition-opacity"
+            style={{ 
+              backgroundColor: `${getPatternColor(latestPattern.type)}20`,
+              borderColor: getPatternColor(latestPattern.type),
+              color: getPatternColor(latestPattern.type)
+            }}
+            onClick={() => onPatternClick?.(latestPattern)}
+          >
+            {latestPattern.icon} {latestPattern.name}
+          </Badge>
+        ) : (
+          <Button 
+            size="sm" 
+            variant="outline" 
+            onClick={handleScanPatterns} 
+            disabled={isScanning}
+            className="h-7 text-xs gap-1.5"
+          >
+            {isScanning ? (
+              <Loader2 className="w-3 h-3 animate-spin" />
+            ) : (
+              <Search className="w-3 h-3" />
             )}
-          </div>
+            Detect Patterns
+          </Button>
         )}
       </div>
     );
