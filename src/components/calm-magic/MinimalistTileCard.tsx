@@ -144,14 +144,8 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
     
     setIsSaving(true);
     
-    const context = [
-      response,
-      selectedPosture && `\n[Posture: ${POSTURES.find(p => p.id === selectedPosture)?.label}]`,
-      selectedAttitude && `\n[Attitude: ${ATTITUDES.find(a => a.id === selectedAttitude)?.label}]`,
-    ].filter(Boolean).join('');
-    
+    // Conversation flows naturally into the ontology - no separate save needed
     await sendResponse(response);
-    await onSavePolen(context, tileId);
     
     setResponse('');
     setIsSaving(false);
@@ -364,7 +358,7 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
               ) : (
                 <Send className="w-4 h-4" />
               )}
-              Capture
+              Speak
             </Button>
           )}
         </div>
@@ -591,20 +585,15 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
               <Badge variant="secondary" className="text-xs">
                 {ATTITUDES.find(a => a.id === selectedAttitude)?.icon}
               </Badge>
-            )}
+             )}
           </div>
           
-          <div className="flex gap-2">
-            {messages.length >= 2 && (
-              <Button 
-                variant="outline"
-                size="sm"
-                onClick={handleSaveConversation}
-                className="gap-1"
-              >
-                <Save className="w-3 h-3" />
-                Save
-              </Button>
+          <div className="flex items-center gap-3">
+            {/* Woven into memory indicator */}
+            {lastSavedAt && (
+              <span className="text-xs text-muted-foreground/70 italic animate-in fade-in slide-in-from-right-2 duration-500">
+                woven into memory
+              </span>
             )}
             <Button 
               onClick={handleSubmit} 
@@ -616,7 +605,7 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
               ) : (
                 <Send className="w-4 h-4" />
               )}
-              Capture
+              Speak
             </Button>
           </div>
         </div>
