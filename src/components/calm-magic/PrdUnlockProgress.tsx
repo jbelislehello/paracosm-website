@@ -148,8 +148,24 @@ export const PrdUnlockProgress = ({
       <div className="flex items-center gap-2">
         {showConfetti && <Confetti />}
         
-        {/* Show most recent pattern OR detect button */}
-        {latestPattern ? (
+        {/* Always show Detect Patterns button */}
+        <Button 
+          size="sm" 
+          variant="outline" 
+          onClick={handleScanPatterns} 
+          disabled={isScanning}
+          className="h-7 text-xs gap-1.5"
+        >
+          {isScanning ? (
+            <Loader2 className="w-3 h-3 animate-spin" />
+          ) : (
+            <Search className="w-3 h-3" />
+          )}
+          Detect Patterns
+        </Button>
+        
+        {/* Show latest pattern if detected */}
+        {latestPattern && (
           <Badge 
             variant="secondary" 
             className="px-3 py-1.5 cursor-pointer hover:opacity-80 transition-opacity"
@@ -162,21 +178,6 @@ export const PrdUnlockProgress = ({
           >
             {latestPattern.icon} {latestPattern.name}
           </Badge>
-        ) : (
-          <Button 
-            size="sm" 
-            variant="outline" 
-            onClick={handleScanPatterns} 
-            disabled={isScanning}
-            className="h-7 text-xs gap-1.5"
-          >
-            {isScanning ? (
-              <Loader2 className="w-3 h-3 animate-spin" />
-            ) : (
-              <Search className="w-3 h-3" />
-            )}
-            Detect Patterns
-          </Button>
         )}
       </div>
     );
