@@ -12,6 +12,7 @@ import {
   FeltState,
   TopologicalSignature,
   QuadrantThemes,
+  EmotionalCheckInData,
 } from '@/types/trajectory';
 import { analyzeCoherence, GapInfo } from '@/utils/coherenceAnalysis';
 
@@ -96,7 +97,8 @@ export function useQuadrantDynamics(
   seasonProgress: Record<Season, Set<string>>,
   currentSeason: Season,
   polenCounts: Record<string, number> = {},
-  journeyPath: Array<{ row: number; col: number }> = []
+  journeyPath: Array<{ row: number; col: number }> = [],
+  emotionalCheckins: EmotionalCheckInData[] = [] // NEW: Accept emotional check-ins
 ) {
   const [trajectoryState, setTrajectoryState] = useState<TrajectoryState>(defaultTrajectoryState);
   const [isLoading, setIsLoading] = useState(true);
@@ -226,10 +228,62 @@ export function useQuadrantDynamics(
     };
   }, [seasonProgress, currentSeason, polenCounts, journeyPath]);
 
-  // Calculate current shadow position with factors and nudge
+  // Calculate emotional influence from check-ins (30% weight)
+  const emotionalInfluence = useMemo((): QuadrantPosition | null => {
+    if (emotionalCheckins.length === 0) return null;
+    
+    // Average all emotional axes
+    const totals = emotionalCheckins.reduce(
+      (acc, c) => ({
+        love: acc.love + c.axes.love,
+        magic: acc.magic + c.axes.magic,
+        calm: acc.calm + c.axes.calm,
+        open: acc.open + c.axes.open,
+        free: acc.free + c.axes.free,
+      }),
+      { love: 0, magic: 0, calm: 0, open: 0, free: 0 }
+    );
+    
+    const count = emotionalCheckins.length;
+    const avgAxes = {
+      love: totals.love / count / 100,   // Normalize to 0-1
+      magic: totals.magic / count / 100,
+      calm: totals.calm / count / 100,
+      open: totals.open / count / 100,
+      free: totals.free / count / 100,
+    };
+    
+    // Map emotional axes to quadrant position:
+    // X-axis (Memory↔Novelty): (open + free) vs (love + calm)
+    // Y-axis (Intimacy↔Sovereignty): (calm + magic) vs (love)
+    const noveltyWeight = (avgAxes.open + avgAxes.free) / 2;
+    const memoryWeight = (avgAxes.love + avgAxes.calm) / 2;
+    const x = (noveltyWeight - memoryWeight) * 2; // Scale to -1 to 1
+    
+    const sovereigntyWeight = (avgAxes.calm + avgAxes.magic) / 2;
+    const intimacyWeight = avgAxes.love;
+    const y = (sovereigntyWeight - intimacyWeight) * 2;
+    
+    return { x: Math.max(-1, Math.min(1, x)), y: Math.max(-1, Math.min(1, y)) };
+  }, [emotionalCheckins]);
+
+  // Calculate current shadow position with factors, nudge, and emotional influence
   const shadowPosition = useMemo(() => {
-    return calculateEnhancedShadowPosition(shadowFactors, trajectoryState.shadow_nudge);
-  }, [shadowFactors, trajectoryState.shadow_nudge]);
+    let pos = calculateEnhancedShadowPosition(shadowFactors, trajectoryState.shadow_nudge);
+    
+    // Blend in emotional influence (30% weight if available)
+    if (emotionalInfluence) {
+      pos = {
+        x: pos.x * 0.7 + emotionalInfluence.x * 0.3,
+        y: pos.y * 0.7 + emotionalInfluence.y * 0.3,
+      };
+    }
+    
+    return {
+      x: Math.max(-1, Math.min(1, pos.x)),
+      y: Math.max(-1, Math.min(1, pos.y)),
+    };
+  }, [shadowFactors, trajectoryState.shadow_nudge, emotionalInfluence]);
 
   // Get current shadow quadrant
   const shadowQuadrant = useMemo(() => {
