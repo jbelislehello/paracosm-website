@@ -62,14 +62,14 @@ function calculateFisherInformation(
   const tileList = Array.from(visitedTiles);
   
   tileList.forEach(tile => {
-    const [r, c] = tile.split(',').map(Number);
+    const [r, c] = tile.split('-').map(Number);
     if (isNaN(r) || isNaN(c)) return;
     
     const currentDensity = densityMap.get(tile) || 1;
     
     // Calculate gradients to neighbors
     [[0, 1], [0, -1], [1, 0], [-1, 0]].forEach(([dr, dc]) => {
-      const neighborKey = `${r + dr},${c + dc}`;
+      const neighborKey = `${r + dr}-${c + dc}`;
       if (visitedTiles.has(neighborKey)) {
         const neighborDensity = densityMap.get(neighborKey) || 1;
         const gradient = Math.abs(currentDensity - neighborDensity);
@@ -98,7 +98,7 @@ function calculateIntegratedCurvature(
   for (let r = 0; r < 7; r++) {
     for (let c = 0; c < 7; c++) {
       const corners = [
-        `${r},${c}`, `${r},${c+1}`, `${r+1},${c}`, `${r+1},${c+1}`
+        `${r}-${c}`, `${r}-${c+1}`, `${r+1}-${c}`, `${r+1}-${c+1}`
       ];
       
       const visitedCorners = corners.filter(k => visitedTiles.has(k));
@@ -140,7 +140,7 @@ function analyzeRecursiveDynamics(
   const revisitSequences: string[] = [];
   
   journeyPath.forEach(({ row, col }) => {
-    const key = `${row},${col}`;
+    const key = `${row}-${col}`;
     const currentCount = (visitCounts.get(key) || 0) + 1;
     visitCounts.set(key, currentCount);
     
@@ -272,10 +272,10 @@ export function calculateConsciousnessGeometry(
   const maxPossibleEdges = visitedTiles.size * 4;
   let actualEdges = 0;
   visitedTiles.forEach(tile => {
-    const [r, c] = tile.split(',').map(Number);
+    const [r, c] = tile.split('-').map(Number);
     if (!isNaN(r) && !isNaN(c)) {
       [[0, 1], [0, -1], [1, 0], [-1, 0]].forEach(([dr, dc]) => {
-        if (visitedTiles.has(`${r + dr},${c + dc}`)) actualEdges++;
+        if (visitedTiles.has(`${r + dr}-${c + dc}`)) actualEdges++;
       });
     }
   });
