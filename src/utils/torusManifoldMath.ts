@@ -377,3 +377,86 @@ export const ROW_LABELS: Record<RowKey, { short: string; full: string; stage: st
   'synergies': { short: 'S', full: 'Synergies', stage: 'MAPS' },
   'protocols': { short: 'P', full: 'Protocols & Architectures', stage: 'MAPS' }
 };
+
+/**
+ * Convert matrix coordinates to isometric 3D projection
+ */
+export function matrixToIsometric(row: number, col: number, scale: number = 20): [number, number, number] {
+  const isoX = (col - row) * scale * 0.866; // cos(30°)
+  const isoY = (col + row) * scale * 0.5;   // sin(30°)
+  const isoZ = 0;
+  return [isoX, isoY, isoZ];
+}
+
+/**
+ * Convert torus coordinates to unfolded 2D rectangle
+ * θ maps to X, φ maps to Y
+ */
+export function torusToUnfolded(theta: number, phi: number, width: number = 400, height: number = 200): [number, number] {
+  const x = (theta / (2 * Math.PI)) * width;
+  const y = (phi / (2 * Math.PI)) * height;
+  return [x, y];
+}
+
+/**
+ * Map ring zone (1-4) to torus surface region boundaries
+ * Returns phi range for the ring zone
+ */
+export function ringZoneToTorusRegion(ring: number, season: ManifoldSeason): { phiStart: number; phiEnd: number } {
+  const seasonIdx = SEASON_INDEX[season];
+  const seasonPhiStart = (seasonIdx / 5) * 2 * Math.PI;
+  const seasonPhiRange = (2 * Math.PI) / 5;
+  
+  // Map rings to rows within season
+  // Ring 1 (Inner): rows 2-5 (center)
+  // Ring 2 (Stretch): rows 1,6 
+  // Ring 3 (Edge): rows 0,7
+  // Ring 4 (Integrator): corners only
+  
+  const ringRowRanges: Record<number, [number, number]> = {
+    1: [2, 5], // Inner 4x4
+    2: [1, 6], // Stretch ring
+    3: [0, 7], // Edge ring
+    4: [0, 7]  // Full (corners handled separately)
+  };
+  
+  const [rowStart, rowEnd] = ringRowRanges[ring] || [0, 7];
+  const phiStart = seasonPhiStart + (rowStart / 8) * seasonPhiRange;
+  const phiEnd = seasonPhiStart + ((rowEnd + 1) / 8) * seasonPhiRange;
+  
+  return { phiStart, phiEnd };
+}
+
+/**
+ * Generate connection data between adjacent tiles on torus
+ */
+export function generateTileConnectionMesh(
+  visitedTiles: Set<string>,
+  season: ManifoldSeason
+): Array<{ from: [number, number, number]; to: [number, number, number] }> {
+  const connections: Array<{ from: [number, number, number]; to: [number, number, number] }> = [];
+  
+  visitedTiles.forEach(tileKey => {
+    const [row, col] = tileKey.split('-').map(Number);
+    
+    // Check right neighbor
+    const rightKey = `${row}-${col + 1}`;
+    if (col < 7 && visitedTiles.has(rightKey)) {
+      connections.push({
+        from: tileToTorusPoint(row, col, season),
+        to: tileToTorusPoint(row, col + 1, season)
+      });
+    }
+    
+    // Check bottom neighbor
+    const bottomKey = `${row + 1}-${col}`;
+    if (row < 7 && visitedTiles.has(bottomKey)) {
+      connections.push({
+        from: tileToTorusPoint(row, col, season),
+        to: tileToTorusPoint(row + 1, col, season)
+      });
+    }
+  });
+  
+  return connections;
+}
