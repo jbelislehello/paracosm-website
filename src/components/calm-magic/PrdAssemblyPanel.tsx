@@ -73,33 +73,46 @@ import { PRD_STAGES, PrdStage } from '@/types/journal-expansion';
 
 // Wizard-specific types and constants
 interface GeneratedContent {
-  pollens_observations?: string;
-  pollens_biases?: string;
-  pollens_cultural_issues?: string;
-  pollens_prd_shadows?: string;
+  // POLLENS Layer - Relational & Cultural Aspirations
+  pollens_aspirations?: string;
+  pollens_team_dynamics?: string;
+  pollens_cultural_elements?: string;
+  pollens_relational_patterns?: string;
   pollens_constraints?: string;
   pollens_stakes?: string;
+  // NOEMS Layer - Conceptual Ideation
   noems_concepts?: string;
   noems_shared_ideas?: string;
   noems_intuitions?: string;
-  poems_narratives?: string;
-  poems_content_sources?: string;
-  poems_data_nodes?: string;
-  totems_processes?: string;
-  totems_maps?: string;
-  totems_three_graph?: string;
-  totems_semantic_notes?: string;
-  anthems_alignment?: string;
+  noems_mental_models?: string;
+  // POEMS Layer - P.O.E.M.S. Experiential Design
+  poems_people?: string;
+  poems_objects?: string;
+  poems_environments?: string;
+  poems_messages?: string;
+  poems_systems?: string;
+  poems_prototypes?: string;
+  // TOTEMS Layer - Technical Infrastructure
+  totems_data_architecture?: string;
+  totems_security_policies?: string;
+  totems_access_controls?: string;
+  totems_system_requirements?: string;
+  totems_integration_points?: string;
+  totems_technical_debt?: string;
+  // ANTHEMS Layer - Market & Storytelling
+  anthems_market_positioning?: string;
+  anthems_brand_narrative?: string;
+  anthems_go_to_market?: string;
+  anthems_audience_segments?: string;
   anthems_success_signals?: string;
-  anthems_guardrails?: string;
-  anthems_roadmap?: string;
-  anthems_feminine_quality?: string;
-  anthems_learning_cadence?: string;
+  anthems_storytelling_assets?: string;
+  // COMPILATION: Stack Implications per layer
   stack_implications_pollens?: string;
   stack_implications_noems?: string;
   stack_implications_poems?: string;
   stack_implications_totems?: string;
   stack_implications_anthems?: string;
+  // COMPILATION: Prompt Hooks per layer
   prompt_hooks_pollens?: string;
   prompt_hooks_noems?: string;
   prompt_hooks_poems?: string;
@@ -108,41 +121,54 @@ interface GeneratedContent {
 }
 
 const LAYER_FIELDS: Record<PrdLayer, (keyof GeneratedContent)[]> = {
-  POLLENS: ['pollens_observations', 'pollens_biases', 'pollens_cultural_issues', 'pollens_prd_shadows', 'pollens_constraints', 'pollens_stakes', 'stack_implications_pollens', 'prompt_hooks_pollens'],
-  NOEMS: ['noems_concepts', 'noems_shared_ideas', 'noems_intuitions', 'stack_implications_noems', 'prompt_hooks_noems'],
-  POEMS: ['poems_narratives', 'poems_content_sources', 'poems_data_nodes', 'stack_implications_poems', 'prompt_hooks_poems'],
-  TOTEMS: ['totems_processes', 'totems_maps', 'totems_three_graph', 'totems_semantic_notes', 'stack_implications_totems', 'prompt_hooks_totems'],
-  ANTHEMS: ['anthems_alignment', 'anthems_success_signals', 'anthems_guardrails', 'anthems_roadmap', 'anthems_feminine_quality', 'anthems_learning_cadence', 'stack_implications_anthems', 'prompt_hooks_anthems']
+  POLLENS: ['pollens_aspirations', 'pollens_team_dynamics', 'pollens_cultural_elements', 'pollens_relational_patterns', 'pollens_constraints', 'pollens_stakes', 'stack_implications_pollens', 'prompt_hooks_pollens'],
+  NOEMS: ['noems_concepts', 'noems_shared_ideas', 'noems_intuitions', 'noems_mental_models', 'stack_implications_noems', 'prompt_hooks_noems'],
+  POEMS: ['poems_people', 'poems_objects', 'poems_environments', 'poems_messages', 'poems_systems', 'poems_prototypes', 'stack_implications_poems', 'prompt_hooks_poems'],
+  TOTEMS: ['totems_data_architecture', 'totems_security_policies', 'totems_access_controls', 'totems_system_requirements', 'totems_integration_points', 'totems_technical_debt', 'stack_implications_totems', 'prompt_hooks_totems'],
+  ANTHEMS: ['anthems_market_positioning', 'anthems_brand_narrative', 'anthems_go_to_market', 'anthems_audience_segments', 'anthems_success_signals', 'anthems_storytelling_assets', 'stack_implications_anthems', 'prompt_hooks_anthems']
 };
 
 const WIZARD_FIELD_LABELS: Record<string, { label: string; description: string }> = {
-  pollens_observations: { label: 'Raw Observations & Glitches', description: 'Tensions, complaints, weird use cases, emotional texture' },
-  pollens_biases: { label: 'Biases Surfaced', description: 'Cognitive, cultural, institutional biases noticed' },
-  pollens_cultural_issues: { label: 'Cultural Issues', description: 'Systemic and cultural patterns' },
-  pollens_prd_shadows: { label: 'PRD Shadows', description: 'What the PRD might be hiding or avoiding' },
-  pollens_constraints: { label: 'Constraints', description: 'Legal, ethical, financial, technical barriers' },
-  pollens_stakes: { label: 'Stakes', description: 'What happens if nothing changes' },
-  noems_concepts: { label: 'Crystallized Concepts', description: 'Emerging concepts with maturity levels' },
+  // POLLENS - Relational & Cultural Aspirations
+  pollens_aspirations: { label: 'Aspirations', description: 'Individual, team, and organizational aspirations with emotional texture' },
+  pollens_team_dynamics: { label: 'Team Dynamics', description: 'Patterns in collaboration, communication, and conflict resolution' },
+  pollens_cultural_elements: { label: 'Cultural Elements', description: 'Values, norms, rituals, and unwritten rules at play' },
+  pollens_relational_patterns: { label: 'Relational Patterns', description: 'Key relationships and their dynamics' },
+  pollens_constraints: { label: 'Constraints', description: 'Cultural, relational, and organizational barriers' },
+  pollens_stakes: { label: 'Stakes', description: 'What happens to relationships and culture if nothing changes' },
+  // NOEMS - Conceptual Ideation
+  noems_concepts: { label: 'Crystallized Concepts', description: 'Emerging concepts with maturity levels (seed/growing/ripe)' },
   noems_shared_ideas: { label: 'Shared Ideas', description: 'Ideas emerging from multiple tensions' },
   noems_intuitions: { label: 'Intuitions', description: 'Gut feelings worth tracking' },
-  poems_narratives: { label: 'User Narratives', description: 'Before → during → after journeys' },
-  poems_content_sources: { label: 'Content Sources', description: 'What content/data powers narratives' },
-  poems_data_nodes: { label: 'Data Nodes', description: 'Key entities and relationships' },
-  totems_processes: { label: 'Processes & Flows', description: 'Service blueprints, what people touch' },
-  totems_maps: { label: 'Relationship Maps', description: 'Conceptual architecture, boundaries' },
-  totems_three_graph: { label: 'Three Graph Model', description: 'Subject, Lexical, Domain graphs' },
-  totems_semantic_notes: { label: 'Semantic Notes', description: 'RDF/OWL patterns emerging' },
-  anthems_alignment: { label: 'Strategic Alignment', description: 'How this supports the larger story' },
+  noems_mental_models: { label: 'Mental Models', description: 'Assumptions and frameworks shaping problem understanding' },
+  // POEMS - P.O.E.M.S. Framework
+  poems_people: { label: '👤 People', description: 'User personas, stakeholders, needs, behaviors, contexts' },
+  poems_objects: { label: '📦 Objects', description: 'Physical/digital artifacts, products, tools, interfaces' },
+  poems_environments: { label: '🌍 Environments', description: 'Physical spaces, digital contexts, social settings' },
+  poems_messages: { label: '💬 Messages', description: 'Information flows, notifications, feedback, communications' },
+  poems_systems: { label: '⚙️ Systems', description: 'Processes, services, technical components' },
+  poems_prototypes: { label: '🎨 Prototypes', description: 'UI mockups, interaction flows, ontological design patterns' },
+  // TOTEMS - Technical Infrastructure
+  totems_data_architecture: { label: 'Data Architecture', description: 'Data models, storage, processing pipelines' },
+  totems_security_policies: { label: 'Security Policies', description: 'Security requirements, encryption, compliance' },
+  totems_access_controls: { label: 'Access Controls', description: 'Role-based access, authentication, authorization' },
+  totems_system_requirements: { label: 'System Requirements', description: 'Performance, scalability, reliability needs' },
+  totems_integration_points: { label: 'Integration Points', description: 'APIs, third-party services, data flows' },
+  totems_technical_debt: { label: 'Technical Debt', description: 'Legacy systems, technical risks, migration needs' },
+  // ANTHEMS - Market & Storytelling
+  anthems_market_positioning: { label: 'Market Positioning', description: 'Competitive landscape, unique value proposition' },
+  anthems_brand_narrative: { label: 'Brand Narrative', description: 'The story we tell, emotional resonance, brand voice' },
+  anthems_go_to_market: { label: 'Go-to-Market', description: 'Channels, timing, launch strategy' },
+  anthems_audience_segments: { label: 'Audience Segments', description: 'Target personas and how to reach them' },
   anthems_success_signals: { label: 'Success Signals', description: 'Qualitative and quantitative indicators' },
-  anthems_guardrails: { label: 'Guardrails', description: 'Ethics, compliance, social impact' },
-  anthems_roadmap: { label: 'Roadmap', description: 'Now/next/later with owners' },
-  anthems_feminine_quality: { label: 'Feminine Quality Review', description: 'Which principles honored/at risk' },
-  anthems_learning_cadence: { label: 'Learning Cadence', description: 'How we build in Drift time' },
+  anthems_storytelling_assets: { label: 'Storytelling Assets', description: 'Taglines, elevator pitch, anthem/manifesto' },
+  // COMPILATION: Stack Implications
   stack_implications_pollens: { label: '🔧 Stack Implications', description: 'Constraints, integrations, latency requirements' },
   stack_implications_noems: { label: '🔧 Stack Implications', description: 'Data types, capabilities, candidate components' },
   stack_implications_poems: { label: '🔧 Stack Implications', description: 'UX surface, adapters, session model' },
   stack_implications_totems: { label: '🔧 Stack Implications', description: 'Logging, access control, monitoring' },
   stack_implications_anthems: { label: '🔧 Stack Implications', description: 'MVP vs V2/V3, cost tradeoffs, licensing' },
+  // COMPILATION: Prompt Hooks
   prompt_hooks_pollens: { label: '🤖 Prompt Hooks', description: 'Purpose, vibe, user archetypes' },
   prompt_hooks_noems: { label: '🤖 Prompt Hooks', description: 'Ontology, entities, relationships' },
   prompt_hooks_poems: { label: '🤖 Prompt Hooks', description: 'Canonical flows, error states, guardrails' },
@@ -152,25 +178,25 @@ const WIZARD_FIELD_LABELS: Record<string, { label: string; description: string }
 
 const LAYER_CHECKLIST: Record<PrdLayer, { label: string; check: (content: GeneratedContent) => boolean }[]> = {
   POLLENS: [
-    { label: '5–15 tensions/glitches captured', check: (c) => (c.pollens_observations?.length || 0) > 100 },
-    { label: 'Biases and shadows surfaced', check: (c) => !!(c.pollens_biases || c.pollens_prd_shadows) }
+    { label: 'Aspirations captured with emotional texture', check: (c) => (c.pollens_aspirations?.length || 0) > 100 },
+    { label: 'Team dynamics and culture explored', check: (c) => !!(c.pollens_team_dynamics || c.pollens_cultural_elements) }
   ],
   NOEMS: [
     { label: 'Concepts crystallized with maturity', check: (c) => (c.noems_concepts?.length || 0) > 50 },
-    { label: 'Intuitions captured', check: (c) => !!(c.noems_intuitions) }
+    { label: 'Mental models surfaced', check: (c) => !!(c.noems_mental_models || c.noems_intuitions) }
   ],
   POEMS: [
-    { label: '1–3 narrative arcs described', check: (c) => (c.poems_narratives?.length || 0) > 100 },
-    { label: 'Data nodes identified', check: (c) => !!(c.poems_data_nodes) }
+    { label: 'P.O.E.M.S. framework addressed', check: (c) => !!(c.poems_people && c.poems_objects) },
+    { label: 'Systems and environments mapped', check: (c) => !!(c.poems_systems || c.poems_environments) }
   ],
   TOTEMS: [
-    { label: 'Processes mapped', check: (c) => (c.totems_processes?.length || 0) > 50 },
-    { label: 'Three Graph Model hints', check: (c) => (c.totems_three_graph?.length || 0) > 30 }
+    { label: 'Data architecture defined', check: (c) => (c.totems_data_architecture?.length || 0) > 50 },
+    { label: 'Security and access controls specified', check: (c) => !!(c.totems_security_policies || c.totems_access_controls) }
   ],
   ANTHEMS: [
-    { label: 'Success signals defined', check: (c) => (c.anthems_success_signals?.length || 0) > 50 },
-    { label: 'Guardrails defined', check: (c) => (c.anthems_guardrails?.length || 0) > 50 },
-    { label: 'Feminine quality reviewed', check: (c) => (c.anthems_feminine_quality?.length || 0) > 30 }
+    { label: 'Market positioning defined', check: (c) => (c.anthems_market_positioning?.length || 0) > 50 },
+    { label: 'Brand narrative crafted', check: (c) => (c.anthems_brand_narrative?.length || 0) > 50 },
+    { label: 'Storytelling assets created', check: (c) => (c.anthems_storytelling_assets?.length || 0) > 30 }
   ]
 };
 
@@ -429,25 +455,40 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   useEffect(() => {
     if (prdData) {
       const mapped: GeneratedContent = {
-        pollens_observations: prdData.love_signals_summary || '',
-        pollens_biases: '',
-        pollens_prd_shadows: '',
+        // POLLENS - Relational & Cultural
+        pollens_aspirations: prdData.love_signals_summary || '',
+        pollens_team_dynamics: '',
+        pollens_cultural_elements: '',
+        pollens_relational_patterns: '',
+        pollens_constraints: '',
         pollens_stakes: prdData.love_decision_to_exist || '',
+        // NOEMS - Conceptual
         noems_concepts: prdData.magic_prd_outline || '',
         noems_shared_ideas: prdData.magic_hypotheses || '',
         noems_intuitions: prdData.magic_patterns || '',
-        poems_narratives: prdData.magic_storyworld || '',
-        poems_content_sources: prdData.open_real_workflow || '',
-        poems_data_nodes: '',
-        totems_processes: prdData.calm_requirements || '',
-        totems_maps: prdData.open_ontology_and_graph || '',
-        totems_three_graph: '',
-        totems_semantic_notes: prdData.calm_risks_and_limits || '',
-        anthems_alignment: prdData.free_totem_anthem || '',
+        noems_mental_models: '',
+        // POEMS - P.O.E.M.S.
+        poems_people: prdData.magic_storyworld || '',
+        poems_objects: '',
+        poems_environments: '',
+        poems_messages: '',
+        poems_systems: prdData.open_real_workflow || '',
+        poems_prototypes: '',
+        // TOTEMS - Technical Infrastructure
+        totems_data_architecture: prdData.calm_requirements || '',
+        totems_security_policies: '',
+        totems_access_controls: '',
+        totems_system_requirements: prdData.calm_risks_and_limits || '',
+        totems_integration_points: prdData.open_ontology_and_graph || '',
+        totems_technical_debt: '',
+        // ANTHEMS - Market & Storytelling
+        anthems_market_positioning: prdData.free_totem_anthem || '',
+        anthems_brand_narrative: '',
+        anthems_go_to_market: prdData.free_first_poem_description || '',
+        anthems_audience_segments: '',
         anthems_success_signals: prdData.free_success_criteria || '',
-        anthems_guardrails: prdData.open_adjustment_plan || '',
-        anthems_roadmap: prdData.free_first_poem_description || '',
-        anthems_learning_cadence: prdData.free_next_cycle_hooks || '',
+        anthems_storytelling_assets: prdData.open_adjustment_plan || '',
+        // Stack implications
         stack_implications_pollens: prdData.stack_implications_pollens || '',
         stack_implications_noems: prdData.stack_implications_noems || '',
         stack_implications_poems: prdData.stack_implications_poems || '',
@@ -543,21 +584,27 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
         title,
         status: 'draft',
         prototype_stage: 'B_DIEGETIC',
-        love_signals_summary: contentRef.current.pollens_observations,
-        love_decision_to_exist: `Biases: ${contentRef.current.pollens_biases || ''}\n\nShadows: ${contentRef.current.pollens_prd_shadows || ''}\n\nStakes: ${contentRef.current.pollens_stakes || ''}`,
-        magic_storyworld: contentRef.current.poems_narratives,
+        // POLLENS → love fields
+        love_signals_summary: contentRef.current.pollens_aspirations,
+        love_decision_to_exist: `Team Dynamics: ${contentRef.current.pollens_team_dynamics || ''}\n\nCultural: ${contentRef.current.pollens_cultural_elements || ''}\n\nRelational: ${contentRef.current.pollens_relational_patterns || ''}\n\nStakes: ${contentRef.current.pollens_stakes || ''}`,
+        // POEMS → magic storyworld and open workflow
+        magic_storyworld: contentRef.current.poems_people,
+        open_real_workflow: contentRef.current.poems_systems,
+        // NOEMS → magic fields
         magic_prd_outline: contentRef.current.noems_concepts,
         magic_hypotheses: contentRef.current.noems_shared_ideas,
         magic_patterns: contentRef.current.noems_intuitions,
-        calm_requirements: contentRef.current.totems_processes,
-        calm_risks_and_limits: `Three Graph: ${contentRef.current.totems_three_graph || ''}\n\nSemantic: ${contentRef.current.totems_semantic_notes || ''}`,
-        open_ontology_and_graph: contentRef.current.totems_maps,
-        open_real_workflow: contentRef.current.poems_content_sources,
-        open_adjustment_plan: contentRef.current.anthems_guardrails,
-        free_first_poem_description: contentRef.current.anthems_roadmap,
-        free_totem_anthem: contentRef.current.anthems_alignment,
+        // TOTEMS → calm and open fields
+        calm_requirements: contentRef.current.totems_data_architecture,
+        calm_risks_and_limits: `Security: ${contentRef.current.totems_security_policies || ''}\n\nAccess: ${contentRef.current.totems_access_controls || ''}\n\nRequirements: ${contentRef.current.totems_system_requirements || ''}`,
+        open_ontology_and_graph: contentRef.current.totems_integration_points,
+        // ANTHEMS → free fields
+        open_adjustment_plan: contentRef.current.anthems_storytelling_assets,
+        free_first_poem_description: contentRef.current.anthems_go_to_market,
+        free_totem_anthem: contentRef.current.anthems_market_positioning,
         free_success_criteria: contentRef.current.anthems_success_signals,
-        free_next_cycle_hooks: contentRef.current.anthems_learning_cadence,
+        free_next_cycle_hooks: contentRef.current.anthems_brand_narrative,
+        // Stack implications & prompt hooks
         stack_implications_pollens: contentRef.current.stack_implications_pollens,
         stack_implications_noems: contentRef.current.stack_implications_noems,
         stack_implications_poems: contentRef.current.stack_implications_poems,
@@ -709,21 +756,27 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
         title,
         status: 'draft',
         prototype_stage: 'B_DIEGETIC',
-        love_signals_summary: content.pollens_observations,
-        love_decision_to_exist: `Biases: ${content.pollens_biases || ''}\n\nShadows: ${content.pollens_prd_shadows || ''}\n\nStakes: ${content.pollens_stakes || ''}`,
-        magic_storyworld: content.poems_narratives,
+        // POLLENS → love fields
+        love_signals_summary: content.pollens_aspirations,
+        love_decision_to_exist: `Team Dynamics: ${content.pollens_team_dynamics || ''}\n\nCultural: ${content.pollens_cultural_elements || ''}\n\nRelational: ${content.pollens_relational_patterns || ''}\n\nStakes: ${content.pollens_stakes || ''}`,
+        // POEMS → magic storyworld and open workflow
+        magic_storyworld: content.poems_people,
+        open_real_workflow: content.poems_systems,
+        // NOEMS → magic fields
         magic_prd_outline: content.noems_concepts,
         magic_hypotheses: content.noems_shared_ideas,
         magic_patterns: content.noems_intuitions,
-        calm_requirements: content.totems_processes,
-        calm_risks_and_limits: `Three Graph: ${content.totems_three_graph || ''}\n\nSemantic: ${content.totems_semantic_notes || ''}`,
-        open_ontology_and_graph: content.totems_maps,
-        open_real_workflow: content.poems_content_sources,
-        open_adjustment_plan: content.anthems_guardrails,
-        free_first_poem_description: content.anthems_roadmap,
-        free_totem_anthem: content.anthems_alignment,
+        // TOTEMS → calm and open fields
+        calm_requirements: content.totems_data_architecture,
+        calm_risks_and_limits: `Security: ${content.totems_security_policies || ''}\n\nAccess: ${content.totems_access_controls || ''}\n\nRequirements: ${content.totems_system_requirements || ''}`,
+        open_ontology_and_graph: content.totems_integration_points,
+        // ANTHEMS → free fields
+        open_adjustment_plan: content.anthems_storytelling_assets,
+        free_first_poem_description: content.anthems_go_to_market,
+        free_totem_anthem: content.anthems_market_positioning,
         free_success_criteria: content.anthems_success_signals,
-        free_next_cycle_hooks: content.anthems_learning_cadence,
+        free_next_cycle_hooks: content.anthems_brand_narrative,
+        // Stack implications & prompt hooks
         stack_implications_pollens: content.stack_implications_pollens,
         stack_implications_noems: content.stack_implications_noems,
         stack_implications_poems: content.stack_implications_poems,
