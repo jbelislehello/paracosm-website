@@ -151,6 +151,53 @@
   animation: shimmer-locked 2s linear infinite;
 }
 
+/* Torus manifold animations */
+@keyframes torus-breathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+@keyframes torus-pulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.08);
+    filter: brightness(1.2);
+  }
+}
+
+@keyframes torus-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-torus-breathe {
+  animation: torus-breathe 3s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.animate-torus-pulse {
+  animation: torus-pulse 2.5s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.animate-torus-rotate {
+  animation: torus-rotate 20s linear infinite;
+  transform-origin: center;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
