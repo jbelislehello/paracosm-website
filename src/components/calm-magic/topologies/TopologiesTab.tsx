@@ -9,12 +9,13 @@ import { FundamentalCyclesOverlay } from './FundamentalCyclesOverlay';
 import { ToroidalFlowField } from './ToroidalFlowField';
 import { UnfoldedChartProjection } from './UnfoldedChartProjection';
 import { ViewModeSelector, TopologyViewMode } from './ViewModeSelector';
-import { TopologyInsightPanel } from './TopologyInsightPanel';
+import { TopologyStoryExplorer } from './TopologyStoryExplorer';
 import { useTopologyInsight } from '@/hooks/useTopologyInsight';
 import { RingLevel } from '@/utils/ringToleranceSystem';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
+import { toast } from 'sonner';
 import { 
   RotateCcw, 
   Maximize,
@@ -56,11 +57,11 @@ export function TopologiesTab({
   const [cubeSize, setCubeSize] = useState(32);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  const { insight, isLoading, error, fetchInsight, clearInsight } = useTopologyInsight();
+  const { story, isLoading, error, fetchStory, clearStory } = useTopologyInsight();
 
-  // Fetch insight when view mode changes or journey updates significantly
-  const handleFetchInsight = useCallback(() => {
-    fetchInsight({
+  // Fetch story when view mode changes
+  const handleFetchStory = useCallback(() => {
+    fetchStory({
       viewMode,
       journeyPath,
       visitedTiles,
@@ -70,20 +71,28 @@ export function TopologiesTab({
       currentSeason,
       currentUnlockedRing
     });
-  }, [viewMode, journeyPath, visitedTiles, densityMap, shadowPosition, higherSelfPosition, currentSeason, currentUnlockedRing, fetchInsight]);
+  }, [viewMode, journeyPath, visitedTiles, densityMap, shadowPosition, higherSelfPosition, currentSeason, currentUnlockedRing, fetchStory]);
 
-  // Fetch insight when view mode changes
+  // Fetch story when view mode changes
   useEffect(() => {
     if (visitedTiles.size > 0) {
-      handleFetchInsight();
+      handleFetchStory();
     } else {
-      clearInsight();
+      clearStory();
     }
-  }, [viewMode]); // Only re-fetch on view mode change, not on every data change
+  }, [viewMode]); // Only re-fetch on view mode change
 
   const handleReset = () => {
     setViewMode('isometric');
     setCubeSize(32);
+  };
+
+  const handleSaveToJournal = (content: string) => {
+    // For now, just copy to clipboard - could integrate with POLEN system
+    navigator.clipboard.writeText(content);
+    toast.success('Story copied to clipboard', {
+      description: 'You can paste this into your journal or notes'
+    });
   };
 
   // Shared props for all layouts
@@ -203,12 +212,13 @@ export function TopologiesTab({
         {renderLayout()}
       </div>
 
-      {/* AI Insight Panel */}
-      <TopologyInsightPanel
-        insight={insight}
+      {/* Interactive Story Explorer */}
+      <TopologyStoryExplorer
+        story={story}
         isLoading={isLoading}
         error={error}
-        onRegenerate={handleFetchInsight}
+        onRegenerate={handleFetchStory}
+        onSaveToJournal={handleSaveToJournal}
       />
 
       {/* Legend */}
