@@ -13,9 +13,14 @@ import {
   RotateCcw,
   Layers,
   Sparkles,
-  Link
+  Link,
+  Route,
+  Network,
+  FastForward,
+  Rewind
 } from 'lucide-react';
 import { ManifoldSeason, SEASON_COLORS } from '@/utils/torusManifoldMath';
+import { ConnectionLegend } from './SemanticConnectionLines';
 
 interface ManifoldControlsProps {
   showCurvature: boolean;
@@ -28,6 +33,14 @@ interface ManifoldControlsProps {
   setShowParticles: (show: boolean) => void;
   showConnections: boolean;
   setShowConnections: (show: boolean) => void;
+  showSemanticConnections: boolean;
+  setShowSemanticConnections: (show: boolean) => void;
+  showJourneyPath: boolean;
+  setShowJourneyPath: (show: boolean) => void;
+  isJourneyPlaying: boolean;
+  setIsJourneyPlaying: (playing: boolean) => void;
+  journeySpeed: number;
+  setJourneySpeed: (speed: number) => void;
   isAnimating: boolean;
   setIsAnimating: (animating: boolean) => void;
   opacity: number;
@@ -48,6 +61,14 @@ export function ManifoldControls({
   setShowParticles,
   showConnections,
   setShowConnections,
+  showSemanticConnections,
+  setShowSemanticConnections,
+  showJourneyPath,
+  setShowJourneyPath,
+  isJourneyPlaying,
+  setIsJourneyPlaying,
+  journeySpeed,
+  setJourneySpeed,
   isAnimating,
   setIsAnimating,
   opacity,
@@ -57,7 +78,7 @@ export function ManifoldControls({
   onReset
 }: ManifoldControlsProps) {
   return (
-    <div className="absolute left-4 top-20 bottom-4 w-64 bg-background/90 backdrop-blur-sm rounded-lg border border-border p-4 overflow-y-auto">
+    <div className="absolute left-4 top-20 bottom-4 w-72 bg-background/90 backdrop-blur-sm rounded-lg border border-border p-4 overflow-y-auto">
       <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
         <Layers className="h-5 w-5" />
         Manifold Controls
@@ -81,6 +102,59 @@ export function ManifoldControls({
               <span className="text-muted-foreground">{seasonBreakdown[season]}</span>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Journey Fly-Through Controls */}
+      <div className="mb-6 p-3 bg-primary/10 rounded-lg">
+        <p className="text-sm font-medium mb-3 flex items-center gap-2">
+          <Route className="h-4 w-4" />
+          Journey Fly-Through
+        </p>
+        
+        <div className="flex items-center justify-between mb-3">
+          <Label htmlFor="journeyPath" className="text-sm">Show Path</Label>
+          <Switch
+            id="journeyPath"
+            checked={showJourneyPath}
+            onCheckedChange={setShowJourneyPath}
+          />
+        </div>
+
+        <div className="flex gap-2 mb-3">
+          <Button
+            variant={isJourneyPlaying ? "default" : "outline"}
+            size="sm"
+            onClick={() => setIsJourneyPlaying(!isJourneyPlaying)}
+            className="flex-1"
+            disabled={totalEntries < 2}
+          >
+            {isJourneyPlaying ? (
+              <>
+                <Pause className="h-4 w-4 mr-1" /> Pause
+              </>
+            ) : (
+              <>
+                <Play className="h-4 w-4 mr-1" /> Play Journey
+              </>
+            )}
+          </Button>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-xs">Speed: {journeySpeed.toFixed(1)}x</Label>
+          <div className="flex items-center gap-2">
+            <Rewind className="h-3 w-3 text-muted-foreground" />
+            <Slider
+              value={[journeySpeed]}
+              onValueChange={(v) => setJourneySpeed(v[0])}
+              max={3}
+              min={0.25}
+              step={0.25}
+              className="flex-1"
+            />
+            <FastForward className="h-3 w-3 text-muted-foreground" />
+          </div>
         </div>
       </div>
 
@@ -145,6 +219,18 @@ export function ManifoldControls({
             onCheckedChange={setShowConnections}
           />
         </div>
+
+        <div className="flex items-center justify-between">
+          <Label htmlFor="semanticConnections" className="flex items-center gap-2 text-sm">
+            <Network className="h-4 w-4" />
+            Semantic Links
+          </Label>
+          <Switch
+            id="semanticConnections"
+            checked={showSemanticConnections}
+            onCheckedChange={setShowSemanticConnections}
+          />
+        </div>
       </div>
 
       {/* Opacity slider */}
@@ -169,11 +255,11 @@ export function ManifoldControls({
         >
           {isAnimating ? (
             <>
-              <Pause className="h-4 w-4 mr-1" /> Pause
+              <Pause className="h-4 w-4 mr-1" /> Pause Orbit
             </>
           ) : (
             <>
-              <Play className="h-4 w-4 mr-1" /> Animate
+              <Play className="h-4 w-4 mr-1" /> Orbit
             </>
           )}
         </Button>
@@ -186,20 +272,28 @@ export function ManifoldControls({
         </Button>
       </div>
 
-      {/* Legend */}
-      <div className="mt-6 p-3 bg-muted/50 rounded-lg">
-        <p className="text-xs font-medium mb-2">Surface Curvature</p>
-        <div className="flex items-center gap-2 text-xs">
-          <div className="w-4 h-4 rounded bg-blue-500" />
-          <span>Convex (outer edge)</span>
+      {/* Legends */}
+      <div className="mt-6 space-y-4">
+        <div className="p-3 bg-muted/50 rounded-lg">
+          <p className="text-xs font-medium mb-2">Surface Curvature</p>
+          <div className="flex items-center gap-2 text-xs">
+            <div className="w-4 h-4 rounded bg-blue-500" />
+            <span>Convex (outer edge)</span>
+          </div>
+          <div className="flex items-center gap-2 text-xs mt-1">
+            <div className="w-4 h-4 rounded bg-red-500" />
+            <span>Saddle (inner edge)</span>
+          </div>
+          <p className="text-xs text-muted-foreground mt-2">
+            Bulges indicate high insight density
+          </p>
         </div>
-        <div className="flex items-center gap-2 text-xs mt-1">
-          <div className="w-4 h-4 rounded bg-red-500" />
-          <span>Saddle (inner edge)</span>
-        </div>
-        <p className="text-xs text-muted-foreground mt-2">
-          Bulges indicate high insight density
-        </p>
+
+        {showSemanticConnections && (
+          <div className="p-3 bg-muted/50 rounded-lg">
+            <ConnectionLegend />
+          </div>
+        )}
       </div>
     </div>
   );
