@@ -3,6 +3,8 @@ import { Flower2, Lightbulb, BookOpen, Landmark, Music, RefreshCw } from 'lucide
 import { cn } from '@/lib/utils';
 import { getProjectSeasonProgressAsync, SeasonPersistenceState, Season } from '@/hooks/useSeasonPersistence';
 import { supabase } from '@/integrations/supabase/client';
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
+import { SEASON_DEFINITIONS } from '@/data/seasonDefinitions';
 
 interface SeasonProgressIndicatorProps {
   projectId: string;
@@ -17,36 +19,42 @@ const SEASON_CONFIG: Record<Season, {
   color: string;
   bgColor: string;
   label: string;
+  description: string;
 }> = {
   POLLENS: { 
     icon: Flower2, 
     color: 'text-rose-500',
     bgColor: 'bg-rose-500',
-    label: 'P'
+    label: 'P',
+    description: SEASON_DEFINITIONS.POLLENS.shortDescription
   },
   NOEMS: { 
     icon: Lightbulb, 
     color: 'text-purple-500',
     bgColor: 'bg-purple-500',
-    label: 'N'
+    label: 'N',
+    description: SEASON_DEFINITIONS.NOEMS.shortDescription
   },
   POEMS: { 
     icon: BookOpen, 
     color: 'text-blue-500',
     bgColor: 'bg-blue-500',
-    label: 'Po'
+    label: 'Po',
+    description: SEASON_DEFINITIONS.POEMS.shortDescription
   },
   TOTEMS: { 
     icon: Landmark, 
     color: 'text-green-500',
     bgColor: 'bg-green-500',
-    label: 'T'
+    label: 'T',
+    description: SEASON_DEFINITIONS.TOTEMS.shortDescription
   },
   ANTHEMS: { 
     icon: Music, 
     color: 'text-amber-500',
     bgColor: 'bg-amber-500',
-    label: 'A'
+    label: 'A',
+    description: SEASON_DEFINITIONS.ANTHEMS.shortDescription
   },
 };
 
@@ -138,53 +146,67 @@ export const SeasonProgressIndicator: React.FC<SeasonProgressIndicatorProps> = (
   };
 
   return (
-    <div className="flex items-center gap-1">
-      {SEASONS.map((season, idx) => {
-        const status = getSeasonStatus(season);
-        const config = SEASON_CONFIG[season];
-        const tileCount = getSeasonTileCount(season);
-        const Icon = config.icon;
-        
-        return (
-          <React.Fragment key={season}>
-            <div 
-              className={cn(
-                "relative rounded-full flex items-center justify-center transition-all",
-                compact ? "w-3 h-3" : "w-4 h-4",
-                status === 'complete' && config.bgColor,
-                status === 'current' && `ring-2 ring-offset-1 ring-offset-background ${config.bgColor.replace('bg-', 'ring-')}`,
-                status === 'not-started' && "bg-muted"
+    <TooltipProvider>
+      <div className="flex items-center gap-1">
+        {SEASONS.map((season, idx) => {
+          const status = getSeasonStatus(season);
+          const config = SEASON_CONFIG[season];
+          const tileCount = getSeasonTileCount(season);
+          const Icon = config.icon;
+          
+          return (
+            <React.Fragment key={season}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div 
+                    className={cn(
+                      "relative rounded-full flex items-center justify-center transition-all cursor-default",
+                      compact ? "w-3 h-3" : "w-4 h-4",
+                      status === 'complete' && config.bgColor,
+                      status === 'current' && `ring-2 ring-offset-1 ring-offset-background ${config.bgColor.replace('bg-', 'ring-')}`,
+                      status === 'not-started' && "bg-muted"
+                    )}
+                  >
+                    {status === 'complete' && (
+                      <Icon className="w-2 h-2 text-white" />
+                    )}
+                    {status === 'current' && tileCount > 0 && (
+                      <div 
+                        className={cn("absolute inset-0 rounded-full", config.bgColor)}
+                        style={{ 
+                          clipPath: `inset(${100 - (tileCount / TILES_PER_SEASON) * 100}% 0 0 0)` 
+                        }}
+                      />
+                    )}
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="max-w-xs">
+                  <p className="font-medium">{season}: {tileCount}/{TILES_PER_SEASON} tiles</p>
+                  <p className="text-xs text-muted-foreground">{config.description}</p>
+                  {season === 'POEMS' && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      <span className="font-bold">P</span>eople • <span className="font-bold">O</span>bjects • <span className="font-bold">E</span>nvironments • <span className="font-bold">M</span>essages • <span className="font-bold">S</span>ystems
+                    </p>
+                  )}
+                </TooltipContent>
+              </Tooltip>
+              {idx < SEASONS.length - 1 && (
+                <div className={cn(
+                  "h-px",
+                  compact ? "w-1" : "w-2",
+                  status === 'complete' || (status === 'current' && SEASONS.indexOf(currentSeason) > idx)
+                    ? "bg-primary/50"
+                    : "bg-muted"
+                )} />
               )}
-              title={`${season}: ${tileCount}/${TILES_PER_SEASON} tiles`}
-            >
-              {status === 'complete' && (
-                <Icon className="w-2 h-2 text-white" />
-              )}
-              {status === 'current' && tileCount > 0 && (
-                <div 
-                  className={cn("absolute inset-0 rounded-full", config.bgColor)}
-                  style={{ 
-                    clipPath: `inset(${100 - (tileCount / TILES_PER_SEASON) * 100}% 0 0 0)` 
-                  }}
-                />
-              )}
-            </div>
-            {idx < SEASONS.length - 1 && (
-              <div className={cn(
-                "h-px",
-                compact ? "w-1" : "w-2",
-                status === 'complete' || (status === 'current' && SEASONS.indexOf(currentSeason) > idx)
-                  ? "bg-primary/50"
-                  : "bg-muted"
-              )} />
-            )}
-          </React.Fragment>
-        );
-      })}
-      <span className="ml-2 text-xs text-muted-foreground">
-        {completedSeasons.length}/{SEASONS.length} • {overallPercentage}%
-      </span>
-    </div>
+            </React.Fragment>
+          );
+        })}
+        <span className="ml-2 text-xs text-muted-foreground">
+          {completedSeasons.length}/{SEASONS.length} • {overallPercentage}%
+        </span>
+      </div>
+    </TooltipProvider>
   );
 };
 

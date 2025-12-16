@@ -2,7 +2,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { PartyPopper, Sparkles, ArrowRight, Flower2, BookOpen, Mountain, Music, FileText } from 'lucide-react';
+import { PartyPopper, Sparkles, ArrowRight, Flower2, BookOpen, Mountain, Music, FileText, Lightbulb } from 'lucide-react';
+import { SEASON_DEFINITIONS, POEMS_ACRONYM } from '@/data/seasonDefinitions';
 
 type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 
@@ -27,7 +28,7 @@ const SEASON_CONFIG: Record<Season, {
 }> = {
   POLLENS: {
     label: 'Pollens',
-    description: 'Signals & Context - raw observations, glitches, tensions, and emotional climate',
+    description: SEASON_DEFINITIONS.POLLENS.fullDescription,
     icon: Flower2,
     color: 'text-rose-500',
     gradient: 'from-rose-500 to-pink-500',
@@ -35,15 +36,15 @@ const SEASON_CONFIG: Record<Season, {
   },
   NOEMS: {
     label: 'Noems',
-    description: 'Conceptual Atoms - distilled insights, core patterns, and knowledge nuggets',
-    icon: Sparkles,
+    description: SEASON_DEFINITIONS.NOEMS.fullDescription,
+    icon: Lightbulb,
     color: 'text-violet-500',
     gradient: 'from-violet-500 to-purple-500',
     nextSeason: 'POEMS',
   },
   POEMS: {
     label: 'Poems',
-    description: 'Narrative & Meaning - user journeys, hypotheses, and thematic anchors',
+    description: SEASON_DEFINITIONS.POEMS.fullDescription,
     icon: BookOpen,
     color: 'text-purple-500',
     gradient: 'from-purple-500 to-indigo-500',
@@ -51,7 +52,7 @@ const SEASON_CONFIG: Record<Season, {
   },
   TOTEMS: {
     label: 'Totems',
-    description: 'Form & Interfaces - core flows, ontology, and system boundaries',
+    description: SEASON_DEFINITIONS.TOTEMS.fullDescription,
     icon: Mountain,
     color: 'text-blue-500',
     gradient: 'from-blue-500 to-cyan-500',
@@ -59,7 +60,7 @@ const SEASON_CONFIG: Record<Season, {
   },
   ANTHEMS: {
     label: 'Anthems',
-    description: 'Alignment & Impact - success metrics, guardrails, and strategic alignment',
+    description: SEASON_DEFINITIONS.ANTHEMS.fullDescription,
     icon: Music,
     color: 'text-emerald-500',
     gradient: 'from-emerald-500 to-green-500',
@@ -138,6 +139,17 @@ const SeasonCompletionModal = ({
                 <p className="text-sm text-muted-foreground mt-1">
                   {config.description}
                 </p>
+                {/* P.O.E.M.S. Acronym Display */}
+                {season === 'POEMS' && (
+                  <div className="mt-3 grid grid-cols-5 gap-1 text-xs text-center border-t pt-3">
+                    {Object.entries(POEMS_ACRONYM).map(([letter, word]) => (
+                      <div key={letter} className="flex flex-col items-center">
+                        <span className="font-bold text-primary text-sm">{letter}</span>
+                        <span className="text-muted-foreground">{word}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </Card>

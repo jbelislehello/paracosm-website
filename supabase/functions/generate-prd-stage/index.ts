@@ -116,100 +116,139 @@ Always consider: Receptivity, Softness & Safety, Relationality, Cyclical Time, E
 Write with clarity and emotional intelligence. Treat insights as living organisms.`;
 
     const layerPrompts: Record<PrdLayer, string> = {
-      POLLENS: `Based on these raw signals from a ${board} board cycle, generate the POLLENS layer:
+      POLLENS: `Based on these raw signals from a ${board} board cycle, generate the POLLENS layer — focused on RELATIONAL & CULTURAL ASPIRATIONS:
 
 POLLEN ENTRIES:
 ${polenContext}
 
+Consider these areas:
+- Self aspirations: What do individuals hope to become/achieve?
+- Team dynamics: How does the team collaborate, communicate, resolve conflict?
+- Organizational culture: What values, norms, and patterns shape behavior?
+- Relational elements: What relationships and connections matter most?
+
 Return JSON with these exact keys:
 {
-  "pollens_observations": "5-15 clear tensions/glitches with emotional texture",
-  "pollens_biases": "Biases surfaced in the conversation (cognitive, cultural, institutional)",
-  "pollens_cultural_issues": "Systemic and cultural patterns noticed",
-  "pollens_prd_shadows": "What the PRD might be hiding or avoiding",
-  "pollens_constraints": "Legal, ethical, financial, technical barriers named honestly",
-  "pollens_stakes": "What happens if nothing changes (emotional and practical)",
-  "stack_implications_pollens": "High-level constraints: on-prem/cloud, data residency, sensitivity levels. Integration context: existing tools, APIs, identity systems. Latency/robustness expectations.",
+  "pollens_aspirations": "5-10 individual, team, and organizational aspirations with emotional texture",
+  "pollens_team_dynamics": "Patterns in how people work together, tensions and harmonies observed",
+  "pollens_cultural_elements": "Values, norms, rituals, and unwritten rules at play",
+  "pollens_relational_patterns": "Key relationships and their dynamics",
+  "pollens_constraints": "Cultural, relational, and organizational barriers",
+  "pollens_stakes": "What happens to relationships and culture if nothing changes",
+  "stack_implications_pollens": "High-level constraints: on-prem/cloud, data residency, sensitivity levels. Integration context: existing tools, APIs, identity systems.",
   "prompt_hooks_pollens": "Project name + one-line purpose. Core vibe (tone, ethos, personality). Primary user archetypes and their main questions."
 }
 
-Stay with the raw signal. No premature solutions.`,
+Stay with relational signals. Culture before solutions.`,
 
-      NOEMS: `Based on POLLENS and context, generate the NOEMS layer (conceptual atoms):
+      NOEMS: `Based on POLLENS and context, generate the NOEMS layer — focused on CONCEPTUAL IDEATION:
 
 POLLEN ENTRIES:
 ${polenContext}
 
 ${existingContext ? `EXISTING CONTENT:\n${existingContext}` : ''}
 
+Consider these areas:
+- Ideas: What new ideas are emerging from the tensions and aspirations?
+- Concepts: What abstract frameworks help make sense of the situation?
+- Mental models: What assumptions and worldviews are at play?
+- Theoretical structures: What patterns connect multiple observations?
+
 Return JSON with these exact keys:
 {
   "noems_concepts": "Crystallized concepts emerging from pollens. Format: Title: Insight (maturity: seed/growing/ripe)",
-  "noems_shared_ideas": "Ideas that emerged from multiple glitches or tensions",
+  "noems_shared_ideas": "Ideas that emerged from multiple tensions or aspirations",
   "noems_intuitions": "Gut feelings and hunches worth tracking, not yet proven",
-  "stack_implications_noems": "Data types & sources (files, DB, APIs, logs). Needed capabilities: OCR, Vision, RAG, workflow engine, etc. Candidate components: Supabase, vector DB, orchestration tools.",
+  "noems_mental_models": "Assumptions and frameworks shaping how the problem is understood",
+  "stack_implications_noems": "Data types & sources (files, DB, APIs, logs). Needed capabilities: OCR, Vision, RAG, workflow engine, etc.",
   "prompt_hooks_noems": "Ontology: key entities, relationships, allowed operations. What the assistant knows and must protect/respect."
 }
 
 Let concepts emerge naturally. Don't force structure.`,
 
-      POEMS: `Based on previous layers, generate the POEMS layer (narratives & knowledge objects):
+      POEMS: `Based on previous layers, generate the POEMS layer using the P.O.E.M.S. framework for EXPERIENTIAL DESIGN:
+
+P.O.E.M.S. = People • Objects • Environments • Messages • Systems
 
 POLLEN ENTRIES:
 ${polenContext}
 
 ${existingContext ? `EXISTING CONTENT:\n${existingContext}` : ''}
 
+For each element of P.O.E.M.S., consider:
+- PEOPLE: Who are the users, stakeholders, personas? What are their needs, behaviors, contexts?
+- OBJECTS: What physical/digital artifacts do they interact with? Products, tools, interfaces?
+- ENVIRONMENTS: Where do interactions happen? Physical spaces, digital contexts, social settings?
+- MESSAGES: What information flows between actors? Notifications, feedback, communications?
+- SYSTEMS: What processes, services, and technical components enable the experience?
+
 Return JSON with these exact keys:
 {
-  "poems_narratives": "1-3 user journeys as stories (before → during → after) with emotional texture",
-  "poems_content_sources": "What content, data, and information powers these narratives",
-  "poems_data_nodes": "Key data entities and relationships that the system needs to track",
-  "stack_implications_poems": "UX surface: chat, dashboard, form assistant, background agent. Needed adapters: email, calendar, file upload, webhooks, etc. Session + memory model (short-term vs long-term).",
-  "prompt_hooks_poems": "Canonical flows in natural language ('When user does X, the assistant must...'). Error states, guardrails, escalation behavior."
+  "poems_people": "User personas, stakeholders, and their needs/behaviors/contexts",
+  "poems_objects": "Physical and digital artifacts, products, tools, interfaces involved",
+  "poems_environments": "Physical spaces, digital contexts, social settings where interactions occur",
+  "poems_messages": "Information flows, notifications, feedback, and communications",
+  "poems_systems": "Processes, services, and technical components enabling the experience",
+  "poems_prototypes": "UI mockups, interaction flows, and ontological design patterns to explore",
+  "stack_implications_poems": "UX surface (chat, dashboard, forms). Adapters (email, calendar, webhooks). Session model.",
+  "prompt_hooks_poems": "Canonical user flows in natural language. Error states and guardrails."
 }
 
-Stories first, then structure. Allow many possible futures.`,
+Design the full experience across People, Objects, Environments, Messages, and Systems.`,
 
-      TOTEMS: `Based on previous layers, generate the TOTEMS layer (semantic structures):
+      TOTEMS: `Based on previous layers, generate the TOTEMS layer for TECHNICAL INFRASTRUCTURE:
 
 POLLEN ENTRIES:
 ${polenContext}
 
 ${existingContext ? `EXISTING CONTENT:\n${existingContext}` : ''}
 
+Focus on:
+- Data architecture: What data needs to be stored, processed, analyzed?
+- Security policies: What must be protected? Who can access what?
+- Access controls: Role-based permissions, authentication, authorization
+- System requirements: Performance, scalability, reliability needs
+
 Return JSON with these exact keys:
 {
-  "totems_processes": "Core flows, service blueprints, what people will touch/see/feel",
-  "totems_maps": "Relationship maps, conceptual architecture, system boundaries",
-  "totems_three_graph": "Three Graph Model hints: Subject Graph (who/what), Lexical Graph (vocabulary), Domain Graph (concepts)",
-  "totems_semantic_notes": "RDF/OWL patterns emerging, ontological commitments being made",
-  "stack_implications_totems": "Logging/observability, evaluation harness, test suites. Role-based access, multi-tenant patterns, privacy layers. Monitoring tools (dashboards, alerts, feedback capture).",
-  "prompt_hooks_totems": "Non-negotiable rules (compliance, ethics, tone). 'Never do X', 'Always explain Y', 'Ask for clarification when Z'. Evaluation criteria the assistant should self-check against."
+  "totems_data_architecture": "Data models, storage requirements, processing pipelines",
+  "totems_security_policies": "Security requirements, encryption, compliance needs",
+  "totems_access_controls": "Role-based access, authentication methods, authorization rules",
+  "totems_system_requirements": "Performance, scalability, reliability, and availability needs",
+  "totems_integration_points": "APIs, third-party services, data flows between systems",
+  "totems_technical_debt": "Legacy systems to address, technical risks, migration needs",
+  "stack_implications_totems": "Logging/observability, evaluation harness, test suites. RBAC patterns.",
+  "prompt_hooks_totems": "Non-negotiable rules (compliance, ethics). 'Never do X', 'Always explain Y'."
 }
 
-Things become concrete here. Semantic structures crystallize.`,
+Technical infrastructure becomes concrete. Security and data architecture crystallize.`,
 
-      ANTHEMS: `Based on all previous layers, generate the ANTHEMS layer (integration & alignment):
+      ANTHEMS: `Based on all previous layers, generate the ANTHEMS layer for MARKET & STORYTELLING:
 
 POLLEN ENTRIES:
 ${polenContext}
 
 ${existingContext ? `EXISTING CONTENT:\n${existingContext}` : ''}
 
+Focus on:
+- Market positioning: Where does this fit in the competitive landscape?
+- Brand narrative: What story are we telling? What emotions do we evoke?
+- Go-to-market: How do we reach our audience? Channels, timing, messaging?
+- Audience targeting: Who are we speaking to? Segments, personas, contexts?
+
 Return JSON with these exact keys:
 {
-  "anthems_alignment": "How this supports the organization's story and long-term narrative",
-  "anthems_success_signals": "3-5 qualitative and quantitative signals of success",
-  "anthems_guardrails": "3-5 guardrails: ethics, compliance, ecological and social impact",
-  "anthems_roadmap": "Simple now/next/later roadmap with named owners",
-  "anthems_feminine_quality": "Which of the 8 principles this honors, and which need attention",
-  "anthems_learning_cadence": "How we build in time for Drift between Tunes",
-  "stack_implications_anthems": "MVP vs V2 vs V3 stack choices (start simple, grow complexity). Cost/performance tradeoffs, multi-tenant vs single-tenant. Licensing/deployment model (SaaS, self-host, hybrid).",
-  "prompt_hooks_anthems": "Phased evolution of the assistant ('In Phase 1, assistant can only do... In Phase 2...'). Flags for features that are future capabilities vs current."
+  "anthems_market_positioning": "Competitive landscape, unique value proposition, market fit",
+  "anthems_brand_narrative": "The story we tell, emotional resonance, brand voice",
+  "anthems_go_to_market": "Channels, timing, launch strategy, marketing approach",
+  "anthems_audience_segments": "Target personas, segments, and how to reach them",
+  "anthems_success_signals": "3-5 qualitative and quantitative signals of market success",
+  "anthems_storytelling_assets": "Key messages, taglines, elevator pitch, anthem/manifesto",
+  "stack_implications_anthems": "MVP vs V2 vs V3 stack choices. Cost/performance tradeoffs.",
+  "prompt_hooks_anthems": "Phased evolution ('In Phase 1...'). Future capability flags."
 }
 
-Integration time. What we learn flows back into POLLENS for the next cycle.`
+Tell the market story. Position for success.`
     };
 
     const callGateway = async (userPrompt: string) => {
