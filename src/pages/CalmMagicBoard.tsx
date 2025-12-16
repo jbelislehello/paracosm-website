@@ -5,7 +5,7 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe, Eye, EyeOff, Orbit } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe, Eye, EyeOff } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { getTerminology } from '@/data/modeAwareTerminology';
@@ -45,7 +45,7 @@ import { DetectedPattern, PatternHistoryEntry } from '@/utils/patternDetection';
 import { TopologiesTab } from '@/components/calm-magic/topologies/TopologiesTab';
 import { ManifoldSeason } from '@/utils/torusManifoldMath';
 import { getCurrentUnlockedRing } from '@/utils/ringToleranceSystem';
-import { TorusManifoldVisualization } from '@/components/calm-magic/TorusManifoldVisualization';
+
 
 const ROW_LABELS = ['Mindsets', 'Agilities', 'Goals', 'Intuition', 'Compasses', 'Norms', 'Synergies', 'Protocols & Architectures'];
 const COL_LABELS = ['Chances', 'Heart', 'Observer', 'Reversal', 'Design', 'Seeds', 'Methods', 'Systems'];
@@ -134,7 +134,7 @@ const CalmMagicBoard = () => {
   const [patternHistory, setPatternHistory] = useState<PatternHistoryEntry[]>([]);
   const [highlightedPattern, setHighlightedPattern] = useState<DetectedPattern | null>(null);
   const [cleanMatrixView, setCleanMatrixView] = useState(false);
-  const [showManifoldVisualization, setShowManifoldVisualization] = useState(false);
+  
   
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   
@@ -842,15 +842,6 @@ const CalmMagicBoard = () => {
               <Library className="w-4 h-4" />
             </Button>
             
-            {/* 3D Manifold Visualization */}
-            <Button 
-              variant={showManifoldVisualization ? "default" : "ghost"} 
-              size="icon"
-              onClick={() => setShowManifoldVisualization(true)}
-              title="3D Torus Manifold - Journey Visualization"
-            >
-              <Orbit className="w-4 h-4" />
-            </Button>
             
             {/* Sync Progress */}
             <Button 
@@ -978,15 +969,6 @@ const CalmMagicBoard = () => {
                 >
                   <BookOpen className="w-4 h-4 mr-2" />
                   Encyclopedia
-                </Button>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  className="justify-start"
-                  onClick={() => { setShowManifoldVisualization(true); setShowMobileMenu(false); }}
-                >
-                  <Orbit className="w-4 h-4 mr-2" />
-                  Manifold
                 </Button>
               </div>
             </div>
@@ -1460,10 +1442,6 @@ const CalmMagicBoard = () => {
         </SheetContent>
       </Sheet>
 
-      {/* 3D Torus Manifold Visualization */}
-      {showManifoldVisualization && (
-        <TorusManifoldVisualization onClose={() => setShowManifoldVisualization(false)} />
-      )}
       
     </div>
   );
