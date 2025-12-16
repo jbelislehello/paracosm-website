@@ -4,9 +4,6 @@ import { TopologyViewMode } from '@/components/calm-magic/topologies/ViewModeSel
 
 export interface MysteryZone {
   id: string;
-  x: number;
-  y: number;
-  radius: number;
   zoneType: 'gap' | 'cluster' | 'boundary' | 'attractor' | 'connection' | 'transition';
   label: string;
   fragment?: string;
@@ -19,20 +16,16 @@ export interface MysteryZoneConfig {
   journeyPath: Array<{ row: number; col: number }>;
   densityMap: Map<string, number>;
   currentUnlockedRing: number;
-  containerWidth: number;
-  containerHeight: number;
 }
 
-const STORAGE_KEY = 'mystery-zones-revealed';
+const REVEALED_STORAGE_KEY = 'mystery-zones-revealed';
+const FRAGMENTS_STORAGE_KEY = 'mystery-zones-fragments';
+const SAVED_STORAGE_KEY = 'mystery-zones-saved';
 
 // Calculate mystery zones based on view mode and journey data
 function calculateZones(config: MysteryZoneConfig): MysteryZone[] {
-  const { viewMode, visitedTiles, journeyPath, densityMap, currentUnlockedRing, containerWidth, containerHeight } = config;
+  const { viewMode, visitedTiles, journeyPath, densityMap, currentUnlockedRing } = config;
   const zones: MysteryZone[] = [];
-  
-  const cx = containerWidth / 2;
-  const cy = containerHeight / 2;
-  const scale = Math.min(containerWidth, containerHeight) / 2;
   
   // Calculate coverage stats
   const totalTiles = 64;
@@ -50,13 +43,11 @@ function calculateZones(config: MysteryZoneConfig): MysteryZone[] {
     else quadrantCoverage.IM++;
   });
 
-  // Find max density tile
+  // Find max density
   let maxDensity = 0;
-  let maxDensityKey = '0,0';
-  densityMap.forEach((density, key) => {
+  densityMap.forEach((density) => {
     if (density > maxDensity) {
       maxDensity = density;
-      maxDensityKey = key;
     }
   });
 
@@ -64,13 +55,9 @@ function calculateZones(config: MysteryZoneConfig): MysteryZone[] {
     case 'isometric': {
       // Gap zones for unexplored quadrants
       Object.entries(quadrantCoverage).forEach(([quadrant, count]) => {
-        if (count < 4) { // Less than 25% of quadrant visited
-          const qPos = getQuadrantPosition(quadrant, cx, cy, scale * 0.5);
+        if (count < 4) {
           zones.push({
             id: `gap-${quadrant.toLowerCase()}`,
-            x: qPos.x,
-            y: qPos.y,
-            radius: 35,
             zoneType: 'gap',
             label: getQuadrantLabel(quadrant),
             isRevealed: false
@@ -80,12 +67,8 @@ function calculateZones(config: MysteryZoneConfig): MysteryZone[] {
       
       // Cluster zone for high density area
       if (maxDensity > 2) {
-        const [dr, dc] = maxDensityKey.split(',').map(Number);
         zones.push({
           id: 'cluster-deep',
-          x: cx + (dc - 3.5) * (scale * 0.12),
-          y: cy + (dr - 3.5) * (scale * 0.12),
-          radius: 30,
           zoneType: 'cluster',
           label: 'The Deep Well',
           isRevealed: false
@@ -96,9 +79,6 @@ function calculateZones(config: MysteryZoneConfig): MysteryZone[] {
       if (currentUnlockedRing < 4) {
         zones.push({
           id: `boundary-ring${currentUnlockedRing + 1}`,
-          x: cx + scale * 0.35,
-          y: cy - scale * 0.1,
-          radius: 40,
           zoneType: 'boundary',
           label: `The Threshold of ${getRingName(currentUnlockedRing + 1)}`,
           isRevealed: false
@@ -108,37 +88,25 @@ function calculateZones(config: MysteryZoneConfig): MysteryZone[] {
     }
     
     case 'spiral': {
-      // Center zone
       zones.push({
         id: 'spiral-center',
-        x: cx,
-        y: cy,
-        radius: 35,
         zoneType: 'attractor',
         label: 'The Origin Point',
         isRevealed: false
       });
       
-      // Ring transitions
       for (let ring = 1; ring <= Math.min(currentUnlockedRing, 3); ring++) {
         zones.push({
           id: `spiral-ring-${ring}`,
-          x: cx + Math.cos(ring * 1.2) * (scale * ring * 0.2),
-          y: cy + Math.sin(ring * 1.2) * (scale * ring * 0.2),
-          radius: 30,
           zoneType: 'boundary',
           label: `Ring ${ring} Crossing`,
           isRevealed: false
         });
       }
       
-      // Edge zone
       if (coverage > 0.3) {
         zones.push({
           id: 'spiral-edge',
-          x: cx + scale * 0.7,
-          y: cy + scale * 0.3,
-          radius: 35,
           zoneType: 'gap',
           label: 'The Expanding Edge',
           isRevealed: false
@@ -148,19 +116,15 @@ function calculateZones(config: MysteryZoneConfig): MysteryZone[] {
     }
     
     case 'diamond': {
-      // Phase transition zones
       const transitions = [
-        { id: 'discover-define', x: cx - scale * 0.25, y: cy - scale * 0.1, label: 'The Narrowing' },
-        { id: 'define-develop', x: cx, y: cy + scale * 0.15, label: 'The Pivot Point' },
-        { id: 'develop-deliver', x: cx + scale * 0.25, y: cy - scale * 0.1, label: 'The Opening' }
+        { id: 'discover-define', label: 'The Narrowing' },
+        { id: 'define-develop', label: 'The Pivot Point' },
+        { id: 'develop-deliver', label: 'The Opening' }
       ];
       
       transitions.forEach(t => {
         zones.push({
           id: `transition-${t.id}`,
-          x: t.x,
-          y: t.y,
-          radius: 35,
           zoneType: 'transition',
           label: t.label,
           isRevealed: false
@@ -170,35 +134,23 @@ function calculateZones(config: MysteryZoneConfig): MysteryZone[] {
     }
     
     case 'flow': {
-      // Attractor zones (sinks)
       zones.push({
         id: 'flow-sink-primary',
-        x: cx + scale * 0.3,
-        y: cy - scale * 0.2,
-        radius: 40,
         zoneType: 'attractor',
         label: 'The Gathering Pool',
         isRevealed: false
       });
       
-      // Source zone
       zones.push({
         id: 'flow-source',
-        x: cx - scale * 0.4,
-        y: cy + scale * 0.3,
-        radius: 35,
         zoneType: 'gap',
         label: 'The Spring',
         isRevealed: false
       });
       
-      // Divergence point
       if (journeyPath.length > 5) {
         zones.push({
           id: 'flow-divergence',
-          x: cx,
-          y: cy - scale * 0.35,
-          radius: 30,
           zoneType: 'connection',
           label: 'The Branching',
           isRevealed: false
@@ -208,12 +160,8 @@ function calculateZones(config: MysteryZoneConfig): MysteryZone[] {
     }
     
     case 'projection': {
-      // Hidden neighbor zones
       zones.push({
         id: 'projection-fold-1',
-        x: cx - scale * 0.5,
-        y: cy,
-        radius: 35,
         zoneType: 'connection',
         label: 'The Hidden Seam',
         isRevealed: false
@@ -221,9 +169,6 @@ function calculateZones(config: MysteryZoneConfig): MysteryZone[] {
       
       zones.push({
         id: 'projection-fold-2',
-        x: cx + scale * 0.5,
-        y: cy,
-        radius: 35,
         zoneType: 'connection',
         label: 'The Edge Connection',
         isRevealed: false
@@ -232,23 +177,15 @@ function calculateZones(config: MysteryZoneConfig): MysteryZone[] {
     }
     
     case 'cycles': {
-      // Incomplete loop zones
       zones.push({
         id: 'cycle-incomplete',
-        x: cx + scale * 0.2,
-        y: cy - scale * 0.3,
-        radius: 40,
         zoneType: 'gap',
         label: 'The Unfinished Loop',
         isRevealed: false
       });
       
-      // Cycle intersection
       zones.push({
         id: 'cycle-intersection',
-        x: cx,
-        y: cy,
-        radius: 35,
         zoneType: 'attractor',
         label: 'The Crossroads',
         isRevealed: false
@@ -257,12 +194,8 @@ function calculateZones(config: MysteryZoneConfig): MysteryZone[] {
     }
     
     case 'coordinates': {
-      // Quadrant boundary zones
       zones.push({
         id: 'coord-origin',
-        x: cx,
-        y: cy,
-        radius: 40,
         zoneType: 'attractor',
         label: 'The Center Point',
         isRevealed: false
@@ -270,9 +203,6 @@ function calculateZones(config: MysteryZoneConfig): MysteryZone[] {
       
       zones.push({
         id: 'coord-boundary-x',
-        x: cx + scale * 0.6,
-        y: cy,
-        radius: 30,
         zoneType: 'boundary',
         label: 'The Novelty Horizon',
         isRevealed: false
@@ -280,9 +210,6 @@ function calculateZones(config: MysteryZoneConfig): MysteryZone[] {
       
       zones.push({
         id: 'coord-boundary-y',
-        x: cx,
-        y: cy - scale * 0.5,
-        radius: 30,
         zoneType: 'boundary',
         label: 'The Sovereignty Threshold',
         isRevealed: false
@@ -291,24 +218,16 @@ function calculateZones(config: MysteryZoneConfig): MysteryZone[] {
     }
     
     case 'charts': {
-      // Uncharted region
       zones.push({
         id: 'chart-uncharted',
-        x: cx + scale * 0.4,
-        y: cy + scale * 0.3,
-        radius: 40,
         zoneType: 'gap',
         label: 'The Uncharted Region',
         isRevealed: false
       });
       
-      // Dense chart area
       if (maxDensity > 1) {
         zones.push({
           id: 'chart-dense',
-          x: cx - scale * 0.2,
-          y: cy - scale * 0.2,
-          radius: 35,
           zoneType: 'cluster',
           label: 'The Dense Archive',
           isRevealed: false
@@ -318,18 +237,7 @@ function calculateZones(config: MysteryZoneConfig): MysteryZone[] {
     }
   }
   
-  // Limit to 4 zones max per view
   return zones.slice(0, 4);
-}
-
-function getQuadrantPosition(quadrant: string, cx: number, cy: number, offset: number) {
-  switch (quadrant) {
-    case 'SN': return { x: cx - offset, y: cy - offset };
-    case 'IN': return { x: cx + offset, y: cy - offset };
-    case 'SM': return { x: cx - offset, y: cy + offset };
-    case 'IM': return { x: cx + offset, y: cy + offset };
-    default: return { x: cx, y: cy };
-  }
 }
 
 function getQuadrantLabel(quadrant: string) {
@@ -355,9 +263,28 @@ function getRingName(ring: number) {
 export function useMysteryZones(config: MysteryZoneConfig | null) {
   const [zones, setZones] = useState<MysteryZone[]>([]);
   const [loadingZoneId, setLoadingZoneId] = useState<string | null>(null);
+  
   const [revealedZones, setRevealedZones] = useState<Set<string>>(() => {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
+      const stored = localStorage.getItem(REVEALED_STORAGE_KEY);
+      return stored ? new Set(JSON.parse(stored)) : new Set();
+    } catch {
+      return new Set();
+    }
+  });
+
+  const [fragments, setFragments] = useState<Record<string, string>>(() => {
+    try {
+      const stored = localStorage.getItem(FRAGMENTS_STORAGE_KEY);
+      return stored ? JSON.parse(stored) : {};
+    } catch {
+      return {};
+    }
+  });
+
+  const [savedZones, setSavedZones] = useState<Set<string>>(() => {
+    try {
+      const stored = localStorage.getItem(SAVED_STORAGE_KEY);
       return stored ? new Set(JSON.parse(stored)) : new Set();
     } catch {
       return new Set();
@@ -366,23 +293,34 @@ export function useMysteryZones(config: MysteryZoneConfig | null) {
 
   // Calculate zones when config changes
   useEffect(() => {
-    if (!config || config.containerWidth === 0) return;
+    if (!config) return;
     
     const calculatedZones = calculateZones(config);
     
-    // Mark previously revealed zones
-    const zonesWithRevealState = calculatedZones.map(zone => ({
+    // Hydrate with revealed state and fragments
+    const zonesWithState = calculatedZones.map(zone => ({
       ...zone,
-      isRevealed: revealedZones.has(zone.id)
+      isRevealed: revealedZones.has(zone.id),
+      fragment: fragments[zone.id]
     }));
     
-    setZones(zonesWithRevealState);
-  }, [config, revealedZones]);
+    setZones(zonesWithState);
+  }, [config, revealedZones, fragments]);
 
   // Persist revealed zones
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([...revealedZones]));
+    localStorage.setItem(REVEALED_STORAGE_KEY, JSON.stringify([...revealedZones]));
   }, [revealedZones]);
+
+  // Persist fragments
+  useEffect(() => {
+    localStorage.setItem(FRAGMENTS_STORAGE_KEY, JSON.stringify(fragments));
+  }, [fragments]);
+
+  // Persist saved zones
+  useEffect(() => {
+    localStorage.setItem(SAVED_STORAGE_KEY, JSON.stringify([...savedZones]));
+  }, [savedZones]);
 
   const revealZone = useCallback(async (zoneId: string) => {
     const zone = zones.find(z => z.id === zoneId);
@@ -406,7 +344,10 @@ export function useMysteryZones(config: MysteryZoneConfig | null) {
       
       const fragment = data?.fragment || "A mystery awaits discovery here...";
       
-      // Update zone with fragment
+      // Store fragment
+      setFragments(prev => ({ ...prev, [zoneId]: fragment }));
+      
+      // Update zone state
       setZones(prev => prev.map(z => 
         z.id === zoneId 
           ? { ...z, fragment, isRevealed: true }
@@ -418,10 +359,11 @@ export function useMysteryZones(config: MysteryZoneConfig | null) {
       
     } catch (err) {
       console.error('Failed to generate zone fragment:', err);
-      // Still reveal with fallback
+      const fallback = "The mist clears, but the mystery remains...";
+      setFragments(prev => ({ ...prev, [zoneId]: fallback }));
       setZones(prev => prev.map(z => 
         z.id === zoneId 
-          ? { ...z, fragment: "The mist clears, but the mystery remains...", isRevealed: true }
+          ? { ...z, fragment: fallback, isRevealed: true }
           : z
       ));
       setRevealedZones(prev => new Set([...prev, zoneId]));
@@ -430,15 +372,25 @@ export function useMysteryZones(config: MysteryZoneConfig | null) {
     }
   }, [zones, config, loadingZoneId]);
 
+  const markZoneAsSaved = useCallback((zoneId: string) => {
+    setSavedZones(prev => new Set([...prev, zoneId]));
+  }, []);
+
   const resetRevealedZones = useCallback(() => {
     setRevealedZones(new Set());
-    localStorage.removeItem(STORAGE_KEY);
+    setFragments({});
+    setSavedZones(new Set());
+    localStorage.removeItem(REVEALED_STORAGE_KEY);
+    localStorage.removeItem(FRAGMENTS_STORAGE_KEY);
+    localStorage.removeItem(SAVED_STORAGE_KEY);
   }, []);
 
   return {
     zones,
     loadingZoneId,
     revealZone,
+    savedZones,
+    markZoneAsSaved,
     resetRevealedZones,
     revealedCount: revealedZones.size
   };
