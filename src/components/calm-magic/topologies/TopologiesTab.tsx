@@ -20,7 +20,9 @@ import { toast } from 'sonner';
 import { 
   RotateCcw, 
   Maximize,
-  Minimize
+  Minimize,
+  Brain,
+  Loader2
 } from 'lucide-react';
 
 interface TopologiesTabProps {
@@ -198,6 +200,22 @@ export function TopologiesTab({
 
         {/* Action buttons */}
         <div className="flex items-center gap-2">
+          <Button
+            variant="default"
+            size="sm"
+            onClick={onAnalyzeTopology}
+            disabled={isAnalyzingTopology || visitedTiles.size === 0}
+            className="h-8 gap-1.5"
+          >
+            {isAnalyzingTopology ? (
+              <Loader2 className="w-3 h-3 animate-spin" />
+            ) : (
+              <Brain className="w-3 h-3" />
+            )}
+            <span className="hidden sm:inline">
+              {isAnalyzingTopology ? 'Analyzing...' : 'Analyze Journey'}
+            </span>
+          </Button>
           <Button
             variant="outline"
             size="sm"
