@@ -1,6 +1,8 @@
 import React, { useMemo, useState, useEffect, useRef } from 'react';
-import { QuadrantPosition, TrajectoryEvent } from '@/types/trajectory';
+import { QuadrantPosition, TrajectoryEvent, DissonanceType } from '@/types/trajectory';
 import { TorusMarker } from './TorusMarker';
+import { Badge } from '@/components/ui/badge';
+import { AlertTriangle, Sparkles } from 'lucide-react';
 
 interface TrajectoryVisualizationProps {
   shadowPosition: QuadrantPosition;
@@ -8,6 +10,11 @@ interface TrajectoryVisualizationProps {
   trajectoryLog: TrajectoryEvent[];
   onQuadrantClick?: (position: QuadrantPosition) => void;
   interactive?: boolean;
+  // New: Inferred shadow from AI analysis
+  inferredShadowPosition?: QuadrantPosition | null;
+  dissonanceType?: DissonanceType;
+  dissonanceGap?: number;
+  aiNudge?: string | null;
 }
 
 // Explicit colors for quadrants (HSL values)
@@ -32,6 +39,10 @@ export const TrajectoryVisualization: React.FC<TrajectoryVisualizationProps> = (
   trajectoryLog,
   onQuadrantClick,
   interactive = false,
+  inferredShadowPosition,
+  dissonanceType,
+  dissonanceGap = 0,
+  aiNudge,
 }) => {
   const [previousCoord, setPreviousCoord] = useState<{ x: number; y: number } | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -45,6 +56,15 @@ export const TrajectoryVisualization: React.FC<TrajectoryVisualizationProps> = (
 
   const shadowCoord = toSvgCoord(shadowPosition);
   const higherSelfCoord = higherSelfPosition ? toSvgCoord(higherSelfPosition) : null;
+  const inferredCoord = inferredShadowPosition ? toSvgCoord(inferredShadowPosition) : null;
+  
+  // Calculate distance between calculated and inferred shadow
+  const inferredDistance = inferredShadowPosition 
+    ? Math.sqrt(
+        Math.pow(shadowPosition.x - inferredShadowPosition.x, 2) + 
+        Math.pow(shadowPosition.y - inferredShadowPosition.y, 2)
+      )
+    : 0;
 
   // Track position changes for animation
   useEffect(() => {
@@ -231,6 +251,31 @@ export const TrajectoryVisualization: React.FC<TrajectoryVisualizationProps> = (
           />
         )}
         
+        {/* Inferred Shadow Torus (ghost outline when different from calculated) */}
+        {inferredCoord && inferredDistance > 0.15 && (
+          <g>
+            {/* Connection line between calculated and inferred */}
+            <line
+              x1={shadowCoord.x}
+              y1={shadowCoord.y}
+              x2={inferredCoord.x}
+              y2={inferredCoord.y}
+              stroke="hsl(var(--chart-2) / 0.4)"
+              strokeWidth="1"
+              strokeDasharray="2,2"
+            />
+            <TorusMarker
+              cx={inferredCoord.x}
+              cy={inferredCoord.y}
+              size={5}
+              type="inferred"
+              animated={false}
+              variant="outline"
+              label="inferred"
+            />
+          </g>
+        )}
+        
         {/* Shadow Torus Manifold */}
         <g>
           {/* Pulse ring on animation */}
@@ -293,16 +338,48 @@ export const TrajectoryVisualization: React.FC<TrajectoryVisualizationProps> = (
       </div>
 
       {/* Manifold Legend */}
-      <div className="absolute -bottom-6 left-0 right-0 flex justify-center gap-4 text-[10px]">
+      <div className="absolute -bottom-6 left-0 right-0 flex justify-center gap-3 text-[10px]">
         <span className="flex items-center gap-1.5 px-2 py-1 rounded bg-muted text-foreground">
           <span className="w-3 h-1.5 rounded-full bg-foreground opacity-80" /> Shadow
         </span>
+        {inferredShadowPosition && inferredDistance > 0.15 && (
+          <span className="flex items-center gap-1.5 px-2 py-1 rounded bg-muted text-foreground">
+            <span className="w-3 h-1.5 rounded-full bg-chart-2 opacity-60" /> Inferred
+          </span>
+        )}
         {higherSelfPosition && (
           <span className="flex items-center gap-1.5 px-2 py-1 rounded bg-muted text-foreground">
             <span className="w-3 h-1.5 rounded-full bg-primary opacity-80" /> Higher Self
           </span>
         )}
       </div>
+
+      {/* Dissonance Warning Badge */}
+      {dissonanceType === 'contradictory' && (
+        <div className="absolute -top-2 -right-2 z-10">
+          <Badge variant="destructive" className="flex items-center gap-1 text-[10px] px-2">
+            <AlertTriangle className="w-3 h-3" />
+            Trap detected
+          </Badge>
+        </div>
+      )}
+      {dissonanceType === 'divergent' && (
+        <div className="absolute -top-2 -right-2 z-10">
+          <Badge variant="secondary" className="flex items-center gap-1 text-[10px] px-2">
+            <Sparkles className="w-3 h-3" />
+            Diverging
+          </Badge>
+        </div>
+      )}
+
+      {/* AI Nudge tooltip */}
+      {aiNudge && (
+        <div className="absolute -bottom-24 left-0 right-0 px-2">
+          <p className="text-[9px] text-muted-foreground text-center italic leading-tight">
+            {aiNudge}
+          </p>
+        </div>
+      )}
     </div>
   );
 };

@@ -10,6 +10,8 @@ import {
   ShadowFactors,
   ShadowNudge,
   FeltState,
+  TopologicalSignature,
+  QuadrantThemes,
 } from '@/types/trajectory';
 import { analyzeCoherence, GapInfo } from '@/utils/coherenceAnalysis';
 
@@ -100,6 +102,10 @@ export function useQuadrantDynamics(
   const [isLoading, setIsLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState(false);
+  
+  // New: Topological signature from AI analysis
+  const [topologicalSignature, setTopologicalSignature] = useState<TopologicalSignature | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   // Get user ID on mount
   useEffect(() => {
@@ -334,6 +340,7 @@ export function useQuadrantDynamics(
   // Reset trajectory
   const resetTrajectory = useCallback(async () => {
     setTrajectoryState(defaultTrajectoryState);
+    setTopologicalSignature(null);
     localStorage.removeItem(STORAGE_KEY);
     
     if (userId) {
@@ -347,6 +354,55 @@ export function useQuadrantDynamics(
       }
     }
   }, [userId]);
+
+  // Analyze topology using AI sentiment analysis on POLEN entries
+  const analyzeTopology = useCallback(async (polenEntries: Array<{ id: string; content: string; tile_id?: number; season_context?: string; tags?: string[] }>) => {
+    if (polenEntries.length === 0) {
+      console.log('[useQuadrantDynamics] No POLEN entries to analyze');
+      return null;
+    }
+    
+    setIsAnalyzing(true);
+    try {
+      console.log('[useQuadrantDynamics] Analyzing', polenEntries.length, 'POLEN entries');
+      
+      const { data, error } = await supabase.functions.invoke('analyze-topology', {
+        body: { 
+          entries: polenEntries,
+          prophecy: trajectoryState.higher_self_position,
+          structuralFactors: shadowFactors
+        }
+      });
+      
+      if (error) {
+        console.error('[useQuadrantDynamics] Analysis error:', error);
+        return null;
+      }
+      
+      const signature = data?.signature as TopologicalSignature;
+      setTopologicalSignature(signature);
+      
+      // Auto-log if significant dissonance detected
+      if (signature?.dissonanceType === 'contradictory') {
+        logTrajectoryEvent('pattern_discovery', undefined, 
+          signature.aiNudge || `Dissonance detected: patterns suggest ${signature.inferredQuadrant} while prophecy points to ${trajectoryState.higher_self_quadrant}`
+        );
+      }
+      
+      console.log('[useQuadrantDynamics] Analysis complete:', {
+        inferredQuadrant: signature?.inferredQuadrant,
+        confidence: signature?.confidence,
+        dissonanceType: signature?.dissonanceType
+      });
+      
+      return signature;
+    } catch (e) {
+      console.error('[useQuadrantDynamics] Failed to analyze topology:', e);
+      return null;
+    } finally {
+      setIsAnalyzing(false);
+    }
+  }, [trajectoryState.higher_self_position, trajectoryState.higher_self_quadrant, shadowFactors, logTrajectoryEvent]);
 
   return {
     // State
@@ -364,11 +420,21 @@ export function useQuadrantDynamics(
     isLoading,
     isSyncing,
     
+    // New: Topological signature
+    topologicalSignature,
+    isAnalyzing,
+    inferredShadowPosition: topologicalSignature?.inferredPosition || null,
+    inferredQuadrant: topologicalSignature?.inferredQuadrant || null,
+    dissonanceType: topologicalSignature?.dissonanceType || null,
+    dissonanceGap: topologicalSignature?.dissonanceFromProphecy || 0,
+    aiNudge: topologicalSignature?.aiNudge || null,
+    
     // Actions
     setProphecy,
     applyShadowNudge,
     resetShadowNudge,
     logTrajectoryEvent,
     resetTrajectory,
+    analyzeTopology,
   };
 }
