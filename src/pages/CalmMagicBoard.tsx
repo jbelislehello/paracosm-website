@@ -832,16 +832,6 @@ const CalmMagicBoard = () => {
               {!canAccessInsights && <Lock className="w-2.5 h-2.5 absolute -top-0.5 -right-0.5 text-amber-500" />}
             </Button>
             
-            <Button 
-              variant={showPolenBrowser ? "default" : "ghost"} 
-              size="icon"
-              onClick={() => setShowPolenBrowser(!showPolenBrowser)}
-              title="Fragment Library"
-              data-tour="fragments"
-            >
-              <Library className="w-4 h-4" />
-            </Button>
-            
             
             {/* Sync Progress */}
             <Button 
