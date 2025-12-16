@@ -22,7 +22,8 @@ export type TrajectoryEventType =
   | 'prd_generated'
   | 'prophecy_set'
   | 'shadow_nudge'
-  | 'emotional_checkin';
+  | 'emotional_checkin'
+  | 'pattern_discovery';
 
 // Emotional check-in types
 export interface EmotionalAxes {
