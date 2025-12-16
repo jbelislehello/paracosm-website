@@ -231,25 +231,60 @@ const TileDetailPanel = ({
 
   return (
     <div className="h-full flex flex-col bg-gradient-to-br from-background to-muted/30">
-      {/* Compact Tile Identity Header */}
-      <div className="px-3 py-1.5 border-b border-border/30 bg-muted/30 flex items-center justify-between shrink-0">
-        <span className="text-xs font-mono flex items-center gap-1.5">
-          <span className="text-muted-foreground">Tile {tileId}</span>
-          <span className="text-foreground">=</span>
-          <Badge variant="outline" className={`text-[10px] px-1.5 py-0 bg-gradient-to-r ${getBoardColor(board)} text-white border-0`}>
-            {rowLabels[selectedTile.row].letter} × {colLabels[selectedTile.col].letter}
-          </Badge>
-          <span className="text-muted-foreground hidden sm:inline">
-            ({rowLabels[selectedTile.row].name} × {colLabels[selectedTile.col].name})
-          </span>
-        </span>
-        <div className="flex items-center gap-1.5">
-          <Badge variant="outline" className="text-[10px]">{currentSeason}</Badge>
-          <Button variant="ghost" size="icon" onClick={handleClose} className="shrink-0 h-6 w-6">
-            <X className="w-3 h-3" />
-          </Button>
-        </div>
+      {/* Prominent Simple Title */}
+      <div className="px-5 py-3 border-b border-border/30 flex items-center justify-between shrink-0">
+        <h2 className="text-lg font-semibold">
+          {rowLabels[selectedTile.row].name} × {colLabels[selectedTile.col].name}
+        </h2>
+        <Button variant="ghost" size="icon" onClick={handleClose} className="shrink-0 h-8 w-8">
+          <X className="w-4 h-4" />
+        </Button>
       </div>
+
+      {/* Context Accordion - closed by default, contains all contextual info */}
+      <Accordion type="single" collapsible className="border-b border-border/30 shrink-0">
+        <AccordionItem value="context" className="border-none">
+          <AccordionTrigger className="px-5 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:no-underline">
+            <span className="flex items-center gap-2">
+              <BookOpen className="w-3 h-3" />
+              Tile {tileId} = {rowLabels[selectedTile.row].letter} × {colLabels[selectedTile.col].letter} • {currentSeason}
+            </span>
+          </AccordionTrigger>
+          <AccordionContent className="px-5 pb-4">
+            <div className="space-y-3 text-xs">
+              {/* Stage Info */}
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className={`text-[10px] bg-gradient-to-r ${getBoardColor(board)} text-white border-0`}>
+                  {stageDefinition?.name || 'Stage'}
+                </Badge>
+                <span className="text-muted-foreground">{rowLabels[selectedTile.row].stage}</span>
+              </div>
+              
+              {/* Tile Deliverable */}
+              {tileContent?.deliverable && (
+                <p className="text-muted-foreground leading-relaxed">{tileContent.deliverable}</p>
+              )}
+              
+              {/* Principles */}
+              {stagePrinciples && stagePrinciples.length > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {stagePrinciples.slice(0, 3).map((principle, idx) => (
+                    <Badge key={idx} variant="outline" className="text-[10px]">{principle.name}</Badge>
+                  ))}
+                </div>
+              )}
+              
+              {/* Portal Day */}
+              {isCurrentPortalDay && (
+                <Badge className="text-[10px] bg-amber-500/20 text-amber-400 border-amber-500/30 gap-1">
+                  <Hexagon className="w-3 h-3" />
+                  Portal Day — Diagonals Active
+                </Badge>
+              )}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
 
       {/* Tabs Navigation */}
       <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)} className="flex-1 flex flex-col min-h-0">
@@ -279,40 +314,9 @@ const TileDetailPanel = ({
 
         {/* CHAT Tab */}
         <TabsContent value="chat" className="flex-1 flex flex-col m-0 min-h-0">
-          {/* Compact Context Accordion - closed by default */}
-          <Accordion type="single" collapsible className="border-b border-border/30 shrink-0">
-            <AccordionItem value="context" className="border-none">
-              <AccordionTrigger className="px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:no-underline">
-                <span className="flex items-center gap-2">
-                  <BookOpen className="w-3 h-3" />
-                  {stageDefinition?.name || 'Stage'} • {tileContent?.deliverable ? 'View guidance' : 'Meta rules'}
-                </span>
-              </AccordionTrigger>
-              <AccordionContent className="px-3 pt-1 pb-2">
-                <div className="space-y-2 text-xs">
-                  {tileContent?.deliverable && (
-                    <p className="text-muted-foreground leading-relaxed">{tileContent.deliverable}</p>
-                  )}
-                  {stagePrinciples && stagePrinciples.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
-                      {stagePrinciples.slice(0, 3).map((principle, idx) => (
-                        <Badge key={idx} variant="outline" className="text-[10px]">{principle.name}</Badge>
-                      ))}
-                    </div>
-                  )}
-                  {isCurrentPortalDay && (
-                    <Badge className="text-[10px] bg-amber-500/20 text-amber-400 border-amber-500/30 gap-1">
-                      <Hexagon className="w-3 h-3" />
-                      Portal Day — Diagonals Active
-                    </Badge>
-                  )}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
 
           <ScrollArea className="flex-1">
-            <div className="px-3 py-2 space-y-2">
+            <div className="p-5 space-y-3">
               {/* All messages including first question as bubble */}
               {messages.map((message, index) => (
                 <div
@@ -320,7 +324,7 @@ const TileDetailPanel = ({
                   className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[90%] rounded-2xl px-3 py-2 ${
+                    className={`max-w-[90%] rounded-2xl px-4 py-3 ${
                       message.role === 'assistant' && index === 0
                         ? 'bg-muted/60 rounded-tl-sm shadow-sm border border-border/30'
                         : message.role === 'user'
@@ -337,7 +341,7 @@ const TileDetailPanel = ({
 
               {isLoading && (
                 <div className="flex justify-start">
-                  <div className="bg-muted/60 rounded-2xl rounded-tl-sm px-3 py-2 border border-border/30">
+                  <div className="bg-muted/60 rounded-2xl rounded-tl-sm px-4 py-3 border border-border/30">
                     <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
                   </div>
                 </div>
@@ -358,7 +362,7 @@ const TileDetailPanel = ({
           </ScrollArea>
 
           {/* Input Area */}
-          <div className="p-3 border-t border-border/50 bg-background/80 shrink-0">
+          <div className="p-5 border-t border-border/50 bg-background/80 shrink-0">
             <div className="flex gap-2">
               {voiceSupported && (
                 <Button
@@ -420,7 +424,7 @@ const TileDetailPanel = ({
         </TabsContent>
 
         {/* FOCUS Tab */}
-        <TabsContent value="focus" className="flex-1 m-0 min-h-0">
+        <TabsContent value="focus" className="flex-1 m-0 min-h-0 p-5">
           <MinimalistTileCard
             selectedTile={selectedTile}
             board={board}
@@ -434,7 +438,7 @@ const TileDetailPanel = ({
 
         {/* MANIFOLDS Tab */}
         <TabsContent value="manifolds" className="flex-1 m-0 min-h-0 overflow-y-auto">
-          <Accordion type="single" collapsible className="w-full p-2">
+          <Accordion type="single" collapsible className="w-full p-5">
             {/* Emotional Check-in */}
             {onEmotionalCheckin && (
               <AccordionItem value="emotional">
