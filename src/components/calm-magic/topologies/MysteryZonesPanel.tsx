@@ -49,7 +49,7 @@ export function MysteryZonesPanel({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-[380px] sm:w-[420px]">
+      <SheetContent side="right" className="w-[380px] sm:w-[420px] flex flex-col overflow-hidden">
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-primary" />
@@ -60,7 +60,7 @@ export function MysteryZonesPanel({
           </SheetDescription>
         </SheetHeader>
 
-        <ScrollArea className="h-[calc(100vh-140px)] mt-6 pr-4">
+        <ScrollArea className="flex-1 mt-6 pr-4 min-h-0" showScrollIndicators>
           <div className="space-y-6">
             {/* Unrevealed Zones */}
             {unrevealedZones.length > 0 && (

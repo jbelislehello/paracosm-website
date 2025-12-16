@@ -3,22 +3,81 @@ import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area"
 
 import { cn } from "@/lib/utils"
 
+interface ScrollAreaProps extends React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root> {
+  showScrollIndicators?: boolean;
+}
+
 const ScrollArea = React.forwardRef<
   React.ElementRef<typeof ScrollAreaPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root>
->(({ className, children, ...props }, ref) => (
-  <ScrollAreaPrimitive.Root
-    ref={ref}
-    className={cn("relative overflow-hidden", className)}
-    {...props}
-  >
-    <ScrollAreaPrimitive.Viewport className="h-full w-full rounded-[inherit]">
-      {children}
-    </ScrollAreaPrimitive.Viewport>
-    <ScrollBar />
-    <ScrollAreaPrimitive.Corner />
-  </ScrollAreaPrimitive.Root>
-))
+  ScrollAreaProps
+>(({ className, children, showScrollIndicators = false, ...props }, ref) => {
+  const viewportRef = React.useRef<HTMLDivElement>(null);
+  const [canScrollUp, setCanScrollUp] = React.useState(false);
+  const [canScrollDown, setCanScrollDown] = React.useState(false);
+
+  React.useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport || !showScrollIndicators) return;
+
+    const checkScroll = () => {
+      setCanScrollUp(viewport.scrollTop > 10);
+      setCanScrollDown(
+        viewport.scrollTop < viewport.scrollHeight - viewport.clientHeight - 10
+      );
+    };
+
+    checkScroll();
+    viewport.addEventListener('scroll', checkScroll);
+    
+    const resizeObserver = new ResizeObserver(checkScroll);
+    resizeObserver.observe(viewport);
+
+    return () => {
+      viewport.removeEventListener('scroll', checkScroll);
+      resizeObserver.disconnect();
+    };
+  }, [showScrollIndicators]);
+
+  return (
+    <ScrollAreaPrimitive.Root
+      ref={ref}
+      className={cn("relative overflow-hidden", className)}
+      {...props}
+    >
+      <ScrollAreaPrimitive.Viewport 
+        ref={viewportRef}
+        className="h-full w-full rounded-[inherit]"
+      >
+        {children}
+      </ScrollAreaPrimitive.Viewport>
+      
+      {showScrollIndicators && (
+        <div 
+          className={cn(
+            "absolute top-0 left-0 right-0 h-8 pointer-events-none z-10",
+            "bg-gradient-to-b from-background to-transparent",
+            "transition-opacity duration-200",
+            canScrollUp ? "opacity-100" : "opacity-0"
+          )}
+        />
+      )}
+      
+      {showScrollIndicators && (
+        <div 
+          className={cn(
+            "absolute bottom-0 left-0 right-0 h-8 pointer-events-none z-10",
+            "bg-gradient-to-t from-background to-transparent",
+            "transition-opacity duration-200",
+            canScrollDown ? "opacity-100" : "opacity-0"
+          )}
+        />
+      )}
+      
+      <ScrollBar />
+      <ScrollAreaPrimitive.Corner />
+    </ScrollAreaPrimitive.Root>
+  );
+})
 ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName
 
 const ScrollBar = React.forwardRef<
