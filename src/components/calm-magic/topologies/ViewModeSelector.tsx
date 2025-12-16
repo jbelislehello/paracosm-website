@@ -1,7 +1,7 @@
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { Box, Diamond, Orbit, Sparkles } from 'lucide-react';
+import { Box, Diamond, Orbit } from 'lucide-react';
 
-export type TopologyViewMode = 'isometric' | 'diamond' | 'spiral' | 'constellation';
+export type TopologyViewMode = 'isometric' | 'diamond' | 'spiral';
 
 interface ViewModeSelectorProps {
   value: TopologyViewMode;
@@ -27,10 +27,6 @@ export function ViewModeSelector({ value, onChange }: ViewModeSelectorProps) {
       <ToggleGroupItem value="spiral" aria-label="Spiral view" className="gap-1.5 text-xs">
         <Orbit className="w-3.5 h-3.5" />
         Spiral
-      </ToggleGroupItem>
-      <ToggleGroupItem value="constellation" aria-label="Constellation view" className="gap-1.5 text-xs">
-        <Sparkles className="w-3.5 h-3.5" />
-        Constellation
       </ToggleGroupItem>
     </ToggleGroup>
   );

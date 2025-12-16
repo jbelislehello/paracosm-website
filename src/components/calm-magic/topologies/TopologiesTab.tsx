@@ -3,7 +3,6 @@ import { ManifoldSeason } from '@/utils/torusManifoldMath';
 import { IsometricCubeMatrix } from './IsometricCubeMatrix';
 import { DoubleDiamondLayout } from './DoubleDiamondLayout';
 import { SpiralLayout } from './SpiralLayout';
-import { ConstellationLayout } from './ConstellationLayout';
 import { ViewModeSelector, TopologyViewMode } from './ViewModeSelector';
 import { RingLevel } from '@/utils/ringToleranceSystem';
 import { Button } from '@/components/ui/button';
@@ -70,8 +69,6 @@ export function TopologiesTab({
         return <DoubleDiamondLayout {...layoutProps} />;
       case 'spiral':
         return <SpiralLayout {...layoutProps} />;
-      case 'constellation':
-        return <ConstellationLayout {...layoutProps} />;
       case 'isometric':
       default:
         return (
@@ -182,8 +179,7 @@ export function TopologiesTab({
           </div>
         ))}
         <span className="ml-auto">
-          {viewMode === 'constellation' ? 'Stars drift and connect • Click to select' : 
-           viewMode === 'diamond' ? 'Design thinking phases • Click to navigate' :
+          {viewMode === 'diamond' ? 'Design thinking phases • Click to navigate' :
            viewMode === 'spiral' ? 'Spiral from center outward • Click to select' :
            'Drag to rotate • Click accessible tiles'}
         </span>
