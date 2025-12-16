@@ -1302,6 +1302,10 @@ const CalmMagicBoard = () => {
                 handleNavigate(row, col);
                 setActiveView('matrix');
               }}
+              topologicalSignature={topologicalSignature}
+              isAnalyzingTopology={isAnalyzing}
+              onAnalyzeTopology={() => analyzeTopology(polenEntries)}
+              onApplyInsightToShadow={handleApplyInsightToShadow}
             />
           </div>
         )}
