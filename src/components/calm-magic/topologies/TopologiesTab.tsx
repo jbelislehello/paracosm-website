@@ -8,6 +8,7 @@ import { TorusCoordinateReference } from './TorusCoordinateReference';
 import { FundamentalCyclesOverlay } from './FundamentalCyclesOverlay';
 import { ToroidalFlowField } from './ToroidalFlowField';
 import { UnfoldedChartProjection } from './UnfoldedChartProjection';
+import { OntologicalGravityWell } from './OntologicalGravityWell';
 import { ViewModeSelector, TopologyViewMode } from './ViewModeSelector';
 import { TopologyStoryExplorer } from './TopologyStoryExplorer';
 import { useTopologyInsight } from '@/hooks/useTopologyInsight';
@@ -185,6 +186,18 @@ export function TopologiesTab({
         return <ManifoldChartView selectedTile={{ row, col }} season={season} visitedTiles={visitedTiles} densityMap={densityMap} onTileClick={onTileSelect} />;
       case 'coordinates':
         return <TorusCoordinateReference selectedTile={{ row, col }} season={season} densityMap={densityMap} />;
+      case 'gravity':
+        return (
+          <OntologicalGravityWell
+            currentPosition={{ row, col }}
+            shadowPosition={shadowPosition}
+            higherSelfPosition={higherSelfPosition}
+            visitedTiles={visitedTiles}
+            polenDensity={densityMap}
+            weavingConnections={[]}
+            consciousnessScore={(consciousnessGeometry as any)?.fisherInformation || visitedTiles.size / 64}
+          />
+        );
       case 'cycles':
         return <FundamentalCyclesOverlay selectedTile={{ row, col }} season={season} journeyPath={journeyPath} visitedTiles={visitedTiles} />;
       case 'flow':

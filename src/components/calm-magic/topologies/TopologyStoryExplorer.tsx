@@ -81,6 +81,12 @@ const VIEW_SIGNIFICANCE: Record<TopologyViewMode, { icon: React.ReactNode; title
     question: "How has my capacity for complexity grown?",
     description: "Starting from the Inner Core (center), each ring represents expanded capacity to hold paradox, tension, and emergence. Your progress spirals outward."
   },
+  gravity: {
+    icon: <Zap className="w-4 h-4" />,
+    title: "Ontological Gravity Well",
+    question: "What forces are shaping my journey toward or away from my aspirations?",
+    description: "Gravitational fields reveal the relational forces between your Shadow (where you are) and Higher Self (where you aspire to be). Entanglement lines show semantic connections between ideas."
+  },
   flow: {
     icon: <TrendingUp className="w-4 h-4" />,
     title: "Attention Flow Field",

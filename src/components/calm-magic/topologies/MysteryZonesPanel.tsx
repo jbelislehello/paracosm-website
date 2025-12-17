@@ -29,6 +29,7 @@ const viewModeLabels: Record<TopologyViewMode, string> = {
   spiral: 'Spiral Layout',
   charts: 'Chart View',
   coordinates: 'Coordinate Reference',
+  gravity: 'Gravity Well',
   cycles: 'Fundamental Cycles',
   flow: 'Flow Field',
   projection: 'Unfolded Projection'

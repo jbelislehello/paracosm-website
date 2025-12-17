@@ -1,8 +1,8 @@
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Box, Diamond, Orbit, Grid3X3, Compass, Wind, Layers, RotateCw } from 'lucide-react';
+import { Box, Diamond, Orbit, Grid3X3, Compass, Wind, Layers, RotateCw, Atom } from 'lucide-react';
 
-export type TopologyViewMode = 'isometric' | 'diamond' | 'spiral' | 'charts' | 'coordinates' | 'cycles' | 'flow' | 'projection';
+export type TopologyViewMode = 'isometric' | 'diamond' | 'spiral' | 'charts' | 'coordinates' | 'cycles' | 'flow' | 'projection' | 'gravity';
 
 interface ViewConfig {
   icon: typeof Box;
@@ -35,6 +35,11 @@ const VIEW_CONFIGS: Record<TopologyViewMode, ViewConfig> = {
     icon: Compass,
     label: 'Position Map',
     tooltip: 'Where exactly am I? Precise coordinates on the surface.'
+  },
+  gravity: {
+    icon: Atom,
+    label: 'Gravity Well',
+    tooltip: 'What forces shape your journey? See gravitational fields between Shadow and Higher Self.'
   },
   cycles: {
     icon: RotateCw,
