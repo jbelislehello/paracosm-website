@@ -536,6 +536,7 @@ export function OntologicalGravityWell({
             <Maximize2 className="w-3 h-3" />
             Manifolds
           </Button>
+        </div>
         
         {/* Audio controls */}
         <div className="flex items-center gap-2 bg-background/80 backdrop-blur-sm rounded-lg p-2">
