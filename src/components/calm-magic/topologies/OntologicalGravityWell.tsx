@@ -3,13 +3,19 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Html, OrbitControls, Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { useGravitationalField, GravitationalMass, EntanglementLine } from '@/hooks/useGravitationalField';
+import { useManifoldIntersection } from '@/hooks/useManifoldIntersection';
 import { usePositionAudio } from '@/hooks/usePositionAudio';
-import { QuadrantPosition } from '@/types/trajectory';
+import { QuadrantPosition, TrajectoryEvent } from '@/types/trajectory';
+import { RingState } from '@/utils/ringToleranceSystem';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { Volume2, VolumeX, Orbit, Sparkles, Waves } from 'lucide-react';
+import { Volume2, VolumeX, Orbit, Sparkles, Waves, Maximize2 } from 'lucide-react';
 import { getSemanticMeaning, getShadowMeaning, getHigherSelfMeaning, describeGap } from '@/utils/tileSemanticMeaning';
+import { 
+  ManifoldPositionalityScene, 
+  ManifoldMetricsDisplay 
+} from './ManifoldPositionality';
 
 // Gravitational mass visualization
 function GravityMass({ mass, time }: { mass: GravitationalMass; time: number }) {
@@ -324,6 +330,9 @@ function GravityWellScene({
   showForceLines,
   showContours,
   showEntanglement,
+  showManifolds,
+  intersectionResult,
+  positionalityState,
 }: {
   masses: GravitationalMass[];
   fieldGrid: ReturnType<typeof useGravitationalField>['fieldGrid'];
@@ -334,6 +343,9 @@ function GravityWellScene({
   showForceLines: boolean;
   showContours: boolean;
   showEntanglement: boolean;
+  showManifolds: boolean;
+  intersectionResult: ReturnType<typeof useManifoldIntersection>['intersectionResult'] | null;
+  positionalityState: ReturnType<typeof useManifoldIntersection>['positionalityState'] | null;
 }) {
   const [time, setTime] = useState(0);
   
@@ -357,6 +369,17 @@ function GravityWellScene({
         higherSelfPosition={higherSelfPosition}
         time={time}
       />
+      
+      {/* Manifold Positionality System */}
+      {showManifolds && intersectionResult && positionalityState && (
+        <ManifoldPositionalityScene
+          intersectionResult={intersectionResult}
+          positionalityState={positionalityState}
+          shadowPosition={shadowPosition}
+          higherSelfPosition={higherSelfPosition}
+          time={time}
+        />
+      )}
       
       {masses.map((mass, idx) => (
         <GravityMass key={`${mass.type}-${idx}`} mass={mass} time={time} />
@@ -388,6 +411,8 @@ interface OntologicalGravityWellProps {
     strength: number;
   }>;
   consciousnessScore?: number;
+  ringStates?: RingState[];
+  trajectoryLog?: TrajectoryEvent[];
 }
 
 export function OntologicalGravityWell({
@@ -398,10 +423,13 @@ export function OntologicalGravityWell({
   polenDensity,
   weavingConnections,
   consciousnessScore = 0,
+  ringStates = [],
+  trajectoryLog = [],
 }: OntologicalGravityWellProps) {
   const [showForceLines, setShowForceLines] = useState(true);
   const [showContours, setShowContours] = useState(true);
   const [showEntanglement, setShowEntanglement] = useState(true);
+  const [showManifolds, setShowManifolds] = useState(true);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [audioVolume, setAudioVolume] = useState(0.3);
 
@@ -424,6 +452,16 @@ export function OntologicalGravityWell({
     weavingConnections,
     consciousnessThreshold
   );
+
+  // Manifold intersection prediction
+  const { intersectionResult, positionalityState } = useManifoldIntersection({
+    shadowPosition,
+    higherSelfPosition,
+    trajectoryLog,
+    ringStates,
+    visitedTiles,
+    weavingConnections
+  });
 
   const { playPosition, setVolume } = usePositionAudio({
     baseFrequency: 220,
@@ -489,7 +527,15 @@ export function OntologicalGravityWell({
             <Sparkles className="w-3 h-3" />
             Entanglement
           </Button>
-        </div>
+          <Button
+            variant={showManifolds ? "default" : "outline"}
+            size="sm"
+            onClick={() => setShowManifolds(!showManifolds)}
+            className="text-xs gap-1"
+          >
+            <Maximize2 className="w-3 h-3" />
+            Manifolds
+          </Button>
         
         {/* Audio controls */}
         <div className="flex items-center gap-2 bg-background/80 backdrop-blur-sm rounded-lg p-2">
@@ -594,6 +640,9 @@ export function OntologicalGravityWell({
           showForceLines={showForceLines}
           showContours={showContours}
           showEntanglement={showEntanglement}
+          showManifolds={showManifolds}
+          intersectionResult={intersectionResult}
+          positionalityState={positionalityState}
         />
       </Canvas>
       
