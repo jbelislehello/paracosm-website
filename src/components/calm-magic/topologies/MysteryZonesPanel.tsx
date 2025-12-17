@@ -28,8 +28,7 @@ const viewModeLabels: Record<TopologyViewMode, string> = {
   diamond: 'Double Diamond',
   spiral: 'Spiral Layout',
   charts: 'Chart View',
-  coordinates: 'Coordinate Reference',
-  gravity: 'Gravity Well',
+  coordinates: 'Position Map',
   cycles: 'Fundamental Cycles',
   flow: 'Flow Field',
   projection: 'Unfolded Projection'
