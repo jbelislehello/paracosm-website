@@ -18,6 +18,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { getTerminology } from '@/data/modeAwareTerminology';
 import { toast } from 'sonner';
@@ -954,16 +955,24 @@ const CalmMagicBoard = () => {
                 {/* Manual Season Completion Button - appears when 5+ fragments saved */}
                 {currentSeasonPolenCount >= 5 && !completedSeasons.includes(currentSeason) && (
                   <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className={`bg-gradient-to-r ${SEASON_COLORS[currentSeason]} text-white border-0 hover:opacity-90`}
-                      >
-                        <CheckCircle className="w-3 h-3 mr-1" />
-                        Complete Season
-                      </Button>
-                    </AlertDialogTrigger>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <AlertDialogTrigger asChild>
+                            <Button 
+                              variant="outline" 
+                              size="icon"
+                              className={`h-8 w-8 bg-gradient-to-r ${SEASON_COLORS[currentSeason]} text-white border-0 hover:opacity-90`}
+                            >
+                              <CheckCircle className="w-4 h-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Complete {currentSeason} Season ({currentSeasonPolenCount} fragments)</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                     <AlertDialogContent>
                       <AlertDialogHeader>
                         <AlertDialogTitle>Complete {currentSeason} Season?</AlertDialogTitle>
