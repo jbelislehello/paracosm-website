@@ -381,9 +381,11 @@ function GravityWellScene({
         />
       )}
       
-      {masses.map((mass, idx) => (
-        <GravityMass key={`${mass.type}-${idx}`} mass={mass} time={time} />
-      ))}
+      {masses
+        .filter(mass => !(showManifolds && (mass.type === 'shadow' || mass.type === 'higherSelf')))
+        .map((mass, idx) => (
+          <GravityMass key={`${mass.type}-${idx}`} mass={mass} time={time} />
+        ))}
       
       <OrbitControls 
         enablePan={true}
@@ -628,18 +630,16 @@ export function OntologicalGravityWell({
           </div>
         )}
         
-        {/* Legend toggle button */}
-        {semanticInsight && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowLegend(!showLegend)}
-            className="text-xs gap-1 bg-background/80 backdrop-blur-sm shrink-0"
-          >
-            {showLegend ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />}
-            {showLegend ? 'Hide' : 'Show'} Legend
-          </Button>
-        )}
+        {/* Legend toggle button - always visible */}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setShowLegend(!showLegend)}
+          className="text-xs gap-1 bg-background/80 backdrop-blur-sm shrink-0"
+        >
+          {showLegend ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />}
+          {showLegend ? 'Hide' : 'Show'} Legend
+        </Button>
       </div>
 
       {/* 3D Canvas */}
