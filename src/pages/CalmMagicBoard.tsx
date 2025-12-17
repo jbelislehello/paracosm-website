@@ -5,7 +5,18 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe, Eye, EyeOff, Moon, Sun } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe, Eye, EyeOff, Moon, Sun, CheckCircle } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { getTerminology } from '@/data/modeAwareTerminology';
@@ -939,6 +950,37 @@ const CalmMagicBoard = () => {
                   <RotateCcw className="w-3 h-3 mr-1" />
                   Reset
                 </Button>
+                
+                {/* Manual Season Completion Button - appears when 5+ fragments saved */}
+                {currentSeasonPolenCount >= 5 && !completedSeasons.includes(currentSeason) && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className={`bg-gradient-to-r ${SEASON_COLORS[currentSeason]} text-white border-0 hover:opacity-90`}
+                      >
+                        <CheckCircle className="w-3 h-3 mr-1" />
+                        Complete Season
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Complete {currentSeason} Season?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          You've documented {currentSeasonPolenCount} fragments in {currentSeason} ({visitedTiles.size} tiles visited). 
+                          Ready to continue to {SEASON_ORDER[SEASON_ORDER.indexOf(currentSeason) + 1] || 'final review'}?
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Keep Exploring</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleSeasonContinue}>
+                          Continue to Next Season
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
               </>
             )}
             
