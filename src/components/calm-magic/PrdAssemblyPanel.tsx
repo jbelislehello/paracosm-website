@@ -437,12 +437,52 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
     ) || title.trim().length > 0,
   [content, title]);
 
+  // Track if we've attempted auto-creation to prevent loops
+  const autoCreateAttemptedRef = useRef(false);
+
   useEffect(() => {
     if (isOpen) {
       fetchPrdData();
       fetchPolenEntries();
+    } else {
+      // Reset auto-create flag when panel closes
+      autoCreateAttemptedRef.current = false;
     }
   }, [isOpen, prdId]);
+
+  // Auto-create PRD when panel opens with fragments but no prdId
+  useEffect(() => {
+    const autoCreatePrd = async () => {
+      if (!isOpen || prdId || autoCreateAttemptedRef.current || polenEntries.length === 0) return;
+      
+      autoCreateAttemptedRef.current = true;
+      
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { data: newPrd, error } = await supabase
+          .from('prds')
+          .insert({
+            owner_id: user.id,
+            title: `${isPersonal ? 'RRD' : 'PRD'} — ${new Date().toLocaleDateString()}`,
+            status: 'draft',
+            prototype_stage: 'B_DIEGETIC',
+          })
+          .select()
+          .single();
+
+        if (error) throw error;
+        
+        onPrdCreated?.(newPrd.id);
+        toast.success(`${isPersonal ? 'RRD' : 'PRD'} created from your ${polenEntries.length} fragments`);
+      } catch (err) {
+        console.error('Failed to auto-create PRD:', err);
+      }
+    };
+
+    autoCreatePrd();
+  }, [isOpen, prdId, polenEntries.length, isPersonal, onPrdCreated]);
 
   // Update title from prdData
   useEffect(() => {
