@@ -10,7 +10,7 @@ import { RingState } from '@/utils/ringToleranceSystem';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { Volume2, VolumeX, Orbit, Sparkles, Waves, Maximize2 } from 'lucide-react';
+import { Volume2, VolumeX, Orbit, Sparkles, Waves, Maximize2, ChevronDown, ChevronUp } from 'lucide-react';
 import { getSemanticMeaning, getShadowMeaning, getHigherSelfMeaning, describeGap } from '@/utils/tileSemanticMeaning';
 import { 
   ManifoldPositionalityScene, 
@@ -453,6 +453,9 @@ export function OntologicalGravityWell({
     consciousnessThreshold
   );
 
+  // Legend visibility state
+  const [showLegend, setShowLegend] = useState(true);
+
   // Manifold intersection prediction
   const { intersectionResult, positionalityState } = useManifoldIntersection({
     shadowPosition,
@@ -592,10 +595,10 @@ export function OntologicalGravityWell({
         </div>
       </div>
 
-      {/* Semantic insight panel */}
-      {semanticInsight && (
-        <div className="absolute bottom-4 left-4 right-4 z-10">
-          <div className="bg-background/90 backdrop-blur-sm rounded-lg p-4 max-w-xl">
+      {/* Semantic insight panel with toggle */}
+      <div className="absolute bottom-4 left-4 right-4 z-10 flex items-end justify-between gap-4">
+        {semanticInsight && showLegend && (
+          <div className="bg-background/90 backdrop-blur-sm rounded-lg p-4 max-w-xl transition-all duration-300">
             <p className="text-xs text-muted-foreground mb-1">Current Position</p>
             <p className="text-sm italic text-foreground/80 mb-3">
               {semanticInsight.meaning}
@@ -623,8 +626,21 @@ export function OntologicalGravityWell({
               </div>
             )}
           </div>
-        </div>
-      )}
+        )}
+        
+        {/* Legend toggle button */}
+        {semanticInsight && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowLegend(!showLegend)}
+            className="text-xs gap-1 bg-background/80 backdrop-blur-sm shrink-0"
+          >
+            {showLegend ? <ChevronDown className="w-3 h-3" /> : <ChevronUp className="w-3 h-3" />}
+            {showLegend ? 'Hide' : 'Show'} Legend
+          </Button>
+        )}
+      </div>
 
       {/* 3D Canvas */}
       <Canvas 
