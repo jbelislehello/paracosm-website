@@ -44,6 +44,7 @@ import {
 } from 'lucide-react';
 import { downloadMarkdown, exportPrdAsPdf } from '@/utils/prdExport';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { 
   Season, 
@@ -895,6 +896,18 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
             <h2 className="text-lg font-semibold">Living {documentName} Assembly</h2>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <span>{completedLayers.length}/{LAYERS.length} layers • {progressPercentage}% complete</span>
+              <Badge 
+                variant="secondary" 
+                className={cn(
+                  "text-xs font-normal",
+                  polenEntries.length >= 50 && "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400",
+                  polenEntries.length >= 10 && polenEntries.length < 50 && "bg-amber-500/20 text-amber-600 dark:text-amber-400",
+                  polenEntries.length < 10 && "bg-muted text-muted-foreground"
+                )}
+              >
+                <Layers className="h-3 w-3 mr-1" />
+                {polenEntries.length} fragments
+              </Badge>
               {autoSaving && (
                 <span className="flex items-center gap-1 text-amber-500">
                   <Loader2 className="h-3 w-3 animate-spin" />
