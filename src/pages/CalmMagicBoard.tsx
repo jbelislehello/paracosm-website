@@ -1101,14 +1101,47 @@ const CalmMagicBoard = () => {
                   Start Innovating
                 </Button>
               ) : (
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-sm px-2 py-0.5">
-                    {visitedTiles.size}/64 tiles
-                  </Badge>
-                  <Button variant="ghost" size="sm" onClick={() => { handleResetJourney(); setShowMobileMenu(false); }}>
-                    <RotateCcw className="w-3 h-3 mr-1" />
-                    Reset
-                  </Button>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className="text-sm px-2 py-0.5">
+                      {visitedTiles.size}/64 tiles
+                    </Badge>
+                    <Button variant="ghost" size="sm" onClick={() => { handleResetJourney(); setShowMobileMenu(false); }}>
+                      <RotateCcw className="w-3 h-3 mr-1" />
+                      Reset
+                    </Button>
+                  </div>
+                  
+                  {/* Mobile Complete Season Button */}
+                  {currentSeasonPolenCount >= 5 && !completedSeasons.includes(currentSeason) && (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className={`w-full bg-gradient-to-r ${SEASON_COLORS[currentSeason]} text-white border-0 hover:opacity-90`}
+                        >
+                          <CheckCircle className="w-4 h-4 mr-2" />
+                          Complete {currentSeason} Season
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Complete {currentSeason} Season?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            You've documented {currentSeasonPolenCount} fragments in {currentSeason} ({visitedTiles.size} tiles visited). 
+                            Ready to continue to {SEASON_ORDER[SEASON_ORDER.indexOf(currentSeason) + 1] || 'final review'}?
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Keep Exploring</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => { handleSeasonContinue(); setShowMobileMenu(false); }}>
+                            Continue to Next Season
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
                 </div>
               )}
             </div>
