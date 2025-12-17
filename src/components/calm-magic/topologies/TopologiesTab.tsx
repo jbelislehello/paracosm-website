@@ -4,7 +4,7 @@ import { IsometricCubeMatrix } from './IsometricCubeMatrix';
 import { DoubleDiamondLayout } from './DoubleDiamondLayout';
 import { SpiralLayout } from './SpiralLayout';
 import { ManifoldChartView } from './ManifoldChartView';
-import { TorusCoordinateReference } from './TorusCoordinateReference';
+
 import { FundamentalCyclesOverlay } from './FundamentalCyclesOverlay';
 import { ToroidalFlowField } from './ToroidalFlowField';
 import { UnfoldedChartProjection } from './UnfoldedChartProjection';
@@ -185,8 +185,6 @@ export function TopologiesTab({
       case 'charts':
         return <ManifoldChartView selectedTile={{ row, col }} season={season} visitedTiles={visitedTiles} densityMap={densityMap} onTileClick={onTileSelect} />;
       case 'coordinates':
-        return <TorusCoordinateReference selectedTile={{ row, col }} season={season} densityMap={densityMap} />;
-      case 'gravity':
         return (
           <OntologicalGravityWell
             currentPosition={{ row, col }}
