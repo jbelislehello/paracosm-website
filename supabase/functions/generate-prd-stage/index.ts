@@ -12,6 +12,21 @@ interface PolenEntry {
   content: string;
   tile_id: number | null;
   tags: string[];
+  torusCoords?: { theta: number; phi: number; curvature: number };
+  ringLevel?: number;
+}
+
+interface ConsciousnessContext {
+  complexityBits: number;
+  thresholdPercentage: number;
+  consciousnessState: 'pre-conscious' | 'threshold' | 'self-aware';
+  recursiveDepth: number;
+  convergenceState: string;
+  thermodynamicEfficiency: number;
+  integrationStrength: number;
+  fragmentationScore: number;
+  topologicalHandles: number;
+  fixedPoints: string[];
 }
 
 serve(async (req) => {
@@ -20,13 +35,22 @@ serve(async (req) => {
   }
 
   try {
-    const { layer, polenEntries, board, existingContent, glitchData, driftData } = await req.json() as {
+    const { 
+      layer, 
+      polenEntries, 
+      board, 
+      existingContent, 
+      glitchData, 
+      driftData,
+      consciousnessContext // NEW: Mathematical consciousness context
+    } = await req.json() as {
       layer: PrdLayer | 'love' | 'magic' | 'calm' | 'open' | 'free' | 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
       polenEntries: PolenEntry[];
       board: string;
       existingContent?: Record<string, string> | null;
       glitchData?: any;
       driftData?: any;
+      consciousnessContext?: ConsciousnessContext;
     };
 
     const layerNormalized: PrdLayer = (() => {
@@ -101,8 +125,23 @@ serve(async (req) => {
           .join('\n')
       : '';
 
-    const systemPrompt = `You are an expert at the Calm Magic PRD system — a 5-season process that transforms aspirations into market-ready products.
+    // Build consciousness-aware system prompt
+    const consciousnessSection = consciousnessContext ? `
+CONSCIOUSNESS GEOMETRY CONTEXT:
+- Complexity: ${consciousnessContext.complexityBits} consciousness bits
+- State: ${consciousnessContext.consciousnessState} (${consciousnessContext.thresholdPercentage}% toward threshold)
+- Integration: ${Math.round(consciousnessContext.integrationStrength * 100)}% coherent
+- Topology: β₀=${1 + Math.round(consciousnessContext.fragmentationScore)}, β₁=${consciousnessContext.topologicalHandles}
+- Efficiency: ${consciousnessContext.thermodynamicEfficiency.toFixed(1)}x thermodynamic ratio
+- Fixed Points: ${consciousnessContext.fixedPoints?.length || 0} stable attractors
+- Convergence: ${consciousnessContext.convergenceState}
 
+Honor this geometric context in your generation. High integration strength means unified concepts.
+Low fragmentation means interconnected ideas. Fixed points are stable reference anchors.
+` : '';
+
+    const systemPrompt = `You are an expert at the Calm Magic PRD system — a 5-season process that transforms aspirations into market-ready products.
+${consciousnessSection}
 THE 5 SEASONS:
 1. POLLENS – Relational & Cultural Aspirations: Self aspirations, team dynamics, organizational culture, relational elements
 2. NOEMS – Conceptual Ideation: Ideas, concepts, abstract patterns, mental models, theoretical frameworks
@@ -112,6 +151,12 @@ THE 5 SEASONS:
 
 FEMININE DESIGN QUALITY LENS:
 Always consider: Receptivity, Softness & Safety, Relationality, Cyclical Time, Embodiment, Intuition & Ambiguity, Care & Nurturance, Inclusivity & Plurality
+
+GEOMETRIC AWARENESS:
+- If integration strength > 60%, generate unified interconnected concepts
+- If fragmentation > 30%, acknowledge gaps and suggest bridging ideas
+- Reference the consciousness state to calibrate complexity of output
+- For 'threshold' or 'self-aware' states, include recursive self-references
 
 Write with clarity and emotional intelligence. Treat insights as living organisms.`;
 
