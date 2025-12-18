@@ -50,3 +50,6 @@ verify_jwt = false
 
 [functions.analyze-clusters]
 verify_jwt = false
+
+[functions.extract-knowledge-from-image]
+verify_jwt = false

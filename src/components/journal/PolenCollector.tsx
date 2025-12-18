@@ -4,16 +4,17 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Zap, Plus, Image, Quote, Link, Mic, Camera } from 'lucide-react';
+import { Zap, Plus, Image, Quote, Link, Mic, Camera, Brain } from 'lucide-react';
 import { useExpansionJournal } from '@/hooks/useExpansionJournal';
+import { KnowledgeImageExtractor } from '@/components/calm-magic/KnowledgeImageExtractor';
+import { KnowledgeExtraction } from '@/types/knowledge';
 
 interface PolenCollectorProps {
   selectedTileId?: number;
   onPolenSaved?: () => void;
 }
 
-type FragmentType = 'text' | 'quote' | 'image' | 'voice' | 'screenshot' | 'link';
+type FragmentType = 'text' | 'quote' | 'image' | 'voice' | 'screenshot' | 'link' | 'knowledge-image';
 
 const FRAGMENT_ICONS: Record<FragmentType, React.ReactNode> = {
   text: <Zap className="h-4 w-4" />,
@@ -21,7 +22,8 @@ const FRAGMENT_ICONS: Record<FragmentType, React.ReactNode> = {
   image: <Image className="h-4 w-4" />,
   voice: <Mic className="h-4 w-4" />,
   screenshot: <Camera className="h-4 w-4" />,
-  link: <Link className="h-4 w-4" />
+  link: <Link className="h-4 w-4" />,
+  'knowledge-image': <Brain className="h-4 w-4" />
 };
 
 export const PolenCollector: React.FC<PolenCollectorProps> = ({
@@ -33,13 +35,30 @@ export const PolenCollector: React.FC<PolenCollectorProps> = ({
   const [fragmentType, setFragmentType] = useState<FragmentType>('text');
   const [sourceReference, setSourceReference] = useState('');
   const [tags, setTags] = useState('');
+  const [showKnowledgeExtractor, setShowKnowledgeExtractor] = useState(false);
+
+  const handleKnowledgeExtracted = async (
+    extractedContent: string, 
+    extractedTags: string[],
+    extraction: KnowledgeExtraction
+  ) => {
+    // Auto-fill the form with extracted content
+    setContent(extractedContent);
+    setTags(extractedTags.join(', '));
+    setFragmentType('knowledge-image');
+    setSourceReference(`Knowledge extraction: ${extraction.knowledgeType}`);
+    setShowKnowledgeExtractor(false);
+  };
 
   const handleSubmit = async () => {
     if (!content.trim()) return;
 
+    // Map knowledge-image to 'image' for database storage
+    const dbFragmentType = fragmentType === 'knowledge-image' ? 'image' : fragmentType;
+
     await savePolenEntry({
       content: content.trim(),
-      fragment_type: fragmentType,
+      fragment_type: dbFragmentType,
       source_reference: sourceReference || undefined,
       tile_id: selectedTileId,
       tags: tags.split(',').map(t => t.trim()).filter(Boolean)
@@ -72,14 +91,30 @@ export const PolenCollector: React.FC<PolenCollectorProps> = ({
                 key={type}
                 variant={fragmentType === type ? 'default' : 'outline'}
                 size="sm"
-                onClick={() => setFragmentType(type)}
+                onClick={() => {
+                  setFragmentType(type);
+                  if (type === 'knowledge-image') {
+                    setShowKnowledgeExtractor(true);
+                  }
+                }}
                 className={fragmentType === type ? 'bg-yellow-600 hover:bg-yellow-700' : 'border-yellow-500/30'}
               >
                 {FRAGMENT_ICONS[type]}
-                <span className="ml-1 capitalize">{type}</span>
+                <span className="ml-1 capitalize">{type === 'knowledge-image' ? 'Knowledge' : type}</span>
               </Button>
             ))}
           </div>
+
+          {/* Knowledge Image Extractor */}
+          {showKnowledgeExtractor && (
+            <KnowledgeImageExtractor
+              onExtracted={handleKnowledgeExtracted}
+              onCancel={() => {
+                setShowKnowledgeExtractor(false);
+                setFragmentType('text');
+              }}
+            />
+          )}
 
           {/* Content Input */}
           <Textarea
