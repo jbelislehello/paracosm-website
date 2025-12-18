@@ -495,41 +495,42 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   // Map PRD data to wizard content format
   useEffect(() => {
     if (prdData) {
+      // Map PRD data - prefer NEW columns, fallback to OLD columns for backwards compatibility
       const mapped: GeneratedContent = {
-        // POLLENS - Relational & Cultural
-        pollens_aspirations: prdData.love_signals_summary || '',
-        pollens_team_dynamics: '',
-        pollens_cultural_elements: '',
-        pollens_relational_patterns: '',
-        pollens_constraints: '',
-        pollens_stakes: prdData.love_decision_to_exist || '',
+        // POLLENS - Relational & Cultural (new columns first, fallback to old)
+        pollens_aspirations: prdData.pollens_aspirations || prdData.love_signals_summary || '',
+        pollens_team_dynamics: prdData.pollens_team_dynamics || '',
+        pollens_cultural_elements: prdData.pollens_cultural_elements || '',
+        pollens_relational_patterns: prdData.pollens_relational_patterns || '',
+        pollens_constraints: prdData.pollens_constraints || '',
+        pollens_stakes: prdData.pollens_stakes || prdData.love_decision_to_exist || '',
         // NOEMS - Conceptual
-        noems_concepts: prdData.magic_prd_outline || '',
-        noems_shared_ideas: prdData.magic_hypotheses || '',
-        noems_intuitions: prdData.magic_patterns || '',
-        noems_mental_models: '',
-        // POEMS - P.O.E.M.S.
-        poems_people: prdData.magic_storyworld || '',
-        poems_objects: '',
-        poems_environments: '',
-        poems_messages: '',
-        poems_systems: prdData.open_real_workflow || '',
-        poems_prototypes: '',
+        noems_concepts: prdData.noems_concepts || prdData.magic_prd_outline || '',
+        noems_shared_ideas: prdData.noems_shared_ideas || prdData.magic_hypotheses || '',
+        noems_intuitions: prdData.noems_intuitions || prdData.magic_patterns || '',
+        noems_mental_models: prdData.noems_mental_models || '',
+        // POEMS - P.O.E.M.S. framework
+        poems_people: prdData.poems_people || prdData.magic_storyworld || '',
+        poems_objects: prdData.poems_objects || '',
+        poems_environments: prdData.poems_environments || '',
+        poems_messages: prdData.poems_messages || '',
+        poems_systems: prdData.poems_systems || prdData.open_real_workflow || '',
+        poems_prototypes: prdData.poems_prototypes || '',
         // TOTEMS - Technical Infrastructure
-        totems_data_architecture: prdData.calm_requirements || '',
-        totems_security_policies: '',
-        totems_access_controls: '',
-        totems_system_requirements: prdData.calm_risks_and_limits || '',
-        totems_integration_points: prdData.open_ontology_and_graph || '',
-        totems_technical_debt: '',
+        totems_data_architecture: prdData.totems_data_architecture || prdData.calm_requirements || '',
+        totems_security_policies: prdData.totems_security_policies || '',
+        totems_access_controls: prdData.totems_access_controls || '',
+        totems_system_requirements: prdData.totems_system_requirements || prdData.calm_risks_and_limits || '',
+        totems_integration_points: prdData.totems_integration_points || prdData.open_ontology_and_graph || '',
+        totems_technical_debt: prdData.totems_technical_debt || '',
         // ANTHEMS - Market & Storytelling
-        anthems_market_positioning: prdData.free_totem_anthem || '',
-        anthems_brand_narrative: '',
-        anthems_go_to_market: prdData.free_first_poem_description || '',
-        anthems_audience_segments: '',
-        anthems_success_signals: prdData.free_success_criteria || '',
-        anthems_storytelling_assets: prdData.open_adjustment_plan || '',
-        // Stack implications
+        anthems_market_positioning: prdData.anthems_market_positioning || prdData.free_totem_anthem || '',
+        anthems_brand_narrative: prdData.anthems_brand_narrative || prdData.free_next_cycle_hooks || '',
+        anthems_go_to_market: prdData.anthems_go_to_market || prdData.free_first_poem_description || '',
+        anthems_audience_segments: prdData.anthems_audience_segments || '',
+        anthems_success_signals: prdData.anthems_success_signals || prdData.free_success_criteria || '',
+        anthems_storytelling_assets: prdData.anthems_storytelling_assets || prdData.open_adjustment_plan || '',
+        // Stack implications & prompt hooks
         stack_implications_pollens: prdData.stack_implications_pollens || '',
         stack_implications_noems: prdData.stack_implications_noems || '',
         stack_implications_poems: prdData.stack_implications_poems || '',
@@ -620,31 +621,45 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
+      // Direct column mapping - each field saves to its own column (no concatenation!)
       const prdPayload = {
         owner_id: user.id,
         title,
         status: 'draft',
         prototype_stage: 'B_DIEGETIC',
-        // POLLENS → love fields
-        love_signals_summary: contentRef.current.pollens_aspirations,
-        love_decision_to_exist: `Team Dynamics: ${contentRef.current.pollens_team_dynamics || ''}\n\nCultural: ${contentRef.current.pollens_cultural_elements || ''}\n\nRelational: ${contentRef.current.pollens_relational_patterns || ''}\n\nStakes: ${contentRef.current.pollens_stakes || ''}`,
-        // POEMS → magic storyworld and open workflow
-        magic_storyworld: contentRef.current.poems_people,
-        open_real_workflow: contentRef.current.poems_systems,
-        // NOEMS → magic fields
-        magic_prd_outline: contentRef.current.noems_concepts,
-        magic_hypotheses: contentRef.current.noems_shared_ideas,
-        magic_patterns: contentRef.current.noems_intuitions,
-        // TOTEMS → calm and open fields
-        calm_requirements: contentRef.current.totems_data_architecture,
-        calm_risks_and_limits: `Security: ${contentRef.current.totems_security_policies || ''}\n\nAccess: ${contentRef.current.totems_access_controls || ''}\n\nRequirements: ${contentRef.current.totems_system_requirements || ''}`,
-        open_ontology_and_graph: contentRef.current.totems_integration_points,
-        // ANTHEMS → free fields
-        open_adjustment_plan: contentRef.current.anthems_storytelling_assets,
-        free_first_poem_description: contentRef.current.anthems_go_to_market,
-        free_totem_anthem: contentRef.current.anthems_market_positioning,
-        free_success_criteria: contentRef.current.anthems_success_signals,
-        free_next_cycle_hooks: contentRef.current.anthems_brand_narrative,
+        // POLLENS - Direct mapping to new columns
+        pollens_aspirations: contentRef.current.pollens_aspirations,
+        pollens_team_dynamics: contentRef.current.pollens_team_dynamics,
+        pollens_cultural_elements: contentRef.current.pollens_cultural_elements,
+        pollens_relational_patterns: contentRef.current.pollens_relational_patterns,
+        pollens_constraints: contentRef.current.pollens_constraints,
+        pollens_stakes: contentRef.current.pollens_stakes,
+        // NOEMS - Direct mapping
+        noems_concepts: contentRef.current.noems_concepts,
+        noems_shared_ideas: contentRef.current.noems_shared_ideas,
+        noems_intuitions: contentRef.current.noems_intuitions,
+        noems_mental_models: contentRef.current.noems_mental_models,
+        // POEMS - P.O.E.M.S. framework (all 6 fields)
+        poems_people: contentRef.current.poems_people,
+        poems_objects: contentRef.current.poems_objects,
+        poems_environments: contentRef.current.poems_environments,
+        poems_messages: contentRef.current.poems_messages,
+        poems_systems: contentRef.current.poems_systems,
+        poems_prototypes: contentRef.current.poems_prototypes,
+        // TOTEMS - Technical infrastructure (all 6 fields)
+        totems_data_architecture: contentRef.current.totems_data_architecture,
+        totems_security_policies: contentRef.current.totems_security_policies,
+        totems_access_controls: contentRef.current.totems_access_controls,
+        totems_system_requirements: contentRef.current.totems_system_requirements,
+        totems_integration_points: contentRef.current.totems_integration_points,
+        totems_technical_debt: contentRef.current.totems_technical_debt,
+        // ANTHEMS - Market & storytelling (all 6 fields)
+        anthems_market_positioning: contentRef.current.anthems_market_positioning,
+        anthems_brand_narrative: contentRef.current.anthems_brand_narrative,
+        anthems_go_to_market: contentRef.current.anthems_go_to_market,
+        anthems_audience_segments: contentRef.current.anthems_audience_segments,
+        anthems_success_signals: contentRef.current.anthems_success_signals,
+        anthems_storytelling_assets: contentRef.current.anthems_storytelling_assets,
         // Stack implications & prompt hooks
         stack_implications_pollens: contentRef.current.stack_implications_pollens,
         stack_implications_noems: contentRef.current.stack_implications_noems,
@@ -792,31 +807,45 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
+      // Direct column mapping - each field saves to its own column (no concatenation!)
       const prdPayload = {
         owner_id: user.id,
         title,
         status: 'draft',
         prototype_stage: 'B_DIEGETIC',
-        // POLLENS → love fields
-        love_signals_summary: content.pollens_aspirations,
-        love_decision_to_exist: `Team Dynamics: ${content.pollens_team_dynamics || ''}\n\nCultural: ${content.pollens_cultural_elements || ''}\n\nRelational: ${content.pollens_relational_patterns || ''}\n\nStakes: ${content.pollens_stakes || ''}`,
-        // POEMS → magic storyworld and open workflow
-        magic_storyworld: content.poems_people,
-        open_real_workflow: content.poems_systems,
-        // NOEMS → magic fields
-        magic_prd_outline: content.noems_concepts,
-        magic_hypotheses: content.noems_shared_ideas,
-        magic_patterns: content.noems_intuitions,
-        // TOTEMS → calm and open fields
-        calm_requirements: content.totems_data_architecture,
-        calm_risks_and_limits: `Security: ${content.totems_security_policies || ''}\n\nAccess: ${content.totems_access_controls || ''}\n\nRequirements: ${content.totems_system_requirements || ''}`,
-        open_ontology_and_graph: content.totems_integration_points,
-        // ANTHEMS → free fields
-        open_adjustment_plan: content.anthems_storytelling_assets,
-        free_first_poem_description: content.anthems_go_to_market,
-        free_totem_anthem: content.anthems_market_positioning,
-        free_success_criteria: content.anthems_success_signals,
-        free_next_cycle_hooks: content.anthems_brand_narrative,
+        // POLLENS - Direct mapping to new columns
+        pollens_aspirations: content.pollens_aspirations,
+        pollens_team_dynamics: content.pollens_team_dynamics,
+        pollens_cultural_elements: content.pollens_cultural_elements,
+        pollens_relational_patterns: content.pollens_relational_patterns,
+        pollens_constraints: content.pollens_constraints,
+        pollens_stakes: content.pollens_stakes,
+        // NOEMS - Direct mapping
+        noems_concepts: content.noems_concepts,
+        noems_shared_ideas: content.noems_shared_ideas,
+        noems_intuitions: content.noems_intuitions,
+        noems_mental_models: content.noems_mental_models,
+        // POEMS - P.O.E.M.S. framework (all 6 fields)
+        poems_people: content.poems_people,
+        poems_objects: content.poems_objects,
+        poems_environments: content.poems_environments,
+        poems_messages: content.poems_messages,
+        poems_systems: content.poems_systems,
+        poems_prototypes: content.poems_prototypes,
+        // TOTEMS - Technical infrastructure (all 6 fields)
+        totems_data_architecture: content.totems_data_architecture,
+        totems_security_policies: content.totems_security_policies,
+        totems_access_controls: content.totems_access_controls,
+        totems_system_requirements: content.totems_system_requirements,
+        totems_integration_points: content.totems_integration_points,
+        totems_technical_debt: content.totems_technical_debt,
+        // ANTHEMS - Market & storytelling (all 6 fields)
+        anthems_market_positioning: content.anthems_market_positioning,
+        anthems_brand_narrative: content.anthems_brand_narrative,
+        anthems_go_to_market: content.anthems_go_to_market,
+        anthems_audience_segments: content.anthems_audience_segments,
+        anthems_success_signals: content.anthems_success_signals,
+        anthems_storytelling_assets: content.anthems_storytelling_assets,
         // Stack implications & prompt hooks
         stack_implications_pollens: content.stack_implications_pollens,
         stack_implications_noems: content.stack_implications_noems,
