@@ -712,12 +712,25 @@ const CalmMagicBoard = () => {
       setSelectedTile(null);
       toast.success(`Advanced to ${nextSeason} season!`);
     } else {
-      // All 5 seasons complete - PRD ready
+      // All 5 seasons complete - Navigate to Garden Expansion Mode
       updateProgress({
         completedSeasons: newCompletedSeasons,
       });
-      toast.success('All seasons complete! Your PRD is ready for review.');
-      navigate('/prds-dashboard');
+      toast.success('All seasons complete! Your garden awaits 🌳');
+      navigate('/calm-magic-board/garden', {
+        state: {
+          projectId: projectContext?.id,
+          garden: projectContext?.garden || 'intelligence',
+          metrics: {
+            polenCount: polenEntries.length,
+            noemsCount: Math.floor(polenEntries.length / 4),
+            completedSeasons: 5,
+            tilesVisited: Object.values(seasonProgress).reduce((acc, set) => acc + set.size, 0),
+            coherence: 75,
+            connections: 0,
+          }
+        }
+      });
     }
     
     setShowSeasonModal(false);
@@ -1635,6 +1648,23 @@ const CalmMagicBoard = () => {
             '🎉 Your Foundational Prompt is ready! Navigate to Compilation tab to export.',
             { duration: 5000 }
           );
+        }}
+        onEnterGarden={() => {
+          setShowSeasonModal(false);
+          navigate('/calm-magic-board/garden', {
+            state: {
+              projectId: projectContext?.id,
+              garden: projectContext?.garden || 'intelligence',
+              metrics: {
+                polenCount: polenEntries.length,
+                noemsCount: Math.floor(polenEntries.length / 4),
+                completedSeasons: 5,
+                tilesVisited: Object.values(seasonProgress).reduce((acc, set) => acc + set.size, 0),
+                coherence: 75,
+                connections: 0,
+              }
+            }
+          });
         }}
         season={currentSeason}
         tilesVisited={visitedTiles.size}

@@ -1,8 +1,9 @@
+import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { PartyPopper, Sparkles, ArrowRight, Flower2, BookOpen, Mountain, Music, FileText, Lightbulb, Bot, Smartphone, Crown } from 'lucide-react';
+import { PartyPopper, Sparkles, ArrowRight, Flower2, BookOpen, Mountain, Music, FileText, Lightbulb, Bot, Smartphone, Crown, TreeDeciduous } from 'lucide-react';
 import { SEASON_DEFINITIONS, POEMS_ACRONYM } from '@/data/seasonDefinitions';
 
 type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
@@ -13,6 +14,7 @@ interface SeasonCompletionModalProps {
   onContinue: () => void;
   onGeneratePrdLayer: () => void;
   onGenerateFoundationalPrompt?: () => void;
+  onEnterGarden?: () => void;
   season: Season;
   tilesVisited: number;
   polenCount: number;
@@ -75,6 +77,7 @@ const SeasonCompletionModal = ({
   onContinue,
   onGeneratePrdLayer,
   onGenerateFoundationalPrompt,
+  onEnterGarden,
   season,
   tilesVisited,
   polenCount,
@@ -207,22 +210,23 @@ const SeasonCompletionModal = ({
           {/* Actions - Different for ANTHEMS */}
           {isLastSeason ? (
             <div className="space-y-3">
+              {/* Primary Action: Enter Garden */}
               <Button 
-                onClick={onGenerateFoundationalPrompt}
+                onClick={onEnterGarden}
                 className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-lg py-6"
               >
-                <Bot className="w-5 h-5 mr-2" />
-                Generate Foundational Prompt
+                <TreeDeciduous className="w-5 h-5 mr-2" />
+                Enter Your Garden 🌳
                 <Sparkles className="w-5 h-5 ml-2" />
               </Button>
               <div className="flex gap-2">
+                <Button variant="outline" onClick={onGenerateFoundationalPrompt} className="flex-1">
+                  <Bot className="w-4 h-4 mr-1" />
+                  Foundational Prompt
+                </Button>
                 <Button variant="outline" onClick={onContinue} className="flex-1">
                   <FileText className="w-4 h-4 mr-1" />
                   View Full PRD
-                </Button>
-                <Button variant="outline" onClick={onGeneratePrdLayer} className="flex-1" disabled={isGenerating}>
-                  <Smartphone className="w-4 h-4 mr-1" />
-                  {isGenerating ? 'Generating...' : 'Export Tonalli'}
                 </Button>
               </div>
             </div>
