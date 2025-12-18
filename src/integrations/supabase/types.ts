@@ -595,10 +595,13 @@ export type Database = {
           anthems_market_positioning: string | null
           anthems_storytelling_assets: string | null
           anthems_success_signals: string | null
+          auto_compiled_at: string | null
           calm_requirements: string | null
           calm_risks_and_limits: string | null
+          compilation_trigger: string | null
           compiled_prompt: string | null
           compiled_tech_stack: Json | null
+          consciousness_geometry: Json | null
           created_at: string
           free_first_poem_description: string | null
           free_next_cycle_hooks: string | null
@@ -620,6 +623,7 @@ export type Database = {
           main_senge_focus:
             | Database["public"]["Enums"]["senge_discipline"]
             | null
+          manifold_embedding: Json | null
           noems_concepts: string | null
           noems_intuitions: string | null
           noems_mental_models: string | null
@@ -653,7 +657,9 @@ export type Database = {
           stack_implications_totems: string | null
           status: string
           team_id: string | null
+          thermodynamic_profile: Json | null
           title: string
+          topology_signature: Json | null
           totems_access_controls: string | null
           totems_data_architecture: string | null
           totems_integration_points: string | null
@@ -661,6 +667,7 @@ export type Database = {
           totems_system_requirements: string | null
           totems_technical_debt: string | null
           updated_at: string
+          window_state: Json | null
         }
         Insert: {
           anthems_audience_segments?: string | null
@@ -669,10 +676,13 @@ export type Database = {
           anthems_market_positioning?: string | null
           anthems_storytelling_assets?: string | null
           anthems_success_signals?: string | null
+          auto_compiled_at?: string | null
           calm_requirements?: string | null
           calm_risks_and_limits?: string | null
+          compilation_trigger?: string | null
           compiled_prompt?: string | null
           compiled_tech_stack?: Json | null
+          consciousness_geometry?: Json | null
           created_at?: string
           free_first_poem_description?: string | null
           free_next_cycle_hooks?: string | null
@@ -694,6 +704,7 @@ export type Database = {
           main_senge_focus?:
             | Database["public"]["Enums"]["senge_discipline"]
             | null
+          manifold_embedding?: Json | null
           noems_concepts?: string | null
           noems_intuitions?: string | null
           noems_mental_models?: string | null
@@ -727,7 +738,9 @@ export type Database = {
           stack_implications_totems?: string | null
           status?: string
           team_id?: string | null
+          thermodynamic_profile?: Json | null
           title: string
+          topology_signature?: Json | null
           totems_access_controls?: string | null
           totems_data_architecture?: string | null
           totems_integration_points?: string | null
@@ -735,6 +748,7 @@ export type Database = {
           totems_system_requirements?: string | null
           totems_technical_debt?: string | null
           updated_at?: string
+          window_state?: Json | null
         }
         Update: {
           anthems_audience_segments?: string | null
@@ -743,10 +757,13 @@ export type Database = {
           anthems_market_positioning?: string | null
           anthems_storytelling_assets?: string | null
           anthems_success_signals?: string | null
+          auto_compiled_at?: string | null
           calm_requirements?: string | null
           calm_risks_and_limits?: string | null
+          compilation_trigger?: string | null
           compiled_prompt?: string | null
           compiled_tech_stack?: Json | null
+          consciousness_geometry?: Json | null
           created_at?: string
           free_first_poem_description?: string | null
           free_next_cycle_hooks?: string | null
@@ -768,6 +785,7 @@ export type Database = {
           main_senge_focus?:
             | Database["public"]["Enums"]["senge_discipline"]
             | null
+          manifold_embedding?: Json | null
           noems_concepts?: string | null
           noems_intuitions?: string | null
           noems_mental_models?: string | null
@@ -801,7 +819,9 @@ export type Database = {
           stack_implications_totems?: string | null
           status?: string
           team_id?: string | null
+          thermodynamic_profile?: Json | null
           title?: string
+          topology_signature?: Json | null
           totems_access_controls?: string | null
           totems_data_architecture?: string | null
           totems_integration_points?: string | null
@@ -809,6 +829,7 @@ export type Database = {
           totems_system_requirements?: string | null
           totems_technical_debt?: string | null
           updated_at?: string
+          window_state?: Json | null
         }
         Relationships: [
           {
