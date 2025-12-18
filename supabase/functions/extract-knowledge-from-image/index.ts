@@ -121,6 +121,48 @@ function extractFirstJsonObject(content: string): string {
   return (greedy?.[0] ?? s).trim();
 }
 
+async function repairJsonViaModel(lovableApiKey: string, candidateJson: string): Promise<string> {
+  console.log('Attempting JSON repair via model...');
+
+  const repairResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${lovableApiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'google/gemini-2.5-flash',
+      messages: [
+        {
+          role: 'system',
+          content:
+            'You fix invalid JSON. Return ONLY valid JSON (no markdown). Use double quotes for keys/strings. Remove trailing commas. Escape newlines in strings as \\n.',
+        },
+        {
+          role: 'user',
+          content:
+            'Fix this to be valid JSON. Do not change the schema/meaning; only correct JSON syntax. Output ONLY JSON.\n\n' +
+            candidateJson,
+        },
+      ],
+      temperature: 0,
+      max_tokens: 2500,
+    }),
+  });
+
+  if (!repairResponse.ok) {
+    const t = await repairResponse.text();
+    console.error('JSON repair call failed:', repairResponse.status, t);
+    throw new Error(`JSON repair failed: ${repairResponse.status}`);
+  }
+
+  const repairData = await repairResponse.json();
+  const repairedContent = repairData.choices?.[0]?.message?.content;
+  if (!repairedContent) throw new Error('No content from JSON repair');
+
+  return extractFirstJsonObject(repairedContent);
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -196,21 +238,21 @@ Return a JSON object with this exact structure:
         model: 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: systemPrompt },
-          { 
-            role: 'user', 
+          {
+            role: 'user',
             content: [
               { type: 'text', text: userPrompt },
-              { 
-                type: 'image_url', 
-                image_url: { 
-                  url: `data:image/png;base64,${imageBase64}` 
-                } 
-              }
-            ]
-          }
+              {
+                type: 'image_url',
+                image_url: {
+                  url: `data:image/png;base64,${imageBase64}`,
+                },
+              },
+            ],
+          },
         ],
-        temperature: 0.3,
-        max_tokens: 4000,
+        temperature: 0,
+        max_tokens: 3200,
       }),
     });
 
@@ -265,7 +307,11 @@ Return a JSON object with this exact structure:
         console.error('JSON parse still failing after cleanup.', parseError2);
         // Helpful context for debugging without logging the full payload.
         console.error('Failing JSON tail:', cleaned.substring(Math.max(0, cleaned.length - 400)));
-        throw parseError2;
+
+        // Last resort: ask the model to repair to strict JSON.
+        const repaired = await repairJsonViaModel(lovableApiKey, cleaned.substring(0, 20000));
+        console.log('Repaired JSON length:', repaired.length);
+        extraction = JSON.parse(repaired);
       }
     }
 
