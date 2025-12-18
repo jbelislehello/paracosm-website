@@ -26,6 +26,8 @@ interface SeasonArchiveProps {
   seasonCounts: Record<Season, number>;
   className?: string;
   initialDateFilter?: Date;
+  initialTagFilter?: string[];
+  onFilterChange?: (filters: SearchFilters) => void;
 }
 
 const SEASON_CONFIG: Record<Season, {
@@ -74,13 +76,13 @@ const SEASON_CONFIG: Record<Season, {
 
 const SEASON_ORDER: Season[] = ['POLLENS', 'NOEMS', 'POEMS', 'TOTEMS', 'ANTHEMS'];
 
-const SeasonArchive = ({ seasonCounts, className, initialDateFilter }: SeasonArchiveProps) => {
+const SeasonArchive = ({ seasonCounts, className, initialDateFilter, initialTagFilter, onFilterChange }: SeasonArchiveProps) => {
   const navigate = useNavigate();
   const [allEntries, setAllEntries] = useState<PolenEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<SearchFilters>({
     query: '',
-    tags: [],
+    tags: initialTagFilter || [],
     dateRange: initialDateFilter ? { from: initialDateFilter, to: initialDateFilter } : undefined
   });
 
@@ -121,6 +123,16 @@ const SeasonArchive = ({ seasonCounts, className, initialDateFilter }: SeasonArc
       }));
     }
   }, [initialDateFilter]);
+
+  // Update tags when initialTagFilter changes (from TagCloud clicks)
+  useEffect(() => {
+    if (initialTagFilter && JSON.stringify(initialTagFilter) !== JSON.stringify(filters.tags)) {
+      setFilters(prev => ({
+        ...prev,
+        tags: initialTagFilter
+      }));
+    }
+  }, [initialTagFilter]);
 
   // Extract all unique tags
   const availableTags = useMemo(() => {
@@ -215,7 +227,10 @@ const SeasonArchive = ({ seasonCounts, className, initialDateFilter }: SeasonArc
       {/* Search & Filter Toolbar */}
       <SearchFilterToolbar
         filters={filters}
-        onFiltersChange={setFilters}
+        onFiltersChange={(newFilters) => {
+          setFilters(newFilters);
+          onFilterChange?.(newFilters);
+        }}
         availableTags={availableTags}
         totalCount={totalCount}
         filteredCount={filteredCount}
