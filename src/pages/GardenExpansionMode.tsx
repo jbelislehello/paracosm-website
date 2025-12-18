@@ -333,6 +333,21 @@ const GardenExpansionMode = () => {
           if (fragmentCount && fragmentCount > 0) {
             console.log(`Creating new PRD for user with ${fragmentCount} fragments`);
             
+            // Ensure profile exists before creating PRD (foreign key constraint)
+            const { error: profileError } = await supabase
+              .from('profiles')
+              .upsert({
+                id: currentUserId,
+                full_name: userData?.user?.email?.split('@')[0] || 'User',
+                updated_at: new Date().toISOString()
+              }, {
+                onConflict: 'id'
+              });
+
+            if (profileError) {
+              console.error('Failed to create profile:', profileError);
+            }
+            
             // Create new PRD for this user
             const { data: newPrd, error: createError } = await supabase
               .from('prds')
