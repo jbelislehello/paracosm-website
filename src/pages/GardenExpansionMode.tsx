@@ -16,6 +16,9 @@ import GardenFloatingControls from '@/components/calm-magic/garden/GardenFloatin
 import { GARDEN_THEMES, GardenActivity } from '@/data/gardenConnections';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
+import { formatFoundationalPrompt } from '@/utils/formatFoundationalPrompt';
+import { useGardenAudio } from '@/hooks/useGardenAudio';
 import {
   Dialog,
   DialogContent,
@@ -69,35 +72,92 @@ const GardenExpansionMode = () => {
   const [compiledPrompt, setCompiledPrompt] = useState<string>('');
   const [showCelebration, setShowCelebration] = useState(true);
   const [particlesEnabled, setParticlesEnabled] = useState(true);
-  const [audioEnabled, setAudioEnabled] = useState(false);
   const [fullscreenTree, setFullscreenTree] = useState(false);
   const [selectedSeason, setSelectedSeason] = useState<number | null>(null);
+  const [prdData, setPrdData] = useState<any>(null);
+  const [isLoadingPrd, setIsLoadingPrd] = useState(true);
 
+  // Garden audio system
+  const {
+    isPlaying: audioEnabled,
+    volume: audioVolume,
+    profile: audioProfile,
+    toggle: toggleAudio,
+    setVolume: setAudioVolume,
+    playConnectionSound,
+    playActivitySound,
+  } = useGardenAudio({ garden });
+
+  // Fetch PRD data from Supabase
   useEffect(() => {
-    const prompt = `# Foundational Prompt - ${projectContext?.projectName || 'Calm Magic Project'}
+    const fetchPrdData = async () => {
+      if (!projectContext?.id) {
+        setIsLoadingPrd(false);
+        return;
+      }
 
-## Garden: ${theme?.name || 'Garden of Intelligence'}
+      try {
+        // First check project_season_progress for prd_id
+        const { data: progressData } = await supabase
+          .from('project_season_progress')
+          .select('prd_id')
+          .eq('project_id', projectContext.id)
+          .maybeSingle();
 
-## Journey Metrics
-- Polen Collected: ${metrics.polenCount}
-- Noems Crystallized: ${metrics.noemsCount}
-- Seasons Completed: ${metrics.completedSeasons}/5
-- Tiles Explored: ${metrics.tilesVisited}/64
-- Coherence Score: ${metrics.coherence}%
+        let prdId = progressData?.prd_id;
 
-## Agentic Configuration
-This prompt was generated through the Calm Magic Board journey.
-Use this as your foundational context for AI-assisted development.
+        // If no prd_id in progress, look for PRD by owner
+        if (!prdId) {
+          const { data: userData } = await supabase.auth.getUser();
+          if (userData?.user?.id) {
+            const { data: prds } = await supabase
+              .from('prds')
+              .select('*')
+              .eq('owner_id', userData.user.id)
+              .order('updated_at', { ascending: false })
+              .limit(1);
+            
+            if (prds && prds.length > 0) {
+              setPrdData(prds[0]);
+            }
+          }
+        } else {
+          // Fetch the specific PRD
+          const { data: prd } = await supabase
+            .from('prds')
+            .select('*')
+            .eq('id', prdId)
+            .single();
+          
+          if (prd) {
+            setPrdData(prd);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching PRD:', error);
+      } finally {
+        setIsLoadingPrd(false);
+      }
+    };
 
-## Active Connections
-${activeConnections.length > 0 ? activeConnections.join(', ') : 'None yet'}
-`;
+    fetchPrdData();
+  }, [projectContext?.id]);
+
+  // Generate compiled prompt using the rich formatter
+  useEffect(() => {
+    const prompt = formatFoundationalPrompt(
+      prdData,
+      metrics,
+      projectContext?.projectName || 'Calm Magic Project',
+      garden
+    );
     setCompiledPrompt(prompt);
-  }, [projectContext, theme, metrics, activeConnections]);
+  }, [prdData, metrics, projectContext?.projectName, garden]);
 
   const handleConnect = (connectionId: string) => {
     setActiveConnections(prev => [...prev, connectionId]);
     setMetrics(prev => ({ ...prev, connections: prev.connections + 1 }));
+    playConnectionSound();
   };
 
   const handleDisconnect = (connectionId: string) => {
@@ -313,8 +373,11 @@ ${activeConnections.length > 0 ? activeConnections.join(', ') : 'None yet'}
       <GardenFloatingControls
         particlesEnabled={particlesEnabled}
         audioEnabled={audioEnabled}
+        audioVolume={audioVolume}
+        audioProfileName={audioProfile.name}
         onToggleParticles={setParticlesEnabled}
-        onToggleAudio={setAudioEnabled}
+        onToggleAudio={toggleAudio}
+        onVolumeChange={setAudioVolume}
         onToggleFullscreen={() => setFullscreenTree(!fullscreenTree)}
         onResetView={() => {
           setShowCelebration(true);
