@@ -179,6 +179,7 @@ const CalmMagicBoard = () => {
   const [showMigrationDialog, setShowMigrationDialog] = useState(false);
   const [showForcePrdDialog, setShowForcePrdDialog] = useState(false);
   const [forcePrdData, setForcePrdData] = useState<{
+    projectId: string;
     polenEntries: any[];
     startLayer: 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
     inferMissing: boolean;
@@ -954,6 +955,7 @@ const CalmMagicBoard = () => {
     inferMissing: boolean
   ) => {
     setForcePrdData({
+      projectId,
       polenEntries: entries,
       startLayer,
       inferMissing
@@ -2067,7 +2069,7 @@ const CalmMagicBoard = () => {
           onClose={() => setForcePrdData(null)}
           polenEntries={forcePrdData.polenEntries}
           board={forcePrdData.startLayer}
-          projectId={activeProjectId}
+          projectId={forcePrdData.projectId}
           forceStartLayer={forcePrdData.startLayer}
           forceMode={true}
           inferMissingLayers={forcePrdData.inferMissing}

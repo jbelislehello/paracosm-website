@@ -33,6 +33,9 @@ interface ForcePrdDialogProps {
   defaultProjectId?: string | null;
 }
 
+// Export PolenEntry type for use in parent components
+export type { PolenEntry };
+
 const LAYERS: PrdLayer[] = ['POLLENS', 'NOEMS', 'POEMS', 'TOTEMS', 'ANTHEMS'];
 
 const LAYER_ICONS: Record<PrdLayer, React.ElementType> = {
