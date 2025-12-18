@@ -5,7 +5,14 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe, Eye, EyeOff, Moon, Sun, CheckCircle, GitBranch } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe, Eye, EyeOff, Moon, Sun, CheckCircle, GitBranch, ChevronDown, AlertTriangle } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -597,6 +604,14 @@ const CalmMagicBoard = () => {
     toast.info('Full cycle reset');
   };
 
+  // Navigate to a specific season
+  const handleSeasonSelect = (season: typeof currentSeason) => {
+    if (season === currentSeason) return;
+    updateProgress({ currentSeason: season });
+    setSelectedTile(null);
+    toast.success(`Navigated to ${season} season`);
+  };
+
   // Navigate handler with journey and season tracking
   const handleNavigate = (row: number, col: number) => {
     setSelectedTile({ row, col });
@@ -958,6 +973,7 @@ const CalmMagicBoard = () => {
               currentSeason={currentSeason}
               seasonProgress={seasonProgress}
               completedSeasons={completedSeasons}
+              onSeasonSelect={handleSeasonSelect}
             />
           </div>
 
@@ -988,10 +1004,45 @@ const CalmMagicBoard = () => {
                 <Badge variant="outline" className="text-sm px-2 py-0.5">
                   {visitedTiles.size}/64
                 </Badge>
-                <Button variant="ghost" size="sm" onClick={handleResetJourney}>
-                  <RotateCcw className="w-3 h-3 mr-1" />
-                  Reset
-                </Button>
+                <AlertDialog>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        <RotateCcw className="w-3 h-3 mr-1" />
+                        Reset
+                        <ChevronDown className="w-3 h-3 ml-1" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={handleResetJourney}>
+                        <RotateCcw className="w-3.5 h-3.5 mr-2" />
+                        Reset Current Season
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <AlertDialogTrigger asChild>
+                        <DropdownMenuItem className="text-destructive focus:text-destructive">
+                          <AlertTriangle className="w-3.5 h-3.5 mr-2" />
+                          Reset Full Cycle
+                        </DropdownMenuItem>
+                      </AlertDialogTrigger>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Reset Full Cycle?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This will clear all progress across all seasons (POLLENS, NOEMS, POEMS, TOTEMS, ANTHEMS). 
+                        Your saved Polen fragments will not be deleted, but your journey path and season progress will be reset.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleResetCycle} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                        Reset Everything
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
                 
                 {/* Manual Season Completion Button - appears when 5+ fragments saved */}
                 {currentSeasonPolenCount >= 5 && !completedSeasons.includes(currentSeason) && (
@@ -1135,6 +1186,7 @@ const CalmMagicBoard = () => {
                 currentSeason={currentSeason}
                 seasonProgress={seasonProgress}
                 completedSeasons={completedSeasons}
+                onSeasonSelect={(season) => { handleSeasonSelect(season); setShowMobileMenu(false); }}
               />
             </div>
 
@@ -1156,10 +1208,44 @@ const CalmMagicBoard = () => {
                     <Badge variant="outline" className="text-sm px-2 py-0.5">
                       {visitedTiles.size}/64 tiles
                     </Badge>
-                    <Button variant="ghost" size="sm" onClick={() => { handleResetJourney(); setShowMobileMenu(false); }}>
-                      <RotateCcw className="w-3 h-3 mr-1" />
-                      Reset
-                    </Button>
+                    <AlertDialog>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm">
+                            <RotateCcw className="w-3 h-3 mr-1" />
+                            Reset
+                            <ChevronDown className="w-3 h-3 ml-1" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => { handleResetJourney(); setShowMobileMenu(false); }}>
+                            <RotateCcw className="w-3.5 h-3.5 mr-2" />
+                            Reset Current Season
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <AlertDialogTrigger asChild>
+                            <DropdownMenuItem className="text-destructive focus:text-destructive">
+                              <AlertTriangle className="w-3.5 h-3.5 mr-2" />
+                              Reset Full Cycle
+                            </DropdownMenuItem>
+                          </AlertDialogTrigger>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Reset Full Cycle?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This will clear all progress across all seasons. Your saved Polen fragments will not be deleted.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => { handleResetCycle(); setShowMobileMenu(false); }} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                            Reset Everything
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                   
                   {/* Mobile Complete Season Button */}
