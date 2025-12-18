@@ -7,7 +7,8 @@ import { useProjects } from '@/context/ProjectsContext';
 import { useMode } from '@/components/calm-magic/context/ModeContext';
 import SeasonFlowVisualization from '@/components/calm-magic/garden/SeasonFlowVisualization';
 import OntologySummary from '@/components/calm-magic/garden/OntologySummary';
-import SeasonHighlights from '@/components/calm-magic/garden/SeasonHighlights';
+import SeasonArchive from '@/components/calm-magic/garden/SeasonArchive';
+import HexagramGallery from '@/components/calm-magic/garden/HexagramGallery';
 import IntegrationPathways from '@/components/calm-magic/garden/IntegrationPathways';
 import { GARDEN_THEMES } from '@/data/gardenConnections';
 import { cn } from '@/lib/utils';
@@ -16,6 +17,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { formatFoundationalPrompt } from '@/utils/formatFoundationalPrompt';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
+
+type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 
 interface GardenMetrics {
   polenCount: number;
@@ -54,14 +57,24 @@ const GardenExpansionMode = () => {
   const [prdData, setPrdData] = useState<any>(null);
   const [isLoadingPrd, setIsLoadingPrd] = useState(true);
   const [copied, setCopied] = useState(false);
+  
+  // Real season counts from database
+  const [seasonCounts, setSeasonCounts] = useState<Record<Season, number>>({
+    POLLENS: 0,
+    NOEMS: 0,
+    POEMS: 0,
+    TOTEMS: 0,
+    ANTHEMS: 0,
+  });
+  const [hexagramCount, setHexagramCount] = useState(0);
 
-  // Season data for visualization
+  // Season data for visualization - using real counts
   const seasonData = [
-    { name: 'POLLENS', label: 'fragments', count: metrics.polenCount, description: 'Raw signals gathered' },
-    { name: 'NOEMS', label: 'concepts', count: metrics.noemsCount, description: 'Ideas crystallized' },
-    { name: 'POEMS', label: 'designs', count: prdData?.poems_people ? 1 : 0, description: 'Experiences mapped' },
-    { name: 'TOTEMS', label: 'systems', count: prdData?.totems_data_architecture ? 1 : 0, description: 'Architecture defined' },
-    { name: 'ANTHEMS', label: 'stories', count: prdData?.anthems_brand_narrative ? 1 : 0, description: 'Voice established' },
+    { name: 'POLLENS', label: 'fragments', count: seasonCounts.POLLENS, description: 'Raw signals gathered' },
+    { name: 'NOEMS', label: 'concepts', count: seasonCounts.NOEMS, description: 'Ideas crystallized' },
+    { name: 'POEMS', label: 'designs', count: seasonCounts.POEMS, description: 'Experiences mapped' },
+    { name: 'TOTEMS', label: 'systems', count: seasonCounts.TOTEMS, description: 'Architecture defined' },
+    { name: 'ANTHEMS', label: 'stories', count: seasonCounts.ANTHEMS, description: 'Voice established' },
   ];
 
   // Fetch PRD data from Supabase
@@ -116,34 +129,63 @@ const GardenExpansionMode = () => {
     fetchPrdData();
   }, [projectContext?.id]);
 
-  // Fetch POLEN count
+  // Fetch POLEN counts per season and hexagram readings count
   useEffect(() => {
-    const fetchPolenData = async () => {
+    const fetchSeasonData = async () => {
       try {
         const { data: userData } = await supabase.auth.getUser();
         if (!userData?.user?.id) return;
 
+        // Fetch all POLEN entries with season_context
         const { data: polenEntries, error } = await supabase
           .from('polen_entries')
-          .select('id, tile_id')
+          .select('id, tile_id, season_context')
           .eq('user_id', userData.user.id);
 
         if (error || !polenEntries) return;
 
+        // Count per season
+        const counts: Record<Season, number> = {
+          POLLENS: 0,
+          NOEMS: 0,
+          POEMS: 0,
+          TOTEMS: 0,
+          ANTHEMS: 0,
+        };
+
+        polenEntries.forEach(entry => {
+          const season = entry.season_context as Season;
+          if (season && counts[season] !== undefined) {
+            counts[season]++;
+          }
+        });
+
+        setSeasonCounts(counts);
+
+        // Update metrics with total count
         const uniqueTiles = new Set(polenEntries.map(e => e.tile_id).filter(Boolean));
+        const totalCount = Object.values(counts).reduce((a, b) => a + b, 0);
         
         setMetrics(prev => ({
           ...prev,
-          polenCount: polenEntries.length,
+          polenCount: totalCount,
           tilesVisited: uniqueTiles.size
         }));
+
+        // Fetch hexagram readings count
+        const { count: hexCount } = await supabase
+          .from('hexagram_readings')
+          .select('id', { count: 'exact', head: true })
+          .eq('user_id', userData.user.id);
+
+        setHexagramCount(hexCount || 0);
         
       } catch (error) {
-        console.error('Error fetching POLEN data:', error);
+        console.error('Error fetching season data:', error);
       }
     };
 
-    fetchPolenData();
+    fetchSeasonData();
   }, [projectContext?.id]);
 
   // Generate compiled prompt
@@ -259,10 +301,21 @@ const GardenExpansionMode = () => {
             </Card>
           </section>
 
-          {/* Season Highlights - Expandable */}
+          {/* Season Archive - Expandable with real entries */}
           <section className="py-8">
-            <SeasonHighlights prdData={prdData} />
+            <Card className="p-8 bg-background/50 backdrop-blur-sm border-border/50">
+              <SeasonArchive seasonCounts={seasonCounts} />
+            </Card>
           </section>
+
+          {/* Hexagram Gallery */}
+          {hexagramCount > 0 && (
+            <section className="py-8">
+              <Card className="p-8 bg-background/50 backdrop-blur-sm border-border/50">
+                <HexagramGallery />
+              </Card>
+            </section>
+          )}
 
           {/* Foundational Prompt Preview */}
           <section className="py-8 space-y-6">

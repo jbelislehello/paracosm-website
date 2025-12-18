@@ -305,6 +305,7 @@ const CalmMagicBoard = () => {
     
     const params = parseBoardEntryParams(searchParams);
     const projectId = searchParams.get('projectId');
+    const seasonParam = searchParams.get('season') as Season | null;
     
     // If projectId is provided, set it as active
     if (projectId) {
@@ -315,6 +316,15 @@ const CalmMagicBoard = () => {
           setMode(project.mode);
         }
       }
+    }
+
+    // Handle season navigation from garden page
+    if (seasonParam && SEASON_ORDER.includes(seasonParam)) {
+      hasAppliedUrlParams.current = true;
+      updateProgress({ currentSeason: seasonParam });
+      setSearchParams({}, { replace: true });
+      toast.success(`Viewing ${seasonParam} season`, { duration: 2000 });
+      return;
     }
     
     if (params.hasAssessmentContext || projectId) {
