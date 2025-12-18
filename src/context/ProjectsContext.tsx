@@ -20,6 +20,12 @@ interface ProjectsContextValue {
   projectContext: Project | null;
   isLoading: boolean;
   isSynced: boolean;
+  // Recovery API
+  recoverProjects: () => Promise<{ recovered: number; error?: string; localProjects: Project[]; backupProjects: Project[] }>;
+  clearBackup: () => void;
+  localStorageCount: number;
+  backupCount: number;
+  migrationStatus: 'idle' | 'pending' | 'success' | 'error';
 }
 
 const ProjectsContext = createContext<ProjectsContextValue | null>(null);
