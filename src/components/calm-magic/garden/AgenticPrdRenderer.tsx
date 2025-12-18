@@ -401,15 +401,15 @@ const AgenticPrdRenderer: React.FC<AgenticPrdRendererProps> = ({
             {/* C-Suite Tab */}
             <TabsContent value="csuite" className="m-0 p-4">
               <CSuiteDashboard 
-                prdData={prdData as any}
-                polenEntries={[]}
+                prdData={prdData}
                 seasonProgress={{
-                  currentSeason: 'ANTHEMS',
-                  completedSeasons: new Set(),
-                  seasonProgress: new Set(),
-                  journeyStarted: new Set(),
-                  journeyPath: []
-                } as any}
+                  POLLENS: new Set([1,2,3,4,5,6,7,8]),
+                  NOEMS: new Set([1,2,3,4,5,6,7,8]),
+                  POEMS: new Set([1,2,3,4,5,6,7,8]),
+                  TOTEMS: new Set([1,2,3,4,5,6,7,8]),
+                  ANTHEMS: new Set([1,2,3,4,5,6,7,8]),
+                }}
+                currentSeason="ANTHEMS"
               />
             </TabsContent>
 
