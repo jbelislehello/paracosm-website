@@ -5,7 +5,7 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe, Eye, EyeOff, Moon, Sun, CheckCircle } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe, Eye, EyeOff, Moon, Sun, CheckCircle, GitBranch } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -1363,6 +1363,16 @@ const CalmMagicBoard = () => {
             <BookOpen className="w-4 h-4" />
             <span className="hidden lg:inline text-xs">Encyclopedia</span>
           </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1.5 h-8 px-2"
+            onClick={() => navigate('/calm-magic-board/paracosm')}
+            title="Paracosm Creative Lineage"
+          >
+            <GitBranch className="w-4 h-4" />
+            <span className="hidden lg:inline text-xs">Paracosm</span>
+          </Button>
         </div>
       </div>
 
@@ -1400,10 +1410,21 @@ const CalmMagicBoard = () => {
           </TabsList>
         </Tabs>
         
-        {/* Mobile progress indicator - compact */}
-        <Badge variant="outline" className="text-[10px] px-1.5 py-0.5 shrink-0">
-          {visitedTiles.size}/64
-        </Badge>
+        <div className="flex items-center gap-1.5">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={() => navigate('/calm-magic-board/paracosm')}
+            title="Paracosm"
+          >
+            <GitBranch className="w-4 h-4" />
+          </Button>
+          {/* Mobile progress indicator - compact */}
+          <Badge variant="outline" className="text-[10px] px-1.5 py-0.5 shrink-0">
+            {visitedTiles.size}/64
+          </Badge>
+        </div>
       </div>
 
       {/* Main Content: Split Layout */}
