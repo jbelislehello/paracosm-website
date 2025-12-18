@@ -121,7 +121,10 @@ function extractFirstJsonObject(content: string): string {
   return (greedy?.[0] ?? s).trim();
 }
 
-async function repairJsonViaModel(lovableApiKey: string, candidateJson: string): Promise<string> {
+async function repairJsonViaModel(
+  lovableApiKey: string,
+  candidateJson: string,
+): Promise<string> {
   console.log('Attempting JSON repair via model...');
 
   const repairResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
@@ -136,7 +139,7 @@ async function repairJsonViaModel(lovableApiKey: string, candidateJson: string):
         {
           role: 'system',
           content:
-            'You fix invalid JSON. Return ONLY valid JSON (no markdown). Use double quotes for keys/strings. Remove trailing commas. Escape newlines in strings as \\n.',
+            'You fix invalid JSON. Return ONLY valid JSON (no markdown). Use double quotes for keys/strings. Remove trailing commas. Escape newlines in strings as \\n. Do not truncate output; ensure all arrays/objects are properly closed.',
         },
         {
           role: 'user',
@@ -146,7 +149,7 @@ async function repairJsonViaModel(lovableApiKey: string, candidateJson: string):
         },
       ],
       temperature: 0,
-      max_tokens: 2500,
+      max_tokens: 7000,
     }),
   });
 
@@ -160,7 +163,8 @@ async function repairJsonViaModel(lovableApiKey: string, candidateJson: string):
   const repairedContent = repairData.choices?.[0]?.message?.content;
   if (!repairedContent) throw new Error('No content from JSON repair');
 
-  return extractFirstJsonObject(repairedContent);
+  const extracted = extractFirstJsonObject(repairedContent);
+  return cleanupJsonString(extracted);
 }
 
 serve(async (req) => {
@@ -311,7 +315,13 @@ Return a JSON object with this exact structure:
         // Last resort: ask the model to repair to strict JSON.
         const repaired = await repairJsonViaModel(lovableApiKey, cleaned.substring(0, 20000));
         console.log('Repaired JSON length:', repaired.length);
-        extraction = JSON.parse(repaired);
+
+        try {
+          extraction = JSON.parse(repaired);
+        } catch (repairParseError) {
+          console.error('Repaired JSON still invalid, attempting cleanup parse...', repairParseError);
+          extraction = JSON.parse(cleanupJsonString(repaired));
+        }
       }
     }
 
