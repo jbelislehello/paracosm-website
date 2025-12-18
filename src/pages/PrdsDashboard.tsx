@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
+import { useProjects } from '@/context/ProjectsContext';
 import { 
   FileText, Search, Filter, Plus, ArrowLeft, 
   Heart, Wand2, Mountain, DoorOpen, Bird,
@@ -82,10 +83,11 @@ const PrdsDashboard = () => {
   const [prdToDelete, setPrdToDelete] = useState<string | null>(null);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { activeProjectId } = useProjects();
 
   useEffect(() => {
     fetchPrds();
-  }, []);
+  }, [activeProjectId]);
 
   const fetchPrds = async () => {
     try {
@@ -95,11 +97,17 @@ const PrdsDashboard = () => {
         return;
       }
 
-      const { data, error } = await supabase
+      let query = supabase
         .from('prds')
         .select('*')
         .eq('owner_id', user.id)
         .order('updated_at', { ascending: false });
+      
+      if (activeProjectId) {
+        query = query.eq('project_id', activeProjectId);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
       setPrds(data || []);

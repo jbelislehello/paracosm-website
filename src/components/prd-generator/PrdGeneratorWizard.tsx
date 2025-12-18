@@ -30,6 +30,7 @@ interface PrdGeneratorWizardProps {
   cycleId?: string;
   polenEntries: PolenEntry[];
   board: string;
+  projectId?: string | null;
   onPrdCreated?: (prdId: string) => void;
 }
 
@@ -183,6 +184,7 @@ const PrdGeneratorWizard = ({
   cycleId,
   polenEntries,
   board,
+  projectId,
   onPrdCreated
 }: PrdGeneratorWizardProps) => {
   const [currentLayer, setCurrentLayer] = useState<PrdLayer>('POLLENS');
@@ -321,6 +323,7 @@ const PrdGeneratorWizard = ({
 
       const prdData = {
         owner_id: user.id,
+        project_id: projectId || null,
         title,
         status: 'draft',
         prototype_stage: 'B_DIEGETIC',

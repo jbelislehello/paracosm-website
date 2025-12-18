@@ -134,6 +134,7 @@ const CalmMagicBoard = () => {
     setActiveProject, 
     getProjectById,
     updateProject,
+    activeProjectId,
     isLoading: projectLoading 
   } = useProjects();
   const hasAppliedUrlParams = useRef(false);
@@ -794,6 +795,7 @@ const CalmMagicBoard = () => {
           .from('prds')
           .insert({
             owner_id: user.id,
+            project_id: activeProjectId || null,
             title: `PRD - ${new Date().toLocaleDateString()}`,
             status: 'draft',
             main_board: SEASON_TO_BOARD[currentSeason],
@@ -1542,6 +1544,7 @@ const CalmMagicBoard = () => {
               seasonProgress={seasonProgress as Record<PrdSeason, Set<string>>}
               completedSeasons={completedSeasons as PrdSeason[]}
               prdId={prdId}
+              projectId={activeProjectId}
               onPrdCreated={(newPrdId) => updateProgress({ prdId: newPrdId })}
               visitedTiles={visitedTiles}
               polenCount={polenEntries.length}
@@ -1550,11 +1553,16 @@ const CalmMagicBoard = () => {
               onPatternDetected={handlePatternDetected}
               onGenerateLayer={async (season) => {
                 // Fetch Polen entries for this season
-                const { data: polenEntries, error } = await supabase
+                let polenQuery = supabase
                   .from('polen_entries')
                   .select('*')
-                  .eq('user_id', user?.id)
-                  .or(`season_context.eq.${season},tags.cs.{${season}}`);
+                  .eq('user_id', user?.id);
+                
+                if (activeProjectId) {
+                  polenQuery = polenQuery.eq('project_id', activeProjectId);
+                }
+                
+                const { data: polenEntries, error } = await polenQuery.or(`season_context.eq.${season},tags.cs.{${season}}`);
                 
                 if (error) throw error;
 
@@ -1577,6 +1585,7 @@ const CalmMagicBoard = () => {
                     .from('prds')
                     .insert({
                       owner_id: user.id,
+                      project_id: activeProjectId || null,
                       title: `PRD - ${new Date().toLocaleDateString()}`,
                       status: 'draft',
                       main_board: SEASON_TO_BOARD[season as Season],
