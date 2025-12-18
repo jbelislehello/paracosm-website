@@ -36,6 +36,7 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { SeasonProgressIndicator } from '@/components/calm-magic/SeasonProgressIndicator';
+import { ShareProjectDialog } from '@/components/ShareProjectDialog';
 import { 
   ArrowLeft, 
   Plus, 
@@ -50,7 +51,9 @@ import {
   Rocket,
   Filter,
   X,
-  FileText
+  FileText,
+  Share2,
+  Users
 } from 'lucide-react';
 import { useProjects, Project } from '@/context/ProjectsContext';
 import { useUserSession } from '@/hooks/useUserSession';
@@ -91,6 +94,7 @@ const ProjectsDashboard: React.FC = () => {
   const [editValue, setEditValue] = useState('');
   const [showSignupPrompt, setShowSignupPrompt] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [shareProject, setShareProject] = useState<Project | null>(null);
   const isMobile = useIsMobile();
 
   // Check if we should show guest banner
@@ -435,6 +439,15 @@ const ProjectsDashboard: React.FC = () => {
                             <Pencil className="w-4 h-4 mr-2" />
                             Rename
                           </DropdownMenuItem>
+                          {!project.isShared && user && (
+                            <DropdownMenuItem onClick={(e) => {
+                              e.stopPropagation();
+                              setShareProject(project);
+                            }}>
+                              <Share2 className="w-4 h-4 mr-2" />
+                              Share
+                            </DropdownMenuItem>
+                          )}
                           <DropdownMenuItem onClick={(e) => {
                             e.stopPropagation();
                             setActiveProject(project.id);
@@ -491,6 +504,12 @@ const ProjectsDashboard: React.FC = () => {
                       <Badge variant="outline" className="text-xs capitalize">
                         {project.mode}
                       </Badge>
+                      {project.isShared && (
+                        <Badge variant="secondary" className="text-xs gap-1">
+                          <Users className="w-3 h-3" />
+                          Shared
+                        </Badge>
+                      )}
                     </div>
                     
                     {/* Season Progress */}
@@ -575,6 +594,16 @@ const ProjectsDashboard: React.FC = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Share Project Dialog */}
+      {shareProject && (
+        <ShareProjectDialog
+          open={!!shareProject}
+          onOpenChange={(open) => !open && setShareProject(null)}
+          projectId={shareProject.id}
+          projectName={shareProject.projectName}
+        />
+      )}
     </div>
   );
 };
