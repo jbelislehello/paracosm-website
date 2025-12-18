@@ -37,6 +37,7 @@ interface PolenEntry {
 
 interface PolenBrowserProps {
   cycleId?: string;
+  projectId?: string | null;
   onEntrySelect?: (entry: PolenEntry) => void;
 }
 
@@ -59,7 +60,7 @@ const JOURNEY_ICONS: Record<JourneyMode, React.ReactNode> = {
   'product': <Briefcase className="h-3 w-3" />,
 };
 
-export const PolenBrowser: React.FC<PolenBrowserProps> = ({ cycleId, onEntrySelect }) => {
+export const PolenBrowser: React.FC<PolenBrowserProps> = ({ cycleId, projectId, onEntrySelect }) => {
   const [entries, setEntries] = useState<PolenEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isOpen, setIsOpen] = useState(false);
@@ -72,7 +73,7 @@ export const PolenBrowser: React.FC<PolenBrowserProps> = ({ cycleId, onEntrySele
 
   useEffect(() => {
     fetchEntries();
-  }, [cycleId]);
+  }, [cycleId, projectId]);
 
   const fetchEntries = async () => {
     setIsLoading(true);
@@ -86,6 +87,11 @@ export const PolenBrowser: React.FC<PolenBrowserProps> = ({ cycleId, onEntrySele
         .eq('user_id', userData.user.id)
         .contains('tags', ['ai-prompt'])
         .order('created_at', { ascending: false });
+
+      // Filter by project_id if provided
+      if (projectId) {
+        query = query.eq('project_id', projectId);
+      }
 
       if (cycleId) {
         query = query.eq('cycle_id', cycleId);

@@ -11,6 +11,7 @@ import { KnowledgeExtraction } from '@/types/knowledge';
 
 interface PolenCollectorProps {
   selectedTileId?: number;
+  projectId?: string | null;
   onPolenSaved?: () => void;
 }
 
@@ -28,9 +29,10 @@ const FRAGMENT_ICONS: Record<FragmentType, React.ReactNode> = {
 
 export const PolenCollector: React.FC<PolenCollectorProps> = ({
   selectedTileId,
+  projectId,
   onPolenSaved
 }) => {
-  const { savePolenEntry, polenEntries, loading } = useExpansionJournal();
+  const { savePolenEntry, polenEntries, loading } = useExpansionJournal(projectId);
   const [content, setContent] = useState('');
   const [fragmentType, setFragmentType] = useState<FragmentType>('text');
   const [sourceReference, setSourceReference] = useState('');

@@ -257,7 +257,7 @@ const CalmMagicBoard = () => {
     saving,
     savePolenEntry,
     polenEntries,
-  } = useTileMatrixPersistence(todayTile?.board || SEASON_TO_BOARD[currentSeason]);
+  } = useTileMatrixPersistence(todayTile?.board || SEASON_TO_BOARD[currentSeason], activeProjectId);
 
   // Weaving connections - semantic threads between tiles
   const { threads: weavingThreads } = useWeavingConnections(user?.id);
@@ -1601,6 +1601,7 @@ const CalmMagicBoard = () => {
           <div className="w-[400px] max-w-[40vw] shrink-0 border-l border-border/50 animate-in slide-in-from-right duration-300 p-4">
             <FragmentBrowser 
               currentSeason={currentSeason as PrdSeason}
+              projectId={activeProjectId}
               onEntrySelect={(entry) => {
                 if (entry.tile_id) {
                   const row = Math.floor((entry.tile_id - 1) / 8);
@@ -1812,6 +1813,7 @@ const CalmMagicBoard = () => {
           <SheetContent side="bottom" className="h-[75vh] p-4 rounded-t-xl">
             <FragmentBrowser 
               currentSeason={currentSeason as PrdSeason}
+              projectId={activeProjectId}
               onEntrySelect={(entry) => {
                 if (entry.tile_id) {
                   const row = Math.floor((entry.tile_id - 1) / 8);

@@ -34,6 +34,7 @@ interface FragmentEntry {
 
 interface FragmentBrowserProps {
   currentSeason: Season;
+  projectId?: string | null;
   onEntrySelect?: (entry: FragmentEntry) => void;
   onPushToPrd?: (entry: FragmentEntry) => void;
   showAllSeasons?: boolean;
@@ -56,7 +57,8 @@ const SEASON_COLORS: Record<Season, string> = {
 };
 
 export const FragmentBrowser: React.FC<FragmentBrowserProps> = ({ 
-  currentSeason, 
+  currentSeason,
+  projectId,
   onEntrySelect,
   onPushToPrd,
   showAllSeasons = false
@@ -70,7 +72,7 @@ export const FragmentBrowser: React.FC<FragmentBrowserProps> = ({
 
   useEffect(() => {
     fetchEntries();
-  }, [currentSeason, viewMode]);
+  }, [currentSeason, viewMode, projectId]);
 
   const fetchEntries = async () => {
     setIsLoading(true);
@@ -83,6 +85,11 @@ export const FragmentBrowser: React.FC<FragmentBrowserProps> = ({
         .select('*')
         .eq('user_id', userData.user.id)
         .order('created_at', { ascending: false });
+
+      // Filter by project_id if provided
+      if (projectId) {
+        query = query.eq('project_id', projectId);
+      }
 
       // Filter by current season if not viewing all
       if (viewMode === 'current') {
