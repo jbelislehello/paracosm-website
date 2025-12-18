@@ -15,6 +15,7 @@ import { useTopologyInsight } from '@/hooks/useTopologyInsight';
 import { RingLevel } from '@/utils/ringToleranceSystem';
 import { TopologicalSignature, QuadrantPosition } from '@/types/trajectory';
 import { ConsciousnessGeometryExport } from '@/utils/consciousnessGeometry';
+import { ConsciousnessObservatory } from '@/components/calm-magic/observatory/ConsciousnessObservatory';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
@@ -202,6 +203,17 @@ export function TopologiesTab({
         return <ToroidalFlowField selectedTile={{ row, col }} season={season} journeyPath={journeyPath} visitedTiles={visitedTiles} densityMap={densityMap} onTileClick={onTileSelect} />;
       case 'projection':
         return <UnfoldedChartProjection selectedTile={{ row, col }} season={season} journeyPath={journeyPath} visitedTiles={visitedTiles} densityMap={densityMap} onTileClick={onTileSelect} />;
+      case 'observatory':
+        return (
+          <div className="p-4 h-full overflow-auto">
+            <ConsciousnessObservatory
+              visitedTiles={visitedTiles}
+              journeyPath={journeyPath}
+              densityMap={densityMap}
+              consciousnessGeometry={consciousnessGeometry}
+            />
+          </div>
+        );
       case 'isometric':
       default:
         return (

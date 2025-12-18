@@ -9,6 +9,8 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import { 
   Brain, 
   Target, 
@@ -16,7 +18,8 @@ import {
   Layers,
   CheckCircle2,
   Circle,
-  Loader2
+  Loader2,
+  Sparkles
 } from 'lucide-react';
 import { AutoCompilationTrigger, Season } from '@/hooks/useAutoCompilation';
 import { cn } from '@/lib/utils';
@@ -25,6 +28,8 @@ interface CompilationTriggerWidgetProps {
   triggers: AutoCompilationTrigger[];
   isCompiling: boolean;
   compiledLayers: Season[];
+  enabled?: boolean;
+  onToggleEnabled?: (enabled: boolean) => void;
   className?: string;
 }
 
@@ -46,6 +51,8 @@ export function CompilationTriggerWidget({
   triggers,
   isCompiling,
   compiledLayers,
+  enabled = true,
+  onToggleEnabled,
   className
 }: CompilationTriggerWidgetProps) {
   const triggeredCount = triggers.filter(t => t.triggered).length;
@@ -54,7 +61,7 @@ export function CompilationTriggerWidget({
   return (
     <Card className={cn("bg-card/60 backdrop-blur-sm border-border/50", className)}>
       <CardContent className="p-4 space-y-3">
-        {/* Header */}
+        {/* Header with Toggle */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             {isCompiling ? (
@@ -75,6 +82,25 @@ export function CompilationTriggerWidget({
           <Badge variant="outline" className="text-xs">
             {compiledLayers.length}/5 layers
           </Badge>
+        </div>
+
+        {/* Auto-Compilation Toggle */}
+        <div className="flex items-center justify-between py-2 px-3 rounded-md bg-muted/30 border border-border/30">
+          <div className="flex items-center gap-2">
+            <Sparkles className={cn(
+              "h-4 w-4 transition-colors",
+              enabled ? "text-primary" : "text-muted-foreground"
+            )} />
+            <Label htmlFor="auto-compile" className="text-xs font-medium cursor-pointer">
+              Auto-Crystallization
+            </Label>
+          </div>
+          <Switch
+            id="auto-compile"
+            checked={enabled}
+            onCheckedChange={onToggleEnabled}
+            aria-label="Toggle automatic PRD crystallization"
+          />
         </div>
 
         {/* Season Compilation Status */}
@@ -138,7 +164,7 @@ export function CompilationTriggerWidget({
         </div>
 
         {/* Active Trigger Message */}
-        {triggers.filter(t => t.triggered).slice(0, 1).map((trigger, idx) => (
+        {enabled && triggers.filter(t => t.triggered).slice(0, 1).map((trigger, idx) => (
           <div 
             key={idx}
             className="text-xs text-center text-primary/80 bg-primary/5 rounded-md p-2"
@@ -146,6 +172,13 @@ export function CompilationTriggerWidget({
             ✨ {trigger.message}
           </div>
         ))}
+
+        {/* Disabled state message */}
+        {!enabled && triggeredCount > 0 && (
+          <p className="text-[10px] text-muted-foreground text-center">
+            {triggeredCount} threshold{triggeredCount > 1 ? 's' : ''} met — enable auto-crystallization to compile
+          </p>
+        )}
       </CardContent>
     </Card>
   );
