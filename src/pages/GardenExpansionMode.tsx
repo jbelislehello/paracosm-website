@@ -13,6 +13,7 @@ import IntegrationPathways from '@/components/calm-magic/garden/IntegrationPathw
 import JourneyTimeline from '@/components/calm-magic/garden/JourneyTimeline';
 import JourneySummaryExport from '@/components/calm-magic/garden/JourneySummaryExport';
 import { PrdCompilationCard } from '@/components/calm-magic/garden/PrdCompilationCard';
+import TagCloudVisualization from '@/components/calm-magic/garden/TagCloudVisualization';
 import { GARDEN_THEMES } from '@/data/gardenConnections';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -76,6 +77,9 @@ const GardenExpansionMode = () => {
   
   // Selected date from timeline
   const [selectedTimelineDate, setSelectedTimelineDate] = useState<Date | undefined>(undefined);
+  
+  // Tag cloud filter state (lifted to connect TagCloud to SeasonArchive)
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   // Season data for visualization - using real counts
   const seasonData = [
@@ -333,6 +337,14 @@ const GardenExpansionMode = () => {
             </section>
           )}
 
+          {/* Tag Cloud Visualization */}
+          <section className="py-4">
+            <TagCloudVisualization
+              selectedTags={selectedTags}
+              onTagSelect={setSelectedTags}
+            />
+          </section>
+
           {/* Journey Timeline */}
           <section className="py-8">
             <Card className="p-6 bg-background/50 backdrop-blur-sm border-border/50">
@@ -356,6 +368,8 @@ const GardenExpansionMode = () => {
               <SeasonArchive 
                 seasonCounts={seasonCounts} 
                 initialDateFilter={selectedTimelineDate}
+                initialTagFilter={selectedTags}
+                onFilterChange={(filters) => setSelectedTags(filters.tags)}
               />
             </Card>
           </section>

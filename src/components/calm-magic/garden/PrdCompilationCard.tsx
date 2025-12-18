@@ -2,9 +2,20 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { CheckCircle2, Circle, Loader2, Sparkles, AlertCircle } from 'lucide-react';
+import { CheckCircle2, Circle, Loader2, Sparkles, AlertCircle, RefreshCw } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 
@@ -156,6 +167,46 @@ export const PrdCompilationCard: React.FC<PrdCompilationCardProps> = ({
     }
   };
 
+  const handleRegenerateAll = async () => {
+    if (!prdId) return;
+
+    setIsCompiling(true);
+    setError(null);
+    setCompletedLayers([]);
+
+    try {
+      for (const layer of SEASONS) {
+        setCurrentLayer(layer);
+        
+        const generatedContent = await compileLayer(layer);
+        
+        if (Object.keys(generatedContent).length > 0) {
+          const { error: updateError } = await supabase
+            .from('prds')
+            .update(generatedContent)
+            .eq('id', prdId);
+
+          if (updateError) {
+            throw new Error(`Failed to save ${layer}: ${updateError.message}`);
+          }
+        }
+
+        setCompletedLayers(prev => [...prev, layer]);
+        toast.success(`${SEASON_CONFIG[layer].label} regenerated`);
+      }
+
+      toast.success('All 5 layers regenerated from your fragments!');
+      onCompilationComplete();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      setError(message);
+      toast.error(`Regeneration failed: ${message}`);
+    } finally {
+      setIsCompiling(false);
+      setCurrentLayer(null);
+    }
+  };
+
   if (!prdId) {
     return (
       <Card className="border-amber-500/30 bg-amber-500/5">
@@ -229,35 +280,77 @@ export const PrdCompilationCard: React.FC<PrdCompilationCardProps> = ({
           </div>
         )}
 
-        {/* Status Summary & Action */}
-        <div className="flex items-center justify-between pt-2 border-t">
-          <div className="text-sm text-muted-foreground">
-            {emptyLayers.length === 0 ? (
-              <span className="text-green-600 font-medium">✓ All layers complete</span>
-            ) : (
-              <span>{filledLayers.length}/5 layers filled • {emptyLayers.length} missing</span>
+        {/* Status Summary & Actions */}
+        <div className="flex flex-col gap-3 pt-2 border-t">
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-muted-foreground">
+              {emptyLayers.length === 0 ? (
+                <span className="text-green-600 font-medium">✓ All layers complete</span>
+              ) : (
+                <span>{filledLayers.length}/5 layers filled • {emptyLayers.length} missing</span>
+              )}
+            </div>
+            
+            {emptyLayers.length > 0 && (
+              <Button
+                onClick={handleCompileMissing}
+                disabled={isCompiling}
+                size="sm"
+                className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+              >
+                {isCompiling ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Compiling...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    Compile {emptyLayers.length} Missing
+                  </>
+                )}
+              </Button>
             )}
           </div>
           
-          {emptyLayers.length > 0 && (
-            <Button
-              onClick={handleCompileMissing}
-              disabled={isCompiling}
-              size="sm"
-              className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
-            >
-              {isCompiling ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Compiling...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  Compile {emptyLayers.length} Missing
-                </>
-              )}
-            </Button>
+          {/* Regenerate All Button */}
+          {filledLayers.length > 0 && !isCompiling && (
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full text-muted-foreground hover:text-foreground"
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Regenerate All 5 Layers
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Regenerate All PRD Layers?</AlertDialogTitle>
+                  <AlertDialogDescription className="space-y-2">
+                    <p>
+                      This will regenerate all 5 PRD layers from your fragments, 
+                      <span className="font-semibold text-destructive"> overwriting existing content</span>.
+                    </p>
+                    <p className="text-sm">
+                      Currently filled: {filledLayers.map(l => SEASON_CONFIG[l].label).join(', ')}
+                    </p>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleRegenerateAll}
+                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                  >
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Regenerate All
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
         </div>
       </CardContent>
