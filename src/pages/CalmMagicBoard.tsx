@@ -5,7 +5,7 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe, Eye, EyeOff, Moon, Sun, CheckCircle, GitBranch, ChevronDown, AlertTriangle, Brain, Database } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe, Eye, EyeOff, Moon, Sun, CheckCircle, GitBranch, ChevronDown, AlertTriangle, Brain, Database, Rocket } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -67,6 +67,8 @@ import PatternJournal from '@/components/calm-magic/PatternJournal';
 import { DetectedPattern, PatternHistoryEntry } from '@/utils/patternDetection';
 import { TopologiesTab } from '@/components/calm-magic/topologies/TopologiesTab';
 import { FragmentMigrationDialog } from '@/components/calm-magic/FragmentMigrationDialog';
+import ForcePrdDialog from '@/components/prd-generator/ForcePrdDialog';
+import PrdGeneratorWizard from '@/components/prd-generator/PrdGeneratorWizard';
 import { TopologyInsightIndicator } from '@/components/calm-magic/topologies/TopologyInsightIndicator';
 import { useTopologyInsight } from '@/hooks/useTopologyInsight';
 import { ManifoldSeason } from '@/utils/torusManifoldMath';
@@ -175,6 +177,12 @@ const CalmMagicBoard = () => {
   const [showPatternJournal, setShowPatternJournal] = useState(false);
   const [showKnowledgeImageDialog, setShowKnowledgeImageDialog] = useState(false);
   const [showMigrationDialog, setShowMigrationDialog] = useState(false);
+  const [showForcePrdDialog, setShowForcePrdDialog] = useState(false);
+  const [forcePrdData, setForcePrdData] = useState<{
+    polenEntries: any[];
+    startLayer: 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
+    inferMissing: boolean;
+  } | null>(null);
   const [detectedPatterns, setDetectedPatterns] = useState<DetectedPattern[]>([]);
   const [patternHistory, setPatternHistory] = useState<PatternHistoryEntry[]>([]);
   const [highlightedPattern, setHighlightedPattern] = useState<DetectedPattern | null>(null);
@@ -938,6 +946,21 @@ const CalmMagicBoard = () => {
     return currentSeasonPolenCount;
   };
 
+  // Handle forced PRD generation from any layer
+  const handleForcePrdStart = useCallback((
+    projectId: string,
+    startLayer: 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS',
+    entries: any[],
+    inferMissing: boolean
+  ) => {
+    setForcePrdData({
+      polenEntries: entries,
+      startLayer,
+      inferMissing
+    });
+    setShowForcePrdDialog(false);
+  }, []);
+
   // Handle project rename
   const handleProjectRename = (newName: string) => {
     if (projectContext) {
@@ -1194,6 +1217,25 @@ const CalmMagicBoard = () => {
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>Migrate Orphan Fragments</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            
+            {/* Force PRD Generation */}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => setShowForcePrdDialog(true)}
+                    className="relative"
+                  >
+                    <Rocket className="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Force PRD Generation</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -2009,6 +2051,33 @@ const CalmMagicBoard = () => {
           toast.success('Fragments migrés avec succès');
         }}
       />
+
+      {/* Force PRD Dialog */}
+      <ForcePrdDialog
+        isOpen={showForcePrdDialog}
+        onClose={() => setShowForcePrdDialog(false)}
+        defaultProjectId={activeProjectId}
+        onStartGeneration={handleForcePrdStart}
+      />
+
+      {/* Force PRD Wizard */}
+      {forcePrdData && (
+        <PrdGeneratorWizard
+          isOpen={!!forcePrdData}
+          onClose={() => setForcePrdData(null)}
+          polenEntries={forcePrdData.polenEntries}
+          board={forcePrdData.startLayer}
+          projectId={activeProjectId}
+          forceStartLayer={forcePrdData.startLayer}
+          forceMode={true}
+          inferMissingLayers={forcePrdData.inferMissing}
+          onPrdCreated={(newPrdId) => {
+            updateProgress({ prdId: newPrdId });
+            setForcePrdData(null);
+            toast.success('PRD created successfully!');
+          }}
+        />
+      )}
 
     </div>
   );

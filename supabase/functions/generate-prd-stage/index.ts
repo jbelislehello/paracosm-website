@@ -42,7 +42,8 @@ serve(async (req) => {
       existingContent, 
       glitchData, 
       driftData,
-      consciousnessContext // NEW: Mathematical consciousness context
+      consciousnessContext, // Mathematical consciousness context
+      inferMissingLayers // NEW: When true, AI will synthesize content for layers before the starting layer
     } = await req.json() as {
       layer: PrdLayer | 'love' | 'magic' | 'calm' | 'open' | 'free' | 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE';
       polenEntries: PolenEntry[];
@@ -51,6 +52,7 @@ serve(async (req) => {
       glitchData?: any;
       driftData?: any;
       consciousnessContext?: ConsciousnessContext;
+      inferMissingLayers?: boolean;
     };
 
     const layerNormalized: PrdLayer = (() => {
@@ -64,7 +66,7 @@ serve(async (req) => {
       throw new Error(`Invalid layer: ${String(layer)}`);
     })();
 
-    console.log(`Generating Calm Magic PRD content for layer: ${layerNormalized}, ${polenEntries.length} polen entries (incoming: ${layer})`);
+    console.log(`Generating Calm Magic PRD content for layer: ${layerNormalized}, ${polenEntries.length} polen entries (incoming: ${layer}), inferMissing: ${inferMissingLayers || false}`);
     // If we have structured data from the assistant, use it directly
     if (layerNormalized === 'POLLENS' && glitchData?.pollens) {
       const pollens = glitchData.pollens;
@@ -140,8 +142,21 @@ Honor this geometric context in your generation. High integration strength means
 Low fragmentation means interconnected ideas. Fixed points are stable reference anchors.
 ` : '';
 
+    // Build inference context section for force mode
+    const inferenceSection = inferMissingLayers ? `
+INFERENCE MODE ACTIVE:
+You are generating content for layer ${layerNormalized}, but the user started their journey from this layer.
+Previous layers (POLLENS, NOEMS, etc.) may not have been explicitly captured.
+When generating content:
+1. Synthesize reasonable assumptions for earlier layers based on the ${layerNormalized} content
+2. Make connections between what IS documented and what can be INFERRED
+3. Be clear when you are inferring vs. when you are working from explicit input
+4. Flag gaps or areas that would benefit from more explicit exploration
+` : '';
+
     const systemPrompt = `You are an expert at the Calm Magic PRD system — a 5-season process that transforms aspirations into market-ready products.
 ${consciousnessSection}
+${inferenceSection}
 THE 5 SEASONS:
 1. POLLENS – Relational & Cultural Aspirations: Self aspirations, team dynamics, organizational culture, relational elements
 2. NOEMS – Conceptual Ideation: Ideas, concepts, abstract patterns, mental models, theoretical frameworks
