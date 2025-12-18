@@ -132,12 +132,14 @@ const GardenExpansionMode = () => {
     setPrdRefreshKey(prev => prev + 1);
   };
 
+  const [autoCompileEnabled, setAutoCompileEnabled] = useState(true);
+
   const autoCompilation = useAutoCompilation({
     visitedTiles,
     journeyPath,
     polenCounts: seasonCounts as Record<AutoSeason, number>,
     onCompile: handleAutoCompile,
-    enabled: false // Disabled by default - can be enabled via UI toggle
+    enabled: autoCompileEnabled // Enabled by default
   });
 
   // Season data for visualization - using real counts
@@ -443,6 +445,8 @@ const GardenExpansionMode = () => {
                   triggers={autoCompilation.triggers}
                   isCompiling={autoCompilation.isCompiling}
                   compiledLayers={autoCompilation.compiledLayers}
+                  enabled={autoCompileEnabled}
+                  onToggleEnabled={setAutoCompileEnabled}
                 />
               </div>
             </section>

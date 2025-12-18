@@ -110,6 +110,12 @@ const VIEW_SIGNIFICANCE: Record<TopologyViewMode, { icon: React.ReactNode; title
     title: "Archive Density View",
     question: "Where is my knowledge deepest?",
     description: "Charts show the density of your engagement—where you've lingered and documented deeply versus where you've only passed through."
+  },
+  observatory: {
+    icon: <Zap className="w-4 h-4" />,
+    title: "Consciousness Observatory",
+    question: "What is the mathematical signature of my emerging consciousness?",
+    description: "Live metrics dashboard showing Fisher Information, Betti numbers, consciousness threshold progression, and 3D torus visualization of your ontological manifold."
   }
 };
 

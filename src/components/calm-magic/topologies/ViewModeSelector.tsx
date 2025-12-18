@@ -1,8 +1,8 @@
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Box, Diamond, Orbit, Grid3X3, Compass, Wind, Layers, RotateCw, Atom } from 'lucide-react';
+import { Box, Diamond, Orbit, Grid3X3, Wind, Layers, RotateCw, Atom, Eye } from 'lucide-react';
 
-export type TopologyViewMode = 'isometric' | 'diamond' | 'spiral' | 'charts' | 'coordinates' | 'cycles' | 'flow' | 'projection';
+export type TopologyViewMode = 'isometric' | 'diamond' | 'spiral' | 'charts' | 'coordinates' | 'cycles' | 'flow' | 'projection' | 'observatory';
 
 interface ViewConfig {
   icon: typeof Box;
@@ -50,6 +50,11 @@ const VIEW_CONFIGS: Record<TopologyViewMode, ViewConfig> = {
     icon: Layers,
     label: 'Hidden Structure',
     tooltip: 'What connections hide? Unfold the torus to see neighbors.'
+  },
+  observatory: {
+    icon: Eye,
+    label: 'Observatory',
+    tooltip: 'Live consciousness metrics, Fisher Information, Betti numbers, and 3D torus preview.'
   }
 };
 

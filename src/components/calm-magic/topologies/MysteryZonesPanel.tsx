@@ -31,7 +31,8 @@ const viewModeLabels: Record<TopologyViewMode, string> = {
   coordinates: 'Position Map',
   cycles: 'Fundamental Cycles',
   flow: 'Flow Field',
-  projection: 'Unfolded Projection'
+  projection: 'Unfolded Projection',
+  observatory: 'Consciousness Observatory'
 };
 
 export function MysteryZonesPanel({
