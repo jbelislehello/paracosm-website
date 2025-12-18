@@ -37,9 +37,18 @@ interface FragmentMigrationDialogProps {
 
 type MigrationMode = 'date' | 'keywords' | 'manual';
 
+// Time filter presets
+const TIME_FILTERS = [
+  { label: 'Tout', value: 'all', hours: null },
+  { label: 'Dernière heure', value: '1h', hours: 1 },
+  { label: '4 dernières heures', value: '4h', hours: 4 },
+  { label: 'Aujourd\'hui', value: 'today', hours: 24 },
+  { label: 'Cette semaine', value: 'week', hours: 168 },
+];
+
 // Keyword detection rules for auto-assignment
 const PROJECT_KEYWORDS: Record<string, string[]> = {
-  'prodago': ['prodago', 'ontologie', 'gouvernance ia', 'ia générative', 'cadre', 'organisation'],
+  'prodago': ['prodago', 'ontologie', 'gouvernance ia', 'ia générative', 'cadre', 'organisation', 'anthems', 'poem', 'totem'],
   'tonalli': ['tonalli', 'nahuatl', 'maya', 'tzolkin', 'hexagramme', 'calendrier'],
   'wuxia': ['wuxia', 'fox', 'renard', 'kung fu', 'martial'],
   'oaciq': ['oaciq', 'immobilier', 'courtier', 'agent'],
@@ -60,6 +69,8 @@ export function FragmentMigrationDialog({
   const [isLoading, setIsLoading] = useState(true);
   const [isMigrating, setIsMigrating] = useState(false);
   const [autoAssignments, setAutoAssignments] = useState<Map<string, string>>(new Map());
+  const [timeFilter, setTimeFilter] = useState<string>('all');
+  const [customTimeInput, setCustomTimeInput] = useState<string>('');
 
   // Fetch orphan fragments and projects on open
   useEffect(() => {
@@ -135,6 +146,30 @@ export function FragmentMigrationDialog({
     return null;
   };
 
+  // Time-filtered fragments for date mode
+  const timeFilteredFragments = useMemo(() => {
+    if (timeFilter === 'all' && !customTimeInput) return orphanFragments;
+    
+    // Custom time input (HH:MM format for today)
+    if (customTimeInput) {
+      const [hours, minutes] = customTimeInput.split(':').map(Number);
+      if (!isNaN(hours) && !isNaN(minutes)) {
+        const cutoff = new Date();
+        cutoff.setHours(hours, minutes, 0, 0);
+        return orphanFragments.filter(f => new Date(f.created_at) >= cutoff);
+      }
+    }
+    
+    // Preset time filters
+    const preset = TIME_FILTERS.find(t => t.value === timeFilter);
+    if (preset?.hours) {
+      const cutoff = new Date(Date.now() - preset.hours * 60 * 60 * 1000);
+      return orphanFragments.filter(f => new Date(f.created_at) >= cutoff);
+    }
+    
+    return orphanFragments;
+  }, [orphanFragments, timeFilter, customTimeInput]);
+
   // Compute auto-assignments based on mode
   useEffect(() => {
     if (mode === 'keywords' && projects.length > 0) {
@@ -149,27 +184,28 @@ export function FragmentMigrationDialog({
       
       setAutoAssignments(assignments);
     } else if (mode === 'date' && projects.length > 0 && selectedProject) {
-      // For date mode, all fragments go to selected project
+      // For date mode, only time-filtered fragments go to selected project
       const assignments = new Map<string, string>();
-      orphanFragments.forEach(fragment => {
+      timeFilteredFragments.forEach(fragment => {
         assignments.set(fragment.id, selectedProject);
       });
       setAutoAssignments(assignments);
     } else {
       setAutoAssignments(new Map());
     }
-  }, [mode, orphanFragments, projects, selectedProject]);
+  }, [mode, orphanFragments, timeFilteredFragments, projects, selectedProject]);
 
   // Filtered fragments based on search
   const filteredFragments = useMemo(() => {
-    if (!searchQuery.trim()) return orphanFragments;
+    const base = mode === 'date' ? timeFilteredFragments : orphanFragments;
+    if (!searchQuery.trim()) return base;
     
     const query = searchQuery.toLowerCase();
-    return orphanFragments.filter(f => 
+    return base.filter(f => 
       f.content.toLowerCase().includes(query) ||
       f.tags?.some(t => t.toLowerCase().includes(query))
     );
-  }, [orphanFragments, searchQuery]);
+  }, [orphanFragments, timeFilteredFragments, searchQuery, mode]);
 
   // Group fragments by auto-detected project for keywords mode
   const groupedByProject = useMemo(() => {
@@ -238,8 +274,29 @@ export function FragmentMigrationDialog({
           if (error) throw error;
           migratedCount += fragmentIds.length;
         }
+      } else if (mode === 'date') {
+        // Date mode - migrate time-filtered fragments to selected project
+        const fragmentIds = timeFilteredFragments.map(f => f.id);
+        
+        if (fragmentIds.length === 0) {
+          toast.error('Aucun fragment à migrer pour ce filtre');
+          setIsMigrating(false);
+          return;
+        }
+
+        const { error } = await supabase
+          .from('polen_entries')
+          .update({ project_id: selectedProject })
+          .in('id', fragmentIds);
+
+        if (error) throw error;
+        migratedCount = fragmentIds.length;
+        
+        // Remove migrated from orphan list
+        const migratedSet = new Set(fragmentIds);
+        setOrphanFragments(prev => prev.filter(f => !migratedSet.has(f.id)));
       } else {
-        // Manual or Date mode - migrate selected fragments to selected project
+        // Manual mode - migrate selected fragments to selected project
         const fragmentIds = Array.from(selectedFragments);
         
         if (fragmentIds.length === 0) {
@@ -255,19 +312,13 @@ export function FragmentMigrationDialog({
 
         if (error) throw error;
         migratedCount = fragmentIds.length;
+        
+        // Remove migrated from orphan list
+        setOrphanFragments(prev => prev.filter(f => !selectedFragments.has(f.id)));
+        setSelectedFragments(new Set());
       }
 
       toast.success(`${migratedCount} fragment(s) migré(s) avec succès`);
-      
-      // Refresh orphan list
-      setOrphanFragments(prev => 
-        prev.filter(f => 
-          mode === 'keywords' 
-            ? !autoAssignments.has(f.id)
-            : !selectedFragments.has(f.id)
-        )
-      );
-      setSelectedFragments(new Set());
       
       onMigrationComplete?.();
     } catch (error) {
@@ -462,34 +513,78 @@ export function FragmentMigrationDialog({
                 <div className="flex items-center gap-2 p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
                   <Calendar className="h-5 w-5 text-blue-500" />
                   <p className="text-sm">
-                    Assigner tous les fragments orphelins au projet sélectionné
+                    Filtrer par heure et assigner au projet sélectionné
                   </p>
                 </div>
 
-                <Select value={selectedProject || ''} onValueChange={setSelectedProject}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Sélectionner le projet cible" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {projects.map(project => (
-                      <SelectItem key={project.id} value={project.id}>
-                        <div className="flex items-center justify-between gap-4">
-                          <span>{project.project_name}</span>
-                          <span className="text-xs text-muted-foreground">
-                            {format(new Date(project.created_at), 'dd MMM yyyy', { locale: fr })}
-                          </span>
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="flex items-center gap-3">
+                  <Select value={selectedProject || ''} onValueChange={setSelectedProject}>
+                    <SelectTrigger className="w-[200px]">
+                      <SelectValue placeholder="Projet cible" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {projects.map(project => (
+                        <SelectItem key={project.id} value={project.id}>
+                          {project.project_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  
+                  <Select value={timeFilter} onValueChange={(v) => { setTimeFilter(v); setCustomTimeInput(''); }}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue placeholder="Filtre temps" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {TIME_FILTERS.map(filter => (
+                        <SelectItem key={filter.value} value={filter.value}>
+                          {filter.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">ou depuis</span>
+                    <Input
+                      type="time"
+                      value={customTimeInput}
+                      onChange={(e) => { setCustomTimeInput(e.target.value); setTimeFilter('all'); }}
+                      className="w-[120px]"
+                      placeholder="15:50"
+                    />
+                  </div>
+                </div>
 
                 <div className="border rounded-lg p-4 text-center">
-                  <p className="text-2xl font-bold text-primary">{orphanFragments.length}</p>
+                  <p className="text-2xl font-bold text-primary">{timeFilteredFragments.length}</p>
                   <p className="text-sm text-muted-foreground">
                     fragments seront migrés vers <strong>{getProjectName(selectedProject)}</strong>
                   </p>
+                  {customTimeInput && (
+                    <p className="text-xs text-blue-500 mt-1">
+                      Filtré depuis {customTimeInput} aujourd'hui
+                    </p>
+                  )}
                 </div>
+                
+                <ScrollArea className="h-[150px] border rounded-lg p-2">
+                  <div className="space-y-1">
+                    {timeFilteredFragments.slice(0, 10).map(fragment => (
+                      <div key={fragment.id} className="flex items-center gap-2 p-2 rounded text-xs bg-muted/30">
+                        <span className="text-muted-foreground shrink-0">
+                          {format(new Date(fragment.created_at), 'HH:mm', { locale: fr })}
+                        </span>
+                        <span className="line-clamp-1">{fragment.content.slice(0, 80)}...</span>
+                      </div>
+                    ))}
+                    {timeFilteredFragments.length > 10 && (
+                      <p className="text-xs text-muted-foreground text-center py-2">
+                        ... et {timeFilteredFragments.length - 10} autres
+                      </p>
+                    )}
+                  </div>
+                </ScrollArea>
               </TabsContent>
             </Tabs>
           </>
@@ -506,7 +601,7 @@ export function FragmentMigrationDialog({
               orphanFragments.length === 0 ||
               (mode === 'manual' && selectedFragments.size === 0) ||
               (mode === 'keywords' && autoAssignments.size === 0) ||
-              (mode === 'date' && !selectedProject)
+              (mode === 'date' && (!selectedProject || timeFilteredFragments.length === 0))
             }
           >
             {isMigrating ? (
@@ -516,7 +611,7 @@ export function FragmentMigrationDialog({
               </>
             ) : (
               <>
-                Migrer {mode === 'keywords' ? autoAssignments.size : mode === 'date' ? orphanFragments.length : selectedFragments.size} fragment(s)
+                Migrer {mode === 'keywords' ? autoAssignments.size : mode === 'date' ? timeFilteredFragments.length : selectedFragments.size} fragment(s)
               </>
             )}
           </Button>
