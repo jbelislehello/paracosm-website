@@ -123,7 +123,8 @@ export const PrdCompilationCard: React.FC<PrdCompilationCardProps> = ({
       throw new Error(`Failed to generate ${layer}: ${genError.message}`);
     }
 
-    return data || {};
+    // Extract content field if wrapped, otherwise use data directly
+    return data?.content || data || {};
   };
 
   const handleCompileMissing = async () => {
