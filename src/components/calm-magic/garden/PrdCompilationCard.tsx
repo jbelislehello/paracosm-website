@@ -16,7 +16,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { CompilationProgressToast } from './CompilationProgressToast';
 
 type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 
@@ -74,8 +73,6 @@ export const PrdCompilationCard: React.FC<PrdCompilationCardProps> = ({
   const [completedLayers, setCompletedLayers] = useState<Season[]>([]);
   const [failedLayers, setFailedLayers] = useState<Season[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [compilationStartTime, setCompilationStartTime] = useState<number>(0);
-  const progressToastId = useRef<string | number | null>(null);
   const fragmentCountRef = useRef<number>(0);
 
   // Check if a layer has content
@@ -141,54 +138,6 @@ export const PrdCompilationCard: React.FC<PrdCompilationCardProps> = ({
     };
   };
 
-  // Show persistent progress toast
-  const showProgressToast = (targetLayers: Season[]) => {
-    const startTime = Date.now();
-    setCompilationStartTime(startTime);
-    fragmentCountRef.current = 0;
-    
-    progressToastId.current = toast.custom(
-      (t) => (
-        <CompilationProgressToast
-          layers={targetLayers}
-          currentLayer={currentLayer}
-          completedLayers={completedLayers}
-          failedLayers={failedLayers}
-          startTime={startTime}
-          onDismiss={() => toast.dismiss(t)}
-        />
-      ),
-      { duration: Infinity, position: 'bottom-right' }
-    );
-  };
-
-  // Update progress toast
-  const updateProgressToast = (targetLayers: Season[], current: Season | null, completed: Season[], failed: Season[]) => {
-    if (progressToastId.current) {
-      toast.custom(
-        (t) => (
-          <CompilationProgressToast
-            layers={targetLayers}
-            currentLayer={current}
-            completedLayers={completed}
-            failedLayers={failed}
-            startTime={compilationStartTime}
-            onDismiss={() => toast.dismiss(t)}
-          />
-        ),
-        { id: progressToastId.current, duration: Infinity, position: 'bottom-right' }
-      );
-    }
-  };
-
-  // Dismiss progress toast
-  const dismissProgressToast = () => {
-    if (progressToastId.current) {
-      toast.dismiss(progressToastId.current);
-      progressToastId.current = null;
-    }
-  };
-
   const handleCompileMissing = async () => {
     if (!prdId || emptyLayers.length === 0) return;
 
@@ -197,18 +146,13 @@ export const PrdCompilationCard: React.FC<PrdCompilationCardProps> = ({
     setError(null);
     setCompletedLayers([]);
     setFailedLayers([]);
-    setCompilationStartTime(startTime);
     fragmentCountRef.current = 0;
-
-    // Show persistent progress toast
-    showProgressToast(emptyLayers);
 
     const compiledLayersList: Season[] = [];
 
     try {
       for (const layer of emptyLayers) {
         setCurrentLayer(layer);
-        updateProgressToast(emptyLayers, layer, compiledLayersList, []);
         
         const { content: generatedContent, fragmentCount } = await compileLayer(layer);
         fragmentCountRef.current += fragmentCount;
@@ -227,12 +171,8 @@ export const PrdCompilationCard: React.FC<PrdCompilationCardProps> = ({
 
         compiledLayersList.push(layer);
         setCompletedLayers([...compiledLayersList]);
-        updateProgressToast(emptyLayers, layer, compiledLayersList, []);
       }
 
-      // Dismiss progress toast and show completion
-      dismissProgressToast();
-      
       const stats: CompilationStats = {
         layersCompiled: compiledLayersList,
         totalFragments: fragmentCountRef.current,
@@ -245,9 +185,7 @@ export const PrdCompilationCard: React.FC<PrdCompilationCardProps> = ({
       setError(message);
       if (currentLayer) {
         setFailedLayers(prev => [...prev, currentLayer]);
-        updateProgressToast(emptyLayers, null, completedLayers, [...failedLayers, currentLayer]);
       }
-      dismissProgressToast();
       toast.error(`Compilation failed: ${message}`);
     } finally {
       setIsCompiling(false);
@@ -263,18 +201,13 @@ export const PrdCompilationCard: React.FC<PrdCompilationCardProps> = ({
     setError(null);
     setCompletedLayers([]);
     setFailedLayers([]);
-    setCompilationStartTime(startTime);
     fragmentCountRef.current = 0;
-
-    // Show persistent progress toast
-    showProgressToast(SEASONS);
 
     const compiledLayersList: Season[] = [];
 
     try {
       for (const layer of SEASONS) {
         setCurrentLayer(layer);
-        updateProgressToast(SEASONS, layer, compiledLayersList, []);
         
         const { content: generatedContent, fragmentCount } = await compileLayer(layer);
         fragmentCountRef.current += fragmentCount;
@@ -292,12 +225,8 @@ export const PrdCompilationCard: React.FC<PrdCompilationCardProps> = ({
 
         compiledLayersList.push(layer);
         setCompletedLayers([...compiledLayersList]);
-        updateProgressToast(SEASONS, layer, compiledLayersList, []);
       }
 
-      // Dismiss progress toast and show completion
-      dismissProgressToast();
-      
       const stats: CompilationStats = {
         layersCompiled: compiledLayersList,
         totalFragments: fragmentCountRef.current,
@@ -310,9 +239,7 @@ export const PrdCompilationCard: React.FC<PrdCompilationCardProps> = ({
       setError(message);
       if (currentLayer) {
         setFailedLayers(prev => [...prev, currentLayer]);
-        updateProgressToast(SEASONS, null, completedLayers, [...failedLayers, currentLayer]);
       }
-      dismissProgressToast();
       toast.error(`Regeneration failed: ${message}`);
     } finally {
       setIsCompiling(false);
