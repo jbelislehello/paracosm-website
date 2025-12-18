@@ -5,6 +5,16 @@
 
 export type NatureCognitiveMode = 'river' | 'mountain' | 'lake' | 'forest' | 'tree';
 
+export interface ParticleConfig {
+  type: 'droplet' | 'mist' | 'firefly' | 'leaf' | 'seed' | 'ripple' | 'snow';
+  count: number;
+  speed: number;
+  color: { h: number; s: number; b: number };
+  behavior: 'flow' | 'rise' | 'wander' | 'fall' | 'spiral' | 'pulse';
+  size: { min: number; max: number };
+  glow?: boolean;
+}
+
 export interface NatureMode {
   id: NatureCognitiveMode;
   name: string;
@@ -16,6 +26,7 @@ export interface NatureMode {
   icon: string;
   vegetation: VegetationType[];
   terrain: TerrainType;
+  particles: ParticleConfig[];
 }
 
 export type VegetationType = 
@@ -56,7 +67,11 @@ export const NATURE_COGNITIVE_MODES: Record<NatureCognitiveMode, NatureMode> = {
     color: 'hsl(200, 70%, 50%)',
     icon: '🌊',
     vegetation: ['bamboo', 'ferns', 'moss_lichen'],
-    terrain: 'water_feature'
+    terrain: 'water_feature',
+    particles: [
+      { type: 'droplet', count: 40, speed: 1.2, color: { h: 200, s: 70, b: 70 }, behavior: 'flow', size: { min: 2, max: 5 } },
+      { type: 'mist', count: 15, speed: 0.3, color: { h: 200, s: 30, b: 90 }, behavior: 'flow', size: { min: 8, max: 15 } }
+    ]
   },
   mountain: {
     id: 'mountain',
@@ -68,7 +83,11 @@ export const NATURE_COGNITIVE_MODES: Record<NatureCognitiveMode, NatureMode> = {
     color: 'hsl(45, 80%, 55%)',
     icon: '⛰️',
     vegetation: ['succulents', 'ancient_trees', 'moss_lichen'],
-    terrain: 'rocky_outcrop'
+    terrain: 'rocky_outcrop',
+    particles: [
+      { type: 'snow', count: 30, speed: 0.5, color: { h: 0, s: 0, b: 95 }, behavior: 'fall', size: { min: 2, max: 4 } },
+      { type: 'mist', count: 20, speed: 0.2, color: { h: 220, s: 15, b: 85 }, behavior: 'rise', size: { min: 10, max: 20 } }
+    ]
   },
   lake: {
     id: 'lake',
@@ -80,7 +99,11 @@ export const NATURE_COGNITIVE_MODES: Record<NatureCognitiveMode, NatureMode> = {
     color: 'hsl(210, 60%, 60%)',
     icon: '🏞️',
     vegetation: ['ferns', 'wildflowers', 'moss_lichen'],
-    terrain: 'water_feature'
+    terrain: 'water_feature',
+    particles: [
+      { type: 'ripple', count: 8, speed: 0.1, color: { h: 210, s: 50, b: 70 }, behavior: 'pulse', size: { min: 5, max: 25 } },
+      { type: 'mist', count: 12, speed: 0.15, color: { h: 210, s: 20, b: 90 }, behavior: 'rise', size: { min: 12, max: 25 } }
+    ]
   },
   forest: {
     id: 'forest',
@@ -92,7 +115,11 @@ export const NATURE_COGNITIVE_MODES: Record<NatureCognitiveMode, NatureMode> = {
     color: 'hsl(142, 60%, 45%)',
     icon: '🌳',
     vegetation: ['dense_canopy', 'mushrooms', 'vines', 'ferns'],
-    terrain: 'fertile_soil'
+    terrain: 'fertile_soil',
+    particles: [
+      { type: 'firefly', count: 25, speed: 0.4, color: { h: 60, s: 90, b: 85 }, behavior: 'wander', size: { min: 3, max: 6 }, glow: true },
+      { type: 'leaf', count: 15, speed: 0.6, color: { h: 100, s: 50, b: 60 }, behavior: 'fall', size: { min: 4, max: 8 } }
+    ]
   },
   tree: {
     id: 'tree',
@@ -104,7 +131,11 @@ export const NATURE_COGNITIVE_MODES: Record<NatureCognitiveMode, NatureMode> = {
     color: 'hsl(340, 65%, 55%)',
     icon: '🌱',
     vegetation: ['ancient_trees', 'vines', 'wildflowers'],
-    terrain: 'fertile_soil'
+    terrain: 'fertile_soil',
+    particles: [
+      { type: 'seed', count: 20, speed: 0.3, color: { h: 45, s: 70, b: 75 }, behavior: 'spiral', size: { min: 3, max: 5 } },
+      { type: 'leaf', count: 10, speed: 0.5, color: { h: 340, s: 40, b: 70 }, behavior: 'fall', size: { min: 4, max: 7 } }
+    ]
   }
 };
 
@@ -115,6 +146,15 @@ export const SEASON_TO_NATURE: Record<string, NatureCognitiveMode> = {
   'POEMS': 'river',      // Flow, emergence, creativity
   'TOTEMS': 'mountain',  // Structure, integration, vision
   'ANTHEMS': 'forest'    // Ecosystem, interconnection, maturity
+};
+
+// Board to nature mapping for water features
+export const BOARD_TO_WATER: Record<string, boolean> = {
+  'MAGIC': true,
+  'CALM': true,
+  'LOVE': false,
+  'OPEN': false,
+  'FREE': false
 };
 
 // Vegetation density thresholds
@@ -167,4 +207,23 @@ export function getTerrainType(
   if (fragmentCount === 0) return 'sandy_clearing';
   if (fragmentCount >= 5) return 'mossy_ground';
   return 'fertile_soil';
+}
+
+/**
+ * Check if a tile should have water features based on board/season
+ */
+export function shouldHaveWater(
+  row: number, 
+  col: number, 
+  currentNatureMode: NatureCognitiveMode | null
+): boolean {
+  // Water modes always have water
+  if (currentNatureMode === 'river' || currentNatureMode === 'lake') {
+    return true;
+  }
+  // Specific tiles based on position (MAGIC/CALM alignment)
+  // MAGIC tiles are typically in rows 2-3, CALM in rows 4-5
+  const isMagicArea = row >= 2 && row <= 3;
+  const isCalmArea = row >= 4 && row <= 5;
+  return isMagicArea || isCalmArea;
 }

@@ -153,6 +153,72 @@ const GardenExpansionMode = () => {
     fetchPrdData();
   }, [projectContext?.id]);
 
+  // Fetch real POLEN data from Supabase to populate tile ecology
+  useEffect(() => {
+    const fetchPolenData = async () => {
+      try {
+        const { data: userData } = await supabase.auth.getUser();
+        if (!userData?.user?.id) return;
+
+        // Fetch all POLEN entries for this user
+        const { data: polenEntries, error } = await supabase
+          .from('polen_entries')
+          .select('id, content, tile_id, tags, season_context, created_at')
+          .eq('user_id', userData.user.id);
+
+        if (error) {
+          console.error('Error fetching POLEN entries:', error);
+          return;
+        }
+
+        if (!polenEntries || polenEntries.length === 0) {
+          return;
+        }
+
+        // Group by tile_id and extract blunt quotes
+        const tileMap = new Map<string, { fragmentCount: number; quotes: BluntQuote[] }>();
+        const visited = new Set<string>();
+
+        polenEntries.forEach(entry => {
+          if (entry.tile_id !== null && entry.tile_id !== undefined) {
+            const row = Math.floor(entry.tile_id / 8);
+            const col = entry.tile_id % 8;
+            const key = `${row}-${col}`;
+            
+            visited.add(key);
+            
+            const existing = tileMap.get(key) || { fragmentCount: 0, quotes: [] };
+            existing.fragmentCount++;
+            
+            // Extract blunt quotes from this entry
+            const extracted = extractBluntQuotes(
+              [{ id: entry.id, content: entry.content, tile_id: entry.tile_id }],
+              (tileId: number) => ({ row: Math.floor(tileId / 8), col: tileId % 8 })
+            );
+            existing.quotes.push(...extracted);
+            
+            tileMap.set(key, existing);
+          }
+        });
+
+        setTileEcologyData(tileMap);
+        setVisitedTiles(visited);
+        
+        // Update metrics with real data
+        setMetrics(prev => ({
+          ...prev,
+          polenCount: polenEntries.length,
+          tilesVisited: visited.size
+        }));
+        
+      } catch (error) {
+        console.error('Error fetching POLEN data:', error);
+      }
+    };
+
+    fetchPolenData();
+  }, [projectContext?.id]);
+
   // Generate compiled prompt using the rich formatter
   useEffect(() => {
     const prompt = formatFoundationalPrompt(
