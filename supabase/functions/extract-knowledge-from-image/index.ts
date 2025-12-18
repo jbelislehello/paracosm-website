@@ -34,6 +34,93 @@ interface KnowledgeExtraction {
   summary: string;
 }
 
+function cleanupJsonString(input: string): string {
+  return input
+    .trim()
+    // Remove trailing commas
+    .replace(/,\s*}/g, '}')
+    .replace(/,\s*]/g, ']')
+    // Replace smart quotes
+    .replace(/[\u201C\u201D]/g, '"')
+    .replace(/[\u2018\u2019]/g, "'")
+    // Remove JS-style comments (rare but happens)
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/^\s*\/\/.*$/gm, '');
+}
+
+function extractFirstJsonObject(content: string): string {
+  // Strip code fences if present
+  let s = content.trim();
+  if (s.startsWith('```')) {
+    const firstNewline = s.indexOf('\n');
+    if (firstNewline !== -1) s = s.slice(firstNewline + 1);
+    const lastFence = s.lastIndexOf('```');
+    if (lastFence !== -1) s = s.slice(0, lastFence);
+    s = s.trim();
+  }
+
+  // Find first object/array start
+  const startObj = s.indexOf('{');
+  const startArr = s.indexOf('[');
+  let start = -1;
+  if (startObj !== -1 && startArr !== -1) start = Math.min(startObj, startArr);
+  else start = startObj !== -1 ? startObj : startArr;
+
+  if (start === -1) {
+    // Last resort: return whole string; JSON.parse will throw with context.
+    return s;
+  }
+
+  // Brace/Bracket matching with string/escape awareness
+  let inString = false;
+  let stringQuote: '"' | "'" | null = null;
+  let escape = false;
+  const stack: string[] = [];
+
+  for (let i = start; i < s.length; i++) {
+    const ch = s[i];
+
+    if (inString) {
+      if (escape) {
+        escape = false;
+        continue;
+      }
+      if (ch === '\\') {
+        escape = true;
+        continue;
+      }
+      if (stringQuote && ch === stringQuote) {
+        inString = false;
+        stringQuote = null;
+      }
+      continue;
+    }
+
+    if (ch === '"' || ch === "'") {
+      inString = true;
+      stringQuote = ch as '"' | "'";
+      continue;
+    }
+
+    if (ch === '{') stack.push('}');
+    else if (ch === '[') stack.push(']');
+    else if (ch === '}' || ch === ']') {
+      const expected = stack.pop();
+      if (expected !== ch) {
+        // Mismatched close, break and let JSON.parse complain.
+        break;
+      }
+      if (stack.length === 0) {
+        return s.slice(start, i + 1).trim();
+      }
+    }
+  }
+
+  // If we couldn't find a balanced end, fall back to greedy object match.
+  const greedy = s.match(/\{[\s\S]*\}/);
+  return (greedy?.[0] ?? s).trim();
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -158,47 +245,28 @@ Return a JSON object with this exact structure:
     console.log('AI response received, parsing JSON...');
     console.log('Raw content length:', content.length);
 
-    // Extract JSON from response (handle markdown code blocks)
-    let jsonStr = content.trim();
-    
-    // Remove markdown code block wrappers if present
-    // Handle: ```json\n{...}\n``` or ```\n{...}\n```
-    if (jsonStr.startsWith('```')) {
-      // Find the end of the opening code fence
-      const firstNewline = jsonStr.indexOf('\n');
-      if (firstNewline !== -1) {
-        jsonStr = jsonStr.substring(firstNewline + 1);
-      }
-      // Remove trailing code fence
-      const lastFence = jsonStr.lastIndexOf('```');
-      if (lastFence !== -1) {
-        jsonStr = jsonStr.substring(0, lastFence);
-      }
-      jsonStr = jsonStr.trim();
-    }
-    
-    // Also try regex as fallback
-    if (!jsonStr.startsWith('{') && !jsonStr.startsWith('[')) {
-      const jsonMatch = content.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        jsonStr = jsonMatch[0];
-      }
-    }
-    
-    console.log('Cleaned JSON starts with:', jsonStr.substring(0, 50));
+    // Extract and sanitize JSON from the model output.
+    // Models sometimes return extra prose, code fences, or comments; we defensively extract the first JSON object.
+    const jsonStr = extractFirstJsonObject(content);
+
+    console.log('Extracted JSON length:', jsonStr.length);
+    console.log('Extracted JSON preview:', jsonStr.substring(0, 120));
 
     let extraction: KnowledgeExtraction;
     try {
       extraction = JSON.parse(jsonStr);
     } catch (parseError) {
-      console.error('JSON parse error, attempting cleanup...', parseError);
-      // Try to fix common JSON issues
-      jsonStr = jsonStr
-        .replace(/,\s*}/g, '}')
-        .replace(/,\s*]/g, ']')
-        .replace(/[\u201C\u201D]/g, '"') // Replace smart quotes
-        .replace(/'/g, '"');
-      extraction = JSON.parse(jsonStr);
+      console.error('JSON parse error. Attempting cleanup...', parseError);
+
+      const cleaned = cleanupJsonString(jsonStr);
+      try {
+        extraction = JSON.parse(cleaned);
+      } catch (parseError2) {
+        console.error('JSON parse still failing after cleanup.', parseError2);
+        // Helpful context for debugging without logging the full payload.
+        console.error('Failing JSON tail:', cleaned.substring(Math.max(0, cleaned.length - 400)));
+        throw parseError2;
+      }
     }
 
     // Validate and set defaults
