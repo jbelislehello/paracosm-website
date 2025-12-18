@@ -262,7 +262,7 @@ const GardenExpansionMode = () => {
     { name: 'ANTHEMS', label: 'stories', count: seasonCounts.ANTHEMS, description: 'Voice established' },
   ];
 
-  // Fetch PRD data from Supabase
+  // Fetch PRD data from Supabase - auto-create if user has fragments but no PRD
   useEffect(() => {
     const fetchPrdData = async () => {
       if (!projectContext?.id) {
@@ -272,10 +272,16 @@ const GardenExpansionMode = () => {
 
       try {
         const { data: userData } = await supabase.auth.getUser();
-        if (userData?.user?.id) {
-          setUserId(userData.user.id);
+        const currentUserId = userData?.user?.id;
+        
+        if (currentUserId) {
+          setUserId(currentUserId);
+        } else {
+          setIsLoadingPrd(false);
+          return;
         }
 
+        // Check project_season_progress for linked PRD
         const { data: progressData } = await supabase
           .from('project_season_progress')
           .select('prd_id')
@@ -283,33 +289,111 @@ const GardenExpansionMode = () => {
           .maybeSingle();
 
         let foundPrdId = progressData?.prd_id;
+        let prdRecord = null;
 
-        if (!foundPrdId) {
-          if (userData?.user?.id) {
-            const { data: prds } = await supabase
-              .from('prds')
-              .select('*')
-              .eq('owner_id', userData.user.id)
-              .order('updated_at', { ascending: false })
-              .limit(1);
-            
-            if (prds && prds.length > 0) {
-              setPrdData(prds[0]);
-              setPrdId(prds[0].id);
-            }
-          }
-        } else {
-          setPrdId(foundPrdId);
+        // If we have a linked PRD, fetch it
+        if (foundPrdId) {
           const { data: prd } = await supabase
             .from('prds')
             .select('*')
             .eq('id', foundPrdId)
             .single();
           
-          if (prd) {
-            setPrdData(prd);
+          // Verify the PRD belongs to current user
+          if (prd && prd.owner_id === currentUserId) {
+            prdRecord = prd;
+          } else {
+            // PRD doesn't belong to user, reset
+            foundPrdId = null;
           }
         }
+
+        // If no valid PRD found, search for user's existing PRD
+        if (!foundPrdId) {
+          const { data: prds } = await supabase
+            .from('prds')
+            .select('*')
+            .eq('owner_id', currentUserId)
+            .order('updated_at', { ascending: false })
+            .limit(1);
+          
+          if (prds && prds.length > 0) {
+            prdRecord = prds[0];
+            foundPrdId = prds[0].id;
+          }
+        }
+
+        // If still no PRD, check if user has fragments and create one
+        if (!foundPrdId) {
+          const { count: fragmentCount } = await supabase
+            .from('polen_entries')
+            .select('*', { count: 'exact', head: true })
+            .eq('user_id', currentUserId);
+
+          if (fragmentCount && fragmentCount > 0) {
+            console.log(`Creating new PRD for user with ${fragmentCount} fragments`);
+            
+            // Create new PRD for this user
+            const { data: newPrd, error: createError } = await supabase
+              .from('prds')
+              .insert({
+                owner_id: currentUserId,
+                title: projectContext.projectName || 'Calm Magic PRD',
+                status: 'draft',
+                prototype_stage: 'B_DIEGETIC'
+              })
+              .select()
+              .single();
+
+            if (createError) {
+              console.error('Failed to create PRD:', createError);
+            } else if (newPrd) {
+              prdRecord = newPrd;
+              foundPrdId = newPrd.id;
+              
+              toast.success('Created new PRD for your project', {
+                description: `${fragmentCount} fragments ready for compilation`
+              });
+
+              // Link the new PRD to project_season_progress
+              const { error: linkError } = await supabase
+                .from('project_season_progress')
+                .upsert({
+                  project_id: projectContext.id,
+                  user_id: currentUserId,
+                  prd_id: newPrd.id,
+                  current_season: 'ANTHEMS',
+                  journey_started: true
+                }, {
+                  onConflict: 'project_id'
+                });
+
+              if (linkError) {
+                console.error('Failed to link PRD to project:', linkError);
+              }
+            }
+          }
+        } else if (progressData && !progressData.prd_id && foundPrdId) {
+          // We found a PRD but it's not linked to the project - link it now
+          await supabase
+            .from('project_season_progress')
+            .upsert({
+              project_id: projectContext.id,
+              user_id: currentUserId,
+              prd_id: foundPrdId,
+              current_season: 'ANTHEMS',
+              journey_started: true
+            }, {
+              onConflict: 'project_id'
+            });
+        }
+
+        // Set state with found/created PRD
+        if (prdRecord) {
+          setPrdData(prdRecord);
+          setPrdId(foundPrdId);
+        }
+        
       } catch (error) {
         console.error('Error fetching PRD:', error);
       } finally {
