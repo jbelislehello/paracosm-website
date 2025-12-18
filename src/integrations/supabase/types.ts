@@ -589,6 +589,12 @@ export type Database = {
       }
       prds: {
         Row: {
+          anthems_audience_segments: string | null
+          anthems_brand_narrative: string | null
+          anthems_go_to_market: string | null
+          anthems_market_positioning: string | null
+          anthems_storytelling_assets: string | null
+          anthems_success_signals: string | null
           calm_requirements: string | null
           calm_risks_and_limits: string | null
           compiled_prompt: string | null
@@ -614,10 +620,26 @@ export type Database = {
           main_senge_focus:
             | Database["public"]["Enums"]["senge_discipline"]
             | null
+          noems_concepts: string | null
+          noems_intuitions: string | null
+          noems_mental_models: string | null
+          noems_shared_ideas: string | null
           open_adjustment_plan: string | null
           open_ontology_and_graph: string | null
           open_real_workflow: string | null
           owner_id: string
+          poems_environments: string | null
+          poems_messages: string | null
+          poems_objects: string | null
+          poems_people: string | null
+          poems_prototypes: string | null
+          poems_systems: string | null
+          pollens_aspirations: string | null
+          pollens_constraints: string | null
+          pollens_cultural_elements: string | null
+          pollens_relational_patterns: string | null
+          pollens_stakes: string | null
+          pollens_team_dynamics: string | null
           prompt_hooks_anthems: string | null
           prompt_hooks_noems: string | null
           prompt_hooks_poems: string | null
@@ -632,9 +654,21 @@ export type Database = {
           status: string
           team_id: string | null
           title: string
+          totems_access_controls: string | null
+          totems_data_architecture: string | null
+          totems_integration_points: string | null
+          totems_security_policies: string | null
+          totems_system_requirements: string | null
+          totems_technical_debt: string | null
           updated_at: string
         }
         Insert: {
+          anthems_audience_segments?: string | null
+          anthems_brand_narrative?: string | null
+          anthems_go_to_market?: string | null
+          anthems_market_positioning?: string | null
+          anthems_storytelling_assets?: string | null
+          anthems_success_signals?: string | null
           calm_requirements?: string | null
           calm_risks_and_limits?: string | null
           compiled_prompt?: string | null
@@ -660,10 +694,26 @@ export type Database = {
           main_senge_focus?:
             | Database["public"]["Enums"]["senge_discipline"]
             | null
+          noems_concepts?: string | null
+          noems_intuitions?: string | null
+          noems_mental_models?: string | null
+          noems_shared_ideas?: string | null
           open_adjustment_plan?: string | null
           open_ontology_and_graph?: string | null
           open_real_workflow?: string | null
           owner_id: string
+          poems_environments?: string | null
+          poems_messages?: string | null
+          poems_objects?: string | null
+          poems_people?: string | null
+          poems_prototypes?: string | null
+          poems_systems?: string | null
+          pollens_aspirations?: string | null
+          pollens_constraints?: string | null
+          pollens_cultural_elements?: string | null
+          pollens_relational_patterns?: string | null
+          pollens_stakes?: string | null
+          pollens_team_dynamics?: string | null
           prompt_hooks_anthems?: string | null
           prompt_hooks_noems?: string | null
           prompt_hooks_poems?: string | null
@@ -678,9 +728,21 @@ export type Database = {
           status?: string
           team_id?: string | null
           title: string
+          totems_access_controls?: string | null
+          totems_data_architecture?: string | null
+          totems_integration_points?: string | null
+          totems_security_policies?: string | null
+          totems_system_requirements?: string | null
+          totems_technical_debt?: string | null
           updated_at?: string
         }
         Update: {
+          anthems_audience_segments?: string | null
+          anthems_brand_narrative?: string | null
+          anthems_go_to_market?: string | null
+          anthems_market_positioning?: string | null
+          anthems_storytelling_assets?: string | null
+          anthems_success_signals?: string | null
           calm_requirements?: string | null
           calm_risks_and_limits?: string | null
           compiled_prompt?: string | null
@@ -706,10 +768,26 @@ export type Database = {
           main_senge_focus?:
             | Database["public"]["Enums"]["senge_discipline"]
             | null
+          noems_concepts?: string | null
+          noems_intuitions?: string | null
+          noems_mental_models?: string | null
+          noems_shared_ideas?: string | null
           open_adjustment_plan?: string | null
           open_ontology_and_graph?: string | null
           open_real_workflow?: string | null
           owner_id?: string
+          poems_environments?: string | null
+          poems_messages?: string | null
+          poems_objects?: string | null
+          poems_people?: string | null
+          poems_prototypes?: string | null
+          poems_systems?: string | null
+          pollens_aspirations?: string | null
+          pollens_constraints?: string | null
+          pollens_cultural_elements?: string | null
+          pollens_relational_patterns?: string | null
+          pollens_stakes?: string | null
+          pollens_team_dynamics?: string | null
           prompt_hooks_anthems?: string | null
           prompt_hooks_noems?: string | null
           prompt_hooks_poems?: string | null
@@ -724,6 +802,12 @@ export type Database = {
           status?: string
           team_id?: string | null
           title?: string
+          totems_access_controls?: string | null
+          totems_data_architecture?: string | null
+          totems_integration_points?: string | null
+          totems_security_policies?: string | null
+          totems_system_requirements?: string | null
+          totems_technical_debt?: string | null
           updated_at?: string
         }
         Relationships: [

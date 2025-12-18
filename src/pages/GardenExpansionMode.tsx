@@ -15,7 +15,7 @@ import GardenAmbientParticles from '@/components/calm-magic/garden/GardenAmbient
 import GardenStatsPanel from '@/components/calm-magic/garden/GardenStatsPanel';
 import GardenCelebration from '@/components/calm-magic/garden/GardenCelebration';
 import GardenFloatingControls from '@/components/calm-magic/garden/GardenFloatingControls';
-import GardenPrdPreview from '@/components/calm-magic/garden/GardenPrdPreview';
+import AgenticPrdRenderer from '@/components/calm-magic/garden/AgenticPrdRenderer';
 import { GardenViewModeSelector, GardenViewMode, NatureModeSelector, NatureCognitiveMode } from '@/components/calm-magic/garden/GardenViewModeSelector';
 import { GardenLegend } from '@/components/calm-magic/garden/GardenLegend';
 import { GARDEN_THEMES, GardenActivity } from '@/data/gardenConnections';
