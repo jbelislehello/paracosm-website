@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
@@ -32,6 +32,10 @@ interface PrdGeneratorWizardProps {
   board: string;
   projectId?: string | null;
   onPrdCreated?: (prdId: string) => void;
+  // Force mode props
+  forceStartLayer?: PrdLayer;
+  forceMode?: boolean;
+  inferMissingLayers?: boolean;
 }
 
 interface GeneratedContent {
@@ -185,9 +189,20 @@ const PrdGeneratorWizard = ({
   polenEntries,
   board,
   projectId,
-  onPrdCreated
+  onPrdCreated,
+  forceStartLayer,
+  forceMode = false,
+  inferMissingLayers = false
 }: PrdGeneratorWizardProps) => {
-  const [currentLayer, setCurrentLayer] = useState<PrdLayer>('POLLENS');
+  // Start at the forced layer if provided, otherwise POLLENS
+  const [currentLayer, setCurrentLayer] = useState<PrdLayer>(forceStartLayer || 'POLLENS');
+  
+  // Reset to forceStartLayer when it changes
+  useEffect(() => {
+    if (forceStartLayer) {
+      setCurrentLayer(forceStartLayer);
+    }
+  }, [forceStartLayer]);
   const [completedLayers, setCompletedLayers] = useState<PrdLayer[]>([]);
   const [generating, setGenerating] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -263,7 +278,8 @@ const PrdGeneratorWizard = ({
             tags: p.tags
           })),
           board,
-          existingContent: content
+          existingContent: content,
+          inferMissingLayers: forceMode && inferMissingLayers
         }
       });
 
