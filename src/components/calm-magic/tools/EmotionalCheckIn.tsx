@@ -1,11 +1,14 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
 import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Heart, Sparkles, Brain, Leaf, Wind, ChevronDown, ChevronUp, Activity } from 'lucide-react';
+import { Heart, Sparkles, Brain, Leaf, Wind, ChevronDown, ChevronUp, Activity, Camera, Wand2 } from 'lucide-react';
 import { FeltState, EmotionalAxes, EmotionalCheckInData } from '@/types/trajectory';
+import { BodyAwareCapture } from '../embodied/BodyAwareCapture';
+import type { EmbodiedAxesInference } from '@/types/embodied';
 
 interface EmotionalCheckInProps {
   tileId: number;
@@ -38,6 +41,11 @@ export const EmotionalCheckIn = ({ tileId, onCheckin, previousCheckins = [] }: E
     free: 50,
   });
   const [note, setNote] = useState('');
+  
+  // Body-aware mode state
+  const [bodyAwareEnabled, setBodyAwareEnabled] = useState(false);
+  const [embodiedSuggestion, setEmbodiedSuggestion] = useState<EmbodiedAxesInference | null>(null);
+  const [isBodyActive, setIsBodyActive] = useState(false);
 
   const handleAxisChange = (key: keyof EmotionalAxes, value: number[]) => {
     setAxes(prev => ({ ...prev, [key]: value[0] }));
@@ -50,7 +58,20 @@ export const EmotionalCheckIn = ({ tileId, onCheckin, previousCheckins = [] }: E
     setAxes({ love: 50, magic: 50, calm: 50, open: 50, free: 50 });
     setNote('');
     setIsExpanded(false);
+    setEmbodiedSuggestion(null);
   };
+  
+  // Handle embodied state changes
+  const handleEmbodiedStateChange = useCallback((inferredAxes: EmbodiedAxesInference) => {
+    setEmbodiedSuggestion(inferredAxes);
+  }, []);
+  
+  // Apply embodied suggestion to sliders
+  const applyEmbodiedSuggestion = useCallback(() => {
+    if (embodiedSuggestion) {
+      setAxes(embodiedSuggestion);
+    }
+  }, [embodiedSuggestion]);
 
   const checkinCount = previousCheckins.length;
   const lastCheckin = previousCheckins[previousCheckins.length - 1];
@@ -87,6 +108,51 @@ export const EmotionalCheckIn = ({ tileId, onCheckin, previousCheckins = [] }: E
       </CollapsibleTrigger>
 
       <CollapsibleContent className="px-3 pb-3 space-y-3">
+        {/* Body-Aware Mode Toggle */}
+        <div className="flex items-center justify-between py-2 px-2 rounded-md bg-muted/30">
+          <div className="flex items-center gap-2">
+            <Camera className="w-4 h-4 text-muted-foreground" />
+            <span className="text-xs font-medium">Body-Aware Mode</span>
+            {isBodyActive && (
+              <Badge variant="outline" className="text-[10px] bg-emerald-500/10 text-emerald-600 border-emerald-500/30">
+                Active
+              </Badge>
+            )}
+          </div>
+          <Switch
+            checked={bodyAwareEnabled}
+            onCheckedChange={setBodyAwareEnabled}
+            className="scale-75"
+          />
+        </div>
+        
+        {/* Body-Aware Capture */}
+        {bodyAwareEnabled && (
+          <BodyAwareCapture
+            compact
+            onStateChange={handleEmbodiedStateChange}
+            onActiveChange={setIsBodyActive}
+          />
+        )}
+        
+        {/* Embodied Suggestion Banner */}
+        {embodiedSuggestion && isBodyActive && (
+          <div className="flex items-center justify-between p-2 rounded-md bg-violet-500/10 border border-violet-500/20">
+            <div className="flex items-center gap-2">
+              <Wand2 className="w-3 h-3 text-violet-500" />
+              <span className="text-xs text-violet-600">Body-inferred axes ready</span>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-6 text-xs text-violet-600 hover:text-violet-700 hover:bg-violet-500/20"
+              onClick={applyEmbodiedSuggestion}
+            >
+              Apply
+            </Button>
+          </div>
+        )}
+        
         {/* Felt State Selector */}
         <div className="space-y-1.5">
           <label className="text-xs text-muted-foreground font-medium">How are you feeling?</label>

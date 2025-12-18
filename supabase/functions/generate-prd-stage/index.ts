@@ -152,6 +152,13 @@ THE 5 SEASONS:
 FEMININE DESIGN QUALITY LENS:
 Always consider: Receptivity, Softness & Safety, Relationality, Cyclical Time, Embodiment, Intuition & Ambiguity, Care & Nurturance, Inclusivity & Plurality
 
+EMBODIED INTERACTION DESIGN (ml5.js):
+When designing experiential elements, consider body-aware sensing opportunities:
+- BodyPose: Detect posture (tense/relaxed/engaged) to adapt UI or provide feedback
+- FaceMesh: Read facial expressions (smiling/focused/stressed/calm) for emotional context
+- HandPose: Enable gestural navigation (pointing, open palm, thumbs up)
+These should always be opt-in, processed locally, and respect user consent.
+
 GEOMETRIC AWARENESS:
 - If integration strength > 60%, generate unified interconnected concepts
 - If fragmentation > 30%, acknowledge gaps and suggest bridging ideas
@@ -227,6 +234,13 @@ For each element of P.O.E.M.S., consider:
 - MESSAGES: What information flows between actors? Notifications, feedback, communications?
 - SYSTEMS: What processes, services, and technical components enable the experience?
 
+EMBODIED INTERACTION DESIGN (ml5.js integration opportunities):
+- Body-aware interfaces: How can posture, gesture, and facial expression enhance the UX?
+- Somatic feedback loops: What body signals indicate user state (tension, engagement, flow)?
+- Gestural affordances: What natural gestures could control or navigate the interface?
+- Emotional resonance: How can the system respond to detected emotional states?
+- Consent-first embodiment: How to opt-in to body-aware features respectfully?
+
 Return JSON with these exact keys:
 {
   "poems_people": "User personas, stakeholders, and their needs/behaviors/contexts",
@@ -235,11 +249,13 @@ Return JSON with these exact keys:
   "poems_messages": "Information flows, notifications, feedback, and communications",
   "poems_systems": "Processes, services, and technical components enabling the experience",
   "poems_prototypes": "UI mockups, interaction flows, and ontological design patterns to explore",
-  "stack_implications_poems": "UX surface (chat, dashboard, forms). Adapters (email, calendar, webhooks). Session model.",
-  "prompt_hooks_poems": "Canonical user flows in natural language. Error states and guardrails."
+  "poems_embodied_interactions": "Body-aware interaction patterns: posture detection, facial expression sensing, gestural navigation, somatic feedback. Include ml5.js integration points (BodyPose, FaceMesh, HandPose)",
+  "poems_somatic_design": "Somatic design principles: How the interface respects and responds to bodily states. Consent patterns for camera/body tracking. Local processing guarantees. Emotional axes inference from embodied data",
+  "stack_implications_poems": "UX surface (chat, dashboard, forms). Adapters (email, calendar, webhooks). Session model. ml5.js for embodied sensing (BodyPose, FaceMesh).",
+  "prompt_hooks_poems": "Canonical user flows in natural language. Error states and guardrails. Body-aware interaction triggers."
 }
 
-Design the full experience across People, Objects, Environments, Messages, and Systems.`,
+Design the full experience across People, Objects, Environments, Messages, and Systems. Include embodied interaction opportunities where appropriate.`,
 
       TOTEMS: `Based on previous layers, generate the TOTEMS layer for TECHNICAL INFRASTRUCTURE:
 
