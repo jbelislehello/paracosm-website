@@ -334,6 +334,38 @@ export function FragmentMigrationDialog({
     return projects.find(p => p.id === id)?.project_name || 'Inconnu';
   };
 
+  // Quick action: assign ALL orphans to a specific project (Tonalli)
+  const handleQuickAssignAll = async () => {
+    const tonalli = projects.find(p => p.project_name.toLowerCase().includes('tonalli'));
+    if (!tonalli) {
+      toast.error('Projet Tonalli introuvable');
+      return;
+    }
+
+    setIsMigrating(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Non authentifié');
+
+      const { error, count } = await supabase
+        .from('polen_entries')
+        .update({ project_id: tonalli.id })
+        .eq('user_id', user.id)
+        .is('project_id', null);
+
+      if (error) throw error;
+
+      toast.success(`${orphanFragments.length} fragments assignés à Tonalli`);
+      setOrphanFragments([]);
+      onMigrationComplete?.();
+    } catch (error) {
+      console.error('Quick assign error:', error);
+      toast.error('Erreur lors de l\'assignation');
+    } finally {
+      setIsMigrating(false);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-3xl max-h-[90vh] flex flex-col">
@@ -348,6 +380,20 @@ export function FragmentMigrationDialog({
             </Badge>
             Assignez ces fragments à leurs projets respectifs
           </DialogDescription>
+          {orphanFragments.length > 0 && (
+            <Button 
+              variant="default" 
+              size="sm" 
+              onClick={handleQuickAssignAll}
+              disabled={isMigrating}
+              className="mt-2 bg-emerald-600 hover:bg-emerald-700"
+            >
+              {isMigrating ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : null}
+              Tout assigner à Tonalli ({orphanFragments.length})
+            </Button>
+          )}
         </DialogHeader>
 
         {isLoading ? (
