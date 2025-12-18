@@ -4,10 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, FileText, Sparkles, TreeDeciduous, Download, X, Eye } from 'lucide-react';
+import { ArrowLeft, FileText, Sparkles, TreeDeciduous, Download, X, Grid3X3 } from 'lucide-react';
 import { useProjects } from '@/context/ProjectsContext';
 import { useMode } from '@/components/calm-magic/context/ModeContext';
 import EnhancedAnthemTreeP5 from '@/components/calm-magic/garden/EnhancedAnthemTreeP5';
+import EcologicalGardenP5 from '@/components/calm-magic/garden/EcologicalGardenP5';
 import GardenActivities from '@/components/calm-magic/garden/GardenActivities';
 import GardenConnectionHub from '@/components/calm-magic/garden/GardenConnectionHub';
 import GardenAmbientParticles from '@/components/calm-magic/garden/GardenAmbientParticles';
@@ -15,7 +16,10 @@ import GardenStatsPanel from '@/components/calm-magic/garden/GardenStatsPanel';
 import GardenCelebration from '@/components/calm-magic/garden/GardenCelebration';
 import GardenFloatingControls from '@/components/calm-magic/garden/GardenFloatingControls';
 import GardenPrdPreview from '@/components/calm-magic/garden/GardenPrdPreview';
+import { GardenViewModeSelector, GardenViewMode, NatureModeSelector, NatureCognitiveMode } from '@/components/calm-magic/garden/GardenViewModeSelector';
+import { GardenLegend } from '@/components/calm-magic/garden/GardenLegend';
 import { GARDEN_THEMES, GardenActivity } from '@/data/gardenConnections';
+import { extractBluntQuotes, BluntQuote } from '@/utils/bluntQuoteExtraction';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -78,6 +82,10 @@ const GardenExpansionMode = () => {
   const [selectedSeason, setSelectedSeason] = useState<number | null>(null);
   const [prdData, setPrdData] = useState<any>(null);
   const [isLoadingPrd, setIsLoadingPrd] = useState(true);
+  const [viewMode, setViewMode] = useState<GardenViewMode>('ecological');
+  const [natureMode, setNatureMode] = useState<NatureCognitiveMode | null>(null);
+  const [tileEcologyData, setTileEcologyData] = useState<Map<string, { fragmentCount: number; quotes: BluntQuote[] }>>(new Map());
+  const [visitedTiles, setVisitedTiles] = useState<Set<string>>(new Set());
 
   // Garden audio system
   const {
@@ -299,38 +307,73 @@ const GardenExpansionMode = () => {
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl" />
           </Card>
 
-          {/* Tree + Stats + PRD Preview Grid */}
-          <Tabs defaultValue="tree" className="space-y-4">
-            <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
-              <TabsTrigger value="tree" className="flex items-center gap-2">
-                <TreeDeciduous className="w-4 h-4" />
-                Anthem Tree
-              </TabsTrigger>
-              <TabsTrigger value="prd" className="flex items-center gap-2">
-                <Eye className="w-4 h-4" />
-                PRD Preview
-              </TabsTrigger>
-            </TabsList>
+          {/* Garden Views */}
+          <Tabs defaultValue="ecological" className="space-y-4">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <TabsList className="grid w-full max-w-lg mx-auto grid-cols-3">
+                <TabsTrigger value="ecological" className="flex items-center gap-2">
+                  <Grid3X3 className="w-4 h-4" />
+                  <span className="hidden sm:inline">Ecological</span>
+                </TabsTrigger>
+                <TabsTrigger value="tree" className="flex items-center gap-2">
+                  <TreeDeciduous className="w-4 h-4" />
+                  <span className="hidden sm:inline">World Tree</span>
+                </TabsTrigger>
+                <TabsTrigger value="prd" className="flex items-center gap-2">
+                  <FileText className="w-4 h-4" />
+                  <span className="hidden sm:inline">PRD Layers</span>
+                </TabsTrigger>
+              </TabsList>
+            </div>
+
+            {/* Ecological Garden View */}
+            <TabsContent value="ecological" className="mt-0">
+              <div className="space-y-4">
+                {/* Nature Mode Selector */}
+                <Card className="p-4 bg-background/60 backdrop-blur-xl border-border/30">
+                  <div className="flex items-center justify-between flex-wrap gap-4">
+                    <div>
+                      <h4 className="text-sm font-medium mb-1">Cognitive Mode</h4>
+                      <p className="text-xs text-muted-foreground">Think like nature to navigate your journey</p>
+                    </div>
+                    <NatureModeSelector value={natureMode} onChange={setNatureMode} />
+                  </div>
+                </Card>
+
+                <div className="grid lg:grid-cols-5 gap-6">
+                  {/* Ecological Garden Canvas */}
+                  <Card className={cn(
+                    "lg:col-span-3 p-4 relative overflow-hidden",
+                    "bg-gradient-to-b from-background/80 to-muted/20",
+                    "backdrop-blur-xl border-border/30"
+                  )}>
+                    <EcologicalGardenP5
+                      garden={garden}
+                      tileData={tileEcologyData}
+                      visitedTiles={visitedTiles}
+                      currentNatureMode={natureMode}
+                    />
+                    {/* Legend overlay */}
+                    <div className="absolute bottom-4 left-4">
+                      <GardenLegend />
+                    </div>
+                  </Card>
+
+                  {/* Stats Panel */}
+                  <div className="lg:col-span-2">
+                    <GardenStatsPanel metrics={metrics} />
+                  </div>
+                </div>
+              </div>
+            </TabsContent>
 
             <TabsContent value="tree" className="mt-0">
               <div className="grid lg:grid-cols-5 gap-6">
-                {/* Tree Canvas */}
                 <Card className={cn(
                   "lg:col-span-3 p-6 flex flex-col items-center relative overflow-hidden",
                   "bg-gradient-to-b from-background/80 to-muted/20",
-                  "backdrop-blur-xl border-white/10"
+                  "backdrop-blur-xl border-border/30"
                 )}>
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary/5 to-transparent pointer-events-none" />
-                  
-                  <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 relative z-10">
-                    <TreeDeciduous className="w-5 h-5" />
-                    Anthem Tree
-                    <Badge variant="outline" className="ml-2 text-xs">Interactive</Badge>
-                  </h3>
-                  <p className="text-sm text-muted-foreground mb-4 text-center">
-                    Click on fruits to explore each season's harvest
-                  </p>
-                  
                   <EnhancedAnthemTreeP5
                     garden={garden}
                     metrics={metrics}
@@ -338,8 +381,6 @@ const GardenExpansionMode = () => {
                     onFruitClick={handleFruitClick}
                   />
                 </Card>
-
-                {/* Stats Panel */}
                 <div className="lg:col-span-2">
                   <GardenStatsPanel metrics={metrics} />
                 </div>
@@ -348,7 +389,6 @@ const GardenExpansionMode = () => {
 
             <TabsContent value="prd" className="mt-0">
               <div className="grid lg:grid-cols-5 gap-6">
-                {/* PRD Preview */}
                 <div className="lg:col-span-3">
                   <GardenPrdPreview 
                     prdData={prdData} 
@@ -356,14 +396,13 @@ const GardenExpansionMode = () => {
                     onExport={handleExportPrd}
                   />
                 </div>
-
-                {/* Stats Panel */}
                 <div className="lg:col-span-2">
                   <GardenStatsPanel metrics={metrics} />
                 </div>
               </div>
             </TabsContent>
           </Tabs>
+
 
           {/* Garden Activities */}
           <Card className={cn(
