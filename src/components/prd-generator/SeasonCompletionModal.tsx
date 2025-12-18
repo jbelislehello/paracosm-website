@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { PartyPopper, Sparkles, ArrowRight, Flower2, BookOpen, Mountain, Music, FileText, Lightbulb } from 'lucide-react';
+import { PartyPopper, Sparkles, ArrowRight, Flower2, BookOpen, Mountain, Music, FileText, Lightbulb, Bot, Smartphone, Crown } from 'lucide-react';
 import { SEASON_DEFINITIONS, POEMS_ACRONYM } from '@/data/seasonDefinitions';
 
 type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
@@ -12,6 +12,7 @@ interface SeasonCompletionModalProps {
   onClose: () => void;
   onContinue: () => void;
   onGeneratePrdLayer: () => void;
+  onGenerateFoundationalPrompt?: () => void;
   season: Season;
   tilesVisited: number;
   polenCount: number;
@@ -63,7 +64,7 @@ const SEASON_CONFIG: Record<Season, {
     description: SEASON_DEFINITIONS.ANTHEMS.fullDescription,
     icon: Music,
     color: 'text-emerald-500',
-    gradient: 'from-emerald-500 to-green-500',
+    gradient: 'from-emerald-500 to-teal-500',
     nextSeason: null,
   },
 };
@@ -73,6 +74,7 @@ const SeasonCompletionModal = ({
   onClose,
   onContinue,
   onGeneratePrdLayer,
+  onGenerateFoundationalPrompt,
   season,
   tilesVisited,
   polenCount,
@@ -88,12 +90,21 @@ const SeasonCompletionModal = ({
         <DialogHeader>
           <div className="flex items-center gap-3">
             <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${config.gradient} flex items-center justify-center animate-bounce`}>
-              <PartyPopper className="w-6 h-6 text-white" />
+              {isLastSeason ? (
+                <Crown className="w-6 h-6 text-white" />
+              ) : (
+                <PartyPopper className="w-6 h-6 text-white" />
+              )}
             </div>
             <div>
-              <DialogTitle className="text-2xl">Season Complete!</DialogTitle>
+              <DialogTitle className="text-2xl">
+                {isLastSeason ? '🎉 All Seasons Complete!' : 'Season Complete!'}
+              </DialogTitle>
               <DialogDescription>
-                You've journeyed through all 64 {config.label} tiles
+                {isLastSeason 
+                  ? 'Your complete journey is ready for compilation'
+                  : `You've journeyed through all 64 ${config.label} tiles`
+                }
               </DialogDescription>
             </div>
           </div>
@@ -108,7 +119,10 @@ const SeasonCompletionModal = ({
                 <h3 className="text-xl font-bold">{config.label} Season Completed</h3>
               </div>
               <p className="text-sm opacity-90 mt-1">
-                Your collected entries form the {config.label} layer of your PRD
+                {isLastSeason 
+                  ? 'All 5 PRD layers are now complete and ready for export'
+                  : `Your collected entries form the ${config.label} layer of your PRD`
+                }
               </p>
             </div>
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
@@ -128,59 +142,109 @@ const SeasonCompletionModal = ({
             </Card>
           </div>
 
-          {/* PRD Layer Preview */}
-          <Card className="p-4 border-2 border-primary/30 bg-gradient-to-r from-background to-primary/5">
-            <div className="flex items-start gap-4">
-              <div className={`w-10 h-10 rounded-lg bg-gradient-to-r ${config.gradient} flex items-center justify-center flex-shrink-0`}>
-                <FileText className="w-5 h-5 text-white" />
-              </div>
-              <div className="flex-1">
-                <h4 className="font-bold">{config.label} Layer</h4>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {config.description}
-                </p>
-                {/* P.O.E.M.S. Acronym Display */}
-                {season === 'POEMS' && (
-                  <div className="mt-3 grid grid-cols-5 gap-1 text-xs text-center border-t pt-3">
-                    {Object.entries(POEMS_ACRONYM).map(([letter, word]) => (
-                      <div key={letter} className="flex flex-col items-center">
-                        <span className="font-bold text-primary text-sm">{letter}</span>
-                        <span className="text-muted-foreground">{word}</span>
-                      </div>
-                    ))}
+          {/* Foundational Prompt Ready - Only for ANTHEMS */}
+          {isLastSeason && (
+            <Card className="p-4 border-2 border-emerald-500/50 bg-gradient-to-r from-emerald-500/10 to-teal-500/10">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center animate-pulse">
+                  <Bot className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-bold text-emerald-600 dark:text-emerald-400">
+                    🎉 Foundational Prompt Ready!
+                  </h4>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Your complete journey through all 5 seasons has been compiled into an agentic Foundational Prompt.
+                  </p>
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    <Badge className="bg-rose-500/20 text-rose-600 dark:text-rose-400 border-rose-500/30">Lovable</Badge>
+                    <Badge className="bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30">Base44</Badge>
+                    <Badge className="bg-violet-500/20 text-violet-600 dark:text-violet-400 border-violet-500/30">Claude</Badge>
+                    <Badge className="bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30">Tonalli</Badge>
                   </div>
-                )}
+                </div>
               </div>
-            </div>
-          </Card>
+            </Card>
+          )}
+
+          {/* PRD Layer Preview - Show for non-last seasons */}
+          {!isLastSeason && (
+            <Card className="p-4 border-2 border-primary/30 bg-gradient-to-r from-background to-primary/5">
+              <div className="flex items-start gap-4">
+                <div className={`w-10 h-10 rounded-lg bg-gradient-to-r ${config.gradient} flex items-center justify-center flex-shrink-0`}>
+                  <FileText className="w-5 h-5 text-white" />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-bold">{config.label} Layer</h4>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {config.description}
+                  </p>
+                  {/* P.O.E.M.S. Acronym Display */}
+                  {season === 'POEMS' && (
+                    <div className="mt-3 grid grid-cols-5 gap-1 text-xs text-center border-t pt-3">
+                      {Object.entries(POEMS_ACRONYM).map(([letter, word]) => (
+                        <div key={letter} className="flex flex-col items-center">
+                          <span className="font-bold text-primary text-sm">{letter}</span>
+                          <span className="text-muted-foreground">{word}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </Card>
+          )}
 
           {/* Next Steps */}
           <div className="text-sm text-muted-foreground text-center">
             {isLastSeason ? (
-              <p>All 5 seasons complete! Your PRD is ready for review.</p>
+              <p>Export your Foundational Prompt to any AI platform or companion device.</p>
             ) : (
               <p>Next: <Badge variant="outline">{config.nextSeason}</Badge> season to build the next PRD layer</p>
             )}
           </div>
 
-          {/* Actions */}
-          <div className="flex gap-3">
-            <Button 
-              variant="outline" 
-              onClick={onGeneratePrdLayer} 
-              className="flex-1"
-              disabled={isGenerating}
-            >
-              {isGenerating ? 'Generating...' : `Generate ${config.label}`}
-            </Button>
-            <Button 
-              onClick={onContinue} 
-              className={`flex-1 bg-gradient-to-r ${config.gradient}`}
-            >
-              {isLastSeason ? 'Complete PRD' : `Continue to ${config.nextSeason}`}
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </div>
+          {/* Actions - Different for ANTHEMS */}
+          {isLastSeason ? (
+            <div className="space-y-3">
+              <Button 
+                onClick={onGenerateFoundationalPrompt}
+                className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-lg py-6"
+              >
+                <Bot className="w-5 h-5 mr-2" />
+                Generate Foundational Prompt
+                <Sparkles className="w-5 h-5 ml-2" />
+              </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={onContinue} className="flex-1">
+                  <FileText className="w-4 h-4 mr-1" />
+                  View Full PRD
+                </Button>
+                <Button variant="outline" onClick={onGeneratePrdLayer} className="flex-1" disabled={isGenerating}>
+                  <Smartphone className="w-4 h-4 mr-1" />
+                  {isGenerating ? 'Generating...' : 'Export Tonalli'}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex gap-3">
+              <Button 
+                variant="outline" 
+                onClick={onGeneratePrdLayer} 
+                className="flex-1"
+                disabled={isGenerating}
+              >
+                {isGenerating ? 'Generating...' : `Generate ${config.label}`}
+              </Button>
+              <Button 
+                onClick={onContinue} 
+                className={`flex-1 bg-gradient-to-r ${config.gradient}`}
+              >
+                Continue to {config.nextSeason}
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
+          )}
         </div>
       </DialogContent>
     </Dialog>
