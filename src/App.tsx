@@ -22,6 +22,7 @@ import GlitchLog from "./pages/GlitchLog";
 import Drift from "./pages/Drift";
 import PrdEditor from "./pages/PrdEditor";
 import PrdsDashboard from "./pages/PrdsDashboard";
+import GardenExpansionMode from "./pages/GardenExpansionMode";
 import CalmMagicVisualization from "./pages/CalmMagicVisualization";
 import CalmMagicJournal from "./pages/CalmMagicJournal";
 import ProjectsDashboard from "./pages/ProjectsDashboard";
@@ -57,6 +58,7 @@ function App() {
                   <Route path="/calm-magic-board/insights" element={<ProtectedRoute><GlitchInsights /></ProtectedRoute>} />
                   <Route path="/calm-magic-board/drift" element={<ProtectedRoute><Drift /></ProtectedRoute>} />
                   <Route path="/calm-magic-board/prds" element={<ProtectedRoute><PrdsDashboard /></ProtectedRoute>} />
+                  <Route path="/calm-magic-board/garden" element={<ProtectedRoute><GardenExpansionMode /></ProtectedRoute>} />
                   <Route path="/calm-magic-board/prds/:id" element={<ProtectedRoute><PrdEditor /></ProtectedRoute>} />
                   <Route path="/prd-editor/:id" element={<ProtectedRoute><PrdEditor /></ProtectedRoute>} />
                   <Route path="/calm-magic-visualization" element={<CalmMagicVisualization />} />
