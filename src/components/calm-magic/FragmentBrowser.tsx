@@ -163,6 +163,9 @@ export const FragmentBrowser: React.FC<FragmentBrowserProps> = ({
             </TabsTrigger>
           </TabsList>
         </Tabs>
+        <p className="text-xs text-muted-foreground mt-1 text-center">
+          Use "All Seasons" tab to view all fragments across your journey
+        </p>
       </CardHeader>
 
       <CardContent className="flex-1 flex flex-col min-h-0 space-y-3">

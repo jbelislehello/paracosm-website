@@ -778,6 +778,12 @@ export type Database = {
       }
       project_season_progress: {
         Row: {
+          ai_summary_connections: Json | null
+          ai_summary_generated_at: string | null
+          ai_summary_hexagram: Json | null
+          ai_summary_insights: Json | null
+          ai_summary_next_areas: string[] | null
+          ai_summary_themes: string[] | null
           completed_seasons: string[]
           created_at: string
           current_season: string
@@ -791,6 +797,12 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          ai_summary_connections?: Json | null
+          ai_summary_generated_at?: string | null
+          ai_summary_hexagram?: Json | null
+          ai_summary_insights?: Json | null
+          ai_summary_next_areas?: string[] | null
+          ai_summary_themes?: string[] | null
           completed_seasons?: string[]
           created_at?: string
           current_season?: string
@@ -804,6 +816,12 @@ export type Database = {
           user_id: string
         }
         Update: {
+          ai_summary_connections?: Json | null
+          ai_summary_generated_at?: string | null
+          ai_summary_hexagram?: Json | null
+          ai_summary_insights?: Json | null
+          ai_summary_next_areas?: string[] | null
+          ai_summary_themes?: string[] | null
           completed_seasons?: string[]
           created_at?: string
           current_season?: string

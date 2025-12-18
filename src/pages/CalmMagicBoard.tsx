@@ -41,6 +41,7 @@ import SeasonCompletionModal from '@/components/prd-generator/SeasonCompletionMo
 import AssistantChatPanel from '@/components/calm-magic/AssistantChatPanel';
 import AssistantChatButton from '@/components/calm-magic/AssistantChatButton';
 import { JourneySummary } from '@/components/calm-magic/JourneySummary';
+import { AllFragmentsGallery } from '@/components/calm-magic/AllFragmentsGallery';
 import { InsightConnectionsGraph } from '@/components/calm-magic/InsightConnectionsGraph';
 import { QuadrantDynamicsPanel } from '@/components/calm-magic/QuadrantDynamicsPanel';
 import { HigherSelfProphecyModal } from '@/components/calm-magic/HigherSelfProphecyModal';
@@ -155,6 +156,7 @@ const CalmMagicBoard = () => {
 
   // New panel states
   const [showJourneySummary, setShowJourneySummary] = useState(false);
+  const [showAllFragments, setShowAllFragments] = useState(false);
   const [showInsightsGraph, setShowInsightsGraph] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeFeature, setUpgradeFeature] = useState<'insight_connections' | null>(null);
@@ -1679,10 +1681,18 @@ const CalmMagicBoard = () => {
         currentSeason={currentSeason}
         seasonProgress={visitedTiles}
         prdId={prdId}
+        projectId={projectContext?.id}
         onGeneratePrdLayer={handleGeneratePrdLayer}
         onViewPrd={prdId ? () => navigate(`/prds/${prdId}`) : undefined}
         hexagramData={getHexagramDataForSummary(visitedTiles)}
         consciousnessGeometry={consciousnessGeometry}
+      />
+
+      {/* All Fragments Gallery */}
+      <AllFragmentsGallery
+        isOpen={showAllFragments}
+        onClose={() => setShowAllFragments(false)}
+        projectId={projectContext?.id}
       />
 
       {/* Insight Connections Graph */}
