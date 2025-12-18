@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import p5 from 'p5';
 import { RingLevel, getTileRing } from '@/utils/ringToleranceSystem';
 import { 
@@ -6,7 +6,9 @@ import {
   NATURE_COGNITIVE_MODES, 
   VegetationType, 
   getVegetationType, 
-  getTerrainType 
+  getTerrainType,
+  shouldHaveWater,
+  ParticleConfig
 } from '@/data/natureTaxonomy';
 import { BluntQuote, RockFormation, getDominantRockFormation } from '@/utils/bluntQuoteExtraction';
 
@@ -19,6 +21,7 @@ interface TileEcology {
   terrain: string;
   ring: RingLevel;
   isVisited: boolean;
+  hasWater: boolean;
 }
 
 interface EcologicalGardenP5Props {
@@ -32,29 +35,110 @@ interface EcologicalGardenP5Props {
 // Garden-specific color palettes
 const GARDEN_PALETTES = {
   intelligence: {
-    base: { h: 280, s: 30, b: 25 },      // Deep purple base
-    accent: { h: 320, s: 50, b: 60 },    // Rose accent
-    highlight: { h: 200, s: 60, b: 70 }, // Cyan highlight
+    base: { h: 280, s: 30, b: 25 },
+    accent: { h: 320, s: 50, b: 60 },
+    highlight: { h: 200, s: 60, b: 70 },
   },
   systems: {
-    base: { h: 200, s: 35, b: 20 },      // Deep blue base
-    accent: { h: 160, s: 50, b: 55 },    // Teal accent
-    highlight: { h: 45, s: 70, b: 75 },  // Amber highlight
+    base: { h: 200, s: 35, b: 20 },
+    accent: { h: 160, s: 50, b: 55 },
+    highlight: { h: 45, s: 70, b: 75 },
   },
   prototypes: {
-    base: { h: 120, s: 30, b: 22 },      // Deep green base
-    accent: { h: 80, s: 50, b: 60 },     // Lime accent
-    highlight: { h: 340, s: 60, b: 70 }, // Rose highlight
+    base: { h: 120, s: 30, b: 22 },
+    accent: { h: 80, s: 50, b: 60 },
+    highlight: { h: 340, s: 60, b: 70 },
   }
 };
 
 // Ring colors (matching tolerance system)
 const RING_COLORS: Record<RingLevel, { h: number; s: number; b: number }> = {
-  1: { h: 210, s: 70, b: 50 },  // Blue - Calmness
-  2: { h: 270, s: 60, b: 50 },  // Purple - Spaciousness
-  3: { h: 142, s: 71, b: 45 },  // Green - Openness
-  4: { h: 45, s: 93, b: 47 },   // Amber - Freedom
+  1: { h: 210, s: 70, b: 50 },
+  2: { h: 270, s: 60, b: 50 },
+  3: { h: 142, s: 71, b: 45 },
+  4: { h: 45, s: 93, b: 47 },
 };
+
+// Particle class for nature-responsive animations
+class NatureParticle {
+  x: number;
+  y: number;
+  z: number;
+  vx: number;
+  vy: number;
+  vz: number;
+  life: number;
+  maxLife: number;
+  config: ParticleConfig;
+  phase: number;
+  
+  constructor(config: ParticleConfig, bounds: { w: number; h: number; d: number }) {
+    this.config = config;
+    this.x = (Math.random() - 0.5) * bounds.w;
+    this.y = (Math.random() - 0.5) * bounds.h;
+    this.z = (Math.random() - 0.5) * bounds.d;
+    this.vx = 0;
+    this.vy = 0;
+    this.vz = 0;
+    this.maxLife = 200 + Math.random() * 200;
+    this.life = Math.random() * this.maxLife;
+    this.phase = Math.random() * Math.PI * 2;
+  }
+  
+  update(frameCount: number) {
+    const speed = this.config.speed;
+    
+    switch (this.config.behavior) {
+      case 'flow':
+        this.vx = speed + Math.sin(frameCount * 0.02 + this.phase) * 0.3;
+        this.vy = Math.sin(frameCount * 0.01 + this.phase) * 0.2;
+        this.vz = Math.cos(frameCount * 0.015 + this.phase) * 0.2;
+        break;
+      case 'rise':
+        this.vy = -speed * 0.5;
+        this.vx = Math.sin(frameCount * 0.01 + this.phase) * 0.1;
+        this.vz = Math.cos(frameCount * 0.01 + this.phase) * 0.1;
+        break;
+      case 'wander':
+        this.vx = Math.sin(frameCount * 0.03 + this.phase) * speed;
+        this.vy = Math.sin(frameCount * 0.02 + this.phase * 1.5) * speed * 0.5;
+        this.vz = Math.cos(frameCount * 0.025 + this.phase) * speed;
+        break;
+      case 'fall':
+        this.vy = speed;
+        this.vx = Math.sin(frameCount * 0.01 + this.phase) * 0.3;
+        this.vz = Math.cos(frameCount * 0.015 + this.phase) * 0.2;
+        break;
+      case 'spiral':
+        const angle = frameCount * 0.02 + this.phase;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = -speed * 0.3;
+        this.vz = Math.sin(angle) * speed;
+        break;
+      case 'pulse':
+        // Ripples expand outward
+        this.life -= 2;
+        break;
+    }
+    
+    this.x += this.vx;
+    this.y += this.vy;
+    this.z += this.vz;
+    this.life--;
+  }
+  
+  reset(bounds: { w: number; h: number; d: number }) {
+    this.x = (Math.random() - 0.5) * bounds.w;
+    this.y = (Math.random() - 0.5) * bounds.h;
+    this.z = (Math.random() - 0.5) * bounds.d;
+    this.life = this.maxLife;
+    this.phase = Math.random() * Math.PI * 2;
+  }
+  
+  isAlive() {
+    return this.life > 0;
+  }
+}
 
 export default function EcologicalGardenP5({
   garden,
@@ -65,6 +149,7 @@ export default function EcologicalGardenP5({
 }: EcologicalGardenP5Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const p5Ref = useRef<p5 | null>(null);
+  const particlesRef = useRef<NatureParticle[]>([]);
   
   // Camera controls
   const rotationRef = useRef({ x: -0.7, y: 0.4 });
@@ -82,11 +167,12 @@ export default function EcologicalGardenP5({
     const data = tileData.get(key) || { fragmentCount: 0, quotes: [] };
     const ring = getTileRing(row, col);
     const isVisited = visitedTiles.has(key);
+    const hasWater = shouldHaveWater(row, col, currentNatureMode);
     
     const vegetation = getVegetationType(
       data.fragmentCount,
       data.quotes.length > 0,
-      0, // connection count - could be enhanced
+      0,
       currentNatureMode
     );
     
@@ -104,7 +190,8 @@ export default function EcologicalGardenP5({
       vegetation,
       terrain,
       ring,
-      isVisited
+      isVisited,
+      hasWater
     };
   }, [tileData, visitedTiles, currentNatureMode]);
 
@@ -114,10 +201,25 @@ export default function EcologicalGardenP5({
     const sketch = (p: p5) => {
       let width = containerRef.current?.clientWidth || 800;
       let height = containerRef.current?.clientHeight || 500;
+      const bounds = { w: 400, h: 200, d: 400 };
+
+      // Initialize particles based on current nature mode
+      const initParticles = () => {
+        particlesRef.current = [];
+        if (currentNatureMode) {
+          const mode = NATURE_COGNITIVE_MODES[currentNatureMode];
+          mode.particles.forEach(config => {
+            for (let i = 0; i < config.count; i++) {
+              particlesRef.current.push(new NatureParticle(config, bounds));
+            }
+          });
+        }
+      };
 
       p.setup = () => {
         p.createCanvas(width, height, p.WEBGL);
         p.colorMode(p.HSB, 360, 100, 100, 1);
+        initParticles();
       };
 
       p.windowResized = () => {
@@ -154,8 +256,14 @@ export default function EcologicalGardenP5({
           drawEcologicalTile(p, getTileEcology(row, col));
         }
 
+        // Draw water features (streams between water tiles)
+        drawWaterConnections(p);
+
         // Draw central PRD tree marker
         drawCentralTree(p);
+
+        // Draw nature particles
+        drawParticles(p);
 
         p.pop();
 
@@ -164,7 +272,7 @@ export default function EcologicalGardenP5({
       };
 
       const drawEcologicalTile = (p: p5, tile: TileEcology) => {
-        const { row, col, fragmentCount, quotes, vegetation, ring, isVisited } = tile;
+        const { row, col, fragmentCount, quotes, vegetation, ring, isVisited, hasWater } = tile;
         
         // Grid position
         const gridCenter = 3.5;
@@ -187,8 +295,12 @@ export default function EcologicalGardenP5({
         // Draw base terrain tile
         const tileHeight = 8 + fragmentCount * 1.5;
         
-        // Top face
-        p.fill(ringColor.h, ringColor.s * (isVisited ? 0.8 : 0.3), ringColor.b * (isVisited ? 0.9 : 0.4), 0.95);
+        // Top face - add blue tint for water tiles
+        if (hasWater && isVisited) {
+          p.fill(200, 50, ringColor.b * (isVisited ? 0.9 : 0.4), 0.95);
+        } else {
+          p.fill(ringColor.h, ringColor.s * (isVisited ? 0.8 : 0.3), ringColor.b * (isVisited ? 0.9 : 0.4), 0.95);
+        }
         p.stroke(ringColor.h, ringColor.s * 0.5, ringColor.b * 1.2, 0.6);
         p.strokeWeight(isHovered ? 2 : 1);
         
@@ -221,8 +333,13 @@ export default function EcologicalGardenP5({
         p.vertex(half, tileHeight, half);
         p.endShape(p.CLOSE);
 
+        // Draw water pool on water tiles
+        if (hasWater && isVisited) {
+          drawPool(p, fragmentCount);
+        }
+
         // Draw vegetation based on type
-        if (isVisited && fragmentCount > 0) {
+        if (isVisited && fragmentCount > 0 && !hasWater) {
           drawVegetation(p, vegetation, fragmentCount, ringColor);
         }
 
@@ -232,6 +349,73 @@ export default function EcologicalGardenP5({
         }
 
         p.pop();
+      };
+
+      const drawPool = (p: p5, fragmentCount: number) => {
+        // Animated water pool
+        const ripple = Math.sin(p.frameCount * 0.03) * 2;
+        const poolSize = 12 + fragmentCount * 2;
+        
+        // Water surface
+        p.fill(200, 60, 55, 0.5);
+        p.noStroke();
+        p.ellipse(0, -0.5, poolSize + ripple, poolSize * 0.7 + ripple * 0.7);
+        
+        // Inner highlight
+        p.fill(200, 40, 70, 0.4);
+        p.ellipse(0, -0.5, poolSize * 0.6, poolSize * 0.4);
+        
+        // Animated ripples
+        p.noFill();
+        p.stroke(200, 30, 80, 0.3);
+        p.strokeWeight(1);
+        const ripplePhase = (p.frameCount * 0.02) % 1;
+        p.ellipse(0, -0.5, poolSize * ripplePhase * 1.5, poolSize * 0.7 * ripplePhase * 1.5);
+      };
+
+      const drawWaterConnections = (p: p5) => {
+        // Find water tiles and draw streams between adjacent ones
+        const waterTiles: Array<{ row: number; col: number; x: number; z: number }> = [];
+        const gridCenter = 3.5;
+        
+        for (let row = 0; row < 8; row++) {
+          for (let col = 0; col < 8; col++) {
+            const tile = getTileEcology(row, col);
+            if (tile.hasWater && tile.isVisited) {
+              waterTiles.push({
+                row,
+                col,
+                x: (col - gridCenter) * cubeSize * 1.15,
+                z: (row - gridCenter) * cubeSize * 1.15
+              });
+            }
+          }
+        }
+        
+        // Draw streams between adjacent water tiles
+        p.noFill();
+        p.stroke(200, 50, 65, 0.4);
+        p.strokeWeight(3);
+        
+        waterTiles.forEach(tile => {
+          // Check for adjacent water tiles
+          waterTiles.forEach(other => {
+            const dr = Math.abs(tile.row - other.row);
+            const dc = Math.abs(tile.col - other.col);
+            // Adjacent (not diagonal)
+            if ((dr === 1 && dc === 0) || (dr === 0 && dc === 1)) {
+              // Draw curved stream with animation
+              const flowOffset = Math.sin(p.frameCount * 0.04) * 3;
+              const midX = (tile.x + other.x) / 2 + flowOffset;
+              const midZ = (tile.z + other.z) / 2;
+              
+              p.beginShape();
+              p.vertex(tile.x, -1, tile.z);
+              p.quadraticVertex(midX, -2, midZ, other.x, -1, other.z);
+              p.endShape();
+            }
+          });
+        });
       };
 
       const drawVegetation = (
@@ -383,6 +567,80 @@ export default function EcologicalGardenP5({
         }
       };
 
+      const drawParticles = (p: p5) => {
+        particlesRef.current.forEach(particle => {
+          particle.update(p.frameCount);
+          
+          if (!particle.isAlive()) {
+            particle.reset(bounds);
+          }
+          
+          const { config } = particle;
+          const alpha = Math.min(1, particle.life / 50);
+          const size = config.size.min + (config.size.max - config.size.min) * Math.random();
+          
+          p.push();
+          p.translate(particle.x, particle.y, particle.z);
+          
+          // Draw particle based on type
+          p.noStroke();
+          
+          switch (config.type) {
+            case 'firefly':
+              // Glowing firefly
+              if (config.glow) {
+                p.fill(config.color.h, config.color.s, config.color.b, alpha * 0.3);
+                p.sphere(size * 2);
+              }
+              p.fill(config.color.h, config.color.s, config.color.b, alpha);
+              p.sphere(size);
+              break;
+              
+            case 'droplet':
+              // Water droplet
+              p.fill(config.color.h, config.color.s, config.color.b, alpha * 0.7);
+              p.ellipsoid(size * 0.5, size, size * 0.5);
+              break;
+              
+            case 'mist':
+              // Soft mist cloud
+              p.fill(config.color.h, config.color.s, config.color.b, alpha * 0.2);
+              p.sphere(size);
+              break;
+              
+            case 'leaf':
+              // Falling leaf
+              p.fill(config.color.h, config.color.s, config.color.b, alpha);
+              p.rotateZ(p.frameCount * 0.05 + particle.phase);
+              p.ellipse(0, 0, size, size * 0.5);
+              break;
+              
+            case 'seed':
+              // Rising seed
+              p.fill(config.color.h, config.color.s, config.color.b, alpha * 0.8);
+              p.ellipsoid(size * 0.3, size, size * 0.3);
+              break;
+              
+            case 'snow':
+              // Snowflake
+              p.fill(config.color.h, config.color.s, config.color.b, alpha * 0.8);
+              p.sphere(size * 0.5);
+              break;
+              
+            case 'ripple':
+              // Expanding ripple (rendered differently)
+              p.noFill();
+              p.stroke(config.color.h, config.color.s, config.color.b, alpha * 0.5);
+              p.strokeWeight(1);
+              const rippleSize = (1 - particle.life / particle.maxLife) * size * 3;
+              p.ellipse(0, 0, rippleSize, rippleSize * 0.6);
+              break;
+          }
+          
+          p.pop();
+        });
+      };
+
       const drawCentralTree = (p: p5) => {
         // Large central tree representing PRD
         p.push();
@@ -434,6 +692,11 @@ export default function EcologicalGardenP5({
           p.fill(200);
           p.text(`${mode.icon} ${mode.name}`, 16, 32);
         }
+        
+        // Particle count indicator
+        p.textSize(9);
+        p.fill(150);
+        p.text(`Particles: ${particlesRef.current.length}`, 16, 48);
         
         p.pop();
       };
