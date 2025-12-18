@@ -342,7 +342,7 @@ Tell the market story. Position for success.`
           ],
           // Ask the gateway to enforce a JSON object response when supported
           response_format: { type: 'json_object' },
-          max_tokens: 4096,
+          max_tokens: 8192,
         }),
       });
 
