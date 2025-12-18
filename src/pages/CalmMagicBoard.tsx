@@ -5,7 +5,7 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe, Eye, EyeOff, Moon, Sun, CheckCircle, GitBranch, ChevronDown, AlertTriangle } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe, Eye, EyeOff, Moon, Sun, CheckCircle, GitBranch, ChevronDown, AlertTriangle, Brain } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,6 +25,9 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { KnowledgeImageExtractor } from '@/components/calm-magic/KnowledgeImageExtractor';
+import { KnowledgeExtraction } from '@/types/knowledge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { getTerminology } from '@/data/modeAwareTerminology';
@@ -169,6 +172,7 @@ const CalmMagicBoard = () => {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeFeature, setUpgradeFeature] = useState<'insight_connections' | null>(null);
   const [showPatternJournal, setShowPatternJournal] = useState(false);
+  const [showKnowledgeImageDialog, setShowKnowledgeImageDialog] = useState(false);
   const [detectedPatterns, setDetectedPatterns] = useState<DetectedPattern[]>([]);
   const [patternHistory, setPatternHistory] = useState<PatternHistoryEntry[]>([]);
   const [highlightedPattern, setHighlightedPattern] = useState<DetectedPattern | null>(null);
@@ -610,6 +614,23 @@ const CalmMagicBoard = () => {
     updateProgress({ currentSeason: season });
     setSelectedTile(null);
     toast.success(`Navigated to ${season} season`);
+  };
+
+  // Handle knowledge image extraction save as Polen
+  const handleKnowledgeImageSaved = async (
+    content: string, 
+    tags: string[],
+    extraction: KnowledgeExtraction
+  ) => {
+    const tileId = selectedTile ? (selectedTile.row * 8 + selectedTile.col + 1) : null;
+    const allTags = [...tags, `knowledge:${extraction.knowledgeType}`];
+    
+    await savePolenEntry(content, tileId, 'image', allTags, currentSeason);
+    
+    setShowKnowledgeImageDialog(false);
+    toast.success('Knowledge objects extracted and saved as Polen!', {
+      description: `${extraction.entities.length} entities • ${extraction.playbookSeeds.length} playbook seeds`
+    });
   };
 
   // Navigate handler with journey and season tracking
@@ -1122,6 +1143,24 @@ const CalmMagicBoard = () => {
               {!canAccessInsights && <Lock className="w-2.5 h-2.5 absolute -top-0.5 -right-0.5 text-amber-500" />}
             </Button>
             
+            {/* Knowledge Image Upload */}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => setShowKnowledgeImageDialog(true)}
+                    className="relative"
+                  >
+                    <Brain className="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Upload Knowledge Image</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             
             {/* Sync Progress */}
             <Button 
@@ -1337,6 +1376,15 @@ const CalmMagicBoard = () => {
                 >
                   <BookOpen className="w-4 h-4 mr-2" />
                   Encyclopedia
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  className="justify-start"
+                  onClick={() => { setShowKnowledgeImageDialog(true); setShowMobileMenu(false); }}
+                >
+                  <Brain className="w-4 h-4 mr-2" />
+                  Knowledge
                 </Button>
               </div>
             </div>
@@ -1912,7 +1960,25 @@ const CalmMagicBoard = () => {
         </SheetContent>
       </Sheet>
 
-      
+      {/* Knowledge Image Upload Dialog */}
+      <Dialog open={showKnowledgeImageDialog} onOpenChange={setShowKnowledgeImageDialog}>
+        <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Brain className="h-5 w-5 text-violet-400" />
+              Extract Knowledge from Image
+            </DialogTitle>
+            <DialogDescription>
+              Upload a diagram, framework, or organizational chart to extract knowledge objects for {currentSeason}
+            </DialogDescription>
+          </DialogHeader>
+          <KnowledgeImageExtractor
+            onExtracted={handleKnowledgeImageSaved}
+            onCancel={() => setShowKnowledgeImageDialog(false)}
+          />
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 };
