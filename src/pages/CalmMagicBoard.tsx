@@ -1628,6 +1628,14 @@ const CalmMagicBoard = () => {
         onClose={() => setShowSeasonModal(false)}
         onContinue={handleSeasonContinue}
         onGeneratePrdLayer={handleGeneratePrdLayer}
+        onGenerateFoundationalPrompt={() => {
+          setShowSeasonModal(false);
+          setActiveView('prd-assembly');
+          toast.success(
+            '🎉 Your Foundational Prompt is ready! Navigate to Compilation tab to export.',
+            { duration: 5000 }
+          );
+        }}
         season={currentSeason}
         tilesVisited={visitedTiles.size}
         polenCount={getCurrentSeasonPolenCount()}
