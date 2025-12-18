@@ -1,8 +1,8 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, FileText, Download, Copy, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, FileText, Download, Copy, CheckCircle2, Loader2 } from 'lucide-react';
 import { useProjects } from '@/context/ProjectsContext';
 import { useMode } from '@/components/calm-magic/context/ModeContext';
 import SeasonFlowVisualization from '@/components/calm-magic/garden/SeasonFlowVisualization';
@@ -21,6 +21,7 @@ import PrdExportOptions from '@/components/calm-magic/garden/PrdExportOptions';
 import { SemanticClusteringPanel } from '@/components/calm-magic/garden/SemanticClusteringPanel';
 import { OntologicalPrdPanel } from '@/components/calm-magic/garden/OntologicalPrdPanel';
 import { CompilationTriggerWidget } from '@/components/calm-magic/garden/CompilationTriggerWidget';
+import { FullPrdDisplay } from '@/components/calm-magic/garden/FullPrdDisplay';
 import { useAutoCompilation, Season as AutoSeason, OntologicalContext } from '@/hooks/useAutoCompilation';
 import { calculateConsciousnessGeometryFromTiles } from '@/utils/consciousnessGeometry';
 import { calculateRingStates, getCurrentUnlockedRing } from '@/utils/ringToleranceSystem';
@@ -33,6 +34,16 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Textarea } from '@/components/ui/textarea';
 
 type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
+const SEASONS: Season[] = ['POLLENS', 'NOEMS', 'POEMS', 'TOTEMS', 'ANTHEMS'];
+
+// Season field mapping for checking content
+const SEASON_FIELDS: Record<Season, string[]> = {
+  POLLENS: ['pollens_aspirations', 'pollens_team_dynamics', 'pollens_cultural_elements', 'pollens_relational_patterns', 'pollens_constraints', 'pollens_stakes'],
+  NOEMS: ['noems_concepts', 'noems_shared_ideas', 'noems_intuitions', 'noems_mental_models'],
+  POEMS: ['poems_people', 'poems_objects', 'poems_environments', 'poems_messages', 'poems_systems', 'poems_prototypes'],
+  TOTEMS: ['totems_data_architecture', 'totems_security_policies', 'totems_access_controls', 'totems_system_requirements', 'totems_integration_points', 'totems_technical_debt'],
+  ANTHEMS: ['anthems_market_positioning', 'anthems_brand_narrative', 'anthems_go_to_market', 'anthems_audience_segments', 'anthems_success_signals', 'anthems_storytelling_assets'],
+};
 
 interface GardenMetrics {
   polenCount: number;
@@ -133,6 +144,9 @@ const GardenExpansionMode = () => {
   };
 
   const [autoCompileEnabled, setAutoCompileEnabled] = useState(true);
+  const [isAutoCompiling, setIsAutoCompiling] = useState(false);
+  const [autoCompileProgress, setAutoCompileProgress] = useState<string | null>(null);
+  const hasAutoCompiledRef = useRef(false);
 
   const autoCompilation = useAutoCompilation({
     visitedTiles,
@@ -141,6 +155,103 @@ const GardenExpansionMode = () => {
     onCompile: handleAutoCompile,
     enabled: autoCompileEnabled // Enabled by default
   });
+
+  // Check if a layer has any content
+  const hasLayerContent = useCallback((season: Season): boolean => {
+    if (!prdData) return false;
+    const fields = SEASON_FIELDS[season];
+    return fields.some(field => {
+      const value = prdData[field];
+      return value && typeof value === 'string' && value.trim().length > 0;
+    });
+  }, [prdData]);
+
+  // Auto-compile missing layers on page load
+  useEffect(() => {
+    const autoCompileIncomplete = async () => {
+      // Skip if already compiled, no PRD, no user, or currently compiling
+      if (hasAutoCompiledRef.current || !prdId || !userId || isAutoCompiling || isLoadingPrd) return;
+      
+      // Find layers that have fragments but no PRD content
+      const layersToCompile: Season[] = [];
+      for (const season of SEASONS) {
+        const hasFragments = seasonCounts[season] > 0;
+        const hasContent = hasLayerContent(season);
+        if (hasFragments && !hasContent) {
+          layersToCompile.push(season);
+        }
+      }
+      
+      if (layersToCompile.length === 0) return;
+      
+      hasAutoCompiledRef.current = true;
+      setIsAutoCompiling(true);
+      
+      toast.info(`Crystallizing your PRD from ${Object.values(seasonCounts).reduce((a, b) => a + b, 0)} fragments...`, {
+        duration: 3000,
+      });
+
+      try {
+        for (const layer of layersToCompile) {
+          setAutoCompileProgress(`Compiling ${layer}...`);
+          
+          // Fetch fragments for this layer
+          const { data: entries, error: fetchError } = await supabase
+            .from('polen_entries')
+            .select('*')
+            .eq('user_id', userId)
+            .eq('season_context', layer)
+            .order('created_at', { ascending: true });
+
+          if (fetchError || !entries || entries.length === 0) continue;
+
+          // Generate content for this layer
+          const { data, error: genError } = await supabase.functions.invoke('generate-prd-stage', {
+            body: {
+              layer,
+              polenEntries: entries.map(e => ({
+                content: e.content,
+                tileId: e.tile_id,
+                tags: e.tags || []
+              })),
+              board: layer,
+              existingContent: prdData
+            }
+          });
+
+          if (genError) {
+            console.error(`Failed to generate ${layer}:`, genError);
+            continue;
+          }
+
+          const generatedContent = data?.content || data || {};
+          
+          if (Object.keys(generatedContent).length > 0) {
+            await supabase
+              .from('prds')
+              .update(generatedContent)
+              .eq('id', prdId);
+          }
+        }
+
+        // Refresh PRD data
+        setPrdRefreshKey(prev => prev + 1);
+        toast.success('PRD crystallization complete!');
+        
+      } catch (err) {
+        console.error('Auto-compilation failed:', err);
+        toast.error('Some layers could not be compiled');
+      } finally {
+        setIsAutoCompiling(false);
+        setAutoCompileProgress(null);
+      }
+    };
+
+    // Only run after PRD data and season counts are loaded
+    if (!isLoadingPrd && prdId && userId && Object.values(seasonCounts).some(c => c > 0)) {
+      autoCompileIncomplete();
+    }
+  }, [prdId, userId, seasonCounts, isLoadingPrd, prdData, hasLayerContent, isAutoCompiling]);
 
   // Season data for visualization - using real counts
   const seasonData = [
@@ -401,11 +512,33 @@ const GardenExpansionMode = () => {
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               {metrics.polenCount} fragments crystallized across 5 seasons into a unified intelligence ready to serve
             </p>
+            
+            {/* Auto-compile progress indicator */}
+            {isAutoCompiling && (
+              <div className="flex items-center justify-center gap-3 text-primary">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span className="text-sm font-medium">{autoCompileProgress || 'Crystallizing PRD...'}</span>
+              </div>
+            )}
           </section>
 
           {/* Season Flow Visualization */}
           <section className="py-8">
             <SeasonFlowVisualization seasons={seasonData} />
+          </section>
+
+          {/* ===== HERO: Full PRD Display ===== */}
+          <section className="py-8">
+            <div className="text-center mb-6">
+              <h3 className="text-2xl font-semibold mb-2">📜 Your Assembled PRD</h3>
+              <p className="text-sm text-muted-foreground">
+                All content compiled from your journey fragments
+              </p>
+            </div>
+            <FullPrdDisplay 
+              prdData={prdData} 
+              isLoading={isLoadingPrd || isAutoCompiling} 
+            />
           </section>
 
           {/* PRD Health Score */}
