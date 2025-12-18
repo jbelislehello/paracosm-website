@@ -10,6 +10,8 @@ import OntologySummary from '@/components/calm-magic/garden/OntologySummary';
 import SeasonArchive from '@/components/calm-magic/garden/SeasonArchive';
 import HexagramGallery from '@/components/calm-magic/garden/HexagramGallery';
 import IntegrationPathways from '@/components/calm-magic/garden/IntegrationPathways';
+import JourneyTimeline from '@/components/calm-magic/garden/JourneyTimeline';
+import JourneySummaryExport from '@/components/calm-magic/garden/JourneySummaryExport';
 import { GARDEN_THEMES } from '@/data/gardenConnections';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -67,6 +69,9 @@ const GardenExpansionMode = () => {
     ANTHEMS: 0,
   });
   const [hexagramCount, setHexagramCount] = useState(0);
+  
+  // Selected date from timeline
+  const [selectedTimelineDate, setSelectedTimelineDate] = useState<Date | undefined>(undefined);
 
   // Season data for visualization - using real counts
   const seasonData = [
@@ -219,6 +224,10 @@ const GardenExpansionMode = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleTimelineDateSelect = (date: Date) => {
+    setSelectedTimelineDate(date);
+  };
+
   return (
     <div className="min-h-screen relative">
       {/* Subtle ambient gradient background */}
@@ -255,6 +264,12 @@ const GardenExpansionMode = () => {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              <JourneySummaryExport
+                projectName={projectContext?.projectName || 'Calm Magic Project'}
+                gardenName={theme?.name || 'Intelligence'}
+                seasonCounts={seasonCounts}
+                foundationalPrompt={compiledPrompt}
+              />
               <Button 
                 variant="outline" 
                 size="sm" 
@@ -291,6 +306,13 @@ const GardenExpansionMode = () => {
             <SeasonFlowVisualization seasons={seasonData} />
           </section>
 
+          {/* Journey Timeline */}
+          <section className="py-8">
+            <Card className="p-6 bg-background/50 backdrop-blur-sm border-border/50">
+              <JourneyTimeline onDateSelect={handleTimelineDateSelect} />
+            </Card>
+          </section>
+
           {/* Ontology Summary */}
           <section className="py-8">
             <Card className="p-8 bg-background/50 backdrop-blur-sm border-border/50">
@@ -301,10 +323,13 @@ const GardenExpansionMode = () => {
             </Card>
           </section>
 
-          {/* Season Archive - Expandable with real entries */}
+          {/* Season Archive - Expandable with real entries and filtering */}
           <section className="py-8">
             <Card className="p-8 bg-background/50 backdrop-blur-sm border-border/50">
-              <SeasonArchive seasonCounts={seasonCounts} />
+              <SeasonArchive 
+                seasonCounts={seasonCounts} 
+                initialDateFilter={selectedTimelineDate}
+              />
             </Card>
           </section>
 

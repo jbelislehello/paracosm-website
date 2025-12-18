@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -7,7 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Flower2, Lightbulb, BookOpen, Gem, Music, ArrowRight, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
+import { format, isWithinInterval, startOfDay, endOfDay } from 'date-fns';
+import SearchFilterToolbar, { SearchFilters } from './SearchFilterToolbar';
 
 type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 
@@ -24,6 +25,7 @@ interface PolenEntry {
 interface SeasonArchiveProps {
   seasonCounts: Record<Season, number>;
   className?: string;
+  initialDateFilter?: Date;
 }
 
 const SEASON_CONFIG: Record<Season, {
@@ -72,16 +74,15 @@ const SEASON_CONFIG: Record<Season, {
 
 const SEASON_ORDER: Season[] = ['POLLENS', 'NOEMS', 'POEMS', 'TOTEMS', 'ANTHEMS'];
 
-const SeasonArchive = ({ seasonCounts, className }: SeasonArchiveProps) => {
+const SeasonArchive = ({ seasonCounts, className, initialDateFilter }: SeasonArchiveProps) => {
   const navigate = useNavigate();
-  const [entriesBySeason, setEntriesBySeason] = useState<Record<Season, PolenEntry[]>>({
-    POLLENS: [],
-    NOEMS: [],
-    POEMS: [],
-    TOTEMS: [],
-    ANTHEMS: [],
-  });
+  const [allEntries, setAllEntries] = useState<PolenEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState<SearchFilters>({
+    query: '',
+    tags: [],
+    dateRange: initialDateFilter ? { from: initialDateFilter, to: initialDateFilter } : undefined
+  });
 
   useEffect(() => {
     const fetchEntries = async () => {
@@ -100,23 +101,7 @@ const SeasonArchive = ({ seasonCounts, className }: SeasonArchiveProps) => {
           return;
         }
 
-        // Group by season_context
-        const grouped: Record<Season, PolenEntry[]> = {
-          POLLENS: [],
-          NOEMS: [],
-          POEMS: [],
-          TOTEMS: [],
-          ANTHEMS: [],
-        };
-
-        entries.forEach(entry => {
-          const season = entry.season_context as Season;
-          if (season && grouped[season]) {
-            grouped[season].push(entry);
-          }
-        });
-
-        setEntriesBySeason(grouped);
+        setAllEntries(entries);
       } catch (error) {
         console.error('Error:', error);
       } finally {
@@ -126,6 +111,88 @@ const SeasonArchive = ({ seasonCounts, className }: SeasonArchiveProps) => {
 
     fetchEntries();
   }, []);
+
+  // Update date filter when initialDateFilter changes
+  useEffect(() => {
+    if (initialDateFilter) {
+      setFilters(prev => ({
+        ...prev,
+        dateRange: { from: initialDateFilter, to: initialDateFilter }
+      }));
+    }
+  }, [initialDateFilter]);
+
+  // Extract all unique tags
+  const availableTags = useMemo(() => {
+    const tagSet = new Set<string>();
+    allEntries.forEach(entry => {
+      entry.tags?.forEach(tag => tagSet.add(tag));
+    });
+    return Array.from(tagSet).sort();
+  }, [allEntries]);
+
+  // Apply filters
+  const filteredEntries = useMemo(() => {
+    return allEntries.filter(entry => {
+      // Content search
+      if (filters.query) {
+        const query = filters.query.toLowerCase();
+        if (!entry.content.toLowerCase().includes(query)) {
+          return false;
+        }
+      }
+
+      // Tag filter
+      if (filters.tags.length > 0) {
+        if (!entry.tags || !filters.tags.some(tag => entry.tags?.includes(tag))) {
+          return false;
+        }
+      }
+
+      // Date filter
+      if (filters.dateRange?.from) {
+        const entryDate = new Date(entry.created_at);
+        const start = startOfDay(filters.dateRange.from);
+        const end = filters.dateRange.to ? endOfDay(filters.dateRange.to) : endOfDay(filters.dateRange.from);
+        if (!isWithinInterval(entryDate, { start, end })) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [allEntries, filters]);
+
+  // Group filtered entries by season
+  const entriesBySeason = useMemo(() => {
+    const grouped: Record<Season, PolenEntry[]> = {
+      POLLENS: [],
+      NOEMS: [],
+      POEMS: [],
+      TOTEMS: [],
+      ANTHEMS: [],
+    };
+
+    filteredEntries.forEach(entry => {
+      const season = entry.season_context as Season;
+      if (season && grouped[season]) {
+        grouped[season].push(entry);
+      }
+    });
+
+    return grouped;
+  }, [filteredEntries]);
+
+  // Get filtered counts
+  const filteredCounts = useMemo(() => {
+    return SEASON_ORDER.reduce((acc, season) => {
+      acc[season] = entriesBySeason[season].length;
+      return acc;
+    }, {} as Record<Season, number>);
+  }, [entriesBySeason]);
+
+  const totalCount = allEntries.length;
+  const filteredCount = filteredEntries.length;
 
   const handleBrowseInBoard = (season: Season) => {
     navigate(`/calm-magic-board?season=${season}`);
@@ -145,12 +212,23 @@ const SeasonArchive = ({ seasonCounts, className }: SeasonArchiveProps) => {
         </p>
       </div>
 
+      {/* Search & Filter Toolbar */}
+      <SearchFilterToolbar
+        filters={filters}
+        onFiltersChange={setFilters}
+        availableTags={availableTags}
+        totalCount={totalCount}
+        filteredCount={filteredCount}
+      />
+
       <Accordion type="single" collapsible className="space-y-3">
         {SEASON_ORDER.map((season) => {
           const config = SEASON_CONFIG[season];
           const Icon = config.icon;
           const entries = entriesBySeason[season];
-          const count = seasonCounts[season] || 0;
+          const originalCount = seasonCounts[season] || 0;
+          const count = filteredCounts[season];
+          const isFiltered = count !== originalCount;
 
           return (
             <AccordionItem 
@@ -178,7 +256,11 @@ const SeasonArchive = ({ seasonCounts, className }: SeasonArchiveProps) => {
                         {season}
                       </span>
                       <Badge variant="secondary" className="text-xs">
-                        {count} {count === 1 ? 'fragment' : 'fragments'}
+                        {isFiltered ? (
+                          <span>{count} / {originalCount}</span>
+                        ) : (
+                          <span>{count} {count === 1 ? 'fragment' : 'fragments'}</span>
+                        )}
                       </Badge>
                     </div>
                     <p className="text-xs text-muted-foreground mt-0.5">
@@ -195,7 +277,7 @@ const SeasonArchive = ({ seasonCounts, className }: SeasonArchiveProps) => {
                   </div>
                 ) : entries.length === 0 ? (
                   <div className="text-sm text-muted-foreground text-center py-4">
-                    No fragments captured yet in this season
+                    {isFiltered ? 'No matching fragments' : 'No fragments captured yet in this season'}
                   </div>
                 ) : (
                   <div className="space-y-4">
