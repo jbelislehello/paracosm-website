@@ -419,6 +419,7 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isCreatingPrd, setIsCreatingPrd] = useState(false);
   const [isCompiling, setIsCompiling] = useState(false);
+  const [compilingLayer, setCompilingLayer] = useState<PrdLayer | null>(null);
   
   // Refs for auto-save debouncing
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout>();
@@ -808,9 +809,12 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   // Compile PRD content from POLEN entries
   const handleCompileFromPolen = async () => {
     setIsCompiling(true);
+    setCompilingLayer(null);
     try {
       // Generate content for all layers sequentially
       for (const layer of LAYERS) {
+        setCompilingLayer(layer); // Show which layer is being processed
+        
         const layerPolen = polenEntries.filter(p => 
           p.season_context === layer || p.tags?.includes(layer) || 
           // Default untagged entries to POLLENS
@@ -843,6 +847,7 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
       }
       
       // Save everything
+      setCompilingLayer(null);
       await autoSavePrd(true);
       setCompletedLayers(LAYERS);
       toast.success(`${documentName} compiled from ${polenEntries.length} fragments`);
@@ -851,6 +856,7 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
       toast.error('Failed to compile content. Please try again.');
     } finally {
       setIsCompiling(false);
+      setCompilingLayer(null);
     }
   };
 
@@ -1065,11 +1071,16 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
               className="h-7 px-3 text-xs bg-amber-500 hover:bg-amber-600"
             >
               {isCompiling ? (
-                <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                <>
+                  <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                  {compilingLayer ? `Generating ${compilingLayer}...` : 'Preparing...'}
+                </>
               ) : (
-                <Sparkles className="h-3 w-3 mr-1" />
+                <>
+                  <Sparkles className="h-3 w-3 mr-1" />
+                  Compile from {polenEntries.length} Fragments
+                </>
               )}
-              Compile from {polenEntries.length} Fragments
             </Button>
           ) : (
             // Has content - show Save button
