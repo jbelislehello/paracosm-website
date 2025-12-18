@@ -14,6 +14,9 @@ import JourneyTimeline from '@/components/calm-magic/garden/JourneyTimeline';
 import JourneySummaryExport from '@/components/calm-magic/garden/JourneySummaryExport';
 import { PrdCompilationCard } from '@/components/calm-magic/garden/PrdCompilationCard';
 import TagCloudVisualization from '@/components/calm-magic/garden/TagCloudVisualization';
+import FragmentHeatmap from '@/components/calm-magic/garden/FragmentHeatmap';
+import PrdHealthScore from '@/components/calm-magic/garden/PrdHealthScore';
+import PrdExportOptions from '@/components/calm-magic/garden/PrdExportOptions';
 import { GARDEN_THEMES } from '@/data/gardenConnections';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -289,6 +292,11 @@ const GardenExpansionMode = () => {
                 seasonCounts={seasonCounts}
                 foundationalPrompt={compiledPrompt}
               />
+              <PrdExportOptions
+                prdData={prdData}
+                projectName={projectContext?.projectName || 'Calm Magic Project'}
+                compiledPrompt={compiledPrompt}
+              />
               <Button 
                 variant="outline" 
                 size="sm" 
@@ -296,10 +304,6 @@ const GardenExpansionMode = () => {
               >
                 <FileText className="w-4 h-4 mr-2" />
                 View Full PRD
-              </Button>
-              <Button size="sm" onClick={handleExportPrd}>
-                <Download className="w-4 h-4 mr-2" />
-                Export
               </Button>
             </div>
           </div>
@@ -325,6 +329,13 @@ const GardenExpansionMode = () => {
             <SeasonFlowVisualization seasons={seasonData} />
           </section>
 
+          {/* PRD Health Score */}
+          {prdData && (
+            <section className="py-4">
+              <PrdHealthScore prdData={prdData} />
+            </section>
+          )}
+
           {/* PRD Compilation Status */}
           {userId && (
             <section className="py-4">
@@ -343,6 +354,11 @@ const GardenExpansionMode = () => {
               selectedTags={selectedTags}
               onTagSelect={setSelectedTags}
             />
+          </section>
+
+          {/* Fragment Activity Heatmap */}
+          <section className="py-4">
+            <FragmentHeatmap onDateSelect={handleTimelineDateSelect} />
           </section>
 
           {/* Journey Timeline */}
