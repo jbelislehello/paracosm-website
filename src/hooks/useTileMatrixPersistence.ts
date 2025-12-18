@@ -35,7 +35,7 @@ interface PolenEntry {
   season_context: string | null;
 }
 
-export const useTileMatrixPersistence = (board: Board = 'LOVE') => {
+export const useTileMatrixPersistence = (board: Board = 'LOVE', projectId?: string | null) => {
   const [user, setUser] = useState<{ id: string } | null>(null);
   const [currentCycle, setCurrentCycle] = useState<JournalCycle | null>(null);
   const [polenEntries, setPolenEntries] = useState<PolenEntry[]>([]);
@@ -70,7 +70,7 @@ export const useTileMatrixPersistence = (board: Board = 'LOVE') => {
       setPolenEntries([]);
       setLoading(false);
     }
-  }, [user, board]);
+  }, [user, board, projectId]);
 
   // Real-time subscription for POLEN entries
   useEffect(() => {
@@ -273,11 +273,18 @@ export const useTileMatrixPersistence = (board: Board = 'LOVE') => {
     if (!user) return;
     
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('polen_entries')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
+
+      // Filter by project_id if provided
+      if (projectId) {
+        query = query.eq('project_id', projectId);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
       setPolenEntries(data?.map(entry => ({
@@ -464,6 +471,7 @@ export const useTileMatrixPersistence = (board: Board = 'LOVE') => {
         .insert({
           user_id: user.id,
           cycle_id: currentCycle?.id || null,
+          project_id: projectId || null,
           tile_id: tileId,
           content,
           fragment_type: fragmentType,

@@ -279,9 +279,13 @@ export const useExpansionJournal = (projectId?: string | null) => {
 
   const fetchPolenEntries = async () => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
       let query = supabase
         .from('polen_entries')
         .select('*')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
       
       if (projectId) {
