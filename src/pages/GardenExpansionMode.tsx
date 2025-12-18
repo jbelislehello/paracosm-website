@@ -17,6 +17,7 @@ import { PrdPreviewModal } from '@/components/calm-magic/garden/PrdPreviewModal'
 import TagCloudVisualization from '@/components/calm-magic/garden/TagCloudVisualization';
 import FragmentHeatmap from '@/components/calm-magic/garden/FragmentHeatmap';
 import PrdHealthScore from '@/components/calm-magic/garden/PrdHealthScore';
+import { PrdFieldsMatrix } from '@/components/calm-magic/garden/PrdFieldsMatrix';
 import PrdExportOptions from '@/components/calm-magic/garden/PrdExportOptions';
 import { SemanticClusteringPanel } from '@/components/calm-magic/garden/SemanticClusteringPanel';
 import { OntologicalPrdPanel } from '@/components/calm-magic/garden/OntologicalPrdPanel';
@@ -640,10 +641,13 @@ const GardenExpansionMode = () => {
             />
           </section>
 
-          {/* PRD Health Score */}
+          {/* PRD Health Score & Fields Matrix */}
           {prdData && (
             <section className="py-4">
-              <PrdHealthScore prdData={prdData} />
+              <div className="grid md:grid-cols-2 gap-4">
+                <PrdHealthScore prdData={prdData} />
+                <PrdFieldsMatrix prdData={prdData} />
+              </div>
             </section>
           )}
 
