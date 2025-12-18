@@ -31,6 +31,7 @@ import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import SubscriptionCanceled from "./pages/SubscriptionCanceled";
 import PatternEncyclopedia from "./pages/PatternEncyclopedia";
 import ParacosmDashboard from "./pages/ParacosmDashboard";
+import Settings from "./pages/Settings";
 import "./App.css";
 
 const queryClient = new QueryClient();
@@ -66,6 +67,7 @@ function App() {
                   <Route path="/calm-magic-visualization" element={<CalmMagicVisualization />} />
                   <Route path="/calm-magic-journal" element={<CalmMagicJournal />} />
                   <Route path="/projects" element={<ProjectsDashboard />} />
+                  <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                   <Route path="/subscription-success" element={<SubscriptionSuccess />} />
                   <Route path="/subscription-canceled" element={<SubscriptionCanceled />} />
                   <Route path="/pattern-encyclopedia" element={<PatternEncyclopedia />} />

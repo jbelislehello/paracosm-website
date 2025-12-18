@@ -199,6 +199,11 @@ const UserProfileMenu: React.FC = () => {
             Edit Profile
           </DropdownMenuItem>
           
+          <DropdownMenuItem onClick={() => navigate('/settings')} className="cursor-pointer">
+            <Settings className="w-4 h-4 mr-2" />
+            Settings & Diagnostics
+          </DropdownMenuItem>
+          
           <DropdownMenuSeparator />
           
           {/* Sign Out */}
