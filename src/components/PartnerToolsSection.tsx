@@ -8,11 +8,23 @@ const PartnerToolsSection: React.FC = () => {
   const { tools } = usePartnerTools();
   
   const categoryColors: Record<string, string> = {
+    voice: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200',
+    mcp: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200',
     ai: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
     database: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
     development: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200',
     integration: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
     collaboration: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
+  };
+
+  const categoryLabels: Record<string, string> = {
+    voice: 'Voice Computing & Affective Computing',
+    mcp: 'MCP',
+    ai: 'AI',
+    database: 'Database',
+    development: 'Development',
+    integration: 'Integration',
+    collaboration: 'Collaboration',
   };
 
   return (
@@ -30,7 +42,7 @@ const PartnerToolsSection: React.FC = () => {
                 <div className="flex justify-between items-start">
                   <CardTitle className="text-xl">{tool.name}</CardTitle>
                   <Badge className={categoryColors[tool.category]}>
-                    {tool.category.charAt(0).toUpperCase() + tool.category.slice(1)}
+                    {categoryLabels[tool.category] || tool.category}
                   </Badge>
                 </div>
                 <CardDescription>{tool.description}</CardDescription>
