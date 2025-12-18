@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, ArrowUpLeft, ArrowUpRight, ArrowDownLeft, ArrowDownRight, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Wand2, Moon, BookOpen, ScrollText, Focus, Layers, Hexagon } from 'lucide-react';
+import { ArrowUp, ArrowRight, ArrowDown, ArrowLeft, ArrowUpLeft, ArrowUpRight, ArrowDownLeft, ArrowDownRight, Sparkles, Save, Loader2, LogIn, X, Leaf, Heart, MessageCircle, RefreshCw, Send, Mic, MicOff, Pencil, GitBranch, Wand2, Moon, BookOpen, ScrollText, Focus, Layers, Hexagon, Volume2 } from 'lucide-react';
 import { canMoveDiagonally, isPortalDay, getKinForTile } from '@/data/cosmologicalMapping';
 import { MinimalistTileCard } from '@/components/calm-magic/MinimalistTileCard';
 import { useState, useEffect, useRef } from 'react';
@@ -25,6 +25,7 @@ import { HexagramJournal } from '@/components/calm-magic/HexagramJournal';
 import { useTzolkinResonance } from '@/hooks/useTzolkinResonance';
 import { toast } from 'sonner';
 import { FeltState, EmotionalAxes, EmotionalCheckInData } from '@/types/trajectory';
+import { VoiceModePanel } from '@/components/calm-magic/VoiceModePanel';
 
 const rowLabels = [
   { letter: 'M', name: 'Mindsets', stage: 'AGENDAS' },
@@ -63,6 +64,7 @@ interface TileDetailPanelProps {
   emotionalCheckins?: EmotionalCheckInData[];
   visitedTiles?: Set<number>;
   onOpenAssistant?: () => void;
+  projectId?: string;
 }
 
 const TileDetailPanel = ({
@@ -77,12 +79,13 @@ const TileDetailPanel = ({
   onEmotionalCheckin,
   emotionalCheckins = [],
   visitedTiles = new Set<number>(),
+  projectId,
 }: TileDetailPanelProps) => {
   const [userInput, setUserInput] = useState('');
   const [conversationSaved, setConversationSaved] = useState(false);
   const [showMeditationMode, setShowMeditationMode] = useState(false);
   const [highlightedTile, setHighlightedTile] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState<'chat' | 'focus' | 'manifolds' | 'topologies'>('chat');
+  const [activeTab, setActiveTab] = useState<'chat' | 'focus' | 'manifolds' | 'voice'>('chat');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // Tzolkin resonance for meditation mode
@@ -309,6 +312,13 @@ const TileDetailPanel = ({
           >
             <Layers className="w-3 h-3 mr-1" />
             Manifolds
+          </TabsTrigger>
+          <TabsTrigger 
+            value="voice" 
+            className="flex-1 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent py-1.5 text-xs font-semibold uppercase tracking-wider"
+          >
+            <span className="text-sm mr-1">🦊</span>
+            Voice
           </TabsTrigger>
         </TabsList>
 
@@ -558,6 +568,23 @@ const TileDetailPanel = ({
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+        </TabsContent>
+
+        {/* VOICE Tab */}
+        <TabsContent value="voice" className="flex-1 m-0 min-h-0">
+          <VoiceModePanel
+            projectId={projectId || ''}
+            currentTile={{ row: selectedTile.row, col: selectedTile.col, season: currentSeason }}
+            onNavigate={(direction) => {
+              if (direction === 'glitch' && canGlitch) {
+                onNavigate(selectedTile.row + 1, selectedTile.col);
+              } else if (direction === 'drift' && canDriftRight) {
+                onNavigate(selectedTile.row, selectedTile.col + 1);
+              } else if (direction === 'tune' && canTune) {
+                onNavigate(selectedTile.row - 1, selectedTile.col);
+              }
+            }}
+          />
         </TabsContent>
       </Tabs>
 
