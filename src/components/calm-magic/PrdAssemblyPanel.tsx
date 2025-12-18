@@ -417,6 +417,8 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   const [saving, setSaving] = useState(false);
   const [autoSaving, setAutoSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
+  const [isCreatingPrd, setIsCreatingPrd] = useState(false);
+  const [isCompiling, setIsCompiling] = useState(false);
   
   // Refs for auto-save debouncing
   const autoSaveTimeoutRef = useRef<NodeJS.Timeout>();
@@ -769,6 +771,89 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
     }
   };
 
+  // Create a new PRD
+  const handleCreatePrd = async () => {
+    setIsCreatingPrd(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast.error('Please sign in to create a document');
+        return;
+      }
+
+      const { data: newPrd, error } = await supabase
+        .from('prds')
+        .insert({
+          owner_id: user.id,
+          title: `${documentName} — ${new Date().toLocaleDateString()}`,
+          status: 'draft',
+          prototype_stage: 'B_DIEGETIC',
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      onPrdCreated?.(newPrd.id);
+      setTitle(newPrd.title);
+      toast.success(`${documentName} created`);
+    } catch (error) {
+      console.error('Failed to create PRD:', error);
+      toast.error('Failed to create document');
+    } finally {
+      setIsCreatingPrd(false);
+    }
+  };
+
+  // Compile PRD content from POLEN entries
+  const handleCompileFromPolen = async () => {
+    setIsCompiling(true);
+    try {
+      // Generate content for all layers sequentially
+      for (const layer of LAYERS) {
+        const layerPolen = polenEntries.filter(p => 
+          p.season_context === layer || p.tags?.includes(layer) || 
+          // Default untagged entries to POLLENS
+          (!p.season_context && layer === 'POLLENS')
+        );
+        
+        // Only generate if there are relevant POLEN entries
+        if (layerPolen.length > 0 || layer === 'POLLENS') {
+          const { data, error } = await supabase.functions.invoke('generate-prd-stage', {
+            body: {
+              layer,
+              polenEntries: (layerPolen.length > 0 ? layerPolen : polenEntries).map(p => ({
+                content: p.content,
+                tile_id: p.tile_id,
+                tags: p.tags
+              })),
+              board: layer,
+              existingContent: content
+            }
+          });
+
+          if (error) {
+            console.error(`Failed to generate ${layer}:`, error);
+            continue;
+          }
+
+          setContent(prev => ({ ...prev, ...data.content }));
+          contentRef.current = { ...contentRef.current, ...data.content };
+        }
+      }
+      
+      // Save everything
+      await autoSavePrd(true);
+      setCompletedLayers(LAYERS);
+      toast.success(`${documentName} compiled from ${polenEntries.length} fragments`);
+    } catch (error) {
+      console.error('Compilation error:', error);
+      toast.error('Failed to compile content. Please try again.');
+    } finally {
+      setIsCompiling(false);
+    }
+  };
+
   // Layer switch with auto-save
   const handleLayerSwitch = async (targetLayer: PrdLayer) => {
     // Save current layer's content before switching
@@ -953,27 +1038,64 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => autoSavePrd(false)}
-            disabled={autoSaving || !hasAnyContent}
-            className="h-7 px-2 text-xs"
-          >
-            {autoSaving ? (
-              <Loader2 className="h-3 w-3 animate-spin" />
-            ) : (
-              <>
-                <Cloud className="h-3 w-3 mr-1" />
-                Save Now
-              </>
-            )}
-          </Button>
+          {/* Contextual PRD Action Button */}
+          {!prdId ? (
+            // No PRD exists - show Create button
+            <Button
+              variant="default"
+              size="sm"
+              onClick={handleCreatePrd}
+              disabled={isCreatingPrd}
+              className="h-7 px-3 text-xs"
+            >
+              {isCreatingPrd ? (
+                <Loader2 className="h-3 w-3 animate-spin mr-1" />
+              ) : (
+                <FileText className="h-3 w-3 mr-1" />
+              )}
+              Create {documentName}
+            </Button>
+          ) : filledFields === 0 && polenEntries.length > 0 ? (
+            // PRD exists but empty, has POLEN - show Compile button
+            <Button
+              variant="default"
+              size="sm"
+              onClick={handleCompileFromPolen}
+              disabled={isCompiling}
+              className="h-7 px-3 text-xs bg-amber-500 hover:bg-amber-600"
+            >
+              {isCompiling ? (
+                <Loader2 className="h-3 w-3 animate-spin mr-1" />
+              ) : (
+                <Sparkles className="h-3 w-3 mr-1" />
+              )}
+              Compile from {polenEntries.length} Fragments
+            </Button>
+          ) : (
+            // Has content - show Save button
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => autoSavePrd(false)}
+              disabled={autoSaving || !hasAnyContent}
+              className="h-7 px-2 text-xs"
+            >
+              {autoSaving ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : (
+                <>
+                  <Cloud className="h-3 w-3 mr-1" />
+                  Save Now
+                </>
+              )}
+            </Button>
+          )}
           <Button 
             variant="outline" 
             size="sm"
             onClick={() => setShowFullPreview(true)}
-            disabled={filledFields === 0}
+            disabled={filledFields === 0 && polenEntries.length === 0}
+            title={filledFields === 0 ? 'Compile content first to preview' : 'Preview document'}
           >
             <Eye className="h-3.5 w-3.5 mr-1" />
             Preview
