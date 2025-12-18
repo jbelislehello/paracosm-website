@@ -17,6 +17,7 @@ import TagCloudVisualization from '@/components/calm-magic/garden/TagCloudVisual
 import FragmentHeatmap from '@/components/calm-magic/garden/FragmentHeatmap';
 import PrdHealthScore from '@/components/calm-magic/garden/PrdHealthScore';
 import PrdExportOptions from '@/components/calm-magic/garden/PrdExportOptions';
+import { SemanticClusteringPanel } from '@/components/calm-magic/garden/SemanticClusteringPanel';
 import { GARDEN_THEMES } from '@/data/gardenConnections';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -353,6 +354,14 @@ const GardenExpansionMode = () => {
             <TagCloudVisualization
               selectedTags={selectedTags}
               onTagSelect={setSelectedTags}
+            />
+          </section>
+
+          {/* Semantic Clustering Panel */}
+          <section className="py-4">
+            <SemanticClusteringPanel 
+              userId={userId}
+              onNoemCreated={() => setPrdRefreshKey(prev => prev + 1)}
             />
           </section>
 
