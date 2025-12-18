@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Copy, Download, Check, Bot, Sparkles, Heart, Hexagon, Code, MessageSquare } from 'lucide-react';
-import { compileFoundationalPrompt, formatForLovable, formatForBase44, formatForEdgeFunction, formatForClaude } from '@/data/prdCompilation';
+import { Copy, Download, Check, Bot, Sparkles, Heart, Hexagon, Code, MessageSquare, Smartphone } from 'lucide-react';
+import { compileFoundationalPrompt, formatForLovable, formatForBase44, formatForEdgeFunction, formatForClaude, formatForTonalli } from '@/data/prdCompilation';
 import { toast } from 'sonner';
 
 interface FoundationalPromptCompilerProps {
@@ -24,6 +24,7 @@ export const FoundationalPromptCompiler: React.FC<FoundationalPromptCompilerProp
   const [copiedBase44, setCopiedBase44] = useState(false);
   const [copiedEdgeFunction, setCopiedEdgeFunction] = useState(false);
   const [copiedClaude, setCopiedClaude] = useState(false);
+  const [copiedTonalli, setCopiedTonalli] = useState(false);
 
   const compiledPrompt = useMemo(() => {
     return compileFoundationalPrompt(promptHooks, projectName);
@@ -70,6 +71,16 @@ export const FoundationalPromptCompiler: React.FC<FoundationalPromptCompilerProp
     setCopiedClaude(true);
     toast.success('Copied for Claude! XML-formatted for optimal context parsing');
     setTimeout(() => setCopiedClaude(false), 2000);
+  };
+
+  const handleCopyToTonalli = async () => {
+    const tonalliFormatted = formatForTonalli(compiledPrompt, projectName);
+    await navigator.clipboard.writeText(tonalliFormatted);
+    setCopiedTonalli(true);
+    toast.success('🦊 Copied for Tonalli! Wuxia awaits your story.', {
+      description: 'Paste into Tonalli companion-io app configuration'
+    });
+    setTimeout(() => setCopiedTonalli(false), 2000);
   };
 
   const handleDownload = () => {
@@ -149,13 +160,14 @@ export const FoundationalPromptCompiler: React.FC<FoundationalPromptCompilerProp
           <Badge variant="secondary" className="text-[10px] bg-blue-500/10 text-blue-500 border-blue-500/30">Base44</Badge>
           <Badge variant="secondary" className="text-[10px] bg-violet-500/10 text-violet-500 border-violet-500/30">Claude</Badge>
           <Badge variant="secondary" className="text-[10px] bg-emerald-500/10 text-emerald-500 border-emerald-500/30">Edge Functions</Badge>
+          <Badge variant="secondary" className="text-[10px] bg-amber-500/10 text-amber-500 border-amber-500/30">Tonalli</Badge>
         </div>
 
         {/* Actions */}
         <div className="flex flex-col gap-2">
           {/* Primary Platform Actions */}
           <TooltipProvider>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-4 gap-2">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
@@ -213,6 +225,26 @@ export const FoundationalPromptCompiler: React.FC<FoundationalPromptCompilerProp
                 </TooltipTrigger>
                 <TooltipContent>
                   <p className="text-xs">XML-formatted for Claude's optimal context parsing</p>
+                </TooltipContent>
+              </Tooltip>
+
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    size="sm"
+                    onClick={handleCopyToTonalli}
+                    className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
+                  >
+                    {copiedTonalli ? (
+                      <Check className="h-3.5 w-3.5 mr-1" />
+                    ) : (
+                      <Smartphone className="h-3.5 w-3.5 mr-1" />
+                    )}
+                    {copiedTonalli ? 'Copied!' : 'Tonalli'}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p className="text-xs">🦊 Export for Tonalli companion-io with Wuxia the Fox integration</p>
                 </TooltipContent>
               </Tooltip>
             </div>
