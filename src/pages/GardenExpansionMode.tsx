@@ -12,6 +12,7 @@ import HexagramGallery from '@/components/calm-magic/garden/HexagramGallery';
 import IntegrationPathways from '@/components/calm-magic/garden/IntegrationPathways';
 import JourneyTimeline from '@/components/calm-magic/garden/JourneyTimeline';
 import JourneySummaryExport from '@/components/calm-magic/garden/JourneySummaryExport';
+import { PrdCompilationCard } from '@/components/calm-magic/garden/PrdCompilationCard';
 import { GARDEN_THEMES } from '@/data/gardenConnections';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -57,8 +58,11 @@ const GardenExpansionMode = () => {
   
   const [compiledPrompt, setCompiledPrompt] = useState<string>('');
   const [prdData, setPrdData] = useState<any>(null);
+  const [prdId, setPrdId] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [isLoadingPrd, setIsLoadingPrd] = useState(true);
   const [copied, setCopied] = useState(false);
+  const [prdRefreshKey, setPrdRefreshKey] = useState(0);
   
   // Real season counts from database
   const [seasonCounts, setSeasonCounts] = useState<Record<Season, number>>({
@@ -91,16 +95,20 @@ const GardenExpansionMode = () => {
       }
 
       try {
+        const { data: userData } = await supabase.auth.getUser();
+        if (userData?.user?.id) {
+          setUserId(userData.user.id);
+        }
+
         const { data: progressData } = await supabase
           .from('project_season_progress')
           .select('prd_id')
           .eq('project_id', projectContext.id)
           .maybeSingle();
 
-        let prdId = progressData?.prd_id;
+        let foundPrdId = progressData?.prd_id;
 
-        if (!prdId) {
-          const { data: userData } = await supabase.auth.getUser();
+        if (!foundPrdId) {
           if (userData?.user?.id) {
             const { data: prds } = await supabase
               .from('prds')
@@ -111,13 +119,15 @@ const GardenExpansionMode = () => {
             
             if (prds && prds.length > 0) {
               setPrdData(prds[0]);
+              setPrdId(prds[0].id);
             }
           }
         } else {
+          setPrdId(foundPrdId);
           const { data: prd } = await supabase
             .from('prds')
             .select('*')
-            .eq('id', prdId)
+            .eq('id', foundPrdId)
             .single();
           
           if (prd) {
@@ -132,7 +142,12 @@ const GardenExpansionMode = () => {
     };
 
     fetchPrdData();
-  }, [projectContext?.id]);
+  }, [projectContext?.id, prdRefreshKey]);
+
+  // Callback when PRD compilation completes
+  const handleCompilationComplete = () => {
+    setPrdRefreshKey(prev => prev + 1);
+  };
 
   // Fetch POLEN counts per season and hexagram readings count
   useEffect(() => {
@@ -305,6 +320,18 @@ const GardenExpansionMode = () => {
           <section className="py-8">
             <SeasonFlowVisualization seasons={seasonData} />
           </section>
+
+          {/* PRD Compilation Status */}
+          {userId && (
+            <section className="py-4">
+              <PrdCompilationCard
+                prdData={prdData}
+                prdId={prdId}
+                userId={userId}
+                onCompilationComplete={handleCompilationComplete}
+              />
+            </section>
+          )}
 
           {/* Journey Timeline */}
           <section className="py-8">
