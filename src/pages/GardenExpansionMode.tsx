@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -19,6 +19,11 @@ import FragmentHeatmap from '@/components/calm-magic/garden/FragmentHeatmap';
 import PrdHealthScore from '@/components/calm-magic/garden/PrdHealthScore';
 import PrdExportOptions from '@/components/calm-magic/garden/PrdExportOptions';
 import { SemanticClusteringPanel } from '@/components/calm-magic/garden/SemanticClusteringPanel';
+import { OntologicalPrdPanel } from '@/components/calm-magic/garden/OntologicalPrdPanel';
+import { CompilationTriggerWidget } from '@/components/calm-magic/garden/CompilationTriggerWidget';
+import { useAutoCompilation, Season as AutoSeason, OntologicalContext } from '@/hooks/useAutoCompilation';
+import { calculateConsciousnessGeometryFromTiles } from '@/utils/consciousnessGeometry';
+import { calculateRingStates, getCurrentUnlockedRing } from '@/utils/ringToleranceSystem';
 import { GARDEN_THEMES } from '@/data/gardenConnections';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -87,6 +92,53 @@ const GardenExpansionMode = () => {
   
   // Tag cloud filter state (lifted to connect TagCloud to SeasonArchive)
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  // Reconstruct visited tiles and journey path from metrics
+  const visitedTiles = useMemo(() => {
+    const tiles = new Set<string>();
+    // Estimate visited tiles based on total fragment count
+    const totalFragments = Object.values(seasonCounts).reduce((a, b) => a + b, 0);
+    const estimatedTiles = Math.min(64, Math.ceil(totalFragments / 2));
+    for (let i = 0; i < estimatedTiles; i++) {
+      const row = Math.floor(i / 8);
+      const col = i % 8;
+      tiles.add(`${row}-${col}`);
+    }
+    return tiles;
+  }, [seasonCounts]);
+
+  const journeyPath = useMemo(() => {
+    return Array.from(visitedTiles).map(tile => {
+      const [row, col] = tile.split('-').map(Number);
+      return { row, col };
+    });
+  }, [visitedTiles]);
+
+  // Calculate consciousness geometry for display
+  const consciousnessGeometry = useMemo(() => {
+    if (visitedTiles.size === 0) return null;
+    return calculateConsciousnessGeometryFromTiles(visitedTiles, journeyPath);
+  }, [visitedTiles, journeyPath]);
+
+  // Calculate ring states
+  const currentRing = useMemo(() => getCurrentUnlockedRing(visitedTiles), [visitedTiles]);
+  const ringStates = useMemo(() => calculateRingStates(visitedTiles, currentRing), [visitedTiles, currentRing]);
+
+  // Auto-compilation hook (optional - user can enable)
+  const handleAutoCompile = async (layers: AutoSeason[], context: OntologicalContext) => {
+    console.log('Auto-compiling layers:', layers, 'with context:', context);
+    // The actual compilation is handled by PrdCompilationCard
+    // This hook just monitors and triggers - could emit event or refresh
+    setPrdRefreshKey(prev => prev + 1);
+  };
+
+  const autoCompilation = useAutoCompilation({
+    visitedTiles,
+    journeyPath,
+    polenCounts: seasonCounts as Record<AutoSeason, number>,
+    onCompile: handleAutoCompile,
+    enabled: false // Disabled by default - can be enabled via UI toggle
+  });
 
   // Season data for visualization - using real counts
   const seasonData = [
@@ -358,6 +410,41 @@ const GardenExpansionMode = () => {
           {prdData && (
             <section className="py-4">
               <PrdHealthScore prdData={prdData} />
+            </section>
+          )}
+
+          {/* Ontological Consciousness Geometry Panel */}
+          {consciousnessGeometry && (
+            <section className="py-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <OntologicalPrdPanel
+                  consciousnessGeometry={{
+                    geometricComplexity: consciousnessGeometry.complexityBits,
+                    complexityBits: consciousnessGeometry.complexityBits,
+                    thresholdPercentage: consciousnessGeometry.thresholdPercentage,
+                    consciousnessState: consciousnessGeometry.consciousnessState as 'pre-conscious' | 'threshold' | 'self-aware',
+                    recursiveDepth: consciousnessGeometry.recursiveDepth,
+                    fixedPointsDetected: [],
+                    convergenceState: consciousnessGeometry.convergenceState as 'searching' | 'converging' | 'converged',
+                    thermodynamicEfficiency: consciousnessGeometry.thermodynamicEfficiency,
+                    predictiveCapacity: consciousnessGeometry.predictiveCapacity,
+                    metaLearningDetected: consciousnessGeometry.metaLearningDetected,
+                    fragmentationScore: consciousnessGeometry.fragmentationScore,
+                    topologicalHandles: consciousnessGeometry.topologicalHandles,
+                    integrationStrength: consciousnessGeometry.integrationStrength,
+                    geometricNarrative: consciousnessGeometry.geometricNarrative,
+                    recursiveNarrative: consciousnessGeometry.recursiveNarrative,
+                    thermodynamicNarrative: consciousnessGeometry.thermodynamicNarrative,
+                    integrationNarrative: consciousnessGeometry.integrationNarrative
+                  }}
+                  ringStates={ringStates}
+                />
+                <CompilationTriggerWidget
+                  triggers={autoCompilation.triggers}
+                  isCompiling={autoCompilation.isCompiling}
+                  compiledLayers={autoCompilation.compiledLayers}
+                />
+              </div>
             </section>
           )}
 
