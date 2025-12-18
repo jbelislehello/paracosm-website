@@ -10,6 +10,8 @@ export interface Project {
   mode: ModeType;
   createdAt: string;
   updatedAt: string;
+  isShared?: boolean; // true if user is a collaborator (not owner)
+  collaboratorRole?: 'viewer' | 'editor' | 'admin';
 }
 
 interface ProjectsState {
@@ -27,13 +29,15 @@ const generateId = (): string => {
 };
 
 // Convert DB row to Project
-const dbToProject = (row: any): Project => ({
+const dbToProject = (row: any, isShared = false, collaboratorRole?: string): Project => ({
   id: row.id,
   projectName: row.project_name,
   garden: row.garden as GardenType,
   mode: row.mode as ModeType,
   createdAt: row.created_at,
   updatedAt: row.updated_at,
+  isShared,
+  collaboratorRole: collaboratorRole as 'viewer' | 'editor' | 'admin' | undefined,
 });
 
 // Convert Project to DB row
@@ -61,21 +65,36 @@ export function useProjectContext(userId?: string | null) {
       setIsLoading(true);
       
       if (userId) {
-        // Logged in - fetch from Supabase
+        // Logged in - fetch from Supabase (owned + shared projects)
         try {
-          const { data, error } = await supabase
+          // Fetch owned projects
+          const { data: ownedData, error: ownedError } = await supabase
             .from('projects')
             .select('*')
             .eq('user_id', userId)
             .order('updated_at', { ascending: false });
 
-          if (error) throw error;
+          if (ownedError) throw ownedError;
 
-          if (data && data.length > 0) {
-            // User has Supabase projects
-            const projects = data.map(dbToProject);
-            const activeId = localStorage.getItem(`${STORAGE_KEY}-active-${userId}`) || projects[0]?.id || null;
-            setState({ projects, activeProjectId: activeId });
+          // Fetch shared projects via project_collaborators
+          const { data: sharedData, error: sharedError } = await supabase
+            .from('project_collaborators')
+            .select('project_id, role, projects(*)')
+            .eq('user_id', userId);
+
+          if (sharedError) throw sharedError;
+
+          // Combine owned and shared projects
+          const ownedProjects = (ownedData || []).map(row => dbToProject(row, false));
+          const sharedProjects = (sharedData || [])
+            .filter(item => item.projects)
+            .map(item => dbToProject(item.projects, true, item.role));
+
+          const allProjects = [...ownedProjects, ...sharedProjects];
+
+          if (allProjects.length > 0) {
+            const activeId = localStorage.getItem(`${STORAGE_KEY}-active-${userId}`) || allProjects[0]?.id || null;
+            setState({ projects: allProjects, activeProjectId: activeId });
             setIsSynced(true);
           } else {
             // Check for localStorage projects to migrate
@@ -161,6 +180,36 @@ export function useProjectContext(userId?: string | null) {
   useEffect(() => {
     if (!userId) return;
 
+    const refetchProjects = async () => {
+      // Fetch owned projects
+      const { data: ownedData } = await supabase
+        .from('projects')
+        .select('*')
+        .eq('user_id', userId)
+        .order('updated_at', { ascending: false });
+
+      // Fetch shared projects
+      const { data: sharedData } = await supabase
+        .from('project_collaborators')
+        .select('project_id, role, projects(*)')
+        .eq('user_id', userId);
+
+      const ownedProjects = (ownedData || []).map(row => dbToProject(row, false));
+      const sharedProjects = (sharedData || [])
+        .filter(item => item.projects)
+        .map(item => dbToProject(item.projects, true, item.role));
+
+      const allProjects = [...ownedProjects, ...sharedProjects];
+
+      setState(prev => ({
+        ...prev,
+        projects: allProjects,
+        activeProjectId: prev.activeProjectId && allProjects.some(p => p.id === prev.activeProjectId)
+          ? prev.activeProjectId
+          : allProjects[0]?.id || null,
+      }));
+    };
+
     const channel = supabase
       .channel('projects-changes')
       .on(
@@ -171,25 +220,17 @@ export function useProjectContext(userId?: string | null) {
           table: 'projects',
           filter: `user_id=eq.${userId}`,
         },
-        async () => {
-          // Refetch projects on any change
-          const { data } = await supabase
-            .from('projects')
-            .select('*')
-            .eq('user_id', userId)
-            .order('updated_at', { ascending: false });
-          
-          if (data) {
-            const projects = data.map(dbToProject);
-            setState(prev => ({
-              ...prev,
-              projects,
-              activeProjectId: prev.activeProjectId && projects.some(p => p.id === prev.activeProjectId)
-                ? prev.activeProjectId
-                : projects[0]?.id || null,
-            }));
-          }
-        }
+        refetchProjects
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'project_collaborators',
+          filter: `user_id=eq.${userId}`,
+        },
+        refetchProjects
       )
       .subscribe();
 
