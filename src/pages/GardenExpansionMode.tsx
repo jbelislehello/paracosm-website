@@ -12,7 +12,8 @@ import HexagramGallery from '@/components/calm-magic/garden/HexagramGallery';
 import IntegrationPathways from '@/components/calm-magic/garden/IntegrationPathways';
 import JourneyTimeline from '@/components/calm-magic/garden/JourneyTimeline';
 import JourneySummaryExport from '@/components/calm-magic/garden/JourneySummaryExport';
-import { PrdCompilationCard } from '@/components/calm-magic/garden/PrdCompilationCard';
+import { PrdCompilationCard, CompilationStats } from '@/components/calm-magic/garden/PrdCompilationCard';
+import { PrdPreviewModal } from '@/components/calm-magic/garden/PrdPreviewModal';
 import TagCloudVisualization from '@/components/calm-magic/garden/TagCloudVisualization';
 import FragmentHeatmap from '@/components/calm-magic/garden/FragmentHeatmap';
 import PrdHealthScore from '@/components/calm-magic/garden/PrdHealthScore';
@@ -68,6 +69,8 @@ const GardenExpansionMode = () => {
   const [isLoadingPrd, setIsLoadingPrd] = useState(true);
   const [copied, setCopied] = useState(false);
   const [prdRefreshKey, setPrdRefreshKey] = useState(0);
+  const [showPrdPreview, setShowPrdPreview] = useState(false);
+  const [compilationStats, setCompilationStats] = useState<CompilationStats | null>(null);
   
   // Real season counts from database
   const [seasonCounts, setSeasonCounts] = useState<Record<Season, number>>({
@@ -153,8 +156,29 @@ const GardenExpansionMode = () => {
   }, [projectContext?.id, prdRefreshKey]);
 
   // Callback when PRD compilation completes
-  const handleCompilationComplete = () => {
+  const handleCompilationComplete = (stats?: CompilationStats) => {
     setPrdRefreshKey(prev => prev + 1);
+    
+    if (stats) {
+      setCompilationStats(stats);
+      
+      // Show success toast with summary
+      toast.success('PRD Compilation Complete!', {
+        description: `${stats.layersCompiled.length} layers compiled from ${stats.totalFragments} fragments`,
+        action: {
+          label: 'View PRD',
+          onClick: () => navigate('/calm-magic-board?view=prd-assembly'),
+        },
+        duration: 8000,
+      });
+      
+      // Show preview modal
+      setShowPrdPreview(true);
+    }
+  };
+  
+  const handleNavigateToPrd = () => {
+    navigate('/calm-magic-board?view=prd-assembly');
   };
 
   // Fetch POLEN counts per season and hexagram readings count
@@ -488,6 +512,16 @@ const GardenExpansionMode = () => {
 
         </div>
       </main>
+      
+      {/* PRD Preview Modal */}
+      <PrdPreviewModal
+        open={showPrdPreview}
+        onOpenChange={setShowPrdPreview}
+        prdData={prdData}
+        compilationStats={compilationStats}
+        onNavigateToPrd={handleNavigateToPrd}
+        onDownload={handleExportPrd}
+      />
     </div>
   );
 };
