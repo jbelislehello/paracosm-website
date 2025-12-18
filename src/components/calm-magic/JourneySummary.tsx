@@ -36,6 +36,7 @@ interface JourneySummaryProps {
   currentSeason: string;
   seasonProgress?: Set<string>;
   prdId?: string | null;
+  projectId?: string | null;
   onGeneratePrdLayer?: () => Promise<void>;
   onViewPrd?: () => void;
   hexagramData?: HexagramData;
@@ -71,6 +72,7 @@ export const JourneySummary: React.FC<JourneySummaryProps> = ({
   currentSeason,
   seasonProgress,
   prdId,
+  projectId,
   onGeneratePrdLayer,
   onViewPrd,
   hexagramData,
@@ -81,6 +83,8 @@ export const JourneySummary: React.FC<JourneySummaryProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isGeneratingPrd, setIsGeneratingPrd] = useState(false);
+  const [summaryGeneratedAt, setSummaryGeneratedAt] = useState<string | null>(null);
+  const [isSavedSummary, setIsSavedSummary] = useState(false);
   
   const { tier } = useSubscription();
   const canUseAiSummary = hasFeatureAccess(tier, 'ai_journey_summary');
@@ -88,8 +92,65 @@ export const JourneySummary: React.FC<JourneySummaryProps> = ({
   useEffect(() => {
     if (isOpen) {
       fetchEntries();
+      loadSavedSummary();
     }
-  }, [isOpen, currentSeason]);
+  }, [isOpen, currentSeason, projectId]);
+
+  // Load saved AI summary from database
+  const loadSavedSummary = async () => {
+    if (!projectId) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('project_season_progress')
+        .select('ai_summary_themes, ai_summary_insights, ai_summary_next_areas, ai_summary_connections, ai_summary_hexagram, ai_summary_generated_at')
+        .eq('project_id', projectId)
+        .maybeSingle();
+
+      if (error) throw error;
+      
+      if (data?.ai_summary_generated_at && data?.ai_summary_themes?.length > 0) {
+        setSummary({
+          themes: data.ai_summary_themes || [],
+          keyInsights: (data.ai_summary_insights as unknown as { text: string; importance: number }[]) || [],
+          nextAreas: data.ai_summary_next_areas || [],
+          connections: (data.ai_summary_connections as unknown as { from: string; to: string; relationship: string }[]) || [],
+          hexagramInterpretation: data.ai_summary_hexagram as unknown as HexagramInterpretation | undefined
+        });
+        setSummaryGeneratedAt(data.ai_summary_generated_at);
+        setIsSavedSummary(true);
+      }
+    } catch (err) {
+      console.error('Failed to load saved summary:', err);
+    }
+  };
+
+  // Save AI summary to database
+  const saveSummaryToDatabase = async (summaryData: SummaryData) => {
+    if (!projectId) return;
+    
+    try {
+      const { error } = await supabase
+        .from('project_season_progress')
+        .update({
+          ai_summary_themes: summaryData.themes,
+          ai_summary_insights: JSON.parse(JSON.stringify(summaryData.keyInsights)),
+          ai_summary_next_areas: summaryData.nextAreas,
+          ai_summary_connections: JSON.parse(JSON.stringify(summaryData.connections)),
+          ai_summary_hexagram: summaryData.hexagramInterpretation ? JSON.parse(JSON.stringify(summaryData.hexagramInterpretation)) : null,
+          ai_summary_generated_at: new Date().toISOString()
+        })
+        .eq('project_id', projectId);
+
+      if (error) throw error;
+      
+      setSummaryGeneratedAt(new Date().toISOString());
+      setIsSavedSummary(true);
+      toast.success('AI summary saved to your journey');
+    } catch (err) {
+      console.error('Failed to save summary:', err);
+    }
+  };
 
   const fetchEntries = async () => {
     setIsLoading(true);
@@ -137,6 +198,7 @@ export const JourneySummary: React.FC<JourneySummaryProps> = ({
     }
 
     setIsGenerating(true);
+    setIsSavedSummary(false);
     try {
       const { data, error } = await supabase.functions.invoke('journey-summary', {
         body: { 
@@ -166,6 +228,11 @@ export const JourneySummary: React.FC<JourneySummaryProps> = ({
 
       if (error) throw error;
       setSummary(data);
+      
+      // Auto-save to database
+      if (data) {
+        await saveSummaryToDatabase(data);
+      }
     } catch (err) {
       console.error('Failed to generate summary:', err);
       toast.error('Failed to generate summary');
@@ -269,19 +336,26 @@ export const JourneySummary: React.FC<JourneySummaryProps> = ({
 
               {/* Generate Summary Button */}
               {canUseAiSummary ? (
-                <Button
-                  onClick={generateSummary}
-                  disabled={isGenerating || entries.length === 0}
-                  variant="outline"
-                  className="w-full"
-                >
-                  {isGenerating ? (
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  ) : (
-                    <Sparkles className="h-4 w-4 mr-2" />
+                <div className="space-y-2">
+                  <Button
+                    onClick={generateSummary}
+                    disabled={isGenerating || entries.length === 0}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    {isGenerating ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <Sparkles className="h-4 w-4 mr-2" />
+                    )}
+                    {isGenerating ? 'Analyzing...' : summary && isSavedSummary ? 'Regenerate AI Summary' : 'Generate AI Summary'}
+                  </Button>
+                  {summaryGeneratedAt && isSavedSummary && (
+                    <p className="text-xs text-center text-muted-foreground">
+                      Last generated: {new Date(summaryGeneratedAt).toLocaleDateString()} at {new Date(summaryGeneratedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </p>
                   )}
-                  {isGenerating ? 'Analyzing...' : 'Generate AI Summary'}
-                </Button>
+                </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <Button

@@ -3,7 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, FileText, Sparkles, TreeDeciduous, Download, X } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ArrowLeft, FileText, Sparkles, TreeDeciduous, Download, X, Eye } from 'lucide-react';
 import { useProjects } from '@/context/ProjectsContext';
 import { useMode } from '@/components/calm-magic/context/ModeContext';
 import EnhancedAnthemTreeP5 from '@/components/calm-magic/garden/EnhancedAnthemTreeP5';
@@ -13,6 +14,7 @@ import GardenAmbientParticles from '@/components/calm-magic/garden/GardenAmbient
 import GardenStatsPanel from '@/components/calm-magic/garden/GardenStatsPanel';
 import GardenCelebration from '@/components/calm-magic/garden/GardenCelebration';
 import GardenFloatingControls from '@/components/calm-magic/garden/GardenFloatingControls';
+import GardenPrdPreview from '@/components/calm-magic/garden/GardenPrdPreview';
 import { GARDEN_THEMES, GardenActivity } from '@/data/gardenConnections';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -297,38 +299,71 @@ const GardenExpansionMode = () => {
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl" />
           </Card>
 
-          {/* Tree + Stats Grid */}
-          <div className="grid lg:grid-cols-5 gap-6">
-            {/* Tree Canvas */}
-            <Card className={cn(
-              "lg:col-span-3 p-6 flex flex-col items-center relative overflow-hidden",
-              "bg-gradient-to-b from-background/80 to-muted/20",
-              "backdrop-blur-xl border-white/10"
-            )}>
-              <div className="absolute inset-0 bg-gradient-to-t from-primary/5 to-transparent pointer-events-none" />
-              
-              <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 relative z-10">
-                <TreeDeciduous className="w-5 h-5" />
+          {/* Tree + Stats + PRD Preview Grid */}
+          <Tabs defaultValue="tree" className="space-y-4">
+            <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
+              <TabsTrigger value="tree" className="flex items-center gap-2">
+                <TreeDeciduous className="w-4 h-4" />
                 Anthem Tree
-                <Badge variant="outline" className="ml-2 text-xs">Interactive</Badge>
-              </h3>
-              <p className="text-sm text-muted-foreground mb-4 text-center">
-                Click on fruits to explore each season's harvest
-              </p>
-              
-              <EnhancedAnthemTreeP5
-                garden={garden}
-                metrics={metrics}
-                activeConnections={activeConnections}
-                onFruitClick={handleFruitClick}
-              />
-            </Card>
+              </TabsTrigger>
+              <TabsTrigger value="prd" className="flex items-center gap-2">
+                <Eye className="w-4 h-4" />
+                PRD Preview
+              </TabsTrigger>
+            </TabsList>
 
-            {/* Stats Panel */}
-            <div className="lg:col-span-2">
-              <GardenStatsPanel metrics={metrics} />
-            </div>
-          </div>
+            <TabsContent value="tree" className="mt-0">
+              <div className="grid lg:grid-cols-5 gap-6">
+                {/* Tree Canvas */}
+                <Card className={cn(
+                  "lg:col-span-3 p-6 flex flex-col items-center relative overflow-hidden",
+                  "bg-gradient-to-b from-background/80 to-muted/20",
+                  "backdrop-blur-xl border-white/10"
+                )}>
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary/5 to-transparent pointer-events-none" />
+                  
+                  <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 relative z-10">
+                    <TreeDeciduous className="w-5 h-5" />
+                    Anthem Tree
+                    <Badge variant="outline" className="ml-2 text-xs">Interactive</Badge>
+                  </h3>
+                  <p className="text-sm text-muted-foreground mb-4 text-center">
+                    Click on fruits to explore each season's harvest
+                  </p>
+                  
+                  <EnhancedAnthemTreeP5
+                    garden={garden}
+                    metrics={metrics}
+                    activeConnections={activeConnections}
+                    onFruitClick={handleFruitClick}
+                  />
+                </Card>
+
+                {/* Stats Panel */}
+                <div className="lg:col-span-2">
+                  <GardenStatsPanel metrics={metrics} />
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="prd" className="mt-0">
+              <div className="grid lg:grid-cols-5 gap-6">
+                {/* PRD Preview */}
+                <div className="lg:col-span-3">
+                  <GardenPrdPreview 
+                    prdData={prdData} 
+                    isLoading={isLoadingPrd}
+                    onExport={handleExportPrd}
+                  />
+                </div>
+
+                {/* Stats Panel */}
+                <div className="lg:col-span-2">
+                  <GardenStatsPanel metrics={metrics} />
+                </div>
+              </div>
+            </TabsContent>
+          </Tabs>
 
           {/* Garden Activities */}
           <Card className={cn(
