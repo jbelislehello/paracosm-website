@@ -454,18 +454,11 @@ const GardenExpansionMode = () => {
             </TabsContent>
 
             <TabsContent value="prd" className="mt-0">
-              <div className="grid lg:grid-cols-5 gap-6">
-                <div className="lg:col-span-3">
-                  <GardenPrdPreview 
-                    prdData={prdData} 
-                    isLoading={isLoadingPrd}
-                    onExport={handleExportPrd}
-                  />
-                </div>
-                <div className="lg:col-span-2">
-                  <GardenStatsPanel metrics={metrics} />
-                </div>
-              </div>
+              <AgenticPrdRenderer 
+                prdData={prdData} 
+                projectName={projectContext?.projectName || 'My Project'}
+                isLoading={isLoadingPrd}
+              />
             </TabsContent>
           </Tabs>
 
