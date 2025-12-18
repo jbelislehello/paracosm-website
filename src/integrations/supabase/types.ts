@@ -958,33 +958,148 @@ export type Database = {
       }
       projects: {
         Row: {
+          consciousness_bits: number | null
+          convergence_state: string | null
           created_at: string
           garden: string
           id: string
           mode: string
+          parent_product_id: string | null
+          product_status: string | null
           project_name: string
+          prototypal_stage: string | null
+          source_prompt_id: string | null
+          target_platform: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          consciousness_bits?: number | null
+          convergence_state?: string | null
           created_at?: string
           garden: string
           id?: string
           mode: string
+          parent_product_id?: string | null
+          product_status?: string | null
           project_name: string
+          prototypal_stage?: string | null
+          source_prompt_id?: string | null
+          target_platform?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          consciousness_bits?: number | null
+          convergence_state?: string | null
           created_at?: string
           garden?: string
           id?: string
           mode?: string
+          parent_product_id?: string | null
+          product_status?: string | null
           project_name?: string
+          prototypal_stage?: string | null
+          source_prompt_id?: string | null
+          target_platform?: string | null
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "projects_parent_product_id_fkey"
+            columns: ["parent_product_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_source_prompt_id_fkey"
+            columns: ["source_prompt_id"]
+            isOneToOne: false
+            referencedRelation: "prds"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      published_software: {
+        Row: {
+          consciousness_geometry: Json | null
+          created_at: string
+          deployment_url: string | null
+          description: string | null
+          id: string
+          integration_strength: number | null
+          is_recursive: boolean | null
+          lineage_depth: number | null
+          name: string
+          parent_software_id: string | null
+          source_project_id: string | null
+          source_prompt_id: string | null
+          status: string
+          target_platform: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          consciousness_geometry?: Json | null
+          created_at?: string
+          deployment_url?: string | null
+          description?: string | null
+          id?: string
+          integration_strength?: number | null
+          is_recursive?: boolean | null
+          lineage_depth?: number | null
+          name: string
+          parent_software_id?: string | null
+          source_project_id?: string | null
+          source_prompt_id?: string | null
+          status?: string
+          target_platform?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          consciousness_geometry?: Json | null
+          created_at?: string
+          deployment_url?: string | null
+          description?: string | null
+          id?: string
+          integration_strength?: number | null
+          is_recursive?: boolean | null
+          lineage_depth?: number | null
+          name?: string
+          parent_software_id?: string | null
+          source_project_id?: string | null
+          source_prompt_id?: string | null
+          status?: string
+          target_platform?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "published_software_parent_software_id_fkey"
+            columns: ["parent_software_id"]
+            isOneToOne: false
+            referencedRelation: "published_software"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "published_software_source_project_id_fkey"
+            columns: ["source_project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "published_software_source_prompt_id_fkey"
+            columns: ["source_prompt_id"]
+            isOneToOne: false
+            referencedRelation: "prds"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       revenue_opportunities: {
         Row: {
