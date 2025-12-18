@@ -306,6 +306,20 @@ const CalmMagicBoard = () => {
     const params = parseBoardEntryParams(searchParams);
     const projectId = searchParams.get('projectId');
     const seasonParam = searchParams.get('season') as Season | null;
+    const viewParam = searchParams.get('view') as ViewTab | null;
+    
+    // Handle view parameter for tab switching (e.g., from Garden page after PRD compilation)
+    if (viewParam && ['matrix', 'window-of-tolerance', 'topologies', 'prd-assembly'].includes(viewParam)) {
+      setActiveView(viewParam);
+      // Clean view param from URL
+      const newParams = new URLSearchParams(searchParams);
+      newParams.delete('view');
+      setSearchParams(newParams, { replace: true });
+      
+      if (viewParam === 'prd-assembly') {
+        toast.success('Viewing PRD Assembly', { duration: 2000 });
+      }
+    }
     
     // If projectId is provided, set it as active
     if (projectId) {
