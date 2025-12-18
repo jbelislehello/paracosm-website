@@ -30,6 +30,7 @@ import Pricing from "./pages/Pricing";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import SubscriptionCanceled from "./pages/SubscriptionCanceled";
 import PatternEncyclopedia from "./pages/PatternEncyclopedia";
+import ParacosmDashboard from "./pages/ParacosmDashboard";
 import "./App.css";
 
 const queryClient = new QueryClient();
@@ -59,6 +60,7 @@ function App() {
                   <Route path="/calm-magic-board/drift" element={<ProtectedRoute><Drift /></ProtectedRoute>} />
                   <Route path="/calm-magic-board/prds" element={<ProtectedRoute><PrdsDashboard /></ProtectedRoute>} />
                   <Route path="/calm-magic-board/garden" element={<ProtectedRoute><GardenExpansionMode /></ProtectedRoute>} />
+                  <Route path="/calm-magic-board/paracosm" element={<ProtectedRoute><ParacosmDashboard /></ProtectedRoute>} />
                   <Route path="/calm-magic-board/prds/:id" element={<ProtectedRoute><PrdEditor /></ProtectedRoute>} />
                   <Route path="/prd-editor/:id" element={<ProtectedRoute><PrdEditor /></ProtectedRoute>} />
                   <Route path="/calm-magic-visualization" element={<CalmMagicVisualization />} />
