@@ -2,35 +2,20 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, FileText, Sparkles, TreeDeciduous, Download, X, Grid3X3 } from 'lucide-react';
+import { ArrowLeft, FileText, Download, Copy, CheckCircle2 } from 'lucide-react';
 import { useProjects } from '@/context/ProjectsContext';
 import { useMode } from '@/components/calm-magic/context/ModeContext';
-import EnhancedAnthemTreeP5 from '@/components/calm-magic/garden/EnhancedAnthemTreeP5';
-import EcologicalGardenP5 from '@/components/calm-magic/garden/EcologicalGardenP5';
-import GardenActivities from '@/components/calm-magic/garden/GardenActivities';
-import GardenConnectionHub from '@/components/calm-magic/garden/GardenConnectionHub';
-import GardenAmbientParticles from '@/components/calm-magic/garden/GardenAmbientParticles';
-import GardenStatsPanel from '@/components/calm-magic/garden/GardenStatsPanel';
-import GardenCelebration from '@/components/calm-magic/garden/GardenCelebration';
-import GardenFloatingControls from '@/components/calm-magic/garden/GardenFloatingControls';
-import AgenticPrdRenderer from '@/components/calm-magic/garden/AgenticPrdRenderer';
-import { GardenViewModeSelector, GardenViewMode, NatureModeSelector, NatureCognitiveMode } from '@/components/calm-magic/garden/GardenViewModeSelector';
-import { GardenLegend } from '@/components/calm-magic/garden/GardenLegend';
-import { GARDEN_THEMES, GardenActivity } from '@/data/gardenConnections';
-import { extractBluntQuotes, BluntQuote } from '@/utils/bluntQuoteExtraction';
+import SeasonFlowVisualization from '@/components/calm-magic/garden/SeasonFlowVisualization';
+import OntologySummary from '@/components/calm-magic/garden/OntologySummary';
+import SeasonHighlights from '@/components/calm-magic/garden/SeasonHighlights';
+import IntegrationPathways from '@/components/calm-magic/garden/IntegrationPathways';
+import { GARDEN_THEMES } from '@/data/gardenConnections';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { formatFoundationalPrompt } from '@/utils/formatFoundationalPrompt';
-import { useGardenAudio } from '@/hooks/useGardenAudio';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Textarea } from '@/components/ui/textarea';
 
 interface GardenMetrics {
   polenCount: number;
@@ -40,14 +25,6 @@ interface GardenMetrics {
   coherence: number;
   connections: number;
 }
-
-const seasonDetails = [
-  { name: 'POLLENS', description: 'Raw signals and tensions gathered from your journey', color: 'text-rose-500', highlights: ['87 fragments collected', 'Key themes identified', 'Relational patterns mapped'] },
-  { name: 'NOEMS', description: 'Crystallized concepts and mental models', color: 'text-violet-500', highlights: ['23 insights distilled', 'Connections formed', 'Understanding deepened'] },
-  { name: 'POEMS', description: 'Narrative frameworks and experiential designs', color: 'text-indigo-500', highlights: ['Story arcs defined', 'User journeys mapped', 'P.O.E.M.S. applied'] },
-  { name: 'TOTEMS', description: 'Technical foundations and data structures', color: 'text-cyan-500', highlights: ['Architecture designed', 'Security reviewed', 'Stack selected'] },
-  { name: 'ANTHEMS', description: 'Market positioning and living documentation', color: 'text-emerald-500', highlights: ['Brand voice defined', 'Launch ready', 'PRD complete'] },
-];
 
 const GardenExpansionMode = () => {
   const navigate = useNavigate();
@@ -65,38 +42,27 @@ const GardenExpansionMode = () => {
   const theme = GARDEN_THEMES[garden];
   
   const [metrics, setMetrics] = useState<GardenMetrics>({
-    polenCount: state?.metrics?.polenCount || 87,
-    noemsCount: state?.metrics?.noemsCount || 23,
+    polenCount: state?.metrics?.polenCount || 0,
+    noemsCount: state?.metrics?.noemsCount || 0,
     completedSeasons: state?.metrics?.completedSeasons || 5,
-    tilesVisited: state?.metrics?.tilesVisited || 64,
+    tilesVisited: state?.metrics?.tilesVisited || 0,
     coherence: state?.metrics?.coherence || 75,
     connections: 0,
   });
   
-  const [activeConnections, setActiveConnections] = useState<string[]>([]);
-  const [activeActivity, setActiveActivity] = useState<string | null>(null);
   const [compiledPrompt, setCompiledPrompt] = useState<string>('');
-  const [showCelebration, setShowCelebration] = useState(true);
-  const [particlesEnabled, setParticlesEnabled] = useState(true);
-  const [fullscreenTree, setFullscreenTree] = useState(false);
-  const [selectedSeason, setSelectedSeason] = useState<number | null>(null);
   const [prdData, setPrdData] = useState<any>(null);
   const [isLoadingPrd, setIsLoadingPrd] = useState(true);
-  const [viewMode, setViewMode] = useState<GardenViewMode>('ecological');
-  const [natureMode, setNatureMode] = useState<NatureCognitiveMode | null>(null);
-  const [tileEcologyData, setTileEcologyData] = useState<Map<string, { fragmentCount: number; quotes: BluntQuote[] }>>(new Map());
-  const [visitedTiles, setVisitedTiles] = useState<Set<string>>(new Set());
+  const [copied, setCopied] = useState(false);
 
-  // Garden audio system
-  const {
-    isPlaying: audioEnabled,
-    volume: audioVolume,
-    profile: audioProfile,
-    toggle: toggleAudio,
-    setVolume: setAudioVolume,
-    playConnectionSound,
-    playActivitySound,
-  } = useGardenAudio({ garden });
+  // Season data for visualization
+  const seasonData = [
+    { name: 'POLLENS', label: 'fragments', count: metrics.polenCount, description: 'Raw signals gathered' },
+    { name: 'NOEMS', label: 'concepts', count: metrics.noemsCount, description: 'Ideas crystallized' },
+    { name: 'POEMS', label: 'designs', count: prdData?.poems_people ? 1 : 0, description: 'Experiences mapped' },
+    { name: 'TOTEMS', label: 'systems', count: prdData?.totems_data_architecture ? 1 : 0, description: 'Architecture defined' },
+    { name: 'ANTHEMS', label: 'stories', count: prdData?.anthems_brand_narrative ? 1 : 0, description: 'Voice established' },
+  ];
 
   // Fetch PRD data from Supabase
   useEffect(() => {
@@ -107,7 +73,6 @@ const GardenExpansionMode = () => {
       }
 
       try {
-        // First check project_season_progress for prd_id
         const { data: progressData } = await supabase
           .from('project_season_progress')
           .select('prd_id')
@@ -116,7 +81,6 @@ const GardenExpansionMode = () => {
 
         let prdId = progressData?.prd_id;
 
-        // If no prd_id in progress, look for PRD by owner
         if (!prdId) {
           const { data: userData } = await supabase.auth.getUser();
           if (userData?.user?.id) {
@@ -132,7 +96,6 @@ const GardenExpansionMode = () => {
             }
           }
         } else {
-          // Fetch the specific PRD
           const { data: prd } = await supabase
             .from('prds')
             .select('*')
@@ -153,62 +116,26 @@ const GardenExpansionMode = () => {
     fetchPrdData();
   }, [projectContext?.id]);
 
-  // Fetch real POLEN data from Supabase to populate tile ecology
+  // Fetch POLEN count
   useEffect(() => {
     const fetchPolenData = async () => {
       try {
         const { data: userData } = await supabase.auth.getUser();
         if (!userData?.user?.id) return;
 
-        // Fetch all POLEN entries for this user
         const { data: polenEntries, error } = await supabase
           .from('polen_entries')
-          .select('id, content, tile_id, tags, season_context, created_at')
+          .select('id, tile_id')
           .eq('user_id', userData.user.id);
 
-        if (error) {
-          console.error('Error fetching POLEN entries:', error);
-          return;
-        }
+        if (error || !polenEntries) return;
 
-        if (!polenEntries || polenEntries.length === 0) {
-          return;
-        }
-
-        // Group by tile_id and extract blunt quotes
-        const tileMap = new Map<string, { fragmentCount: number; quotes: BluntQuote[] }>();
-        const visited = new Set<string>();
-
-        polenEntries.forEach(entry => {
-          if (entry.tile_id !== null && entry.tile_id !== undefined) {
-            const row = Math.floor(entry.tile_id / 8);
-            const col = entry.tile_id % 8;
-            const key = `${row}-${col}`;
-            
-            visited.add(key);
-            
-            const existing = tileMap.get(key) || { fragmentCount: 0, quotes: [] };
-            existing.fragmentCount++;
-            
-            // Extract blunt quotes from this entry
-            const extracted = extractBluntQuotes(
-              [{ id: entry.id, content: entry.content, tile_id: entry.tile_id }],
-              (tileId: number) => ({ row: Math.floor(tileId / 8), col: tileId % 8 })
-            );
-            existing.quotes.push(...extracted);
-            
-            tileMap.set(key, existing);
-          }
-        });
-
-        setTileEcologyData(tileMap);
-        setVisitedTiles(visited);
+        const uniqueTiles = new Set(polenEntries.map(e => e.tile_id).filter(Boolean));
         
-        // Update metrics with real data
         setMetrics(prev => ({
           ...prev,
           polenCount: polenEntries.length,
-          tilesVisited: visited.size
+          tilesVisited: uniqueTiles.size
         }));
         
       } catch (error) {
@@ -219,7 +146,7 @@ const GardenExpansionMode = () => {
     fetchPolenData();
   }, [projectContext?.id]);
 
-  // Generate compiled prompt using the rich formatter
+  // Generate compiled prompt
   useEffect(() => {
     const prompt = formatFoundationalPrompt(
       prdData,
@@ -229,25 +156,6 @@ const GardenExpansionMode = () => {
     );
     setCompiledPrompt(prompt);
   }, [prdData, metrics, projectContext?.projectName, garden]);
-
-  const handleConnect = (connectionId: string) => {
-    setActiveConnections(prev => [...prev, connectionId]);
-    setMetrics(prev => ({ ...prev, connections: prev.connections + 1 }));
-    playConnectionSound();
-  };
-
-  const handleDisconnect = (connectionId: string) => {
-    setActiveConnections(prev => prev.filter(id => id !== connectionId));
-    setMetrics(prev => ({ ...prev, connections: Math.max(0, prev.connections - 1) }));
-  };
-
-  const handleActivitySelect = (activity: GardenActivity) => {
-    setActiveActivity(activity.id);
-    toast.success(`${activity.name} activity activated!`, {
-      description: activity.description
-    });
-    setTimeout(() => setActiveActivity(null), 2000);
-  };
 
   const handleExportPrd = () => {
     const blob = new Blob([compiledPrompt], { type: 'text/markdown' });
@@ -259,68 +167,62 @@ const GardenExpansionMode = () => {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    toast.success('Foundational Prompt exported!');
+    toast.success('Foundational Prompt exported');
   };
 
-  const handleFruitClick = (seasonIndex: number) => {
-    setSelectedSeason(seasonIndex);
+  const handleCopyPrompt = async () => {
+    await navigator.clipboard.writeText(compiledPrompt);
+    setCopied(true);
+    toast.success('Copied to clipboard');
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Ambient particles */}
-      {particlesEnabled && <GardenAmbientParticles garden={garden} intensity={0.8} />}
-      
-      {/* Celebration effects */}
-      <GardenCelebration 
-        isActive={showCelebration} 
-        onComplete={() => setShowCelebration(false)} 
-      />
-      
-      {/* Gradient background */}
+    <div className="min-h-screen relative">
+      {/* Subtle ambient gradient background */}
       <div 
-        className="fixed inset-0 -z-10"
+        className="fixed inset-0 -z-10 transition-opacity duration-1000"
         style={{
           background: `
-            radial-gradient(ellipse at 50% 0%, hsl(var(--primary) / 0.15) 0%, transparent 50%),
-            radial-gradient(ellipse at 80% 80%, hsl(var(--primary) / 0.1) 0%, transparent 40%),
-            radial-gradient(ellipse at 20% 60%, hsl(var(--secondary) / 0.08) 0%, transparent 40%),
-            linear-gradient(to bottom, hsl(var(--background)), hsl(var(--muted) / 0.3))
+            radial-gradient(ellipse at 50% 0%, hsl(var(--primary) / 0.08) 0%, transparent 60%),
+            radial-gradient(ellipse at 100% 100%, hsl(var(--primary) / 0.05) 0%, transparent 50%),
+            hsl(var(--background))
           `
         }}
       />
 
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b bg-background/60 backdrop-blur-xl supports-[backdrop-filter]:bg-background/40">
-        <div className="container mx-auto px-4 py-3">
+      <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur-xl">
+        <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" onClick={() => navigate('/calm-magic-board')} className="hover:bg-white/10">
+            <div className="flex items-center gap-4">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => navigate('/calm-magic-board')}
+              >
                 <ArrowLeft className="w-5 h-5" />
               </Button>
-              <div className="flex items-center gap-3">
-                <div className={cn(
-                  "w-10 h-10 rounded-xl flex items-center justify-center text-2xl",
-                  "bg-gradient-to-br shadow-lg",
-                  theme?.gradient
-                )}>
-                  {theme?.icon}
-                </div>
-                <div>
-                  <h1 className="text-lg font-bold">{theme?.name}</h1>
-                  <p className="text-xs text-muted-foreground">
-                    {projectContext?.projectName || 'Your Garden'}
-                  </p>
-                </div>
+              <div>
+                <h1 className="text-xl font-semibold tracking-tight">
+                  {projectContext?.projectName || 'Your Living Ontology'}
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  Consecration • {theme?.name}
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => navigate('/calm-magic-board/prds')} className="backdrop-blur-sm bg-background/50">
-                <FileText className="w-4 h-4 mr-1" />
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => navigate('/calm-magic-board/prds')}
+              >
+                <FileText className="w-4 h-4 mr-2" />
                 View Full PRD
               </Button>
-              <Button size="sm" onClick={handleExportPrd} className={cn("bg-gradient-to-r shadow-lg", theme?.gradient)}>
-                <Download className="w-4 h-4 mr-1" />
+              <Button size="sm" onClick={handleExportPrd}>
+                <Download className="w-4 h-4 mr-2" />
                 Export
               </Button>
             </div>
@@ -329,272 +231,119 @@ const GardenExpansionMode = () => {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 relative z-10">
-        <div className="max-w-7xl mx-auto space-y-8">
+      <main className="container mx-auto px-4 py-12 max-w-5xl">
+        <div className="space-y-16">
           
-          {/* Celebration Banner */}
-          <Card className={cn(
-            "p-8 text-center relative overflow-hidden",
-            "bg-gradient-to-r shadow-2xl border-0",
-            theme?.gradient
-          )}>
-            {/* Animated background pattern */}
-            <div className="absolute inset-0 opacity-20">
-              <div className="absolute inset-0" style={{
-                backgroundImage: `radial-gradient(circle at 20% 50%, white 1px, transparent 1px),
-                                  radial-gradient(circle at 80% 50%, white 1px, transparent 1px)`,
-                backgroundSize: '40px 40px',
-                animation: 'pulse 4s ease-in-out infinite'
-              }} />
-            </div>
-            
-            <div className="relative z-10 text-white">
-              <div className="flex items-center justify-center gap-3 mb-3">
-                <TreeDeciduous className="w-10 h-10 animate-pulse" />
-                <h2 className="text-3xl font-bold tracking-tight">Your Anthem Tree Has Taken Root!</h2>
-                <Sparkles className="w-10 h-10 animate-pulse" />
-              </div>
-              <p className="text-lg opacity-90 max-w-2xl mx-auto">
-                All 5 seasons complete • Your living PRD is ready to grow and connect
-              </p>
-              <div className="flex items-center justify-center gap-6 mt-4">
-                {[...Array(5)].map((_, i) => (
-                  <div 
-                    key={i} 
-                    className="w-3 h-3 rounded-full bg-white/80 animate-pulse"
-                    style={{ animationDelay: `${i * 0.2}s` }}
-                  />
-                ))}
-              </div>
-            </div>
-            
-            {/* Decorative elements */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl" />
-          </Card>
+          {/* Hero Section - Typography-led */}
+          <section className="text-center space-y-6 py-8">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+              Your Living Ontology Has Emerged
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              {metrics.polenCount} fragments crystallized across 5 seasons into a unified intelligence ready to serve
+            </p>
+          </section>
 
-          {/* Garden Views */}
-          <Tabs defaultValue="ecological" className="space-y-4">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <TabsList className="grid w-full max-w-lg mx-auto grid-cols-3">
-                <TabsTrigger value="ecological" className="flex items-center gap-2">
-                  <Grid3X3 className="w-4 h-4" />
-                  <span className="hidden sm:inline">Ecological</span>
-                </TabsTrigger>
-                <TabsTrigger value="tree" className="flex items-center gap-2">
-                  <TreeDeciduous className="w-4 h-4" />
-                  <span className="hidden sm:inline">World Tree</span>
-                </TabsTrigger>
-                <TabsTrigger value="prd" className="flex items-center gap-2">
-                  <FileText className="w-4 h-4" />
-                  <span className="hidden sm:inline">PRD Layers</span>
-                </TabsTrigger>
-              </TabsList>
-            </div>
+          {/* Season Flow Visualization */}
+          <section className="py-8">
+            <SeasonFlowVisualization seasons={seasonData} />
+          </section>
 
-            {/* Ecological Garden View */}
-            <TabsContent value="ecological" className="mt-0">
-              <div className="space-y-4">
-                {/* Nature Mode Selector */}
-                <Card className="p-4 bg-background/60 backdrop-blur-xl border-border/30">
-                  <div className="flex items-center justify-between flex-wrap gap-4">
-                    <div>
-                      <h4 className="text-sm font-medium mb-1">Cognitive Mode</h4>
-                      <p className="text-xs text-muted-foreground">Think like nature to navigate your journey</p>
-                    </div>
-                    <NatureModeSelector value={natureMode} onChange={setNatureMode} />
-                  </div>
-                </Card>
-
-                <div className="grid lg:grid-cols-5 gap-6">
-                  {/* Ecological Garden Canvas */}
-                  <Card className={cn(
-                    "lg:col-span-3 p-4 relative overflow-hidden",
-                    "bg-gradient-to-b from-background/80 to-muted/20",
-                    "backdrop-blur-xl border-border/30"
-                  )}>
-                    <EcologicalGardenP5
-                      garden={garden}
-                      tileData={tileEcologyData}
-                      visitedTiles={visitedTiles}
-                      currentNatureMode={natureMode}
-                    />
-                    {/* Legend overlay */}
-                    <div className="absolute bottom-4 left-4">
-                      <GardenLegend />
-                    </div>
-                  </Card>
-
-                  {/* Stats Panel */}
-                  <div className="lg:col-span-2">
-                    <GardenStatsPanel metrics={metrics} />
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="tree" className="mt-0">
-              <div className="grid lg:grid-cols-5 gap-6">
-                <Card className={cn(
-                  "lg:col-span-3 p-6 flex flex-col items-center relative overflow-hidden",
-                  "bg-gradient-to-b from-background/80 to-muted/20",
-                  "backdrop-blur-xl border-border/30"
-                )}>
-                  <EnhancedAnthemTreeP5
-                    garden={garden}
-                    metrics={metrics}
-                    activeConnections={activeConnections}
-                    onFruitClick={handleFruitClick}
-                  />
-                </Card>
-                <div className="lg:col-span-2">
-                  <GardenStatsPanel metrics={metrics} />
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="prd" className="mt-0">
-              <AgenticPrdRenderer 
+          {/* Ontology Summary */}
+          <section className="py-8">
+            <Card className="p-8 bg-background/50 backdrop-blur-sm border-border/50">
+              <OntologySummary 
                 prdData={prdData} 
-                projectName={projectContext?.projectName || 'My Project'}
-                isLoading={isLoadingPrd}
+                projectName={projectContext?.projectName || 'Project'} 
               />
-            </TabsContent>
-          </Tabs>
+            </Card>
+          </section>
 
+          {/* Season Highlights - Expandable */}
+          <section className="py-8">
+            <SeasonHighlights prdData={prdData} />
+          </section>
 
-          {/* Garden Activities */}
-          <Card className={cn(
-            "p-6 relative overflow-hidden",
-            "bg-gradient-to-br from-background/80 to-muted/20",
-            "backdrop-blur-xl border-white/10"
-          )}>
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 pointer-events-none" />
+          {/* Foundational Prompt Preview */}
+          <section className="py-8 space-y-6">
+            <div className="text-center">
+              <h3 className="text-lg font-semibold mb-2">The Foundational Prompt</h3>
+              <p className="text-sm text-muted-foreground">
+                Your compiled intelligence, ready for AI systems
+              </p>
+            </div>
             
-            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 relative z-10">
-              <Sparkles className="w-5 h-5" />
-              L.O.V.E. Gardening Activities
-              <span className="text-sm font-normal text-muted-foreground ml-2">
-                Nurture your garden's growth
-              </span>
-            </h3>
-            <GardenActivities
-              onActivitySelect={handleActivitySelect}
-              activeActivity={activeActivity}
-            />
-          </Card>
+            <Card className="relative overflow-hidden border-border/50">
+              <div className="absolute top-3 right-3 flex gap-2 z-10">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={handleCopyPrompt}
+                  className="h-8"
+                >
+                  {copied ? (
+                    <>
+                      <CheckCircle2 className="w-3.5 h-3.5 mr-1.5 text-emerald-500" />
+                      Copied
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5 mr-1.5" />
+                      Copy
+                    </>
+                  )}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={handleExportPrd}
+                  className="h-8"
+                >
+                  <Download className="w-3.5 h-3.5 mr-1.5" />
+                  Download
+                </Button>
+              </div>
+              
+              <ScrollArea className="h-80">
+                <Textarea
+                  value={compiledPrompt}
+                  readOnly
+                  className={cn(
+                    "min-h-80 resize-none border-0 bg-muted/30",
+                    "font-mono text-xs leading-relaxed p-4 pt-12",
+                    "focus-visible:ring-0"
+                  )}
+                />
+              </ScrollArea>
+            </Card>
+          </section>
 
-          {/* Connection Hub */}
-          <Card className={cn(
-            "p-6 relative overflow-hidden",
-            "bg-gradient-to-br from-background/80 to-muted/20",
-            "backdrop-blur-xl border-white/10"
-          )}>
-            <div className="absolute inset-0 bg-gradient-to-l from-emerald-500/5 to-transparent pointer-events-none" />
-            
-            <GardenConnectionHub
-              activeConnections={activeConnections}
-              onConnect={handleConnect}
-              onDisconnect={handleDisconnect}
-              compiledPrompt={compiledPrompt}
-            />
-          </Card>
+          {/* Integration Pathways */}
+          <section className="py-8">
+            <Card className="p-8 bg-background/50 backdrop-blur-sm border-border/50">
+              <IntegrationPathways 
+                compiledPrompt={compiledPrompt}
+                onExport={handleExportPrd}
+              />
+            </Card>
+          </section>
+
+          {/* Closing */}
+          <section className="text-center py-12 space-y-4">
+            <p className="text-muted-foreground max-w-xl mx-auto">
+              This living ontology continues to evolve. Return to the board to deepen 
+              your exploration, or take these insights into the world.
+            </p>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/calm-magic-board')}
+            >
+              Return to Board
+            </Button>
+          </section>
+
         </div>
       </main>
-
-      {/* Floating Controls */}
-      <GardenFloatingControls
-        particlesEnabled={particlesEnabled}
-        audioEnabled={audioEnabled}
-        audioVolume={audioVolume}
-        audioProfileName={audioProfile.name}
-        onToggleParticles={setParticlesEnabled}
-        onToggleAudio={toggleAudio}
-        onVolumeChange={setAudioVolume}
-        onToggleFullscreen={() => setFullscreenTree(!fullscreenTree)}
-        onResetView={() => {
-          setShowCelebration(true);
-          toast.success('View reset!');
-        }}
-      />
-
-      {/* Season Details Dialog */}
-      <Dialog open={selectedSeason !== null} onOpenChange={() => setSelectedSeason(null)}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className={cn(
-              "flex items-center gap-2 text-xl",
-              selectedSeason !== null && seasonDetails[selectedSeason]?.color
-            )}>
-              {selectedSeason !== null && (
-                <>
-                  <div className={cn(
-                    "w-8 h-8 rounded-full flex items-center justify-center text-white text-sm",
-                    "bg-gradient-to-br",
-                    selectedSeason === 0 && "from-rose-500 to-pink-500",
-                    selectedSeason === 1 && "from-violet-500 to-purple-500",
-                    selectedSeason === 2 && "from-indigo-500 to-blue-500",
-                    selectedSeason === 3 && "from-cyan-500 to-teal-500",
-                    selectedSeason === 4 && "from-emerald-500 to-green-500",
-                  )}>
-                    {selectedSeason + 1}
-                  </div>
-                  {seasonDetails[selectedSeason].name}
-                </>
-              )}
-            </DialogTitle>
-          </DialogHeader>
-          
-          {selectedSeason !== null && (
-            <div className="space-y-4">
-              <p className="text-muted-foreground">
-                {seasonDetails[selectedSeason].description}
-              </p>
-              
-              <div className="space-y-2">
-                <h4 className="font-medium text-sm">Season Highlights:</h4>
-                <ul className="space-y-1">
-                  {seasonDetails[selectedSeason].highlights.map((highlight, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm">
-                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                      {highlight}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              
-              <Button 
-                className="w-full" 
-                variant="outline"
-                onClick={() => setSelectedSeason(null)}
-              >
-                Close
-              </Button>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Fullscreen Tree Modal */}
-      {fullscreenTree && (
-        <div className="fixed inset-0 z-50 bg-background">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-4 right-4 z-50"
-            onClick={() => setFullscreenTree(false)}
-          >
-            <X className="w-6 h-6" />
-          </Button>
-          <EnhancedAnthemTreeP5
-            garden={garden}
-            metrics={metrics}
-            activeConnections={activeConnections}
-            onFruitClick={handleFruitClick}
-            fullscreen
-          />
-        </div>
-      )}
     </div>
   );
 };
