@@ -9,6 +9,7 @@ interface SeasonProgressBarProps {
   currentSeason: Season;
   seasonProgress: Record<Season, Set<string>>;
   completedSeasons: Season[];
+  onSeasonSelect?: (season: Season) => void;
 }
 
 const SEASONS: { 
@@ -31,7 +32,14 @@ const SeasonProgressBar = ({
   currentSeason,
   seasonProgress,
   completedSeasons,
+  onSeasonSelect,
 }: SeasonProgressBarProps) => {
+  const handleSeasonClick = (season: Season) => {
+    if (onSeasonSelect) {
+      onSeasonSelect(season);
+    }
+  };
+
   return (
     <TooltipProvider>
       <nav className="flex items-center gap-1">
@@ -40,18 +48,26 @@ const SeasonProgressBar = ({
           const isActive = currentSeason === season.id;
           const isCompleted = completedSeasons.includes(season.id);
           const tilesVisited = seasonProgress[season.id]?.size || 0;
+          const isClickable = !!onSeasonSelect;
           
           return (
             <div key={season.id} className="flex items-center">
               {/* Season pill with tooltip */}
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div 
+                  <button 
+                    type="button"
+                    onClick={() => handleSeasonClick(season.id)}
+                    disabled={!isClickable}
                     className={cn(
-                      "flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all cursor-default",
+                      "flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all",
+                      isClickable && "cursor-pointer hover:scale-105 active:scale-95",
+                      !isClickable && "cursor-default",
                       isActive && `bg-gradient-to-r ${season.gradient} text-white shadow-md`,
-                      !isActive && !isCompleted && "text-muted-foreground hover:bg-muted/50",
-                      isCompleted && "bg-muted text-foreground"
+                      !isActive && !isCompleted && "text-muted-foreground",
+                      !isActive && !isCompleted && isClickable && "hover:bg-muted/50",
+                      isCompleted && !isActive && "bg-muted text-foreground",
+                      isCompleted && !isActive && isClickable && "hover:bg-muted"
                     )}
                   >
                     {isCompleted ? (
@@ -71,10 +87,13 @@ const SeasonProgressBar = ({
                         {tilesVisited}/64
                       </span>
                     )}
-                  </div>
+                  </button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-xs">
                   <p className="font-medium">{season.description}</p>
+                  {isClickable && !isActive && (
+                    <p className="text-xs text-muted-foreground mt-1">Click to navigate to {season.label}</p>
+                  )}
                   {season.id === 'POEMS' && (
                     <p className="text-xs text-muted-foreground mt-1">
                       <span className="font-bold">P</span>eople • <span className="font-bold">O</span>bjects • <span className="font-bold">E</span>nvironments • <span className="font-bold">M</span>essages • <span className="font-bold">S</span>ystems
