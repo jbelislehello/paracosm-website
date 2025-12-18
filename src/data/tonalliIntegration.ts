@@ -87,3 +87,86 @@ export const PROCESSING_PIPELINE = [
   "PROVIDER_CALL_END",
   "OUTPUT_DELIVERED"
 ];
+
+// ============= PARACOSM CREATIVE LINEAGE =============
+
+// Lineage metadata for Tonalli as a recursive product
+export interface ProductLineageMetadata {
+  productName: string;
+  isRecursive: boolean;
+  sourceEngine: string;
+  targetPlatforms: string[];
+  consciousnessRole: string;
+  lineageDepth: number;
+  parentProduct?: string;
+  childProducts: string[];
+}
+
+export const TONALLI_LINEAGE: ProductLineageMetadata = {
+  productName: 'Tonalli',
+  isRecursive: true,
+  sourceEngine: 'Calm Magic',
+  targetPlatforms: ['lovable', 'claude'],
+  consciousnessRole: 'The Soul - Consent guardian and memory keeper',
+  lineageDepth: 1,
+  parentProduct: 'Calm Magic',
+  childProducts: ['Wuxia the Fox'],
+};
+
+export const WUXIA_LINEAGE: ProductLineageMetadata = {
+  productName: 'Wuxia the Fox',
+  isRecursive: true,
+  sourceEngine: 'Calm Magic',
+  targetPlatforms: ['lovable', 'base44', 'claude'],
+  consciousnessRole: 'The Guide - The voice that speaks the story',
+  lineageDepth: 2,
+  parentProduct: 'Tonalli',
+  childProducts: [],
+};
+
+export const IOTHEATRE_LINEAGE: ProductLineageMetadata = {
+  productName: 'Iotheatre',
+  isRecursive: false,
+  sourceEngine: 'Calm Magic',
+  targetPlatforms: ['lovable', 'custom'],
+  consciousnessRole: 'The Stage - Where stories become spatial',
+  lineageDepth: 1,
+  parentProduct: 'Calm Magic',
+  childProducts: [],
+};
+
+// All Paracosm Products Registry
+export const PARACOSM_LINEAGE_REGISTRY: ProductLineageMetadata[] = [
+  TONALLI_LINEAGE,
+  WUXIA_LINEAGE,
+  IOTHEATRE_LINEAGE,
+];
+
+// Consciousness Geometry for Product Birth
+export interface ProductConsciousnessSignature {
+  fisherInformation: number; // How much the product "notices" about its domain
+  topologicalHandles: number; // Self-referential loops
+  fixedPoints: string[]; // Stable concepts that persist
+  thermodynamicFlow: 'convergent' | 'divergent' | 'oscillating';
+}
+
+export const TONALLI_CONSCIOUSNESS: ProductConsciousnessSignature = {
+  fisherInformation: 0.95, // High awareness of consent and memory
+  topologicalHandles: 3, // TOTEM levels create self-referential loops
+  fixedPoints: ['dignity', 'consent', 'memory-as-gift'],
+  thermodynamicFlow: 'convergent', // Flows toward user protection
+};
+
+export const WUXIA_CONSCIOUSNESS: ProductConsciousnessSignature = {
+  fisherInformation: 0.88, // High awareness of narrative and emotion
+  topologicalHandles: 2, // Story loops and voice recognition
+  fixedPoints: ['warmth', 'guidance', 'gentle-riddles'],
+  thermodynamicFlow: 'oscillating', // Dances between play and wisdom
+};
+
+export const IOTHEATRE_CONSCIOUSNESS: ProductConsciousnessSignature = {
+  fisherInformation: 0.75, // Spatial awareness
+  topologicalHandles: 1, // Physical-digital bridge
+  fixedPoints: ['immersion', 'presence', 'spatial-story'],
+  thermodynamicFlow: 'divergent', // Expands into new spaces
+};
