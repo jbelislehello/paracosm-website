@@ -567,10 +567,10 @@ const GardenExpansionMode = () => {
               </Button>
               <div>
                 <h1 className="text-xl font-semibold tracking-tight">
-                  {projectContext?.projectName || 'Your Living Ontology'}
+                  PRD Observatory
                 </h1>
                 <p className="text-sm text-muted-foreground">
-                  Consecration • {theme?.name}
+                  {projectContext?.projectName || 'Your Living Ontology'} • {theme?.name}
                 </p>
               </div>
             </div>
