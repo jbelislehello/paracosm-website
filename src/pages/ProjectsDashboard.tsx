@@ -49,7 +49,8 @@ import {
   Cloud,
   Rocket,
   Filter,
-  X
+  X,
+  FileText
 } from 'lucide-react';
 import { useProjects, Project } from '@/context/ProjectsContext';
 import { useUserSession } from '@/hooks/useUserSession';
@@ -433,6 +434,14 @@ const ProjectsDashboard: React.FC = () => {
                           }}>
                             <Pencil className="w-4 h-4 mr-2" />
                             Rename
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveProject(project.id);
+                            navigate('/calm-magic-board/garden');
+                          }}>
+                            <FileText className="w-4 h-4 mr-2" />
+                            PRD Observatory
                           </DropdownMenuItem>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem 
