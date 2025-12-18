@@ -3,15 +3,25 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, FileText, Sparkles, TreeDeciduous, Download } from 'lucide-react';
+import { ArrowLeft, FileText, Sparkles, TreeDeciduous, Download, X } from 'lucide-react';
 import { useProjects } from '@/context/ProjectsContext';
 import { useMode } from '@/components/calm-magic/context/ModeContext';
-import AnthemTreeP5 from '@/components/calm-magic/garden/AnthemTreeP5';
+import EnhancedAnthemTreeP5 from '@/components/calm-magic/garden/EnhancedAnthemTreeP5';
 import GardenActivities from '@/components/calm-magic/garden/GardenActivities';
 import GardenConnectionHub from '@/components/calm-magic/garden/GardenConnectionHub';
+import GardenAmbientParticles from '@/components/calm-magic/garden/GardenAmbientParticles';
+import GardenStatsPanel from '@/components/calm-magic/garden/GardenStatsPanel';
+import GardenCelebration from '@/components/calm-magic/garden/GardenCelebration';
+import GardenFloatingControls from '@/components/calm-magic/garden/GardenFloatingControls';
 import { GARDEN_THEMES, GardenActivity } from '@/data/gardenConnections';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 
 interface GardenMetrics {
   polenCount: number;
@@ -22,13 +32,20 @@ interface GardenMetrics {
   connections: number;
 }
 
+const seasonDetails = [
+  { name: 'POLLENS', description: 'Raw signals and tensions gathered from your journey', color: 'text-rose-500', highlights: ['87 fragments collected', 'Key themes identified', 'Relational patterns mapped'] },
+  { name: 'NOEMS', description: 'Crystallized concepts and mental models', color: 'text-violet-500', highlights: ['23 insights distilled', 'Connections formed', 'Understanding deepened'] },
+  { name: 'POEMS', description: 'Narrative frameworks and experiential designs', color: 'text-indigo-500', highlights: ['Story arcs defined', 'User journeys mapped', 'P.O.E.M.S. applied'] },
+  { name: 'TOTEMS', description: 'Technical foundations and data structures', color: 'text-cyan-500', highlights: ['Architecture designed', 'Security reviewed', 'Stack selected'] },
+  { name: 'ANTHEMS', description: 'Market positioning and living documentation', color: 'text-emerald-500', highlights: ['Brand voice defined', 'Launch ready', 'PRD complete'] },
+];
+
 const GardenExpansionMode = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { projectContext } = useProjects();
   const { mode } = useMode();
   
-  // Get state from navigation
   const state = location.state as {
     projectId?: string;
     garden?: 'intelligence' | 'systems' | 'prototypes';
@@ -50,8 +67,12 @@ const GardenExpansionMode = () => {
   const [activeConnections, setActiveConnections] = useState<string[]>([]);
   const [activeActivity, setActiveActivity] = useState<string | null>(null);
   const [compiledPrompt, setCompiledPrompt] = useState<string>('');
+  const [showCelebration, setShowCelebration] = useState(true);
+  const [particlesEnabled, setParticlesEnabled] = useState(true);
+  const [audioEnabled, setAudioEnabled] = useState(false);
+  const [fullscreenTree, setFullscreenTree] = useState(false);
+  const [selectedSeason, setSelectedSeason] = useState<number | null>(null);
 
-  // Generate a sample compiled prompt
   useEffect(() => {
     const prompt = `# Foundational Prompt - ${projectContext?.projectName || 'Calm Magic Project'}
 
@@ -89,8 +110,6 @@ ${activeConnections.length > 0 ? activeConnections.join(', ') : 'None yet'}
     toast.success(`${activity.name} activity activated!`, {
       description: activity.description
     });
-    
-    // Reset after animation
     setTimeout(() => setActiveActivity(null), 2000);
   };
 
@@ -107,21 +126,50 @@ ${activeConnections.length > 0 ? activeConnections.join(', ') : 'None yet'}
     toast.success('Foundational Prompt exported!');
   };
 
+  const handleFruitClick = (seasonIndex: number) => {
+    setSelectedSeason(seasonIndex);
+  };
+
   return (
-    <div className={cn(
-      "min-h-screen",
-      "bg-gradient-to-b from-background via-background to-muted/30"
-    )}>
+    <div className="min-h-screen relative overflow-hidden">
+      {/* Ambient particles */}
+      {particlesEnabled && <GardenAmbientParticles garden={garden} intensity={0.8} />}
+      
+      {/* Celebration effects */}
+      <GardenCelebration 
+        isActive={showCelebration} 
+        onComplete={() => setShowCelebration(false)} 
+      />
+      
+      {/* Gradient background */}
+      <div 
+        className="fixed inset-0 -z-10"
+        style={{
+          background: `
+            radial-gradient(ellipse at 50% 0%, hsl(var(--primary) / 0.15) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 80%, hsl(var(--primary) / 0.1) 0%, transparent 40%),
+            radial-gradient(ellipse at 20% 60%, hsl(var(--secondary) / 0.08) 0%, transparent 40%),
+            linear-gradient(to bottom, hsl(var(--background)), hsl(var(--muted) / 0.3))
+          `
+        }}
+      />
+
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-40 border-b bg-background/60 backdrop-blur-xl supports-[backdrop-filter]:bg-background/40">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="icon" onClick={() => navigate('/calm-magic-board')}>
+              <Button variant="ghost" size="icon" onClick={() => navigate('/calm-magic-board')} className="hover:bg-white/10">
                 <ArrowLeft className="w-5 h-5" />
               </Button>
-              <div className="flex items-center gap-2">
-                <span className="text-2xl">{theme?.icon}</span>
+              <div className="flex items-center gap-3">
+                <div className={cn(
+                  "w-10 h-10 rounded-xl flex items-center justify-center text-2xl",
+                  "bg-gradient-to-br shadow-lg",
+                  theme?.gradient
+                )}>
+                  {theme?.icon}
+                </div>
                 <div>
                   <h1 className="text-lg font-bold">{theme?.name}</h1>
                   <p className="text-xs text-muted-foreground">
@@ -131,11 +179,11 @@ ${activeConnections.length > 0 ? activeConnections.join(', ') : 'None yet'}
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={() => navigate('/calm-magic-board/prds')}>
+              <Button variant="outline" size="sm" onClick={() => navigate('/calm-magic-board/prds')} className="backdrop-blur-sm bg-background/50">
                 <FileText className="w-4 h-4 mr-1" />
                 View Full PRD
               </Button>
-              <Button size="sm" onClick={handleExportPrd} className={cn("bg-gradient-to-r", theme?.gradient)}>
+              <Button size="sm" onClick={handleExportPrd} className={cn("bg-gradient-to-r shadow-lg", theme?.gradient)}>
                 <Download className="w-4 h-4 mr-1" />
                 Export
               </Button>
@@ -145,83 +193,97 @@ ${activeConnections.length > 0 ? activeConnections.join(', ') : 'None yet'}
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto space-y-8">
+      <main className="container mx-auto px-4 py-8 relative z-10">
+        <div className="max-w-7xl mx-auto space-y-8">
           
           {/* Celebration Banner */}
           <Card className={cn(
-            "p-6 text-center relative overflow-hidden",
-            "bg-gradient-to-r",
+            "p-8 text-center relative overflow-hidden",
+            "bg-gradient-to-r shadow-2xl border-0",
             theme?.gradient
           )}>
-            <div className="relative z-10 text-white">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <TreeDeciduous className="w-8 h-8" />
-                <h2 className="text-2xl font-bold">🎉 Your Anthem Tree Has Taken Root!</h2>
-                <Sparkles className="w-8 h-8" />
-              </div>
-              <p className="opacity-90">
-                All 5 seasons complete • Your living PRD is ready to grow
-              </p>
+            {/* Animated background pattern */}
+            <div className="absolute inset-0 opacity-20">
+              <div className="absolute inset-0" style={{
+                backgroundImage: `radial-gradient(circle at 20% 50%, white 1px, transparent 1px),
+                                  radial-gradient(circle at 80% 50%, white 1px, transparent 1px)`,
+                backgroundSize: '40px 40px',
+                animation: 'pulse 4s ease-in-out infinite'
+              }} />
             </div>
-            {/* Decorative circles */}
-            <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+            
+            <div className="relative z-10 text-white">
+              <div className="flex items-center justify-center gap-3 mb-3">
+                <TreeDeciduous className="w-10 h-10 animate-pulse" />
+                <h2 className="text-3xl font-bold tracking-tight">Your Anthem Tree Has Taken Root!</h2>
+                <Sparkles className="w-10 h-10 animate-pulse" />
+              </div>
+              <p className="text-lg opacity-90 max-w-2xl mx-auto">
+                All 5 seasons complete • Your living PRD is ready to grow and connect
+              </p>
+              <div className="flex items-center justify-center gap-6 mt-4">
+                {[...Array(5)].map((_, i) => (
+                  <div 
+                    key={i} 
+                    className="w-3 h-3 rounded-full bg-white/80 animate-pulse"
+                    style={{ animationDelay: `${i * 0.2}s` }}
+                  />
+                ))}
+              </div>
+            </div>
+            
+            {/* Decorative elements */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl" />
           </Card>
 
-          {/* Tree Visualization + Stats */}
-          <div className="grid lg:grid-cols-3 gap-6">
+          {/* Tree + Stats Grid */}
+          <div className="grid lg:grid-cols-5 gap-6">
             {/* Tree Canvas */}
-            <Card className="lg:col-span-2 p-6 flex flex-col items-center bg-gradient-to-b from-background to-muted/20">
-              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <Card className={cn(
+              "lg:col-span-3 p-6 flex flex-col items-center relative overflow-hidden",
+              "bg-gradient-to-b from-background/80 to-muted/20",
+              "backdrop-blur-xl border-white/10"
+            )}>
+              <div className="absolute inset-0 bg-gradient-to-t from-primary/5 to-transparent pointer-events-none" />
+              
+              <h3 className="text-lg font-semibold mb-2 flex items-center gap-2 relative z-10">
                 <TreeDeciduous className="w-5 h-5" />
                 Anthem Tree
+                <Badge variant="outline" className="ml-2 text-xs">Interactive</Badge>
               </h3>
-              <AnthemTreeP5
+              <p className="text-sm text-muted-foreground mb-4 text-center">
+                Click on fruits to explore each season's harvest
+              </p>
+              
+              <EnhancedAnthemTreeP5
                 garden={garden}
                 metrics={metrics}
                 activeConnections={activeConnections}
+                onFruitClick={handleFruitClick}
               />
             </Card>
 
             {/* Stats Panel */}
-            <Card className="p-6 space-y-4">
-              <h3 className="text-lg font-semibold">Journey Harvest</h3>
-              
-              <div className="space-y-3">
-                <div className="flex justify-between items-center p-3 bg-rose-500/10 rounded-lg">
-                  <span className="text-sm">🍃 Polen Leaves</span>
-                  <Badge variant="outline" className="text-rose-500">{metrics.polenCount}</Badge>
-                </div>
-                <div className="flex justify-between items-center p-3 bg-violet-500/10 rounded-lg">
-                  <span className="text-sm">🌸 Noems Flowers</span>
-                  <Badge variant="outline" className="text-violet-500">{metrics.noemsCount}</Badge>
-                </div>
-                <div className="flex justify-between items-center p-3 bg-emerald-500/10 rounded-lg">
-                  <span className="text-sm">🍎 Season Fruits</span>
-                  <Badge variant="outline" className="text-emerald-500">{metrics.completedSeasons}/5</Badge>
-                </div>
-                <div className="flex justify-between items-center p-3 bg-blue-500/10 rounded-lg">
-                  <span className="text-sm">🗺️ Tiles Explored</span>
-                  <Badge variant="outline" className="text-blue-500">{metrics.tilesVisited}/64</Badge>
-                </div>
-                <div className="flex justify-between items-center p-3 bg-amber-500/10 rounded-lg">
-                  <span className="text-sm">💫 Coherence</span>
-                  <Badge variant="outline" className="text-amber-500">{metrics.coherence}%</Badge>
-                </div>
-                <div className="flex justify-between items-center p-3 bg-cyan-500/10 rounded-lg">
-                  <span className="text-sm">🌿 Root Connections</span>
-                  <Badge variant="outline" className="text-cyan-500">{activeConnections.length}</Badge>
-                </div>
-              </div>
-            </Card>
+            <div className="lg:col-span-2">
+              <GardenStatsPanel metrics={metrics} />
+            </div>
           </div>
 
           {/* Garden Activities */}
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <Card className={cn(
+            "p-6 relative overflow-hidden",
+            "bg-gradient-to-br from-background/80 to-muted/20",
+            "backdrop-blur-xl border-white/10"
+          )}>
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-secondary/5 pointer-events-none" />
+            
+            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2 relative z-10">
               <Sparkles className="w-5 h-5" />
               L.O.V.E. Gardening Activities
+              <span className="text-sm font-normal text-muted-foreground ml-2">
+                Nurture your garden's growth
+              </span>
             </h3>
             <GardenActivities
               onActivitySelect={handleActivitySelect}
@@ -230,7 +292,13 @@ ${activeConnections.length > 0 ? activeConnections.join(', ') : 'None yet'}
           </Card>
 
           {/* Connection Hub */}
-          <Card className="p-6">
+          <Card className={cn(
+            "p-6 relative overflow-hidden",
+            "bg-gradient-to-br from-background/80 to-muted/20",
+            "backdrop-blur-xl border-white/10"
+          )}>
+            <div className="absolute inset-0 bg-gradient-to-l from-emerald-500/5 to-transparent pointer-events-none" />
+            
             <GardenConnectionHub
               activeConnections={activeConnections}
               onConnect={handleConnect}
@@ -240,6 +308,97 @@ ${activeConnections.length > 0 ? activeConnections.join(', ') : 'None yet'}
           </Card>
         </div>
       </main>
+
+      {/* Floating Controls */}
+      <GardenFloatingControls
+        particlesEnabled={particlesEnabled}
+        audioEnabled={audioEnabled}
+        onToggleParticles={setParticlesEnabled}
+        onToggleAudio={setAudioEnabled}
+        onToggleFullscreen={() => setFullscreenTree(!fullscreenTree)}
+        onResetView={() => {
+          setShowCelebration(true);
+          toast.success('View reset!');
+        }}
+      />
+
+      {/* Season Details Dialog */}
+      <Dialog open={selectedSeason !== null} onOpenChange={() => setSelectedSeason(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className={cn(
+              "flex items-center gap-2 text-xl",
+              selectedSeason !== null && seasonDetails[selectedSeason]?.color
+            )}>
+              {selectedSeason !== null && (
+                <>
+                  <div className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center text-white text-sm",
+                    "bg-gradient-to-br",
+                    selectedSeason === 0 && "from-rose-500 to-pink-500",
+                    selectedSeason === 1 && "from-violet-500 to-purple-500",
+                    selectedSeason === 2 && "from-indigo-500 to-blue-500",
+                    selectedSeason === 3 && "from-cyan-500 to-teal-500",
+                    selectedSeason === 4 && "from-emerald-500 to-green-500",
+                  )}>
+                    {selectedSeason + 1}
+                  </div>
+                  {seasonDetails[selectedSeason].name}
+                </>
+              )}
+            </DialogTitle>
+          </DialogHeader>
+          
+          {selectedSeason !== null && (
+            <div className="space-y-4">
+              <p className="text-muted-foreground">
+                {seasonDetails[selectedSeason].description}
+              </p>
+              
+              <div className="space-y-2">
+                <h4 className="font-medium text-sm">Season Highlights:</h4>
+                <ul className="space-y-1">
+                  {seasonDetails[selectedSeason].highlights.map((highlight, i) => (
+                    <li key={i} className="flex items-center gap-2 text-sm">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      {highlight}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <Button 
+                className="w-full" 
+                variant="outline"
+                onClick={() => setSelectedSeason(null)}
+              >
+                Close
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Fullscreen Tree Modal */}
+      {fullscreenTree && (
+        <div className="fixed inset-0 z-50 bg-background">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute top-4 right-4 z-50"
+            onClick={() => setFullscreenTree(false)}
+          >
+            <X className="w-6 h-6" />
+          </Button>
+          <EnhancedAnthemTreeP5
+            garden={garden}
+            metrics={metrics}
+            activeConnections={activeConnections}
+            onFruitClick={handleFruitClick}
+            fullscreen
+          />
+        </div>
+      )}
     </div>
   );
 };
