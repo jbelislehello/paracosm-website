@@ -373,6 +373,7 @@ interface PrdAssemblyPanelProps {
   seasonProgress: Record<Season, Set<string>>;
   completedSeasons: Season[];
   prdId: string | null;
+  projectId?: string | null;
   onGenerateLayer: (season: Season) => Promise<void>;
   onPrdCreated?: (prdId: string) => void;
   // New props for unlock progress
@@ -390,6 +391,7 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   seasonProgress,
   completedSeasons,
   prdId,
+  projectId,
   onGenerateLayer,
   onPrdCreated,
   visitedTiles = new Set(),
@@ -469,6 +471,7 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
           .from('prds')
           .insert({
             owner_id: user.id,
+            project_id: projectId || null,
             title: `${isPersonal ? 'RRD' : 'PRD'} — ${new Date().toLocaleDateString()}`,
             status: 'draft',
             prototype_stage: 'B_DIEGETIC',
@@ -786,6 +789,7 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
         .from('prds')
         .insert({
           owner_id: user.id,
+          project_id: projectId || null,
           title: `${documentName} — ${new Date().toLocaleDateString()}`,
           status: 'draft',
           prototype_stage: 'B_DIEGETIC',
@@ -901,6 +905,7 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
       // Direct column mapping - each field saves to its own column (no concatenation!)
       const prdPayload = {
         owner_id: user.id,
+        project_id: projectId || null,
         title,
         status: 'draft',
         prototype_stage: 'B_DIEGETIC',

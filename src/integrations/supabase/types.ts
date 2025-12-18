@@ -490,6 +490,7 @@ export type Database = {
           fragment_type: Database["public"]["Enums"]["fragment_type"]
           hexagram_number: number | null
           id: string
+          project_id: string | null
           season_context: string | null
           source_reference: string | null
           tags: string[] | null
@@ -505,6 +506,7 @@ export type Database = {
           fragment_type?: Database["public"]["Enums"]["fragment_type"]
           hexagram_number?: number | null
           id?: string
+          project_id?: string | null
           season_context?: string | null
           source_reference?: string | null
           tags?: string[] | null
@@ -520,6 +522,7 @@ export type Database = {
           fragment_type?: Database["public"]["Enums"]["fragment_type"]
           hexagram_number?: number | null
           id?: string
+          project_id?: string | null
           season_context?: string | null
           source_reference?: string | null
           tags?: string[] | null
@@ -540,6 +543,13 @@ export type Database = {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "polen_entries_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
           {
@@ -644,6 +654,7 @@ export type Database = {
           pollens_relational_patterns: string | null
           pollens_stakes: string | null
           pollens_team_dynamics: string | null
+          project_id: string | null
           prompt_hooks_anthems: string | null
           prompt_hooks_noems: string | null
           prompt_hooks_poems: string | null
@@ -725,6 +736,7 @@ export type Database = {
           pollens_relational_patterns?: string | null
           pollens_stakes?: string | null
           pollens_team_dynamics?: string | null
+          project_id?: string | null
           prompt_hooks_anthems?: string | null
           prompt_hooks_noems?: string | null
           prompt_hooks_poems?: string | null
@@ -806,6 +818,7 @@ export type Database = {
           pollens_relational_patterns?: string | null
           pollens_stakes?: string | null
           pollens_team_dynamics?: string | null
+          project_id?: string | null
           prompt_hooks_anthems?: string | null
           prompt_hooks_noems?: string | null
           prompt_hooks_poems?: string | null
@@ -837,6 +850,13 @@ export type Database = {
             columns: ["owner_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prds_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
           {
@@ -1409,6 +1429,7 @@ export type Database = {
           higher_self_quadrant: string | null
           id: string
           last_shadow_position: Json | null
+          project_id: string | null
           prophecy_reflection: string | null
           prophecy_set_at: string | null
           shadow_factors: Json | null
@@ -1423,6 +1444,7 @@ export type Database = {
           higher_self_quadrant?: string | null
           id?: string
           last_shadow_position?: Json | null
+          project_id?: string | null
           prophecy_reflection?: string | null
           prophecy_set_at?: string | null
           shadow_factors?: Json | null
@@ -1437,6 +1459,7 @@ export type Database = {
           higher_self_quadrant?: string | null
           id?: string
           last_shadow_position?: Json | null
+          project_id?: string | null
           prophecy_reflection?: string | null
           prophecy_set_at?: string | null
           shadow_factors?: Json | null
@@ -1445,7 +1468,15 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "trajectory_states_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       urgent_priorities: {
         Row: {

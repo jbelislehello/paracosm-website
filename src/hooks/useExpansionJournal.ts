@@ -24,7 +24,7 @@ interface JournalCycleData {
   integrator_tiles_unlocked: number;
 }
 
-export const useExpansionJournal = () => {
+export const useExpansionJournal = (projectId?: string | null) => {
   const [currentCycle, setCurrentCycle] = useState<JournalCycleData | null>(null);
   const [polenEntries, setPolenEntries] = useState<any[]>([]);
   const [noems, setNoems] = useState<any[]>([]);
@@ -174,6 +174,7 @@ export const useExpansionJournal = () => {
         .insert({
           user_id: user.id,
           cycle_id: currentCycle?.id,
+          project_id: projectId || null,
           ...entry
         })
         .select()
@@ -278,10 +279,16 @@ export const useExpansionJournal = () => {
 
   const fetchPolenEntries = async () => {
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('polen_entries')
         .select('*')
         .order('created_at', { ascending: false });
+      
+      if (projectId) {
+        query = query.eq('project_id', projectId);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
       setPolenEntries(data || []);
@@ -292,10 +299,13 @@ export const useExpansionJournal = () => {
 
   const fetchNoems = async () => {
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('noems')
         .select('*')
         .order('created_at', { ascending: false });
+      
+      // Note: noems table doesn't have project_id yet, but filtering by cycle which is project-scoped
+      const { data, error } = await query;
 
       if (error) throw error;
       setNoems(data || []);
@@ -323,7 +333,7 @@ export const useExpansionJournal = () => {
     fetchPolenEntries();
     fetchNoems();
     fetchPoems();
-  }, []);
+  }, [projectId]);
 
   return {
     currentCycle,
