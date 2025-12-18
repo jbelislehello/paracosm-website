@@ -5,7 +5,7 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe, Eye, EyeOff, Moon, Sun, CheckCircle, GitBranch, ChevronDown, AlertTriangle, Brain } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe, Eye, EyeOff, Moon, Sun, CheckCircle, GitBranch, ChevronDown, AlertTriangle, Brain, Database } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -66,6 +66,7 @@ import ProjectTitleBar from '@/components/calm-magic/ProjectTitleBar';
 import PatternJournal from '@/components/calm-magic/PatternJournal';
 import { DetectedPattern, PatternHistoryEntry } from '@/utils/patternDetection';
 import { TopologiesTab } from '@/components/calm-magic/topologies/TopologiesTab';
+import { FragmentMigrationDialog } from '@/components/calm-magic/FragmentMigrationDialog';
 import { TopologyInsightIndicator } from '@/components/calm-magic/topologies/TopologyInsightIndicator';
 import { useTopologyInsight } from '@/hooks/useTopologyInsight';
 import { ManifoldSeason } from '@/utils/torusManifoldMath';
@@ -173,6 +174,7 @@ const CalmMagicBoard = () => {
   const [upgradeFeature, setUpgradeFeature] = useState<'insight_connections' | null>(null);
   const [showPatternJournal, setShowPatternJournal] = useState(false);
   const [showKnowledgeImageDialog, setShowKnowledgeImageDialog] = useState(false);
+  const [showMigrationDialog, setShowMigrationDialog] = useState(false);
   const [detectedPatterns, setDetectedPatterns] = useState<DetectedPattern[]>([]);
   const [patternHistory, setPatternHistory] = useState<PatternHistoryEntry[]>([]);
   const [highlightedPattern, setHighlightedPattern] = useState<DetectedPattern | null>(null);
@@ -1178,6 +1180,24 @@ const CalmMagicBoard = () => {
               <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
             </Button>
             
+            {/* Fragment Migration */}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => setShowMigrationDialog(true)}
+                  >
+                    <Database className="w-4 h-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Migrate Orphan Fragments</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            
             {/* Ambient Soundscape Control */}
             <AmbientSoundscapeControl
               isPlaying={isAmbientPlaying}
@@ -1980,6 +2000,15 @@ const CalmMagicBoard = () => {
           />
         </DialogContent>
       </Dialog>
+
+      {/* Fragment Migration Dialog */}
+      <FragmentMigrationDialog
+        isOpen={showMigrationDialog}
+        onClose={() => setShowMigrationDialog(false)}
+        onMigrationComplete={() => {
+          toast.success('Fragments migrés avec succès');
+        }}
+      />
 
     </div>
   );
