@@ -53,7 +53,10 @@ import {
   X,
   FileText,
   Share2,
-  Users
+  Users,
+  RefreshCw,
+  AlertTriangle,
+  Database
 } from 'lucide-react';
 import { useProjects, Project } from '@/context/ProjectsContext';
 import { useUserSession } from '@/hooks/useUserSession';
@@ -81,7 +84,12 @@ const ProjectsDashboard: React.FC = () => {
     setActiveProject, 
     deleteProject, 
     updateProject,
-    isLoading 
+    isLoading,
+    recoverProjects,
+    clearBackup,
+    localStorageCount,
+    backupCount,
+    migrationStatus,
   } = useProjects();
   
   const [searchQuery, setSearchQuery] = useState('');
@@ -95,7 +103,12 @@ const ProjectsDashboard: React.FC = () => {
   const [showSignupPrompt, setShowSignupPrompt] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [shareProject, setShareProject] = useState<Project | null>(null);
+  const [isRecovering, setIsRecovering] = useState(false);
+  const [recoveryResult, setRecoveryResult] = useState<{ recovered: number; error?: string } | null>(null);
   const isMobile = useIsMobile();
+  
+  // Check if there are recoverable projects
+  const hasRecoverableProjects = localStorageCount > 0 || backupCount > 0;
 
   // Check if we should show guest banner
   const isGuest = !user;
@@ -149,6 +162,25 @@ const ProjectsDashboard: React.FC = () => {
       day: 'numeric',
       year: 'numeric',
     });
+  };
+
+  const handleRecoverProjects = async () => {
+    setIsRecovering(true);
+    setRecoveryResult(null);
+    try {
+      const result = await recoverProjects();
+      setRecoveryResult({ recovered: result.recovered, error: result.error });
+      console.log('[ProjectsDashboard] Recovery result:', result);
+    } catch (error: any) {
+      setRecoveryResult({ recovered: 0, error: error.message || 'Unknown error' });
+    } finally {
+      setIsRecovering(false);
+    }
+  };
+
+  const handleClearBackup = () => {
+    clearBackup();
+    setRecoveryResult(null);
   };
 
   if (isLoading) {
@@ -530,6 +562,72 @@ const ProjectsDashboard: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Project Recovery Banner */}
+      {user && hasRecoverableProjects && (
+        <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border-t border-amber-500/30 backdrop-blur-sm z-20">
+          <div className="max-w-6xl mx-auto px-4 md:px-6 py-2 md:py-3">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                <Database className="w-4 md:w-5 h-4 md:h-5 text-amber-500 shrink-0" />
+                <div className="text-xs md:text-sm min-w-0">
+                  <span className="font-medium text-amber-600 dark:text-amber-400">
+                    {localStorageCount + backupCount} recoverable project(s) found
+                  </span>
+                  <span className="hidden sm:inline text-muted-foreground">
+                    {' '}— Projects from localStorage or backup
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleRecoverProjects}
+                  disabled={isRecovering}
+                  className="border-amber-500/30 hover:border-amber-500/50 text-xs md:text-sm h-8"
+                >
+                  {isRecovering ? (
+                    <>
+                      <RefreshCw className="w-3 h-3 mr-1 animate-spin" />
+                      Recovering...
+                    </>
+                  ) : (
+                    <>
+                      <RefreshCw className="w-3 h-3 mr-1" />
+                      Recover
+                    </>
+                  )}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleClearBackup}
+                  className="text-xs h-8 text-muted-foreground hover:text-foreground"
+                >
+                  <X className="w-3 h-3" />
+                </Button>
+              </div>
+            </div>
+            {recoveryResult && (
+              <div className={`mt-2 text-xs ${recoveryResult.error ? 'text-destructive' : 'text-green-600 dark:text-green-400'}`}>
+                {recoveryResult.error ? (
+                  <span className="flex items-center gap-1">
+                    <AlertTriangle className="w-3 h-3" />
+                    {recoveryResult.error}
+                  </span>
+                ) : (
+                  <span>
+                    {recoveryResult.recovered > 0 
+                      ? `Successfully recovered ${recoveryResult.recovered} project(s)!` 
+                      : 'All projects already synced'}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Guest Mode Banner */}
       {isGuest && hasProjects && (
