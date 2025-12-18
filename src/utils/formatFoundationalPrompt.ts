@@ -1,13 +1,61 @@
 // Rich Foundational Prompt formatter for Garden Expansion Mode
+// Updated to use new PRD field structure with all 5 seasons
 
 import { GARDEN_THEMES, GardenTheme } from '@/data/gardenConnections';
 
 interface PrdData {
-  id: string;
-  title: string;
-  status: string;
-  prototype_stage: string;
-  // Layers
+  id?: string;
+  title?: string;
+  status?: string;
+  prototype_stage?: string;
+  // POLLENS (new structure)
+  pollens_aspirations?: string | null;
+  pollens_team_dynamics?: string | null;
+  pollens_cultural_elements?: string | null;
+  pollens_relational_patterns?: string | null;
+  pollens_constraints?: string | null;
+  pollens_stakes?: string | null;
+  // NOEMS (new structure)
+  noems_concepts?: string | null;
+  noems_shared_ideas?: string | null;
+  noems_intuitions?: string | null;
+  noems_mental_models?: string | null;
+  // POEMS (new structure)
+  poems_people?: string | null;
+  poems_objects?: string | null;
+  poems_environments?: string | null;
+  poems_messages?: string | null;
+  poems_systems?: string | null;
+  poems_prototypes?: string | null;
+  // TOTEMS (new structure)
+  totems_data_architecture?: string | null;
+  totems_security_policies?: string | null;
+  totems_access_controls?: string | null;
+  totems_system_requirements?: string | null;
+  totems_integration_points?: string | null;
+  totems_technical_debt?: string | null;
+  // ANTHEMS (new structure)
+  anthems_market_positioning?: string | null;
+  anthems_brand_narrative?: string | null;
+  anthems_go_to_market?: string | null;
+  anthems_audience_segments?: string | null;
+  anthems_success_signals?: string | null;
+  anthems_storytelling_assets?: string | null;
+  // Prompt hooks
+  prompt_hooks_pollens?: string | null;
+  prompt_hooks_noems?: string | null;
+  prompt_hooks_poems?: string | null;
+  prompt_hooks_totems?: string | null;
+  prompt_hooks_anthems?: string | null;
+  // Stack implications
+  stack_implications_pollens?: string | null;
+  stack_implications_noems?: string | null;
+  stack_implications_poems?: string | null;
+  stack_implications_totems?: string | null;
+  stack_implications_anthems?: string | null;
+  // Consciousness geometry
+  consciousness_geometry?: any;
+  // Legacy fields (backwards compatibility)
   love_signals_summary?: string | null;
   love_decision_to_exist?: string | null;
   magic_storyworld?: string | null;
@@ -23,18 +71,6 @@ interface PrdData {
   free_totem_anthem?: string | null;
   free_success_criteria?: string | null;
   free_next_cycle_hooks?: string | null;
-  // Prompt hooks
-  prompt_hooks_pollens?: string | null;
-  prompt_hooks_noems?: string | null;
-  prompt_hooks_poems?: string | null;
-  prompt_hooks_totems?: string | null;
-  prompt_hooks_anthems?: string | null;
-  // Stack implications
-  stack_implications_pollens?: string | null;
-  stack_implications_noems?: string | null;
-  stack_implications_poems?: string | null;
-  stack_implications_totems?: string | null;
-  stack_implications_anthems?: string | null;
 }
 
 interface GardenMetrics {
@@ -48,7 +84,7 @@ interface GardenMetrics {
 
 const formatSection = (title: string, content: string | null | undefined): string => {
   if (!content?.trim()) return '';
-  return `### ${title}\n${content.trim()}\n\n`;
+  return `**${title}:**\n${content.trim()}\n\n`;
 };
 
 const hasContent = (content: string | null | undefined): boolean => {
@@ -68,12 +104,17 @@ export const formatFoundationalPrompt = (
     return generateBasicTemplate(metrics, projectName, theme);
   }
   
-  // Check if PRD has any meaningful content
-  const hasPollenContent = hasContent(prd.love_signals_summary) || hasContent(prd.love_decision_to_exist);
-  const hasNoemContent = hasContent(prd.magic_storyworld) || hasContent(prd.magic_patterns);
-  const hasPoemContent = hasContent(prd.calm_requirements);
-  const hasTotemContent = hasContent(prd.open_ontology_and_graph);
-  const hasAnthemContent = hasContent(prd.free_totem_anthem) || hasContent(prd.free_success_criteria);
+  // Check new field structure for content
+  const hasPollenContent = hasContent(prd.pollens_aspirations) || hasContent(prd.pollens_team_dynamics) || 
+                           hasContent(prd.pollens_cultural_elements) || hasContent(prd.pollens_constraints);
+  const hasNoemContent = hasContent(prd.noems_concepts) || hasContent(prd.noems_shared_ideas) || 
+                         hasContent(prd.noems_intuitions) || hasContent(prd.noems_mental_models);
+  const hasPoemContent = hasContent(prd.poems_people) || hasContent(prd.poems_objects) || 
+                         hasContent(prd.poems_environments) || hasContent(prd.poems_systems);
+  const hasTotemContent = hasContent(prd.totems_data_architecture) || hasContent(prd.totems_security_policies) || 
+                          hasContent(prd.totems_system_requirements);
+  const hasAnthemContent = hasContent(prd.anthems_market_positioning) || hasContent(prd.anthems_brand_narrative) || 
+                           hasContent(prd.anthems_success_signals);
   
   const hasMeaningfulContent = hasPollenContent || hasNoemContent || hasPoemContent || hasTotemContent || hasAnthemContent;
   
@@ -85,6 +126,7 @@ export const formatFoundationalPrompt = (
   let prompt = `# ${prd.title || projectName} — Foundational Prompt
 
 > Generated through Calm Magic Board's ${theme.name}
+> Creating Learning Organizations and Relational Intelligence in Humans in the AI Era
 
 ---
 
@@ -110,62 +152,97 @@ export const formatFoundationalPrompt = (
 
 `;
 
-  // POLLENS Layer
+  // POLLENS Layer - Relational & Cultural Aspirations
   if (hasPollenContent) {
-    prompt += `## 🌱 POLLENS — Raw Signals & Context
+    prompt += `## 🌸 POLLENS — Relational & Cultural Aspirations
 
 `;
-    prompt += formatSection('Signals Summary', prd.love_signals_summary);
-    prompt += formatSection('Decision to Exist', prd.love_decision_to_exist);
+    prompt += formatSection('Aspirations', prd.pollens_aspirations);
+    prompt += formatSection('Team Dynamics', prd.pollens_team_dynamics);
+    prompt += formatSection('Cultural Elements', prd.pollens_cultural_elements);
+    prompt += formatSection('Relational Patterns', prd.pollens_relational_patterns);
+    prompt += formatSection('Constraints', prd.pollens_constraints);
+    prompt += formatSection('Stakes', prd.pollens_stakes);
     prompt += '---\n\n';
   }
 
-  // NOEMS Layer
+  // NOEMS Layer - Conceptual Ideation
   if (hasNoemContent) {
-    prompt += `## 💎 NOEMS — Conceptual Atoms
+    prompt += `## 💡 NOEMS — Conceptual Ideation & Mental Models
 
 `;
-    prompt += formatSection('Storyworld', prd.magic_storyworld);
-    prompt += formatSection('PRD Outline', prd.magic_prd_outline);
-    prompt += formatSection('Hypotheses', prd.magic_hypotheses);
-    prompt += formatSection('Patterns', prd.magic_patterns);
+    prompt += formatSection('Core Concepts', prd.noems_concepts);
+    prompt += formatSection('Shared Ideas', prd.noems_shared_ideas);
+    prompt += formatSection('Intuitions', prd.noems_intuitions);
+    prompt += formatSection('Mental Models', prd.noems_mental_models);
     prompt += '---\n\n';
   }
 
-  // POEMS Layer
+  // POEMS Layer - P.O.E.M.S. Framework
   if (hasPoemContent) {
-    prompt += `## 📖 POEMS — Narrative Structures
+    prompt += `## 📖 POEMS — P.O.E.M.S. Experiential Design
+
+> People • Objects • Environments • Messages • Systems
 
 `;
-    prompt += formatSection('Requirements', prd.calm_requirements);
-    prompt += formatSection('Risks & Limits', prd.calm_risks_and_limits);
+    prompt += formatSection('People (Users & Stakeholders)', prd.poems_people);
+    prompt += formatSection('Objects (Artifacts & Tools)', prd.poems_objects);
+    prompt += formatSection('Environments (Contexts & Spaces)', prd.poems_environments);
+    prompt += formatSection('Messages (Information Flows)', prd.poems_messages);
+    prompt += formatSection('Systems (Processes & Components)', prd.poems_systems);
+    prompt += formatSection('Prototypes (Early Designs)', prd.poems_prototypes);
     prompt += '---\n\n';
   }
 
-  // TOTEMS Layer
+  // TOTEMS Layer - Technical Infrastructure
   if (hasTotemContent) {
-    prompt += `## 🏛️ TOTEMS — Semantic Forms
+    prompt += `## 💎 TOTEMS — Technical Infrastructure & Security
 
 `;
-    prompt += formatSection('Ontology & Graph', prd.open_ontology_and_graph);
-    prompt += formatSection('Real Workflow', prd.open_real_workflow);
-    prompt += formatSection('Adjustment Plan', prd.open_adjustment_plan);
+    prompt += formatSection('Data Architecture', prd.totems_data_architecture);
+    prompt += formatSection('Security Policies', prd.totems_security_policies);
+    prompt += formatSection('Access Controls', prd.totems_access_controls);
+    prompt += formatSection('System Requirements', prd.totems_system_requirements);
+    prompt += formatSection('Integration Points', prd.totems_integration_points);
+    prompt += formatSection('Technical Debt', prd.totems_technical_debt);
     prompt += '---\n\n';
   }
 
-  // ANTHEMS Layer
+  // ANTHEMS Layer - Market & Storytelling
   if (hasAnthemContent) {
-    prompt += `## 🎵 ANTHEMS — Integration & Execution
+    prompt += `## 🎵 ANTHEMS — Market Positioning & Storytelling
 
 `;
-    prompt += formatSection('First Poem', prd.free_first_poem_description);
-    prompt += formatSection('Totem Anthem', prd.free_totem_anthem);
-    prompt += formatSection('Success Criteria', prd.free_success_criteria);
-    prompt += formatSection('Next Cycle Hooks', prd.free_next_cycle_hooks);
+    prompt += formatSection('Market Positioning', prd.anthems_market_positioning);
+    prompt += formatSection('Brand Narrative', prd.anthems_brand_narrative);
+    prompt += formatSection('Go-to-Market Strategy', prd.anthems_go_to_market);
+    prompt += formatSection('Audience Segments', prd.anthems_audience_segments);
+    prompt += formatSection('Success Signals', prd.anthems_success_signals);
+    prompt += formatSection('Storytelling Assets', prd.anthems_storytelling_assets);
     prompt += '---\n\n';
   }
 
-  // Prompt Hooks (for AI)
+  // Consciousness Geometry (if available)
+  if (prd.consciousness_geometry) {
+    const cg = prd.consciousness_geometry;
+    prompt += `## 🧠 Consciousness Geometry
+
+| Metric | Value |
+|--------|-------|
+| Complexity Bits | ${cg.complexityBits || 'N/A'} |
+| Threshold Progress | ${cg.thresholdPercentage || 0}% |
+| Consciousness State | ${cg.consciousnessState || 'pre-conscious'} |
+| Thermodynamic Efficiency | ${((cg.thermodynamicEfficiency || 0) * 100).toFixed(1)}% |
+| Integration Strength | ${((cg.integrationStrength || 0) * 100).toFixed(1)}% |
+
+${cg.geometricNarrative ? `**Geometric Narrative:** ${cg.geometricNarrative}\n\n` : ''}
+${cg.recursiveNarrative ? `**Recursive Narrative:** ${cg.recursiveNarrative}\n\n` : ''}
+---
+
+`;
+  }
+
+  // Prompt Hooks (for AI agents)
   const hasPromptHooks = hasContent(prd.prompt_hooks_pollens) || 
                          hasContent(prd.prompt_hooks_noems) || 
                          hasContent(prd.prompt_hooks_poems) || 
@@ -204,25 +281,25 @@ export const formatFoundationalPrompt = (
                                hasContent(prd.stack_implications_anthems);
 
   if (hasStackImplications) {
-    prompt += `## 🔧 Tech Stack Requirements
+    prompt += `## 🔧 8-Layer Agentic Architecture
 
 | Layer | Requirements |
 |-------|--------------|
 `;
     if (hasContent(prd.stack_implications_pollens)) {
-      prompt += `| POLLENS | ${prd.stack_implications_pollens} |\n`;
+      prompt += `| L1-L2 Infrastructure/Agent Internet | ${prd.stack_implications_pollens} |\n`;
     }
     if (hasContent(prd.stack_implications_noems)) {
-      prompt += `| NOEMS | ${prd.stack_implications_noems} |\n`;
+      prompt += `| L5-L6 Cognition/Memory | ${prd.stack_implications_noems} |\n`;
     }
     if (hasContent(prd.stack_implications_poems)) {
-      prompt += `| POEMS | ${prd.stack_implications_poems} |\n`;
+      prompt += `| L4-L7 Tooling/Application | ${prd.stack_implications_poems} |\n`;
     }
     if (hasContent(prd.stack_implications_totems)) {
-      prompt += `| TOTEMS | ${prd.stack_implications_totems} |\n`;
+      prompt += `| L3 Protocol | ${prd.stack_implications_totems} |\n`;
     }
     if (hasContent(prd.stack_implications_anthems)) {
-      prompt += `| ANTHEMS | ${prd.stack_implications_anthems} |\n`;
+      prompt += `| L8 Governance | ${prd.stack_implications_anthems} |\n`;
     }
     prompt += '\n---\n\n';
   }
@@ -230,6 +307,8 @@ export const formatFoundationalPrompt = (
   prompt += `---
 
 _Generated by Calm Magic Board — Creating Learning Organizations and Relational Intelligence in Humans in the AI Era_
+
+_This Foundational Prompt is designed to be consumed by agentic AI systems as a system prompt or context injection._
 `;
 
   return prompt;
