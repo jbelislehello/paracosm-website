@@ -47,3 +47,6 @@ verify_jwt = false
 
 [functions.generate-zone-fragment]
 verify_jwt = false
+
+[functions.analyze-clusters]
+verify_jwt = false
