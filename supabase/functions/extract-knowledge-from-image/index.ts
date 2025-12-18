@@ -156,23 +156,47 @@ Return a JSON object with this exact structure:
     }
 
     console.log('AI response received, parsing JSON...');
+    console.log('Raw content length:', content.length);
 
     // Extract JSON from response (handle markdown code blocks)
-    let jsonStr = content;
-    const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
-    if (jsonMatch) {
-      jsonStr = jsonMatch[1].trim();
+    let jsonStr = content.trim();
+    
+    // Remove markdown code block wrappers if present
+    // Handle: ```json\n{...}\n``` or ```\n{...}\n```
+    if (jsonStr.startsWith('```')) {
+      // Find the end of the opening code fence
+      const firstNewline = jsonStr.indexOf('\n');
+      if (firstNewline !== -1) {
+        jsonStr = jsonStr.substring(firstNewline + 1);
+      }
+      // Remove trailing code fence
+      const lastFence = jsonStr.lastIndexOf('```');
+      if (lastFence !== -1) {
+        jsonStr = jsonStr.substring(0, lastFence);
+      }
+      jsonStr = jsonStr.trim();
     }
+    
+    // Also try regex as fallback
+    if (!jsonStr.startsWith('{') && !jsonStr.startsWith('[')) {
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        jsonStr = jsonMatch[0];
+      }
+    }
+    
+    console.log('Cleaned JSON starts with:', jsonStr.substring(0, 50));
 
     let extraction: KnowledgeExtraction;
     try {
       extraction = JSON.parse(jsonStr);
     } catch (parseError) {
-      console.error('JSON parse error, attempting cleanup...');
+      console.error('JSON parse error, attempting cleanup...', parseError);
       // Try to fix common JSON issues
       jsonStr = jsonStr
         .replace(/,\s*}/g, '}')
         .replace(/,\s*]/g, ']')
+        .replace(/[\u201C\u201D]/g, '"') // Replace smart quotes
         .replace(/'/g, '"');
       extraction = JSON.parse(jsonStr);
     }
