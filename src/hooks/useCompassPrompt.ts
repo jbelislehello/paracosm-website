@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { CompassType, JourneyMode } from '@/types/journal-expansion';
 import { TileContent } from '@/data/tileContents';
 import { useToast } from '@/hooks/use-toast';
+import { warnIfMissingProjectId } from '@/utils/devWarnings';
 
 interface UseCompassPromptOptions {
   compass: CompassType;
@@ -89,6 +90,9 @@ export function useCompassPrompt({ compass, journeyMode, tile, cycleId, projectI
       if (!userData.user) {
         throw new Error('Not authenticated');
       }
+
+      // Warn in dev mode if saving without project_id
+      warnIfMissingProjectId('polen_entries', projectId, userData.user.id, `useCompassPrompt - tile: ${tile.id}`);
 
       const stepLabels = {
         glitch: 'GL!TCH',

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { warnIfMissingProjectId } from '@/utils/devWarnings';
 import { 
   JournalPhase, 
   CycleNumber, 
@@ -169,6 +170,9 @@ export const useExpansionJournal = (projectId?: string | null) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
+      // Warn in dev mode if saving without project_id
+      warnIfMissingProjectId('polen_entries', projectId, user.id, 'useExpansionJournal.savePolenEntry');
+
       const { data, error } = await supabase
         .from('polen_entries')
         .insert({
@@ -206,6 +210,9 @@ export const useExpansionJournal = (projectId?: string | null) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
+
+      // Warn in dev mode - noems table doesn't have project_id column yet
+      warnIfMissingProjectId('noems', null, user.id, 'useExpansionJournal.saveNoem - noems table needs project_id column');
 
       const { data, error } = await supabase
         .from('noems')
@@ -245,6 +252,9 @@ export const useExpansionJournal = (projectId?: string | null) => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
+
+      // Warn in dev mode - poems table doesn't have project_id column yet
+      warnIfMissingProjectId('poems', null, user.id, 'useExpansionJournal.savePoem - poems table needs project_id column');
 
       const { data, error } = await supabase
         .from('poems')

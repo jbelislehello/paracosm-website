@@ -9,6 +9,7 @@ import { Loader2, Sparkles, GitMerge, MessageSquare } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { warnIfMissingProjectId } from '@/utils/devWarnings';
 import type { Branch, Message } from '@/hooks/useAgentTileConversation';
 
 interface BranchMergeDialogProps {
@@ -144,6 +145,9 @@ export const BranchMergeDialog: React.FC<BranchMergeDialogProps> = ({
         toast({ variant: 'destructive', description: 'Please sign in to save.' });
         return;
       }
+
+      // Warn in dev mode if saving without project_id
+      warnIfMissingProjectId('polen_entries', projectId, user.id, 'BranchMergeDialog - branch merge');
 
       const branchNames = Array.from(selectedBranches).map(id => 
         branches.find(b => b.id === id)?.name || id

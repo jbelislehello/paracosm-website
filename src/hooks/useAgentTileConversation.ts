@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { TILE_CONTENTS, getRowKey, getColKey } from '@/data/tileContents';
+import { warnIfMissingProjectId } from '@/utils/devWarnings';
 
 export interface Message {
   id: string;
@@ -308,6 +309,9 @@ export const useAgentTileConversation = (
         setIsSaving(false);
         return false;
       }
+
+      // Warn in dev mode if saving without project_id
+      warnIfMissingProjectId('polen_entries', projectId, user.id, `tile-agent conversation - tile: ${tile.row}-${tile.col}`);
 
       const tileId = tile.row * 8 + tile.col + 1;
       const tileKey = `${tile.row}-${tile.col}`;
