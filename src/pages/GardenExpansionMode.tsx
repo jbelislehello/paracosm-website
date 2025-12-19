@@ -58,7 +58,7 @@ interface GardenMetrics {
 const GardenExpansionMode = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { projectContext } = useProjects();
+  const { projectContext, activeProjectId } = useProjects();
   const { mode } = useMode();
   
   const state = location.state as {
@@ -712,6 +712,7 @@ const GardenExpansionMode = () => {
           <section className="py-4">
             <SemanticClusteringPanel 
               userId={userId}
+              projectId={state?.projectId || activeProjectId}
               onNoemCreated={() => setPrdRefreshKey(prev => prev + 1)}
             />
           </section>
