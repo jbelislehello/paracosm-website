@@ -705,6 +705,7 @@ const GardenExpansionMode = () => {
             <TagCloudVisualization
               selectedTags={selectedTags}
               onTagSelect={setSelectedTags}
+              projectId={state?.projectId || activeProjectId}
             />
           </section>
 
@@ -719,7 +720,10 @@ const GardenExpansionMode = () => {
 
           {/* Fragment Activity Heatmap */}
           <section className="py-4">
-            <FragmentHeatmap onDateSelect={handleTimelineDateSelect} />
+            <FragmentHeatmap 
+              projectId={state?.projectId || activeProjectId}
+              onDateSelect={handleTimelineDateSelect} 
+            />
           </section>
 
           {/* Journey Timeline */}

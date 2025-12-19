@@ -14,6 +14,7 @@ interface TagCount {
 interface TagCloudVisualizationProps {
   onTagSelect: (tags: string[]) => void;
   selectedTags: string[];
+  projectId?: string | null;
   className?: string;
 }
 
@@ -26,7 +27,7 @@ const SEASON_COLORS: Record<string, string> = {
   ANTHEMS: 'bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-500/40 hover:bg-emerald-500/30',
 };
 
-const TagCloudVisualization = ({ onTagSelect, selectedTags, className }: TagCloudVisualizationProps) => {
+const TagCloudVisualization = ({ onTagSelect, selectedTags, projectId, className }: TagCloudVisualizationProps) => {
   const [tagCounts, setTagCounts] = useState<TagCount[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,10 +37,17 @@ const TagCloudVisualization = ({ onTagSelect, selectedTags, className }: TagClou
         const { data: userData } = await supabase.auth.getUser();
         if (!userData?.user?.id) return;
 
-        const { data: entries, error } = await supabase
+        let query = supabase
           .from('polen_entries')
           .select('tags')
           .eq('user_id', userData.user.id);
+        
+        // Filter by project_id if provided
+        if (projectId) {
+          query = query.eq('project_id', projectId);
+        }
+
+        const { data: entries, error } = await query;
 
         if (error || !entries) {
           console.error('Error fetching tags:', error);
@@ -68,7 +76,7 @@ const TagCloudVisualization = ({ onTagSelect, selectedTags, className }: TagClou
     };
 
     fetchTags();
-  }, []);
+  }, [projectId]);
 
   // Calculate font size based on frequency (log scale for balance)
   const getFontSize = (count: number, maxCount: number, minCount: number) => {
