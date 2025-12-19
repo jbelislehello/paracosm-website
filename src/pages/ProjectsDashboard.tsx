@@ -37,6 +37,7 @@ import {
 } from '@/components/ui/sheet';
 import { SeasonProgressIndicator } from '@/components/calm-magic/SeasonProgressIndicator';
 import { ShareProjectDialog } from '@/components/ShareProjectDialog';
+import { MyInvitations } from '@/components/MyInvitations';
 import { 
   ArrowLeft, 
   Plus, 
@@ -397,6 +398,9 @@ const ProjectsDashboard: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* My Invitations Section */}
+      <MyInvitations />
 
       {/* Projects Grid */}
       <div className="max-w-6xl mx-auto px-4 md:px-6 pb-12">
