@@ -43,6 +43,33 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
+    // Check for subscription override BEFORE Stripe
+    const { data: override } = await supabaseClient
+      .from('subscription_overrides')
+      .select('tier, expires_at')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (override && (!override.expires_at || new Date(override.expires_at) > new Date())) {
+      const tierProductMap: Record<string, string> = {
+        starter: 'prod_TaAJMpFlkbMYfX',
+        growth: 'prod_TaAQ9CwD5qvxuk',
+        scale: 'prod_TaVtrYEo3xOhQ'
+      };
+      
+      logStep("Subscription override found", { tier: override.tier, expires: override.expires_at });
+      
+      return new Response(JSON.stringify({
+        subscribed: true,
+        productId: tierProductMap[override.tier] || null,
+        subscriptionEnd: override.expires_at || null,
+        isOverride: true
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
+    }
+
     const stripe = new Stripe(stripeKey, { apiVersion: "2025-08-27.basil" });
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     
