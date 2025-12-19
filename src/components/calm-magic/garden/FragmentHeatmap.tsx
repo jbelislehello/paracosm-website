@@ -15,6 +15,7 @@ interface DayData {
 }
 
 interface FragmentHeatmapProps {
+  projectId?: string | null;
   onDateSelect?: (date: Date) => void;
   className?: string;
 }
@@ -27,7 +28,7 @@ const SEASON_COLORS: Record<Season, string> = {
   ANTHEMS: 'text-emerald-500',
 };
 
-const FragmentHeatmap: React.FC<FragmentHeatmapProps> = ({ onDateSelect, className }) => {
+const FragmentHeatmap: React.FC<FragmentHeatmapProps> = ({ projectId, onDateSelect, className }) => {
   const [dayData, setDayData] = useState<Record<string, DayData>>({});
   const [isLoading, setIsLoading] = useState(true);
   const [maxCount, setMaxCount] = useState(1);
@@ -39,11 +40,17 @@ const FragmentHeatmap: React.FC<FragmentHeatmapProps> = ({ onDateSelect, classNa
         const { data: userData } = await supabase.auth.getUser();
         if (!userData?.user?.id) return;
 
-        const { data: entries } = await supabase
+        let query = supabase
           .from('polen_entries')
           .select('created_at, season_context')
-          .eq('user_id', userData.user.id)
-          .order('created_at', { ascending: true });
+          .eq('user_id', userData.user.id);
+        
+        // Filter by project_id if provided
+        if (projectId) {
+          query = query.eq('project_id', projectId);
+        }
+        
+        const { data: entries } = await query.order('created_at', { ascending: true });
 
         if (!entries) return;
 
@@ -82,7 +89,7 @@ const FragmentHeatmap: React.FC<FragmentHeatmapProps> = ({ onDateSelect, classNa
     };
 
     fetchData();
-  }, []);
+  }, [projectId]);
 
   // Generate weeks array (last 16 weeks)
   const weeks = useMemo(() => {

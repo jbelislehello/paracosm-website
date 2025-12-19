@@ -100,7 +100,7 @@ const TileDetailPanel = ({
     sendResponse,
     saveConversationAsPolen,
     fetchInitialQuestion
-  } = useAgentTileConversation(selectedTile, currentSeason, isAuthenticated);
+  } = useAgentTileConversation(selectedTile, currentSeason, isAuthenticated, projectId);
 
   const {
     isListening,
@@ -439,6 +439,7 @@ const TileDetailPanel = ({
             selectedTile={selectedTile}
             board={board}
             currentSeason={currentSeason}
+            projectId={projectId}
             onClose={() => setActiveTab('chat')}
             onSavePolen={onSavePolen}
             onExpandToFull={() => setActiveTab('chat')}

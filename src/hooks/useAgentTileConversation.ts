@@ -44,7 +44,8 @@ const generateId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9
 export const useAgentTileConversation = (
   tile: { row: number; col: number } | null,
   season: string,
-  isAuthenticated: boolean
+  isAuthenticated: boolean,
+  projectId?: string | null
 ) => {
   const [allMessages, setAllMessages] = useState<Message[]>([]);
   const [branches, setBranches] = useState<Branch[]>([{ id: 'main', name: 'Main Path', createdAt: new Date() }]);
@@ -107,11 +108,18 @@ export const useAgentTileConversation = (
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data, error } = await supabase
+      let query = supabase
         .from('polen_entries')
         .select('*')
         .eq('user_id', user.id)
-        .contains('tags', [season])
+        .contains('tags', [season]);
+      
+      // Filter by project_id if provided
+      if (projectId) {
+        query = query.eq('project_id', projectId);
+      }
+      
+      const { data, error } = await query
         .order('created_at', { ascending: false })
         .limit(20);
 
@@ -137,7 +145,7 @@ export const useAgentTileConversation = (
     } catch (err) {
       console.error('Error fetching completed tiles:', err);
     }
-  }, [isAuthenticated, season, getTileContent]);
+  }, [isAuthenticated, season, projectId, getTileContent]);
 
   // Fetch initial question when tile changes
   const fetchInitialQuestion = useCallback(async () => {
@@ -313,6 +321,7 @@ export const useAgentTileConversation = (
 
       const { error } = await supabase.from('polen_entries').insert({
         user_id: user.id,
+        project_id: projectId || null,
         content,
         tile_id: tileId,
         fragment_type: 'text',
@@ -349,7 +358,7 @@ export const useAgentTileConversation = (
     } finally {
       setIsSaving(false);
     }
-  }, [tile, isAuthenticated, messages, season, currentQuestion, buildTileContext, branches, currentBranchId]);
+  }, [tile, isAuthenticated, messages, season, currentQuestion, buildTileContext, branches, currentBranchId, projectId]);
 
   // Auto-save is now immediate - this is kept for edge cases
   const scheduleAutoSave = useCallback(() => {

@@ -43,6 +43,7 @@ interface MinimalistTileCardProps {
   selectedTile: { row: number; col: number };
   board: string;
   currentSeason?: string;
+  projectId?: string | null;
   onClose: () => void;
   onSavePolen: (content: string, tileId: number) => Promise<void>;
   onExpandToFull?: () => void;
@@ -74,6 +75,7 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
   selectedTile,
   board,
   currentSeason,
+  projectId,
   onClose,
   onSavePolen,
   onExpandToFull,
@@ -110,7 +112,8 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
   } = useAgentTileConversation(
     selectedTile,
     currentSeason || 'POLLENS',
-    true
+    true,
+    projectId
   );
 
   const latestQuestion = messages.filter(m => m.role === 'assistant').pop()?.content || 
@@ -518,6 +521,7 @@ export const MinimalistTileCard: React.FC<MinimalistTileCardProps> = ({
         tileId={tileId}
         tileName={tileContent?.name || 'Unknown Tile'}
         season={currentSeason || 'POLLENS'}
+        projectId={projectId}
         onMergeComplete={() => {
           toast({
             title: "✨ Merge complete",

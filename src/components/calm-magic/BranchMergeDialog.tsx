@@ -19,6 +19,7 @@ interface BranchMergeDialogProps {
   tileId: number;
   tileName: string;
   season: string;
+  projectId?: string | null;
   onMergeComplete: () => void;
 }
 
@@ -30,6 +31,7 @@ export const BranchMergeDialog: React.FC<BranchMergeDialogProps> = ({
   tileId,
   tileName,
   season,
+  projectId,
   onMergeComplete
 }) => {
   const [selectedBranches, setSelectedBranches] = useState<Set<string>>(new Set());
@@ -149,6 +151,7 @@ export const BranchMergeDialog: React.FC<BranchMergeDialogProps> = ({
 
       const { error } = await supabase.from('polen_entries').insert({
         user_id: user.id,
+        project_id: projectId || null,
         tile_id: tileId,
         content: mergedSummary,
         fragment_type: 'text',

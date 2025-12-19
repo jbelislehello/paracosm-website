@@ -69,26 +69,32 @@ function tileIdToRowCol(tileId: number): { row: number; col: number } {
   return { row, col };
 }
 
-export function useWeavingConnections(userId: string | null, minStrength: number = 0.25) {
+export function useWeavingConnections(userId: string | null, projectId: string | null = null, minStrength: number = 0.25) {
   const [threads, setThreads] = useState<WeavingThread[]>([]);
   const [newThreads, setNewThreads] = useState<WeavingThread[]>([]);
   const [polenEntries, setPolenEntries] = useState<PolenEntry[]>([]);
 
-  // Fetch all polen entries for this user
+  // Fetch all polen entries for this user and project
   const fetchPolenEntries = useCallback(async () => {
     if (!userId) return;
     
-    const { data, error } = await supabase
+    let query = supabase
       .from('polen_entries')
       .select('id, tile_id, tags, content, created_at')
       .eq('user_id', userId)
-      .not('tile_id', 'is', null)
-      .order('created_at', { ascending: true });
+      .not('tile_id', 'is', null);
+    
+    // Filter by project_id if provided
+    if (projectId) {
+      query = query.eq('project_id', projectId);
+    }
+    
+    const { data, error } = await query.order('created_at', { ascending: true });
     
     if (!error && data) {
       setPolenEntries(data);
     }
-  }, [userId]);
+  }, [userId, projectId]);
 
   // Calculate all connections between entries
   const calculateConnections = useCallback((entries: PolenEntry[]): WeavingThread[] => {
@@ -158,7 +164,7 @@ export function useWeavingConnections(userId: string | null, minStrength: number
     if (!userId) return;
 
     const channel = supabase
-      .channel('polen-weaving')
+      .channel(`polen-weaving-${projectId || 'global'}`)
       .on(
         'postgres_changes',
         {
@@ -168,7 +174,10 @@ export function useWeavingConnections(userId: string | null, minStrength: number
           filter: `user_id=eq.${userId}`
         },
         (payload) => {
-          const newEntry = payload.new as PolenEntry;
+          const newEntry = payload.new as PolenEntry & { project_id?: string };
+          // Only process if entry belongs to current project
+          if (projectId && newEntry.project_id !== projectId) return;
+          
           if (newEntry.tile_id) {
             // Add new entry and recalculate
             setPolenEntries(prev => {
@@ -217,7 +226,7 @@ export function useWeavingConnections(userId: string | null, minStrength: number
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [userId, minStrength]);
+  }, [userId, projectId, minStrength]);
 
   // Combine existing and new threads
   const allThreads = useMemo(() => {

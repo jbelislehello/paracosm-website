@@ -61,15 +61,15 @@ const BOARD_TO_SEASON: Record<string, ManifoldSeason> = {
   'FREE': 'ANTHEMS'
 };
 
-export function useManifoldData(): UseManifoldDataReturn {
+export function useManifoldData(projectId?: string | null): UseManifoldDataReturn {
   const [entries, setEntries] = useState<ManifoldEntry[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      // Fetch all POLEN entries with tile info
-      const { data: polenData, error } = await supabase
+      // Build query with project_id filter if provided
+      let query = supabase
         .from('polen_entries')
         .select(`
           id,
@@ -83,8 +83,14 @@ export function useManifoldData(): UseManifoldDataReturn {
             col,
             board
           )
-        `)
-        .order('created_at', { ascending: false });
+        `);
+      
+      // Filter by project_id if provided
+      if (projectId) {
+        query = query.eq('project_id', projectId);
+      }
+      
+      const { data: polenData, error } = await query.order('created_at', { ascending: false });
 
       if (error) {
         console.error('Error fetching manifold data:', error);
@@ -128,7 +134,7 @@ export function useManifoldData(): UseManifoldDataReturn {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [projectId]);
 
   // Calculate density map and aggregate data points
   const { dataPoints, densityMap, maxDensity } = useMemo(() => {
