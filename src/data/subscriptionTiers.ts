@@ -98,6 +98,26 @@ export const getProjectLimitDisplay = (tier: string | null, currentCount: number
   return `${currentCount} of ${limit} project${limit !== 1 ? 's' : ''}`;
 };
 
+// Get max collaborators allowed (excluding owner)
+export const getCollaboratorLimit = (tier: string | null): number => {
+  if (!tier) return 0; // Free tier: no collaborators
+  const users = SUBSCRIPTION_TIERS[tier]?.users ?? 1;
+  return Math.max(0, users - 1); // Subtract 1 for owner
+};
+
+// Check if user can add more collaborators
+export const canAddCollaborator = (tier: string | null, currentCollaboratorCount: number): boolean => {
+  const limit = getCollaboratorLimit(tier);
+  return currentCollaboratorCount < limit;
+};
+
+// Display string for collaborator limits
+export const getCollaboratorLimitDisplay = (tier: string | null, currentCount: number): string => {
+  const limit = getCollaboratorLimit(tier);
+  if (limit === 0) return 'Upgrade to add collaborators';
+  return `${currentCount} of ${limit} collaborator${limit !== 1 ? 's' : ''}`;
+};
+
 export const getNextUpgradeTier = (currentTier: string | null): string | null => {
   if (!currentTier || currentTier === 'starter') return 'growth';
   if (currentTier === 'growth') return 'scale';

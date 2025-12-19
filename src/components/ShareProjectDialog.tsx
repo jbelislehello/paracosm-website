@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,10 +7,13 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Progress } from '@/components/ui/progress';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Share2, UserPlus, Trash2, Loader2, Users, Mail, Clock } from 'lucide-react';
+import { Share2, UserPlus, Trash2, Loader2, Users, Mail, Clock, Crown } from 'lucide-react';
 import { z } from 'zod';
+import { useSubscription } from '@/hooks/useSubscription';
+import { getCollaboratorLimit, canAddCollaborator, getCollaboratorLimitDisplay } from '@/data/subscriptionTiers';
 
 interface CollaboratorProfile {
   username: string | null;
@@ -48,6 +52,8 @@ export const ShareProjectDialog: React.FC<ShareProjectDialogProps> = ({
   projectId,
   projectName,
 }) => {
+  const navigate = useNavigate();
+  const { tier } = useSubscription();
   const [input, setInput] = useState('');
   const [role, setRole] = useState<'viewer' | 'editor' | 'admin'>('editor');
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
@@ -55,6 +61,12 @@ export const ShareProjectDialog: React.FC<ShareProjectDialogProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [inputError, setInputError] = useState('');
+
+  // Calculate collaborator limits
+  const collaboratorLimit = getCollaboratorLimit(tier);
+  const totalCollaborators = collaborators.length + pendingInvitations.length;
+  const canAdd = canAddCollaborator(tier, totalCollaborators);
+  const limitDisplay = getCollaboratorLimitDisplay(tier, totalCollaborators);
 
   // Fetch existing collaborators and pending invitations
   useEffect(() => {
@@ -131,6 +143,12 @@ export const ShareProjectDialog: React.FC<ShareProjectDialogProps> = ({
   const handleAddCollaborator = async () => {
     const trimmedInput = input.trim();
     if (!trimmedInput) return;
+
+    // Check limit before proceeding
+    if (!canAddCollaborator(tier, collaborators.length + pendingInvitations.length)) {
+      toast.error('You have reached your collaborator limit. Please upgrade your plan.');
+      return;
+    }
 
     setInputError('');
     setIsAdding(true);
@@ -355,7 +373,7 @@ export const ShareProjectDialog: React.FC<ShareProjectDialogProps> = ({
             </div>
             <Button 
               onClick={handleAddCollaborator} 
-              disabled={!input.trim() || isAdding}
+              disabled={!input.trim() || isAdding || !canAdd}
               className="w-full"
             >
               {isAdding ? (
@@ -365,6 +383,40 @@ export const ShareProjectDialog: React.FC<ShareProjectDialogProps> = ({
               )}
               Add Collaborator
             </Button>
+
+            {/* Collaborator limit display */}
+            <div className="flex items-center justify-between text-sm pt-2">
+              <span className="text-muted-foreground">{limitDisplay}</span>
+              {collaboratorLimit > 0 && (
+                <Progress 
+                  value={(totalCollaborators / collaboratorLimit) * 100} 
+                  className="w-24 h-2" 
+                />
+              )}
+            </div>
+
+            {/* Upgrade prompt when at limit */}
+            {!canAdd && (
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
+                <Crown className="w-4 h-4 text-amber-600 shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium">Collaborator limit reached</p>
+                  <p className="text-xs text-muted-foreground">
+                    Upgrade your plan to add more team members
+                  </p>
+                </div>
+                <Button 
+                  size="sm" 
+                  variant="outline" 
+                  onClick={() => {
+                    onOpenChange(false);
+                    navigate('/subscription');
+                  }}
+                >
+                  Upgrade
+                </Button>
+              </div>
+            )}
           </div>
 
           {/* Pending Invitations */}
