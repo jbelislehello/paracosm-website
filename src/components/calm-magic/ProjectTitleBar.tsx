@@ -7,6 +7,7 @@ import { Pencil, Check, X, FolderOpen } from 'lucide-react';
 import { Project } from '@/hooks/useProjectContext';
 import { getGardenByType } from '@/data/gardens';
 import UserProfileMenu from '@/components/UserProfileMenu';
+import SubscriptionStatusIndicator from '@/components/SubscriptionStatusIndicator';
 
 interface ProjectTitleBarProps {
   project: Project;
@@ -112,6 +113,7 @@ const ProjectTitleBar: React.FC<ProjectTitleBarProps> = ({
         </div>
         
         <div className="flex items-center gap-2 shrink-0">
+          <SubscriptionStatusIndicator />
           <Button
             variant="ghost"
             size="sm"
