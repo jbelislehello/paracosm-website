@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { warnIfMissingProjectId } from '@/utils/devWarnings';
 import type { Database } from '@/integrations/supabase/types';
 
 type Board = Database['public']['Enums']['board'];
@@ -460,6 +461,9 @@ export const useTileMatrixPersistence = (board: Board = 'LOVE', projectId?: stri
 
     try {
       setSaving(true);
+      
+      // Warn in dev mode if saving without project_id
+      warnIfMissingProjectId('polen_entries', projectId, user.id, `savePolenEntry - tile: ${tileId}`);
       
       // Auto-detect season from tags if not provided
       const detectedSeason = seasonContext || tags.find(t => 
