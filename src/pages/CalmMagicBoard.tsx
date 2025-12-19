@@ -271,7 +271,7 @@ const CalmMagicBoard = () => {
   } = useTileMatrixPersistence(todayTile?.board || SEASON_TO_BOARD[currentSeason], activeProjectId);
 
   // Weaving connections - semantic threads between tiles
-  const { threads: weavingThreads } = useWeavingConnections(user?.id);
+  const { threads: weavingThreads } = useWeavingConnections(user?.id, activeProjectId);
 
   // Extract density map from polen entries per tile (shared across components)
   const densityMap = useMemo(() => {

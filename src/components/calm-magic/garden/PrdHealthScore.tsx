@@ -10,6 +10,7 @@ type Season = 'POLLENS' | 'NOEMS' | 'POEMS' | 'TOTEMS' | 'ANTHEMS';
 
 interface PrdHealthScoreProps {
   prdData: any;
+  projectId?: string | null;
   className?: string;
 }
 
@@ -47,7 +48,7 @@ const SEASON_LABELS: Record<Season, { label: string; icon: string }> = {
   ANTHEMS: { label: 'Anthems', icon: '🎵' },
 };
 
-const PrdHealthScore: React.FC<PrdHealthScoreProps> = ({ prdData, className }) => {
+const PrdHealthScore: React.FC<PrdHealthScoreProps> = ({ prdData, projectId, className }) => {
   const [fragmentCount, setFragmentCount] = useState(0);
   const [uniqueTiles, setUniqueTiles] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -59,10 +60,17 @@ const PrdHealthScore: React.FC<PrdHealthScoreProps> = ({ prdData, className }) =
         const { data: userData } = await supabase.auth.getUser();
         if (!userData?.user?.id) return;
 
-        const { data: entries } = await supabase
+        let query = supabase
           .from('polen_entries')
           .select('id, tile_id')
           .eq('user_id', userData.user.id);
+        
+        // Filter by project_id if provided
+        if (projectId) {
+          query = query.eq('project_id', projectId);
+        }
+        
+        const { data: entries } = await query;
 
         if (entries) {
           setFragmentCount(entries.length);
@@ -77,7 +85,7 @@ const PrdHealthScore: React.FC<PrdHealthScoreProps> = ({ prdData, className }) =
     };
 
     fetchStats();
-  }, []);
+  }, [projectId]);
 
   // Calculate layer statuses
   const layerStatuses = useMemo((): LayerStatus[] => {

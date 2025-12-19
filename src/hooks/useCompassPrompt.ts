@@ -9,6 +9,7 @@ interface UseCompassPromptOptions {
   journeyMode: JourneyMode;
   tile: TileContent;
   cycleId?: string;
+  projectId?: string | null;
   onSaveSuccess?: () => void;
 }
 
@@ -23,7 +24,7 @@ interface CompassPromptResult {
   savePromptAsPolen: () => Promise<void>;
 }
 
-export function useCompassPrompt({ compass, journeyMode, tile, cycleId, onSaveSuccess }: UseCompassPromptOptions): CompassPromptResult {
+export function useCompassPrompt({ compass, journeyMode, tile, cycleId, projectId, onSaveSuccess }: UseCompassPromptOptions): CompassPromptResult {
   const [prompt, setPrompt] = useState<string | null>(null);
   const [currentStep, setCurrentStep] = useState<'glitch' | 'drift' | 'tune' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -102,6 +103,7 @@ export function useCompassPrompt({ compass, journeyMode, tile, cycleId, onSaveSu
         .insert({
           user_id: userData.user.id,
           cycle_id: cycleId || null,
+          project_id: projectId || null,
           tile_id: tile.id,
           content,
           fragment_type: 'text',
@@ -130,7 +132,7 @@ export function useCompassPrompt({ compass, journeyMode, tile, cycleId, onSaveSu
     } finally {
       setIsSaving(false);
     }
-  }, [prompt, currentStep, compass, journeyMode, tile, cycleId, toast, onSaveSuccess]);
+  }, [prompt, currentStep, compass, journeyMode, tile, cycleId, projectId, toast, onSaveSuccess]);
 
   return { 
     prompt, 
