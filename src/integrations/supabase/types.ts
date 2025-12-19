@@ -377,6 +377,7 @@ export type Database = {
           id: string
           insight: string
           maturity: Database["public"]["Enums"]["noem_maturity"]
+          project_id: string | null
           title: string
           topology_x: number | null
           topology_y: number | null
@@ -391,6 +392,7 @@ export type Database = {
           id?: string
           insight: string
           maturity?: Database["public"]["Enums"]["noem_maturity"]
+          project_id?: string | null
           title: string
           topology_x?: number | null
           topology_y?: number | null
@@ -405,6 +407,7 @@ export type Database = {
           id?: string
           insight?: string
           maturity?: Database["public"]["Enums"]["noem_maturity"]
+          project_id?: string | null
           title?: string
           topology_x?: number | null
           topology_y?: number | null
@@ -419,6 +422,13 @@ export type Database = {
             referencedRelation: "journal_cycles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "noems_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
         ]
       }
       poems: {
@@ -431,6 +441,7 @@ export type Database = {
           narrative: string
           poem_type: Database["public"]["Enums"]["poem_type"]
           prd_id: string | null
+          project_id: string | null
           tech_stack_hints: string[] | null
           title: string
           updated_at: string
@@ -445,6 +456,7 @@ export type Database = {
           narrative: string
           poem_type?: Database["public"]["Enums"]["poem_type"]
           prd_id?: string | null
+          project_id?: string | null
           tech_stack_hints?: string[] | null
           title: string
           updated_at?: string
@@ -459,6 +471,7 @@ export type Database = {
           narrative?: string
           poem_type?: Database["public"]["Enums"]["poem_type"]
           prd_id?: string | null
+          project_id?: string | null
           tech_stack_hints?: string[] | null
           title?: string
           updated_at?: string
@@ -477,6 +490,13 @@ export type Database = {
             columns: ["prd_id"]
             isOneToOne: false
             referencedRelation: "prds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "poems_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]

@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { warnIfMissingProjectId } from '@/utils/devWarnings';
 
 export interface ClusterSuggestion {
   id: string;
@@ -29,7 +30,7 @@ interface UseSemanticClusteringResult {
   crystallizedIds: Set<string>;
 }
 
-export function useSemanticClustering(userId: string | null): UseSemanticClusteringResult {
+export function useSemanticClustering(userId: string | null, projectId?: string | null): UseSemanticClusteringResult {
   const [clusters, setClusters] = useState<ClusterSuggestion[]>([]);
   const [fragments, setFragments] = useState<Fragment[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -46,13 +47,19 @@ export function useSemanticClustering(userId: string | null): UseSemanticCluster
     setError(null);
 
     try {
-      // Fetch user's POLEN entries
-      const { data: polenData, error: fetchError } = await supabase
+      // Fetch user's POLEN entries for this project
+      let query = supabase
         .from('polen_entries')
         .select('id, content, tags, season_context, created_at')
         .eq('user_id', userId)
         .order('created_at', { ascending: false })
         .limit(100);
+
+      if (projectId) {
+        query = query.eq('project_id', projectId);
+      }
+
+      const { data: polenData, error: fetchError } = await query;
 
       if (fetchError) throw fetchError;
 
@@ -90,7 +97,7 @@ export function useSemanticClustering(userId: string | null): UseSemanticCluster
     } finally {
       setIsAnalyzing(false);
     }
-  }, [userId]);
+  }, [userId, projectId]);
 
   const crystallizeNoem = useCallback(async (cluster: ClusterSuggestion): Promise<boolean> => {
     if (!userId) {
@@ -98,12 +105,15 @@ export function useSemanticClustering(userId: string | null): UseSemanticCluster
       return false;
     }
 
+    warnIfMissingProjectId('noems', projectId, userId, 'useSemanticClustering.crystallizeNoem');
+
     try {
-      // Create NOEM in database
+      // Create NOEM in database with project_id
       const { data: noem, error: insertError } = await supabase
         .from('noems')
         .insert({
           user_id: userId,
+          project_id: projectId || null,
           title: cluster.theme,
           insight: cluster.insight,
           connected_polen_ids: cluster.fragmentIds,
@@ -125,7 +135,7 @@ export function useSemanticClustering(userId: string | null): UseSemanticCluster
       toast.error(message);
       return false;
     }
-  }, [userId]);
+  }, [userId, projectId]);
 
   return {
     clusters,

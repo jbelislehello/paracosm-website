@@ -9,10 +9,11 @@ import { NoemSuggestionCard } from './NoemSuggestionCard';
 
 interface SemanticClusteringPanelProps {
   userId: string | null;
+  projectId?: string | null;
   onNoemCreated?: () => void;
 }
 
-export function SemanticClusteringPanel({ userId, onNoemCreated }: SemanticClusteringPanelProps) {
+export function SemanticClusteringPanel({ userId, projectId, onNoemCreated }: SemanticClusteringPanelProps) {
   const {
     clusters,
     fragments,
@@ -21,7 +22,7 @@ export function SemanticClusteringPanel({ userId, onNoemCreated }: SemanticClust
     analyzeClusters,
     crystallizeNoem,
     crystallizedIds
-  } = useSemanticClustering(userId);
+  } = useSemanticClustering(userId, projectId);
 
   const [selectedClusterId, setSelectedClusterId] = useState<string | null>(null);
   const [hasAnalyzed, setHasAnalyzed] = useState(false);
