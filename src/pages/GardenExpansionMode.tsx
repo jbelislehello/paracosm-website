@@ -729,7 +729,10 @@ const GardenExpansionMode = () => {
           {/* Journey Timeline */}
           <section className="py-8">
             <Card className="p-6 bg-background/50 backdrop-blur-sm border-border/50">
-              <JourneyTimeline onDateSelect={handleTimelineDateSelect} />
+              <JourneyTimeline 
+                projectId={state?.projectId || activeProjectId}
+                onDateSelect={handleTimelineDateSelect} 
+              />
             </Card>
           </section>
 
