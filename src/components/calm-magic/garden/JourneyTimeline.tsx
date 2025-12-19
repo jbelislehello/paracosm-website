@@ -16,6 +16,7 @@ interface DailyActivity {
 }
 
 interface JourneyTimelineProps {
+  projectId?: string | null;
   onDateSelect?: (date: Date) => void;
   className?: string;
 }
@@ -30,7 +31,7 @@ const SEASON_COLORS: Record<Season, string> = {
 
 const SEASON_ORDER: Season[] = ['POLLENS', 'NOEMS', 'POEMS', 'TOTEMS', 'ANTHEMS'];
 
-const JourneyTimeline = ({ onDateSelect, className }: JourneyTimelineProps) => {
+const JourneyTimeline = ({ projectId, onDateSelect, className }: JourneyTimelineProps) => {
   const [dailyData, setDailyData] = useState<DailyActivity[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -41,11 +42,17 @@ const JourneyTimeline = ({ onDateSelect, className }: JourneyTimelineProps) => {
         const { data: userData } = await supabase.auth.getUser();
         if (!userData?.user?.id) return;
 
-        const { data: entries, error } = await supabase
+        let query = supabase
           .from('polen_entries')
           .select('created_at, season_context')
-          .eq('user_id', userData.user.id)
-          .order('created_at', { ascending: true });
+          .eq('user_id', userData.user.id);
+
+        // Filter by project_id if provided
+        if (projectId) {
+          query = query.eq('project_id', projectId);
+        }
+
+        const { data: entries, error } = await query.order('created_at', { ascending: true });
 
         if (error || !entries || entries.length === 0) {
           setLoading(false);
@@ -90,7 +97,7 @@ const JourneyTimeline = ({ onDateSelect, className }: JourneyTimelineProps) => {
     };
 
     fetchTimeline();
-  }, []);
+  }, [projectId]);
 
   const maxDailyCount = useMemo(() => {
     return Math.max(...dailyData.map(d => d.total), 1);
