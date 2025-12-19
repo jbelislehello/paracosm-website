@@ -20,7 +20,9 @@ import {
   User,
   Sparkles,
   Activity,
+  Shield,
 } from 'lucide-react';
+import { useAdminStatus } from '@/hooks/useAdminStatus';
 import { useUserSession } from '@/hooks/useUserSession';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useProjectContext, getLocalStorageProjects, getBackupProjects } from '@/hooks/useProjectContext';
@@ -49,6 +51,7 @@ const Settings: React.FC = () => {
   const navigate = useNavigate();
   const { user, profile, isLoading: userLoading } = useUserSession();
   const { tier, isSubscribed, isLoading: subLoading } = useSubscription();
+  const { isAdmin } = useAdminStatus();
   const { 
     projects, 
     localStorageCount, 
@@ -435,6 +438,25 @@ const Settings: React.FC = () => {
               )}
             </CardContent>
           </Card>
+
+          {/* Admin Tools */}
+          {isAdmin && (
+            <Card className="border-primary/20 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Shield className="w-5 h-5" />
+                  Admin Tools
+                </CardTitle>
+                <CardDescription>Manage platform settings and users</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button onClick={() => navigate('/admin/subscriptions')} variant="outline" className="w-full">
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Manage Subscription Overrides
+                </Button>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Debug Console */}
           <Card>

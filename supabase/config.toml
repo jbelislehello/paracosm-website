@@ -56,3 +56,9 @@ verify_jwt = false
 
 [functions.lookup-user-by-email]
 verify_jwt = true
+
+[functions.admin-list-override-users]
+verify_jwt = true
+
+[functions.admin-manage-override]
+verify_jwt = true
