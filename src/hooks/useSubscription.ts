@@ -28,9 +28,18 @@ export const useSubscription = () => {
     }
 
     try {
+      // Refresh session to ensure we have a valid token
+      const { data: { session: freshSession }, error: refreshError } = await supabase.auth.getSession();
+      
+      if (refreshError || !freshSession?.access_token) {
+        console.error('Session refresh failed:', refreshError);
+        setState(prev => ({ ...prev, isLoading: false, isSubscribed: false, tier: null }));
+        return;
+      }
+
       const { data, error } = await supabase.functions.invoke('check-subscription', {
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${freshSession.access_token}`,
         },
       });
 
