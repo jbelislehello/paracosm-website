@@ -211,14 +211,14 @@ export const useExpansionJournal = (projectId?: string | null) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
-      // Warn in dev mode - noems table doesn't have project_id column yet
-      warnIfMissingProjectId('noems', null, user.id, 'useExpansionJournal.saveNoem - noems table needs project_id column');
+      warnIfMissingProjectId('noems', projectId, user.id, 'useExpansionJournal.saveNoem');
 
       const { data, error } = await supabase
         .from('noems')
         .insert({
           user_id: user.id,
           cycle_id: currentCycle?.id,
+          project_id: projectId || null,
           ...noem,
           topology_x: noem.topology_position?.x,
           topology_y: noem.topology_position?.y
@@ -253,14 +253,14 @@ export const useExpansionJournal = (projectId?: string | null) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
-      // Warn in dev mode - poems table doesn't have project_id column yet
-      warnIfMissingProjectId('poems', null, user.id, 'useExpansionJournal.savePoem - poems table needs project_id column');
+      warnIfMissingProjectId('poems', projectId, user.id, 'useExpansionJournal.savePoem');
 
       const { data, error } = await supabase
         .from('poems')
         .insert({
           user_id: user.id,
           cycle_id: currentCycle?.id,
+          project_id: projectId || null,
           ...poem
         })
         .select()
@@ -313,12 +313,19 @@ export const useExpansionJournal = (projectId?: string | null) => {
 
   const fetchNoems = async () => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
       let query = supabase
         .from('noems')
         .select('*')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
       
-      // Note: noems table doesn't have project_id yet, but filtering by cycle which is project-scoped
+      if (projectId) {
+        query = query.eq('project_id', projectId);
+      }
+
       const { data, error } = await query;
 
       if (error) throw error;
@@ -330,10 +337,20 @@ export const useExpansionJournal = (projectId?: string | null) => {
 
   const fetchPoems = async () => {
     try {
-      const { data, error } = await supabase
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      let query = supabase
         .from('poems')
         .select('*')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false });
+
+      if (projectId) {
+        query = query.eq('project_id', projectId);
+      }
+
+      const { data, error } = await query;
 
       if (error) throw error;
       setPoems(data || []);
