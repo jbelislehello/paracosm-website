@@ -57,7 +57,8 @@ import {
   Users,
   RefreshCw,
   AlertTriangle,
-  Database
+  Database,
+  Crown
 } from 'lucide-react';
 import { useProjects, Project } from '@/context/ProjectsContext';
 import { useUserSession } from '@/hooks/useUserSession';
@@ -96,6 +97,7 @@ const ProjectsDashboard: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [gardenFilter, setGardenFilter] = useState<GardenType | 'all'>('all');
   const [modeFilter, setModeFilter] = useState<'all' | 'personal' | 'professional'>('all');
+  const [ownershipFilter, setOwnershipFilter] = useState<'all' | 'owned' | 'shared'>('all');
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null);
@@ -118,14 +120,17 @@ const ProjectsDashboard: React.FC = () => {
   const canCreate = canCreateProject(tier, projectCount);
   const projectLimit = getProjectLimit(tier);
   const limitDisplay = getProjectLimitDisplay(tier, projectCount);
-  const hasActiveFilters = gardenFilter !== 'all' || modeFilter !== 'all' || searchQuery !== '';
+  const hasActiveFilters = gardenFilter !== 'all' || modeFilter !== 'all' || ownershipFilter !== 'all' || searchQuery !== '';
 
   // Filter projects
   const filteredProjects = projects.filter((project) => {
     const matchesSearch = project.projectName.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesGarden = gardenFilter === 'all' || project.garden === gardenFilter;
     const matchesMode = modeFilter === 'all' || project.mode === modeFilter;
-    return matchesSearch && matchesGarden && matchesMode;
+    const matchesOwnership = ownershipFilter === 'all' || 
+      (ownershipFilter === 'owned' && !project.isShared) ||
+      (ownershipFilter === 'shared' && project.isShared);
+    return matchesSearch && matchesGarden && matchesMode && matchesOwnership;
   });
 
   // Sort by most recently updated
@@ -284,6 +289,27 @@ const ProjectsDashboard: React.FC = () => {
               <SelectItem value="professional">Professional</SelectItem>
             </SelectContent>
           </Select>
+          
+          <Select value={ownershipFilter} onValueChange={(v) => setOwnershipFilter(v as 'all' | 'owned' | 'shared')}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="All Projects" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Projects</SelectItem>
+              <SelectItem value="owned">
+                <span className="flex items-center gap-2">
+                  <Crown className="w-4 h-4" />
+                  My Projects
+                </span>
+              </SelectItem>
+              <SelectItem value="shared">
+                <span className="flex items-center gap-2">
+                  <Users className="w-4 h-4" />
+                  Shared with Me
+                </span>
+              </SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
@@ -320,6 +346,7 @@ const ProjectsDashboard: React.FC = () => {
                       onClick={() => {
                         setGardenFilter('all');
                         setModeFilter('all');
+                        setOwnershipFilter('all');
                         setSearchQuery('');
                       }}
                       className="text-muted-foreground"
@@ -365,6 +392,20 @@ const ProjectsDashboard: React.FC = () => {
                   </Select>
                 </div>
                 
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Ownership</label>
+                  <Select value={ownershipFilter} onValueChange={(v) => setOwnershipFilter(v as 'all' | 'owned' | 'shared')}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="All Projects" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Projects</SelectItem>
+                      <SelectItem value="owned">My Projects</SelectItem>
+                      <SelectItem value="shared">Shared with Me</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
                 <Button 
                   className="w-full mt-4" 
                   onClick={() => setShowFilters(false)}
@@ -391,6 +432,18 @@ const ProjectsDashboard: React.FC = () => {
               <Badge variant="secondary" className="gap-1 capitalize">
                 {modeFilter}
                 <button onClick={() => setModeFilter('all')} className="ml-1">
+                  <X className="w-3 h-3" />
+                </button>
+              </Badge>
+            )}
+            {ownershipFilter !== 'all' && (
+              <Badge variant="secondary" className="gap-1">
+                {ownershipFilter === 'owned' ? (
+                  <><Crown className="w-3 h-3" /> My Projects</>
+                ) : (
+                  <><Users className="w-3 h-3" /> Shared</>
+                )}
+                <button onClick={() => setOwnershipFilter('all')} className="ml-1">
                   <X className="w-3 h-3" />
                 </button>
               </Badge>
