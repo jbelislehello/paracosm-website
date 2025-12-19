@@ -128,11 +128,12 @@ async function recoverProgressFromPolen(userId: string, projectId: string): Prom
   const seenTiles = new Set<string>();
   
   try {
-    // Fetch all POLEN entries for the user, ordered by creation date
+    // Fetch POLEN entries for this specific project, ordered by creation date
     const { data: polenEntries, error } = await supabase
       .from('polen_entries')
       .select('tile_id, season_context, created_at')
       .eq('user_id', userId)
+      .eq('project_id', projectId)
       .not('tile_id', 'is', null)
       .order('created_at', { ascending: true });
 
