@@ -4,10 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Zap, Plus, Image, Quote, Link, Mic, Camera, Brain } from 'lucide-react';
+import { Slider } from '@/components/ui/slider';
+import { Zap, Plus, Image, Quote, Link, Mic, Camera, Brain, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 import { useExpansionJournal } from '@/hooks/useExpansionJournal';
 import { KnowledgeImageExtractor } from '@/components/calm-magic/KnowledgeImageExtractor';
 import { KnowledgeExtraction } from '@/types/knowledge';
+
+type ChargeType = 'expanding' | 'contracting' | 'neutral';
 
 interface PolenCollectorProps {
   selectedTileId?: number;
@@ -38,6 +41,8 @@ export const PolenCollector: React.FC<PolenCollectorProps> = ({
   const [sourceReference, setSourceReference] = useState('');
   const [tags, setTags] = useState('');
   const [showKnowledgeExtractor, setShowKnowledgeExtractor] = useState(false);
+  const [intensity, setIntensity] = useState(50);
+  const [charge, setCharge] = useState<ChargeType>('neutral');
 
   const handleKnowledgeExtracted = async (
     extractedContent: string, 
@@ -63,12 +68,16 @@ export const PolenCollector: React.FC<PolenCollectorProps> = ({
       fragment_type: dbFragmentType,
       source_reference: sourceReference || undefined,
       tile_id: selectedTileId,
-      tags: tags.split(',').map(t => t.trim()).filter(Boolean)
+      tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+      intensity,
+      charge
     });
 
     setContent('');
     setSourceReference('');
     setTags('');
+    setIntensity(50);
+    setCharge('neutral');
     onPolenSaved?.();
   };
 
@@ -141,6 +150,63 @@ export const PolenCollector: React.FC<PolenCollectorProps> = ({
             onChange={(e) => setTags(e.target.value)}
             className="bg-background/50 border-yellow-500/30"
           />
+
+          {/* Intensity Slider */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-yellow-200/80">Intensity</span>
+              <span className="text-yellow-300 font-medium">{intensity}%</span>
+            </div>
+            <Slider
+              value={[intensity]}
+              onValueChange={(value) => setIntensity(value[0])}
+              min={0}
+              max={100}
+              step={5}
+              className="[&_[role=slider]]:bg-yellow-500 [&_[role=slider]]:border-yellow-600"
+            />
+            <div className="flex justify-between text-xs text-muted-foreground">
+              <span>Subtle</span>
+              <span>Significant</span>
+            </div>
+          </div>
+
+          {/* Charge Selector */}
+          <div className="space-y-2">
+            <span className="text-sm text-yellow-200/80">Charge</span>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant={charge === 'expanding' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setCharge('expanding')}
+                className={charge === 'expanding' ? 'bg-green-600 hover:bg-green-700' : 'border-green-500/30 text-green-400 hover:bg-green-950/30'}
+              >
+                <TrendingUp className="h-4 w-4 mr-1" />
+                Expanding
+              </Button>
+              <Button
+                type="button"
+                variant={charge === 'neutral' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setCharge('neutral')}
+                className={charge === 'neutral' ? 'bg-yellow-600 hover:bg-yellow-700' : 'border-yellow-500/30'}
+              >
+                <Minus className="h-4 w-4 mr-1" />
+                Neutral
+              </Button>
+              <Button
+                type="button"
+                variant={charge === 'contracting' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setCharge('contracting')}
+                className={charge === 'contracting' ? 'bg-red-600 hover:bg-red-700' : 'border-red-500/30 text-red-400 hover:bg-red-950/30'}
+              >
+                <TrendingDown className="h-4 w-4 mr-1" />
+                Contracting
+              </Button>
+            </div>
+          </div>
 
           {/* Tile Info */}
           {selectedTileId && (

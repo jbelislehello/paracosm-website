@@ -156,6 +156,8 @@ export interface PolenEntry {
   hexagram_number?: number;
   tzolkin_kin?: number;
   tags?: string[];
+  intensity?: number; // 0-100, importance/significance level
+  charge?: 'expanding' | 'contracting' | 'neutral'; // emotional/energetic direction
   created_at?: string;
 }
 
