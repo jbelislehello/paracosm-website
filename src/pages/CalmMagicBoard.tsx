@@ -66,6 +66,7 @@ import ProjectTitleBar from '@/components/calm-magic/ProjectTitleBar';
 import PatternJournal from '@/components/calm-magic/PatternJournal';
 import { DetectedPattern, PatternHistoryEntry } from '@/utils/patternDetection';
 import { TopologiesTab } from '@/components/calm-magic/topologies/TopologiesTab';
+import { ConstellationTab } from '@/components/calm-magic/constellation/ConstellationTab';
 import { FragmentMigrationDialog } from '@/components/calm-magic/FragmentMigrationDialog';
 import ForcePrdDialog from '@/components/prd-generator/ForcePrdDialog';
 import PrdGeneratorWizard from '@/components/prd-generator/PrdGeneratorWizard';
@@ -123,7 +124,7 @@ const COMPASS_MAP: Record<string, CompassType> = {
   'Human Dynamics & Systems': 'human-dynamics',
 };
 
-type ViewTab = 'matrix' | 'window-of-tolerance' | 'topologies' | 'prd-assembly';
+type ViewTab = 'matrix' | 'window-of-tolerance' | 'topologies' | 'prd-assembly' | 'constellation';
 
 // Cosmological overlay state
 
@@ -332,7 +333,7 @@ const CalmMagicBoard = () => {
     const viewParam = searchParams.get('view') as ViewTab | null;
     
     // Handle view parameter for tab switching (e.g., from Garden page after PRD compilation)
-    if (viewParam && ['matrix', 'window-of-tolerance', 'topologies', 'prd-assembly'].includes(viewParam)) {
+    if (viewParam && ['matrix', 'window-of-tolerance', 'topologies', 'prd-assembly', 'constellation'].includes(viewParam)) {
       setActiveView(viewParam);
       // Clean view param from URL
       const newParams = new URLSearchParams(searchParams);
@@ -1530,6 +1531,10 @@ const CalmMagicBoard = () => {
                 <span className="absolute -top-1 -right-1 w-2 h-2 bg-violet-500 rounded-full animate-pulse" />
               )}
             </TabsTrigger>
+            <TabsTrigger value="constellation" className="text-xs gap-1.5 px-3">
+              <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+              Constellation
+            </TabsTrigger>
           </TabsList>
         </Tabs>
         
@@ -1579,33 +1584,32 @@ const CalmMagicBoard = () => {
       {/* Mobile Sub Navigation - Compact tabs */}
       <div className="md:hidden shrink-0 px-3 py-2 border-b border-border/30 bg-background/80 flex items-center justify-between gap-2">
         <Tabs value={activeView} onValueChange={(v) => setActiveView(v as ViewTab)} className="flex-1">
-          <TabsList className="h-8 w-full grid grid-cols-4">
-            <TabsTrigger value="matrix" className="text-[10px] gap-1 px-1.5">
+          <TabsList className="h-8 w-full grid grid-cols-5">
+            <TabsTrigger value="matrix" className="text-[10px] gap-1 px-1">
               <Grid3X3 className="w-3 h-3" />
-              <span className="hidden xs:inline">Matrix</span>
             </TabsTrigger>
-            <TabsTrigger value="window-of-tolerance" className="text-[10px] gap-1 px-1.5">
+            <TabsTrigger value="window-of-tolerance" className="text-[10px] gap-1 px-1">
               <CircleDot className="w-3 h-3" />
-              <span className="hidden xs:inline">Tolerance</span>
             </TabsTrigger>
-            <TabsTrigger value="prd-assembly" className="text-[10px] gap-1 px-1.5">
+            <TabsTrigger value="prd-assembly" className="text-[10px] gap-1 px-1">
               {visitedTiles.size >= 32 && polenEntries.length >= 5 ? (
                 <Sparkles className="w-3 h-3 text-amber-500" />
               ) : (
                 <Layers className="w-3 h-3" />
               )}
-              <span className="hidden xs:inline">PRD</span>
             </TabsTrigger>
-            <TabsTrigger value="topologies" className="text-[10px] gap-1 px-1.5 relative">
+            <TabsTrigger value="topologies" className="text-[10px] gap-1 px-1 relative">
               {topologyStory && visitedTiles.size > 0 ? (
                 <Sparkles className="w-3 h-3 text-violet-500" />
               ) : (
                 <Globe className="w-3 h-3" />
               )}
-              <span className="hidden xs:inline">Torus</span>
               {topologyStory && activeView !== 'topologies' && (
                 <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 bg-violet-500 rounded-full animate-pulse" />
               )}
+            </TabsTrigger>
+            <TabsTrigger value="constellation" className="text-[10px] gap-1 px-1">
+              <Sparkles className="w-3 h-3 text-indigo-500" />
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -1839,6 +1843,16 @@ const CalmMagicBoard = () => {
               onAnalyzeTopology={() => analyzeTopology(polenEntries)}
               onApplyInsightToShadow={handleApplyInsightToShadow}
               consciousnessGeometry={consciousnessGeometry}
+            />
+          </div>
+        )}
+
+        {/* Constellation View */}
+        {activeView === 'constellation' && (
+          <div className="flex-1 flex flex-col overflow-hidden p-4 md:p-6">
+            <ConstellationTab
+              projectId={activeProjectId}
+              currentSeason={(currentSeason as ManifoldSeason) || 'POLLENS'}
             />
           </div>
         )}

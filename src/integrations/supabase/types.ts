@@ -368,6 +368,61 @@ export type Database = {
           },
         ]
       }
+      manifold_edges: {
+        Row: {
+          created_at: string
+          edge_type: string
+          from_entry_id: string
+          id: string
+          project_id: string | null
+          to_entry_id: string
+          user_id: string
+          weight: number | null
+        }
+        Insert: {
+          created_at?: string
+          edge_type: string
+          from_entry_id: string
+          id?: string
+          project_id?: string | null
+          to_entry_id: string
+          user_id: string
+          weight?: number | null
+        }
+        Update: {
+          created_at?: string
+          edge_type?: string
+          from_entry_id?: string
+          id?: string
+          project_id?: string | null
+          to_entry_id?: string
+          user_id?: string
+          weight?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "manifold_edges_from_entry_id_fkey"
+            columns: ["from_entry_id"]
+            isOneToOne: false
+            referencedRelation: "polen_entries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "manifold_edges_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "manifold_edges_to_entry_id_fkey"
+            columns: ["to_entry_id"]
+            isOneToOne: false
+            referencedRelation: "polen_entries"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       noems: {
         Row: {
           connected_polen_ids: string[] | null
@@ -503,6 +558,7 @@ export type Database = {
       }
       polen_entries: {
         Row: {
+          charge: string | null
           content: string
           created_at: string
           cycle_id: string | null
@@ -510,6 +566,8 @@ export type Database = {
           fragment_type: Database["public"]["Enums"]["fragment_type"]
           hexagram_number: number | null
           id: string
+          intensity: number | null
+          phase: string | null
           project_id: string | null
           season_context: string | null
           source_reference: string | null
@@ -519,6 +577,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          charge?: string | null
           content: string
           created_at?: string
           cycle_id?: string | null
@@ -526,6 +585,8 @@ export type Database = {
           fragment_type?: Database["public"]["Enums"]["fragment_type"]
           hexagram_number?: number | null
           id?: string
+          intensity?: number | null
+          phase?: string | null
           project_id?: string | null
           season_context?: string | null
           source_reference?: string | null
@@ -535,6 +596,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          charge?: string | null
           content?: string
           created_at?: string
           cycle_id?: string | null
@@ -542,6 +604,8 @@ export type Database = {
           fragment_type?: Database["public"]["Enums"]["fragment_type"]
           hexagram_number?: number | null
           id?: string
+          intensity?: number | null
+          phase?: string | null
           project_id?: string | null
           season_context?: string | null
           source_reference?: string | null
