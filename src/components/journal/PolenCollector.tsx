@@ -236,30 +236,88 @@ export const PolenCollector: React.FC<PolenCollectorProps> = ({
         </CardHeader>
         <CardContent>
           <div className="space-y-2 max-h-[300px] overflow-y-auto">
-            {polenEntries.slice(0, 10).map((polen) => (
-              <div
-                key={polen.id}
-                className="p-3 rounded-lg bg-muted/50 border border-border/50 hover:border-yellow-500/30 transition-colors"
-              >
-                <div className="flex items-start gap-2">
-                  <div className="text-yellow-500 mt-1">
-                    {FRAGMENT_ICONS[polen.fragment_type as FragmentType]}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm line-clamp-2">{polen.content}</p>
-                    {polen.tags && polen.tags.length > 0 && (
-                      <div className="flex gap-1 mt-1 flex-wrap">
-                        {polen.tags.map((tag: string, i: number) => (
-                          <Badge key={i} variant="secondary" className="text-xs">
-                            {tag}
-                          </Badge>
-                        ))}
+            {polenEntries.slice(0, 10).map((polen) => {
+              const entryIntensity = polen.intensity ?? 50;
+              const entryCharge = polen.charge as ChargeType | undefined;
+              
+              return (
+                <div
+                  key={polen.id}
+                  className="p-3 rounded-lg bg-muted/50 border border-border/50 hover:border-yellow-500/30 transition-colors relative overflow-hidden"
+                >
+                  {/* Intensity bar at bottom */}
+                  <div 
+                    className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-yellow-600/60 to-yellow-400/80 transition-all"
+                    style={{ width: `${entryIntensity}%` }}
+                  />
+                  
+                  <div className="flex items-start gap-2">
+                    {/* Charge indicator */}
+                    <div className="flex flex-col items-center gap-1">
+                      <div className="text-yellow-500">
+                        {FRAGMENT_ICONS[polen.fragment_type as FragmentType]}
                       </div>
-                    )}
+                      {entryCharge && entryCharge !== 'neutral' && (
+                        <div className={`${
+                          entryCharge === 'expanding' 
+                            ? 'text-green-400' 
+                            : 'text-red-400'
+                        }`}>
+                          {entryCharge === 'expanding' ? (
+                            <TrendingUp className="h-3 w-3" />
+                          ) : (
+                            <TrendingDown className="h-3 w-3" />
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <p className="text-sm line-clamp-2 flex-1">{polen.content}</p>
+                        {/* Intensity badge for high-intensity entries */}
+                        {entryIntensity >= 75 && (
+                          <Badge 
+                            variant="outline" 
+                            className="text-[10px] px-1.5 py-0 h-4 border-yellow-500/50 text-yellow-400 shrink-0"
+                          >
+                            {entryIntensity}%
+                          </Badge>
+                        )}
+                      </div>
+                      
+                      <div className="flex gap-1 mt-1 flex-wrap items-center">
+                        {/* Charge badge */}
+                        {entryCharge && (
+                          <Badge 
+                            variant="outline" 
+                            className={`text-[10px] px-1.5 py-0 h-4 ${
+                              entryCharge === 'expanding' 
+                                ? 'border-green-500/50 text-green-400' 
+                                : entryCharge === 'contracting'
+                                ? 'border-red-500/50 text-red-400'
+                                : 'border-yellow-500/30 text-yellow-400/60'
+                            }`}
+                          >
+                            {entryCharge === 'expanding' ? '↑' : entryCharge === 'contracting' ? '↓' : '○'}
+                          </Badge>
+                        )}
+                        
+                        {polen.tags && polen.tags.length > 0 && (
+                          <>
+                            {polen.tags.map((tag: string, i: number) => (
+                              <Badge key={i} variant="secondary" className="text-xs">
+                                {tag}
+                              </Badge>
+                            ))}
+                          </>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             {polenEntries.length === 0 && (
               <p className="text-sm text-muted-foreground text-center py-4">
                 No fragments captured yet. Start noticing what's weird.
