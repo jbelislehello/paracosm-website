@@ -5,6 +5,7 @@ import TransformationJourney from "@/components/TransformationJourney";
 import ContactSection from "@/components/ContactSection";
 import PartnerToolsSection from "@/components/PartnerToolsSection";
 import ParacosmEventsSection from "@/components/ParacosmEventsSection";
+import ParacosmUniverseSection from "@/components/ParacosmUniverseSection";
 import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
 import RetreatAnnouncementPopup from "@/components/RetreatAnnouncementPopup";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -515,6 +516,11 @@ const LandingPage = () => {
             </TabsContent>
           </Tabs>
         </div>
+      </section>
+      
+      {/* Paracosm Universe Section - Wuxia the Fox & Creative Projects */}
+      <section id="universe">
+        <ParacosmUniverseSection />
       </section>
       
       {/* Paracosm Events Section */}
