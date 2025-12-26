@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Loader2, Sparkles, Info, Eye, EyeOff, Link2, X } from 'lucide-react';
 import { useManifoldData, ManifoldEntry } from '@/hooks/useManifoldData';
 import { useManifoldEdges, EdgeType } from '@/hooks/useManifoldEdges';
-import { useProjectionEngine, ProjectionMode } from '@/hooks/useProjectionEngine';
+import { useProjectionEngine, ProjectionMode, GardenType, getDefaultModesForGarden } from '@/hooks/useProjectionEngine';
 import { ProjectionToggle } from './ProjectionToggle';
 import { ConstellationParticles } from './ConstellationParticles';
 import { EdgeCreator } from './EdgeCreator';
@@ -17,10 +17,27 @@ import { cn } from '@/lib/utils';
 interface ConstellationTabProps {
   projectId?: string | null;
   currentSeason?: ManifoldSeason;
+  garden?: GardenType;
 }
 
-export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: ConstellationTabProps) {
-  const [projectionMode, setProjectionMode] = useState<ProjectionMode>('kairos');
+// Mode descriptions for organizational context
+const MODE_DESCRIPTIONS: Record<ProjectionMode, string> = {
+  strategy: 'Spiral Ladder: Track where the org is and what\'s the next move',
+  governance: 'Gate Map: Compliance, approvals, sign-off culture flow',
+  operations: 'Dependency Graph: "Why are we stuck?" critical path view',
+  delivery: 'Roadmap: Now, next 2 milestones, and risk bubbles',
+  adoption: 'Cycle Ring: Training, comms, reinforcement, measurement rhythm',
+  sensemaking: 'Constellation: Current decision with strongest evidence links'
+};
+
+export function ConstellationTab({ 
+  projectId, 
+  currentSeason = 'POLLENS',
+  garden = 'intelligence'
+}: ConstellationTabProps) {
+  // Get default mode based on garden
+  const defaultModes = getDefaultModesForGarden(garden);
+  const [projectionMode, setProjectionMode] = useState<ProjectionMode>(defaultModes[0]);
   const [selectedEntry, setSelectedEntry] = useState<ManifoldEntry | null>(null);
   const [showConnections, setShowConnections] = useState(true);
   
@@ -33,6 +50,12 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
   const { edges, isCreating, createEdge, refetch: refetchEdges } = useManifoldEdges(projectId);
   const { projectedEntries } = useProjectionEngine(entries, projectionMode);
 
+  // Update mode when garden changes
+  useEffect(() => {
+    const newDefaults = getDefaultModesForGarden(garden);
+    setProjectionMode(newDefaults[0]);
+  }, [garden]);
+
   // Fetch edges on mount
   useEffect(() => {
     refetchEdges();
@@ -40,17 +63,14 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
 
   const handleEntryClick = (entry: ManifoldEntry) => {
     if (isEdgeMode) {
-      // Edge creation mode
       if (!edgeSource) {
         setEdgeSource(entry);
       } else if (entry.id === edgeSource.id) {
-        // Clicked same entry, deselect
         setEdgeSource(null);
       } else {
         setEdgeTarget(entry);
       }
     } else {
-      // Normal selection mode
       setSelectedEntry(entry.id === selectedEntry?.id ? null : entry);
     }
   };
@@ -62,7 +82,6 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
     if (success) {
       setEdgeSource(null);
       setEdgeTarget(null);
-      // Stay in edge mode for creating more connections
     }
   };
 
@@ -104,8 +123,8 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-muted-foreground">
-              Your constellation will appear here as you create fragments in the Matrix. 
-              Each insight becomes a star in your personal event field.
+              Your organizational view will appear here as you create entries. 
+              Each insight becomes a node in your decision field.
             </p>
             <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
               <Info className="w-4 h-4" />
@@ -116,6 +135,10 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
       </div>
     );
   }
+
+  // Check if mode is 3D or 2D-style
+  const is3DMode = ['sensemaking', 'strategy', 'adoption'].includes(projectionMode);
+  const shouldAutoRotate = is3DMode && !isEdgeMode;
 
   return (
     <div className="flex-1 flex flex-col gap-4 overflow-hidden">
@@ -132,7 +155,7 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
           {edges.length > 0 && (
             <Badge variant="secondary" className="text-xs gap-1">
               <Link2 className="w-3 h-3" />
-              {edges.length} connections
+              {edges.length}
             </Badge>
           )}
         </div>
@@ -154,14 +177,15 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
             className="gap-1.5"
           >
             {showConnections ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-            <span className="hidden sm:inline">Lines</span>
           </Button>
-          <ProjectionToggle 
-            value={projectionMode} 
-            onChange={setProjectionMode} 
-          />
         </div>
       </div>
+
+      {/* Projection Mode Toggle */}
+      <ProjectionToggle 
+        value={projectionMode} 
+        onChange={setProjectionMode} 
+      />
 
       {/* Season Legend */}
       <div className="flex flex-wrap gap-2">
@@ -194,11 +218,9 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
           style={{ background: 'transparent' }}
         >
           <Suspense fallback={null}>
-            {/* Ambient lighting */}
             <ambientLight intensity={0.3} />
             <pointLight position={[10, 10, 10]} intensity={0.5} />
             
-            {/* Background stars */}
             <Stars 
               radius={50} 
               depth={50} 
@@ -209,7 +231,6 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
               speed={0.5}
             />
             
-            {/* Main constellation particles */}
             <ConstellationParticles
               entries={projectedEntries}
               selectedEntry={isEdgeMode ? (edgeSource || edgeTarget) : selectedEntry}
@@ -221,12 +242,11 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
               edgeTarget={edgeTarget}
             />
             
-            {/* Camera controls */}
             <OrbitControls 
               enablePan={true}
               enableZoom={true}
               enableRotate={true}
-              autoRotate={projectionMode !== 'chronos' && !isEdgeMode}
+              autoRotate={shouldAutoRotate}
               autoRotateSpeed={0.3}
               minDistance={3}
               maxDistance={20}
@@ -235,7 +255,7 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
         </Canvas>
       </div>
 
-      {/* Edge Creator Panel (when in edge mode) */}
+      {/* Edge Creator Panel */}
       {isEdgeMode && (
         <EdgeCreator
           sourceEntry={edgeSource}
@@ -246,7 +266,7 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
         />
       )}
 
-      {/* Selected Entry Detail (when not in edge mode) */}
+      {/* Selected Entry Detail */}
       {!isEdgeMode && selectedEntry && (
         <Card className="animate-in slide-in-from-bottom-4 duration-300">
           <CardContent className="p-4">
@@ -294,15 +314,12 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
         </Card>
       )}
 
-      {/* Projection Mode Description */}
+      {/* Mode Description */}
       <div className="text-xs text-muted-foreground text-center">
         {isEdgeMode 
-          ? 'Edge Mode: Click two events to create a connection between them'
-          : projectionMode === 'chronos' && 'Timeline: Events flow left to right by creation date'
+          ? 'Edge Mode: Click two events to create a connection'
+          : MODE_DESCRIPTIONS[projectionMode]
         }
-        {!isEdgeMode && projectionMode === 'kairos' && 'Now-Gravity: Recent and relevant events pull toward center'}
-        {!isEdgeMode && projectionMode === 'mythos' && 'Spiral: Recurring patterns form an outward spiral'}
-        {!isEdgeMode && projectionMode === 'causality' && 'Graph: Connected events cluster together by shared themes'}
       </div>
     </div>
   );
