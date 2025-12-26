@@ -4,7 +4,7 @@ import { OrbitControls, Stars } from '@react-three/drei';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Loader2, Sparkles, Info, Eye, EyeOff, Link2, X } from 'lucide-react';
+import { Loader2, Sparkles, Info, Eye, EyeOff, Link2, X, BookOpen } from 'lucide-react';
 import { useManifoldData, ManifoldEntry } from '@/hooks/useManifoldData';
 import { useManifoldEdges, EdgeType } from '@/hooks/useManifoldEdges';
 import { useProjectionEngine, ProjectionMode, GardenType, getDefaultModesForGarden } from '@/hooks/useProjectionEngine';
@@ -13,6 +13,8 @@ import { ConstellationParticles } from './ConstellationParticles';
 import { EdgeCreator } from './EdgeCreator';
 import { GovernanceOverlay } from './GovernanceOverlay';
 import { OperationsOverlay } from './OperationsOverlay';
+import { StrategyOverlay } from './StrategyOverlay';
+import { PlaybookPanel } from './PlaybookPanel';
 import { SEASON_HEX_COLORS, ManifoldSeason } from '@/utils/torusManifoldMath';
 import { cn } from '@/lib/utils';
 
@@ -42,6 +44,7 @@ export function ConstellationTab({
   const [projectionMode, setProjectionMode] = useState<ProjectionMode>(defaultModes[0]);
   const [selectedEntry, setSelectedEntry] = useState<ManifoldEntry | null>(null);
   const [showConnections, setShowConnections] = useState(true);
+  const [showPlaybooks, setShowPlaybooks] = useState(false);
   
   // Edge creation mode
   const [isEdgeMode, setIsEdgeMode] = useState(false);
@@ -164,6 +167,15 @@ export function ConstellationTab({
         
         <div className="flex items-center gap-2">
           <Button
+            variant={showPlaybooks ? "default" : "outline"}
+            size="sm"
+            onClick={() => setShowPlaybooks(!showPlaybooks)}
+            className={cn("gap-1.5", showPlaybooks && "bg-primary text-primary-foreground")}
+          >
+            <BookOpen className="w-4 h-4" />
+            <span className="hidden sm:inline">Playbooks</span>
+          </Button>
+          <Button
             variant={isEdgeMode ? "default" : "outline"}
             size="sm"
             onClick={toggleEdgeMode}
@@ -257,6 +269,9 @@ export function ConstellationTab({
         </Canvas>
 
         {/* 2D Overlays for specific modes */}
+        {projectionMode === 'strategy' && (
+          <StrategyOverlay entries={projectedEntries} />
+        )}
         {projectionMode === 'governance' && (
           <GovernanceOverlay entries={projectedEntries} />
         )}
@@ -264,6 +279,17 @@ export function ConstellationTab({
           <OperationsOverlay entries={projectedEntries} />
         )}
       </div>
+
+      {/* Playbook Panel */}
+      {showPlaybooks && (
+        <div className="absolute right-4 top-48 z-10">
+          <PlaybookPanel
+            garden={garden}
+            mode={projectionMode}
+            onClose={() => setShowPlaybooks(false)}
+          />
+        </div>
+      )}
 
       {/* Edge Creator Panel */}
       {isEdgeMode && (
