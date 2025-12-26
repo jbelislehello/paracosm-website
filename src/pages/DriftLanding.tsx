@@ -70,17 +70,55 @@ const DriftLanding = () => {
         </div>
       </section>
 
-      {/* Podcast Drift Section */}
+      {/* Featured Episode Section */}
       <section id="podcast" className="py-20 px-4 bg-gradient-to-r from-primary/5 to-secondary/5">
-        <div className="container max-w-6xl mx-auto">
-          <div className="text-center mb-16">
+        <div className="container max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <Badge variant="outline" className="mb-4 px-4 py-1 text-sm bg-primary/10 border-primary/30">
+              Latest Episode
+            </Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
               Podcast Drift
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              A monthly ritual of deep listening. Each episode drifts through one of the five forces of the Calm Magic compass, exploring how these energies shape our work, relationships, and creative evolution.
-            </p>
           </div>
+
+          {/* Featured YouTube Episode */}
+          <Card className="overflow-hidden border-2 border-primary/20 bg-background/50 backdrop-blur-sm mb-12">
+            <div className="aspect-video w-full">
+              <iframe
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/o1ya-7hIVww"
+                title="Tu veux être payé pour tes idées? 3 pros t'expliquent."
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+            <CardContent className="p-6 space-y-4">
+              <div className="flex items-center gap-3">
+                <Badge className="bg-red-500/10 text-red-500 border-red-500/30">
+                  <Mic className="w-3 h-3 mr-1" />
+                  Live
+                </Badge>
+                <span className="text-sm text-muted-foreground">monExpansion • 2h 30min</span>
+              </div>
+              <h3 className="text-2xl font-bold">Tu veux être payé pour tes idées? 3 pros t'expliquent.</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Une conversation profonde avec 3 professionnels sur la monétisation des idées créatives, 
+                l'entrepreneuriat conscient et la création de valeur authentique.
+              </p>
+              <Button 
+                variant="outline" 
+                className="mt-2"
+                onClick={() => window.open('https://youtu.be/o1ya-7hIVww', '_blank')}
+              >
+                Watch on YouTube
+              </Button>
+            </CardContent>
+          </Card>
+
+          <p className="text-center text-xl text-muted-foreground max-w-3xl mx-auto mb-12">
+            A monthly ritual of deep listening. Each episode drifts through one of the five forces of the Calm Magic compass, exploring how these energies shape our work, relationships, and creative evolution.
+          </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {energeticAxes.map((axis, index) => (
