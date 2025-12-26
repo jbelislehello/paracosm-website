@@ -1,10 +1,10 @@
-import React, { useState, Suspense, useEffect } from 'react';
+import React, { useState, Suspense, useEffect, useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stars } from '@react-three/drei';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Loader2, Sparkles, Info, Eye, EyeOff, Link2, X, BookOpen } from 'lucide-react';
+import { Loader2, Sparkles, Info, Eye, EyeOff, Link2, X, BookOpen, Layers, Atom, Waves, GitBranch } from 'lucide-react';
 import { useManifoldData, ManifoldEntry } from '@/hooks/useManifoldData';
 import { useManifoldEdges, EdgeType } from '@/hooks/useManifoldEdges';
 import { useProjectionEngine, ProjectionMode, GardenType, getDefaultModesForGarden } from '@/hooks/useProjectionEngine';
@@ -17,6 +17,7 @@ import { StrategyOverlay } from './StrategyOverlay';
 import { PlaybookPanel } from './PlaybookPanel';
 import { SEASON_HEX_COLORS, ManifoldSeason } from '@/utils/torusManifoldMath';
 import { cn } from '@/lib/utils';
+import { ConsciousnessMetricsDashboard } from '../visualization/ConsciousnessMetricsDashboard';
 
 interface ConstellationTabProps {
   projectId?: string | null;
@@ -51,9 +52,39 @@ export function ConstellationTab({
   const [edgeSource, setEdgeSource] = useState<ManifoldEntry | null>(null);
   const [edgeTarget, setEdgeTarget] = useState<ManifoldEntry | null>(null);
   
+  // Overlay toggles for advanced visualizations
+  const [showQuantumOverlay, setShowQuantumOverlay] = useState(false);
+  const [showEntropyOverlay, setShowEntropyOverlay] = useState(false);
+  const [showMetricsDashboard, setShowMetricsDashboard] = useState(false);
+  
   const { entries, isLoading, seasonBreakdown, totalEntries, refetch } = useManifoldData(projectId);
   const { edges, isCreating, createEdge, refetch: refetchEdges } = useManifoldEdges(projectId);
   const { projectedEntries } = useProjectionEngine(entries, projectionMode);
+  
+  // Generate sample data for dashboard (in production, derive from actual journey data)
+  const dashboardData = useMemo(() => {
+    const visitedTiles = new Set<string>();
+    const densityMap = new Map<string, number>();
+    const journeyPath: Array<{ row: number; col: number }> = [];
+    
+    entries.forEach((entry, idx) => {
+      const row = idx % 8;
+      const col = Math.floor(idx / 8) % 8;
+      const key = `${row}-${col}`;
+      visitedTiles.add(key);
+      densityMap.set(key, (densityMap.get(key) || 0) + 1);
+      journeyPath.push({ row, col });
+    });
+    
+    const torusProjection = (r: number, c: number): [number, number, number] => {
+      const u = (r / 7) * Math.PI * 2;
+      const v = (c / 7) * Math.PI * 2;
+      const R = 2, r2 = 0.8;
+      return [(R + r2 * Math.cos(v)) * Math.cos(u), (R + r2 * Math.cos(v)) * Math.sin(u), r2 * Math.sin(v)];
+    };
+    
+    return { visitedTiles, densityMap, journeyPath, torusProjection };
+  }, [entries]);
 
   // Update mode when garden changes
   useEffect(() => {
@@ -165,7 +196,38 @@ export function ConstellationTab({
           )}
         </div>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Advanced Overlay Toggles */}
+          <Button
+            variant={showMetricsDashboard ? "default" : "outline"}
+            size="sm"
+            onClick={() => setShowMetricsDashboard(!showMetricsDashboard)}
+            className={cn("gap-1.5", showMetricsDashboard && "bg-violet-600 text-white")}
+            title="Consciousness Metrics Dashboard"
+          >
+            <Layers className="w-4 h-4" />
+          </Button>
+          <Button
+            variant={showQuantumOverlay ? "default" : "outline"}
+            size="sm"
+            onClick={() => setShowQuantumOverlay(!showQuantumOverlay)}
+            className={cn("gap-1.5", showQuantumOverlay && "bg-amber-600 text-white")}
+            title="Quantum Gravity Overlay"
+          >
+            <Atom className="w-4 h-4" />
+          </Button>
+          <Button
+            variant={showEntropyOverlay ? "default" : "outline"}
+            size="sm"
+            onClick={() => setShowEntropyOverlay(!showEntropyOverlay)}
+            className={cn("gap-1.5", showEntropyOverlay && "bg-cyan-600 text-white")}
+            title="Holographic Entropy"
+          >
+            <Waves className="w-4 h-4" />
+          </Button>
+          
+          <div className="w-px h-6 bg-border/50 mx-1" />
+          
           <Button
             variant={showPlaybooks ? "default" : "outline"}
             size="sm"
@@ -278,6 +340,22 @@ export function ConstellationTab({
         {projectionMode === 'operations' && (
           <OperationsOverlay entries={projectedEntries} />
         )}
+        
+        {/* Overlay indicators */}
+        {(showQuantumOverlay || showEntropyOverlay) && (
+          <div className="absolute top-3 left-3 flex gap-2">
+            {showQuantumOverlay && (
+              <Badge className="bg-amber-600/80 text-white text-[10px]">
+                <Atom className="w-3 h-3 mr-1" /> Quantum Gravity Active
+              </Badge>
+            )}
+            {showEntropyOverlay && (
+              <Badge className="bg-cyan-600/80 text-white text-[10px]">
+                <Waves className="w-3 h-3 mr-1" /> Entropy Field Active
+              </Badge>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Playbook Panel */}
@@ -349,6 +427,16 @@ export function ConstellationTab({
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Consciousness Metrics Dashboard */}
+      {showMetricsDashboard && entries.length > 0 && (
+        <ConsciousnessMetricsDashboard
+          visitedTiles={dashboardData.visitedTiles}
+          densityMap={dashboardData.densityMap}
+          journeyPath={dashboardData.journeyPath}
+          torusProjection={dashboardData.torusProjection}
+        />
       )}
 
       {/* Mode Description */}
