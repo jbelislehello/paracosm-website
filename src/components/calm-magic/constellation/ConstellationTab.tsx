@@ -11,6 +11,8 @@ import { useProjectionEngine, ProjectionMode, GardenType, getDefaultModesForGard
 import { ProjectionToggle } from './ProjectionToggle';
 import { ConstellationParticles } from './ConstellationParticles';
 import { EdgeCreator } from './EdgeCreator';
+import { GovernanceOverlay } from './GovernanceOverlay';
+import { OperationsOverlay } from './OperationsOverlay';
 import { SEASON_HEX_COLORS, ManifoldSeason } from '@/utils/torusManifoldMath';
 import { cn } from '@/lib/utils';
 
@@ -208,9 +210,9 @@ export function ConstellationTab({
         })}
       </div>
 
-      {/* 3D Canvas */}
+      {/* 3D Canvas with Overlays */}
       <div className={cn(
-        "flex-1 min-h-[400px] bg-background/30 backdrop-blur-sm rounded-xl border overflow-hidden transition-colors",
+        "relative flex-1 min-h-[400px] bg-background/30 backdrop-blur-sm rounded-xl border overflow-hidden transition-colors",
         isEdgeMode ? "border-primary/50" : "border-border/50"
       )}>
         <Canvas 
@@ -253,6 +255,14 @@ export function ConstellationTab({
             />
           </Suspense>
         </Canvas>
+
+        {/* 2D Overlays for specific modes */}
+        {projectionMode === 'governance' && (
+          <GovernanceOverlay entries={projectedEntries} />
+        )}
+        {projectionMode === 'operations' && (
+          <OperationsOverlay entries={projectedEntries} />
+        )}
       </div>
 
       {/* Edge Creator Panel */}
