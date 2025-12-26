@@ -6,6 +6,15 @@ import { Calendar, MapPin, Users, ExternalLink } from 'lucide-react';
 const ParacosmEventsSection = () => {
   const events = [
     {
+      name: "GL!TCH Session: Maîtriser X Détourner",
+      description: "An immersive Gl!tch session at the E-AI 2026 Annual Conference exploring the intersection of mastery and creative subversion in AI-augmented transformation.",
+      date: "February 18-19, 2026",
+      location: "Montreal Convention Centre",
+      color: "from-orange-500 to-red-500",
+      cta: "Get Tickets",
+      link: "https://my.weezevent.com/e-ai-2026"
+    },
+    {
       name: "AI Symposium - Brome Misisquoi",
       description: "A hands-on workshop for executives and technical leaders to build frameworks for AI governance and strategic implementation.",
       date: "April 2026",
@@ -70,7 +79,7 @@ const ParacosmEventsSection = () => {
                   </div>
                 </div>
 
-                <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt" target="_blank" rel="noopener noreferrer">
+                <a href={event.link || "https://app.reclaim.ai/m/jonathan-helloarchitekt"} target="_blank" rel="noopener noreferrer">
                   <Button 
                     variant="outline" 
                     size="sm" 
