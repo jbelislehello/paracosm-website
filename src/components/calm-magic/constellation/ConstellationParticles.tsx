@@ -2,6 +2,7 @@ import React, { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { ManifoldEntry } from '@/hooks/useManifoldData';
+import { ManifoldEdge } from '@/hooks/useManifoldEdges';
 import { SEASON_HEX_COLORS } from '@/utils/torusManifoldMath';
 
 interface ProjectedEntry extends ManifoldEntry {
@@ -16,14 +17,27 @@ interface ConstellationParticlesProps {
   onEntryClick: (entry: ManifoldEntry) => void;
   particleSize?: number;
   showConnections?: boolean;
+  edges?: ManifoldEdge[];
+  edgeSource?: ManifoldEntry | null;
+  edgeTarget?: ManifoldEntry | null;
 }
+
+// Edge type colors
+const EDGE_COLORS = {
+  resonance: 0xa855f7, // violet
+  causality: 0xf59e0b, // amber
+  echo: 0x06b6d4      // cyan
+};
 
 export function ConstellationParticles({
   entries,
   selectedEntry,
   onEntryClick,
   particleSize = 0.1,
-  showConnections = true
+  showConnections = true,
+  edges = [],
+  edgeSource = null,
+  edgeTarget = null
 }: ConstellationParticlesProps) {
   const pointsRef = useRef<THREE.Points>(null);
   const glowRef = useRef<THREE.Points>(null);
@@ -52,20 +66,21 @@ export function ConstellationParticles({
     return { positions, colors, sizes };
   }, [entries, particleSize]);
 
-  // Connections between entries with shared tags
-  const connectionLines = useMemo(() => {
+  // Tag-based connections (implicit connections)
+  const tagConnections = useMemo(() => {
     if (!showConnections) return [];
     
-    const lines: Array<{ start: THREE.Vector3; end: THREE.Vector3; opacity: number }> = [];
+    const lines: Array<{ start: THREE.Vector3; end: THREE.Vector3; opacity: number; color: number }> = [];
     
-    for (let i = 0; i < entries.length && lines.length < 150; i++) {
-      for (let j = i + 1; j < entries.length && lines.length < 150; j++) {
+    for (let i = 0; i < entries.length && lines.length < 100; i++) {
+      for (let j = i + 1; j < entries.length && lines.length < 100; j++) {
         const shared = entries[i].tags.filter(t => entries[j].tags.includes(t)).length;
         if (shared > 0) {
           lines.push({
             start: new THREE.Vector3(entries[i].projectedX, entries[i].projectedY, entries[i].projectedZ),
             end: new THREE.Vector3(entries[j].projectedX, entries[j].projectedY, entries[j].projectedZ),
-            opacity: Math.min(shared * 0.15, 0.4)
+            opacity: Math.min(shared * 0.1, 0.3),
+            color: 0xffffff
           });
         }
       }
@@ -73,6 +88,29 @@ export function ConstellationParticles({
     
     return lines;
   }, [entries, showConnections]);
+
+  // Explicit manifold edges (user-created)
+  const explicitEdges = useMemo(() => {
+    if (!showConnections || edges.length === 0) return [];
+    
+    const lines: Array<{ start: THREE.Vector3; end: THREE.Vector3; opacity: number; color: number }> = [];
+    
+    edges.forEach(edge => {
+      const fromEntry = entries.find(e => e.id === edge.fromEntryId);
+      const toEntry = entries.find(e => e.id === edge.toEntryId);
+      
+      if (fromEntry && toEntry) {
+        lines.push({
+          start: new THREE.Vector3(fromEntry.projectedX, fromEntry.projectedY, fromEntry.projectedZ),
+          end: new THREE.Vector3(toEntry.projectedX, toEntry.projectedY, toEntry.projectedZ),
+          opacity: 0.6 + edge.weight * 0.3,
+          color: EDGE_COLORS[edge.edgeType] || 0xffffff
+        });
+      }
+    });
+    
+    return lines;
+  }, [entries, edges, showConnections]);
 
   // Animate particles with gentle floating
   useFrame((state) => {
@@ -92,15 +130,15 @@ export function ConstellationParticles({
 
   return (
     <group>
-      {/* Connection lines */}
-      {connectionLines.map((conn, i) => {
+      {/* Tag-based connection lines (subtle) */}
+      {tagConnections.map((conn, i) => {
         const linePositions = new Float32Array([
           conn.start.x, conn.start.y, conn.start.z,
           conn.end.x, conn.end.y, conn.end.z
         ]);
         
         return (
-          <line key={`conn-${i}`}>
+          <line key={`tag-${i}`}>
             <bufferGeometry>
               <bufferAttribute
                 attach="attributes-position"
@@ -108,9 +146,34 @@ export function ConstellationParticles({
               />
             </bufferGeometry>
             <lineBasicMaterial
-              color="#ffffff"
+              color={conn.color}
               transparent
               opacity={conn.opacity}
+            />
+          </line>
+        );
+      })}
+
+      {/* Explicit manifold edges (prominent) */}
+      {explicitEdges.map((conn, i) => {
+        const linePositions = new Float32Array([
+          conn.start.x, conn.start.y, conn.start.z,
+          conn.end.x, conn.end.y, conn.end.z
+        ]);
+        
+        return (
+          <line key={`edge-${i}`}>
+            <bufferGeometry>
+              <bufferAttribute
+                attach="attributes-position"
+                args={[linePositions, 3]}
+              />
+            </bufferGeometry>
+            <lineBasicMaterial
+              color={conn.color}
+              transparent
+              opacity={conn.opacity}
+              linewidth={2}
             />
           </line>
         );
@@ -168,8 +231,72 @@ export function ConstellationParticles({
         />
       </points>
 
-      {/* Selected entry highlight */}
-      {selectedEntry && (() => {
+      {/* Edge source highlight (when creating edge) */}
+      {edgeSource && (() => {
+        const projectedEntry = entries.find(e => e.id === edgeSource.id);
+        if (!projectedEntry) return null;
+        
+        return (
+          <mesh position={[projectedEntry.projectedX, projectedEntry.projectedY, projectedEntry.projectedZ]}>
+            <ringGeometry args={[0.2, 0.25, 32]} />
+            <meshBasicMaterial
+              color={0xa855f7}
+              transparent
+              opacity={0.9}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+        );
+      })()}
+
+      {/* Edge target highlight (when creating edge) */}
+      {edgeTarget && (() => {
+        const projectedEntry = entries.find(e => e.id === edgeTarget.id);
+        if (!projectedEntry) return null;
+        
+        return (
+          <mesh position={[projectedEntry.projectedX, projectedEntry.projectedY, projectedEntry.projectedZ]}>
+            <ringGeometry args={[0.2, 0.25, 32]} />
+            <meshBasicMaterial
+              color={0x22c55e}
+              transparent
+              opacity={0.9}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+        );
+      })()}
+
+      {/* Preview line between source and target */}
+      {edgeSource && edgeTarget && (() => {
+        const sourceEntry = entries.find(e => e.id === edgeSource.id);
+        const targetEntry = entries.find(e => e.id === edgeTarget.id);
+        if (!sourceEntry || !targetEntry) return null;
+        
+        const linePositions = new Float32Array([
+          sourceEntry.projectedX, sourceEntry.projectedY, sourceEntry.projectedZ,
+          targetEntry.projectedX, targetEntry.projectedY, targetEntry.projectedZ
+        ]);
+        
+        return (
+          <line>
+            <bufferGeometry>
+              <bufferAttribute
+                attach="attributes-position"
+                args={[linePositions, 3]}
+              />
+            </bufferGeometry>
+            <lineBasicMaterial
+              color={0xa855f7}
+              transparent
+              opacity={0.8}
+            />
+          </line>
+        );
+      })()}
+
+      {/* Selected entry highlight (normal mode) */}
+      {selectedEntry && !edgeSource && !edgeTarget && (() => {
         const projectedEntry = entries.find(e => e.id === selectedEntry.id);
         if (!projectedEntry) return null;
         
