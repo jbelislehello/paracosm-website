@@ -9,6 +9,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Index from "./pages/Index";
 import LandingPage from "./pages/LandingPage";
 import DriftLanding from "./pages/DriftLanding";
+import WuxiaTheFox from "./pages/WuxiaTheFox";
 import RelationalHealing from "./pages/RelationalHealing";
 import CaseStudies from "./pages/CaseStudies";
 import AboutUs from "./pages/AboutUs";
@@ -48,6 +49,7 @@ function App() {
                 <Routes>
                   <Route path="/" element={<LandingPage />} />
                   <Route path="/drift" element={<DriftLanding />} />
+                  <Route path="/wuxia" element={<WuxiaTheFox />} />
                   <Route path="/agentic-ux" element={<Index />} />
                   <Route path="/calm-magic-assistant" element={<RelationalHealing />} />
                   <Route path="/case-studies" element={<CaseStudies />} />
