@@ -1,14 +1,16 @@
-import React, { useState, Suspense } from 'react';
+import React, { useState, Suspense, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Stars } from '@react-three/drei';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Loader2, Sparkles, Info, Eye, EyeOff } from 'lucide-react';
+import { Loader2, Sparkles, Info, Eye, EyeOff, Link2, X } from 'lucide-react';
 import { useManifoldData, ManifoldEntry } from '@/hooks/useManifoldData';
+import { useManifoldEdges, EdgeType } from '@/hooks/useManifoldEdges';
 import { useProjectionEngine, ProjectionMode } from '@/hooks/useProjectionEngine';
 import { ProjectionToggle } from './ProjectionToggle';
 import { ConstellationParticles } from './ConstellationParticles';
+import { EdgeCreator } from './EdgeCreator';
 import { SEASON_HEX_COLORS, ManifoldSeason } from '@/utils/torusManifoldMath';
 import { cn } from '@/lib/utils';
 
@@ -22,11 +24,61 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
   const [selectedEntry, setSelectedEntry] = useState<ManifoldEntry | null>(null);
   const [showConnections, setShowConnections] = useState(true);
   
-  const { entries, isLoading, seasonBreakdown, totalEntries } = useManifoldData(projectId);
+  // Edge creation mode
+  const [isEdgeMode, setIsEdgeMode] = useState(false);
+  const [edgeSource, setEdgeSource] = useState<ManifoldEntry | null>(null);
+  const [edgeTarget, setEdgeTarget] = useState<ManifoldEntry | null>(null);
+  
+  const { entries, isLoading, seasonBreakdown, totalEntries, refetch } = useManifoldData(projectId);
+  const { edges, isCreating, createEdge, refetch: refetchEdges } = useManifoldEdges(projectId);
   const { projectedEntries } = useProjectionEngine(entries, projectionMode);
 
+  // Fetch edges on mount
+  useEffect(() => {
+    refetchEdges();
+  }, [projectId]);
+
   const handleEntryClick = (entry: ManifoldEntry) => {
-    setSelectedEntry(entry.id === selectedEntry?.id ? null : entry);
+    if (isEdgeMode) {
+      // Edge creation mode
+      if (!edgeSource) {
+        setEdgeSource(entry);
+      } else if (entry.id === edgeSource.id) {
+        // Clicked same entry, deselect
+        setEdgeSource(null);
+      } else {
+        setEdgeTarget(entry);
+      }
+    } else {
+      // Normal selection mode
+      setSelectedEntry(entry.id === selectedEntry?.id ? null : entry);
+    }
+  };
+
+  const handleCreateEdge = async (edgeType: EdgeType) => {
+    if (!edgeSource || !edgeTarget) return;
+    
+    const success = await createEdge(edgeSource.id, edgeTarget.id, edgeType);
+    if (success) {
+      setEdgeSource(null);
+      setEdgeTarget(null);
+      // Stay in edge mode for creating more connections
+    }
+  };
+
+  const handleCancelEdgeMode = () => {
+    setIsEdgeMode(false);
+    setEdgeSource(null);
+    setEdgeTarget(null);
+  };
+
+  const toggleEdgeMode = () => {
+    if (isEdgeMode) {
+      handleCancelEdgeMode();
+    } else {
+      setIsEdgeMode(true);
+      setSelectedEntry(null);
+    }
   };
 
   if (isLoading) {
@@ -77,9 +129,24 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
           <Badge variant="outline" className="text-xs">
             {totalEntries} events
           </Badge>
+          {edges.length > 0 && (
+            <Badge variant="secondary" className="text-xs gap-1">
+              <Link2 className="w-3 h-3" />
+              {edges.length} connections
+            </Badge>
+          )}
         </div>
         
         <div className="flex items-center gap-2">
+          <Button
+            variant={isEdgeMode ? "default" : "outline"}
+            size="sm"
+            onClick={toggleEdgeMode}
+            className={cn("gap-1.5", isEdgeMode && "bg-primary text-primary-foreground")}
+          >
+            {isEdgeMode ? <X className="w-4 h-4" /> : <Link2 className="w-4 h-4" />}
+            <span className="hidden sm:inline">{isEdgeMode ? "Cancel" : "Connect"}</span>
+          </Button>
           <Button
             variant={showConnections ? "secondary" : "ghost"}
             size="sm"
@@ -87,7 +154,7 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
             className="gap-1.5"
           >
             {showConnections ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
-            <span className="hidden sm:inline">Connections</span>
+            <span className="hidden sm:inline">Lines</span>
           </Button>
           <ProjectionToggle 
             value={projectionMode} 
@@ -118,7 +185,10 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
       </div>
 
       {/* 3D Canvas */}
-      <div className="flex-1 min-h-[400px] bg-background/30 backdrop-blur-sm rounded-xl border border-border/50 overflow-hidden">
+      <div className={cn(
+        "flex-1 min-h-[400px] bg-background/30 backdrop-blur-sm rounded-xl border overflow-hidden transition-colors",
+        isEdgeMode ? "border-primary/50" : "border-border/50"
+      )}>
         <Canvas 
           camera={{ position: [0, 0, 8], fov: 60 }}
           style={{ background: 'transparent' }}
@@ -142,10 +212,13 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
             {/* Main constellation particles */}
             <ConstellationParticles
               entries={projectedEntries}
-              selectedEntry={selectedEntry}
+              selectedEntry={isEdgeMode ? (edgeSource || edgeTarget) : selectedEntry}
               onEntryClick={handleEntryClick}
               particleSize={0.12}
               showConnections={showConnections}
+              edges={edges}
+              edgeSource={edgeSource}
+              edgeTarget={edgeTarget}
             />
             
             {/* Camera controls */}
@@ -153,7 +226,7 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
               enablePan={true}
               enableZoom={true}
               enableRotate={true}
-              autoRotate={projectionMode !== 'chronos'}
+              autoRotate={projectionMode !== 'chronos' && !isEdgeMode}
               autoRotateSpeed={0.3}
               minDistance={3}
               maxDistance={20}
@@ -162,12 +235,23 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
         </Canvas>
       </div>
 
-      {/* Selected Entry Detail */}
-      {selectedEntry && (
+      {/* Edge Creator Panel (when in edge mode) */}
+      {isEdgeMode && (
+        <EdgeCreator
+          sourceEntry={edgeSource}
+          targetEntry={edgeTarget}
+          isCreating={isCreating}
+          onCreateEdge={handleCreateEdge}
+          onCancel={handleCancelEdgeMode}
+        />
+      )}
+
+      {/* Selected Entry Detail (when not in edge mode) */}
+      {!isEdgeMode && selectedEntry && (
         <Card className="animate-in slide-in-from-bottom-4 duration-300">
           <CardContent className="p-4">
             <div className="flex items-start justify-between gap-4">
-            <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-2">
                   <Badge 
                     variant="outline" 
@@ -212,10 +296,13 @@ export function ConstellationTab({ projectId, currentSeason = 'POLLENS' }: Const
 
       {/* Projection Mode Description */}
       <div className="text-xs text-muted-foreground text-center">
-        {projectionMode === 'chronos' && 'Timeline: Events flow left to right by creation date'}
-        {projectionMode === 'kairos' && 'Now-Gravity: Recent and relevant events pull toward center'}
-        {projectionMode === 'mythos' && 'Spiral: Recurring patterns form an outward spiral'}
-        {projectionMode === 'causality' && 'Graph: Connected events cluster together by shared themes'}
+        {isEdgeMode 
+          ? 'Edge Mode: Click two events to create a connection between them'
+          : projectionMode === 'chronos' && 'Timeline: Events flow left to right by creation date'
+        }
+        {!isEdgeMode && projectionMode === 'kairos' && 'Now-Gravity: Recent and relevant events pull toward center'}
+        {!isEdgeMode && projectionMode === 'mythos' && 'Spiral: Recurring patterns form an outward spiral'}
+        {!isEdgeMode && projectionMode === 'causality' && 'Graph: Connected events cluster together by shared themes'}
       </div>
     </div>
   );
