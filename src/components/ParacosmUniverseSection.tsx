@@ -1,6 +1,7 @@
 import { Book, Sparkles, Film, ArrowRight, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
 
 const ParacosmUniverseSection = () => {
   return (
@@ -68,7 +69,7 @@ const ParacosmUniverseSection = () => {
                 sovereignty, and the dance between shadow and higher self.
               </p>
               
-              <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
+              <div className="flex flex-wrap gap-3 justify-center lg:justify-start mb-6">
                 <Badge variant="secondary" className="text-sm">
                   <Book className="w-3 h-3 mr-1" />
                   5 New Books
@@ -77,6 +78,13 @@ const ParacosmUniverseSection = () => {
                 <Badge variant="secondary" className="text-sm">AI Companion</Badge>
                 <Badge variant="secondary" className="text-sm">Consent-First Design</Badge>
               </div>
+              
+              <Link to="/wuxia">
+                <Button className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-orange-600 hover:to-amber-600 text-white">
+                  Explore the Project
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
