@@ -286,6 +286,7 @@ export function ConstellationTab({
           <PlaybookPanel
             garden={garden}
             mode={projectionMode}
+            projectId={projectId}
             onClose={() => setShowPlaybooks(false)}
           />
         </div>
