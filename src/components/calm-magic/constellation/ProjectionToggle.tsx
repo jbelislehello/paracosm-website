@@ -1,7 +1,7 @@
 import React from 'react';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { AlignLeft, Target, Orbit, GitBranch } from 'lucide-react';
+import { TrendingUp, ShieldCheck, GitBranch, Calendar, RefreshCw, Sparkles } from 'lucide-react';
 import { ProjectionMode } from '@/hooks/useProjectionEngine';
 import { cn } from '@/lib/utils';
 
@@ -12,29 +12,46 @@ interface ProjectionToggleProps {
 }
 
 const PROJECTION_CONFIGS: Record<ProjectionMode, {
-  icon: typeof AlignLeft;
+  icon: typeof TrendingUp;
   label: string;
   tooltip: string;
+  shortLabel: string;
 }> = {
-  chronos: {
-    icon: AlignLeft,
-    label: 'Timeline',
-    tooltip: 'Chronos: Events arranged by time sequence'
+  strategy: {
+    icon: TrendingUp,
+    label: 'Strategy',
+    shortLabel: 'Strat',
+    tooltip: 'Spiral Ladder: Track progress through LOVE→MAGIC→CALM→OPEN→FREE'
   },
-  kairos: {
-    icon: Target,
-    label: 'Now-Gravity',
-    tooltip: 'Kairos: Recent & relevant events pulled to center'
+  governance: {
+    icon: ShieldCheck,
+    label: 'Governance',
+    shortLabel: 'Gov',
+    tooltip: 'Gate Map: Visualize approval flow through policy gates'
   },
-  mythos: {
-    icon: Orbit,
-    label: 'Spiral',
-    tooltip: 'Mythos: Recurring patterns form a spiral'
-  },
-  causality: {
+  operations: {
     icon: GitBranch,
-    label: 'Graph',
-    tooltip: 'Causality: Connected events cluster together'
+    label: 'Operations',
+    shortLabel: 'Ops',
+    tooltip: 'Dependency Graph: Show critical path and blockers'
+  },
+  delivery: {
+    icon: Calendar,
+    label: 'Delivery',
+    shortLabel: 'Ship',
+    tooltip: 'Roadmap: Timeline with milestones and next steps'
+  },
+  adoption: {
+    icon: RefreshCw,
+    label: 'Adoption',
+    shortLabel: 'Adopt',
+    tooltip: 'Cycle Ring: Track training, comms, reinforcement, measurement'
+  },
+  sensemaking: {
+    icon: Sparkles,
+    label: 'Sensemaking',
+    shortLabel: 'Sense',
+    tooltip: 'Constellation: Current decision with evidence and signals'
   }
 };
 
@@ -45,7 +62,7 @@ export function ProjectionToggle({ value, onChange, className }: ProjectionToggl
         type="single" 
         value={value} 
         onValueChange={(v) => v && onChange(v as ProjectionMode)}
-        className={cn("bg-background/50 backdrop-blur-sm border border-border/50 rounded-lg p-1", className)}
+        className={cn("bg-background/50 backdrop-blur-sm border border-border/50 rounded-lg p-1 flex-wrap", className)}
       >
         {(Object.entries(PROJECTION_CONFIGS) as [ProjectionMode, typeof PROJECTION_CONFIGS[ProjectionMode]][]).map(([mode, config]) => {
           const Icon = config.icon;
@@ -56,17 +73,18 @@ export function ProjectionToggle({ value, onChange, className }: ProjectionToggl
                   value={mode}
                   aria-label={config.label}
                   className={cn(
-                    "px-3 py-2 gap-1.5 text-xs font-medium transition-all",
+                    "px-2 py-1.5 gap-1 text-xs font-medium transition-all",
                     "data-[state=on]:bg-primary/20 data-[state=on]:text-primary",
                     "hover:bg-muted/50"
                   )}
                 >
-                  <Icon className="w-4 h-4" />
-                  <span className="hidden sm:inline">{config.label}</span>
+                  <Icon className="w-3.5 h-3.5" />
+                  <span className="hidden lg:inline">{config.shortLabel}</span>
                 </ToggleGroupItem>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="max-w-xs">
-                <p>{config.tooltip}</p>
+                <p className="font-medium">{config.label}</p>
+                <p className="text-xs text-muted-foreground">{config.tooltip}</p>
               </TooltipContent>
             </Tooltip>
           );
