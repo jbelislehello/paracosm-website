@@ -486,6 +486,68 @@ export type Database = {
           },
         ]
       }
+      playbook_progress: {
+        Row: {
+          completed_at: string | null
+          completed_steps: string[]
+          created_at: string
+          current_step_index: number
+          garden: string
+          id: string
+          mode: string
+          playbook_id: string
+          project_id: string | null
+          started_at: string
+          step_outputs: Json
+          tile_sequence: number[]
+          tiles_visited: number[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          completed_steps?: string[]
+          created_at?: string
+          current_step_index?: number
+          garden: string
+          id?: string
+          mode: string
+          playbook_id: string
+          project_id?: string | null
+          started_at?: string
+          step_outputs?: Json
+          tile_sequence?: number[]
+          tiles_visited?: number[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          completed_steps?: string[]
+          created_at?: string
+          current_step_index?: number
+          garden?: string
+          id?: string
+          mode?: string
+          playbook_id?: string
+          project_id?: string | null
+          started_at?: string
+          step_outputs?: Json
+          tile_sequence?: number[]
+          tiles_visited?: number[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "playbook_progress_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       poems: {
         Row: {
           connected_noem_ids: string[] | null
