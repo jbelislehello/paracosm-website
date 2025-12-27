@@ -280,6 +280,20 @@ const ForcePrdDialog = ({ isOpen, onClose, onStartGeneration, defaultProjectId }
             </div>
           )}
 
+          {/* Force PRD Warning */}
+          <Card className="p-4 bg-amber-500/10 border-amber-500/30">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <p className="text-sm font-medium text-amber-700">Force-Generated PRD Limitations</p>
+                <p className="text-xs text-amber-600/80">
+                  PRDs created via force generation will not be eligible for OECD Framework validation 
+                  or governance playbook generation. Complete the journey organically for full access.
+                </p>
+              </div>
+            </div>
+          </Card>
+
           {/* Options */}
           <div className="flex items-center gap-2 p-3 rounded-lg bg-muted/50 border">
             <Checkbox 
