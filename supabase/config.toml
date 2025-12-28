@@ -1,5 +1,8 @@
 project_id = "qeqfbywgcokyxvubjlhy"
 
+[functions.analyze-oecd-principles]
+verify_jwt = false
+
 [functions.calm-magic-assistant]
 verify_jwt = false
 
