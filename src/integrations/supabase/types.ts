@@ -824,6 +824,7 @@ export type Database = {
           totems_system_requirements: string | null
           totems_technical_debt: string | null
           updated_at: string
+          was_forced: boolean | null
           window_state: Json | null
         }
         Insert: {
@@ -906,6 +907,7 @@ export type Database = {
           totems_system_requirements?: string | null
           totems_technical_debt?: string | null
           updated_at?: string
+          was_forced?: boolean | null
           window_state?: Json | null
         }
         Update: {
@@ -988,6 +990,7 @@ export type Database = {
           totems_system_requirements?: string | null
           totems_technical_debt?: string | null
           updated_at?: string
+          was_forced?: boolean | null
           window_state?: Json | null
         }
         Relationships: [
