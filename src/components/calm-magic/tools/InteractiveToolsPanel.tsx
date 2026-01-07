@@ -12,6 +12,7 @@ import ExperienceDotsVisualization from '../components/ExperienceDotsVisualizati
 import ClientNeedsAssessment from './ClientNeedsAssessment';
 import ClientRecommendations from './ClientRecommendations';
 import BoardEntryGate from '../BoardEntryGate';
+import { OECDInsightMatcher } from '../OECDInsightMatcher';
 import { Compass, ArrowRight } from 'lucide-react';
 
 interface InteractiveToolsPanelProps {
@@ -41,7 +42,8 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
       'PulseToPatternVisualizer': 'visualizer',
       'EmotiveCompassWidget': 'compass',
       'LearningOrganizationDashboard': 'pathways',
-      'CulturalUnitTests': 'lens'
+      'CulturalUnitTests': 'lens',
+      'OECDInsightMatcher': 'oecd'
     };
 
     const targetTab = toolTabMap[toolName] || 'framework';
@@ -75,7 +77,7 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-8">
+        <TabsList className="grid w-full grid-cols-9">
           <TabsTrigger value="assessment">🎯 Assessment</TabsTrigger>
           <TabsTrigger value="recommendations" disabled={!recommendations}>📋 Recommendations</TabsTrigger>
           <TabsTrigger value="framework">📊 Framework</TabsTrigger>
@@ -84,6 +86,7 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
           <TabsTrigger value="compass">🧭 Compass</TabsTrigger>
           <TabsTrigger value="visualizer">🌌 Visualizer</TabsTrigger>
           <TabsTrigger value="pathways">✨ Pathways</TabsTrigger>
+          <TabsTrigger value="oecd">🏛️ OECD</TabsTrigger>
         </TabsList>
 
         <TabsContent value="assessment" className="space-y-4">
@@ -131,6 +134,10 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
 
         <TabsContent value="pathways" className="space-y-4">
           <ExperienceDotsVisualization mode="personal" />
+        </TabsContent>
+
+        <TabsContent value="oecd" className="space-y-4">
+          <OECDInsightMatcher />
         </TabsContent>
       </Tabs>
 
