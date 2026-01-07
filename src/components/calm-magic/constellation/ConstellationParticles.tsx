@@ -1,5 +1,6 @@
 import React, { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { ManifoldEntry } from '@/hooks/useManifoldData';
 import { ManifoldEdge } from '@/hooks/useManifoldEdges';
@@ -131,53 +132,34 @@ export function ConstellationParticles({
   return (
     <group>
       {/* Tag-based connection lines (subtle) */}
-      {tagConnections.map((conn, i) => {
-        const linePositions = new Float32Array([
-          conn.start.x, conn.start.y, conn.start.z,
-          conn.end.x, conn.end.y, conn.end.z
-        ]);
-        
-        return (
-          <line key={`tag-${i}`}>
-            <bufferGeometry>
-              <bufferAttribute
-                attach="attributes-position"
-                args={[linePositions, 3]}
-              />
-            </bufferGeometry>
-            <lineBasicMaterial
-              color={conn.color}
-              transparent
-              opacity={conn.opacity}
-            />
-          </line>
-        );
-      })}
+      {tagConnections.map((conn, i) => (
+        <Line
+          key={`tag-${i}`}
+          points={[
+            [conn.start.x, conn.start.y, conn.start.z],
+            [conn.end.x, conn.end.y, conn.end.z]
+          ]}
+          color={conn.color}
+          transparent
+          opacity={conn.opacity}
+          lineWidth={1}
+        />
+      ))}
 
       {/* Explicit manifold edges (prominent) */}
-      {explicitEdges.map((conn, i) => {
-        const linePositions = new Float32Array([
-          conn.start.x, conn.start.y, conn.start.z,
-          conn.end.x, conn.end.y, conn.end.z
-        ]);
-        
-        return (
-          <line key={`edge-${i}`}>
-            <bufferGeometry>
-              <bufferAttribute
-                attach="attributes-position"
-                args={[linePositions, 3]}
-              />
-            </bufferGeometry>
-            <lineBasicMaterial
-              color={conn.color}
-              transparent
-              opacity={conn.opacity}
-              linewidth={2}
-            />
-          </line>
-        );
-      })}
+      {explicitEdges.map((conn, i) => (
+        <Line
+          key={`edge-${i}`}
+          points={[
+            [conn.start.x, conn.start.y, conn.start.z],
+            [conn.end.x, conn.end.y, conn.end.z]
+          ]}
+          color={conn.color}
+          transparent
+          opacity={conn.opacity}
+          lineWidth={2}
+        />
+      ))}
 
       {/* Main particles */}
       <points ref={pointsRef}>
@@ -273,25 +255,17 @@ export function ConstellationParticles({
         const targetEntry = entries.find(e => e.id === edgeTarget.id);
         if (!sourceEntry || !targetEntry) return null;
         
-        const linePositions = new Float32Array([
-          sourceEntry.projectedX, sourceEntry.projectedY, sourceEntry.projectedZ,
-          targetEntry.projectedX, targetEntry.projectedY, targetEntry.projectedZ
-        ]);
-        
         return (
-          <line>
-            <bufferGeometry>
-              <bufferAttribute
-                attach="attributes-position"
-                args={[linePositions, 3]}
-              />
-            </bufferGeometry>
-            <lineBasicMaterial
-              color={0xa855f7}
-              transparent
-              opacity={0.8}
-            />
-          </line>
+          <Line
+            points={[
+              [sourceEntry.projectedX, sourceEntry.projectedY, sourceEntry.projectedZ],
+              [targetEntry.projectedX, targetEntry.projectedY, targetEntry.projectedZ]
+            ]}
+            color={0xa855f7}
+            transparent
+            opacity={0.8}
+            lineWidth={2}
+          />
         );
       })()}
 
