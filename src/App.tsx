@@ -32,6 +32,7 @@ import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import SubscriptionCanceled from "./pages/SubscriptionCanceled";
 import PatternEncyclopedia from "./pages/PatternEncyclopedia";
 import ParacosmDashboard from "./pages/ParacosmDashboard";
+import GlitchMethodology from "./pages/GlitchMethodology";
 import Settings from "./pages/Settings";
 import AdminSubscriptions from "./pages/AdminSubscriptions";
 import "./App.css";
@@ -75,6 +76,7 @@ function App() {
                   <Route path="/subscription-success" element={<SubscriptionSuccess />} />
                   <Route path="/subscription-canceled" element={<SubscriptionCanceled />} />
                   <Route path="/pattern-encyclopedia" element={<PatternEncyclopedia />} />
+                  <Route path="/glitch-methodology" element={<GlitchMethodology />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
                 <Toaster />
