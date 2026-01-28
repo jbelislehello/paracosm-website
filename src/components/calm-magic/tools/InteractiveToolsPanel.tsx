@@ -13,6 +13,7 @@ import ClientNeedsAssessment from './ClientNeedsAssessment';
 import ClientRecommendations from './ClientRecommendations';
 import BoardEntryGate from '../BoardEntryGate';
 import { OECDInsightMatcher } from '../OECDInsightMatcher';
+import GlitchSessionTimer from './GlitchSessionTimer';
 import { Compass, ArrowRight } from 'lucide-react';
 
 interface InteractiveToolsPanelProps {
@@ -43,7 +44,8 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
       'EmotiveCompassWidget': 'compass',
       'LearningOrganizationDashboard': 'pathways',
       'CulturalUnitTests': 'lens',
-      'OECDInsightMatcher': 'oecd'
+      'OECDInsightMatcher': 'oecd',
+      'GlitchSessionTimer': 'session'
     };
 
     const targetTab = toolTabMap[toolName] || 'framework';
@@ -77,7 +79,7 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-9">
+        <TabsList className="grid w-full grid-cols-10">
           <TabsTrigger value="assessment">🎯 Assessment</TabsTrigger>
           <TabsTrigger value="recommendations" disabled={!recommendations}>📋 Recommendations</TabsTrigger>
           <TabsTrigger value="framework">📊 Framework</TabsTrigger>
@@ -87,6 +89,7 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
           <TabsTrigger value="visualizer">🌌 Visualizer</TabsTrigger>
           <TabsTrigger value="pathways">✨ Pathways</TabsTrigger>
           <TabsTrigger value="oecd">🏛️ OECD</TabsTrigger>
+          <TabsTrigger value="session">⏱️ Session</TabsTrigger>
         </TabsList>
 
         <TabsContent value="assessment" className="space-y-4">
@@ -138,6 +141,10 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
 
         <TabsContent value="oecd" className="space-y-4">
           <OECDInsightMatcher />
+        </TabsContent>
+
+        <TabsContent value="session" className="space-y-4">
+          <GlitchSessionTimer />
         </TabsContent>
       </Tabs>
 
