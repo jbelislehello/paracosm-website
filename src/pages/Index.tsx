@@ -90,6 +90,7 @@ const Index = () => {
           <nav className="hidden md:flex items-center gap-6">
             <a href="#ai-leadership" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.ai_leadership")}</a>
             <Link to="/calm-magic-assistant" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.relational_innovation")}</Link>
+            <Link to="/glitch-methodology" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.glitch_methodology")}</Link>
             <LanguageSwitcher />
           </nav>
           
@@ -127,6 +128,13 @@ const Index = () => {
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     {t("navigation.relational_innovation")}
+                  </Link>
+                  <Link 
+                    to="/glitch-methodology" 
+                    className="text-lg font-medium hover:text-purple-600 transition-colors py-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {t("navigation.glitch_methodology")}
                   </Link>
                   <div className="h-px bg-border my-2" />
                   <Link to="/" onClick={() => setMobileMenuOpen(false)}>
