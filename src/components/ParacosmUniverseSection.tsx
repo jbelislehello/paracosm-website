@@ -7,14 +7,14 @@ const haLabsBranches = [
   {
     title: "Performance Arts",
     icon: Theater,
-    items: ["Satori & Kensho"],
+    items: [{ label: "Satori & Kensho", href: "https://suno.com/@jbelisle" }],
   },
   {
     title: "Innovation Framework",
     icon: Compass,
     items: [
       { label: "Calm Magic: The Board", to: "/calm-magic-board" },
-      "Calm Magic: The Book",
+      { label: "Calm Magic: The Newsletter", href: "https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=6884529759464816640" },
     ],
   },
   {
@@ -54,8 +54,14 @@ const paracosmBranches = [
     icon: Calendar,
     children: [
       { label: "Gl!tch Session", to: "/glitch-methodology" },
-      { label: "Drift Podcast", to: "/drift" },
       "Paracosm Retreat",
+    ],
+  },
+  {
+    label: "Drift",
+    icon: Mic,
+    children: [
+      { label: "Monthly Review", to: "/drift" },
     ],
   },
 ];
@@ -112,6 +118,20 @@ const ParacosmUniverseSection = () => {
                           return (
                             <li key={item} className="text-sm text-muted-foreground">
                               {item}
+                            </li>
+                          );
+                        }
+                        if ('href' in item) {
+                          return (
+                            <li key={item.label}>
+                              <a
+                                href={(item as any).href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-sm text-indigo-600 dark:text-indigo-400 hover:underline inline-flex items-center gap-1"
+                              >
+                                {item.label}
+                              </a>
                             </li>
                           );
                         }
