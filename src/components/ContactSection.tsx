@@ -70,7 +70,7 @@ const ContactSection = () => {
         return [
           {
             title: 'Executive Development',
-            description: 'Expansive leadership coaching for executives',
+            description: 'Building learning organizations for executives',
             caseStudyId: 'executive-coaching',
             caseStudyTitle: 'Executive Transformation Program'
           }

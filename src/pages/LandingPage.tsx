@@ -176,7 +176,7 @@ const LandingPage = () => {
               </div>
               
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-rose-600 animate-gradient-x mb-4 sm:mb-6">
-                Expansive Leadership Coaching
+                Building Learning Organizations
               </h1>
               
               <p className="text-base sm:text-lg md:text-xl mb-4 sm:mb-6 text-gray-700 dark:text-gray-200 px-2 font-medium">
