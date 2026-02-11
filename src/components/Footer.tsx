@@ -11,16 +11,16 @@ const Footer: React.FC = () => {
     <footer className="bg-slate-900 text-slate-300">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand */}
+          {/* Brand — HA Labs */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-md flex items-center justify-center">
-                <span className="text-white font-bold">P</span>
+              <div className="w-8 h-8 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-md flex items-center justify-center">
+                <span className="text-white font-bold text-xs">HA</span>
               </div>
-              <span className="font-bold text-lg text-white">Paracosm</span>
+              <span className="font-bold text-lg text-white">HA Labs</span>
             </div>
             <p className="text-sm text-slate-400 mb-4">
-              {t("footer.paracosm_description")}
+              Creative technology studio — performance arts, interactive storytelling, AI & IOT software, and innovation frameworks.
             </p>
             <div className="flex items-center gap-2 text-sm">
               <Mail className="w-4 h-4 text-slate-400" />
@@ -33,40 +33,49 @@ const Footer: React.FC = () => {
             </div>
           </div>
           
-          {/* Services */}
+          {/* HA Labs Projects */}
           <div>
-            <h3 className="font-semibold text-white mb-4">{t("footer.services_title")}</h3>
+            <h3 className="font-semibold text-white mb-4">HA Labs Projects</h3>
             <ul className="space-y-2">
-              <li>
-                <Link to="/agentic-ux" className="text-sm text-slate-400 hover:text-purple-400 transition-colors">
-                  AI Leadership & Strategy
-                </Link>
-              </li>
-              <li>
-                <Link to="/calm-magic-assistant" className="text-sm text-slate-400 hover:text-purple-400 transition-colors">
-                  Team Coaching & Culture
-                </Link>
-              </li>
               <li>
                 <Link to="/calm-magic-board" className="text-sm text-slate-400 hover:text-purple-400 transition-colors">
                   Calm Magic Board
                 </Link>
               </li>
               <li>
-                <Link to="/case-studies" className="text-sm text-slate-400 hover:text-purple-400 transition-colors">
-                  {t("navigation.case_studies")}
+                <Link to="/wuxia" className="text-sm text-slate-400 hover:text-purple-400 transition-colors">
+                  Wuxia the Fox
                 </Link>
+              </li>
+              <li>
+                <Link to="/tonalli" className="text-sm text-slate-400 hover:text-purple-400 transition-colors">
+                  Tonalli
+                </Link>
+              </li>
+              <li>
+                <span className="text-sm text-slate-400">IoTheatre</span>
+              </li>
+              <li>
+                <span className="text-sm text-slate-400">Satori & Kensho</span>
               </li>
             </ul>
           </div>
           
-          {/* Company */}
+          {/* Paracosm */}
           <div>
-            <h3 className="font-semibold text-white mb-4">{t("footer.company_title")}</h3>
+            <h3 className="font-semibold text-white mb-4">Paracosm</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/about-us" className="text-sm text-slate-400 hover:text-purple-400 transition-colors">
-                  {t("footer.about_jonathan")}
+                <Link to="/calm-magic-assistant" className="text-sm text-slate-400 hover:text-purple-400 transition-colors">
+                  Relational Intelligence
+                </Link>
+              </li>
+              <li>
+                <span className="text-sm text-slate-400">Learning Organizations</span>
+              </li>
+              <li>
+                <Link to="/glitch-methodology" className="text-sm text-slate-400 hover:text-purple-400 transition-colors">
+                  Gl!tch Sessions
                 </Link>
               </li>
               <li>
@@ -75,14 +84,7 @@ const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/pricing" className="text-sm text-slate-400 hover:text-purple-400 transition-colors">
-                  Pricing
-                </Link>
-              </li>
-              <li>
-                <Link to="/#contact" className="text-sm text-slate-400 hover:text-purple-400 transition-colors">
-                  {t("navigation.contact")}
-                </Link>
+                <span className="text-sm text-slate-400">Retreats</span>
               </li>
             </ul>
           </div>
@@ -114,7 +116,7 @@ const Footer: React.FC = () => {
         
         {/* Bottom Bar */}
         <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-slate-400">© 2025 Paracosm. {t("footer.rights_reserved")}</p>
+          <p className="text-sm text-slate-400">© 2025 HA Labs + Paracosm. {t("footer.rights_reserved")}</p>
           <div className="flex space-x-4 mt-4 md:mt-0">
             <a href="https://www.linkedin.com/newsletters/calm-magic-6884529759464816640/" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">LinkedIn</a>
             <a href="https://calmmagic.medium.com/" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">Medium</a>
