@@ -1,29 +1,27 @@
 
 
-# Move Tonalli to Its Own Page
+# Add Tonalli Link Card to Landing Page
 
 ## What's Changing
 
-The Tonalli Initiative section currently embedded in the GL!TCH Methodology page will be extracted into its own dedicated page at `/tonalli`, with its own header, footer, and navigation. The section will be removed from `GlitchMethodology.tsx`.
+A new section will be added to the landing page to help visitors discover the Tonalli Initiative. It will be placed between the "Bridge to Relational Innovation" section and the Contact section (between lines 468 and 470).
 
-## Changes
+## Design
 
-### 1. Create `src/pages/Tonalli.tsx`
-- New standalone page with the same dark theme styling
-- Header with "Tonalli" branding and a "Back to Home" link
-- All existing Tonalli content moved here (Voice, Spatial, Educational Design Platforms, Medium link)
-- Its own CTA section with `mailto:jbelisle@helloarchitekt.com`
-- Footer consistent with other pages
+A compact, visually distinct card section with:
+- Warm amber/orange gradient background (matching Tonalli's branding)
+- "Tonalli Initiative" title with a short tagline
+- Two subtle highlights for Voice and Spatial branches (icons: Mic and Eye)
+- A CTA button linking to `/tonalli`
 
-### 2. Update `src/App.tsx`
-- Import the new `Tonalli` page
-- Add route: `<Route path="/tonalli" element={<Tonalli />} />`
+## Technical Details
 
-### 3. Update `src/pages/GlitchMethodology.tsx`
-- Remove the entire Tonalli section (lines 263-405)
-- Remove unused icon imports (`Mic`, `Eye`, `ExternalLink`, `Lightbulb`, `Box`, `Palette`) if no longer needed
-- Optionally add a small link/card pointing to `/tonalli` so visitors can discover it
+### File: `src/pages/Index.tsx`
 
-### 4. Update navigation (landing page or other nav)
-- Add a link to `/tonalli` from the landing page or main navigation so the new page is discoverable
+- Import `Mic` and `Eye` icons from lucide-react (line 13)
+- Add a new section (~30 lines) between line 468 and line 470, styled as a dark card with amber accents
+- Uses `Link` to `/tonalli` for the CTA button
+- Responsive grid layout consistent with other landing page sections
+
+No new files or components needed -- just a self-contained section block in the existing page.
 
