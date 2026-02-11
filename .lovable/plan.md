@@ -1,65 +1,101 @@
 
 
-# Integrate Expressivity Tools into Calm Magic Board
+# Update Site to Reflect HA Labs + Paracosm Ontological Structure
 
 ## Overview
 
-The Calm Magic Expressivity Tools panel (currently a floating popup window on the Team Coaching page) will be moved into the Calm Magic Board as a new tab. The Team Coaching page will be simplified to show coaching content and a CTA to launch the Board.
+The site currently presents everything under the "Paracosm" brand with an ad-hoc mix of projects. The user has provided a clear two-entity organizational ontology that needs to be reflected across the site: **HA Labs** (the creative/tech studio) and **Paracosm** (the coaching practice). This plan restructures the landing page, navigation, footer, and universe section to match.
 
-## What Changes
+## Organizational Structure to Reflect
 
-### 1. Add "Expressivity" tab to the Calm Magic Board (`src/pages/CalmMagicBoard.tsx`)
+```text
+HA Labs
++-- Performance Arts
+|   +-- Satori & Kensho
++-- Innovation Methodological Framework
+|   +-- Calm Magic: The Board
+|   +-- Calm Magic: The Book
++-- Interactive Storytelling
+|   +-- Wuxia the Fox
+|   +-- Tout ce qui arrive et advient sous la lune
+|   +-- One Mercury Year
+|   +-- Le cosmographe et l'ordre des marchands
+|   +-- The Manifold
++-- AI & IOT Software
+|   +-- IoTheatre
+|   +-- Tonalli (Voice & Spatial Computer)
++-- Client Projects
 
-- Add `'expressivity'` to the `ViewTab` type union
-- Add a new tab trigger in both desktop and mobile sub-navigation (using a Heart or Sparkles icon)
-- Render `InteractiveToolsPanel` when the expressivity tab is active, passing the board's own `emotionalState`-equivalent data (shadow position, season qualities, etc.) to connect the tools to the board's live state
-- The "Boussole Calm Magic" CTA inside InteractiveToolsPanel already links back to the Board Entry Gate, which will be adjusted since we're already inside the board
-
-### 2. Connect InteractiveToolsPanel to Board state (`src/components/calm-magic/tools/InteractiveToolsPanel.tsx`)
-
-- Accept optional board-context props (current season, visited tiles count, shadow position) so the tools can reflect live board state
-- Remove or hide the "Ouvrir le Board" CTA when rendered inside the board (add an `insideBoard` prop)
-- Connect the Client Needs Assessment results to the board's Window of Tolerance / shadow position data when available
-
-### 3. Simplify the Team Coaching page (`src/pages/RelationalHealing.tsx`)
-
-- Remove the `CalmMagicAssistant` popup component entirely (no more floating window)
-- Remove the `isCalmMagicOpen` state and the header button toggling the popup
-- Replace the hero CTA with a direct link to `/calm-magic-board` (or the Board Entry Gate modal for mode selection)
-- Keep the `CoachingServices` section and footer as-is
-- Add a prominent "Launch Calm Magic Board" CTA card in the hero
-
-### 4. Update navigation references
-
-- The "Team Coaching" link in `LandingPage.tsx` nav still points to `/calm-magic-assistant` (no change needed, page still exists)
-- Landing page hero CTA for "Relational Intelligence & Team Coaching" still works
-
-## Technical Details
-
-### ViewTab type change in CalmMagicBoard.tsx
-```
-type ViewTab = 'matrix' | 'window-of-tolerance' | 'topologies' | 'prd-assembly' | 'constellation' | 'expressivity';
+Paracosm (Agentic UX & Coaching)
++-- Relational Intelligence
++-- Learning Organizations
++-- Retreats
++-- Events
+    +-- Gl!tch Session
+    +-- Drift Podcast
+    +-- Paracosm Retreat
 ```
 
-### InteractiveToolsPanel new props
-```typescript
-interface InteractiveToolsPanelProps {
-  emotionalState: Partial<EmotionalState>;
-  onStateChange: (state: Partial<EmotionalState>) => void;
-  insideBoard?: boolean;           // hides the "Ouvrir le Board" CTA
-  currentSeason?: string;          // connects to board season
-  visitedTilesCount?: number;      // shows board progress
-}
-```
+## Changes
 
-### Files modified
-- `src/pages/CalmMagicBoard.tsx` -- add expressivity tab + render InteractiveToolsPanel
-- `src/components/calm-magic/tools/InteractiveToolsPanel.tsx` -- add `insideBoard` prop, hide Board CTA when inside board
-- `src/pages/RelationalHealing.tsx` -- remove CalmMagicAssistant popup, replace with Board launch CTA
-- `src/components/calm-magic/components/ViewModeNavigation.tsx` (if it exists for the old popup nav) -- may need cleanup
+### 1. Rewrite `ParacosmUniverseSection.tsx` as the HA Labs + Paracosm Ecosystem Section
 
-### Files NOT modified
-- `CoachingServices.tsx` stays as-is
-- `LandingPage.tsx` nav stays as-is (the route still exists)
-- The `CalmMagicAssistant` component files remain in the codebase but are no longer imported by RelationalHealing
+Replace the current Wuxia-focused section with a comprehensive ecosystem overview:
+- **Section header**: "The Ecosystem" or "HA Labs + Paracosm" with a brief intro
+- **Two visual columns/areas**:
+  - **HA Labs** card: grouped sub-sections for Performance Arts, Innovation Framework, Interactive Storytelling, AI & IOT Software, and Client Projects -- each with their sub-projects listed
+  - **Paracosm** card: Relational Intelligence, Learning Organizations, Retreats, Events (Gl!tch, Drift, Paracosm Retreat)
+- Keep the Wuxia the Fox featured announcement but nest it under the Interactive Storytelling branch
+- Link existing routes where they exist (`/calm-magic-board`, `/wuxia`, `/tonalli`, `/drift`, `/glitch-methodology`)
+
+### 2. Update Footer (`src/components/Footer.tsx`)
+
+Restructure the footer columns to reflect the two entities:
+- Column 1: **HA Labs** brand + description + email
+- Column 2: **HA Labs Projects** -- Calm Magic Board, Wuxia, Tonalli, IoTheatre, Satori & Kensho
+- Column 3: **Paracosm** -- Relational Intelligence, Learning Organizations, Gl!tch Sessions, Drift Podcast, Retreats
+- Column 4: **Get Started** (keep existing CTAs)
+
+### 3. Update Navigation in `LandingPage.tsx`
+
+Simplify desktop nav to reflect top-level concerns:
+- **Paracosm** (coaching landing -- current Team Coaching link)
+- **Calm Magic Board** (keep)
+- **Drift** (keep)
+- **Tonalli** (keep)
+- **Events** (keep)
+- **Contact** (keep)
+
+Remove "AI Leadership" and "Services" as standalone nav items since the landing page hero already covers service pathways. Mobile menu updated to match.
+
+### 4. Update i18n files
+
+Add new keys to `src/i18n/en/navigation.json` and `src/i18n/fr/navigation.json`:
+- `ha_labs`: "HA Labs" / "HA Labs"
+- `ecosystem`: "Ecosystem" / "Ecosysteme"
+- `performance_arts`: "Performance Arts" / "Arts de la performance"
+- `interactive_storytelling`: "Interactive Storytelling" / "Narration interactive"
+- `ai_iot_software`: "AI & IOT Software" / "Logiciel IA & IOT"
+- `client_projects`: "Client Projects" / "Projets clients"
+- `learning_organizations`: "Learning Organizations" / "Organisations apprenantes"
+- `retreats`: "Retreats" / "Retraites"
+- `events`: "Events" / "Evenements"
+
+### Files Modified
+
+| File | Change |
+|------|--------|
+| `src/components/ParacosmUniverseSection.tsx` | Full rewrite to show HA Labs + Paracosm ecosystem |
+| `src/components/Footer.tsx` | Restructure columns for two entities |
+| `src/pages/LandingPage.tsx` | Update nav links |
+| `src/i18n/en/navigation.json` | Add new keys |
+| `src/i18n/fr/navigation.json` | Add new keys |
+| `src/i18n/en/common.json` | Add ecosystem-related strings |
+| `src/i18n/fr/common.json` | Add ecosystem-related strings |
+
+### Files NOT Modified
+
+- Individual project pages (Tonalli, Wuxia, CalmMagicBoard, Drift, etc.) stay as-is
+- Index.tsx (AI Leadership landing) stays as-is
+- No new routes or pages created
 
