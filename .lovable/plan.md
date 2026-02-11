@@ -1,34 +1,51 @@
 
 
-# Update Drift Discovery Categories
+# Update HA Labs + Paracosm Panel
 
-## Overview
+## Changes
 
-Replace the current 5 discovery categories (Narrative, Workflow, Inquiry & Practices, Playgrounds, Human Dynamics & System Thinking) with the full list of 15 categories provided by the user.
+### HA Labs Side
 
-## New Categories
+1. **Satori & Kensho** -- convert from plain text to a link pointing to `https://suno.com/@jbelisle` (external, opens in new tab)
 
-The `dashboardSections` array in `src/pages/DriftLanding.tsx` will be expanded from 5 to 15 categories. Since the current code maps each category to one of the 5 energetic axes (LOVE, MAGIC, CALM, OPEN, FREE), I'll distribute the 15 categories across these axes in groups of 3:
+2. **"Calm Magic: The Book"** -- rename to **"Calm Magic: The Newsletter"** and make it a link to `https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=6884529759464816640` (external, opens in new tab)
 
-| Axis (Color) | Categories |
-|---|---|
-| **LOVE** (red) | Tangible Play, Embodied Cognition, Wearables |
-| **MAGIC** (purple) | Sensory Rooms, 21c Parenting, Narratives |
-| **CALM** (cyan) | Workflows, Inquiry and Practices, Playgrounds |
-| **OPEN** (green) | Human Dynamics & System Thinking, Connected Life, Telling Stories (Narratives) |
-| **FREE** (amber) | WorldBuilders, Post-Broadcast, Connected Life |
+### Paracosm Side
 
-Note: "Connected Life" appears twice in the user's list -- both will be kept as provided.
+3. **Add a new "Drift" branch** with icon `Mic` (or `Book`), containing one sub-item:
+   - "Monthly Review" -- links to `/drift` (internal)
 
-## Technical Changes
+4. **Remove "Drift Podcast"** from under "Events" since Drift now has its own branch.
 
-**File:** `src/pages/DriftLanding.tsx`
+## Technical Details
 
-- Replace the 5-item `dashboardSections` array (lines 28-32) with a 15-item array
-- Each entry keeps the same structure: `{ axis, type, description }`
-- The grid layout (`grid-cols-1 lg:grid-cols-2`) will be updated to `grid-cols-1 md:grid-cols-2 lg:grid-cols-3` to better accommodate 15 cards
-- Each category gets a brief description consistent with the existing style
+**File:** `src/components/ParacosmUniverseSection.tsx`
+
+### Data changes
+
+In `haLabsBranches`:
+- Line 10: Change `"Satori & Kensho"` to `{ label: "Satori & Kensho", href: "https://suno.com/@jbelisle" }`
+- Line 17: Change `"Calm Magic: The Book"` to `{ label: "Calm Magic: The Newsletter", href: "https://www.linkedin.com/build-relation/newsletter-follow?entityUrn=6884529759464816640" }`
+
+In `paracosmBranches`:
+- Add a new branch after "Events":
+  ```tsx
+  {
+    label: "Drift",
+    icon: Mic,
+    children: [
+      { label: "Monthly Review", to: "/drift" },
+    ],
+  }
+  ```
+- Remove `{ label: "Drift Podcast", to: "/drift" }` from the Events children array
+
+### Rendering update
+
+The HA Labs item renderer (around lines 110-133) currently handles two types: plain strings and objects with `{ label, to }`. It needs to also handle objects with `{ label, href }` for external links, rendering an `<a href="..." target="_blank" rel="noopener noreferrer">` instead of a `<Link>`.
+
+The check will be: if the item has an `href` property, render as an external `<a>` tag; if it has a `to` property, render as an internal `<Link>`.
 
 ### Files modified
-- `src/pages/DriftLanding.tsx` only
+- `src/components/ParacosmUniverseSection.tsx` only
 
