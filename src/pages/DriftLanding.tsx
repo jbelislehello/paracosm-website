@@ -215,7 +215,7 @@ const DriftLanding = () => {
               Monthly Review
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Each month, two curated book discoveries mapped to the Calm Magic compass.
+              Each month, a curated list of books, videos, apps and curious discoveries mapped to the Calm Magic compass.
             </p>
           </div>
 
