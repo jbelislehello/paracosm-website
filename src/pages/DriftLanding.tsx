@@ -16,7 +16,11 @@ const DriftLanding = () => {
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
-    
+
+    const subject = encodeURIComponent("Drift Newsletter - New Subscriber");
+    const body = encodeURIComponent(`New Drift newsletter subscriber:\n\nEmail: ${email}`);
+    window.location.href = `mailto:jbelisle@helloarchitekt.com?subject=${subject}&body=${body}`;
+
     toast({
       title: "Welcome to the drift!",
       description: "You'll receive your first update soon.",
