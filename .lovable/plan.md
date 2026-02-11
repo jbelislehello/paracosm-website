@@ -1,38 +1,41 @@
 
 
-# Update Drift Dashboard Categories to MAGIC Compass
+# Update Top Navigation in LandingPage
 
-## What's Changing
+## Changes to `src/pages/LandingPage.tsx`
 
-The weekly dashboard section on the Drift landing page currently uses generic category labels (Tools, Ideas, Culture, Experiments, Interactions). These will be updated to match the MAGIC compass system from the Calm Magic framework: **Narrative, Workflow, Inquiry and Practices, Playgrounds, Human Dynamics and System Thinking**.
+### 1. Remove "Book Call" button from top nav (line 152-156)
+Remove the "Book Call" outline button entirely from the desktop actions area.
 
-## Category Mapping
+### 2. Link "Get Started" button to contact section (line 157-160)
+Change the "Get Started" button from opening CalmMagicAssistant to scrolling to the `#contact` section instead. Replace `onClick={handleStartCoaching}` with an anchor link to `#contact`.
 
-| MAGIC Letter | New Category | Previous Label | Energetic Axis |
-|---|---|---|---|
-| M | Narrative | Culture / Cultural Comment | LOVE (Aliveness) |
-| A | Workflow | Tools | MAGIC (Spaciousness) |
-| G | Inquiry and Practices | Ideas / Ideas and Books | CALM (Wholeness/Ground) |
-| I | Playgrounds | Experiments | OPEN (Poiesis/Transformation) |
-| C | Human Dynamics and System Thinking | Interactions / Emergence | FREE (Neurogenesis/Integration) |
+### 3. Update desktop nav links (lines 118-125)
+- Change "Paracosm" to two separate links: **"AI Leadership"** (pointing to `/agentic-ux`) and **"Team Coaching"** (pointing to `/calm-magic-assistant`)
+- Change "Calm Magic Board" to just **"Calm Magic"** (same `/calm-magic-board` route)
+- Keep Drift, Tonalli, Events, Contact as-is
 
-## Changes
+### 4. Update mobile nav links (lines 135-145)
+Mirror the same changes: replace "Paracosm" with "AI Leadership" + "Team Coaching", rename "Calm Magic Board" to "Calm Magic".
 
-### File: `src/pages/DriftLanding.tsx`
+## Technical Details
 
-Update the `dashboardSections` array (lines 27-33) to use the new MAGIC compass category names and updated descriptions:
-
-```typescript
-const dashboardSections = [
-  { axis: energeticAxes[0], type: "Narrative", description: "Storytelling -- how discoveries become stories worth telling" },
-  { axis: energeticAxes[1], type: "Workflow", description: "Process -- practical tools and instruments for daily practice" },
-  { axis: energeticAxes[2], type: "Inquiry & Practices", description: "Questions and practices that open new understanding" },
-  { axis: energeticAxes[3], type: "Playgrounds", description: "Experiments, prototypes, and bold attempts at transformation" },
-  { axis: energeticAxes[4], type: "Human Dynamics & System Thinking", description: "How humans and systems interact, emerge, and evolve together" },
-];
+Desktop nav becomes:
+```
+AI Leadership | Team Coaching | Calm Magic | Drift | Tonalli | Events | Contact
 ```
 
-### No other files affected
+The "Get Started" button changes from:
+```tsx
+<Button onClick={handleStartCoaching} ...>Get Started</Button>
+```
+to:
+```tsx
+<a href="#contact"><Button ...>Get Started</Button></a>
+```
 
-The energeticAxes data (LOVE/MAGIC/CALM/OPEN/FREE) in `src/data/gardens.ts` stays unchanged -- the axes provide visual styling (colors, badges) while the new category names provide the conceptual framing.
+The "Book Call" `<a>` + `<Button>` block (lines 152-156) is removed entirely.
+
+### Files modified
+- `src/pages/LandingPage.tsx` only
 
