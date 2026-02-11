@@ -1,60 +1,68 @@
 
 
-# Fix Forms + Minor Cleanup
+# Comprehensive Site Fixes -- Errors, UX, Readability, Findability
 
-## 1. Retreat Invitation Form -- send email via mailto
+## Issues Found
 
-**File:** `src/pages/ParacosmRetreatLanding.tsx`
+After a full audit of the public-facing pages (`/`, `/paracosm-retreat`, `/drift`, `/calm-magic-assistant`), here are all the issues to fix:
 
-Currently the `handleSubmit` only shows a toast. Update it to open a mailto link to `jbelisle@helloarchitekt.com` with the name and email pre-filled in the body, then show the success state.
+---
 
-```tsx
-const handleSubmit = (e: React.FormEvent) => {
-  e.preventDefault();
-  if (!name.trim() || !email.trim()) {
-    toast.error("Please fill in both fields.");
-    return;
-  }
+### 1. Drift page title is nearly invisible
+The "Drift" heading uses a gradient that blends into the white background, making it unreadable.
 
-  const subject = encodeURIComponent("Paracosm Retreat - Invitation Request");
-  const body = encodeURIComponent(
-    `New invitation request for the Paracosm Retreat:\n\nName: ${name}\nEmail: ${email}`
-  );
-  window.location.href = `mailto:jbelisle@helloarchitekt.com?subject=${subject}&body=${body}`;
+**Fix:** Change the gradient colors in `src/pages/DriftLanding.tsx` to use visible, high-contrast colors (e.g., `from-slate-800 via-purple-600 to-blue-600`).
 
-  setSubmitted(true);
-  toast.success("You've been added to the invitation list!");
-};
-```
+---
 
-## 2. Drift Subscribe Form -- send email via mailto
+### 2. Retreat landing page missing Footer
+`/paracosm-retreat` ends abruptly after the invitation form with no footer.
 
-**File:** `src/pages/DriftLanding.tsx`
+**Fix:** Import and add `<Footer />` at the bottom of `src/pages/ParacosmRetreatLanding.tsx`.
 
-Same pattern -- update `handleSubscribe` to open a mailto link.
+---
 
-```tsx
-const handleSubscribe = (e: React.FormEvent) => {
-  e.preventDefault();
-  if (!email) return;
+### 3. Footer copyright year says 2025
+The footer bottom bar shows "2025" instead of "2026."
 
-  const subject = encodeURIComponent("Drift Newsletter - New Subscriber");
-  const body = encodeURIComponent(`New Drift newsletter subscriber:\n\nEmail: ${email}`);
-  window.location.href = `mailto:jbelisle@helloarchitekt.com?subject=${subject}&body=${body}`;
+**Fix:** Update the year in `src/components/Footer.tsx` from `2025` to `2026`.
 
-  toast({ title: "Welcome to the drift!", description: "You'll receive your first update soon." });
-  setEmail("");
-};
-```
+---
 
-## 3. Footer -- rename "Drift Podcast" to "Drift"
+### 4. Event category badges all link to Medium
+In `src/components/ParacosmEventsSection.tsx`, every event card's category badge is wrapped in an `<a>` tag linking to `https://medium.com/futurographer`. This is confusing -- users clicking a category badge expect filtering, not navigation to an external blog.
 
-**File:** `src/components/Footer.tsx` (line 84)
+**Fix:** Remove the `<a>` wrapper from the category badge and render it as a plain `<span>` or keep it as a styled div.
 
-Change the text from "Drift Podcast" to "Drift".
+---
 
-## Files modified
-- `src/pages/ParacosmRetreatLanding.tsx`
-- `src/pages/DriftLanding.tsx`
-- `src/components/Footer.tsx`
+### 5. Footer "Retreats" item is plain text, not a link
+The Paracosm column in the footer shows "Retreats" as non-clickable text. Now that the `/paracosm-retreat` page exists, it should be a link.
+
+**Fix:** Change from `<span>` to `<Link to="/paracosm-retreat">` in `src/components/Footer.tsx`.
+
+---
+
+### 6. Footer "Satori & Kensho" is plain text, not a link
+Same issue -- it should link to `https://suno.com/@jbelisle` as it does in the Universe section.
+
+**Fix:** Change from `<span>` to `<a href="https://suno.com/@jbelisle" target="_blank">` in `src/components/Footer.tsx`.
+
+---
+
+### 7. Footer "IoTheatre" is plain text with no destination
+Currently just a label. This is acceptable if there is no page yet, but visually it looks like a dead item.
+
+**Fix:** Add a subtle `text-slate-500` style or a "(Coming Soon)" indicator to distinguish it from clickable links. No code link needed.
+
+---
+
+## Files Modified
+
+| File | Change |
+|------|--------|
+| `src/pages/DriftLanding.tsx` | Fix "Drift" title contrast |
+| `src/pages/ParacosmRetreatLanding.tsx` | Add Footer |
+| `src/components/Footer.tsx` | Fix year, link Retreats, link Satori & Kensho |
+| `src/components/ParacosmEventsSection.tsx` | Remove misleading Medium link from category badges |
 
