@@ -10,7 +10,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
 import MobileSectionNav from "@/components/MobileSectionNav";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Bot, Brain, TrendingUp, Target, Cog, Compass, Zap, Heart, Users, Menu, X } from 'lucide-react';
+import { ArrowRight, Sparkles, Bot, Brain, TrendingUp, Target, Cog, Compass, Zap, Heart, Users, Menu, X, Mic, Eye } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -463,6 +463,45 @@ const Index = () => {
                 Personal Expansion Journal
               </Button>
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Tonalli Initiative */}
+      <section className="py-12 md:py-16 px-4 bg-gradient-to-b from-slate-900 to-slate-950">
+        <div className="container max-w-4xl mx-auto">
+          <div className="relative rounded-2xl overflow-hidden border border-amber-500/20 bg-gradient-to-br from-amber-950/40 via-slate-900 to-slate-950 p-8 md:p-12">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(245,158,11,0.08),transparent_60%)]" />
+            <div className="relative z-10">
+              <h2 className="text-2xl md:text-3xl font-bold mb-3 text-amber-100">
+                Tonalli Initiative
+              </h2>
+              <p className="text-amber-200/70 mb-8 max-w-2xl text-base md:text-lg">
+                Object-based interaction art — a companion IO platform exploring consent-first voice and spatial design.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                <div className="flex items-start gap-3 bg-amber-500/5 rounded-lg p-4 border border-amber-500/10">
+                  <Mic className="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-semibold text-amber-100 text-sm">Voice Branch</h3>
+                    <p className="text-xs text-amber-200/50">Dignity-first consent interaction</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 bg-amber-500/5 rounded-lg p-4 border border-amber-500/10">
+                  <Eye className="w-5 h-5 text-amber-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-semibold text-amber-100 text-sm">Spatial Branch</h3>
+                    <p className="text-xs text-amber-200/50">Educational design platforms</p>
+                  </div>
+                </div>
+              </div>
+              <Link to="/tonalli">
+                <Button className="bg-amber-600 hover:bg-amber-500 text-white px-6 py-5">
+                  Discover Tonalli
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
