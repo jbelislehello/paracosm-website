@@ -1,26 +1,36 @@
 
 
-# Replace "Expansive Leadership Coaching" with "Building Learning Organizations"
+# Add Case Studies Link to HA Labs "Client Projects" Section
 
-## Overview
+## Change
 
-Replace all instances of "Expansive Leadership Coaching" across the codebase with "Building Learning Organizations".
+In `src/components/ParacosmUniverseSection.tsx`, the "Client Projects" branch under HA Labs currently has an empty `items` array (line 42). Add a link to the Case Studies page.
 
-## Files and Changes
+## Technical Details
 
-### 1. `src/pages/LandingPage.tsx` (line 179)
-- Hero heading: "Expansive Leadership Coaching" → **"Building Learning Organizations"**
+**File:** `src/components/ParacosmUniverseSection.tsx` (line 40-42)
 
-### 2. `index.html` (lines 7, 8, 11, 27, 28, 145, 148)
-- Page title: "Paracosm | Expansive Leadership Coaching" → **"Paracosm | Building Learning Organizations"**
-- Meta description, OG title, schema.org name/description, and FAQ schema — all updated to use "Building Learning Organizations"
+Change:
+```tsx
+{
+  title: "Client Projects",
+  icon: Code,
+  items: [],
+},
+```
 
-### 3. `src/components/FAQSection.tsx` (lines 11-12)
-- FAQ question: "What is Expansive Leadership Coaching?" → **"What is Building Learning Organizations?"**
-- FAQ answer: updated to reference "Building Learning Organizations" instead
+To:
+```tsx
+{
+  title: "Client Projects",
+  icon: Code,
+  items: [
+    { label: "Case Studies", to: "/case-studies" },
+  ],
+},
+```
 
-### 4. `src/components/ContactSection.tsx` (line 73)
-- Service description: "Expansive leadership coaching for executives" → **"Building learning organizations for executives"**
+This follows the existing pattern used by other linked items (e.g., `{ label: "Tonalli (Voice & Spatial Computer)", to: "/tonalli" }`), so it will automatically render as a clickable link styled in indigo.
 
-Total: ~12 string replacements across 4 files.
-
+### Files modified
+- `src/components/ParacosmUniverseSection.tsx` only
