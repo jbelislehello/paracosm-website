@@ -8,8 +8,8 @@ import { HelpCircle } from "lucide-react";
 
 const faqs = [
   {
-    question: "What is Expansive Leadership Coaching?",
-    answer: "Expansive Leadership Coaching is a transformational approach that combines AI systems mastery with relational intelligence to help executives and innovators develop adaptive, future-ready leadership capabilities."
+    question: "What is Building Learning Organizations?",
+    answer: "Building Learning Organizations is a transformational approach that combines AI systems mastery with relational intelligence to help executives and innovators develop adaptive, future-ready leadership capabilities."
   },
   {
     question: "Who is leadership coaching for?",
