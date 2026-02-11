@@ -34,7 +34,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "L'intelligence érotique", author: "Esther Perel", description: "Desire, long-term relationships, and erotic intelligence.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.ca/s?k=Esther+Perel+L%27intelligence+%C3%A9rotique" },
     ],
     videos: [
-      { title: "Jonathan Bélisle — Early Career Interview", speaker: "Jonathan Bélisle", description: "An early look at Jonathan Bélisle's creative practice and storytelling vision.", category: "Telling Stories", axis: "open", youtubeId: "vK5PlnVQUqo", platform: "LienMultimédia" },
+      { title: "Jonathan Bélisle at CreativeMornings Montreal", speaker: "Jonathan Bélisle", description: "A talk on creative practice, worldbuilding, and designing meaningful experiences.", category: "WorldBuilders", axis: "free", youtubeId: "vK5PlnVQUqo", platform: "CreativeMornings" },
     ],
   },
   {
@@ -44,7 +44,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "The Inner Work", author: "Mat & Ash", description: "Shadow work and healing practices for emotional growth.", category: "Inquiry and Practices", axis: "calm", amazonUrl: "https://www.amazon.ca/s?k=The+Inner+Work+Mat+%26+Ash" },
     ],
     videos: [
-      { title: "FNC09 — Psychogeography and Augmented Reality in Cities", speaker: "Jonathan Bélisle", description: "Exploring psychogeography and augmented reality as tools for reimagining urban spaces.", category: "Tangible Play", axis: "love", youtubeId: "swgfAfaEsdw", platform: "FNC" },
+      { title: "TEDxMontréal — Jonathan Bélisle", speaker: "Jonathan Bélisle", description: "A TEDx talk on how technology can transform the way children learn and engage with the world.", category: "21c Parenting", axis: "magic", youtubeId: "swgfAfaEsdw", platform: "TEDx" },
     ],
   },
   {
@@ -54,7 +54,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "L'Architecture du bonheur", author: "Alain de Botton", description: "How buildings and spaces shape our feelings and values.", category: "Sensory Rooms", axis: "magic", amazonUrl: "https://www.amazon.ca/s?k=Alain+de+Botton+L%27architecture+du+bonheur" },
     ],
     videos: [
-      { title: "Environnements programmables et désirables", speaker: "Jonathan Bélisle", description: "Designing programmable and desirable environments at the intersection of technology and space.", category: "Sensory Rooms", axis: "magic", youtubeId: "3uWumNsq7gs", platform: "Mandalab" },
+      { title: "Jonathan Bélisle — Stories of a Near Future Collective Talk", speaker: "Jonathan Bélisle", description: "Exploring the intersection of AI and the arts, imagining near-future creative possibilities.", category: "Post-Broadcast", axis: "free", youtubeId: "3uWumNsq7gs", platform: "E-AI" },
     ],
   },
   {
@@ -64,7 +64,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "The Eight Mountains", author: "Paolo Cognetti", description: "Literary novel about friendship, mountains, and meaning.", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.ca/s?k=Paolo+Cognetti+The+Eight+Mountains" },
     ],
     videos: [
-      { title: "Conférence Infopresse Ottawa", speaker: "Jonathan Bélisle", description: "Conference talk on digital storytelling and creative innovation.", category: "Telling Stories", axis: "open", youtubeId: "OkHQg18SF24", platform: "Infopresse" },
+      { title: "La Machine à bienveillance — Interview Jonathan Bélisle", speaker: "Jonathan Bélisle", description: "A creative exploration of kindness and technology through an interactive installation.", category: "WorldBuilders", axis: "free", youtubeId: "OkHQg18SF24", platform: "TV5MONDE" },
     ],
   },
   {
@@ -74,7 +74,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Jonathan Livingston Seagull", author: "Richard Bach", description: "Short fable about freedom, mastery, and self-transcendence.", category: "WorldBuilders", axis: "free", amazonUrl: "https://www.amazon.ca/s?k=Richard+Bach+Jonathan+Livingston+Seagull" },
     ],
     videos: [
-      { title: "Jonathan Bélisle at CreativeMornings Montreal", speaker: "Jonathan Bélisle", description: "A talk on creative practice, worldbuilding, and designing meaningful experiences.", category: "WorldBuilders", axis: "free", youtubeId: "AXmwf5Fo-84", platform: "CreativeMornings" },
+      { title: "Wuxia le renard — Expérience scolaire à l'Externat Saint-Jean-Berchmans", speaker: "Jonathan Bélisle", description: "An interactive reading experience designed for schools, blending play and storytelling.", category: "Playgrounds", axis: "calm", youtubeId: "AXmwf5Fo-84", platform: "Lu Interactive" },
     ],
   },
   {
@@ -84,7 +84,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Becoming Supernatural", author: "Dr. Joe Dispenza", description: "Meditation/neuroscience framework for changing habits and states.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.ca/s?k=Joe+Dispenza+Becoming+Supernatural" },
     ],
     videos: [
-      { title: "Les nouveaux horizons du Transmédia", speaker: "Jonathan Bélisle", description: "Exploring the new horizons of transmedia storytelling and cross-platform narratives.", category: "Post-Broadcast", axis: "free", youtubeId: "NDQFpxl5UqM", platform: "Transmédia" },
+      { title: "DesignOPS avec Jonathan Bélisle", speaker: "Jonathan Bélisle", description: "A conversation on design operations, creative leadership, and scaling design practice.", category: "Workflows", axis: "calm", youtubeId: "NDQFpxl5UqM", platform: "Sprinkler" },
     ],
   },
   {
@@ -94,7 +94,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "De l'arbre au labyrinthe", author: "Umberto Eco", description: "Essays on signs, interpretation, and knowledge structures.", category: "Telling Stories", axis: "open", amazonUrl: "https://www.amazon.ca/s?k=Umberto+Eco+De+l%27arbre+au+labyrinthe" },
     ],
     videos: [
-      { title: "Wuxia le renard — Interactive Reading School Experience", speaker: "Jonathan Bélisle", description: "An interactive reading experience designed for schools, blending play and storytelling.", category: "Playgrounds", axis: "calm", youtubeId: "CEukKAuEyX4", platform: "Wuxia" },
+      { title: "Le futur de l'édition numérique jeunesse, selon Jonathan Bélisle", speaker: "Jonathan Bélisle", description: "Exploring the future of digital publishing for young audiences.", category: "Post-Broadcast", axis: "free", youtubeId: "CEukKAuEyX4", platform: "FRQSC / UQAM" },
     ],
   },
   {
@@ -104,7 +104,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Phantasmal Media", author: "D. Fox Harrell", description: "How computation and imagination shape identity, culture, and meaning.", category: "Post-Broadcast", axis: "free", amazonUrl: "https://www.amazon.ca/s?k=D.+Fox+Harrell+Phantasmal+Media" },
     ],
     videos: [
-      { title: "TEDxMontréal — Technology in Children's Education", speaker: "Jonathan Bélisle", description: "A TEDx talk on how technology can transform the way children learn and engage with the world.", category: "21c Parenting", axis: "magic", youtubeId: "FEnLGeiNjAc", platform: "TEDx" },
+      { title: "Environnements programmables et désirables — Jonathan Bélisle", speaker: "Jonathan Bélisle", description: "Designing programmable and desirable environments at the intersection of technology and space.", category: "Sensory Rooms", axis: "magic", youtubeId: "FEnLGeiNjAc", platform: "Communautique / Mandalab" },
     ],
   },
   {
@@ -114,7 +114,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "The Third Teacher", author: "OWP/P Architects + VS Furniture + Bruce Mau Design", description: "Design-of-learning spaces case studies — school architecture meets pedagogy.", category: "Sensory Rooms", axis: "magic", amazonUrl: "https://www.amazon.ca/s?k=The+Third+Teacher+book" },
     ],
     videos: [
-      { title: "IoT Theatre — Interview eCOM MTL", speaker: "Jonathan Bélisle", description: "Discussing the Internet of Things applied to theatre and live performance experiences.", category: "Connected Life", axis: "open", youtubeId: "of1aeUkcRxg", platform: "eCOM MTL" },
+      { title: "Mutations :: Convivialité numérique et futur de la lecture", speaker: "Jonathan Bélisle", description: "On digital conviviality and the future of reading in an interconnected world.", category: "Narratives", axis: "magic", youtubeId: "of1aeUkcRxg", platform: "TOPO" },
     ],
   },
   {
@@ -124,7 +124,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Taming the Tiger", author: "Witold Rybczynski", description: "History and critique of society trying to steer technology.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.ca/Taming-Tiger-Struggle-Control-Technology/dp/014007564X" },
     ],
     videos: [
-      { title: "La Machine à bienveillance", speaker: "Jonathan Bélisle", description: "A creative exploration of kindness and technology through an interactive installation.", category: "WorldBuilders", axis: "free", youtubeId: "S0YgJmnQkZM", platform: "TV5MONDE" },
+      { title: "Entrevue Jonathan Bélisle — IoT Theatre", speaker: "Jonathan Bélisle", description: "Discussing the Internet of Things applied to theatre and live performance experiences.", category: "Connected Life", axis: "open", youtubeId: "S0YgJmnQkZM", platform: "eCOM MTL" },
     ],
   },
   {
@@ -134,7 +134,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "A Whole New Mind", author: "Daniel H. Pink", description: "Why right-brain skills — design, empathy, story — matter in modern work.", category: "Playgrounds", axis: "calm", amazonUrl: "https://www.amazon.ca/s?k=Daniel+H.+Pink+A+Whole+New+Mind" },
     ],
     videos: [
-      { title: "Le futur de l'édition numérique jeunesse", speaker: "Jonathan Bélisle", description: "Exploring the future of digital publishing for young audiences.", category: "Post-Broadcast", axis: "free", youtubeId: "LitZOgUQ3GU", platform: "Édition numérique" },
+      { title: "Trouver ton essence pour réussir ta carrière créative", speaker: "Jonathan Bélisle", description: "Finding your creative essence to build a successful and authentic career.", category: "Inquiry and Practices", axis: "calm", youtubeId: "LitZOgUQ3GU", platform: "monExpansion" },
     ],
   },
   {
@@ -144,8 +144,8 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Want", author: "Gillian Anderson", description: "Anthology themed around desire.", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.ca/s?k=Gillian+Anderson+Want" },
     ],
     videos: [
-      { title: "Convivialité numérique et futur de la lecture", speaker: "Jonathan Bélisle", description: "On digital conviviality and the future of reading in an interconnected world.", category: "Narratives", axis: "magic", youtubeId: "Jx-ZLX0NuIE", platform: "TOPO" },
-      { title: "Stories of a Near Future — AI and Arts", speaker: "Jonathan Bélisle", description: "Exploring the intersection of AI and the arts, imagining near-future creative possibilities.", category: "Post-Broadcast", axis: "free", youtubeId: "6ToFJ8I6z1k", platform: "E-AI" },
+      { title: "Du burnout à la renaissance — Redesign ta carrière", speaker: "Jonathan Bélisle", description: "From burnout to renaissance: redesigning your creative career path.", category: "Embodied Cognition", axis: "love", youtubeId: "Jx-ZLX0NuIE", platform: "monExpansion" },
+      { title: "Conférence de Jonathan Bélisle — Tournée Infopresse à Ottawa", speaker: "Jonathan Bélisle", description: "Conference talk on digital storytelling and creative innovation.", category: "Telling Stories", axis: "open", youtubeId: "6ToFJ8I6z1k", platform: "Infopresse" },
     ],
   },
   {
@@ -155,8 +155,8 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "A New Earth", author: "Eckhart Tolle", description: "Presence and ego teachings for psychological and spiritual shift.", category: "Inquiry and Practices", axis: "calm", amazonUrl: "https://www.amazon.ca/s?k=Eckhart+Tolle+A+New+Earth" },
     ],
     videos: [
-      { title: "DesignOPS Podcast", speaker: "Jonathan Bélisle", description: "A conversation on design operations, creative leadership, and scaling design practice.", category: "Workflows", axis: "calm", youtubeId: "yM0H3cZMr9k", platform: "Sprinkler" },
-      { title: "Trouver ton essence pour réussir ta carrière créative", speaker: "Jonathan Bélisle", description: "Finding your creative essence to build a successful and authentic career.", category: "Inquiry and Practices", axis: "calm", youtubeId: "GCncJuY8u_4", platform: "Carrière créative" },
+      { title: "De « clown » à polymathe : raconter le monde quand on ne rentre dans aucune case", speaker: "Jonathan Bélisle", description: "From clown to polymath: telling stories about the world through multiple disciplines.", category: "Human Dynamics & System Thinking", axis: "open", youtubeId: "yM0H3cZMr9k", platform: "The Long And Winding Answer" },
+      { title: "Les nouveaux horizons du Transmédia", speaker: "Jonathan Bélisle", description: "Exploring the new horizons of transmedia storytelling and cross-platform narratives.", category: "Post-Broadcast", axis: "free", youtubeId: "GCncJuY8u_4", platform: "Festival Regards" },
     ],
   },
   {
@@ -166,8 +166,8 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Hyperobjects", author: "Timothy Morton", description: "Philosophy of massive, distributed phenomena like climate change.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.ca/s?k=Timothy+Morton+Hyperobjects" },
     ],
     videos: [
-      { title: "Du burnout à la renaissance — Redesign ta carrière", speaker: "Jonathan Bélisle", description: "From burnout to renaissance: redesigning your creative career path.", category: "Embodied Cognition", axis: "love", youtubeId: "ImsYaGSF1mI", platform: "Renaissance" },
-      { title: "De « clown » à polymathe — raconter le monde", speaker: "Jonathan Bélisle", description: "From clown to polymath: telling stories about the world through multiple disciplines.", category: "Human Dynamics & System Thinking", axis: "open", youtubeId: "7jVV-476Bog", platform: "Polymathe" },
+      { title: "Jonathan Bélisle (LienMultimédia, 2009)", speaker: "Jonathan Bélisle", description: "An early look at Jonathan Bélisle's creative practice and storytelling vision.", category: "Telling Stories", axis: "open", youtubeId: "ImsYaGSF1mI", platform: "LienMultimédia" },
+      { title: "FNC09 — Psychogéographie et réalité augmentée", speaker: "Jonathan Bélisle", description: "Exploring psychogeography and augmented reality as tools for reimagining urban spaces.", category: "Tangible Play", axis: "love", youtubeId: "7jVV-476Bog", platform: "LienMultimédia" },
     ],
   },
 ];
