@@ -1,133 +1,58 @@
 
-# Glitch Session Timer Component
 
-## Overview
+# Reorganize Events Section by GL!TCH Publication Categories
 
-Create a **GlitchSessionTimer** component that facilitates live 25-minute group sessions (5-20+ participants) through the GL!TCH → DRIFT → TUNE breath cycle. The component will provide visual phase indicators, countdown timers, facilitator prompts, and amplification techniques for larger groups.
+## What's Changing
 
-## Session Structure (25 minutes total)
+The events section will be reorganized to align with the five content categories from the Gl!tch Medium publication (medium.com/futurographer), and the "AI Symposium - Brome Misisquoi" event will be updated with its proper title and dates.
 
-```text
-┌─────────────────────────────────────────────────────────────────────────┐
-│                        25-MINUTE GLITCH SESSION                         │
-├──────────────────┬────────────────────────┬────────────────────────────┤
-│   GL!TCH (7min)  │     DRIFT (10min)      │       TUNE (6min)          │
-│                  │                        │                            │
-│  Sensing         │  Exploring             │  Crystallizing             │
-│  the Field       │  Possibilities         │  Form                      │
-├──────────────────┼────────────────────────┼────────────────────────────┤
-│  - Harvest       │  - Small group         │  - Commitment              │
-│    frictions     │    brainstorm          │    rounds                  │
-│  - Pattern       │  - Wild guesses        │  - Weave narrative         │
-│    spotting      │  - Somatic check-in    │  - Next steps              │
-└──────────────────┴────────────────────────┴────────────────────────────┘
-```
+## The 5 Categories (from the publication)
 
----
+1. **Connected Life** -- Connected technology
+2. **Telling Stories** -- Storytelling
+3. **Worldbuilders** -- Worldbuilding
+4. **Learning Enterprises** -- Enterprise architecture
+5. **Post-Broadcast** -- Narratives
 
-## Files to Create
+## Updated Event Details
 
-### 1. Session Configuration Data
-**File:** `src/data/glitchSessionConfig.ts`
+The "AI Symposium - Brome Misisquoi" becomes:
+- **Title**: "AI & Municipalites" (GL!TCH Summit)
+- **Date**: April 22-23, 2026
+- **Location**: Cantons-de-l'Est, QC
 
-Defines the session phases with:
-- Phase IDs: 'glitch', 'drift', 'tune'
-- Durations: 7 min, 10 min, 6 min
-- Colors: Red, Purple, Emerald
-- Facilitator prompts for each phase
-- Amplification techniques for larger groups (10+)
+## Event-to-Category Mapping
 
-### 2. Main Timer Component
-**File:** `src/components/calm-magic/tools/GlitchSessionTimer.tsx`
+| Event | Category |
+|-------|----------|
+| GL!TCH Session: Maitriser X Detourner | **Connected Life** -- AI-augmented transformation at E-AI conference |
+| AI & Municipalites (GL!TCH Summit) | **Learning Enterprises** -- AI governance for municipal leaders |
+| Transformation Design Lab | **Worldbuilders** -- Diegetic prototyping and vision-to-implementation |
+| GL!TCH - Relational Intelligence Summit | **Telling Stories** -- Coaching through narrative and relational practices |
 
-**Features:**
-- Large circular progress indicator with phase completion
-- Current phase name with icon and color theming
-- Time remaining display (MM:SS format)
-- Visual pulse animation for facilitator pacing
+## Technical Changes
 
-**UI Sections:**
-- **Phase Navigation Bar**: Shows all three phases with active highlighting
-- **Facilitator Panel**: Phase-specific prompts that rotate, amplification suggestions
-- **Control Bar**: Play/Pause, Reset, Skip Phase, Group Size selector
-- **Notes Area**: Quick capture of session insights
+### 1. Update `src/components/ParacosmEventsSection.tsx`
+- Add a `category` field to each event object (e.g., "Connected Life", "Learning Enterprises")
+- Update the "AI Symposium" event with new title "AI & Municipalites", date "April 22-23, 2026", and location "Cantons-de-l'Est, QC"
+- Display category labels as colored badges/tags on each event card
+- Add category filter tabs at the top so visitors can browse by category
+- Include a subtle link to the Gl!tch Medium publication for each category
 
-**State Management:**
-- Session status: idle, running, paused, complete
-- Current phase index and time remaining
-- Prompt cycling (every 90 seconds)
-- Group size for amplification suggestions
+### 2. Update `index.html` structured data
+- Update the "AI Symposium" Event schema with:
+  - New name: "AI & Municipalites"
+  - New startDate: "2026-04-22"
+  - New endDate: "2026-04-23"
+  - Updated location: Cantons-de-l'Est, QC
 
----
+### 3. Visual Design
+- Each category gets a distinct color and icon:
+  - **Connected Life**: Cyan/teal with a wifi/network icon
+  - **Telling Stories**: Pink/rose with a book/pen icon
+  - **Worldbuilders**: Purple with a globe/compass icon
+  - **Learning Enterprises**: Blue with a building/briefcase icon
+  - **Post-Broadcast**: Orange/amber with a radio/broadcast icon
+- Category tags appear as small pill badges above each event title
+- Optional: horizontal scrollable category filter bar at the top of the section
 
-## File to Modify
-
-### InteractiveToolsPanel.tsx
-
-**Changes:**
-1. Import the new `GlitchSessionTimer` component
-2. Update grid from `grid-cols-9` to `grid-cols-10`
-3. Add new TabsTrigger: `value="session"` with label "Session Timer"
-4. Add new TabsContent rendering `GlitchSessionTimer`
-5. Add mapping in `toolTabMap`: `'GlitchSessionTimer': 'session'`
-
----
-
-## Visual Design
-
-### Color Theming by Phase
-| Phase | Color Gradient | Icon |
-|-------|---------------|------|
-| GL!TCH | Red to Rose | Search icon |
-| DRIFT | Purple to Indigo | Waves icon |
-| TUNE | Emerald to Teal | Sparkles icon |
-
-### Animations
-- Pulsing outer ring synced to 4-second breath cycle
-- Subtle scale animation on active phase
-- Smooth gradient transitions between phases
-
-### Responsive
-- Full-width for desktop facilitator view
-- Large typography for workshop visibility
-
----
-
-## Facilitator Prompts
-
-**GL!TCH Phase (7 min)**
-- "What tensions or frictions are present in the room?"
-- "What patterns are you noticing?"
-- "Where is energy blocked or stuck?"
-- "What's alive that wants attention?"
-
-**DRIFT Phase (10 min)**
-- "What wild guesses emerge?"
-- "How might we approach this differently?"
-- "What does your body sense about this?"
-- "What connections are forming?"
-
-**TUNE Phase (6 min)**
-- "What's ready to commit to form?"
-- "What's one concrete next step?"
-- "How do we weave these threads together?"
-- "What wants to be named?"
-
----
-
-## Amplification Techniques (10+ participants)
-
-- **Roving Mic Harvest**: Pass mic to capture glitches from crowd
-- **Fishbowl Drift**: Inner circle explores, outer circle witnesses
-- **Popcorn Commitments**: Random participants share commitments
-- **Resonance Checks**: Quick hand-raise for agreement
-
----
-
-## Technical Details
-
-**Dependencies:** Uses existing UI components (Card, Button, Progress, Badge, Slider) and lucide-react icons
-
-**Timer Logic:** useEffect with setInterval, handles phase transitions automatically with optional audio cues
-
-**Group Size Options:** Small (5-9), Medium (10-15), Large (16+) - affects which amplification techniques are shown
