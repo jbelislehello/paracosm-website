@@ -7,7 +7,7 @@ import PartnerToolsSection from "@/components/PartnerToolsSection";
 import ParacosmEventsSection from "@/components/ParacosmEventsSection";
 import ParacosmUniverseSection from "@/components/ParacosmUniverseSection";
 import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
-import RetreatAnnouncementPopup from "@/components/RetreatAnnouncementPopup";
+
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
 import FAQSection from "@/components/FAQSection";
@@ -20,66 +20,17 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 const LandingPage = () => {
   const [isCalmMagicAssistantOpen, setIsCalmMagicAssistantOpen] = useState(false);
-  const [isRetreatAnnouncementOpen, setIsRetreatAnnouncementOpen] = useState(false);
-  const [hasUserEngaged, setHasUserEngaged] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { t } = useLanguage();
 
   useEffect(() => {
     document.title = t("page_titles.choose_coaching_path");
-    
-    // Show retreat announcement only after user has engaged with the site
-    const showRetreatPopup = () => {
-      const lastShown = localStorage.getItem('lastRetreatAnnouncementShown');
-      const now = Date.now();
-      const oneDay = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-      
-      if (!lastShown || (now - parseInt(lastShown) > oneDay)) {
-        // Only show after user has scrolled or clicked something
-        if (hasUserEngaged) {
-          setTimeout(() => {
-            setIsRetreatAnnouncementOpen(true);
-          }, 3000); // 3 second delay after engagement
-        }
-      }
-    };
-
-    // Track user engagement
-    const handleScroll = () => {
-      if (window.scrollY > 200) {
-        setHasUserEngaged(true);
-      }
-    };
-
-    const handleClick = () => {
-      setHasUserEngaged(true);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('click', handleClick);
-
-    if (hasUserEngaged) {
-      showRetreatPopup();
-    }
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('click', handleClick);
-    };
-  }, [t, hasUserEngaged]);
+  }, [t]);
 
   const handleStartCoaching = () => {
     setIsCalmMagicAssistantOpen(true);
   };
 
-  const handleCloseRetreatAnnouncement = () => {
-    setIsRetreatAnnouncementOpen(false);
-    localStorage.setItem('lastRetreatAnnouncementShown', Date.now().toString());
-  };
-
-  const handleShowRetreatPopup = () => {
-    setIsRetreatAnnouncementOpen(true);
-  };
 
   const scrollToMore = () => {
     const element = document.getElementById('leadership-roles');
@@ -98,12 +49,6 @@ const LandingPage = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      {/* Retreat Announcement Popup */}
-      <RetreatAnnouncementPopup 
-        isOpen={isRetreatAnnouncementOpen} 
-        onClose={handleCloseRetreatAnnouncement} 
-      />
-      
       {/* Navigation */}
       <header className="fixed w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
         <div className="container flex items-center justify-between py-3 px-4">

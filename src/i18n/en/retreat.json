@@ -62,6 +62,17 @@
       "2": "Strategic vision blending plans with stubborn optimism"
     }
   },
+  "location": "Azores Island, Portugal",
+  "venue": "Botanico House",
+  "date": "August 25, 2026",
+  "invitation": {
+    "title": "Request Your Invitation",
+    "description": "Limited spaces available. Join the invitation list for this exclusive leadership retreat.",
+    "name_placeholder": "Your full name",
+    "email_placeholder": "Your email address",
+    "submit": "Request Invitation",
+    "success": "Thank you! We'll be in touch with your invitation details."
+  },
   "cta": {
     "title": "Ready to Transform Your Leadership?",
     "description": "Limited spaces available. This premium experience is designed for leaders ready to step into a new paradigm of conscious, creative leadership.",

@@ -54,7 +54,7 @@ const paracosmBranches = [
     icon: Calendar,
     children: [
       { label: "Gl!tch Session", to: "/glitch-methodology" },
-      "Paracosm Retreat",
+      { label: "Paracosm Retreat", to: "/paracosm-retreat" },
     ],
   },
   {
