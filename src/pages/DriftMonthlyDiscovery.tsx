@@ -2,7 +2,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, ExternalLink, BookOpen } from "lucide-react";
+import { ArrowLeft, ArrowRight, ExternalLink, BookOpen, Play } from "lucide-react";
 import Footer from "@/components/Footer";
 import {
   driftMonthlyDiscoveries,
@@ -78,7 +78,7 @@ const DriftMonthlyDiscovery = () => {
       </section>
 
       {/* Books */}
-      <section className="pb-20 px-4">
+      <section className="pb-12 px-4">
         <div className="container max-w-4xl mx-auto space-y-8">
           {entry.books.map((book, i) => (
             <Card key={i} className="border-2 hover:shadow-lg transition-all duration-300" style={{ borderColor: `${axisColors[book.axis]}30` }}>
@@ -117,6 +117,55 @@ const DriftMonthlyDiscovery = () => {
           ))}
         </div>
       </section>
+
+      {/* Videos */}
+      {entry.videos && entry.videos.length > 0 && (
+        <section className="pb-20 px-4">
+          <div className="container max-w-4xl mx-auto space-y-8">
+            <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
+              <Play className="w-6 h-6" />
+              Video Discoveries
+            </h2>
+            {entry.videos.map((video, i) => (
+              <Card key={i} className="border-2 hover:shadow-lg transition-all duration-300 overflow-hidden" style={{ borderColor: `${axisColors[video.axis]}30` }}>
+                <a href={`https://www.youtube.com/watch?v=${video.youtubeId}`} target="_blank" rel="noopener noreferrer" className="block relative group">
+                  <img
+                    src={`https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg`}
+                    alt={video.title}
+                    className="w-full aspect-video object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-full bg-white/90 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                      <Play className="w-7 h-7 text-foreground ml-1" fill="currentColor" />
+                    </div>
+                  </div>
+                </a>
+                <CardContent className="p-8 space-y-4">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Badge
+                      style={{ backgroundColor: `${axisColors[video.axis]}15`, color: axisColors[video.axis], borderColor: `${axisColors[video.axis]}30` }}
+                      className="font-semibold"
+                    >
+                      {axisLabels[video.axis]}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">
+                      {video.category}
+                    </Badge>
+                    <Badge variant="secondary" className="text-xs">
+                      {video.platform}
+                    </Badge>
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-bold text-foreground">{video.title}</h3>
+                    <p className="text-muted-foreground font-medium">{video.speaker}</p>
+                    <p className="text-muted-foreground leading-relaxed">{video.description}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
 
       <Footer />
     </div>
