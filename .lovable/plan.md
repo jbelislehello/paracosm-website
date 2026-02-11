@@ -1,68 +1,74 @@
 
 
-# Comprehensive Site Fixes -- Errors, UX, Readability, Findability
+# Drift Monthly Discovery Pages
 
-## Issues Found
+## Overview
 
-After a full audit of the public-facing pages (`/`, `/paracosm-retreat`, `/drift`, `/calm-magic-assistant`), here are all the issues to fix:
+Create 14 monthly discovery pages (Jan 2025 -- Feb 2026), each featuring 2 books categorized into the Drift discovery categories (LOVE, MAGIC, CALM, OPEN, FREE). A new route `/drift/:year/:month` will render each month's page, and the Drift landing page will link to all available months.
 
----
+## Book Categorization
 
-### 1. Drift page title is nearly invisible
-The "Drift" heading uses a gradient that blends into the white background, making it unreadable.
+Each book is placed into the most fitting Drift discovery category:
 
-**Fix:** Change the gradient colors in `src/pages/DriftLanding.tsx` to use visible, high-contrast colors (e.g., `from-slate-800 via-purple-600 to-blue-600`).
+| Month | Book | Category (Axis) |
+|-------|------|-----------------|
+| Jan 2025 | Nietzsche (Onfray -- Le Roy) | Inquiry and Practices (CALM) |
+| Jan 2025 | L'intelligence erotique (Esther Perel) | Embodied Cognition (LOVE) |
+| Feb 2025 | Petit dictionnaire de mots rares (Prellier) | Narratives (MAGIC) |
+| Feb 2025 | The Inner Work (Mat & Ash) | Inquiry and Practices (CALM) |
+| Mar 2025 | Medecine traditionnelle chinoise (Marabout) | Embodied Cognition (LOVE) |
+| Mar 2025 | L'Architecture du bonheur (de Botton) | Sensory Rooms (MAGIC) |
+| Apr 2025 | Communicating the New (Kim Erwin) | Workflows (CALM) |
+| Apr 2025 | The Eight Mountains (Paolo Cognetti) | Narratives (MAGIC) |
+| May 2025 | Pathogenesis (Jonathan Kennedy) | Human Dynamics & System Thinking (OPEN) |
+| May 2025 | Jonathan Livingston Seagull (Richard Bach) | WorldBuilders (FREE) |
+| Jun 2025 | The Way of the Tarot (Jodorowsky & Costa) | Inquiry and Practices (CALM) |
+| Jun 2025 | Becoming Supernatural (Joe Dispenza) | Embodied Cognition (LOVE) |
+| Jul 2025 | Bliss Club (June Pia) | Tangible Play (LOVE) |
+| Jul 2025 | De l'arbre au labyrinthe (Umberto Eco) | Telling Stories (OPEN) |
+| Aug 2025 | Strategy Safari (Mintzberg et al.) | Human Dynamics & System Thinking (OPEN) |
+| Aug 2025 | Phantasmal Media (D. Fox Harrell) | Post-Broadcast (FREE) |
+| Sep 2025 | The Self-Aware Universe (Amit Goswami) | WorldBuilders (FREE) |
+| Sep 2025 | The Third Teacher | Sensory Rooms (MAGIC) |
+| Oct 2025 | Game Design Workshop (Tracy Fullerton) | Playgrounds (CALM) |
+| Oct 2025 | Taming the Tiger (Witold Rybczynski) | Connected Life (OPEN) |
+| Nov 2025 | Atlas of the Heart (Brene Brown) | Embodied Cognition (LOVE) |
+| Nov 2025 | A Whole New Mind (Daniel H. Pink) | Playgrounds (CALM) |
+| Dec 2025 | Living in Information (Jorge Arango) | Connected Life (OPEN) |
+| Dec 2025 | Want (Gillian Anderson) | Narratives (MAGIC) |
+| Jan 2026 | Making It All Work (David Allen) | Workflows (CALM) |
+| Jan 2026 | A New Earth (Eckhart Tolle) | Inquiry and Practices (CALM) |
+| Feb 2026 | Minimalist Parenting (Koh & Dornfest) | 21c Parenting (MAGIC) |
+| Feb 2026 | Hyperobjects (Timothy Morton) | Human Dynamics & System Thinking (OPEN) |
 
----
+## Implementation
 
-### 2. Retreat landing page missing Footer
-`/paracosm-retreat` ends abruptly after the invitation form with no footer.
+### 1. New data file: `src/data/driftMonthlyDiscoveries.ts`
 
-**Fix:** Import and add `<Footer />` at the bottom of `src/pages/ParacosmRetreatLanding.tsx`.
+Contains all 14 months of discovery data as a typed array. Each entry includes: year, month, books (title, author, description, category, axis, Amazon link).
 
----
+### 2. New page component: `src/pages/DriftMonthlyDiscovery.tsx`
 
-### 3. Footer copyright year says 2025
-The footer bottom bar shows "2025" instead of "2026."
+A page that reads `:year` and `:month` from the URL params, looks up the corresponding month's data, and renders:
+- Month/year header with navigation arrows (previous/next month)
+- Each book as a card showing its title, author, one-line description, category badge (color-coded by axis), and a "Find on Amazon" link
+- Back link to the Drift landing page
+- Footer component
 
-**Fix:** Update the year in `src/components/Footer.tsx` from `2025` to `2026`.
+### 3. New route in `src/App.tsx`
 
----
+Add: `<Route path="/drift/:year/:month" element={<DriftMonthlyDiscovery />} />`
 
-### 4. Event category badges all link to Medium
-In `src/components/ParacosmEventsSection.tsx`, every event card's category badge is wrapped in an `<a>` tag linking to `https://medium.com/futurographer`. This is confusing -- users clicking a category badge expect filtering, not navigation to an external blog.
+### 4. Update `src/pages/DriftLanding.tsx`
 
-**Fix:** Remove the `<a>` wrapper from the category badge and render it as a plain `<span>` or keep it as a styled div.
+Add a new "Monthly Archive" section between the Discovery Categories and the Narrative sections, showing a grid of all 14 months as clickable cards linking to `/drift/2025/01`, `/drift/2025/02`, etc.
 
----
+## Files to create/modify
 
-### 5. Footer "Retreats" item is plain text, not a link
-The Paracosm column in the footer shows "Retreats" as non-clickable text. Now that the `/paracosm-retreat` page exists, it should be a link.
-
-**Fix:** Change from `<span>` to `<Link to="/paracosm-retreat">` in `src/components/Footer.tsx`.
-
----
-
-### 6. Footer "Satori & Kensho" is plain text, not a link
-Same issue -- it should link to `https://suno.com/@jbelisle` as it does in the Universe section.
-
-**Fix:** Change from `<span>` to `<a href="https://suno.com/@jbelisle" target="_blank">` in `src/components/Footer.tsx`.
-
----
-
-### 7. Footer "IoTheatre" is plain text with no destination
-Currently just a label. This is acceptable if there is no page yet, but visually it looks like a dead item.
-
-**Fix:** Add a subtle `text-slate-500` style or a "(Coming Soon)" indicator to distinguish it from clickable links. No code link needed.
-
----
-
-## Files Modified
-
-| File | Change |
+| File | Action |
 |------|--------|
-| `src/pages/DriftLanding.tsx` | Fix "Drift" title contrast |
-| `src/pages/ParacosmRetreatLanding.tsx` | Add Footer |
-| `src/components/Footer.tsx` | Fix year, link Retreats, link Satori & Kensho |
-| `src/components/ParacosmEventsSection.tsx` | Remove misleading Medium link from category badges |
+| `src/data/driftMonthlyDiscoveries.ts` | Create -- all book data |
+| `src/pages/DriftMonthlyDiscovery.tsx` | Create -- monthly page component |
+| `src/App.tsx` | Modify -- add route |
+| `src/pages/DriftLanding.tsx` | Modify -- add archive section |
 
