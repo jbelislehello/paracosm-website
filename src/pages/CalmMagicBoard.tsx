@@ -5,7 +5,7 @@ import { Tile } from '@/types/glitch';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe, Eye, EyeOff, Moon, Sun, CheckCircle, GitBranch, ChevronDown, AlertTriangle, Brain, Database, Rocket } from 'lucide-react';
+import { Library, Play, RotateCcw, FileText, MapPin, Link2, Grid3X3, CircleDot, Layers, Sparkles, X, HelpCircle, Lock, Compass, Menu, RefreshCw, BookOpen, Globe, Eye, EyeOff, Moon, Sun, CheckCircle, GitBranch, ChevronDown, AlertTriangle, Brain, Database, Rocket, Heart } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -67,6 +67,7 @@ import PatternJournal from '@/components/calm-magic/PatternJournal';
 import { DetectedPattern, PatternHistoryEntry } from '@/utils/patternDetection';
 import { TopologiesTab } from '@/components/calm-magic/topologies/TopologiesTab';
 import { ConstellationTab } from '@/components/calm-magic/constellation/ConstellationTab';
+import InteractiveToolsPanel from '@/components/calm-magic/tools/InteractiveToolsPanel';
 import { FragmentMigrationDialog } from '@/components/calm-magic/FragmentMigrationDialog';
 import ForcePrdDialog from '@/components/prd-generator/ForcePrdDialog';
 import PrdGeneratorWizard from '@/components/prd-generator/PrdGeneratorWizard';
@@ -124,7 +125,7 @@ const COMPASS_MAP: Record<string, CompassType> = {
   'Human Dynamics & Systems': 'human-dynamics',
 };
 
-type ViewTab = 'matrix' | 'window-of-tolerance' | 'topologies' | 'prd-assembly' | 'constellation';
+type ViewTab = 'matrix' | 'window-of-tolerance' | 'topologies' | 'prd-assembly' | 'constellation' | 'expressivity';
 
 // Cosmological overlay state
 
@@ -333,7 +334,7 @@ const CalmMagicBoard = () => {
     const viewParam = searchParams.get('view') as ViewTab | null;
     
     // Handle view parameter for tab switching (e.g., from Garden page after PRD compilation)
-    if (viewParam && ['matrix', 'window-of-tolerance', 'topologies', 'prd-assembly', 'constellation'].includes(viewParam)) {
+    if (viewParam && ['matrix', 'window-of-tolerance', 'topologies', 'prd-assembly', 'constellation', 'expressivity'].includes(viewParam)) {
       setActiveView(viewParam);
       // Clean view param from URL
       const newParams = new URLSearchParams(searchParams);
@@ -1535,6 +1536,10 @@ const CalmMagicBoard = () => {
               <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
               Constellation
             </TabsTrigger>
+            <TabsTrigger value="expressivity" className="text-xs gap-1.5 px-3">
+              <Heart className="w-3.5 h-3.5" />
+              Expressivity
+            </TabsTrigger>
           </TabsList>
         </Tabs>
         
@@ -1584,7 +1589,7 @@ const CalmMagicBoard = () => {
       {/* Mobile Sub Navigation - Compact tabs */}
       <div className="md:hidden shrink-0 px-3 py-2 border-b border-border/30 bg-background/80 flex items-center justify-between gap-2">
         <Tabs value={activeView} onValueChange={(v) => setActiveView(v as ViewTab)} className="flex-1">
-          <TabsList className="h-8 w-full grid grid-cols-5">
+          <TabsList className="h-8 w-full grid grid-cols-6">
             <TabsTrigger value="matrix" className="text-[10px] gap-1 px-1">
               <Grid3X3 className="w-3 h-3" />
             </TabsTrigger>
@@ -1610,6 +1615,9 @@ const CalmMagicBoard = () => {
             </TabsTrigger>
             <TabsTrigger value="constellation" className="text-[10px] gap-1 px-1">
               <Sparkles className="w-3 h-3 text-indigo-500" />
+            </TabsTrigger>
+            <TabsTrigger value="expressivity" className="text-[10px] gap-1 px-1">
+              <Heart className="w-3 h-3" />
             </TabsTrigger>
           </TabsList>
         </Tabs>
@@ -1853,6 +1861,19 @@ const CalmMagicBoard = () => {
             <ConstellationTab
               projectId={activeProjectId}
               currentSeason={(currentSeason as ManifoldSeason) || 'POLLENS'}
+            />
+          </div>
+        )}
+
+        {/* Expressivity Tools View */}
+        {activeView === 'expressivity' && (
+          <div className="flex-1 flex flex-col overflow-y-auto p-4 md:p-6">
+            <InteractiveToolsPanel
+              emotionalState={{}}
+              onStateChange={() => {}}
+              insideBoard={true}
+              currentSeason={currentSeason}
+              visitedTilesCount={visitedTiles.size}
             />
           </div>
         )}

@@ -19,11 +19,17 @@ import { Compass, ArrowRight } from 'lucide-react';
 interface InteractiveToolsPanelProps {
   emotionalState: Partial<EmotionalState>;
   onStateChange: (state: Partial<EmotionalState>) => void;
+  insideBoard?: boolean;
+  currentSeason?: string;
+  visitedTilesCount?: number;
 }
 
 const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
   emotionalState,
-  onStateChange
+  onStateChange,
+  insideBoard = false,
+  currentSeason,
+  visitedTilesCount
 }) => {
   const [recommendations, setRecommendations] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('assessment');
@@ -54,29 +60,42 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
 
   return (
     <div className="w-full">
-      {/* Boussole Calm Magic Quick Access */}
-      <div className="mb-4 p-4 bg-gradient-to-r from-rose-50 to-purple-50 dark:from-rose-950/20 dark:to-purple-950/20 rounded-lg border border-primary/20">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-rose-500 to-purple-600 flex items-center justify-center">
-              <Compass className="w-5 h-5 text-white" />
+      {/* Boussole Calm Magic Quick Access - hidden when inside the board */}
+      {!insideBoard && (
+        <div className="mb-4 p-4 bg-gradient-to-r from-rose-50 to-purple-50 dark:from-rose-950/20 dark:to-purple-950/20 rounded-lg border border-primary/20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-rose-500 to-purple-600 flex items-center justify-center">
+                <Compass className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground">Boussole Calm Magic</h3>
+                <p className="text-sm text-muted-foreground">
+                  Commencez votre voyage d'expansion sur le Calm Magic Board
+                </p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-semibold text-foreground">Boussole Calm Magic</h3>
-              <p className="text-sm text-muted-foreground">
-                Commencez votre voyage d'expansion sur le Calm Magic Board
-              </p>
-            </div>
+            <Button
+              onClick={() => setShowBoardGate(true)}
+              className="bg-gradient-to-r from-rose-500 to-purple-600 hover:from-rose-600 hover:to-purple-700"
+            >
+              Ouvrir le Board
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
           </div>
-          <Button
-            onClick={() => setShowBoardGate(true)}
-            className="bg-gradient-to-r from-rose-500 to-purple-600 hover:from-rose-600 hover:to-purple-700"
-          >
-            Ouvrir le Board
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
         </div>
-      </div>
+      )}
+
+      {/* Board context info when inside the board */}
+      {insideBoard && (currentSeason || visitedTilesCount !== undefined) && (
+        <div className="mb-4 p-3 bg-muted/50 rounded-lg border border-border/50 flex items-center gap-3 text-sm">
+          <Compass className="w-4 h-4 text-primary" />
+          <span className="text-muted-foreground">
+            {currentSeason && <span className="font-medium text-foreground">{currentSeason}</span>}
+            {visitedTilesCount !== undefined && <span> · {visitedTilesCount}/64 tiles visited</span>}
+          </span>
+        </div>
+      )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="grid w-full grid-cols-10">
