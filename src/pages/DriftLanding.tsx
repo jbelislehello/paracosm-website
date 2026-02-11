@@ -1,12 +1,14 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Mic, Calendar, Compass, Mail, CheckCircle } from "lucide-react";
+import { Mic, Calendar, Compass, Mail, CheckCircle, BookOpen } from "lucide-react";
 import { energeticAxes } from "@/data/gardens";
 import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
+import { driftMonthlyDiscoveries, getMonthName, axisColors } from "@/data/driftMonthlyDiscoveries";
 
 const DriftLanding = () => {
   const [email, setEmail] = useState("");
@@ -201,6 +203,49 @@ const DriftLanding = () => {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Monthly Archive Section */}
+      <section className="py-20 px-4 bg-gradient-to-r from-secondary/5 to-accent/5">
+        <div className="container max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+              Monthly Review
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Each month, two curated book discoveries mapped to the Calm Magic compass.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {driftMonthlyDiscoveries.map((entry) => {
+              const uniqueAxes = [...new Set(entry.books.map(b => b.axis))];
+              return (
+                <Link
+                  key={`${entry.year}-${entry.month}`}
+                  to={`/drift/${entry.year}/${String(entry.month).padStart(2, '0')}`}
+                >
+                  <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20 h-full">
+                    <CardContent className="p-4 space-y-2 text-center">
+                      <BookOpen className="w-5 h-5 mx-auto text-muted-foreground group-hover:text-primary transition-colors" />
+                      <p className="font-bold text-sm">{getMonthName(entry.month)}</p>
+                      <p className="text-xs text-muted-foreground">{entry.year}</p>
+                      <div className="flex justify-center gap-1 flex-wrap">
+                        {uniqueAxes.map(axis => (
+                          <span
+                            key={axis}
+                            className="w-2 h-2 rounded-full"
+                            style={{ backgroundColor: axisColors[axis] }}
+                          />
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
