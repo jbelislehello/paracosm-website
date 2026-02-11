@@ -269,10 +269,10 @@ const GlitchMethodology = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="bg-rose-500 hover:bg-rose-600">
-              <Link to="/auth">Start Free</Link>
+              <a href="mailto:jbelisle@helloarchitekt.com?subject=Start a GL!TCH Session">Start Free</a>
             </Button>
             <Button asChild variant="outline" size="lg" className="border-white/20 hover:bg-white/10">
-              <a href="mailto:hello@example.com">Contact Us</a>
+              <a href="mailto:jbelisle@helloarchitekt.com?subject=GL!TCH Methodology Inquiry">Contact Us</a>
             </Button>
           </div>
         </div>
