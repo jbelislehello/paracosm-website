@@ -25,11 +25,11 @@ const DriftLanding = () => {
   };
 
   const dashboardSections = [
-    { axis: energeticAxes[0], type: "Tools", description: "Practical instruments for daily aliveness" },
-    { axis: energeticAxes[1], type: "Ideas", description: "Emerging thoughts and spacious possibilities" },
-    { axis: energeticAxes[2], type: "Culture", description: "Systems that ground and regenerate communities" },
-    { axis: energeticAxes[3], type: "Experiments", description: "Bold attempts at transformation and change" },
-    { axis: energeticAxes[4], type: "Interactions", description: "Integrative moments of neurogenesis and growth" },
+    { axis: energeticAxes[0], type: "Narrative", description: "Storytelling — how discoveries become stories worth telling" },
+    { axis: energeticAxes[1], type: "Workflow", description: "Process — practical tools and instruments for daily practice" },
+    { axis: energeticAxes[2], type: "Inquiry & Practices", description: "Questions and practices that open new understanding" },
+    { axis: energeticAxes[3], type: "Playgrounds", description: "Experiments, prototypes, and bold attempts at transformation" },
+    { axis: energeticAxes[4], type: "Human Dynamics & System Thinking", description: "How humans and systems interact, emerge, and evolve together" },
   ];
 
   return (
