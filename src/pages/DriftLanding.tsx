@@ -25,11 +25,26 @@ const DriftLanding = () => {
   };
 
   const dashboardSections = [
-    { axis: energeticAxes[0], type: "Narrative", description: "Storytelling — how discoveries become stories worth telling" },
-    { axis: energeticAxes[1], type: "Workflow", description: "Process — practical tools and instruments for daily practice" },
-    { axis: energeticAxes[2], type: "Inquiry & Practices", description: "Questions and practices that open new understanding" },
-    { axis: energeticAxes[3], type: "Playgrounds", description: "Experiments, prototypes, and bold attempts at transformation" },
-    { axis: energeticAxes[4], type: "Human Dynamics & System Thinking", description: "How humans and systems interact, emerge, and evolve together" },
+    // LOVE
+    { axis: energeticAxes[0], type: "Tangible Play", description: "Physical interaction as a gateway to learning and creative discovery" },
+    { axis: energeticAxes[0], type: "Embodied Cognition", description: "Thinking through the body — where movement meets understanding" },
+    { axis: energeticAxes[0], type: "Wearables", description: "Technology worn close — extending human sensing and expression" },
+    // MAGIC
+    { axis: energeticAxes[1], type: "Sensory Rooms", description: "Immersive environments designed to shift perception and presence" },
+    { axis: energeticAxes[1], type: "21c Parenting", description: "Raising humans in an era of complexity, screens, and possibility" },
+    { axis: energeticAxes[1], type: "Narratives", description: "Storytelling as sense-making — how we frame what matters" },
+    // CALM
+    { axis: energeticAxes[2], type: "Workflows", description: "Process and tools for conscious, intentional daily practice" },
+    { axis: energeticAxes[2], type: "Inquiry and Practices", description: "Questions and rituals that open new understanding" },
+    { axis: energeticAxes[2], type: "Playgrounds", description: "Experiments, prototypes, and bold attempts at transformation" },
+    // OPEN
+    { axis: energeticAxes[3], type: "Human Dynamics & System Thinking", description: "How humans and systems interact, emerge, and evolve together" },
+    { axis: energeticAxes[3], type: "Connected Life", description: "Living in networks — relationships between people, data, and place" },
+    { axis: energeticAxes[3], type: "Telling Stories (Narratives)", description: "The craft of shaping experience into shareable meaning" },
+    // FREE
+    { axis: energeticAxes[4], type: "WorldBuilders", description: "Designing entire realities — games, fiction, futures, and beyond" },
+    { axis: energeticAxes[4], type: "Post-Broadcast", description: "Media after the monologue — participatory, emergent, alive" },
+    { axis: energeticAxes[4], type: "Connected Life", description: "Digital and physical worlds merging into continuous experience" },
   ];
 
   return (
@@ -155,7 +170,7 @@ const DriftLanding = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {dashboardSections.map((section, index) => (
               <Card key={section.axis.key} className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-secondary/20">
                 <CardContent className="p-8 space-y-6">
