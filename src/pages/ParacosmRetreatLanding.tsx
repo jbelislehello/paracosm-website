@@ -6,6 +6,7 @@ import { Mountain, Brain, Users, Sparkles, MapPin, Building, Calendar, ArrowLeft
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
+import Footer from "@/components/Footer";
 
 const ParacosmRetreatLanding = () => {
   const { t } = useLanguage();
@@ -213,6 +214,7 @@ const ParacosmRetreatLanding = () => {
           </div>
         </div>
       </section>
+      <Footer />
     </div>
   );
 };
