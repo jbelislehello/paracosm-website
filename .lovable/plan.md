@@ -1,40 +1,26 @@
 
 
-# Update Event Categories to Match Paracosm Ontology
+# Replace "Expansive Leadership Coaching" with "Building Learning Organizations"
 
-## What's Changing
+## Overview
 
-The events section currently uses the old Medium/Gl!tch publication categories (Connected Life, Telling Stories, Worldbuilders, Learning Enterprises, Post-Broadcast). These need to be updated to match the Paracosm ontological structure established earlier: **Relational Intelligence, Learning Organizations, Retreats, Events**.
+Replace all instances of "Expansive Leadership Coaching" across the codebase with "Building Learning Organizations".
 
-Specifically, the user wants:
-- "GL!TCH Session: Maitriser X Detourner" moved from "Connected Life" to **Learning Organizations**
-- "AI & Municipalites -- GL!TCH Summit" is already effectively "Learning Organizations" (was "Learning Enterprises") -- just rename the category
+## Files and Changes
 
-## Changes to `src/components/ParacosmEventsSection.tsx`
+### 1. `src/pages/LandingPage.tsx` (line 179)
+- Hero heading: "Expansive Leadership Coaching" → **"Building Learning Organizations"**
 
-### 1. Replace category list
+### 2. `index.html` (lines 7, 8, 11, 27, 28, 145, 148)
+- Page title: "Paracosm | Expansive Leadership Coaching" → **"Paracosm | Building Learning Organizations"**
+- Meta description, OG title, schema.org name/description, and FAQ schema — all updated to use "Building Learning Organizations"
 
-Old categories: Connected Life, Telling Stories, Worldbuilders, Learning Enterprises, Post-Broadcast
+### 3. `src/components/FAQSection.tsx` (lines 11-12)
+- FAQ question: "What is Expansive Leadership Coaching?" → **"What is Building Learning Organizations?"**
+- FAQ answer: updated to reference "Building Learning Organizations" instead
 
-New categories matching Paracosm structure:
-- **Relational Intelligence** (replaces Telling Stories)
-- **Learning Organizations** (replaces Learning Enterprises + Connected Life)
-- **Retreats** (replaces Worldbuilders)
-- **Events** (general / replaces Post-Broadcast)
+### 4. `src/components/ContactSection.tsx` (line 73)
+- Service description: "Expansive leadership coaching for executives" → **"Building learning organizations for executives"**
 
-### 2. Update event category assignments
-
-| Event | Old Category | New Category |
-|-------|-------------|--------------|
-| GL!TCH Session: Maitriser X Detourner | Connected Life | Learning Organizations |
-| AI & Municipalites -- GL!TCH Summit | Learning Enterprises | Learning Organizations |
-| Transformation Design Lab | Worldbuilders | Retreats |
-| GL!TCH - Relational Intelligence Summit | Telling Stories | Relational Intelligence |
-
-### 3. Update category colors and icons to match
-
-Keep similar gradient styling but align icons with new category meanings (e.g., Building for Learning Organizations, Users for Relational Intelligence, Globe for Retreats, Calendar for Events).
-
-### Files modified
-- `src/components/ParacosmEventsSection.tsx` only
+Total: ~12 string replacements across 4 files.
 
