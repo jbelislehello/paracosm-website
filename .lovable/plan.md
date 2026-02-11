@@ -1,56 +1,60 @@
 
 
-# Replace Retreat Popup with Landing Page
+# Fix Forms + Minor Cleanup
 
-## Overview
+## 1. Retreat Invitation Form -- send email via mailto
 
-Remove the auto-popup retreat announcement from the homepage and create a dedicated `/paracosm-retreat` landing page. The page will reuse the existing retreat content (highlights, 3-day journey, audience, outcomes) but replace the "Book Consultation" CTA with an **invitation list signup form** (name + email). Updated details: **Azores Island, Portugal at Botanico House -- August 25**.
+**File:** `src/pages/ParacosmRetreatLanding.tsx`
 
-## Changes
+Currently the `handleSubmit` only shows a toast. Update it to open a mailto link to `jbelisle@helloarchitekt.com` with the name and email pre-filled in the body, then show the success state.
 
-### 1. Create new landing page: `src/pages/ParacosmRetreatLanding.tsx`
+```tsx
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!name.trim() || !email.trim()) {
+    toast.error("Please fill in both fields.");
+    return;
+  }
 
-- Full-page layout (not a dialog) with the same gradient styling
-- **Hero section**: Title, updated description mentioning Azores/Botanico House/August 25
-- **Highlights grid**: 3 cards (Immersive Storytelling, Mathematical Creativity, Calm Magic Framework)
-- **3-Day Journey overview**: Same 3-day structure from the popup
-- **Audience & Outcomes sections**: From the existing i18n retreat content
-- **Invitation list form**: Name + email fields with a "Request Invitation" submit button (stores in Supabase or shows a success toast for now)
-- Uses existing `retreat.*` i18n translations where possible, with new keys for location/date details
+  const subject = encodeURIComponent("Paracosm Retreat - Invitation Request");
+  const body = encodeURIComponent(
+    `New invitation request for the Paracosm Retreat:\n\nName: ${name}\nEmail: ${email}`
+  );
+  window.location.href = `mailto:jbelisle@helloarchitekt.com?subject=${subject}&body=${body}`;
 
-### 2. Remove popup from `src/pages/LandingPage.tsx`
+  setSubmitted(true);
+  toast.success("You've been added to the invitation list!");
+};
+```
 
-- Remove `RetreatAnnouncementPopup` import and component usage
-- Remove all popup-related state (`isRetreatAnnouncementOpen`, `hasUserEngaged`)
-- Remove the `useEffect` logic for scroll/click engagement tracking and localStorage
-- Remove `handleCloseRetreatAnnouncement` function
+## 2. Drift Subscribe Form -- send email via mailto
 
-### 3. Add route in `src/App.tsx`
+**File:** `src/pages/DriftLanding.tsx`
 
-- Add `<Route path="/paracosm-retreat" element={<ParacosmRetreatLanding />} />`
+Same pattern -- update `handleSubscribe` to open a mailto link.
 
-### 4. Update `src/components/ParacosmUniverseSection.tsx`
+```tsx
+const handleSubscribe = (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!email) return;
 
-- Change `"Paracosm Retreat"` (plain string) to `{ label: "Paracosm Retreat", to: "/paracosm-retreat" }` so it links to the new landing page
+  const subject = encodeURIComponent("Drift Newsletter - New Subscriber");
+  const body = encodeURIComponent(`New Drift newsletter subscriber:\n\nEmail: ${email}`);
+  window.location.href = `mailto:jbelisle@helloarchitekt.com?subject=${subject}&body=${body}`;
 
-### 5. Update i18n files
+  toast({ title: "Welcome to the drift!", description: "You'll receive your first update soon." });
+  setEmail("");
+};
+```
 
-- Add new keys in `src/i18n/en/retreat.json` and `src/i18n/fr/retreat.json` for:
-  - Location: "Azores Island, Portugal"
-  - Venue: "Botanico House"
-  - Date: "August 25, 2026"
-  - Invitation list CTA text
+## 3. Footer -- rename "Drift Podcast" to "Drift"
 
-### 6. Delete `src/components/RetreatAnnouncementPopup.tsx`
+**File:** `src/components/Footer.tsx` (line 84)
 
-- No longer needed once the landing page replaces it
+Change the text from "Drift Podcast" to "Drift".
 
-### Files modified
-- `src/pages/ParacosmRetreatLanding.tsx` (new)
-- `src/pages/LandingPage.tsx` (remove popup)
-- `src/App.tsx` (add route)
-- `src/components/ParacosmUniverseSection.tsx` (link "Paracosm Retreat")
-- `src/i18n/en/retreat.json` (add location/date/invitation keys)
-- `src/i18n/fr/retreat.json` (add location/date/invitation keys)
-- `src/components/RetreatAnnouncementPopup.tsx` (delete)
+## Files modified
+- `src/pages/ParacosmRetreatLanding.tsx`
+- `src/pages/DriftLanding.tsx`
+- `src/components/Footer.tsx`
 
