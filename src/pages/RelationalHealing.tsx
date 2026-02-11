@@ -1,24 +1,24 @@
 import { useEffect, useState } from "react";
-import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
 import CoachingServices from "@/components/calm-magic/CoachingServices";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
-import { Heart, ArrowLeft } from 'lucide-react';
-import { Link } from "react-router-dom";
+import { Heart, ArrowLeft, ArrowRight } from 'lucide-react';
+import { Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import BoardEntryGate from "@/components/calm-magic/BoardEntryGate";
+
 const RelationalHealing = () => {
-  const [isCalmMagicOpen, setIsCalmMagicOpen] = useState(true);
-  const {
-    t
-  } = useLanguage();
+  const { t } = useLanguage();
+  const navigate = useNavigate();
+  const [showBoardGate, setShowBoardGate] = useState(false);
+
   useEffect(() => {
     document.title = t("page_titles.relational_intelligence");
   }, [t]);
-  const handleStartJourney = () => {
-    setIsCalmMagicOpen(true);
-  };
-  return <div className="flex flex-col min-h-screen bg-gradient-to-b from-rose-50 to-purple-50 dark:from-rose-950/20 dark:to-purple-950/20">
+
+  return (
+    <div className="flex flex-col min-h-screen bg-gradient-to-b from-rose-50 to-purple-50 dark:from-rose-950/20 dark:to-purple-950/20">
       {/* Navigation */}
       <header className="fixed w-full z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
         <div className="container flex items-center justify-between py-4">
@@ -41,14 +41,14 @@ const RelationalHealing = () => {
             <a href="#coaching-services" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.services")}</a>
             <LanguageSwitcher />
           </nav>
-          <Button onClick={handleStartJourney} className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600">
-            {isCalmMagicOpen ? t("calm_magic.framework_open") : t("calm_magic.open_calm_magic")}
+          <Button
+            onClick={() => setShowBoardGate(true)}
+            className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600"
+          >
+            {t("calm_magic.open_calm_magic")}
           </Button>
         </div>
       </header>
-
-      {/* Calm Magic Assistant - Opens automatically */}
-      <CalmMagicAssistant onStartJourney={handleStartJourney} isOpen={isCalmMagicOpen} onOpenChange={setIsCalmMagicOpen} />
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
@@ -63,9 +63,13 @@ const RelationalHealing = () => {
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-                <Button onClick={handleStartJourney} className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 flex items-center gap-2">
+                <Button
+                  onClick={() => setShowBoardGate(true)}
+                  className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 flex items-center gap-2"
+                >
                   <Heart className="w-4 h-4" />
-                  {t("hero.explore_inner_landscape")}
+                  Launch Calm Magic Board
+                  <ArrowRight className="w-4 h-4" />
                 </Button>
                 <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/flexible-quick-meeting" target="_blank" rel="noopener noreferrer">
                   <Button variant="outline" className="flex items-center gap-2">
@@ -91,6 +95,15 @@ const RelationalHealing = () => {
 
       {/* Footer */}
       <Footer />
-    </div>;
+
+      {/* Board Entry Gate Modal */}
+      <BoardEntryGate
+        isOpen={showBoardGate}
+        onClose={() => setShowBoardGate(false)}
+        sourceContext="relational"
+        preselectedMode="personal"
+      />
+    </div>
+  );
 };
 export default RelationalHealing;
