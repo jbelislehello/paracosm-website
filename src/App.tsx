@@ -33,6 +33,7 @@ import SubscriptionCanceled from "./pages/SubscriptionCanceled";
 import PatternEncyclopedia from "./pages/PatternEncyclopedia";
 import ParacosmDashboard from "./pages/ParacosmDashboard";
 import GlitchMethodology from "./pages/GlitchMethodology";
+import Tonalli from "./pages/Tonalli";
 import Settings from "./pages/Settings";
 import AdminSubscriptions from "./pages/AdminSubscriptions";
 import "./App.css";
@@ -77,6 +78,7 @@ function App() {
                   <Route path="/subscription-canceled" element={<SubscriptionCanceled />} />
                   <Route path="/pattern-encyclopedia" element={<PatternEncyclopedia />} />
                   <Route path="/glitch-methodology" element={<GlitchMethodology />} />
+                  <Route path="/tonalli" element={<Tonalli />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
                 <Toaster />
