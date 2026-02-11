@@ -19,6 +19,13 @@ const ParacosmRetreatLanding = () => {
       toast.error("Please fill in both fields.");
       return;
     }
+
+    const subject = encodeURIComponent("Paracosm Retreat - Invitation Request");
+    const body = encodeURIComponent(
+      `New invitation request for the Paracosm Retreat:\n\nName: ${name}\nEmail: ${email}`
+    );
+    window.location.href = `mailto:jbelisle@helloarchitekt.com?subject=${subject}&body=${body}`;
+
     setSubmitted(true);
     toast.success("You've been added to the invitation list!");
   };

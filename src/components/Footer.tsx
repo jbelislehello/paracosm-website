@@ -80,7 +80,7 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <Link to="/drift" className="text-sm text-slate-400 hover:text-purple-400 transition-colors">
-                  Drift Podcast
+                  Drift
                 </Link>
               </li>
               <li>
