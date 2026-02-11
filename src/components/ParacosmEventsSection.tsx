@@ -5,11 +5,10 @@ import { Calendar, MapPin, Users, ExternalLink, Wifi, BookOpen, Globe, Building,
 
 const categories = [
   { name: "All", color: "from-slate-500 to-slate-600", icon: Users },
-  { name: "Connected Life", color: "from-cyan-500 to-teal-500", icon: Wifi, mediumTag: "connected-life" },
-  { name: "Telling Stories", color: "from-pink-500 to-rose-500", icon: BookOpen, mediumTag: "telling-stories" },
-  { name: "Worldbuilders", color: "from-purple-500 to-violet-500", icon: Globe, mediumTag: "worldbuilders" },
-  { name: "Learning Enterprises", color: "from-blue-500 to-indigo-500", icon: Building, mediumTag: "learning-enterprises" },
-  { name: "Post-Broadcast", color: "from-orange-500 to-amber-500", icon: Radio, mediumTag: "post-broadcast" },
+  { name: "Relational Intelligence", color: "from-pink-500 to-rose-500", icon: Users },
+  { name: "Learning Organizations", color: "from-blue-500 to-indigo-500", icon: Building },
+  { name: "Retreats", color: "from-purple-500 to-violet-500", icon: Globe },
+  { name: "Events", color: "from-orange-500 to-amber-500", icon: Calendar },
 ];
 
 const events = [
@@ -18,8 +17,8 @@ const events = [
     description: "An immersive Gl!tch session at the E-AI 2026 Annual Conference exploring the intersection of mastery and creative subversion in AI-augmented transformation.",
     date: "February 18-19, 2026",
     location: "Montreal Convention Centre",
-    category: "Connected Life",
-    color: "from-cyan-500 to-teal-500",
+    category: "Learning Organizations",
+    color: "from-blue-500 to-indigo-500",
     cta: "Get Tickets",
     link: "https://my.weezevent.com/e-ai-2026"
   },
@@ -28,7 +27,7 @@ const events = [
     description: "A hands-on summit for municipal leaders and technical executives to build frameworks for AI governance and strategic implementation in public services.",
     date: "April 22-23, 2026",
     location: "Cantons-de-l'Est, QC",
-    category: "Learning Enterprises",
+    category: "Learning Organizations",
     color: "from-blue-500 to-indigo-500",
     cta: "Join Waitlist"
   },
@@ -37,7 +36,7 @@ const events = [
     description: "Learn to create diegetic prototypes and bridge the gap between vision and implementation through our proven methodology.",
     date: "Summer 2026",
     location: "Montreal, QC",
-    category: "Worldbuilders",
+    category: "Retreats",
     color: "from-purple-500 to-violet-500",
     cta: "Early Access"
   },
@@ -46,7 +45,7 @@ const events = [
     description: "Advanced coaching techniques for creating coherent, learning-oriented cultures that drive innovation and engagement.",
     date: "Autumn 2026",
     location: "Madeira, Portugal",
-    category: "Telling Stories",
+    category: "Relational Intelligence",
     color: "from-pink-500 to-rose-500",
     cta: "Get Notified"
   }
@@ -102,7 +101,7 @@ const ParacosmEventsSection = () => {
                 <CardHeader className="pb-3">
                   {/* Category badge */}
                   <a
-                    href={catMeta?.mediumTag ? `https://medium.com/futurographer/tagged/${catMeta.mediumTag}` : 'https://medium.com/futurographer'}
+                    href="https://medium.com/futurographer"
                     target="_blank"
                     rel="noopener noreferrer"
                     className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold text-white bg-gradient-to-r ${event.color} w-fit mb-3 hover:opacity-90 transition-opacity`}
