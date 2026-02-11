@@ -1,41 +1,40 @@
 
 
-# Update Top Navigation in LandingPage
+# Update Event Categories to Match Paracosm Ontology
 
-## Changes to `src/pages/LandingPage.tsx`
+## What's Changing
 
-### 1. Remove "Book Call" button from top nav (line 152-156)
-Remove the "Book Call" outline button entirely from the desktop actions area.
+The events section currently uses the old Medium/Gl!tch publication categories (Connected Life, Telling Stories, Worldbuilders, Learning Enterprises, Post-Broadcast). These need to be updated to match the Paracosm ontological structure established earlier: **Relational Intelligence, Learning Organizations, Retreats, Events**.
 
-### 2. Link "Get Started" button to contact section (line 157-160)
-Change the "Get Started" button from opening CalmMagicAssistant to scrolling to the `#contact` section instead. Replace `onClick={handleStartCoaching}` with an anchor link to `#contact`.
+Specifically, the user wants:
+- "GL!TCH Session: Maitriser X Detourner" moved from "Connected Life" to **Learning Organizations**
+- "AI & Municipalites -- GL!TCH Summit" is already effectively "Learning Organizations" (was "Learning Enterprises") -- just rename the category
 
-### 3. Update desktop nav links (lines 118-125)
-- Change "Paracosm" to two separate links: **"AI Leadership"** (pointing to `/agentic-ux`) and **"Team Coaching"** (pointing to `/calm-magic-assistant`)
-- Change "Calm Magic Board" to just **"Calm Magic"** (same `/calm-magic-board` route)
-- Keep Drift, Tonalli, Events, Contact as-is
+## Changes to `src/components/ParacosmEventsSection.tsx`
 
-### 4. Update mobile nav links (lines 135-145)
-Mirror the same changes: replace "Paracosm" with "AI Leadership" + "Team Coaching", rename "Calm Magic Board" to "Calm Magic".
+### 1. Replace category list
 
-## Technical Details
+Old categories: Connected Life, Telling Stories, Worldbuilders, Learning Enterprises, Post-Broadcast
 
-Desktop nav becomes:
-```
-AI Leadership | Team Coaching | Calm Magic | Drift | Tonalli | Events | Contact
-```
+New categories matching Paracosm structure:
+- **Relational Intelligence** (replaces Telling Stories)
+- **Learning Organizations** (replaces Learning Enterprises + Connected Life)
+- **Retreats** (replaces Worldbuilders)
+- **Events** (general / replaces Post-Broadcast)
 
-The "Get Started" button changes from:
-```tsx
-<Button onClick={handleStartCoaching} ...>Get Started</Button>
-```
-to:
-```tsx
-<a href="#contact"><Button ...>Get Started</Button></a>
-```
+### 2. Update event category assignments
 
-The "Book Call" `<a>` + `<Button>` block (lines 152-156) is removed entirely.
+| Event | Old Category | New Category |
+|-------|-------------|--------------|
+| GL!TCH Session: Maitriser X Detourner | Connected Life | Learning Organizations |
+| AI & Municipalites -- GL!TCH Summit | Learning Enterprises | Learning Organizations |
+| Transformation Design Lab | Worldbuilders | Retreats |
+| GL!TCH - Relational Intelligence Summit | Telling Stories | Relational Intelligence |
+
+### 3. Update category colors and icons to match
+
+Keep similar gradient styling but align icons with new category meanings (e.g., Building for Learning Organizations, Users for Relational Intelligence, Globe for Retreats, Calendar for Events).
 
 ### Files modified
-- `src/pages/LandingPage.tsx` only
+- `src/components/ParacosmEventsSection.tsx` only
 
