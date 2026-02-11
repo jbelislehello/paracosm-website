@@ -100,15 +100,12 @@ const ParacosmEventsSection = () => {
               <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm">
                 <CardHeader className="pb-3">
                   {/* Category badge */}
-                  <a
-                    href="https://medium.com/futurographer"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold text-white bg-gradient-to-r ${event.color} w-fit mb-3 hover:opacity-90 transition-opacity`}
+                  <span
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold text-white bg-gradient-to-r ${event.color} w-fit mb-3`}
                   >
                     <CatIcon className="w-3 h-3" />
                     {event.category}
-                  </a>
+                  </span>
                   <CardTitle className="text-xl font-bold group-hover:text-purple-600 transition-colors">
                     {event.name}
                   </CardTitle>

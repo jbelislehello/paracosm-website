@@ -53,10 +53,12 @@ const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <span className="text-sm text-slate-400">IoTheatre</span>
+                <span className="text-sm text-slate-500 italic">IoTheatre (Coming Soon)</span>
               </li>
               <li>
-                <span className="text-sm text-slate-400">Satori & Kensho</span>
+                <a href="https://suno.com/@jbelisle" target="_blank" rel="noopener noreferrer" className="text-sm text-slate-400 hover:text-purple-400 transition-colors">
+                  Satori & Kensho
+                </a>
               </li>
             </ul>
           </div>
@@ -84,7 +86,9 @@ const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <span className="text-sm text-slate-400">Retreats</span>
+                <Link to="/paracosm-retreat" className="text-sm text-slate-400 hover:text-purple-400 transition-colors">
+                  Retreats
+                </Link>
               </li>
             </ul>
           </div>
@@ -116,7 +120,7 @@ const Footer: React.FC = () => {
         
         {/* Bottom Bar */}
         <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-slate-400">© 2025 HA Labs + Paracosm. {t("footer.rights_reserved")}</p>
+          <p className="text-sm text-slate-400">© 2026 HA Labs + Paracosm. {t("footer.rights_reserved")}</p>
           <div className="flex space-x-4 mt-4 md:mt-0">
             <a href="https://www.linkedin.com/newsletters/calm-magic-6884529759464816640/" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">LinkedIn</a>
             <a href="https://calmmagic.medium.com/" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">Medium</a>
