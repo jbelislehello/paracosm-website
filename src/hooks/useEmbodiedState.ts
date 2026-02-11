@@ -222,30 +222,11 @@ export function useEmbodiedState() {
     }
   }, []);
   
-  // Initialize ml5 models
+  // Initialize models (ml5 removed — stub for future integration)
   const initModels = useCallback(async (video: HTMLVideoElement) => {
-    try {
-      // Dynamic import of ml5
-      const ml5 = await import('ml5');
-      
-      // Initialize BodyPose
-      bodyPoseModelRef.current = await ml5.default.bodyPose('MoveNet', {
-        modelType: 'SINGLEPOSE_LIGHTNING',
-        enableSmoothing: true,
-      });
-      
-      // Initialize FaceMesh
-      faceMeshModelRef.current = await ml5.default.faceMesh({
-        maxFaces: 1,
-        refineLandmarks: true,
-      });
-      
-      videoRef.current = video;
-      return true;
-    } catch (err) {
-      console.error('Failed to initialize ml5 models:', err);
-      return false;
-    }
+    console.warn('Embodied state: ml5 has been removed. Body/face detection is disabled.');
+    videoRef.current = video;
+    return false;
   }, []);
   
   // Start detection loop
