@@ -39,7 +39,9 @@ const haLabsBranches = [
   {
     title: "Client Projects",
     icon: Code,
-    items: [],
+    items: [
+      { label: "Case Studies", to: "/case-studies" },
+    ],
   },
 ];
 
