@@ -10,7 +10,7 @@ import Footer from "@/components/Footer";
 
 const DriftLanding = () => {
   const [email, setEmail] = useState("");
-  const [subscriptionType, setSubscriptionType] = useState<"both" | "podcast" | "dashboard">("both");
+  
   const { toast } = useToast();
 
   const handleSubscribe = (e: React.FormEvent) => {
@@ -39,7 +39,7 @@ const DriftLanding = () => {
         <div className="container max-w-4xl mx-auto text-center space-y-8">
           <div className="space-y-6">
             <Badge variant="outline" className="px-6 py-2 text-lg font-medium bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
-              Monthly Podcast + Weekly Dashboard
+              Monthly Newsletter
             </Badge>
             
             <h1 className="text-5xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent animate-gradient-x">
@@ -53,32 +53,32 @@ const DriftLanding = () => {
             
             <p className="text-lg text-muted-foreground/80 max-w-xl mx-auto">
               A monthly conversation with the currents of change,<br />
-              and a weekly board for navigating what emerges
+              navigating what emerges with intention
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
             <Button size="lg" className="px-8 py-3 text-lg" onClick={() => document.getElementById('subscribe')?.scrollIntoView({ behavior: 'smooth' })}>
               <Mail className="w-5 h-5 mr-2" />
-              Join the Drift
+              Subscribe to the Drift
             </Button>
-            <Button variant="outline" size="lg" className="px-8 py-3 text-lg" onClick={() => document.getElementById('podcast')?.scrollIntoView({ behavior: 'smooth' })}>
-              <Mic className="w-5 h-5 mr-2" />
-              Explore Episodes
+            <Button variant="outline" size="lg" className="px-8 py-3 text-lg" onClick={() => document.getElementById('latest')?.scrollIntoView({ behavior: 'smooth' })}>
+              <Compass className="w-5 h-5 mr-2" />
+              Explore Topics
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Featured Episode Section */}
-      <section id="podcast" className="py-20 px-4 bg-gradient-to-r from-primary/5 to-secondary/5">
+      {/* Featured Issue Section */}
+      <section id="latest" className="py-20 px-4 bg-gradient-to-r from-primary/5 to-secondary/5">
         <div className="container max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <Badge variant="outline" className="mb-4 px-4 py-1 text-sm bg-primary/10 border-primary/30">
-              Latest Episode
+              Latest Issue
             </Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-              Podcast Drift
+              Monthly Drift
             </h2>
           </div>
 
@@ -95,9 +95,9 @@ const DriftLanding = () => {
             </div>
             <CardContent className="p-6 space-y-4">
               <div className="flex items-center gap-3">
-                <Badge className="bg-red-500/10 text-red-500 border-red-500/30">
+                <Badge className="bg-primary/10 text-primary border-primary/30">
                   <Mic className="w-3 h-3 mr-1" />
-                  Live
+                  Featured
                 </Badge>
                 <span className="text-sm text-muted-foreground">monExpansion • 2h 30min</span>
               </div>
@@ -117,11 +117,11 @@ const DriftLanding = () => {
           </Card>
 
           <p className="text-center text-xl text-muted-foreground max-w-3xl mx-auto mb-12">
-            A monthly ritual of deep listening. Each episode drifts through one of the five forces of the Calm Magic compass, exploring how these energies shape our work, relationships, and creative evolution.
+            A monthly newsletter exploring the five forces of the Calm Magic compass — how these energies shape our work, relationships, and creative evolution.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {energeticAxes.map((axis, index) => (
+            {energeticAxes.map((axis) => (
               <Card key={axis.key} className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20">
                 <CardContent className="p-6 space-y-4">
                   <div className="flex items-center justify-between">
@@ -131,17 +131,11 @@ const DriftLanding = () => {
                     >
                       {axis.name}
                     </Badge>
-                    <Mic className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                    <Compass className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
                   </div>
                   
                   <h3 className="text-xl font-bold">{axis.subtitle}</h3>
                   <p className="text-muted-foreground leading-relaxed">{axis.description}</p>
-                  
-                  <div className="pt-4 border-t">
-                    <p className="text-sm text-muted-foreground">
-                      Episode {index + 1} • Coming Soon
-                    </p>
-                  </div>
                 </CardContent>
               </Card>
             ))}
@@ -154,10 +148,10 @@ const DriftLanding = () => {
         <div className="container max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-secondary to-accent">
-              Weekly Dashboard
+              Discovery Categories
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              A living board that updates weekly, organizing insights and discoveries across the five dimensions of the Calm Magic compass. Each section offers fresh perspectives for navigating complexity with grace.
+              Each issue organizes discoveries across the five dimensions of the Calm Magic compass. Five lenses for navigating complexity with grace.
             </p>
           </div>
 
@@ -182,7 +176,7 @@ const DriftLanding = () => {
                   
                   <div className="pt-4 border-t">
                     <p className="text-sm font-medium text-muted-foreground">
-                      {section.axis.subtitle} • Updated Weekly
+                      {section.axis.subtitle}
                     </p>
                   </div>
                 </CardContent>
@@ -237,37 +231,12 @@ const DriftLanding = () => {
                   Join the Current
                 </h2>
                 <p className="text-lg text-muted-foreground">
-                  Receive monthly podcast episodes and weekly dashboard updates. 
-                  Choose your rhythm of engagement.
+                  Receive the monthly Drift newsletter — discoveries, tools, and stories organized through the Calm Magic compass.
                 </p>
               </div>
 
               <form onSubmit={handleSubscribe} className="space-y-6">
                 <div className="space-y-4">
-                  <div className="space-y-3">
-                    <label className="text-sm font-medium text-muted-foreground">
-                      Subscription Type
-                    </label>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      {[
-                        { value: "both", label: "Both", desc: "Monthly + Weekly" },
-                        { value: "podcast", label: "Podcast Only", desc: "Monthly Episodes" },
-                        { value: "dashboard", label: "Dashboard Only", desc: "Weekly Updates" }
-                      ].map((option) => (
-                        <Button
-                          key={option.value}
-                          type="button"
-                          variant={subscriptionType === option.value ? "default" : "outline"}
-                          className="h-auto p-4 flex flex-col items-center space-y-1"
-                          onClick={() => setSubscriptionType(option.value as any)}
-                        >
-                          <span className="font-semibold">{option.label}</span>
-                          <span className="text-xs opacity-80">{option.desc}</span>
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-
                   <div className="space-y-2">
                     <label htmlFor="email" className="text-sm font-medium text-muted-foreground">
                       Email Address
