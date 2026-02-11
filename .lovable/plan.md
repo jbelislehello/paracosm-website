@@ -1,27 +1,20 @@
 
 
-# Add Tonalli Link Card to Landing Page
+# Add Tonalli Link to Main Navigation
 
 ## What's Changing
 
-A new section will be added to the landing page to help visitors discover the Tonalli Initiative. It will be placed between the "Bridge to Relational Innovation" section and the Contact section (between lines 468 and 470).
+Add a "Tonalli" link to both the desktop and mobile navigation menus in the landing page header.
 
-## Design
+## Changes
 
-A compact, visually distinct card section with:
-- Warm amber/orange gradient background (matching Tonalli's branding)
-- "Tonalli Initiative" title with a short tagline
-- Two subtle highlights for Voice and Spatial branches (icons: Mic and Eye)
-- A CTA button linking to `/tonalli`
+### File: `src/pages/LandingPage.tsx`
 
-## Technical Details
+**Desktop nav** (around line 124, between "Events" and "Contact"):
+- Add: `<Link to="/tonalli" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Tonalli</Link>`
 
-### File: `src/pages/Index.tsx`
+**Mobile menu** (around line 145, between "Events" and "Contact"):
+- Add: `<Link to="/tonalli" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Tonalli</Link>`
 
-- Import `Mic` and `Eye` icons from lucide-react (line 13)
-- Add a new section (~30 lines) between line 468 and line 470, styled as a dark card with amber accents
-- Uses `Link` to `/tonalli` for the CTA button
-- Responsive grid layout consistent with other landing page sections
-
-No new files or components needed -- just a self-contained section block in the existing page.
+No new files, imports, or dependencies needed.
 
