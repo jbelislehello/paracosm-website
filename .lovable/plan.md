@@ -1,28 +1,33 @@
 
 
-# Paracosm Logo: Black Background, Rounded Corners, No Title
+# Generate Professional OG Image for Social Sharing
 
-## What Changes
+## Overview
 
-Remove the "Paracosm" text label next to the logo and ensure the logo image sits on a black background with rounded corners across all 4 locations where it appears.
+Create a proper 1200x630 Open Graph image featuring the Paracosm logo centered on a black background with branding text, replacing the current raw logo JPEG which isn't optimized for social cards.
 
-## Files to Modify
+## Approach
 
-### 1. `src/pages/LandingPage.tsx` (line ~57-58)
-- Remove `<span className="font-bold text-lg">Paracosm</span>`
-- Update the `<img>` tag: add `bg-black` and keep `rounded-md`, ensure `object-contain` and padding so the logo floats on a black pill/square
+Use a Supabase Edge Function to call the Lovable AI image generation API (google/gemini-2.5-flash-image) with a detailed prompt describing the desired OG image layout. The generated image will then be saved as `public/og-image.jpeg`, replacing the current file.
 
-### 2. `src/pages/CaseStudies.tsx` (line ~26-27)
-- Same change: remove the "Paracosm" span, add `bg-black` to the img wrapper
+## Steps
 
-### 3. `src/pages/AboutUs.tsx` (line ~95-96)
-- Same change
+### 1. Create Edge Function `generate-og-image`
+- Call the AI image generation endpoint with a prompt like: "Create a 1200x630 social sharing card with a pure black background. Center the Paracosm logo (a series of concentric rainbow-colored arcs on black). Below the logo, add the text 'PARACOSM' in clean white uppercase lettering, and beneath that in smaller text 'Building Learning Organizations'. Keep the design minimal and elegant."
+- Return the generated base64 image
 
-### 4. `src/components/ParacosmUniverseSection.tsx` (line ~165-167)
-- Remove the `<h3>Paracosm</h3>` text block next to the logo
-- Add `bg-black` to the img element
+### 2. Deploy, call, and retrieve the image
+- Deploy the edge function
+- Call it to generate the image
+- Download the base64 result and save it as `public/og-image.jpeg`
 
-## Technical Detail
+### 3. Clean up
+- Delete the edge function since it's a one-time generation task
+- Verify the OG image meta tags in `index.html` still point to `/og-image.jpeg` (they already do)
 
-Each `<img>` tag will get the class `bg-black rounded-lg p-1 w-8 h-8 object-contain` (or `w-10 h-10` in the universe section to match its current size). The black background ensures the rainbow arc design pops clearly. The slight padding prevents the artwork from touching the rounded edges.
+## Technical Notes
+
+- The AI model produces images at its native resolution; the prompt will request 1200x630 dimensions explicitly
+- The edge function needs the `LOVABLE_API_KEY` secret (should already be available)
+- This is a one-time image generation, not a runtime function
 
