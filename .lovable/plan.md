@@ -1,47 +1,28 @@
 
 
-# Replace Placeholder Logos with Uploaded Brand Logos
+# Paracosm Logo: Black Background, Rounded Corners, No Title
 
-## Overview
+## What Changes
 
-Replace the current text-based placeholder logos across the site with the three uploaded brand images:
-- **Paracosm** logo (rainbow arc on black) -- used on LandingPage, CaseStudies, AboutUs headers
-- **Tonalli** logo (fox with UFO) -- used on the Tonalli page header
-- **HA Labs** logo (black "ha" square) -- used in Footer and ParacosmUniverseSection
-
-## Asset Setup
-
-Copy the 3 uploaded images to `src/assets/` for proper ES module imports:
-- `src/assets/logo-paracosm.jpeg`
-- `src/assets/logo-tonalli.jpeg`
-- `src/assets/logo-ha.jpg`
+Remove the "Paracosm" text label next to the logo and ensure the logo image sits on a black background with rounded corners across all 4 locations where it appears.
 
 ## Files to Modify
 
-### 1. `src/pages/LandingPage.tsx` (line ~55-59)
-Replace the gradient square with "P" text with an `<img>` tag using the Paracosm logo. Size it to match the current 32x32px placeholder. The logo has a dark background so it works well on both light and dark themes.
+### 1. `src/pages/LandingPage.tsx` (line ~57-58)
+- Remove `<span className="font-bold text-lg">Paracosm</span>`
+- Update the `<img>` tag: add `bg-black` and keep `rounded-md`, ensure `object-contain` and padding so the logo floats on a black pill/square
 
-### 2. `src/pages/CaseStudies.tsx` (line ~24-28)
-Same replacement -- swap the "P" square for the Paracosm logo image.
+### 2. `src/pages/CaseStudies.tsx` (line ~26-27)
+- Same change: remove the "Paracosm" span, add `bg-black` to the img wrapper
 
-### 3. `src/pages/AboutUs.tsx` (line ~93-97)
-Same replacement -- swap the "P" square for the Paracosm logo image.
+### 3. `src/pages/AboutUs.tsx` (line ~95-96)
+- Same change
 
-### 4. `src/pages/Tonalli.tsx` (line ~12-14)
-Replace the text-only "Tonalli" link with the Tonalli fox logo image next to the text.
+### 4. `src/components/ParacosmUniverseSection.tsx` (line ~165-167)
+- Remove the `<h3>Paracosm</h3>` text block next to the logo
+- Add `bg-black` to the img element
 
-### 5. `src/components/Footer.tsx` (line ~16-20)
-Replace the gradient square with "HA" text with the HA Labs logo image.
+## Technical Detail
 
-### 6. `src/components/ParacosmUniverseSection.tsx`
-Replace the HA Labs and Paracosm text placeholders in the universe section with the respective logo images.
-
-## Design Considerations
-
-- All logos will be rendered as `<img>` elements with `className` for sizing (h-8 w-8 or similar, matching current dimensions)
-- The Paracosm logo (dark background with rainbow arcs) works well in both light/dark themes
-- The HA logo (black square with white "ha") is compact and works at small sizes
-- The Tonalli logo (fox) may need a slightly larger display size given its detail -- will use h-8 w-auto to preserve aspect ratio
-- `object-contain` will be used to prevent cropping
-- Alt text will be descriptive for accessibility
+Each `<img>` tag will get the class `bg-black rounded-lg p-1 w-8 h-8 object-contain` (or `w-10 h-10` in the universe section to match its current size). The black background ensures the rainbow arc design pops clearly. The slight padding prevents the artwork from touching the rounded edges.
 
