@@ -9,6 +9,7 @@ import { energeticAxes } from "@/data/gardens";
 import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
 import { driftMonthlyDiscoveries, driftLibraryExtras, driftLibraryArtefacts, getMonthName, axisColors } from "@/data/driftMonthlyDiscoveries";
+import logoDrift from "@/assets/drift/logo-drift.jpeg";
 import { driftTools } from "@/data/driftTools";
 
 const DriftLanding = () => {
@@ -61,6 +62,10 @@ const DriftLanding = () => {
       <section className="relative min-h-screen flex items-center justify-center px-4 py-12">
         <div className="container max-w-4xl mx-auto text-center space-y-8">
           <div className="space-y-6">
+            <div className="bg-white border border-purple-300 rounded-2xl p-4 w-32 h-32 mx-auto overflow-hidden">
+              <img src={logoDrift} alt="Drift Logo" className="w-full h-full object-contain" />
+            </div>
+
             <Badge variant="outline" className="px-6 py-2 text-lg font-medium bg-gradient-to-r from-primary/10 to-secondary/10 border-primary/20">
               Monthly Newsletter
             </Badge>
