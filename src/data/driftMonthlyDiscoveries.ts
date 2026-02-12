@@ -700,6 +700,38 @@ export const driftLibraryArtefacts: DriftArtefact[] = [
     axis: "open",
     imagePath: "/drift/Tale_of_Loss.jpg",
   },
+  {
+    title: "Services Map — Cartographie des services",
+    author: "Jonathan Bélisle",
+    description: "Tableur détaillant la cartographie des services, workflows et processus opérationnels dans un écosystème créatif.",
+    category: "Workflows",
+    axis: "calm",
+    filePath: "/drift/Services_Map.xls",
+  },
+  {
+    title: "Environments, Behaviors & Organizations — Diagramme",
+    author: "Jonathan Bélisle",
+    description: "Diagramme dessiné à la main explorant les intersections entre design d'environnements, comportements, organisations et architecture d'expériences.",
+    category: "Connected Life",
+    axis: "open",
+    imagePath: "/drift/Environments_Behaviors_Organizations.jpg",
+  },
+  {
+    title: "Disaster Dialogues — Présentation",
+    author: "Jonathan Bélisle",
+    description: "Présentation sur les dialogues en situation de crise — résilience collective, narration et transformation communautaire.",
+    category: "Community",
+    axis: "free",
+    filePath: "/drift/Disaster_Dialogues.pdf",
+  },
+  {
+    title: "Story-Driven Enterprise Transformation — Présentation",
+    author: "Jonathan Bélisle",
+    description: "Présentation sur la transformation d'entreprise guidée par le récit — storyworlds, narration stratégique et changement organisationnel.",
+    category: "Storyworlds",
+    axis: "magic",
+    filePath: "/drift/StoryDrivenEnterpriseTransformation.pdf",
+  },
 ];
 
 export const axisColors: Record<DriftAxis, string> = {
