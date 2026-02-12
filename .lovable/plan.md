@@ -1,33 +1,32 @@
 
 
-# Generate Professional OG Image for Social Sharing
+# Update OG Image: Logo + "PARACOSM" Title
 
-## Overview
+## What We'll Do
 
-Create a proper 1200x630 Open Graph image featuring the Paracosm logo centered on a black background with branding text, replacing the current raw logo JPEG which isn't optimized for social cards.
+Create a new Open Graph social sharing image (1200x630) with:
+- **White background**
+- **The uploaded rainbow arc logo** (from IMG_2996/IMG_2997) on the left
+- **"PARACOSM"** text in black, positioned to the right of the logo
 
-## Approach
+## Technical Steps
 
-Use a Supabase Edge Function to call the Lovable AI image generation API (google/gemini-2.5-flash-image) with a detailed prompt describing the desired OG image layout. The generated image will then be saved as `public/og-image.jpeg`, replacing the current file.
+1. **Create a temporary edge function** (`generate-og-image`) that sends the uploaded rainbow arc image to the AI image generation API with instructions to place it on a white background with "PARACOSM" in black text to its right
+2. **Deploy and call** the edge function to generate the image
+3. **Save the result** as `public/og-image.jpeg`, replacing the current file
+4. **Clean up** by deleting the edge function (one-time use)
 
-## Steps
+## Design Spec for the Prompt
 
-### 1. Create Edge Function `generate-og-image`
-- Call the AI image generation endpoint with a prompt like: "Create a 1200x630 social sharing card with a pure black background. Center the Paracosm logo (a series of concentric rainbow-colored arcs on black). Below the logo, add the text 'PARACOSM' in clean white uppercase lettering, and beneath that in smaller text 'Building Learning Organizations'. Keep the design minimal and elegant."
-- Return the generated base64 image
+- White (#FFFFFF) background, 1200x630 pixels
+- The rainbow arc logo displayed at roughly 400x400 on the left side
+- "PARACOSM" in bold, clean black sans-serif uppercase text centered vertically to the right of the logo
+- No tagline, no extra decoration -- just logo + title
 
-### 2. Deploy, call, and retrieve the image
-- Deploy the edge function
-- Call it to generate the image
-- Download the base64 result and save it as `public/og-image.jpeg`
+## Files Changed
 
-### 3. Clean up
-- Delete the edge function since it's a one-time generation task
-- Verify the OG image meta tags in `index.html` still point to `/og-image.jpeg` (they already do)
+- `public/og-image.jpeg` (replaced with new generated image)
+- Temporary edge function created and deleted
 
-## Technical Notes
-
-- The AI model produces images at its native resolution; the prompt will request 1200x630 dimensions explicitly
-- The edge function needs the `LOVABLE_API_KEY` secret (should already be available)
-- This is a one-time image generation, not a runtime function
+No changes needed to `index.html` since it already references `/og-image.jpeg`.
 
