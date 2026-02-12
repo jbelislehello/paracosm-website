@@ -49,6 +49,15 @@ export interface DriftArticle {
   source: string;
 }
 
+export interface DriftArtefact {
+  title: string;
+  author: string;
+  description: string;
+  category: string;
+  axis: DriftAxis;
+  imagePath: string;
+}
+
 export interface DriftMonthEntry {
   year: number;
   month: number;
@@ -57,6 +66,7 @@ export interface DriftMonthEntry {
   songs?: DriftSong[];
   podcasts?: DriftPodcast[];
   articles?: DriftArticle[];
+  artefacts?: DriftArtefact[];
 }
 
 export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
@@ -498,6 +508,28 @@ export const driftLibraryExtras: DriftBook[] = [
   { title: "Le Moyen Âge en Occident", author: "Collectif", description: "Synthèse historique sur la société médiévale occidentale.", category: "Human Dynamics & System Thinking", axis: "free", amazonUrl: "https://www.amazon.com/s?k=Le+Moyen+%C3%82ge+en+Occident" },
   { title: "Le feu aux entrailles", author: "Milo Manara & Pedro Almodóvar", description: "Bande dessinée / récit graphique (collab Manara–Almodóvar).", category: "Tangible Play", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Le+feu+aux+entrailles+Manara+Almodovar" },
   { title: "Ubiquitous Computing: Smart Devices, Environments and Interactions", author: "Collectif", description: "Informatique ubiquitaire: environnements intelligents, dispositifs, interactions.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Ubiquitous+Computing+Smart+Devices+Environments+and+Interactions" },
+];
+
+import transmediaMap from '@/assets/drift/transmediamap.jpg';
+import gameplanImage from '@/assets/drift/JonathanBelisle-gameplan.jpg';
+
+export const driftLibraryArtefacts: DriftArtefact[] = [
+  {
+    title: "Transmedia Map",
+    author: "Jonathan Bélisle",
+    description: "A layered diagram showing Noetical Flux, Perma Flux, Bio/Psy/Geo Flux with layers for mythologies, religions, ecosystems, behaviours, tekhne, and economy.",
+    category: "Human Dynamics & System Thinking",
+    axis: "open",
+    imagePath: transmediaMap,
+  },
+  {
+    title: "Game Plan (2017-2020)",
+    author: "Jonathan Bélisle",
+    description: "A concentric spiral diagram mapping story-driven innovation, calm magic, publishing, performances, V10 projects, and transformational design.",
+    category: "Workflows",
+    axis: "calm",
+    imagePath: gameplanImage,
+  },
 ];
 
 export const axisColors: Record<DriftAxis, string> = {

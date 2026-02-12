@@ -1,16 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, BookOpen, ExternalLink } from "lucide-react";
+import { ArrowLeft, BookOpen, ExternalLink, Image } from "lucide-react";
 import { energeticAxes } from "@/data/gardens";
-import { driftMonthlyDiscoveries, driftLibraryExtras, DriftAxis, axisColors } from "@/data/driftMonthlyDiscoveries";
+import { driftMonthlyDiscoveries, driftLibraryExtras, driftLibraryArtefacts, DriftAxis, axisColors } from "@/data/driftMonthlyDiscoveries";
 import Footer from "@/components/Footer";
 
 const DriftLibrary = () => {
   const { axis } = useParams<{ axis: string }>();
   const axisKey = axis as DriftAxis;
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
   const axisInfo = energeticAxes.find(a => a.key === axisKey);
 
@@ -65,10 +66,26 @@ const DriftLibrary = () => {
       .map(a => ({ ...a, year: entry.year, month: entry.month }))
   );
 
-  const totalResources = allBooks.length + allVideos.length + allSongs.length + allPodcasts.length + allArticles.length;
+  // Collect artefacts from months + library artefacts
+  const monthlyArtefacts = driftMonthlyDiscoveries.flatMap(entry =>
+    (entry.artefacts || [])
+      .filter(a => a.axis === axisKey)
+      .map(a => ({ ...a, year: entry.year, month: entry.month }))
+  );
+  const libraryArtefacts = driftLibraryArtefacts.filter(a => a.axis === axisKey);
+  const allArtefacts = [...monthlyArtefacts, ...libraryArtefacts];
+
+  const totalResources = allBooks.length + allVideos.length + allSongs.length + allPodcasts.length + allArticles.length + allArtefacts.length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-background/90">
+      {/* Lightbox */}
+      {lightboxImage && (
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 cursor-pointer" onClick={() => setLightboxImage(null)}>
+          <img src={lightboxImage} alt="Artefact full size" className="max-w-full max-h-full object-contain rounded-lg" />
+        </div>
+      )}
+
       {/* Header */}
       <section className="py-16 px-4" style={{ background: `linear-gradient(135deg, ${color}08, ${color}15)` }}>
         <div className="container max-w-5xl mx-auto">
@@ -133,6 +150,33 @@ const DriftLibrary = () => {
                     <h3 className="font-bold">{video.title}</h3>
                     <p className="text-sm text-muted-foreground">{video.speaker} • {video.platform}</p>
                     <p className="text-sm text-muted-foreground/80">{video.description}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Artefacts */}
+      {allArtefacts.length > 0 && (
+        <section className="py-12 px-4">
+          <div className="container max-w-5xl mx-auto">
+            <h2 className="text-2xl font-bold mb-8 flex items-center gap-2">
+              <Image className="w-6 h-6" style={{ color }} />
+              Artefacts ({allArtefacts.length})
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {allArtefacts.map((artefact, i) => (
+                <Card key={i} className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-opacity-40 overflow-hidden" style={{ borderColor: `${color}20` }}>
+                  <div className="cursor-pointer" onClick={() => setLightboxImage(artefact.imagePath)}>
+                    <img src={artefact.imagePath} alt={artefact.title} className="w-full aspect-[4/3] object-cover group-hover:scale-[1.02] transition-transform duration-300" />
+                  </div>
+                  <CardContent className="p-6 space-y-3">
+                    <Badge variant="outline" className="text-xs">{artefact.category}</Badge>
+                    <h3 className="font-bold text-lg leading-tight">{artefact.title}</h3>
+                    <p className="text-sm text-muted-foreground">{artefact.author}</p>
+                    <p className="text-sm text-muted-foreground/80 leading-relaxed">{artefact.description}</p>
                   </CardContent>
                 </Card>
               ))}
