@@ -1,30 +1,18 @@
 
 
-# Fix Logo: Replace Old Black-Background Logo with New Rainbow Arc Logo
+# Remove Purple Border from Logo
 
-## Problem
-The main landing page (`/`) and About Us page still display the old Paracosm logo on a black background. The Drift page was updated, but the header logo across other pages was not.
+## Change
+Remove the `border border-purple-300` classes from the logo `<img>` tag on both pages where it appears.
 
-## What Will Change
+## Files to Modify
 
-The header logo in the navigation bar (currently showing the old logo with `bg-black`) will be updated to use the new rainbow arc image on a white background with a thin purple border -- matching the Drift page logo style.
+### 1. `src/pages/LandingPage.tsx`
+- Change `className="bg-white border border-purple-300 rounded-lg p-1 w-8 h-8 object-contain"` to `className="bg-white rounded-lg p-1 w-8 h-8 object-contain"`
 
-## Steps
+### 2. `src/pages/AboutUs.tsx`
+- Same change: remove `border border-purple-300` from the logo `<img>` class on line 95
 
-### 1. Replace the old logo asset
-- Overwrite `src/assets/logo-paracosm.jpeg` with the new rainbow arc image (`logo-drift.jpeg`), so all imports of this file automatically use the new logo.
-
-### 2. Update styling in `src/pages/LandingPage.tsx`
-- Change the logo container from `bg-black rounded-lg p-1` to `bg-white border border-purple-300 rounded-lg p-1` so the white background and purple border match the brand specification.
-
-### 3. Update styling in `src/pages/AboutUs.tsx`
-- Same styling change as above: replace `bg-black` with `bg-white border border-purple-300`.
-
-### 4. Check for any other pages using the old logo
-- Search confirms `logo-paracosm.jpeg` is only used in `LandingPage.tsx` and `AboutUs.tsx`.
-
-## Files Modified
-- `src/assets/logo-paracosm.jpeg` -- replaced with the rainbow arc image
-- `src/pages/LandingPage.tsx` -- updated logo container styling
-- `src/pages/AboutUs.tsx` -- updated logo container styling
+### 3. `src/pages/DriftLanding.tsx`
+- Remove `border border-purple-300` from the Drift hero logo container as well, for consistency
 
