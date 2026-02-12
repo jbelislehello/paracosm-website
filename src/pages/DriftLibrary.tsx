@@ -3,9 +3,10 @@ import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, BookOpen, ExternalLink, Image, FileSpreadsheet, FileText, Download } from "lucide-react";
+import { ArrowLeft, BookOpen, ExternalLink, Image, FileSpreadsheet, FileText, Download, Wrench } from "lucide-react";
 import { energeticAxes } from "@/data/gardens";
 import { driftMonthlyDiscoveries, driftLibraryExtras, driftLibraryArtefacts, DriftAxis, axisColors } from "@/data/driftMonthlyDiscoveries";
+import { driftTools } from "@/data/driftTools";
 import Footer from "@/components/Footer";
 
 const DriftLibrary = () => {
@@ -75,7 +76,9 @@ const DriftLibrary = () => {
   const libraryArtefacts = driftLibraryArtefacts.filter(a => a.axis === axisKey);
   const allArtefacts = [...monthlyArtefacts, ...libraryArtefacts];
 
-  const totalResources = allBooks.length + allVideos.length + allSongs.length + allPodcasts.length + allArticles.length + allArtefacts.length;
+  const allTools = driftTools.filter(t => t.axis === axisKey);
+
+  const totalResources = allBooks.length + allVideos.length + allSongs.length + allPodcasts.length + allArticles.length + allArtefacts.length + allTools.length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-background/90">
@@ -150,6 +153,35 @@ const DriftLibrary = () => {
                     <h3 className="font-bold">{video.title}</h3>
                     <p className="text-sm text-muted-foreground">{video.speaker} • {video.platform}</p>
                     <p className="text-sm text-muted-foreground/80">{video.description}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Tools */}
+      {allTools.length > 0 && (
+        <section className="py-12 px-4">
+          <div className="container max-w-5xl mx-auto">
+            <h2 className="text-2xl font-bold mb-8 flex items-center gap-2">
+              <Wrench className="w-6 h-6" style={{ color }} />
+              Tools ({allTools.length})
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {allTools.map((tool, i) => (
+                <Card key={i} className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-opacity-40" style={{ borderColor: `${color}20` }}>
+                  <CardContent className="p-6 space-y-3">
+                    <div className="flex items-start justify-between">
+                      <Badge variant="outline" className="text-xs">{tool.startingPrice}</Badge>
+                      <span className="text-xs text-muted-foreground">{tool.month}/{tool.year}</span>
+                    </div>
+                    <h3 className="font-bold text-lg leading-tight">{tool.name}</h3>
+                    <p className="text-sm text-muted-foreground/80 leading-relaxed">{tool.description}</p>
+                    <a href={tool.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm font-medium hover:underline" style={{ color }}>
+                      Visit <ExternalLink className="w-3 h-3" />
+                    </a>
                   </CardContent>
                 </Card>
               ))}
