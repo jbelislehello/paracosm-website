@@ -24,6 +24,7 @@ const CaseStudies: React.FC = () => {
             </Link>
             <Link to="/" className="flex items-center gap-2">
               <img src={logoParacosm} alt="Paracosm" className="bg-black rounded-lg p-1 w-8 h-8 object-contain" />
+              <span className="font-bold text-slate-900 dark:text-white text-sm">Paracosm</span>
             </Link>
           </div>
           <nav className="hidden md:flex gap-6">
