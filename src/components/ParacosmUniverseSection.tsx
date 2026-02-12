@@ -162,7 +162,7 @@ const ParacosmUniverseSection = () => {
           {/* Paracosm */}
           <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-rose-200 dark:border-rose-800 shadow-lg">
             <div className="flex items-center gap-3 mb-6">
-              <img src={logoParacosm} alt="Paracosm" className="bg-black rounded-lg p-1 w-10 h-10 object-contain" />
+              <img src={logoParacosm} alt="Paracosm" className="bg-white rounded-lg p-1 w-10 h-10 object-contain" />
               <span className="font-bold text-slate-900 dark:text-white text-sm">Paracosm</span>
               <p className="text-xs text-muted-foreground">Agentic UX & Coaching</p>
             </div>
