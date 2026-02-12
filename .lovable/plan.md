@@ -1,69 +1,40 @@
 
+# Add Tools to Axis Library Pages
 
-# Move Tools into Monthly Discovery Pages by Calm Magic Category
+## Problem
+The axis library pages (`/drift/library/love`, `/drift/library/magic`, etc.) aggregate all resources for a given Calm Magic axis but do not include tools. Tools only appear on individual monthly discovery pages.
 
-## Overview
-
-Remove the standalone Tool Showcase section from the Drift landing page. Instead, each tool appears on the monthly discovery page corresponding to its discovery month/year, grouped under its Calm Magic axis alongside books, videos, songs, etc.
+## Solution
+Add a "Tools" section to `DriftLibrary.tsx` that collects all tools from `driftTools.ts` matching the current axis and displays them as cards, consistent with how they appear on monthly pages.
 
 ## Changes
 
-### 1. Add `tools` field to `DriftMonthEntry` (in `src/data/driftMonthlyDiscoveries.ts`)
+### `src/pages/DriftLibrary.tsx`
 
-- Import `DriftTool` from `driftTools.ts`
-- Add optional `tools?: DriftTool[]` to the `DriftMonthEntry` interface
-- Create a helper that auto-populates tools into each month entry based on the `month`/`year` fields in `driftTools.ts` (no need to manually duplicate data)
+1. **Import** `driftTools` from `@/data/driftTools` and `Wrench` from `lucide-react`
+2. **Filter tools** by axis: `const allTools = driftTools.filter(t => t.axis === axisKey)`
+3. **Update total count** to include `allTools.length`
+4. **Add a "Tools" section** after the Artefacts section (or after Videos), rendering each tool as a card with:
+   - Name (bold, linked to external URL)
+   - Starting price (Badge)
+   - Description (muted text)
+   - Month/year label showing when it was discovered
+5. Section is hidden if no tools exist for that axis
 
-### 2. Update `DriftMonthlyDiscovery.tsx` -- render tools per month
-
-- Import `driftTools` and filter by current month/year
-- Group the filtered tools by axis (love, magic, calm, open, free)
-- Add a new "Tools" section (with a Wrench icon) after the existing resource sections (Books, Videos, Songs, Podcasts, Articles, Artefacts)
-- Each axis group gets a colored header, and tools render as compact cards showing: name, price badge, description, and external link
-- If no tools exist for a given month, the section is hidden
-
-### 3. Update `DriftLanding.tsx` -- remove Tool Showcase
-
-- Remove the `DriftToolShowcase` import and `<DriftToolShowcase />` component from the page
-- The Monthly Review grid cards will now also show a Wrench icon when a month has tools (like it already does for Books, Videos, etc.)
-
-### 4. Keep `DriftToolShowcase.tsx` and `driftTools.ts` as-is (data file stays, component can be deleted or kept)
-
-- `src/data/driftTools.ts` stays -- it's the source of truth for tool data
-- `src/components/DriftToolShowcase.tsx` can be deleted since it's no longer used
+### No other files changed
 
 ## Technical Details
 
-### Tool grouping in monthly view
+The tool cards will follow the same Card/CardContent pattern used for books:
 
 ```text
-Tools (section header with Wrench icon)
+Tools (section header with Wrench icon + count)
   |
-  +-- LOVE
-  |     +-- Tonalli card
-  |     +-- Adobe Firefly card
-  |
-  +-- CALM
-  |     +-- Read.ai card
-  |     +-- ClickUp card
-  |
-  +-- MAGIC
-        +-- NotebookLM card
+  +-- Card: Tool name, price badge, description, month/year, external link
+  +-- Card: ...
 ```
 
-Each tool card shows:
-- Name (bold, linked to URL)
-- Starting price (Badge)
-- Description (muted text)
-- Axis color dot + label
-
-### Monthly Review grid update
-
-Add a `Wrench` icon next to existing resource type icons (BookOpen, Play, Music, etc.) when a month has tools. This uses the same pattern already in place -- filter `driftTools` by month/year and check length > 0.
+Grid layout: `grid-cols-1 md:grid-cols-2 lg:grid-cols-3` (same as books).
 
 ### Files modified
-- `src/pages/DriftLanding.tsx` -- remove DriftToolShowcase, add tool icon to month cards
-- `src/pages/DriftMonthlyDiscovery.tsx` -- add Tools section grouped by axis
-- `src/data/driftTools.ts` -- no changes (keep as data source)
-- `src/components/DriftToolShowcase.tsx` -- delete (no longer needed)
-
+- `src/pages/DriftLibrary.tsx` -- add tools section with axis filtering
