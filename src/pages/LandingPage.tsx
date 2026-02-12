@@ -8,6 +8,8 @@ import PartnerToolsSection from "@/components/PartnerToolsSection";
 import ParacosmEventsSection from "@/components/ParacosmEventsSection";
 import ParacosmUniverseSection from "@/components/ParacosmUniverseSection";
 import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
+import ServicesShowcase from "@/components/ServicesShowcase";
+import SocialProofSection from "@/components/SocialProofSection";
 
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
@@ -457,6 +459,9 @@ const LandingPage = () => {
         </div>
       </section>
       
+      {/* Services Showcase */}
+      <ServicesShowcase />
+
       {/* Paracosm Universe Section - Wuxia the Fox & Creative Projects */}
       <section id="universe">
         <ParacosmUniverseSection />
@@ -471,6 +476,9 @@ const LandingPage = () => {
       <section id="coaching-approach">
         <CoachingApproachSection />
       </section>
+
+      {/* Social Proof */}
+      <SocialProofSection />
       
       {/* Transformation Journey */}
       <section id="transformation">
