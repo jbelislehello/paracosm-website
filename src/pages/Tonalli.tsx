@@ -1,4 +1,5 @@
 import { Mic, Eye, ExternalLink, Lightbulb, Box, Palette } from "lucide-react";
+import logoTonalli from "@/assets/logo-tonalli.jpeg";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
@@ -9,7 +10,8 @@ const Tonalli = () => {
       {/* Header */}
       <header className="container mx-auto px-6 py-8">
         <div className="flex items-center justify-between">
-          <Link to="/" className="text-xl font-bold tracking-tight">
+          <Link to="/" className="flex items-center gap-2 text-xl font-bold tracking-tight">
+            <img src={logoTonalli} alt="Tonalli" className="h-8 w-auto rounded-md object-contain" />
             <span className="text-amber-400">Tonalli</span>
           </Link>
           <div className="flex items-center gap-4">
