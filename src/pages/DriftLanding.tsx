@@ -271,6 +271,45 @@ const DriftLanding = () => {
         </div>
       </section>
 
+      {/* Resource Libraries by Axis */}
+      <section className="py-20 px-4">
+        <div className="container max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+              Resource Libraries
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Explore all curated resources organized by the five Calm Magic forces.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            {energeticAxes.map((axis) => {
+              const bookCount = driftMonthlyDiscoveries.reduce((sum, entry) => sum + entry.books.filter(b => b.axis === axis.key).length, 0);
+              const videoCount = driftMonthlyDiscoveries.reduce((sum, entry) => sum + (entry.videos || []).filter(v => v.axis === axis.key).length, 0);
+              const totalCount = bookCount + videoCount;
+
+              return (
+                <Link key={axis.key} to={`/drift/library/${axis.key}`}>
+                  <Card className="group hover:shadow-xl transition-all duration-300 border-2 h-full" style={{ borderColor: `${axis.color}30` }}>
+                    <CardContent className="p-6 space-y-3 text-center">
+                      <div className="w-10 h-10 rounded-full mx-auto" style={{ backgroundColor: `${axis.color}20` }}>
+                        <div className="w-full h-full flex items-center justify-center">
+                          <div className="w-4 h-4 rounded-full" style={{ backgroundColor: axis.color }} />
+                        </div>
+                      </div>
+                      <h3 className="font-bold text-lg" style={{ color: axis.color }}>{axis.name}</h3>
+                      <p className="text-sm text-muted-foreground">{axis.subtitle}</p>
+                      <p className="text-xs text-muted-foreground">{totalCount} resources</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
       {/* Narrative Section */}
       <section className="py-20 px-4 bg-gradient-to-r from-accent/5 to-primary/5">
         <div className="container max-w-4xl mx-auto">
