@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, BookOpen, ExternalLink, Image } from "lucide-react";
+import { ArrowLeft, BookOpen, ExternalLink, Image, FileSpreadsheet, Download } from "lucide-react";
 import { energeticAxes } from "@/data/gardens";
 import { driftMonthlyDiscoveries, driftLibraryExtras, driftLibraryArtefacts, DriftAxis, axisColors } from "@/data/driftMonthlyDiscoveries";
 import Footer from "@/components/Footer";
@@ -169,14 +169,26 @@ const DriftLibrary = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {allArtefacts.map((artefact, i) => (
                 <Card key={i} className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-opacity-40 overflow-hidden" style={{ borderColor: `${color}20` }}>
-                  <div className="cursor-pointer" onClick={() => setLightboxImage(artefact.imagePath)}>
-                    <img src={artefact.imagePath} alt={artefact.title} className="w-full aspect-[4/3] object-cover group-hover:scale-[1.02] transition-transform duration-300" />
-                  </div>
+                  {artefact.imagePath ? (
+                    <div className="cursor-pointer" onClick={() => setLightboxImage(artefact.imagePath!)}>
+                      <img src={artefact.imagePath} alt={artefact.title} className="w-full aspect-[4/3] object-cover group-hover:scale-[1.02] transition-transform duration-300" />
+                    </div>
+                  ) : artefact.filePath ? (
+                    <div className="w-full aspect-[4/3] bg-muted/50 flex flex-col items-center justify-center gap-3">
+                      <FileSpreadsheet className="w-16 h-16 text-muted-foreground/60" />
+                      <span className="text-xs text-muted-foreground font-mono">.xls</span>
+                    </div>
+                  ) : null}
                   <CardContent className="p-6 space-y-3">
                     <Badge variant="outline" className="text-xs">{artefact.category}</Badge>
                     <h3 className="font-bold text-lg leading-tight">{artefact.title}</h3>
                     <p className="text-sm text-muted-foreground">{artefact.author}</p>
                     <p className="text-sm text-muted-foreground/80 leading-relaxed">{artefact.description}</p>
+                    {artefact.filePath && (
+                      <a href={artefact.filePath} download className="inline-flex items-center gap-1 text-sm font-medium hover:underline" style={{ color }}>
+                        <Download className="w-3 h-3" /> Télécharger
+                      </a>
+                    )}
                   </CardContent>
                 </Card>
               ))}

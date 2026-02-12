@@ -55,7 +55,8 @@ export interface DriftArtefact {
   description: string;
   category: string;
   axis: DriftAxis;
-  imagePath: string;
+  imagePath?: string;
+  filePath?: string;
 }
 
 export interface DriftMonthEntry {
@@ -529,6 +530,30 @@ export const driftLibraryArtefacts: DriftArtefact[] = [
     category: "Workflows",
     axis: "calm",
     imagePath: gameplanImage,
+  },
+  {
+    title: "Grille des livrables fidélité v2",
+    author: "Jonathan Bélisle",
+    description: "Matrice de fidélité des livrables UX — besoins utilisateurs, documents stratégiques, wireframes, prototypes et niveaux de fidélité.",
+    category: "Workflows",
+    axis: "calm",
+    filePath: "/drift/Grille_livrables_fidelite_v2.xls",
+  },
+  {
+    title: "Tableau des transitions architecturales",
+    author: "Jonathan Bélisle",
+    description: "Ligne du temps de l'évolution architecturale du Web — du Web 1.0 au Web 4.0, couvrant technologies, paradigmes et écosystèmes.",
+    category: "Connected Life",
+    axis: "open",
+    filePath: "/drift/Tableau_des_transitions_architecturales.xls",
+  },
+  {
+    title: "Veille Web 2.0",
+    author: "Jonathan Bélisle",
+    description: "Grille de veille technologique cartographiant les concepts et plateformes Web 2.0, 3.0 et 4.0 — réseaux sociaux, sémantique, intelligence ambiante.",
+    category: "Connected Life",
+    axis: "open",
+    filePath: "/drift/Veille_Web_2.0.xls",
   },
 ];
 

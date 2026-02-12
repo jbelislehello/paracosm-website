@@ -2,7 +2,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, ExternalLink, BookOpen, Play, Music, Headphones, FileText, Image } from "lucide-react";
+import { ArrowLeft, ArrowRight, ExternalLink, BookOpen, Play, Music, Headphones, FileText, Image, FileSpreadsheet, Download } from "lucide-react";
 import Footer from "@/components/Footer";
 import {
   driftMonthlyDiscoveries,
@@ -320,7 +320,14 @@ const DriftMonthlyDiscovery = () => {
             </h2>
             {entry.artefacts.map((artefact, i) => (
               <Card key={i} className="border-2 hover:shadow-lg transition-all duration-300 overflow-hidden" style={{ borderColor: `${axisColors[artefact.axis]}30` }}>
-                <img src={artefact.imagePath} alt={artefact.title} className="w-full object-cover" />
+                {artefact.imagePath ? (
+                  <img src={artefact.imagePath} alt={artefact.title} className="w-full object-cover" />
+                ) : artefact.filePath ? (
+                  <div className="w-full py-12 bg-muted/50 flex flex-col items-center justify-center gap-3">
+                    <FileSpreadsheet className="w-16 h-16 text-muted-foreground/60" />
+                    <span className="text-xs text-muted-foreground font-mono">.xls</span>
+                  </div>
+                ) : null}
                 <CardContent className="p-8 space-y-4">
                   <div className="flex flex-wrap items-center gap-3">
                     <Badge
@@ -335,6 +342,11 @@ const DriftMonthlyDiscovery = () => {
                     <h3 className="text-2xl font-bold text-foreground">{artefact.title}</h3>
                     <p className="text-muted-foreground font-medium">{artefact.author}</p>
                     <p className="text-muted-foreground leading-relaxed">{artefact.description}</p>
+                    {artefact.filePath && (
+                      <a href={artefact.filePath} download className="inline-flex items-center gap-1 text-sm font-medium hover:underline" style={{ color: axisColors[artefact.axis] }}>
+                        <Download className="w-3 h-3" /> Télécharger
+                      </a>
+                    )}
                   </div>
                 </CardContent>
               </Card>
