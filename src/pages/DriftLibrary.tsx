@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, BookOpen, ExternalLink } from "lucide-react";
 import { energeticAxes } from "@/data/gardens";
-import { driftMonthlyDiscoveries, DriftAxis, axisColors } from "@/data/driftMonthlyDiscoveries";
+import { driftMonthlyDiscoveries, driftLibraryExtras, DriftAxis, axisColors } from "@/data/driftMonthlyDiscoveries";
 import Footer from "@/components/Footer";
 
 const DriftLibrary = () => {
@@ -28,11 +28,18 @@ const DriftLibrary = () => {
   const color = axisColors[axisKey];
 
   // Collect all books for this axis across all months
-  const allBooks = driftMonthlyDiscoveries.flatMap(entry =>
+  const monthlyBooks = driftMonthlyDiscoveries.flatMap(entry =>
     entry.books
       .filter(b => b.axis === axisKey)
-      .map(b => ({ ...b, year: entry.year, month: entry.month }))
+      .map(b => ({ ...b, year: entry.year, month: entry.month, isExtra: false }))
   );
+
+  // Add library-only extras for this axis
+  const extraBooks = driftLibraryExtras
+    .filter(b => b.axis === axisKey)
+    .map(b => ({ ...b, year: 0, month: 0, isExtra: true }));
+
+  const allBooks = [...monthlyBooks, ...extraBooks];
 
   const allVideos = driftMonthlyDiscoveries.flatMap(entry =>
     (entry.videos || [])
@@ -93,7 +100,7 @@ const DriftLibrary = () => {
                   <CardContent className="p-6 space-y-3">
                     <div className="flex items-start justify-between">
                       <Badge variant="outline" className="text-xs">{book.category}</Badge>
-                      <span className="text-xs text-muted-foreground">{book.month}/{book.year}</span>
+                      <span className="text-xs text-muted-foreground">{book.isExtra ? 'Library' : `${book.month}/${book.year}`}</span>
                     </div>
                     <h3 className="font-bold text-lg leading-tight">{book.title}</h3>
                     <p className="text-sm text-muted-foreground">{book.author}</p>

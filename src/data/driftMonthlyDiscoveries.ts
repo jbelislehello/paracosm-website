@@ -218,9 +218,30 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "L'ennéagramme", author: "Collectif", description: "Introduction à l'ennéagramme et ses 9 types de personnalité.", category: "Inquiry and Practices", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=L%27enn%C3%A9agramme+livre" },
     ],
   },
-  { year: 2024, month: 10, books: [] },
-  { year: 2024, month: 11, books: [] },
-  { year: 2024, month: 12, books: [] },
+  {
+    year: 2024, month: 10,
+    books: [
+      { title: "Odyssée", author: "Homère", description: "Épopée fondatrice: le retour d'Ulysse, ruse, épreuves, identité.", category: "WorldBuilders", axis: "free", amazonUrl: "https://www.amazon.com/s?k=Hom%C3%A8re+Odyss%C3%A9e+introduction+Jean" },
+      { title: "Histoire de la guerre du Péloponnèse", author: "Thucydide", description: "Récit historique majeur de la guerre Athènes–Sparte, politique et stratégie.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Thucydide+Histoire+de+la+guerre+du+P%C3%A9loponn%C3%A8se" },
+      { title: "Emotional Intelligence: Self-Awareness", author: "Harvard Business Review Press", description: "Recueil d'articles HBR sur la conscience de soi au travail (décisions, leadership).", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=HBR+Emotional+Intelligence+Self-Awareness" },
+    ],
+  },
+  {
+    year: 2024, month: 11,
+    books: [
+      { title: "Le singe nu", author: "Desmond Morris", description: "Lecture 'éthologique' de l'humain: comportements, sexualité, société, évolution.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Desmond+Morris+Le+singe+nu" },
+      { title: "Le loup des steppes", author: "Hermann Hesse", description: "Roman introspectif sur la dualité, la crise existentielle et la métamorphose.", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Hermann+Hesse+Le+loup+des+steppes" },
+      { title: "Design Works: How to Tackle Your Toughest Innovation Challenges Through Business Design", author: "Heather M.A. Fraser", description: "Méthode de business design pour innover, cadrer, prototyper, livrer.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Design+Works+Heather+M.A.+Fraser" },
+    ],
+  },
+  {
+    year: 2024, month: 12,
+    books: [
+      { title: "Tools of Titans", author: "Tim Ferriss", description: "Tactiques/habitudes d'élite (interviews + routines + frameworks).", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Tools+of+Titans+Tim+" },
+      { title: "Les paysages intérieurs", author: "Catherine D'Amours", description: "Essai sociologique: mémoire, territoire et paysages intérieurs.", category: "Sensory Rooms", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Les+paysages+int%C3%A9rieurs+Catherine+D%27Amours" },
+      { title: "Information Arts: Intersections of Art, Science, and Technology", author: "Stephen Wilson", description: "Panorama des arts techno-scientifiques et des pratiques hybrides.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Information+Arts+Stephen+Wilson" },
+    ],
+  },
   // === 2025 ===
   {
     year: 2025, month: 1,
@@ -366,6 +387,20 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "FNC09 — Psychogéographie et réalité augmentée", speaker: "Jonathan Bélisle", description: "Exploring psychogeography and augmented reality as tools for reimagining urban spaces.", category: "Tangible Play", axis: "love", youtubeId: "7jVV-476Bog", platform: "LienMultimédia" },
     ],
   },
+];
+
+export const driftLibraryExtras: DriftBook[] = [
+  { title: "Thierry Kuntzel", author: "Thierry Kuntzel", description: "Ouvrage d'art/théorie — catalogue ou essai sur l'œuvre de Kuntzel.", category: "Sensory Rooms", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Thierry+Kuntzel+livre" },
+  { title: "Reinventing the Wheel", author: "Jessica Helfand", description: "Essais sur le design graphique, la culture visuelle et la 'pensée design'.", category: "Telling Stories", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Reinventing+the+Wheel+Jessica+Helfand" },
+  { title: "Filthy Ratbag", author: "Celeste Mountjoy", description: "Journal/illustré: humour noir, vulnérabilité, vécu, identité.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Filthy+Ratbag+Celeste+Mountjoy" },
+  { title: "The Stack: On Software and Sovereignty", author: "Benjamin H. Bratton", description: "Théorie géopolitique/tech: couches logicielles, plateformes, souveraineté.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.com/s?k=The+Stack+On+Software+and+Sovereignty+Benjamin+Bratton" },
+  { title: "A More Beautiful Question", author: "Warren Berger", description: "Art de poser de meilleures questions pour innover et débloquer l'action.", category: "Inquiry and Practices", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=A+More+Beautiful+Question+Warren+Berger" },
+  { title: "How to Change Your Mind", author: "Michael Pollan", description: "Histoire/science des psychédéliques et de leurs usages thérapeutiques/culturels.", category: "Inquiry and Practices", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=How+to+Change+Your+Mind+Michael+Pollan" },
+  { title: "La magie du Cosmos", author: "Brian Greene", description: "Vulgarisation cosmologie/physique (édition FR de The Fabric of the Cosmos).", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Brian+Greene+La+magie+du+Cosmos" },
+  { title: "L'Ensorcellement du monde", author: "Boris Cyrulnik", description: "Psyché, récit, croyances: comment le monde 'enchante' nos esprits et nos liens.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Boris+Cyrulnik+L%27Ensorcellement+du+monde" },
+  { title: "Le Moyen Âge en Occident", author: "Collectif", description: "Synthèse historique sur la société médiévale occidentale.", category: "Human Dynamics & System Thinking", axis: "free", amazonUrl: "https://www.amazon.com/s?k=Le+Moyen+%C3%82ge+en+Occident" },
+  { title: "Le feu aux entrailles", author: "Milo Manara & Pedro Almodóvar", description: "Bande dessinée / récit graphique (collab Manara–Almodóvar).", category: "Tangible Play", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Le+feu+aux+entrailles+Manara+Almodovar" },
+  { title: "Ubiquitous Computing: Smart Devices, Environments and Interactions", author: "Collectif", description: "Informatique ubiquitaire: environnements intelligents, dispositifs, interactions.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Ubiquitous+Computing+Smart+Devices+Environments+and+Interactions" },
 ];
 
 export const axisColors: Record<DriftAxis, string> = {
