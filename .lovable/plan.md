@@ -1,61 +1,49 @@
 
 
-# Add Artefacts Resource Type to Drift
+# Add 3 Spreadsheet Resources to Drift as Artefacts
 
 ## Overview
 
-Two hand-drawn diagrams need to be added as a new "Artefacts" resource type in the Drift system:
+Three Excel spreadsheet documents need to be added to the Drift artefact system. Since these are `.xls` files (not images), the artefact system needs a small extension to support downloadable document files alongside image-based artefacts.
 
-1. **Transmedia Map** -- A layered diagram showing Noetical Flux, Perma Flux, Bio/Psy/Geo Flux with layers for mythologies, religions, ecosystems, behaviours, tekhne, and economy. Fits the **OPEN** axis (Human Dynamics and System Thinking / Connected Life).
+## Axis and Category Mapping
 
-2. **Jonathan Belisle Game Plan (2017-2020)** -- A concentric spiral diagram mapping story-driven innovation, calm magic, publishing, performances, V10 projects, and transformational design. Fits the **CALM** axis (Workflows).
+| Document | Axis | Category | Rationale |
+|---|---|---|---|
+| Grille des livrables fidélité v2 | CALM | Workflows | UX deliverables and fidelity framework for production processes |
+| Tableau des transitions architecturales | OPEN | Connected Life | Web evolution timeline from 1.0 to 4.0, system-level thinking |
+| Veille Web 2.0 | OPEN | Connected Life | Technology watch grid mapping Web 2.0/3.0/4.0 concepts |
+
+## Month Assignment
+
+These will be added to existing 2022 months as artefacts (not tied to a specific month -- added as library artefacts alongside the existing Transmedia Map and Game Plan).
 
 ## Technical Changes
 
-### 1. Copy images to project
-- `user-uploads://transmediamap.jpg` to `src/assets/drift/transmediamap.jpg`
-- `user-uploads://JonathanBelisle-gameplan.jpg` to `src/assets/drift/JonathanBelisle-gameplan.jpg`
+### 1. Copy files to `public/drift/`
+- `Grille_livrables_fidelite_v2.xls` to `public/drift/Grille_livrables_fidelite_v2.xls`
+- `Tableau_des_transitions_architecturales.xls` to `public/drift/Tableau_des_transitions_architecturales.xls`
+- `Veille_Web_2.0.xls` to `public/drift/Veille_Web_2.0.xls`
 
-### 2. `src/data/driftMonthlyDiscoveries.ts` -- Add new type and data
+These go in `public/` (not `src/assets/`) because they are downloadable binary files, not imported ES modules.
 
-Add a new `DriftArtefact` interface:
-```typescript
-export interface DriftArtefact {
-  title: string;
-  author: string;
-  description: string;
-  category: string;
-  axis: DriftAxis;
-  imagePath: string; // imported image asset
-}
-```
+### 2. `src/data/driftMonthlyDiscoveries.ts`
+- Extend `DriftArtefact` interface to add an optional `filePath?: string` field (for downloadable documents) alongside the existing `imagePath` (which becomes optional too)
+- Add 3 new entries to `driftLibraryArtefacts` array with `filePath` pointing to the public URLs
 
-Add `artefacts?: DriftArtefact[]` to the `DriftMonthEntry` interface.
+### 3. `src/pages/DriftLibrary.tsx`
+- Update artefact rendering to handle file-based artefacts (show a download card with file icon instead of image preview)
+- If `artefact.filePath` exists and no `imagePath`, render a document-style card with a download link
+- If `artefact.imagePath` exists, keep the existing clickable image behavior
 
-Add a `driftLibraryArtefacts: DriftArtefact[]` export (library extras, not tied to a month) containing both artefacts.
-
-### 3. `src/pages/DriftLibrary.tsx` -- Render artefacts section
-
-- Import `driftLibraryArtefacts`
-- Collect artefacts for the current axis
-- Add an "Artefacts" section with image cards (clickable to view full size)
-- Include artefact count in totalResources
-
-### 4. `src/pages/DriftMonthlyDiscovery.tsx` -- Render artefacts if present
-
-- Add an "Artefacts" section after existing resource sections
-- Display artefact images with title, author, description, axis badge
-
-### 5. `src/pages/DriftLanding.tsx` -- Update resource counts
-
-- Include artefact counts in the Resource Libraries card totals
+### 4. `src/pages/DriftMonthlyDiscovery.tsx`
+- Same rendering update for file-based artefacts in monthly views
 
 ## Files Modified
 
-1. `src/assets/drift/transmediamap.jpg` (new -- copied from upload)
-2. `src/assets/drift/JonathanBelisle-gameplan.jpg` (new -- copied from upload)
-3. `src/data/driftMonthlyDiscoveries.ts` (add DriftArtefact type + library artefacts data)
-4. `src/pages/DriftLibrary.tsx` (render artefacts section)
-5. `src/pages/DriftMonthlyDiscovery.tsx` (render artefacts if present in a month)
-6. `src/pages/DriftLanding.tsx` (include artefact counts)
-
+1. `public/drift/Grille_livrables_fidelite_v2.xls` (new)
+2. `public/drift/Tableau_des_transitions_architecturales.xls` (new)
+3. `public/drift/Veille_Web_2.0.xls` (new)
+4. `src/data/driftMonthlyDiscoveries.ts` (extend DriftArtefact, add 3 entries)
+5. `src/pages/DriftLibrary.tsx` (handle file-based artefacts)
+6. `src/pages/DriftMonthlyDiscovery.tsx` (handle file-based artefacts)
