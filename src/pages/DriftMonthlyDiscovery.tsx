@@ -2,7 +2,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, ExternalLink, BookOpen, Play, Music, Headphones, FileText, Image, FileSpreadsheet, Download } from "lucide-react";
+import { ArrowLeft, ArrowRight, ExternalLink, BookOpen, Play, Music, Headphones, FileText, Image, FileSpreadsheet, Download, Wrench } from "lucide-react";
 import Footer from "@/components/Footer";
 import {
   driftMonthlyDiscoveries,
@@ -12,6 +12,7 @@ import {
   axisLabels,
   DriftArtefact,
 } from "@/data/driftMonthlyDiscoveries";
+import { driftTools, DriftToolAxis } from "@/data/driftTools";
 
 const DriftMonthlyDiscovery = () => {
   const { year, month } = useParams();
@@ -38,7 +39,10 @@ const DriftMonthlyDiscovery = () => {
     );
   }
 
-  const hasContent = entry.books.length > 0 || (entry.videos && entry.videos.length > 0) || (entry.songs && entry.songs.length > 0) || (entry.podcasts && entry.podcasts.length > 0) || (entry.articles && entry.articles.length > 0) || (entry.artefacts && entry.artefacts.length > 0);
+  const monthlyTools = driftTools.filter(t => t.month === m && t.year === y);
+  const toolAxes: DriftToolAxis[] = ['love', 'magic', 'calm', 'open', 'free'];
+
+  const hasContent = entry.books.length > 0 || (entry.videos && entry.videos.length > 0) || (entry.songs && entry.songs.length > 0) || (entry.podcasts && entry.podcasts.length > 0) || (entry.articles && entry.articles.length > 0) || (entry.artefacts && entry.artefacts.length > 0) || monthlyTools.length > 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-background/90">
@@ -351,6 +355,49 @@ const DriftMonthlyDiscovery = () => {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </section>
+      )}
+
+      {/* Tools grouped by axis */}
+      {monthlyTools.length > 0 && (
+        <section className="pb-12 px-4">
+          <div className="container max-w-4xl mx-auto space-y-8">
+            <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
+              <Wrench className="w-6 h-6" />
+              Tools
+            </h2>
+            {toolAxes.map(axis => {
+              const axisTools = monthlyTools.filter(t => t.axis === axis);
+              if (axisTools.length === 0) return null;
+              const color = axisColors[axis];
+              return (
+                <div key={axis} className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full" style={{ backgroundColor: color }} />
+                    <h3 className="text-lg font-semibold" style={{ color }}>{axisLabels[axis]}</h3>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {axisTools.map(tool => (
+                      <a key={tool.name} href={tool.url} target="_blank" rel="noopener noreferrer" className="block group">
+                        <Card className="h-full border-2 hover:shadow-lg transition-all duration-300" style={{ borderColor: `${color}30` }}>
+                          <CardContent className="p-5 space-y-2">
+                            <div className="flex items-start justify-between gap-2">
+                              <h4 className="font-bold text-foreground group-hover:text-primary transition-colors">{tool.name}</h4>
+                              <Badge variant="outline" className="shrink-0 text-xs font-semibold">{tool.startingPrice}</Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground leading-relaxed">{tool.description}</p>
+                            <div className="flex items-center justify-end pt-1">
+                              <ExternalLink className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-colors" />
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </section>
       )}

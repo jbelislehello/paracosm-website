@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Mic, Calendar, Compass, Mail, CheckCircle, BookOpen, Play, Music, Headphones, FileText } from "lucide-react";
+import { Mic, Calendar, Compass, Mail, CheckCircle, BookOpen, Play, Music, Headphones, FileText, Wrench } from "lucide-react";
 import { energeticAxes } from "@/data/gardens";
 import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
 import { driftMonthlyDiscoveries, driftLibraryExtras, driftLibraryArtefacts, getMonthName, axisColors } from "@/data/driftMonthlyDiscoveries";
-import DriftToolShowcase from "@/components/DriftToolShowcase";
+import { driftTools } from "@/data/driftTools";
 
 const DriftLanding = () => {
   const [email, setEmail] = useState("");
@@ -208,9 +208,6 @@ const DriftLanding = () => {
         </div>
       </section>
 
-      {/* Tool Showcase */}
-      <DriftToolShowcase />
-
       {/* Monthly Archive Section */}
       <section className="py-20 px-4 bg-gradient-to-r from-secondary/5 to-accent/5">
         <div className="container max-w-6xl mx-auto">
@@ -238,7 +235,8 @@ const DriftLanding = () => {
               const hasSongs = (entry.songs || []).length > 0;
               const hasPodcasts = (entry.podcasts || []).length > 0;
               const hasArticles = (entry.articles || []).length > 0;
-              const hasAnyContent = hasBooks || hasVideos || hasSongs || hasPodcasts || hasArticles;
+              const hasTools = driftTools.some(t => t.month === entry.month && t.year === entry.year);
+              const hasAnyContent = hasBooks || hasVideos || hasSongs || hasPodcasts || hasArticles || hasTools;
 
               return (
                 <Link
@@ -253,6 +251,7 @@ const DriftLanding = () => {
                         {hasSongs && <Music className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />}
                         {hasPodcasts && <Headphones className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />}
                         {hasArticles && <FileText className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />}
+                        {hasTools && <Wrench className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />}
                         {!hasAnyContent && <BookOpen className="w-4 h-4 text-muted-foreground/40" />}
                       </div>
                       <p className="font-bold text-sm">{getMonthName(entry.month)}</p>
