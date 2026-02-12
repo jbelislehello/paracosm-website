@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Mic, Calendar, Compass, Mail, CheckCircle, BookOpen } from "lucide-react";
+import { Mic, Calendar, Compass, Mail, CheckCircle, BookOpen, Play, Music, Headphones, FileText } from "lucide-react";
 import { energeticAxes } from "@/data/gardens";
 import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
@@ -221,15 +221,36 @@ const DriftLanding = () => {
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
             {driftMonthlyDiscoveries.map((entry) => {
-              const uniqueAxes = [...new Set(entry.books.map(b => b.axis))];
+              const allAxes = [
+                ...entry.books.map(b => b.axis),
+                ...(entry.videos || []).map(v => v.axis),
+                ...(entry.songs || []).map(s => s.axis),
+                ...(entry.podcasts || []).map(p => p.axis),
+                ...(entry.articles || []).map(a => a.axis),
+              ];
+              const uniqueAxes = [...new Set(allAxes)];
+              const hasBooks = entry.books.length > 0;
+              const hasVideos = (entry.videos || []).length > 0;
+              const hasSongs = (entry.songs || []).length > 0;
+              const hasPodcasts = (entry.podcasts || []).length > 0;
+              const hasArticles = (entry.articles || []).length > 0;
+              const hasAnyContent = hasBooks || hasVideos || hasSongs || hasPodcasts || hasArticles;
+
               return (
                 <Link
                   key={`${entry.year}-${entry.month}`}
                   to={`/drift/${entry.year}/${String(entry.month).padStart(2, '0')}`}
                 >
-                  <Card className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20 h-full">
+                  <Card className={`group hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/20 h-full ${!hasAnyContent ? 'opacity-50' : ''}`}>
                     <CardContent className="p-4 space-y-2 text-center">
-                      <BookOpen className="w-5 h-5 mx-auto text-muted-foreground group-hover:text-primary transition-colors" />
+                      <div className="flex justify-center gap-1.5">
+                        {hasBooks && <BookOpen className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />}
+                        {hasVideos && <Play className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />}
+                        {hasSongs && <Music className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />}
+                        {hasPodcasts && <Headphones className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />}
+                        {hasArticles && <FileText className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />}
+                        {!hasAnyContent && <BookOpen className="w-4 h-4 text-muted-foreground/40" />}
+                      </div>
                       <p className="font-bold text-sm">{getMonthName(entry.month)}</p>
                       <p className="text-xs text-muted-foreground">{entry.year}</p>
                       <div className="flex justify-center gap-1 flex-wrap">

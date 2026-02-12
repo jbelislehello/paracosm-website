@@ -2,7 +2,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, ExternalLink, BookOpen, Play } from "lucide-react";
+import { ArrowLeft, ArrowRight, ExternalLink, BookOpen, Play, Music, Headphones, FileText } from "lucide-react";
 import Footer from "@/components/Footer";
 import {
   driftMonthlyDiscoveries,
@@ -37,6 +37,8 @@ const DriftMonthlyDiscovery = () => {
     );
   }
 
+  const hasContent = entry.books.length > 0 || (entry.videos && entry.videos.length > 0) || (entry.songs && entry.songs.length > 0) || (entry.podcasts && entry.podcasts.length > 0) || (entry.articles && entry.articles.length > 0);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-background/90">
       {/* Header */}
@@ -55,7 +57,9 @@ const DriftMonthlyDiscovery = () => {
               {getMonthName(m)} {y}
             </h1>
             <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-              This month's curated discoveries through the Calm Magic compass.
+              {hasContent
+                ? "This month's curated discoveries through the Calm Magic compass."
+                : "Content coming soon — stay tuned for this month's discoveries."}
             </p>
           </div>
 
@@ -78,49 +82,55 @@ const DriftMonthlyDiscovery = () => {
       </section>
 
       {/* Books */}
-      <section className="pb-12 px-4">
-        <div className="container max-w-4xl mx-auto space-y-8">
-          {entry.books.map((book, i) => (
-            <Card key={i} className="border-2 hover:shadow-lg transition-all duration-300" style={{ borderColor: `${axisColors[book.axis]}30` }}>
-              <CardContent className="p-8 space-y-4">
-                <div className="flex flex-wrap items-center gap-3">
-                  <Badge
-                    style={{ backgroundColor: `${axisColors[book.axis]}15`, color: axisColors[book.axis], borderColor: `${axisColors[book.axis]}30` }}
-                    className="font-semibold"
-                  >
-                    {axisLabels[book.axis]}
-                  </Badge>
-                  <Badge variant="outline" className="text-xs">
-                    {book.category}
-                  </Badge>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <BookOpen className="w-8 h-8 mt-1 shrink-0" style={{ color: axisColors[book.axis] }} />
-                  <div className="space-y-2">
-                    <h2 className="text-2xl font-bold text-foreground">{book.title}</h2>
-                    <p className="text-muted-foreground font-medium">{book.author}</p>
-                    <p className="text-muted-foreground leading-relaxed">{book.description}</p>
+      {entry.books.length > 0 && (
+        <section className="pb-12 px-4">
+          <div className="container max-w-4xl mx-auto space-y-8">
+            <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
+              <BookOpen className="w-6 h-6" />
+              Books
+            </h2>
+            {entry.books.map((book, i) => (
+              <Card key={i} className="border-2 hover:shadow-lg transition-all duration-300" style={{ borderColor: `${axisColors[book.axis]}30` }}>
+                <CardContent className="p-8 space-y-4">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Badge
+                      style={{ backgroundColor: `${axisColors[book.axis]}15`, color: axisColors[book.axis], borderColor: `${axisColors[book.axis]}30` }}
+                      className="font-semibold"
+                    >
+                      {axisLabels[book.axis]}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">
+                      {book.category}
+                    </Badge>
                   </div>
-                </div>
 
-                <div className="pt-4">
-                  <Button variant="outline" size="sm" asChild>
-                    <a href={book.amazonUrl} target="_blank" rel="noopener noreferrer">
-                      Find on Amazon
-                      <ExternalLink className="w-3 h-3 ml-2" />
-                    </a>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
+                  <div className="flex items-start gap-4">
+                    <BookOpen className="w-8 h-8 mt-1 shrink-0" style={{ color: axisColors[book.axis] }} />
+                    <div className="space-y-2">
+                      <h3 className="text-2xl font-bold text-foreground">{book.title}</h3>
+                      <p className="text-muted-foreground font-medium">{book.author}</p>
+                      <p className="text-muted-foreground leading-relaxed">{book.description}</p>
+                    </div>
+                  </div>
+
+                  <div className="pt-4">
+                    <Button variant="outline" size="sm" asChild>
+                      <a href={book.amazonUrl} target="_blank" rel="noopener noreferrer">
+                        Find on Amazon
+                        <ExternalLink className="w-3 h-3 ml-2" />
+                      </a>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Videos */}
       {entry.videos && entry.videos.length > 0 && (
-        <section className="pb-20 px-4">
+        <section className="pb-12 px-4">
           <div className="container max-w-4xl mx-auto space-y-8">
             <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
               <Play className="w-6 h-6" />
@@ -167,6 +177,148 @@ const DriftMonthlyDiscovery = () => {
         </section>
       )}
 
+      {/* Songs */}
+      {entry.songs && entry.songs.length > 0 && (
+        <section className="pb-12 px-4">
+          <div className="container max-w-4xl mx-auto space-y-8">
+            <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
+              <Music className="w-6 h-6" />
+              Songs
+            </h2>
+            {entry.songs.map((song, i) => (
+              <Card key={i} className="border-2 hover:shadow-lg transition-all duration-300" style={{ borderColor: `${axisColors[song.axis]}30` }}>
+                <CardContent className="p-8 space-y-4">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Badge
+                      style={{ backgroundColor: `${axisColors[song.axis]}15`, color: axisColors[song.axis], borderColor: `${axisColors[song.axis]}30` }}
+                      className="font-semibold"
+                    >
+                      {axisLabels[song.axis]}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">{song.category}</Badge>
+                    <Badge variant="secondary" className="text-xs">{song.platform}</Badge>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <Music className="w-8 h-8 mt-1 shrink-0" style={{ color: axisColors[song.axis] }} />
+                    <div className="space-y-2">
+                      <h3 className="text-2xl font-bold text-foreground">{song.title}</h3>
+                      <p className="text-muted-foreground font-medium">{song.artist}</p>
+                      <p className="text-muted-foreground leading-relaxed">{song.description}</p>
+                    </div>
+                  </div>
+                  <div className="pt-4">
+                    <Button variant="outline" size="sm" asChild>
+                      <a href={song.url} target="_blank" rel="noopener noreferrer">
+                        Listen
+                        <ExternalLink className="w-3 h-3 ml-2" />
+                      </a>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Podcasts */}
+      {entry.podcasts && entry.podcasts.length > 0 && (
+        <section className="pb-12 px-4">
+          <div className="container max-w-4xl mx-auto space-y-8">
+            <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
+              <Headphones className="w-6 h-6" />
+              Podcasts
+            </h2>
+            {entry.podcasts.map((podcast, i) => (
+              <Card key={i} className="border-2 hover:shadow-lg transition-all duration-300" style={{ borderColor: `${axisColors[podcast.axis]}30` }}>
+                <CardContent className="p-8 space-y-4">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Badge
+                      style={{ backgroundColor: `${axisColors[podcast.axis]}15`, color: axisColors[podcast.axis], borderColor: `${axisColors[podcast.axis]}30` }}
+                      className="font-semibold"
+                    >
+                      {axisLabels[podcast.axis]}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">{podcast.category}</Badge>
+                    <Badge variant="secondary" className="text-xs">{podcast.platform}</Badge>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <Headphones className="w-8 h-8 mt-1 shrink-0" style={{ color: axisColors[podcast.axis] }} />
+                    <div className="space-y-2">
+                      <h3 className="text-2xl font-bold text-foreground">{podcast.title}</h3>
+                      <p className="text-muted-foreground font-medium">{podcast.host}</p>
+                      <p className="text-muted-foreground leading-relaxed">{podcast.description}</p>
+                    </div>
+                  </div>
+                  <div className="pt-4">
+                    <Button variant="outline" size="sm" asChild>
+                      <a href={podcast.url} target="_blank" rel="noopener noreferrer">
+                        Listen
+                        <ExternalLink className="w-3 h-3 ml-2" />
+                      </a>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Articles */}
+      {entry.articles && entry.articles.length > 0 && (
+        <section className="pb-12 px-4">
+          <div className="container max-w-4xl mx-auto space-y-8">
+            <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
+              <FileText className="w-6 h-6" />
+              Articles
+            </h2>
+            {entry.articles.map((article, i) => (
+              <Card key={i} className="border-2 hover:shadow-lg transition-all duration-300" style={{ borderColor: `${axisColors[article.axis]}30` }}>
+                <CardContent className="p-8 space-y-4">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Badge
+                      style={{ backgroundColor: `${axisColors[article.axis]}15`, color: axisColors[article.axis], borderColor: `${axisColors[article.axis]}30` }}
+                      className="font-semibold"
+                    >
+                      {axisLabels[article.axis]}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">{article.category}</Badge>
+                    <Badge variant="secondary" className="text-xs">{article.source}</Badge>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <FileText className="w-8 h-8 mt-1 shrink-0" style={{ color: axisColors[article.axis] }} />
+                    <div className="space-y-2">
+                      <h3 className="text-2xl font-bold text-foreground">{article.title}</h3>
+                      <p className="text-muted-foreground font-medium">{article.author}</p>
+                      <p className="text-muted-foreground leading-relaxed">{article.description}</p>
+                    </div>
+                  </div>
+                  <div className="pt-4">
+                    <Button variant="outline" size="sm" asChild>
+                      <a href={article.url} target="_blank" rel="noopener noreferrer">
+                        Read
+                        <ExternalLink className="w-3 h-3 ml-2" />
+                      </a>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Empty state */}
+      {!hasContent && (
+        <section className="pb-20 px-4">
+          <div className="container max-w-4xl mx-auto text-center py-16">
+            <p className="text-xl text-muted-foreground">No discoveries yet for this month. Check back soon!</p>
+          </div>
+        </section>
+      )}
+
+      <div className="pb-8" />
       <Footer />
     </div>
   );

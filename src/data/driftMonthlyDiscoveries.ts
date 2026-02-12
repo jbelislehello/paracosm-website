@@ -19,14 +19,104 @@ export interface DriftVideo {
   platform: string;
 }
 
+export interface DriftSong {
+  title: string;
+  artist: string;
+  description: string;
+  category: string;
+  axis: DriftAxis;
+  url: string;
+  platform: string;
+}
+
+export interface DriftPodcast {
+  title: string;
+  host: string;
+  description: string;
+  category: string;
+  axis: DriftAxis;
+  url: string;
+  platform: string;
+}
+
+export interface DriftArticle {
+  title: string;
+  author: string;
+  description: string;
+  category: string;
+  axis: DriftAxis;
+  url: string;
+  source: string;
+}
+
 export interface DriftMonthEntry {
   year: number;
   month: number;
   books: DriftBook[];
   videos?: DriftVideo[];
+  songs?: DriftSong[];
+  podcasts?: DriftPodcast[];
+  articles?: DriftArticle[];
 }
 
 export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
+  // === 2023 ===
+  {
+    year: 2023, month: 1,
+    books: [
+      { title: "Dynamic Light and Shade", author: "Burne Hogarth", description: "Figure/illustration-focused guide to rendering light & shadow to create depth, form, and dramatic contrast.", category: "Tangible Play", axis: "love", amazonUrl: "https://www.amazon.com/-/zh_TW/Dynamic-Light-Shade-Burne-Hogarth/dp/0823015815" },
+      { title: "Management (Canadian Edition)", author: "Stephen P. Robbins, Mary A. Coulter, Ed Leach, Mary Kilfoil", description: "Comprehensive management textbook connecting core management concepts to real-world applications.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.ca/Management-Eleventh-Canadian-Stephen-Robbins/dp/0133357279" },
+    ],
+  },
+  {
+    year: 2023, month: 2,
+    books: [
+      { title: "Exploring Storyboarding", author: "Wendy Tumminello", description: "Practical how-to for storyboarding skills, covering shot planning, staging/composition, and camera techniques.", category: "Telling Stories", axis: "open", amazonUrl: "https://www.amazon.ca/Exploring-Storyboarding-Wendy-Tumminello/dp/1401827152" },
+      { title: "Le Pendule de Foucault", author: "Umberto Eco", description: "A literary/idea-driven novel about three Milanese editors who invent an elaborate esoteric conspiracy that begins to feel dangerously real.", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.ca/-/fr/PENDULE-FOUCAULT/dp/2253059498" },
+    ],
+  },
+  {
+    year: 2023, month: 3,
+    books: [
+      { title: "The Innovator's Toolkit", author: "David Silverstein, Philip Samuel, Neil DeCarlo", description: "A structured toolkit of 50+ innovation methods aimed at making innovation more repeatable inside organizations.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.ca/Innovators-Toolkit-Techniques-Predictable-Sustainable/dp/0470345357" },
+      { title: "Design Thinking for Strategic Innovation", author: "Idris Mootee", description: "Design thinking applied to strategy/innovation, with frameworks and approaches for solving complex business problems.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.ca/Design-Thinking-Strategic-Innovation-Business/dp/1118620127" },
+    ],
+  },
+  {
+    year: 2023, month: 4,
+    books: [
+      { title: "Designing for Interaction (2nd Edition)", author: "Dan Saffer", description: "Interaction design fundamentals + methods for researching, designing, and evaluating interactive products.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.com/Designing-Interaction-Creating-Innovative-Applications/dp/0321643399" },
+      { title: "Journal Sparks", author: "Emily K. Neuburger", description: "60 guided prompts mixing writing + art-making (drawing, collage, etc.) to jumpstart creativity.", category: "Playgrounds", axis: "calm", amazonUrl: "https://www.amazon.ca/Journal-Sparks-Creativity-Spontaneous-Inventive/dp/1612126529" },
+    ],
+  },
+  {
+    year: 2023, month: 5,
+    books: [
+      { title: "Mapping Experiences", author: "Jim Kalbach", description: "How to use alignment diagrams (journey maps, service blueprints, etc.) to turn customer observations into actionable insights.", category: "Inquiry and Practices", axis: "calm", amazonUrl: "https://www.amazon.ca/Mapping-Experiences-Complete-Creating-Blueprints/dp/1491923539" },
+      { title: "Unstuck", author: "Keith Yamashita, Sandra Spataro", description: "Tools for diagnosing stuck situations and getting momentum back (personal + team contexts).", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.ca/Unstuck-Keith-Yamashita/dp/1591840376" },
+    ],
+  },
+  { year: 2023, month: 6, books: [] },
+  { year: 2023, month: 7, books: [] },
+  { year: 2023, month: 8, books: [] },
+  { year: 2023, month: 9, books: [] },
+  { year: 2023, month: 10, books: [] },
+  { year: 2023, month: 11, books: [] },
+  { year: 2023, month: 12, books: [] },
+  // === 2024 ===
+  { year: 2024, month: 1, books: [] },
+  { year: 2024, month: 2, books: [] },
+  { year: 2024, month: 3, books: [] },
+  { year: 2024, month: 4, books: [] },
+  { year: 2024, month: 5, books: [] },
+  { year: 2024, month: 6, books: [] },
+  { year: 2024, month: 7, books: [] },
+  { year: 2024, month: 8, books: [] },
+  { year: 2024, month: 9, books: [] },
+  { year: 2024, month: 10, books: [] },
+  { year: 2024, month: 11, books: [] },
+  { year: 2024, month: 12, books: [] },
+  // === 2025 ===
   {
     year: 2025, month: 1,
     books: [
@@ -148,6 +238,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Conférence de Jonathan Bélisle — Tournée Infopresse à Ottawa", speaker: "Jonathan Bélisle", description: "Conference talk on digital storytelling and creative innovation.", category: "Telling Stories", axis: "open", youtubeId: "6ToFJ8I6z1k", platform: "Infopresse" },
     ],
   },
+  // === 2026 ===
   {
     year: 2026, month: 1,
     books: [
