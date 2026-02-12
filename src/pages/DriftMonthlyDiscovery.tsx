@@ -2,7 +2,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, ExternalLink, BookOpen, Play, Music, Headphones, FileText } from "lucide-react";
+import { ArrowLeft, ArrowRight, ExternalLink, BookOpen, Play, Music, Headphones, FileText, Image } from "lucide-react";
 import Footer from "@/components/Footer";
 import {
   driftMonthlyDiscoveries,
@@ -10,6 +10,7 @@ import {
   getMonthName,
   axisColors,
   axisLabels,
+  DriftArtefact,
 } from "@/data/driftMonthlyDiscoveries";
 
 const DriftMonthlyDiscovery = () => {
@@ -37,7 +38,7 @@ const DriftMonthlyDiscovery = () => {
     );
   }
 
-  const hasContent = entry.books.length > 0 || (entry.videos && entry.videos.length > 0) || (entry.songs && entry.songs.length > 0) || (entry.podcasts && entry.podcasts.length > 0) || (entry.articles && entry.articles.length > 0);
+  const hasContent = entry.books.length > 0 || (entry.videos && entry.videos.length > 0) || (entry.songs && entry.songs.length > 0) || (entry.podcasts && entry.podcasts.length > 0) || (entry.articles && entry.articles.length > 0) || (entry.artefacts && entry.artefacts.length > 0);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-background/90">
@@ -301,6 +302,39 @@ const DriftMonthlyDiscovery = () => {
                         <ExternalLink className="w-3 h-3 ml-2" />
                       </a>
                     </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Artefacts */}
+      {entry.artefacts && entry.artefacts.length > 0 && (
+        <section className="pb-12 px-4">
+          <div className="container max-w-4xl mx-auto space-y-8">
+            <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
+              <Image className="w-6 h-6" />
+              Artefacts
+            </h2>
+            {entry.artefacts.map((artefact, i) => (
+              <Card key={i} className="border-2 hover:shadow-lg transition-all duration-300 overflow-hidden" style={{ borderColor: `${axisColors[artefact.axis]}30` }}>
+                <img src={artefact.imagePath} alt={artefact.title} className="w-full object-cover" />
+                <CardContent className="p-8 space-y-4">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Badge
+                      style={{ backgroundColor: `${axisColors[artefact.axis]}15`, color: axisColors[artefact.axis], borderColor: `${axisColors[artefact.axis]}30` }}
+                      className="font-semibold"
+                    >
+                      {axisLabels[artefact.axis]}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">{artefact.category}</Badge>
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-2xl font-bold text-foreground">{artefact.title}</h3>
+                    <p className="text-muted-foreground font-medium">{artefact.author}</p>
+                    <p className="text-muted-foreground leading-relaxed">{artefact.description}</p>
                   </div>
                 </CardContent>
               </Card>
