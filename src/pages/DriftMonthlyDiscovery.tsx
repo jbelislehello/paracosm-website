@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, ExternalLink, BookOpen, Play, Music, Headphones, FileText, Image, FileSpreadsheet, Download, Wrench } from "lucide-react";
+import { ArrowLeft, ArrowRight, ExternalLink, BookOpen, Play, Music, Headphones, FileText, Image, FileSpreadsheet, Download, Wrench, Search, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import Footer from "@/components/Footer";
 import {
   driftMonthlyDiscoveries,
@@ -17,6 +19,7 @@ import { driftTools, DriftToolAxis } from "@/data/driftTools";
 const DriftMonthlyDiscovery = () => {
   const { year, month } = useParams();
   const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState("");
 
   const y = parseInt(year || "0");
   const m = parseInt(month || "0");
@@ -39,10 +42,25 @@ const DriftMonthlyDiscovery = () => {
     );
   }
 
+  const q = searchQuery.toLowerCase().trim();
+
+  const matchesSearch = (...fields: (string | undefined)[]) =>
+    !q || fields.some(f => f?.toLowerCase().includes(q));
+
   const monthlyTools = driftTools.filter(t => t.month === m && t.year === y);
   const toolAxes: DriftToolAxis[] = ['love', 'magic', 'calm', 'open', 'free'];
 
+  // Filtered resources
+  const filteredBooks = entry.books.filter(b => matchesSearch(b.title, b.author, b.description, b.category));
+  const filteredVideos = (entry.videos || []).filter(v => matchesSearch(v.title, v.speaker, v.description, v.category));
+  const filteredSongs = (entry.songs || []).filter(s => matchesSearch(s.title, s.artist, s.description, s.category));
+  const filteredPodcasts = (entry.podcasts || []).filter(p => matchesSearch(p.title, p.host, p.description, p.category));
+  const filteredArticles = (entry.articles || []).filter(a => matchesSearch(a.title, a.author, a.description, a.category));
+  const filteredArtefacts = (entry.artefacts || []).filter(a => matchesSearch(a.title, a.author, a.description, a.category));
+  const filteredTools = monthlyTools.filter(t => matchesSearch(t.name, t.description, t.startingPrice));
+
   const hasContent = entry.books.length > 0 || (entry.videos && entry.videos.length > 0) || (entry.songs && entry.songs.length > 0) || (entry.podcasts && entry.podcasts.length > 0) || (entry.articles && entry.articles.length > 0) || (entry.artefacts && entry.artefacts.length > 0) || monthlyTools.length > 0;
+  const hasFilteredContent = filteredBooks.length > 0 || filteredVideos.length > 0 || filteredSongs.length > 0 || filteredPodcasts.length > 0 || filteredArticles.length > 0 || filteredArtefacts.length > 0 || filteredTools.length > 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-background/90">
@@ -83,18 +101,48 @@ const DriftMonthlyDiscovery = () => {
               </Button>
             ) : <div />}
           </div>
+
+          {/* Search filter */}
+          {hasContent && (
+            <div className="relative mt-6">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search discoveries..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                className="pl-10 pr-10"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </section>
 
+      {/* No search results */}
+      {hasContent && q && !hasFilteredContent && (
+        <section className="pb-12 px-4">
+          <div className="container max-w-4xl mx-auto text-center py-8">
+            <p className="text-lg text-muted-foreground">No discoveries matching "{searchQuery}"</p>
+          </div>
+        </section>
+      )}
+
       {/* Books */}
-      {entry.books.length > 0 && (
+      {filteredBooks.length > 0 && (
         <section className="pb-12 px-4">
           <div className="container max-w-4xl mx-auto space-y-8">
             <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
               <BookOpen className="w-6 h-6" />
               Books
             </h2>
-            {entry.books.map((book, i) => (
+            {filteredBooks.map((book, i) => (
               <Card key={i} className="border-2 hover:shadow-lg transition-all duration-300" style={{ borderColor: `${axisColors[book.axis]}30` }}>
                 <CardContent className="p-8 space-y-4">
                   <div className="flex flex-wrap items-center gap-3">
@@ -134,14 +182,14 @@ const DriftMonthlyDiscovery = () => {
       )}
 
       {/* Videos */}
-      {entry.videos && entry.videos.length > 0 && (
+      {filteredVideos.length > 0 && (
         <section className="pb-12 px-4">
           <div className="container max-w-4xl mx-auto space-y-8">
             <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
               <Play className="w-6 h-6" />
               Video Discoveries
             </h2>
-            {entry.videos.map((video, i) => (
+            {filteredVideos.map((video, i) => (
               <Card key={i} className="border-2 hover:shadow-lg transition-all duration-300 overflow-hidden" style={{ borderColor: `${axisColors[video.axis]}30` }}>
                 <a href={`https://www.youtube.com/watch?v=${video.youtubeId}`} target="_blank" rel="noopener noreferrer" className="block relative group">
                   <img
@@ -183,14 +231,14 @@ const DriftMonthlyDiscovery = () => {
       )}
 
       {/* Songs */}
-      {entry.songs && entry.songs.length > 0 && (
+      {filteredSongs.length > 0 && (
         <section className="pb-12 px-4">
           <div className="container max-w-4xl mx-auto space-y-8">
             <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
               <Music className="w-6 h-6" />
               Songs
             </h2>
-            {entry.songs.map((song, i) => (
+            {filteredSongs.map((song, i) => (
               <Card key={i} className="border-2 hover:shadow-lg transition-all duration-300" style={{ borderColor: `${axisColors[song.axis]}30` }}>
                 <CardContent className="p-8 space-y-4">
                   <div className="flex flex-wrap items-center gap-3">
@@ -227,14 +275,14 @@ const DriftMonthlyDiscovery = () => {
       )}
 
       {/* Podcasts */}
-      {entry.podcasts && entry.podcasts.length > 0 && (
+      {filteredPodcasts.length > 0 && (
         <section className="pb-12 px-4">
           <div className="container max-w-4xl mx-auto space-y-8">
             <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
               <Headphones className="w-6 h-6" />
               Podcasts
             </h2>
-            {entry.podcasts.map((podcast, i) => (
+            {filteredPodcasts.map((podcast, i) => (
               <Card key={i} className="border-2 hover:shadow-lg transition-all duration-300" style={{ borderColor: `${axisColors[podcast.axis]}30` }}>
                 <CardContent className="p-8 space-y-4">
                   <div className="flex flex-wrap items-center gap-3">
@@ -271,14 +319,14 @@ const DriftMonthlyDiscovery = () => {
       )}
 
       {/* Articles */}
-      {entry.articles && entry.articles.length > 0 && (
+      {filteredArticles.length > 0 && (
         <section className="pb-12 px-4">
           <div className="container max-w-4xl mx-auto space-y-8">
             <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
               <FileText className="w-6 h-6" />
               Articles
             </h2>
-            {entry.articles.map((article, i) => (
+            {filteredArticles.map((article, i) => (
               <Card key={i} className="border-2 hover:shadow-lg transition-all duration-300" style={{ borderColor: `${axisColors[article.axis]}30` }}>
                 <CardContent className="p-8 space-y-4">
                   <div className="flex flex-wrap items-center gap-3">
@@ -315,14 +363,14 @@ const DriftMonthlyDiscovery = () => {
       )}
 
       {/* Artefacts */}
-      {entry.artefacts && entry.artefacts.length > 0 && (
+      {filteredArtefacts.length > 0 && (
         <section className="pb-12 px-4">
           <div className="container max-w-4xl mx-auto space-y-8">
             <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
               <Image className="w-6 h-6" />
               Artefacts
             </h2>
-            {entry.artefacts.map((artefact, i) => (
+            {filteredArtefacts.map((artefact, i) => (
               <Card key={i} className="border-2 hover:shadow-lg transition-all duration-300 overflow-hidden" style={{ borderColor: `${axisColors[artefact.axis]}30` }}>
                 {artefact.imagePath ? (
                   <img src={artefact.imagePath} alt={artefact.title} className="w-full object-cover" />
@@ -360,7 +408,7 @@ const DriftMonthlyDiscovery = () => {
       )}
 
       {/* Tools grouped by axis */}
-      {monthlyTools.length > 0 && (
+      {filteredTools.length > 0 && (
         <section className="pb-12 px-4">
           <div className="container max-w-4xl mx-auto space-y-8">
             <h2 className="text-2xl font-bold text-foreground flex items-center gap-3">
@@ -368,7 +416,7 @@ const DriftMonthlyDiscovery = () => {
               Tools
             </h2>
             {toolAxes.map(axis => {
-              const axisTools = monthlyTools.filter(t => t.axis === axis);
+              const axisTools = filteredTools.filter(t => t.axis === axis);
               if (axisTools.length === 0) return null;
               const color = axisColors[axis];
               return (
