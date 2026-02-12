@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Mic, Calendar, Compass, Mail, CheckCircle, BookOpen, Play, Music, Headphones, FileText, Wrench } from "lucide-react";
+import { Mic, Calendar, Compass, Mail, CheckCircle, BookOpen, Play, Music, Headphones, FileText, Wrench, Search, X } from "lucide-react";
 import { energeticAxes } from "@/data/gardens";
 import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
@@ -13,6 +13,7 @@ import { driftTools } from "@/data/driftTools";
 
 const DriftLanding = () => {
   const [email, setEmail] = useState("");
+  const [monthSearch, setMonthSearch] = useState("");
   
   const { toast } = useToast();
 
@@ -220,8 +221,53 @@ const DriftLanding = () => {
             </p>
           </div>
 
+          {/* Search across months */}
+          <div className="relative max-w-md mx-auto mb-10">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Search across all months..."
+              value={monthSearch}
+              onChange={e => setMonthSearch(e.target.value)}
+              className="pl-10 pr-10"
+            />
+            {monthSearch && (
+              <button
+                onClick={() => setMonthSearch("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {driftMonthlyDiscoveries.map((entry) => {
+            {(() => {
+              const mq = monthSearch.toLowerCase().trim();
+              const matchField = (...fields: (string | undefined)[]) =>
+                !mq || fields.some(f => f?.toLowerCase().includes(mq));
+
+              const filtered = driftMonthlyDiscoveries.filter(entry => {
+                if (!mq) return true;
+                const booksMatch = entry.books.some(b => matchField(b.title, b.author, b.description, b.category));
+                const videosMatch = (entry.videos || []).some(v => matchField(v.title, v.speaker, v.description, v.category));
+                const songsMatch = (entry.songs || []).some(s => matchField(s.title, s.artist, s.description, s.category));
+                const podcastsMatch = (entry.podcasts || []).some(p => matchField(p.title, p.host, p.description, p.category));
+                const articlesMatch = (entry.articles || []).some(a => matchField(a.title, a.author, a.description, a.category));
+                const artefactsMatch = (entry.artefacts || []).some(a => matchField(a.title, a.author, a.description, a.category));
+                const toolsMatch = driftTools.filter(t => t.month === entry.month && t.year === entry.year).some(t => matchField(t.name, t.description));
+                const monthMatch = matchField(getMonthName(entry.month), String(entry.year));
+                return booksMatch || videosMatch || songsMatch || podcastsMatch || articlesMatch || artefactsMatch || toolsMatch || monthMatch;
+              });
+
+              if (mq && filtered.length === 0) {
+                return (
+                  <div className="col-span-full text-center py-8">
+                    <p className="text-lg text-muted-foreground">No months matching "{monthSearch}"</p>
+                  </div>
+                );
+              }
+
+              return filtered.map((entry) => {
               const allAxes = [
                 ...entry.books.map(b => b.axis),
                 ...(entry.videos || []).map(v => v.axis),
@@ -269,7 +315,8 @@ const DriftLanding = () => {
                   </Card>
                 </Link>
               );
-            })}
+            });
+            })()}
           </div>
         </div>
       </section>
