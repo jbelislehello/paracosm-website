@@ -9,6 +9,7 @@ import { energeticAxes } from "@/data/gardens";
 import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
 import { driftMonthlyDiscoveries, driftLibraryExtras, driftLibraryArtefacts, getMonthName, axisColors } from "@/data/driftMonthlyDiscoveries";
+import DriftToolShowcase from "@/components/DriftToolShowcase";
 
 const DriftLanding = () => {
   const [email, setEmail] = useState("");
@@ -206,6 +207,9 @@ const DriftLanding = () => {
           </div>
         </div>
       </section>
+
+      {/* Tool Showcase */}
+      <DriftToolShowcase />
 
       {/* Monthly Archive Section */}
       <section className="py-20 px-4 bg-gradient-to-r from-secondary/5 to-accent/5">
