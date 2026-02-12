@@ -1,4 +1,6 @@
 import { Book, Sparkles, Film, ArrowRight, Award, Cpu, Theater, Music, Compass, Heart, Users, Mic, Mountain, Calendar, Lightbulb, Code } from "lucide-react";
+import logoHA from "@/assets/logo-ha.jpg";
+import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
@@ -95,9 +97,7 @@ const ParacosmUniverseSection = () => {
           {/* HA Labs */}
           <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-indigo-200 dark:border-indigo-800 shadow-lg">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-sm">HA</span>
-              </div>
+              <img src={logoHA} alt="HA Labs" className="w-10 h-10 rounded-xl object-contain" />
               <div>
                 <h3 className="text-xl font-bold text-foreground">HA Labs</h3>
                 <p className="text-xs text-muted-foreground">Creative Technology Studio</p>
@@ -162,9 +162,7 @@ const ParacosmUniverseSection = () => {
           {/* Paracosm */}
           <div className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-rose-200 dark:border-rose-800 shadow-lg">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-gradient-to-br from-rose-600 to-purple-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-sm">P</span>
-              </div>
+              <img src={logoParacosm} alt="Paracosm" className="w-10 h-10 rounded-xl object-contain" />
               <div>
                 <h3 className="text-xl font-bold text-foreground">Paracosm</h3>
                 <p className="text-xs text-muted-foreground">Agentic UX & Coaching</p>

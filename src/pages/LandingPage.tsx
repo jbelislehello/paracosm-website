@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import CoachingApproachSection from "@/components/CoachingApproachSection";
 import TransformationJourney from "@/components/TransformationJourney";
 import ContactSection from "@/components/ContactSection";
@@ -53,9 +54,7 @@ const LandingPage = () => {
       <header className="fixed w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
         <div className="container flex items-center justify-between py-3 px-4">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-md flex items-center justify-center">
-              <span className="text-white font-bold">P</span>
-            </div>
+            <img src={logoParacosm} alt="Paracosm" className="w-8 h-8 rounded-md object-contain" />
             <span className="font-bold text-lg">Paracosm</span>
           </div>
           

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -91,9 +92,7 @@ const AboutUs = () => {
               </Button>
             </Link>
             <Link to="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-md flex items-center justify-center">
-                <span className="text-white font-bold">P</span>
-              </div>
+              <img src={logoParacosm} alt="Paracosm" className="w-8 h-8 rounded-md object-contain" />
               <span className="font-bold text-lg">Paracosm</span>
             </Link>
           </div>

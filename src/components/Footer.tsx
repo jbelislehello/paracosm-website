@@ -1,4 +1,5 @@
 import React from 'react';
+import logoHA from "@/assets/logo-ha.jpg";
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Mail } from 'lucide-react';
@@ -14,9 +15,7 @@ const Footer: React.FC = () => {
           {/* Brand — HA Labs */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-md flex items-center justify-center">
-                <span className="text-white font-bold text-xs">HA</span>
-              </div>
+              <img src={logoHA} alt="HA Labs" className="w-8 h-8 rounded-md object-contain" />
               <span className="font-bold text-lg text-white">HA Labs</span>
             </div>
             <p className="text-sm text-slate-400 mb-4">
