@@ -1,29 +1,24 @@
 
 
-# Remove "Paracosm" Title Text from Logo
+# Add "Paracosm" Text to the Right of the Logo
 
-## What Changes
+## Changes
 
-Remove the "Paracosm" text label that was just added next to the logo image across all pages. The logo will return to showing only the rainbow arc image on its black rounded background tile, without any accompanying text.
+Re-add the "Paracosm" text label next to the logo image across all 4 files. The logo image itself stays unchanged (rainbow arc on black rounded tile). The word "Paracosm" appears to its right.
 
-## Files to Update (4 files)
+## Files to Update
 
-### 1. `src/pages/LandingPage.tsx` (line 58)
-Remove the `<span>` with "Paracosm" text
+### 1. `src/pages/LandingPage.tsx` (line 57)
+Add `<span className="font-bold text-slate-900 dark:text-white text-sm">Paracosm</span>` after the `<img>` tag
 
-### 2. `src/pages/AboutUs.tsx` (line 96)
-Remove the `<span>` with "Paracosm" text
+### 2. `src/pages/AboutUs.tsx` (line 95)
+Same addition after the `<img>` tag
 
-### 3. `src/pages/CaseStudies.tsx` (line 27)
-Remove the `<span>` with "Paracosm" text
+### 3. `src/pages/CaseStudies.tsx` (line 26)
+Same addition after the `<img>` tag
 
-### 4. `src/components/ParacosmUniverseSection.tsx` (line 166)
-Remove the `<span>` with "Paracosm" text
+### 4. `src/components/ParacosmUniverseSection.tsx` (line 165)
+Same addition after the `<img>` tag
 
-Each instance removes this line:
-```jsx
-<span className="font-bold text-slate-900 dark:text-white text-sm">Paracosm</span>
-```
-
-No other changes needed -- the logo image and its black rounded tile styling remain untouched.
+Each location already has a `flex items-center gap-2` wrapper, so the text will automatically appear to the right of the logo.
 
