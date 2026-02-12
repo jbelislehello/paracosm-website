@@ -62,7 +62,7 @@ const DriftLanding = () => {
       <section className="relative min-h-screen flex items-center justify-center px-4 py-12">
         <div className="container max-w-4xl mx-auto text-center space-y-8">
           <div className="space-y-6">
-            <div className="bg-white border border-purple-300 rounded-2xl p-4 w-32 h-32 mx-auto overflow-hidden">
+            <div className="bg-white rounded-2xl p-4 w-32 h-32 mx-auto overflow-hidden">
               <img src={logoDrift} alt="Drift Logo" className="w-full h-full object-contain" />
             </div>
 
