@@ -1,18 +1,18 @@
 
 
-# Fix Logo: Replace logo-paracosm.jpeg with Rainbow Arc Image
+# Fix Remaining Black Background on Logo
 
 ## Problem
-The header logo on `/` and `/about` still shows the old logo on a black background. Previous attempts to overwrite `src/assets/logo-paracosm.jpeg` may not have taken effect properly.
+The logo still shows on a black background in two files that were missed in previous updates.
 
-## Solution
-Overwrite `src/assets/logo-paracosm.jpeg` with the freshly uploaded rainbow arc image (`IMG_2998-2.jpeg`). The styling (`bg-white rounded-lg p-1`) is already correct in both `LandingPage.tsx` and `AboutUs.tsx` -- no code changes needed, only the asset file replacement.
+## Changes
 
-## Steps
+### 1. `src/components/ParacosmUniverseSection.tsx` (line 165)
+- Change `bg-black` to `bg-white` on the logo `<img>` tag
 
-1. Copy `user-uploads://IMG_2998-2.jpeg` to `src/assets/logo-paracosm.jpeg`, replacing the existing file
-2. Verify the logo renders correctly on the landing page
+### 2. `src/pages/CaseStudies.tsx` (line 26)
+- Change `bg-black` to `bg-white` on the logo `<img>` tag
 
-## Files Modified
-- `src/assets/logo-paracosm.jpeg` -- overwritten with the new rainbow arc logo
+## No other files affected
+LandingPage.tsx and AboutUs.tsx already use `bg-white` -- only these two remaining instances need updating.
 
