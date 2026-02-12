@@ -96,10 +96,34 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Unstuck", author: "Keith Yamashita, Sandra Spataro", description: "Tools for diagnosing stuck situations and getting momentum back (personal + team contexts).", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.ca/Unstuck-Keith-Yamashita/dp/1591840376" },
     ],
   },
-  { year: 2023, month: 6, books: [] },
-  { year: 2023, month: 7, books: [] },
-  { year: 2023, month: 8, books: [] },
-  { year: 2023, month: 9, books: [] },
+  {
+    year: 2023, month: 6,
+    books: [
+      { title: "The Ayahuasca Conversations", author: "Various (The Jungle Prescription)", description: "Transcript-style encounters exploring ayahuasca through Western culture and modern medicine.", category: "Inquiry and Practices", axis: "calm", amazonUrl: "" },
+      { title: "The Accidental Creative", author: "Todd Henry", description: "Practical methods to stay prolific and creative under real-world deadlines (habits, constraints, routines).", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.ca/Accidental-Creative-Brilliant-Moments-Notice/dp/1591846242" },
+    ],
+  },
+  {
+    year: 2023, month: 7,
+    books: [
+      { title: "Les Mystères du langage", author: "Jay Ingram", description: "A popular-science exploration of language: how it works, how it evolves, and what it reveals about humans and society.", category: "Narratives", axis: "magic", amazonUrl: "" },
+      { title: "Designing Voice User Interfaces", author: "Cathy Pearl", description: "Core principles and process for designing effective voice/conversational products (from prompts and flows to testing).", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.ca/Designing-Voice-User-Interfaces-Conversational/dp/1491955414" },
+    ],
+  },
+  {
+    year: 2023, month: 8,
+    books: [
+      { title: "1492", author: "Jacques Attali", description: "A historical deep-dive around the turning point of 1492 and the forces reshaping Europe and the world.", category: "Human Dynamics and System Thinking", axis: "open", amazonUrl: "https://www.amazon.ca/1492-JACQUES-ATTALI/dp/2253062340" },
+      { title: "The Vagabond's Way", author: "Rolf Potts", description: "366 daily reflections on movement, attention, and how travel changes you.", category: "WorldBuilders", axis: "free", amazonUrl: "https://www.amazon.ca/Vagabonds-Way-Meditations-Wanderlust-Discovery/dp/0593497457" },
+    ],
+  },
+  {
+    year: 2023, month: 9,
+    books: [
+      { title: "The Zero Marginal Cost Society", author: "Jeremy Rifkin", description: "How networks + the Internet of Things push marginal costs down and shift capitalism toward collaborative commons.", category: "Human Dynamics and System Thinking", axis: "open", amazonUrl: "https://www.amazon.ca/Zero-Marginal-Cost-Society-Collaborative/dp/1137280115" },
+      { title: "The Glass Cage", author: "Nicholas Carr", description: "A critique of automation's subtle costs: what we lose in skill, judgment, and meaning when software takes over.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.ca/Glass-Cage-How-Computers-Changing/dp/0393351637" },
+    ],
+  },
   { year: 2023, month: 10, books: [] },
   { year: 2023, month: 11, books: [] },
   { year: 2023, month: 12, books: [] },
