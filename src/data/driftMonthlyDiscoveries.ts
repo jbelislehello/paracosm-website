@@ -60,6 +60,103 @@ export interface DriftMonthEntry {
 }
 
 export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
+  // === 2022 ===
+  {
+    year: 2022, month: 1,
+    books: [
+      { title: "Skin in the Game", author: "Nassim Nicholas Taleb", description: "Risk, responsibility, symmetry: why credibility requires personal exposure.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Skin+in+the+Game+Nassim+Nicholas+Taleb" },
+      { title: "Siddhartha", author: "Hermann Hesse", description: "Spiritual coming-of-age, experience vs doctrine, inner freedom.", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Siddhartha+Hermann+Hesse" },
+      { title: "Les fous du son", author: "Laurent de Wilde", description: "Histoire/portrait de la musique électronique et de ses pionniers.", category: "Sensory Rooms", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Laurent+de+Wilde+Les+fous+du+son" },
+    ],
+  },
+  {
+    year: 2022, month: 2,
+    books: [
+      { title: "La Bhagavad-Gîtâ", author: "Texte classique", description: "Dialogue philosophique sur devoir, action, conscience (hindouisme).", category: "Inquiry and Practices", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=La+Bhagavad+Gita+livre+francais" },
+      { title: "Le Parfum", author: "Patrick Süskind", description: "Roman sur l'obsession olfactive, le génie, et la monstruosité sociale.", category: "Narratives", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Patrick+Suskind+Le+Parfum" },
+      { title: "Le sacré et le profane", author: "Mircea Eliade", description: "Comment les humains donnent sens au monde via le religieux/le symbolique.", category: "Inquiry and Practices", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Mircea+Eliade+Le+sacr%C3%A9+et+le+profane" },
+    ],
+  },
+  {
+    year: 2022, month: 3,
+    books: [
+      { title: "Zero to One", author: "Peter Thiel", description: "Startup thinking: créer du 'nouveau' au lieu de copier/optimiser.", category: "Workflows", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Zero+to+One+Peter+Thiel" },
+      { title: "Labanotation", author: "Ann Hutchinson Guest", description: "Système de notation du mouvement/danse (référence technique).", category: "Tangible Play", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Labanotation+Ann+Hutchinson+Guest" },
+      { title: "Lighter", author: "Yung Pueblo", description: "Poésie/aphorismes sur guérison, détachement, croissance intérieure.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Lighter+Yung+Pueblo" },
+    ],
+  },
+  {
+    year: 2022, month: 4,
+    books: [
+      { title: "Rework", author: "Jason Fried & David Heinemeier Hansson", description: "Construire une entreprise avec simplicité, anti-bullshit, pragmatisme.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Rework+Jason+Fried+David+Heinemeier+Hansson" },
+      { title: "Divining a Digital Future", author: "Paul Dourish & Genevieve Bell", description: "Enquête sur l'impact du numérique sur nos vies/cultures.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Divining+a+Digital+Future+book" },
+      { title: "The Year of Dreaming Dangerously", author: "Slavoj Žižek", description: "Analyse politico-philo des soulèvements/crises contemporaines.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=The+Year+of+Dreaming+Dangerously+Slavoj+Zizek" },
+    ],
+  },
+  {
+    year: 2022, month: 5,
+    books: [
+      { title: "Antifragile", author: "Nassim Nicholas Taleb", description: "Ce qui gagne avec le désordre: options, stress, évolution, robustesse.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Antifragile+Nassim+Nicholas+Taleb" },
+      { title: "Le point de bascule", author: "Malcolm Gladwell", description: "Comment idées/tendances basculent en phénomènes de masse.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Le+point+de+bascule+Malcolm+Gladwell" },
+      { title: "Who's Your City?", author: "Richard Florida", description: "Géographie des talents: pourquoi la ville façonne carrière et bonheur.", category: "WorldBuilders", axis: "free", amazonUrl: "https://www.amazon.com/s?k=Who%27s+Your+City+Richard+Florida" },
+    ],
+  },
+  {
+    year: 2022, month: 6,
+    books: [
+      { title: "Drive", author: "Daniel H. Pink", description: "Motivation: autonomie, maîtrise, sens (au-delà des carottes/bâtons).", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Drive+Daniel+H+Pink" },
+      { title: "Spreadable Media", author: "Henry Jenkins, Sam Ford & Joshua Green", description: "Pourquoi/Comment les contenus circulent (culture participative, partage).", category: "Post-Broadcast", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Spreadable+Media+Jenkins+Ford+Green" },
+      { title: "Précis de méditations", author: "Collectif", description: "Petit manuel/anthologie de méditations.", category: "Inquiry and Practices", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Pr%C3%A9cis+de+m%C3%A9ditations+livre" },
+    ],
+  },
+  {
+    year: 2022, month: 7,
+    books: [
+      { title: "Little Bets", author: "Peter Sims", description: "Innover par micro-expériences et itérations rapides.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Little+Bets+Peter+Sims" },
+      { title: "Discours sur les sciences et les arts / Discours sur l'inégalité", author: "Jean-Jacques Rousseau", description: "Textes clés sur société, morale, inégalités.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Rousseau+Discours+sur+les+sciences+et+les+arts+Discours+sur+l%27in%C3%A9galit%C3%A9" },
+      { title: "Chaos calme", author: "Sandro Veronesi", description: "Roman sur le deuil, le désir, la reconstruction.", category: "Narratives", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Chaos+calme+Sandro+Veronesi" },
+    ],
+  },
+  {
+    year: 2022, month: 8,
+    books: [
+      { title: "Éloge du mariage, de l'engagement et autres folies", author: "Christiane Singer", description: "Essai littéraire sur lien, engagement, sens du couple.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Christiane+Singer+%C3%89loge+du+mariage" },
+      { title: "La condition de l'homme moderne", author: "Hannah Arendt", description: "Philosophie politique / modernité / condition humaine.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Hannah+Arendt+La+condition+de+l%27homme+moderne" },
+      { title: "Futhark: A Handbook of Rune Magic", author: "Edred Thorsson", description: "Introduction structurée aux runes (symbolique, pratique, tradition).", category: "Sensory Rooms", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Futhark+A+Handbook+of+Rune+Magic+Edred+Thorsson" },
+    ],
+  },
+  {
+    year: 2022, month: 9,
+    books: [
+      { title: "Le Satyricon", author: "Pétrone", description: "Satire romaine: mœurs, excès, société, récit fragmentaire.", category: "Narratives", axis: "free", amazonUrl: "https://www.amazon.com/s?k=P%C3%A9trone+Le+Satyricon" },
+      { title: "The Art of Game Design", author: "Jesse Schell", description: "'Lens' de design pour concevoir, tester et équilibrer un jeu.", category: "Playgrounds", axis: "open", amazonUrl: "https://www.amazon.com/s?k=The+Art+of+Game+Design+Jesse+Schell+3rd+Edition" },
+      { title: "Cinéma 1: L'image-mouvement", author: "Gilles Deleuze", description: "Philosophie du cinéma via types d'images et de mouvements.", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Gilles+Deleuze+Cin%C3%A9ma+1+L%27image-mouvement" },
+    ],
+  },
+  {
+    year: 2022, month: 10,
+    books: [
+      { title: "Cinéma 2: L'image-temps", author: "Gilles Deleuze", description: "Quand le cinéma pense le temps, la mémoire, la perception.", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Gilles+Deleuze+Cin%C3%A9ma+2+L%27image-temps" },
+      { title: "Cosmos", author: "Carl Sagan", description: "Science + émerveillement: histoire de l'univers et de nos idées.", category: "WorldBuilders", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Cosmos+Carl+Sagan" },
+      { title: "Le sentiment même de soi", author: "Antonio R. Damasio", description: "Neurosciences: comment naît la conscience du 'moi' en expérience.", category: "Embodied Cognition", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Antonio+Damasio+Le+sentiment+m%C3%AAme+de+soi" },
+    ],
+  },
+  {
+    year: 2022, month: 11,
+    books: [
+      { title: "hot text: Web Writing That Works", author: "Jonathan & Lisa Price", description: "Écrire pour le web: clarté, structure, UX éditoriale.", category: "Telling Stories", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Hot+Text+Web+Writing+That+Works+Jonathan+Price+Lisa+Price" },
+      { title: "The Organism", author: "Kurt Goldstein", description: "Neuro/psycho: vision 'organismique' du vivant et de l'esprit.", category: "Embodied Cognition", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=The+Organism+Kurt+Goldstein" },
+      { title: "FUTURETAINMENT", author: "Mike Walsh", description: "Business du futur: comment le divertissement transforme marques/produits.", category: "Post-Broadcast", axis: "open", amazonUrl: "https://www.amazon.com/s?k=FUTURETAINMENT+Mike+Walsh" },
+    ],
+  },
+  {
+    year: 2022, month: 12,
+    books: [
+      { title: "Bubbletecture", author: "Sharon Francis", description: "Architecture/design gonflable (catalogue/essai).", category: "Sensory Rooms", axis: "free", amazonUrl: "https://www.amazon.com/s?k=Bubbletecture+book" },
+      { title: "The Seven Arts of Change", author: "David Shaner", description: "Frameworks de transformation/innovation.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=The+Seven+Arts+of+Change+book" },
+      { title: "La guerre des yeux", author: "Paul Virilio", description: "Médias/vision: vitesse, images, perception.", category: "Post-Broadcast", axis: "open", amazonUrl: "https://www.amazon.com/s?k=La+guerre+des+yeux+Virilio" },
+    ],
+  },
   // === 2023 ===
   {
     year: 2023, month: 1,
