@@ -124,19 +124,100 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "The Glass Cage", author: "Nicholas Carr", description: "A critique of automation's subtle costs: what we lose in skill, judgment, and meaning when software takes over.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.ca/Glass-Cage-How-Computers-Changing/dp/0393351637" },
     ],
   },
-  { year: 2023, month: 10, books: [] },
-  { year: 2023, month: 11, books: [] },
-  { year: 2023, month: 12, books: [] },
+  {
+    year: 2023, month: 10,
+    books: [
+      { title: "Patrimoine mondial de l'UNESCO : Le guide complet des lieux les plus extraordinaires", author: "UNESCO (collectif)", description: "Guide illustré des sites du Patrimoine mondial.", category: "WorldBuilders", axis: "free", amazonUrl: "https://www.amazon.com/s?k=Patrimoine+mondial+de+l%27UNESCO+%3A+Le+guide+complet+des+lieux+les+plus+extraordinaires+UNESCO+%28collectif%29" },
+      { title: "Living in the End Times", author: "Slavoj Žižek", description: "Essai de philosophie politique sur crises et 'fins du monde'.", category: "Human Dynamics and System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Living+in+the+End+Times+Slavoj+%C5%BDi%C5%BEek" },
+      { title: "Dark Ecology", author: "Timothy Morton", description: "Écologie philosophique: dépasser la séparation nature/culture.", category: "Sensory Rooms", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Dark+Ecology+Timothy+Morton" },
+    ],
+  },
+  {
+    year: 2023, month: 11,
+    books: [
+      { title: "The Seven Day Circle", author: "Eviatar Zerubavel", description: "Sociologie de la semaine de 7 jours et de l'organisation du temps.", category: "Inquiry and Practices", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=The+Seven+Day+Circle+Eviatar+Zerubavel" },
+      { title: "Damn Good Advice (for People with Talent!)", author: "George Lois", description: "Conseils créatifs/carrière par un directeur artistique mythique.", category: "Telling Stories", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Damn+Good+Advice+%28for+People+with+Talent%21%29+George+Lois" },
+      { title: "The 4-Hour Workweek", author: "Tim Ferriss", description: "Design de vie: automatisation, délégation, optimisation du travail.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=The+4-Hour+Workweek+Tim+Ferriss" },
+    ],
+  },
+  {
+    year: 2023, month: 12,
+    books: [
+      { title: "Bicycle Diaries", author: "David Byrne", description: "Carnets de voyage à vélo + réflexions culturelles.", category: "WorldBuilders", axis: "free", amazonUrl: "https://www.amazon.com/s?k=Bicycle+Diaries+David+Byrne" },
+      { title: "World War Z: An Oral History of the Zombie War", author: "Max Brooks", description: "Roman en 'témoignages' sur une guerre mondiale contre les zombies.", category: "Post-Broadcast", axis: "free", amazonUrl: "https://www.amazon.com/s?k=World+War+Z%3A+An+Oral+History+of+the+Zombie+War+Max+Brooks" },
+      { title: "Blood, Sweat, and Pixels", author: "Jason Schreier", description: "Enquête sur le développement de jeux vidéo et le crunch.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Blood%2C+Sweat%2C+and+Pixels+Jason+Schreier" },
+    ],
+  },
   // === 2024 ===
-  { year: 2024, month: 1, books: [] },
-  { year: 2024, month: 2, books: [] },
-  { year: 2024, month: 3, books: [] },
-  { year: 2024, month: 4, books: [] },
-  { year: 2024, month: 5, books: [] },
-  { year: 2024, month: 6, books: [] },
-  { year: 2024, month: 7, books: [] },
-  { year: 2024, month: 8, books: [] },
-  { year: 2024, month: 9, books: [] },
+  {
+    year: 2024, month: 1,
+    books: [
+      { title: "The Language Animal", author: "Charles Taylor", description: "Philosophie du langage: comment le symbolique façonne l'humain.", category: "Narratives", axis: "open", amazonUrl: "https://www.amazon.com/s?k=The+Language+Animal+Charles+Taylor" },
+      { title: "Out on the Wire", author: "Jessica Abel", description: "BD sur le storytelling radio/podcast et le journalisme narratif.", category: "Post-Broadcast", axis: "free", amazonUrl: "https://www.amazon.com/s?k=Out+on+the+Wire+Jessica+Abel" },
+      { title: "Calvinic Magic", author: "Van De Car", description: "Exploration of magical traditions and creative practice.", category: "Sensory Rooms", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Calvinic+Magic+Van+De+Car" },
+    ],
+  },
+  {
+    year: 2024, month: 2,
+    books: [
+      { title: "When: The Scientific Secrets of Perfect Timing", author: "Daniel H. Pink", description: "Science du timing: quand agir, apprendre, décider.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=When%3A+The+Scientific+Secrets+of+Perfect+Timing+Daniel+H.+Pink" },
+      { title: "Blink: The Power of Thinking Without Thinking", author: "Malcolm Gladwell", description: "Intuition et jugements rapides (forces + angles morts).", category: "Inquiry and Practices", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Blink%3A+The+Power+of+Thinking+Without+Thinking+Malcolm+Gladwell" },
+      { title: "Less Than Nothing: Hegel and the Shadow of Dialectical Materialism", author: "Slavoj Žižek", description: "Gros ouvrage sur Hegel/Lacan et matérialisme dialectique.", category: "Human Dynamics and System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Less+Than+Nothing%3A+Hegel+and+the+Shadow+of+Dialectical+Materialism+Slavoj+%C5%BDi%C5%BEek" },
+    ],
+  },
+  {
+    year: 2024, month: 3,
+    books: [
+      { title: "The Fractalist", author: "Benoit B. Mandelbrot", description: "Autobiographie intellectuelle du père des fractales.", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=The+Fractalist+Benoit+B.+Mandelbrot" },
+      { title: "Cunningham's Encyclopedia of Magical Herbs", author: "Scott Cunningham", description: "Répertoire de plantes + correspondances (traditions/folklore).", category: "Sensory Rooms", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Cunningham%27s+Encyclopedia+of+Magical+Herbs+Scott+Cunningham" },
+      { title: "Précis de botanique", author: "Collectif", description: "Manuel de botanique (référence classique).", category: "Inquiry and Practices", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Pr%C3%A9cis+de+botanique" },
+    ],
+  },
+  {
+    year: 2024, month: 4,
+    books: [
+      { title: "A Forest of Kings: The Untold Story of the Ancient Maya", author: "Linda Schele & David Freidel", description: "Civilisation maya, épigraphie, histoire et interprétations.", category: "Human Dynamics and System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=A+Forest+of+Kings%3A+The+Untold+Story+of+the+Ancient+Maya+Linda+Schele+David+Freidel" },
+      { title: "Révolte consommée: Le mythe de la contre-culture", author: "Joseph Heath & Andrew Potter", description: "Essai critique sur le mythe de la contre-culture et la consommation.", category: "Human Dynamics and System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=R%C3%A9volte+consomm%C3%A9e%3A+Le+mythe+du+grand+br%C3%BBl%C3%A9+Heath+Andrew+Potter" },
+      { title: "Tribes: We Need You to Lead Us", author: "Seth Godin", description: "Créer et mener une communauté ('tribu') autour d'une idée.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Tribes%3A+We+Need+You+to+Lead+Us+Seth+Godin" },
+    ],
+  },
+  {
+    year: 2024, month: 5,
+    books: [
+      { title: "L'homme nomade", author: "Jacques Attali", description: "Mobilité, identité, futur des sociétés 'nomades'.", category: "WorldBuilders", axis: "free", amazonUrl: "https://www.amazon.com/s?k=L%27homme+nomade+Jacques+Attali" },
+      { title: "Getting the Love You Want", author: "Harville Hendrix, PhD", description: "Relation (Imago): schémas, blessures, réparation du lien.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Getting+the+Love+You+Want+Harville+Hendrix" },
+      { title: "Dialogue and the Art of Thinking Together", author: "William Isaacs", description: "Outils de dialogue collectif pour penser/écouter/décider mieux.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Dialogue+and+the+Art+of+Thinking+Together+William+Isaacs" },
+    ],
+  },
+  {
+    year: 2024, month: 6,
+    books: [
+      { title: "Cibles", author: "Collectif", description: "Exploration thématique sur les objectifs et la direction.", category: "Telling Stories", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Cibles+livre" },
+      { title: "No Bad Parts", author: "Richard C. Schwartz", description: "Introduction à l'IFS: comprendre ses 'parts' et guérir.", category: "Inquiry and Practices", axis: "love", amazonUrl: "https://www.amazon.com/s?k=No+Bad+Parts+Richard+C.+Schwartz" },
+      { title: "The Creative Habit: Learn It and Use It for Life", author: "Twyla Tharp", description: "Discipline et routines concrètes pour soutenir la créativité.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=The+Creative+Habit%3A+Learn+It+and+Use+It+for+Life+Twyla+Tharp+Mark+Reiter" },
+    ],
+  },
+  {
+    year: 2024, month: 7,
+    books: [
+      { title: "This Is Your Brain on Music", author: "Daniel J. Levitin", description: "Neurosciences de la musique: émotion, mémoire, attention.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.com/s?k=This+Is+Your+Brain+on+Music+Daniel+J.+Levitin" },
+      { title: "L'entraînement de l'esprit", author: "Christophe André", description: "Attention, pleine conscience, entraînement mental au quotidien.", category: "Inquiry and Practices", axis: "love", amazonUrl: "https://www.amazon.com/s?k=L%27entra%C3%AEnement+de+l%27esprit+Christophe+Andr%C3%A9" },
+    ],
+  },
+  {
+    year: 2024, month: 8,
+    books: [
+      { title: "Other Minds: The Octopus and the Evolution of Intelligent Life", author: "Peter Godfrey-Smith", description: "Intelligence des pieuvres + évolution de l'esprit (science/philo).", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Other+Minds%3A+The+Octopus+and+the+Evolution+of+Intelligent+Life+Peter+Godfrey-Smith" },
+      { title: "The Wisdom of Insecurity", author: "Alan Watts", description: "Apprendre à vivre avec l'incertitude et être présent.", category: "Inquiry and Practices", axis: "free", amazonUrl: "https://www.amazon.com/s?k=The+Wisdom+of+Insecurity+Alan+Watts" },
+    ],
+  },
+  {
+    year: 2024, month: 9,
+    books: [
+      { title: "Ready: How to Know When to Go and When to Stay", author: "David Richo", description: "Discernement relationnel: partir, rester, timing intérieur.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Ready%3A+How+to+Know+When+to+Go+and+When+to+Stay+David+Richo" },
+      { title: "L'ennéagramme", author: "Collectif", description: "Introduction à l'ennéagramme et ses 9 types de personnalité.", category: "Inquiry and Practices", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=L%27enn%C3%A9agramme+livre" },
+    ],
+  },
   { year: 2024, month: 10, books: [] },
   { year: 2024, month: 11, books: [] },
   { year: 2024, month: 12, books: [] },

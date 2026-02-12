@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import LandingPage from "./pages/LandingPage";
 import DriftLanding from "./pages/DriftLanding";
 import DriftMonthlyDiscovery from "./pages/DriftMonthlyDiscovery";
+import DriftLibrary from "./pages/DriftLibrary";
 import ParacosmRetreatLanding from "./pages/ParacosmRetreatLanding";
 import WuxiaTheFox from "./pages/WuxiaTheFox";
 import RelationalHealing from "./pages/RelationalHealing";
@@ -54,6 +55,7 @@ function App() {
                   <Route path="/" element={<LandingPage />} />
                   <Route path="/drift" element={<DriftLanding />} />
                   <Route path="/drift/:year/:month" element={<DriftMonthlyDiscovery />} />
+                  <Route path="/drift/library/:axis" element={<DriftLibrary />} />
                   <Route path="/paracosm-retreat" element={<ParacosmRetreatLanding />} />
                   <Route path="/wuxia" element={<WuxiaTheFox />} />
                   <Route path="/agentic-ux" element={<Index />} />
