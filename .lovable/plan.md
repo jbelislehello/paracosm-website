@@ -1,40 +1,25 @@
 
-# Add Tools to Axis Library Pages
 
-## Problem
-The axis library pages (`/drift/library/love`, `/drift/library/magic`, etc.) aggregate all resources for a given Calm Magic axis but do not include tools. Tools only appear on individual monthly discovery pages.
+# Add Paracosm Rainbow Arc Logo to the Drift Landing Page
 
-## Solution
-Add a "Tools" section to `DriftLibrary.tsx` that collects all tools from `driftTools.ts` matching the current axis and displays them as cards, consistent with how they appear on monthly pages.
+## What Changes
+Replace the generic project logo with the uploaded rainbow arc image, displayed inside a white-background container with a thin purple border, placed in the Drift hero section above the "Drift" title.
 
-## Changes
+## Steps
 
-### `src/pages/DriftLibrary.tsx`
+### 1. Copy the uploaded image into the project
+- Copy `user-uploads://IMG_2998.jpeg` to `src/assets/drift/logo-drift.jpeg`
 
-1. **Import** `driftTools` from `@/data/driftTools` and `Wrench` from `lucide-react`
-2. **Filter tools** by axis: `const allTools = driftTools.filter(t => t.axis === axisKey)`
-3. **Update total count** to include `allTools.length`
-4. **Add a "Tools" section** after the Artefacts section (or after Videos), rendering each tool as a card with:
-   - Name (bold, linked to external URL)
-   - Starting price (Badge)
-   - Description (muted text)
-   - Month/year label showing when it was discovered
-5. Section is hidden if no tools exist for that axis
+### 2. Update `src/pages/DriftLanding.tsx`
+- Import the new logo: `import logoDrift from "@/assets/drift/logo-drift.jpeg"`
+- Add the logo image above the "Drift" `<h1>` in the hero section, inside a container with:
+  - White background (`bg-white`)
+  - Thin purple border (`border border-purple-300 rounded-2xl`)
+  - Appropriate sizing (e.g., `w-32 h-auto mx-auto`)
+  - The image displayed with `object-contain` for proper aspect ratio
 
-### No other files changed
+### 3. Update `public/logo.svg` (Optional)
+- If the user also wants the site-wide favicon/logo replaced, that can be a follow-up step. This plan focuses on the Drift page only.
 
-## Technical Details
-
-The tool cards will follow the same Card/CardContent pattern used for books:
-
-```text
-Tools (section header with Wrench icon + count)
-  |
-  +-- Card: Tool name, price badge, description, month/year, external link
-  +-- Card: ...
-```
-
-Grid layout: `grid-cols-1 md:grid-cols-2 lg:grid-cols-3` (same as books).
-
-### Files modified
-- `src/pages/DriftLibrary.tsx` -- add tools section with axis filtering
+## Visual Result
+The hero section will show: Rainbow arc logo (white bg, purple border) -> "Drift" title -> subtitle text -> CTA buttons.
