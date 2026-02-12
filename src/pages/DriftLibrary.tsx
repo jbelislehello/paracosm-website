@@ -3,7 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, BookOpen, ExternalLink, Image, FileSpreadsheet, Download } from "lucide-react";
+import { ArrowLeft, BookOpen, ExternalLink, Image, FileSpreadsheet, FileText, Download } from "lucide-react";
 import { energeticAxes } from "@/data/gardens";
 import { driftMonthlyDiscoveries, driftLibraryExtras, driftLibraryArtefacts, DriftAxis, axisColors } from "@/data/driftMonthlyDiscoveries";
 import Footer from "@/components/Footer";
@@ -175,8 +175,17 @@ const DriftLibrary = () => {
                     </div>
                   ) : artefact.filePath ? (
                     <div className="w-full aspect-[4/3] bg-muted/50 flex flex-col items-center justify-center gap-3">
-                      <FileSpreadsheet className="w-16 h-16 text-muted-foreground/60" />
-                      <span className="text-xs text-muted-foreground font-mono">.xls</span>
+                      {artefact.filePath.endsWith('.pdf') ? (
+                        <>
+                          <FileText className="w-16 h-16 text-muted-foreground/60" />
+                          <span className="text-xs text-muted-foreground font-mono">.pdf</span>
+                        </>
+                      ) : (
+                        <>
+                          <FileSpreadsheet className="w-16 h-16 text-muted-foreground/60" />
+                          <span className="text-xs text-muted-foreground font-mono">.xls</span>
+                        </>
+                      )}
                     </div>
                   ) : null}
                   <CardContent className="p-6 space-y-3">
