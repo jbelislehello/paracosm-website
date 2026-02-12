@@ -1,71 +1,69 @@
 
 
-# Add Tool Showcase to Drift Section
+# Move Tools into Monthly Discovery Pages by Calm Magic Category
 
 ## Overview
 
-Add a new "Tool Showcase" section to the Drift landing page that displays tools from the Partner Tools data plus the 9 new tools you requested. Each tool card shows: name, starting price, function (description), Calm Magic category (axis), and month of discovery.
+Remove the standalone Tool Showcase section from the Drift landing page. Instead, each tool appears on the monthly discovery page corresponding to its discovery month/year, grouped under its Calm Magic axis alongside books, videos, songs, etc.
 
-## New Data File: `src/data/driftTools.ts`
+## Changes
 
-Create a new data file with a `DriftTool` interface and array containing:
+### 1. Add `tools` field to `DriftMonthEntry` (in `src/data/driftMonthlyDiscoveries.ts`)
 
-**Fields per tool:**
-- `name` -- tool name
-- `description` -- what it does (function)
-- `startingPrice` -- e.g. "Free", "$10/mo", "Custom"
-- `axis` -- Calm Magic category (love, magic, calm, open, free)
-- `year` and `month` -- when discovered
-- `url` -- link to the tool
+- Import `DriftTool` from `driftTools.ts`
+- Add optional `tools?: DriftTool[]` to the `DriftMonthEntry` interface
+- Create a helper that auto-populates tools into each month entry based on the `month`/`year` fields in `driftTools.ts` (no need to manually duplicate data)
 
-**Tools to include (from Partner Tools):**
-1. Tonalli -- voice, love
-2. Muse -- voice, love
-3. Hume AI -- voice, love
-4. Sesame -- voice, love
-5. ElevenLabs -- voice, love
-6. Lovable -- mcp, calm
-7. GumLoop -- mcp, calm
-8. Base44 -- mcp, calm
-9. n8n -- mcp, open
-10. GPT Trainer -- ai, magic
-11. OpenAI APIs -- ai, magic
-12. LangChain -- ai, open
-13. Supabase -- database, open
-14. SharePoint -- collaboration, open
-15. Teams -- collaboration, open
+### 2. Update `DriftMonthlyDiscovery.tsx` -- render tools per month
 
-**New tools to add:**
-16. Read.ai -- meeting intelligence, calm
-17. CmapTools -- concept mapping, magic
-18. Axure -- prototyping, free
-19. Adobe Firefly -- generative AI for images, love
-20. ActiveInbox -- email workflow, calm
-21. NotebookLM -- AI research notebook, magic
-22. Antigravity -- creative tool, free
-23. Wolfram Alpha -- computational knowledge, open
-24. ClickUp -- project management, calm
+- Import `driftTools` and filter by current month/year
+- Group the filtered tools by axis (love, magic, calm, open, free)
+- Add a new "Tools" section (with a Wrench icon) after the existing resource sections (Books, Videos, Songs, Podcasts, Articles, Artefacts)
+- Each axis group gets a colored header, and tools render as compact cards showing: name, price badge, description, and external link
+- If no tools exist for a given month, the section is hidden
 
-Each tool will be assigned a reasonable month/year and a starting price based on public pricing.
+### 3. Update `DriftLanding.tsx` -- remove Tool Showcase
 
-## New Component: `src/components/DriftToolShowcase.tsx`
+- Remove the `DriftToolShowcase` import and `<DriftToolShowcase />` component from the page
+- The Monthly Review grid cards will now also show a Wrench icon when a month has tools (like it already does for Books, Videos, etc.)
 
-A filterable card grid section with:
-- Section header: "Tool Showcase"
-- Filter chips by Calm Magic axis (Love, Magic, Calm, Open, Free, All)
-- Cards showing: tool name, starting price badge, description, axis color dot + label, month/year discovered
-- Link to tool URL
-- Consistent styling with existing Drift cards (border-2, hover:shadow-lg)
+### 4. Keep `DriftToolShowcase.tsx` and `driftTools.ts` as-is (data file stays, component can be deleted or kept)
 
-## Modified File: `src/pages/DriftLanding.tsx`
-
-- Import and insert `DriftToolShowcase` between the "Discovery Categories" section and the "Monthly Review" section
-- Single import line + single component placement
+- `src/data/driftTools.ts` stays -- it's the source of truth for tool data
+- `src/components/DriftToolShowcase.tsx` can be deleted since it's no longer used
 
 ## Technical Details
 
-- The `DriftTool` interface is separate from `PartnerTool` to keep concerns clean (Drift has axis/month/price; Partner Tools has category)
-- Axis mapping from partner tool categories: voice->love, mcp->calm, ai->magic, database->open, collaboration->open
-- Filter state managed with `useState` inside the component
-- Reuses existing `Card`, `Badge`, `Button` components and `axisColors`/`axisLabels` from driftMonthlyDiscoveries
+### Tool grouping in monthly view
+
+```text
+Tools (section header with Wrench icon)
+  |
+  +-- LOVE
+  |     +-- Tonalli card
+  |     +-- Adobe Firefly card
+  |
+  +-- CALM
+  |     +-- Read.ai card
+  |     +-- ClickUp card
+  |
+  +-- MAGIC
+        +-- NotebookLM card
+```
+
+Each tool card shows:
+- Name (bold, linked to URL)
+- Starting price (Badge)
+- Description (muted text)
+- Axis color dot + label
+
+### Monthly Review grid update
+
+Add a `Wrench` icon next to existing resource type icons (BookOpen, Play, Music, etc.) when a month has tools. This uses the same pattern already in place -- filter `driftTools` by month/year and check length > 0.
+
+### Files modified
+- `src/pages/DriftLanding.tsx` -- remove DriftToolShowcase, add tool icon to month cards
+- `src/pages/DriftMonthlyDiscovery.tsx` -- add Tools section grouped by axis
+- `src/data/driftTools.ts` -- no changes (keep as data source)
+- `src/components/DriftToolShowcase.tsx` -- delete (no longer needed)
 
