@@ -8,7 +8,7 @@ import { Mic, Calendar, Compass, Mail, CheckCircle, BookOpen, Play, Music, Headp
 import { energeticAxes } from "@/data/gardens";
 import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
-import { driftMonthlyDiscoveries, getMonthName, axisColors } from "@/data/driftMonthlyDiscoveries";
+import { driftMonthlyDiscoveries, driftLibraryExtras, getMonthName, axisColors } from "@/data/driftMonthlyDiscoveries";
 
 const DriftLanding = () => {
   const [email, setEmail] = useState("");
@@ -286,8 +286,9 @@ const DriftLanding = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
             {energeticAxes.map((axis) => {
               const bookCount = driftMonthlyDiscoveries.reduce((sum, entry) => sum + entry.books.filter(b => b.axis === axis.key).length, 0);
+              const extraBookCount = driftLibraryExtras.filter(b => b.axis === axis.key).length;
               const videoCount = driftMonthlyDiscoveries.reduce((sum, entry) => sum + (entry.videos || []).filter(v => v.axis === axis.key).length, 0);
-              const totalCount = bookCount + videoCount;
+              const totalCount = bookCount + extraBookCount + videoCount;
 
               return (
                 <Link key={axis.key} to={`/drift/library/${axis.key}`}>
