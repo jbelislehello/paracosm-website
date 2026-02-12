@@ -301,6 +301,7 @@ const DriftLanding = () => {
                         {!hasAnyContent && <BookOpen className="w-4 h-4 text-muted-foreground/40" />}
                       </div>
                       <p className="font-bold text-sm">{getMonthName(entry.month)}</p>
+                      {entry.theme && <p className="text-[10px] italic text-muted-foreground/70 leading-tight">{entry.theme}</p>}
                       <p className="text-xs text-muted-foreground">{entry.year}</p>
                       <div className="flex justify-center gap-1 flex-wrap">
                         {uniqueAxes.map(axis => (

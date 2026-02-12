@@ -62,6 +62,7 @@ export interface DriftArtefact {
 export interface DriftMonthEntry {
   year: number;
   month: number;
+  theme?: string;
   books: DriftBook[];
   videos?: DriftVideo[];
   songs?: DriftSong[];
@@ -73,7 +74,7 @@ export interface DriftMonthEntry {
 export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
   // === 2022 ===
   {
-    year: 2022, month: 1,
+    year: 2022, month: 1, theme: "Skin & Soul",
     books: [
       { title: "Skin in the Game", author: "Nassim Nicholas Taleb", description: "Risk, responsibility, symmetry: why credibility requires personal exposure.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Skin+in+the+Game+Nassim+Nicholas+Taleb" },
       { title: "Siddhartha", author: "Hermann Hesse", description: "Spiritual coming-of-age, experience vs doctrine, inner freedom.", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Siddhartha+Hermann+Hesse" },
@@ -81,7 +82,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2022, month: 2,
+    year: 2022, month: 2, theme: "Sacred Senses",
     books: [
       { title: "La Bhagavad-Gîtâ", author: "Texte classique", description: "Dialogue philosophique sur devoir, action, conscience (hindouisme).", category: "Inquiry and Practices", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=La+Bhagavad+Gita+livre+francais" },
       { title: "Le Parfum", author: "Patrick Süskind", description: "Roman sur l'obsession olfactive, le génie, et la monstruosité sociale.", category: "Narratives", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Patrick+Suskind+Le+Parfum" },
@@ -89,7 +90,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2022, month: 3,
+    year: 2022, month: 3, theme: "From Zero",
     books: [
       { title: "Zero to One", author: "Peter Thiel", description: "Startup thinking: créer du 'nouveau' au lieu de copier/optimiser.", category: "Workflows", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Zero+to+One+Peter+Thiel" },
       { title: "Labanotation", author: "Ann Hutchinson Guest", description: "Système de notation du mouvement/danse (référence technique).", category: "Tangible Play", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Labanotation+Ann+Hutchinson+Guest" },
@@ -97,7 +98,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2022, month: 4,
+    year: 2022, month: 4, theme: "Rework",
     books: [
       { title: "Rework", author: "Jason Fried & David Heinemeier Hansson", description: "Construire une entreprise avec simplicité, anti-bullshit, pragmatisme.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Rework+Jason+Fried+David+Heinemeier+Hansson" },
       { title: "Divining a Digital Future", author: "Paul Dourish & Genevieve Bell", description: "Enquête sur l'impact du numérique sur nos vies/cultures.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Divining+a+Digital+Future+book" },
@@ -105,7 +106,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2022, month: 5,
+    year: 2022, month: 5, theme: "Tipping Point",
     books: [
       { title: "Antifragile", author: "Nassim Nicholas Taleb", description: "Ce qui gagne avec le désordre: options, stress, évolution, robustesse.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Antifragile+Nassim+Nicholas+Taleb" },
       { title: "Le point de bascule", author: "Malcolm Gladwell", description: "Comment idées/tendances basculent en phénomènes de masse.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Le+point+de+bascule+Malcolm+Gladwell" },
@@ -113,7 +114,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2022, month: 6,
+    year: 2022, month: 6, theme: "Drive",
     books: [
       { title: "Drive", author: "Daniel H. Pink", description: "Motivation: autonomie, maîtrise, sens (au-delà des carottes/bâtons).", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Drive+Daniel+H+Pink" },
       { title: "Spreadable Media", author: "Henry Jenkins, Sam Ford & Joshua Green", description: "Pourquoi/Comment les contenus circulent (culture participative, partage).", category: "Post-Broadcast", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Spreadable+Media+Jenkins+Ford+Green" },
@@ -121,7 +122,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2022, month: 7,
+    year: 2022, month: 7, theme: "Little Bets",
     books: [
       { title: "Little Bets", author: "Peter Sims", description: "Innover par micro-expériences et itérations rapides.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Little+Bets+Peter+Sims" },
       { title: "Discours sur les sciences et les arts / Discours sur l'inégalité", author: "Jean-Jacques Rousseau", description: "Textes clés sur société, morale, inégalités.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Rousseau+Discours+sur+les+sciences+et+les+arts+Discours+sur+l%27in%C3%A9galit%C3%A9" },
@@ -129,7 +130,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2022, month: 8,
+    year: 2022, month: 8, theme: "Bonds & Runes",
     books: [
       { title: "Éloge du mariage, de l'engagement et autres folies", author: "Christiane Singer", description: "Essai littéraire sur lien, engagement, sens du couple.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Christiane+Singer+%C3%89loge+du+mariage" },
       { title: "La condition de l'homme moderne", author: "Hannah Arendt", description: "Philosophie politique / modernité / condition humaine.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Hannah+Arendt+La+condition+de+l%27homme+moderne" },
@@ -137,7 +138,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2022, month: 9,
+    year: 2022, month: 9, theme: "Image & Play",
     books: [
       { title: "Le Satyricon", author: "Pétrone", description: "Satire romaine: mœurs, excès, société, récit fragmentaire.", category: "Narratives", axis: "free", amazonUrl: "https://www.amazon.com/s?k=P%C3%A9trone+Le+Satyricon" },
       { title: "The Art of Game Design", author: "Jesse Schell", description: "'Lens' de design pour concevoir, tester et équilibrer un jeu.", category: "Playgrounds", axis: "open", amazonUrl: "https://www.amazon.com/s?k=The+Art+of+Game+Design+Jesse+Schell+3rd+Edition" },
@@ -145,7 +146,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2022, month: 10,
+    year: 2022, month: 10, theme: "Cosmos & Self",
     books: [
       { title: "Cinéma 2: L'image-temps", author: "Gilles Deleuze", description: "Quand le cinéma pense le temps, la mémoire, la perception.", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Gilles+Deleuze+Cin%C3%A9ma+2+L%27image-temps" },
       { title: "Cosmos", author: "Carl Sagan", description: "Science + émerveillement: histoire de l'univers et de nos idées.", category: "WorldBuilders", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Cosmos+Carl+Sagan" },
@@ -153,7 +154,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2022, month: 11,
+    year: 2022, month: 11, theme: "Hot Text",
     books: [
       { title: "hot text: Web Writing That Works", author: "Jonathan & Lisa Price", description: "Écrire pour le web: clarté, structure, UX éditoriale.", category: "Telling Stories", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Hot+Text+Web+Writing+That+Works+Jonathan+Price+Lisa+Price" },
       { title: "The Organism", author: "Kurt Goldstein", description: "Neuro/psycho: vision 'organismique' du vivant et de l'esprit.", category: "Embodied Cognition", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=The+Organism+Kurt+Goldstein" },
@@ -161,7 +162,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2022, month: 12,
+    year: 2022, month: 12, theme: "Bubbles",
     books: [
       { title: "Bubbletecture", author: "Sharon Francis", description: "Architecture/design gonflable (catalogue/essai).", category: "Sensory Rooms", axis: "free", amazonUrl: "https://www.amazon.com/s?k=Bubbletecture+book" },
       { title: "The Seven Arts of Change", author: "David Shaner", description: "Frameworks de transformation/innovation.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=The+Seven+Arts+of+Change+book" },
@@ -170,70 +171,70 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
   },
   // === 2023 ===
   {
-    year: 2023, month: 1,
+    year: 2023, month: 1, theme: "Light & Form",
     books: [
       { title: "Dynamic Light and Shade", author: "Burne Hogarth", description: "Figure/illustration-focused guide to rendering light & shadow to create depth, form, and dramatic contrast.", category: "Tangible Play", axis: "love", amazonUrl: "https://www.amazon.com/-/zh_TW/Dynamic-Light-Shade-Burne-Hogarth/dp/0823015815" },
       { title: "Management (Canadian Edition)", author: "Stephen P. Robbins, Mary A. Coulter, Ed Leach, Mary Kilfoil", description: "Comprehensive management textbook connecting core management concepts to real-world applications.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.ca/Management-Eleventh-Canadian-Stephen-Robbins/dp/0133357279" },
     ],
   },
   {
-    year: 2023, month: 2,
+    year: 2023, month: 2, theme: "Pendulum",
     books: [
       { title: "Exploring Storyboarding", author: "Wendy Tumminello", description: "Practical how-to for storyboarding skills, covering shot planning, staging/composition, and camera techniques.", category: "Telling Stories", axis: "open", amazonUrl: "https://www.amazon.ca/Exploring-Storyboarding-Wendy-Tumminello/dp/1401827152" },
       { title: "Le Pendule de Foucault", author: "Umberto Eco", description: "A literary/idea-driven novel about three Milanese editors who invent an elaborate esoteric conspiracy that begins to feel dangerously real.", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.ca/-/fr/PENDULE-FOUCAULT/dp/2253059498" },
     ],
   },
   {
-    year: 2023, month: 3,
+    year: 2023, month: 3, theme: "Toolkit",
     books: [
       { title: "The Innovator's Toolkit", author: "David Silverstein, Philip Samuel, Neil DeCarlo", description: "A structured toolkit of 50+ innovation methods aimed at making innovation more repeatable inside organizations.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.ca/Innovators-Toolkit-Techniques-Predictable-Sustainable/dp/0470345357" },
       { title: "Design Thinking for Strategic Innovation", author: "Idris Mootee", description: "Design thinking applied to strategy/innovation, with frameworks and approaches for solving complex business problems.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.ca/Design-Thinking-Strategic-Innovation-Business/dp/1118620127" },
     ],
   },
   {
-    year: 2023, month: 4,
+    year: 2023, month: 4, theme: "Interactions",
     books: [
       { title: "Designing for Interaction (2nd Edition)", author: "Dan Saffer", description: "Interaction design fundamentals + methods for researching, designing, and evaluating interactive products.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.com/Designing-Interaction-Creating-Innovative-Applications/dp/0321643399" },
       { title: "Journal Sparks", author: "Emily K. Neuburger", description: "60 guided prompts mixing writing + art-making (drawing, collage, etc.) to jumpstart creativity.", category: "Playgrounds", axis: "calm", amazonUrl: "https://www.amazon.ca/Journal-Sparks-Creativity-Spontaneous-Inventive/dp/1612126529" },
     ],
   },
   {
-    year: 2023, month: 5,
+    year: 2023, month: 5, theme: "Unstuck",
     books: [
       { title: "Mapping Experiences", author: "Jim Kalbach", description: "How to use alignment diagrams (journey maps, service blueprints, etc.) to turn customer observations into actionable insights.", category: "Inquiry and Practices", axis: "calm", amazonUrl: "https://www.amazon.ca/Mapping-Experiences-Complete-Creating-Blueprints/dp/1491923539" },
       { title: "Unstuck", author: "Keith Yamashita, Sandra Spataro", description: "Tools for diagnosing stuck situations and getting momentum back (personal + team contexts).", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.ca/Unstuck-Keith-Yamashita/dp/1591840376" },
     ],
   },
   {
-    year: 2023, month: 6,
+    year: 2023, month: 6, theme: "Creative Habit",
     books: [
       { title: "The Ayahuasca Conversations", author: "Various (The Jungle Prescription)", description: "Transcript-style encounters exploring ayahuasca through Western culture and modern medicine.", category: "Inquiry and Practices", axis: "calm", amazonUrl: "" },
       { title: "The Accidental Creative", author: "Todd Henry", description: "Practical methods to stay prolific and creative under real-world deadlines (habits, constraints, routines).", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.ca/Accidental-Creative-Brilliant-Moments-Notice/dp/1591846242" },
     ],
   },
   {
-    year: 2023, month: 7,
+    year: 2023, month: 7, theme: "Voice",
     books: [
       { title: "Les Mystères du langage", author: "Jay Ingram", description: "A popular-science exploration of language: how it works, how it evolves, and what it reveals about humans and society.", category: "Narratives", axis: "magic", amazonUrl: "" },
       { title: "Designing Voice User Interfaces", author: "Cathy Pearl", description: "Core principles and process for designing effective voice/conversational products (from prompts and flows to testing).", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.ca/Designing-Voice-User-Interfaces-Conversational/dp/1491955414" },
     ],
   },
   {
-    year: 2023, month: 8,
+    year: 2023, month: 8, theme: "Wandering",
     books: [
       { title: "1492", author: "Jacques Attali", description: "A historical deep-dive around the turning point of 1492 and the forces reshaping Europe and the world.", category: "Human Dynamics and System Thinking", axis: "open", amazonUrl: "https://www.amazon.ca/1492-JACQUES-ATTALI/dp/2253062340" },
       { title: "The Vagabond's Way", author: "Rolf Potts", description: "366 daily reflections on movement, attention, and how travel changes you.", category: "WorldBuilders", axis: "free", amazonUrl: "https://www.amazon.ca/Vagabonds-Way-Meditations-Wanderlust-Discovery/dp/0593497457" },
     ],
   },
   {
-    year: 2023, month: 9,
+    year: 2023, month: 9, theme: "Glass Cage",
     books: [
       { title: "The Zero Marginal Cost Society", author: "Jeremy Rifkin", description: "How networks + the Internet of Things push marginal costs down and shift capitalism toward collaborative commons.", category: "Human Dynamics and System Thinking", axis: "open", amazonUrl: "https://www.amazon.ca/Zero-Marginal-Cost-Society-Collaborative/dp/1137280115" },
       { title: "The Glass Cage", author: "Nicholas Carr", description: "A critique of automation's subtle costs: what we lose in skill, judgment, and meaning when software takes over.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.ca/Glass-Cage-How-Computers-Changing/dp/0393351637" },
     ],
   },
   {
-    year: 2023, month: 10,
+    year: 2023, month: 10, theme: "Dark Ecology",
     books: [
       { title: "Patrimoine mondial de l'UNESCO : Le guide complet des lieux les plus extraordinaires", author: "UNESCO (collectif)", description: "Guide illustré des sites du Patrimoine mondial.", category: "WorldBuilders", axis: "free", amazonUrl: "https://www.amazon.com/s?k=Patrimoine+mondial+de+l%27UNESCO+%3A+Le+guide+complet+des+lieux+les+plus+extraordinaires+UNESCO+%28collectif%29" },
       { title: "Living in the End Times", author: "Slavoj Žižek", description: "Essai de philosophie politique sur crises et 'fins du monde'.", category: "Human Dynamics and System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Living+in+the+End+Times+Slavoj+%C5%BDi%C5%BEek" },
@@ -241,7 +242,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2023, month: 11,
+    year: 2023, month: 11, theme: "Time Design",
     books: [
       { title: "The Seven Day Circle", author: "Eviatar Zerubavel", description: "Sociologie de la semaine de 7 jours et de l'organisation du temps.", category: "Inquiry and Practices", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=The+Seven+Day+Circle+Eviatar+Zerubavel" },
       { title: "Damn Good Advice (for People with Talent!)", author: "George Lois", description: "Conseils créatifs/carrière par un directeur artistique mythique.", category: "Telling Stories", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Damn+Good+Advice+%28for+People+with+Talent%21%29+George+Lois" },
@@ -249,7 +250,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2023, month: 12,
+    year: 2023, month: 12, theme: "Worldcraft",
     books: [
       { title: "Bicycle Diaries", author: "David Byrne", description: "Carnets de voyage à vélo + réflexions culturelles.", category: "WorldBuilders", axis: "free", amazonUrl: "https://www.amazon.com/s?k=Bicycle+Diaries+David+Byrne" },
       { title: "World War Z: An Oral History of the Zombie War", author: "Max Brooks", description: "Roman en 'témoignages' sur une guerre mondiale contre les zombies.", category: "Post-Broadcast", axis: "free", amazonUrl: "https://www.amazon.com/s?k=World+War+Z%3A+An+Oral+History+of+the+Zombie+War+Max+Brooks" },
@@ -258,7 +259,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
   },
   // === 2024 ===
   {
-    year: 2024, month: 1,
+    year: 2024, month: 1, theme: "Language Animal",
     books: [
       { title: "The Language Animal", author: "Charles Taylor", description: "Philosophie du langage: comment le symbolique façonne l'humain.", category: "Narratives", axis: "open", amazonUrl: "https://www.amazon.com/s?k=The+Language+Animal+Charles+Taylor" },
       { title: "Out on the Wire", author: "Jessica Abel", description: "BD sur le storytelling radio/podcast et le journalisme narratif.", category: "Post-Broadcast", axis: "free", amazonUrl: "https://www.amazon.com/s?k=Out+on+the+Wire+Jessica+Abel" },
@@ -266,7 +267,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2024, month: 2,
+    year: 2024, month: 2, theme: "Timing",
     books: [
       { title: "When: The Scientific Secrets of Perfect Timing", author: "Daniel H. Pink", description: "Science du timing: quand agir, apprendre, décider.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=When%3A+The+Scientific+Secrets+of+Perfect+Timing+Daniel+H.+Pink" },
       { title: "Blink: The Power of Thinking Without Thinking", author: "Malcolm Gladwell", description: "Intuition et jugements rapides (forces + angles morts).", category: "Inquiry and Practices", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Blink%3A+The+Power+of+Thinking+Without+Thinking+Malcolm+Gladwell" },
@@ -274,7 +275,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2024, month: 3,
+    year: 2024, month: 3, theme: "Fractals",
     books: [
       { title: "The Fractalist", author: "Benoit B. Mandelbrot", description: "Autobiographie intellectuelle du père des fractales.", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=The+Fractalist+Benoit+B.+Mandelbrot" },
       { title: "Cunningham's Encyclopedia of Magical Herbs", author: "Scott Cunningham", description: "Répertoire de plantes + correspondances (traditions/folklore).", category: "Sensory Rooms", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Cunningham%27s+Encyclopedia+of+Magical+Herbs+Scott+Cunningham" },
@@ -282,7 +283,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2024, month: 4,
+    year: 2024, month: 4, theme: "Tribes",
     books: [
       { title: "A Forest of Kings: The Untold Story of the Ancient Maya", author: "Linda Schele & David Freidel", description: "Civilisation maya, épigraphie, histoire et interprétations.", category: "Human Dynamics and System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=A+Forest+of+Kings%3A+The+Untold+Story+of+the+Ancient+Maya+Linda+Schele+David+Freidel" },
       { title: "Révolte consommée: Le mythe de la contre-culture", author: "Joseph Heath & Andrew Potter", description: "Essai critique sur le mythe de la contre-culture et la consommation.", category: "Human Dynamics and System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=R%C3%A9volte+consomm%C3%A9e%3A+Le+mythe+du+grand+br%C3%BBl%C3%A9+Heath+Andrew+Potter" },
@@ -290,7 +291,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2024, month: 5,
+    year: 2024, month: 5, theme: "Dialogue",
     books: [
       { title: "L'homme nomade", author: "Jacques Attali", description: "Mobilité, identité, futur des sociétés 'nomades'.", category: "WorldBuilders", axis: "free", amazonUrl: "https://www.amazon.com/s?k=L%27homme+nomade+Jacques+Attali" },
       { title: "Getting the Love You Want", author: "Harville Hendrix, PhD", description: "Relation (Imago): schémas, blessures, réparation du lien.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Getting+the+Love+You+Want+Harville+Hendrix" },
@@ -298,7 +299,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2024, month: 6,
+    year: 2024, month: 6, theme: "No Bad Parts",
     books: [
       { title: "Cibles", author: "Collectif", description: "Exploration thématique sur les objectifs et la direction.", category: "Telling Stories", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Cibles+livre" },
       { title: "No Bad Parts", author: "Richard C. Schwartz", description: "Introduction à l'IFS: comprendre ses 'parts' et guérir.", category: "Inquiry and Practices", axis: "love", amazonUrl: "https://www.amazon.com/s?k=No+Bad+Parts+Richard+C.+Schwartz" },
@@ -306,28 +307,28 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2024, month: 7,
+    year: 2024, month: 7, theme: "Brain on Music",
     books: [
       { title: "This Is Your Brain on Music", author: "Daniel J. Levitin", description: "Neurosciences de la musique: émotion, mémoire, attention.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.com/s?k=This+Is+Your+Brain+on+Music+Daniel+J.+Levitin" },
       { title: "L'entraînement de l'esprit", author: "Christophe André", description: "Attention, pleine conscience, entraînement mental au quotidien.", category: "Inquiry and Practices", axis: "love", amazonUrl: "https://www.amazon.com/s?k=L%27entra%C3%AEnement+de+l%27esprit+Christophe+Andr%C3%A9" },
     ],
   },
   {
-    year: 2024, month: 8,
+    year: 2024, month: 8, theme: "Other Minds",
     books: [
       { title: "Other Minds: The Octopus and the Evolution of Intelligent Life", author: "Peter Godfrey-Smith", description: "Intelligence des pieuvres + évolution de l'esprit (science/philo).", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Other+Minds%3A+The+Octopus+and+the+Evolution+of+Intelligent+Life+Peter+Godfrey-Smith" },
       { title: "The Wisdom of Insecurity", author: "Alan Watts", description: "Apprendre à vivre avec l'incertitude et être présent.", category: "Inquiry and Practices", axis: "free", amazonUrl: "https://www.amazon.com/s?k=The+Wisdom+of+Insecurity+Alan+Watts" },
     ],
   },
   {
-    year: 2024, month: 9,
+    year: 2024, month: 9, theme: "Readiness",
     books: [
       { title: "Ready: How to Know When to Go and When to Stay", author: "David Richo", description: "Discernement relationnel: partir, rester, timing intérieur.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Ready%3A+How+to+Know+When+to+Go+and+When+to+Stay+David+Richo" },
       { title: "L'ennéagramme", author: "Collectif", description: "Introduction à l'ennéagramme et ses 9 types de personnalité.", category: "Inquiry and Practices", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=L%27enn%C3%A9agramme+livre" },
     ],
   },
   {
-    year: 2024, month: 10,
+    year: 2024, month: 10, theme: "Odyssey",
     books: [
       { title: "Odyssée", author: "Homère", description: "Épopée fondatrice: le retour d'Ulysse, ruse, épreuves, identité.", category: "WorldBuilders", axis: "free", amazonUrl: "https://www.amazon.com/s?k=Hom%C3%A8re+Odyss%C3%A9e+introduction+Jean" },
       { title: "Histoire de la guerre du Péloponnèse", author: "Thucydide", description: "Récit historique majeur de la guerre Athènes–Sparte, politique et stratégie.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Thucydide+Histoire+de+la+guerre+du+P%C3%A9loponn%C3%A8se" },
@@ -335,7 +336,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2024, month: 11,
+    year: 2024, month: 11, theme: "Duality",
     books: [
       { title: "Le singe nu", author: "Desmond Morris", description: "Lecture 'éthologique' de l'humain: comportements, sexualité, société, évolution.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Desmond+Morris+Le+singe+nu" },
       { title: "Le loup des steppes", author: "Hermann Hesse", description: "Roman introspectif sur la dualité, la crise existentielle et la métamorphose.", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Hermann+Hesse+Le+loup+des+steppes" },
@@ -343,7 +344,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2024, month: 12,
+    year: 2024, month: 12, theme: "Titans",
     books: [
       { title: "Tools of Titans", author: "Tim Ferriss", description: "Tactiques/habitudes d'élite (interviews + routines + frameworks).", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Tools+of+Titans+Tim+" },
       { title: "Les paysages intérieurs", author: "Catherine D'Amours", description: "Essai sociologique: mémoire, territoire et paysages intérieurs.", category: "Sensory Rooms", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Les+paysages+int%C3%A9rieurs+Catherine+D%27Amours" },
@@ -352,7 +353,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
   },
   // === 2025 ===
   {
-    year: 2025, month: 1,
+    year: 2025, month: 1, theme: "Erotic Mind",
     books: [
       { title: "Nietzsche", author: "Michel Onfray & Maximilien Le Roy", description: "Intro/overview book on Nietzsche's life and philosophy.", category: "Inquiry and Practices", axis: "calm", amazonUrl: "https://www.amazon.ca/s?k=Onfray+Le+Roy+Nietzsche" },
       { title: "L'intelligence érotique", author: "Esther Perel", description: "Desire, long-term relationships, and erotic intelligence.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.ca/s?k=Esther+Perel+L%27intelligence+%C3%A9rotique" },
@@ -362,7 +363,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2025, month: 2,
+    year: 2025, month: 2, theme: "Inner Work",
     books: [
       { title: "Petit dictionnaire de mots rares", author: "Thierry Prellier", description: "A handy dictionary of uncommon/rare French words.", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.ca/s?k=Thierry+Prellier+Petit+dictionnaire+de+mots+rares" },
       { title: "The Inner Work", author: "Mat & Ash", description: "Shadow work and healing practices for emotional growth.", category: "Inquiry and Practices", axis: "calm", amazonUrl: "https://www.amazon.ca/s?k=The+Inner+Work+Mat+%26+Ash" },
@@ -372,7 +373,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2025, month: 3,
+    year: 2025, month: 3, theme: "Architecture",
     books: [
       { title: "Médecine traditionnelle chinoise", author: "Marabout", description: "Practical intro/reference on Traditional Chinese Medicine.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.ca/s?k=Marabout+M%C3%A9decine+traditionnelle+chinoise" },
       { title: "L'Architecture du bonheur", author: "Alain de Botton", description: "How buildings and spaces shape our feelings and values.", category: "Sensory Rooms", axis: "magic", amazonUrl: "https://www.amazon.ca/s?k=Alain+de+Botton+L%27architecture+du+bonheur" },
@@ -382,7 +383,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2025, month: 4,
+    year: 2025, month: 4, theme: "Eight Mountains",
     books: [
       { title: "Communicating the New", author: "Kim Erwin", description: "Communication methods to help innovation land and spread.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.ca/Communicating-New-Methods-Accelerate-Innovation-ebook/dp/B00EVQ9FUA" },
       { title: "The Eight Mountains", author: "Paolo Cognetti", description: "Literary novel about friendship, mountains, and meaning.", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.ca/s?k=Paolo+Cognetti+The+Eight+Mountains" },
@@ -392,7 +393,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2025, month: 5,
+    year: 2025, month: 5, theme: "Flight",
     books: [
       { title: "Pathogenesis", author: "Jonathan Kennedy", description: "How inequality and politics shape disease outcomes.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.ca/s?k=Jonathan+Kennedy+Pathogenesis" },
       { title: "Jonathan Livingston Seagull", author: "Richard Bach", description: "Short fable about freedom, mastery, and self-transcendence.", category: "WorldBuilders", axis: "free", amazonUrl: "https://www.amazon.ca/s?k=Richard+Bach+Jonathan+Livingston+Seagull" },
@@ -402,7 +403,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2025, month: 6,
+    year: 2025, month: 6, theme: "Supernatural",
     books: [
       { title: "The Way of the Tarot", author: "Alejandro Jodorowsky & Marianne Costa", description: "Tarot as a tool for insight, symbolism, and self-knowledge.", category: "Inquiry and Practices", axis: "calm", amazonUrl: "https://www.amazon.ca/s?k=Jodorowsky+Costa+The+Way+of+the+Tarot" },
       { title: "Becoming Supernatural", author: "Dr. Joe Dispenza", description: "Meditation/neuroscience framework for changing habits and states.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.ca/s?k=Joe+Dispenza+Becoming+Supernatural" },
@@ -412,7 +413,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2025, month: 7,
+    year: 2025, month: 7, theme: "Bliss",
     books: [
       { title: "Bliss Club", author: "June Pla", description: "Creativity and wellness themed exploration of pleasure and joy.", category: "Tangible Play", axis: "love", amazonUrl: "https://www.amazon.ca/s?k=June+Pia+Bliss+Club" },
       { title: "De l'arbre au labyrinthe", author: "Umberto Eco", description: "Essays on signs, interpretation, and knowledge structures.", category: "Telling Stories", axis: "open", amazonUrl: "https://www.amazon.ca/s?k=Umberto+Eco+De+l%27arbre+au+labyrinthe" },
@@ -422,7 +423,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2025, month: 8,
+    year: 2025, month: 8, theme: "Strategy",
     books: [
       { title: "Strategy Safari", author: "Henry Mintzberg et al.", description: "Classic survey of strategy schools and how strategy really forms.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.ca/s?k=Mintzberg+Strategy+Safari" },
       { title: "Phantasmal Media", author: "D. Fox Harrell", description: "How computation and imagination shape identity, culture, and meaning.", category: "Post-Broadcast", axis: "free", amazonUrl: "https://www.amazon.ca/s?k=D.+Fox+Harrell+Phantasmal+Media" },
@@ -432,7 +433,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2025, month: 9,
+    year: 2025, month: 9, theme: "Aware Universe",
     books: [
       { title: "The Self-Aware Universe", author: "Amit Goswami", description: "Consciousness-first take on physics and mind.", category: "WorldBuilders", axis: "free", amazonUrl: "https://www.amazon.ca/s?k=Amit+Goswami+The+Self-Aware+Universe" },
       { title: "The Third Teacher", author: "OWP/P Architects + VS Furniture + Bruce Mau Design", description: "Design-of-learning spaces case studies — school architecture meets pedagogy.", category: "Sensory Rooms", axis: "magic", amazonUrl: "https://www.amazon.ca/s?k=The+Third+Teacher+book" },
@@ -442,7 +443,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2025, month: 10,
+    year: 2025, month: 10, theme: "Playgrounds",
     books: [
       { title: "Game Design Workshop", author: "Tracy Fullerton", description: "Practical, project-based guide to designing games.", category: "Playgrounds", axis: "calm", amazonUrl: "https://www.amazon.ca/s?k=Tracy+Fullerton+Game+Design+Workshop" },
       { title: "Taming the Tiger", author: "Witold Rybczynski", description: "History and critique of society trying to steer technology.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.ca/Taming-Tiger-Struggle-Control-Technology/dp/014007564X" },
@@ -452,7 +453,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2025, month: 11,
+    year: 2025, month: 11, theme: "Atlas",
     books: [
       { title: "Atlas of the Heart", author: "Brené Brown", description: "Vocabulary and maps for emotions and human experience.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.ca/s?k=Bren%C3%A9+Brown+Atlas+of+the+Heart" },
       { title: "A Whole New Mind", author: "Daniel H. Pink", description: "Why right-brain skills — design, empathy, story — matter in modern work.", category: "Playgrounds", axis: "calm", amazonUrl: "https://www.amazon.ca/s?k=Daniel+H.+Pink+A+Whole+New+Mind" },
@@ -462,7 +463,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2025, month: 12,
+    year: 2025, month: 12, theme: "Renaissance",
     books: [
       { title: "Living in Information", author: "Jorge Arango", description: "Information architecture for everyday modern life and teams.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.ca/s?k=Jorge+Arango+Living+in+Information" },
       { title: "Want", author: "Gillian Anderson", description: "Anthology themed around desire.", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.ca/s?k=Gillian+Anderson+Want" },
@@ -474,7 +475,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
   },
   // === 2026 ===
   {
-    year: 2026, month: 1,
+    year: 2026, month: 1, theme: "New Earth",
     books: [
       { title: "Making It All Work", author: "David Allen", description: "GTD-style productivity: implementation, review, and control loops.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.ca/s?k=David+Allen+Making+It+All+Work" },
       { title: "A New Earth", author: "Eckhart Tolle", description: "Presence and ego teachings for psychological and spiritual shift.", category: "Inquiry and Practices", axis: "calm", amazonUrl: "https://www.amazon.ca/s?k=Eckhart+Tolle+A+New+Earth" },
@@ -485,7 +486,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
   },
   {
-    year: 2026, month: 2,
+    year: 2026, month: 2, theme: "Hyperobjects",
     books: [
       { title: "Minimalist Parenting", author: "Christine Koh & Asha Dornfest", description: "Simplify family life: less stuff, calmer systems, clearer priorities.", category: "21c Parenting", axis: "magic", amazonUrl: "https://www.amazon.ca/s?k=Christine+Koh+Asha+Dornfest+Minimalist+Parenting" },
       { title: "Hyperobjects", author: "Timothy Morton", description: "Philosophy of massive, distributed phenomena like climate change.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.ca/s?k=Timothy+Morton+Hyperobjects" },
