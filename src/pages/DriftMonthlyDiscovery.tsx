@@ -79,6 +79,9 @@ const DriftMonthlyDiscovery = () => {
             <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-800 via-purple-600 to-blue-600 dark:from-slate-200 dark:via-purple-400 dark:to-blue-400">
               {getMonthName(m)} {y}
             </h1>
+            {entry.theme && (
+              <p className="text-lg italic text-muted-foreground/70">{entry.theme}</p>
+            )}
             <p className="text-lg text-muted-foreground max-w-xl mx-auto">
               {hasContent
                 ? "This month's curated discoveries through the Calm Magic compass."
