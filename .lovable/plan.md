@@ -1,63 +1,60 @@
 
 
-# Add 33 Books + Create Axis-Based Resource Libraries
+# Add 20 New Books to Drift + Library Extras
 
-## Part 1: Distribute 33 New Books (max 3 per month)
+## Overview
 
-15 empty months remain (Oct-Dec 2023, Jan-Dec 2024). With 33 books and a 3-book max, here is the distribution:
+There are 20 new books to add, but only 3 empty monthly slots remain (Oct-Dec 2024). The plan: fill those 3 months (9 books), then store the remaining 11 books as "library-only" extras that appear on the axis resource library pages but aren't tied to a specific month.
 
-| Month | Books |
+## Part 1: Monthly Slots (9 books)
+
+| Month | Book | Axis |
+|---|---|---|
+| **Oct 2024** | Odyssee (Homere) | FREE |
+| **Oct 2024** | Histoire de la guerre du Peloponnese (Thucydide) | OPEN |
+| **Oct 2024** | Emotional Intelligence: Self-Awareness (HBR) | CALM |
+| **Nov 2024** | Le singe nu (Desmond Morris) | OPEN |
+| **Nov 2024** | Le loup des steppes (Hermann Hesse) | MAGIC |
+| **Nov 2024** | Design Works (Heather Fraser) | CALM |
+| **Dec 2024** | Tools of Titans (Tim Ferriss) | CALM |
+| **Dec 2024** | Les paysages interieurs (Catherine D'Amours) | MAGIC |
+| **Dec 2024** | Information Arts (Stephen Wilson) | OPEN |
+
+## Part 2: Library-Only Extras (11 books)
+
+These appear only on the axis library pages, not tied to any month:
+
+| Book | Axis |
 |---|---|
-| **Oct 2023** | Patrimoine mondial UNESCO / Living in the End Times (Zizek) / Dark Ecology (Morton) |
-| **Nov 2023** | The Seven Day Circle (Zerubavel) / Damn Good Advice (Lois) / The 4-Hour Workweek (Ferriss) |
-| **Dec 2023** | Bicycle Diaries (Byrne) / World War Z (Brooks) / Blood, Sweat, and Pixels (Schreier) |
-| **Jan 2024** | The Language Animal (Taylor) / Out on the Wire (Abel) / Calvinic Magic (Van De Car) |
-| **Feb 2024** | When (Pink) / Blink (Gladwell) / Less Than Nothing (Zizek) |
-| **Mar 2024** | The Fractalist (Mandelbrot) / Cunningham's Encyclopedia of Magical Herbs / Precis de botanique |
-| **Apr 2024** | A Forest of Kings (Schele & Freidel) / Revolte consommee (Heath & Potter) / Tribes (Godin) |
-| **May 2024** | L'homme nomade (Attali) / Getting the Love You Want (Hendrix) / Dialogue and the Art of Thinking Together (Isaacs) |
-| **Jun 2024** | Cibles / No Bad Parts (Schwartz) / The Creative Habit (Tharp) |
-| **Jul 2024** | This Is Your Brain on Music (Levitin) / L'entrainement de l'esprit (Andre) |
-| **Aug 2024** | Other Minds (Godfrey-Smith) / The Wisdom of Insecurity (Watts) |
-| **Sep 2024** | Ready (Richo) / L'enneagramme |
-| **Oct 2024** | (empty -- ready for future content) |
-| **Nov 2024** | (empty) |
-| **Dec 2024** | (empty) |
+| Thierry Kuntzel (art/theory) | MAGIC |
+| Reinventing the Wheel (Jessica Helfand) | OPEN |
+| Filthy Ratbag (Celeste Mountjoy) | LOVE |
+| The Stack (Benjamin Bratton) | OPEN |
+| A More Beautiful Question (Warren Berger) | CALM |
+| How to Change Your Mind (Michael Pollan) | MAGIC |
+| La magie du Cosmos (Brian Greene) | MAGIC |
+| L'Ensorcellement du monde (Boris Cyrulnik) | LOVE |
+| Le Moyen Age en Occident | FREE |
+| Le feu aux entrailles (Manara and Almodovar) | LOVE |
+| Ubiquitous Computing | OPEN |
 
-### Axis Assignments
+## Technical Changes
 
-- **LOVE**: Getting the Love You Want, No Bad Parts, This Is Your Brain on Music, L'entrainement de l'esprit, Ready
-- **MAGIC**: Dark Ecology, Calvinic Magic, Cunningham's Encyclopedia, L'enneagramme, The Fractalist, Other Minds
-- **CALM**: The Seven Day Circle, The 4-Hour Workweek, When, Blink, The Creative Habit, Precis de botanique, Dialogue and the Art of Thinking Together
-- **OPEN**: Living in the End Times, Damn Good Advice, Blood Sweat and Pixels, The Language Animal, Less Than Nothing, Revolte consommee, Tribes, A Forest of Kings, Cibles
-- **FREE**: Patrimoine mondial UNESCO, Bicycle Diaries, World War Z, Out on the Wire, L'homme nomade, The Wisdom of Insecurity
+### 1. `src/data/driftMonthlyDiscoveries.ts`
+- Fill Oct-Dec 2024 entries with 3 books each (replace empty `books: []`)
+- Add new `driftLibraryExtras` export: an array of `DriftBook` objects for the 11 library-only books
 
-## Part 2: Resource Library Pages (one per axis)
+### 2. `src/pages/DriftLibrary.tsx`
+- Import `driftLibraryExtras`
+- Merge library extras into the book list alongside monthly books
+- Show library-only books in a separate "Library Collection" subsection (no month/year label)
 
-Create a new route `/drift/library/:axis` (e.g., `/drift/library/love`) that aggregates all books across every month for a given axis. This gives each of the 5 Calm Magic forces its own curated library view.
+### 3. `src/pages/DriftLanding.tsx`
+- Update Resource Libraries card counts to include library extras in the total
 
-### New file: `src/pages/DriftLibrary.tsx`
+## Files Modified
 
-- Reads the `axis` param from the URL
-- Filters all `driftMonthlyDiscoveries` entries to collect books (and future songs, videos, podcasts, articles) matching that axis
-- Displays axis name, color, description (from `energeticAxes` in `gardens.ts`)
-- Lists all resources grouped by type (books first, then videos, songs, podcasts, articles)
-- Each book card shows title, author, description, category, and Amazon link
-
-### Update: `src/pages/DriftLanding.tsx`
-
-- Add a "Resource Libraries" section below the archive grid
-- Show 5 cards (one per axis: LOVE, MAGIC, CALM, OPEN, FREE) with axis color, name, and book count
-- Each card links to `/drift/library/:axis`
-
-### Update: `src/App.tsx`
-
-- Add route: `<Route path="/drift/library/:axis" element={<DriftLibrary />} />`
-
-## Files to Create/Modify
-
-1. **`src/data/driftMonthlyDiscoveries.ts`** -- Add book data to the 12 empty month entries (Oct 2023 - Sep 2024)
-2. **`src/pages/DriftLibrary.tsx`** -- New page for axis-based resource library
-3. **`src/pages/DriftLanding.tsx`** -- Add library section with 5 axis cards
-4. **`src/App.tsx`** -- Add new route
+1. `src/data/driftMonthlyDiscoveries.ts` -- fill 3 empty months + add library extras array
+2. `src/pages/DriftLibrary.tsx` -- include library extras in axis pages
+3. `src/pages/DriftLanding.tsx` -- update resource counts to include extras
 
