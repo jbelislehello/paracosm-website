@@ -1,119 +1,133 @@
 
 
-# Add 50 Resources to Drift, Distributed by Release Date (2014-2026)
+# Add 70 Resources to Drift + Axis Filters on Search
 
 ## Overview
-Add 50 podcasts, articles, talks, and papers to the Drift monthly discovery data, distributed across months based on each item's original release/publication date. This requires creating new monthly entries for years 2014-2021 (currently the data starts at 2022) and adding podcasts/articles to existing 2022-2026 entries.
-
-## Confirmed Feb 2026 Books
-Verified on the live page -- all 8 Love-axis books (HOLO 1, HOLO 2, Non-Linear Leadership, Issue 01, Magazine Digi, Guide Montreal, Originals, The Order of Time) render correctly on the February 2026 monthly discovery page.
+Add approximately 70 new resources (videos, podcasts, articles) across the Drift timeline, distributed by content release date. Also add **axis-based filter buttons** (Love, Magic, Calm, Open, Free) to the Monthly Review search section on the Drift landing page, complementing the existing resource-type filters.
 
 ---
 
-## Axis Assignment (Calm Magic Library Mapping)
+## Part 1: Axis Filters on Drift Landing Page
 
-| Content Group | Axis | Category |
+**File: `src/pages/DriftLanding.tsx`**
+
+Add a second row of filter buttons below the existing type filters (Books, Podcasts, etc.) for the 5 Calm Magic axes: Love, Magic, Calm, Open, Free. Each button uses the axis color. When active, only months containing content on the selected axis/axes are shown. Combines with existing type + text filters.
+
+- New state: `axisFilters` (`Set<DriftAxis>`)
+- Filter logic: if axis filters active, only show months where at least one resource matches a selected axis
+- Buttons styled as colored pills using each axis's color from `axisColors`
+
+---
+
+## Part 2: Resource Distribution
+
+**File: `src/data/driftMonthlyDiscoveries.ts`**
+
+After deduplication between the two lists (many items appear in both), approximately 70 unique resources will be added. Content types:
+- YouTube videos (with extractable `youtubeId`) go into the `videos` array
+- Podcasts/audio interviews go into the `podcasts` array
+- Articles, archives, PDFs, resource hubs go into the `articles` array
+- Playlists (no single youtubeId) go into `articles` as reference links
+
+### Axis Mapping
+
+| Thinker/Creator | Axis | Category |
 |---|---|---|
-| Complexity, creative math, emergence (1-12) | **open** | Human Dynamics and System Thinking |
-| Product roadmapping, discovery, operating models (13-28) | **calm** | Workflows |
-| AI governance, auditability, risk, compliance (29-40) | **open** | Connected Life |
-| Neurodivergence, cognitive accessibility (41-46) | **love** | Embodied Cognition |
-| Memory, embodiment, somatics, tantra (47-50) | **love** | Embodied Cognition |
+| Carl Jung | **magic** | Inquiry and Practices |
+| Jean Piaget | **magic** | 21c Parenting |
+| Mircea Eliade | **magic** | Inquiry and Practices |
+| Henri Bergson | **magic** | Narratives |
+| Moshe Feldenkrais | **love** | Embodied Cognition |
+| Steve Paxton | **love** | Tangible Play |
+| Anna Halprin | **love** | Embodied Cognition |
+| Richard Shusterman | **love** | Embodied Cognition |
+| Robert Sapolsky | **love** | Embodied Cognition |
+| Nam June Paik | **free** | Post-Broadcast |
+| Rirkrit Tiravanija | **love** | Tangible Play |
+| Nicolas Bourriaud | **free** | Post-Broadcast |
+| Rick Rubin | **calm** | Inquiry and Practices |
+| Christopher Nolan | **magic** | Narratives |
+| J.J. Abrams | **magic** | Narratives |
+| Eric Berlow | **open** | Human Dynamics and System Thinking |
+| Tom Wujec | **calm** | Workflows |
+| Andrew Stanton | **magic** | Telling Stories |
+| Chris Anderson | **open** | Telling Stories |
+| Susan Cain | **love** | Embodied Cognition |
+| Ken Robinson | **calm** | Playgrounds |
+| Bud Caddell | **calm** | Workflows |
+| Robert Sapolsky (Stanford lectures) | **open** | Human Dynamics and System Thinking |
+
+### Month-by-Month Distribution
+
+**New entries to create:**
+
+| Year | Month | Theme | Content |
+|---|---|---|---|
+| 2014 | 1 | Foundations | Ken Robinson TED (2006, foundational); J.J. Abrams Mystery Box TED (2007); archive.org Bergson audiobook |
+| 2014 | 6 | Archetypes | Jung Face to Face BBC (1959 archival); Jung playlist; Piaget interviews (1974 archival); Piaget playlist |
+| 2014 | 12 | Sacred Time | Eliade interviews (archival); Eliade playlist; "How to Make Time Sacred"; Feldenkrais archive + playlist |
+
+**Augmenting existing entries:**
+
+| Year/Month | Content Added |
+|---|---|
+| 2015/10 | Bergson Aeon video essay (article) |
+| 2016/9 | Bergson Hermitix podcast |
+| 2019/4 | Eric Berlow TED "Simplifying complexity" (video) |
+| 2020/11 | Steve Paxton Q&A Contact Quarterly 2020 (article) |
+| 2021/1 | Sapolsky Stanford Human Behavioral Biology lecture (video); Sapolsky stress playlist (article) |
+| 2021/6 | Sapolsky "Psychology of Stress" (video) |
+| 2022/2 | Eliade "How to Make Time Sacred" -- already related to Eliade book in Feb 2022 (video) |
+| 2022/6 | Tom Wujec TED talks (article); Chris Anderson TED talk (video) |
+| 2022/8 | Susan Cain TED-Ed "Power of Introverts" (video) |
+| 2023/1 | Rick Rubin -- Tim Ferriss transcript (article); Tim Ferriss episode (podcast); On Being (podcast) |
+| 2023/6 | Bud Caddell TEDx (article); TED playlist "How to make a great presentation" (article) |
+| 2023/9 | Andrew Stanton TED "Clues to a great story" (video) |
+| 2023/11 | Nolan x Cameron "Time Travel" conversation (video) |
+| 2024/4 | Steve Paxton -- Talking Dance (video); Paxton + Forti conversation (video) |
+| 2024/5 | Anna Halprin "Power of Ritual" (podcast); Halprin New Thinking Allowed (article) |
+| 2024/6 | Shusterman interview (video); Shusterman video hub (article); Shusterman playlist (article) |
+| 2024/7 | Jung Psyche.co video essay (article); Jung OpenCulture article (article); Jung Face to Face alt upload (video) |
+| 2024/8 | Nam June Paik -- Smithsonian interview (article); Symposium (video); Biennale PDF (article) |
+| 2024/10 | Rirkrit Tiravanija Bloomberg Brilliant Ideas (video); Tiravanija PHI (video) |
+| 2024/11 | Nolan TENET interview (video); Nolan Oppenheimer Bulletin (article) |
+| 2024/12 | Rick Rubin Tetragrammaton hub (podcast) |
+| 2025/1 | Bourriaud Altermodern (video) |
+| 2025/3 | Danspace Project Steve Paxton 2025 (article) |
+| 2025/7 | Bourriaud interview Doors Agency 2025 (article) |
+
+### YouTube IDs to Extract
+
+For items going into the `videos` array, youtubeIds extracted from URLs:
+- Jung Face to Face: `oBYEFX2dqpM` (and alt: `cjxC-Ab84hQ`)
+- Piaget Rencontre: `HqWiTk4Rjok`
+- Piaget Interview: `Nj-1h2Qk2fE`
+- Piaget on Piaget: `I1JWr4G8YLM`
+- Eliade vol 3: `fZ7yLe2axjg`
+- Eliade 1960: `k8AyjjhSVQc`
+- Eliade 1987: `S6W9se3oKJ0`
+- Eliade Sacred: `oHxJMHbZo7A`
+- Bergson Hermitix: `dqnqOIREiic`
+- Paxton Talking Dance: `_82Od5NM4LI`
+- Paxton + Forti: `12j9JxDGlE4`
+- Shusterman: `LXBf2l_tUVI`
+- Sapolsky Stress: `bEcdGK4DQSg`
+- Sapolsky lecture 1: `NNnIGh9g6fA`
+- Paik Symposium: `O1LkIE0uJSw`
+- Tiravanija Bloomberg: `ptbhV4HgMr0`
+- Tiravanija PHI: `OQGeyuuA4IA`
+- Bourriaud Altermodern: `bqHMILrKpDY`
+- Nolan x Cameron: `hGrqHOp2RW8`
+- Nolan TENET: `_Woppb0k_2M`
+- Stanton TED: extracted from TED embed
+- Anderson TED: extracted from TED embed
 
 ---
 
-## Distribution by Release Date
+## Files Changed
+- **`src/data/driftMonthlyDiscoveries.ts`** -- 3 new month entries (2014) + augment ~20 existing months with videos, podcasts, articles
+- **`src/pages/DriftLanding.tsx`** -- Add axis filter row (Love/Magic/Calm/Open/Free) + update filter logic
 
-### New monthly entries to create (2014-2021)
-
-These years currently don't exist in the data. Each new month entry will have a theme, an empty `books` array, and the relevant podcasts/articles.
-
-**2015** -- 1 item
-- Month 10: Karim Nader, "Reconsolidation and the Dynamic Nature of Memory" (paper, ~2015) -- article, axis: love
-
-**2016** -- 1 item
-- Month 9: Tricia Wang TED Talk, "The human insights missing from big data" (Sept 2016) -- podcast/talk, axis: open
-
-**2019** -- 2 items
-- Month 4: Sean Carroll/Strogatz, "Synchronization, Networks, and the Emergence of Complex Behavior" (Apr 2019) -- podcast, axis: open
-- Month 6: Melissa Perri, "Product Thinking for Product Management" (show hub, June 2019) -- podcast, axis: calm
-
-**2020** -- 1 item
-- Month 11: Sean Carroll/Lisa Feldman Barrett, "Emotions, Actions, and the Brain" (Nov 2020) -- podcast, axis: open
-
-**2021** -- 3 items
-- Month 1: Peter Senge, "Compassionate Systems / Leading Complexity" (Jan 2021) -- podcast, axis: open
-- Month 1: Peter Senge, "Can you navigate the uncertainty of change?" -- podcast, axis: open  
-- Month 1: Peter Senge/Gary Hamel, "Leading System Change" -- podcast, axis: open
-
-Also placing the "timeless" Donella Meadows items here:
-- Month 6: Donella Meadows, "Leverage Points" (article, originally 1999 but evergreen) -- article, axis: open
-- Month 6: Donella Meadows, "Molly's Interview with Dana" -- podcast, axis: open
-
-### Existing entries to augment (2022-2026)
-
-**2022**
-- Month 6 (June): Shreyas Doshi -- Lenny's Podcast (pre-mortems, strategy) -- podcast, axis: calm
-- Month 6: Quanta Magazine Emergence hub -- article, axis: open
-- Month 6: Santa Fe Institute podcasts hub -- podcast, axis: open
-
-**2023**
-- Month 4 (April): NIST AI RMF -- Elham Tabassi/Wiley Rein -- podcast, axis: open
-- Month 4: NIST AI RMF -- Reva Schwartz -- podcast, axis: open
-- Month 4: Monitaur/Patrick Hall on NIST AI RMF -- podcast, axis: open
-- Month 4: CR-MAP deep dive NIST AI RMF -- podcast, axis: open
-- Month 6: Teresa Torres -- Lenny's Newsletter episode -- podcast, axis: calm
-- Month 6: Teresa Torres -- "Getting into the Habit of Continuous Discovery" -- podcast, axis: calm
-- Month 9: Teresa Torres -- Non-Nonsense Agile -- podcast, axis: calm
-- Month 9: Teresa Torres -- All Things Product -- podcast, axis: calm
-- Month 9: Shreyas Doshi -- The Knowledge Project -- podcast, axis: calm
-- Month 9: SVPG -- Product Leadership Archetypes -- article, axis: calm
-- Month 12: ICAEW -- "AI in audit: good, bad, ugly" -- podcast, axis: open
-- Month 12: Europeana AI Fund -- Algorithm Audit -- podcast, axis: open
-
-**2024**
-- Month 2: Marty Cagan -- "Moving to the Product Operating Model" -- podcast, axis: calm
-- Month 3: Marty Cagan -- One Knight in Product (Transformed) -- podcast, axis: calm
-- Month 3: Marty Cagan -- Spotify episode (Transformed) -- podcast, axis: calm
-- Month 4: Peter Levine -- "From Trauma to Awakening and Flow" -- podcast, axis: love
-- Month 5: Christopher Wallis -- "Exploring Nondual Shaiva Tantra" -- podcast, axis: love
-- Month 5: Deb Dana -- Rhythm of Regulation (hub) -- podcast, axis: love
-- Month 6: Melissa Perri/John Cutler -- "Freeing Teams from Operational Overload" -- podcast, axis: calm
-- Month 6: Melissa Perri -- "Why Context Switching Slows You Down" -- podcast, axis: calm
-- Month 7: John Cutler -- "Product Management with John Cutler" -- podcast, axis: calm
-- Month 7: John Cutler -- "Identifying Patterns in Product" -- podcast, axis: calm
-- Month 7: John Cutler -- The Product Experience (interview) -- podcast, axis: calm
-- Month 8: Stephanie Walter -- NNg UX Podcast, Accessibility and Neurodiversity -- podcast, axis: love
-- Month 8: Stephanie Walter -- Neurodiversity and UX resources (article hub) -- article, axis: love
-- Month 9: Carleton Accessibility Institute -- "A Neurodivergent Lens" (PDF) -- article, axis: love
-- Month 9: Craig Abbott -- digital accessibility leadership -- podcast, axis: love
-- Month 10: AccessiBrand -- neurodiversity and accessibility -- podcast, axis: love
-- Month 10: Interview: netz-barrierefrei -- podcast, axis: love
-- Month 11: Heidrick -- Miriam Vogel (EqualAI) "Building trust in AI" -- podcast, axis: open
-- Month 11: AI governance standards ISO 42001 + NIST -- article, axis: open
-- Month 12: EU AI Act Explained (Spotify hub) -- podcast, axis: open
-- Month 12: Tricia Wang -- Rosenfeld Review on AI and research -- podcast, axis: open
-- Month 12: Tech Seeking Human -- Tricia Wang "AI and Big Data isn't the answer" -- podcast, axis: open
-
-**2025**
-- Month 1: Simon Wardley -- "Maps, AI, and the Future of Reasoning" -- podcast, axis: open
-- Month 1: Strategy Hero -- "The Power of Wardley Mapping" -- podcast, axis: open
-- Month 1: Wardley Mapping Interviews playlist -- podcast, axis: open
-
----
-
-## Technical Details
-
-### File modified
-**`src/data/driftMonthlyDiscoveries.ts`**
-
-### Changes
-1. Create ~8 new `DriftMonthEntry` objects for years 2015-2021, inserted before the existing 2022 entries
-2. Add `podcasts` and `articles` arrays to ~15 existing monthly entries (2022-2025)
-3. Each podcast entry follows the `DriftPodcast` interface: `{ title, host, description, category, axis, url, platform }`
-4. Each article entry follows the `DriftArticle` interface: `{ title, author, description, category, axis, url, source }`
-5. New months will need theme names assigned
-
-### No other file changes needed
-The DriftMonthlyDiscovery page and DriftLibrary already support rendering podcasts and articles arrays when present.
+## No other files need changes
+The DriftLibrary and monthly discovery pages already render all content types dynamically.
 
