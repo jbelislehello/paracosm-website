@@ -15,7 +15,7 @@ import { driftTools } from "@/data/driftTools";
 const DriftLanding = () => {
   const [email, setEmail] = useState("");
   const [monthSearch, setMonthSearch] = useState("");
-  
+  const [typeFilters, setTypeFilters] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   const handleSubscribe = (e: React.FormEvent) => {
@@ -226,23 +226,66 @@ const DriftLanding = () => {
             </p>
           </div>
 
-          {/* Search across months */}
-          <div className="relative max-w-md mx-auto mb-10">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              placeholder="Search across all months..."
-              value={monthSearch}
-              onChange={e => setMonthSearch(e.target.value)}
-              className="pl-10 pr-10"
-            />
-            {monthSearch && (
-              <button
-                onClick={() => setMonthSearch("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
+          {/* Search and type filters */}
+          <div className="max-w-2xl mx-auto mb-10 space-y-3">
+            <div className="relative max-w-md mx-auto">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search across all months..."
+                value={monthSearch}
+                onChange={e => setMonthSearch(e.target.value)}
+                className="pl-10 pr-10"
+              />
+              {monthSearch && (
+                <button
+                  onClick={() => setMonthSearch("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+            <div className="flex flex-wrap justify-center gap-2">
+              {([
+                { key: "books", label: "Books", icon: BookOpen },
+                { key: "podcasts", label: "Podcasts", icon: Headphones },
+                { key: "articles", label: "Articles", icon: FileText },
+                { key: "videos", label: "Videos", icon: Play },
+                { key: "songs", label: "Songs", icon: Music },
+                { key: "tools", label: "Tools", icon: Wrench },
+              ] as const).map(({ key, label, icon: Icon }) => {
+                const active = typeFilters.has(key);
+                return (
+                  <button
+                    key={key}
+                    onClick={() => {
+                      setTypeFilters(prev => {
+                        const next = new Set(prev);
+                        if (next.has(key)) next.delete(key); else next.add(key);
+                        return next;
+                      });
+                    }}
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                      active
+                        ? "bg-primary text-primary-foreground border-primary"
+                        : "bg-background text-muted-foreground border-border hover:border-primary/40 hover:text-foreground"
+                    }`}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    {label}
+                  </button>
+                );
+              })}
+              {typeFilters.size > 0 && (
+                <button
+                  onClick={() => setTypeFilters(new Set())}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <X className="w-3 h-3" />
+                  Clear
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -252,7 +295,7 @@ const DriftLanding = () => {
                 !mq || fields.some(f => f?.toLowerCase().includes(mq));
 
               const filtered = driftMonthlyDiscoveries.filter(entry => {
-                if (!mq) return true;
+                const hasTypeFilter = typeFilters.size > 0;
                 const booksMatch = entry.books.some(b => matchField(b.title, b.author, b.description, b.category));
                 const videosMatch = (entry.videos || []).some(v => matchField(v.title, v.speaker, v.description, v.category));
                 const songsMatch = (entry.songs || []).some(s => matchField(s.title, s.artist, s.description, s.category));
@@ -261,6 +304,20 @@ const DriftLanding = () => {
                 const artefactsMatch = (entry.artefacts || []).some(a => matchField(a.title, a.author, a.description, a.category));
                 const toolsMatch = driftTools.filter(t => t.month === entry.month && t.year === entry.year).some(t => matchField(t.name, t.description));
                 const monthMatch = matchField(getMonthName(entry.month), String(entry.year));
+
+                // If type filters are active, only show months that have matching content of those types
+                if (hasTypeFilter) {
+                  const typeMatches: boolean[] = [];
+                  if (typeFilters.has("books")) typeMatches.push(booksMatch && entry.books.length > 0);
+                  if (typeFilters.has("podcasts")) typeMatches.push(podcastsMatch && (entry.podcasts || []).length > 0);
+                  if (typeFilters.has("articles")) typeMatches.push(articlesMatch && (entry.articles || []).length > 0);
+                  if (typeFilters.has("videos")) typeMatches.push(videosMatch && (entry.videos || []).length > 0);
+                  if (typeFilters.has("songs")) typeMatches.push(songsMatch && (entry.songs || []).length > 0);
+                  if (typeFilters.has("tools")) typeMatches.push(toolsMatch);
+                  return typeMatches.some(Boolean);
+                }
+
+                if (!mq) return true;
                 return booksMatch || videosMatch || songsMatch || podcastsMatch || articlesMatch || artefactsMatch || toolsMatch || monthMatch;
               });
 
