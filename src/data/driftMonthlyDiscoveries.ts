@@ -72,18 +72,63 @@ export interface DriftMonthEntry {
 }
 
 export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
+  // === 2014 ===
+  {
+    year: 2014, month: 1, theme: "Foundations",
+    books: [],
+    videos: [
+      { title: "Do Schools Kill Creativity?", speaker: "Ken Robinson", description: "Iconic TED talk (2006) on how education systems undermine creativity.", category: "Playgrounds", axis: "calm", youtubeId: "iG9CE55wbtY", platform: "TED" },
+      { title: "The Mystery Box", speaker: "J.J. Abrams", description: "TED talk (2007) on mystery as a storytelling engine and the power of the unknown.", category: "Narratives", axis: "magic", youtubeId: "vpjVgF5JDq8", platform: "TED" },
+    ],
+    articles: [
+      { title: "L'Évolution créatrice — Audiobook (Librivox)", author: "Henri Bergson", description: "Public domain audiobook of Bergson's foundational work on creative evolution and élan vital.", category: "Narratives", axis: "magic", url: "https://archive.org/details/evolutioncreatrice_1706_librivox", source: "Archive.org / Librivox" },
+    ],
+  },
+  {
+    year: 2014, month: 6, theme: "Archetypes",
+    books: [],
+    videos: [
+      { title: "Carl Jung — Face to Face (BBC, 1959)", speaker: "Carl Jung", description: "Rare BBC interview with Jung at 84, on life, death, meaning, and the unconscious.", category: "Inquiry and Practices", axis: "magic", youtubeId: "oBYEFX2dqpM", platform: "BBC" },
+      { title: "Rencontre avec Jean Piaget (1974)", speaker: "Jean Piaget", description: "Archival French-language interview with Piaget on child development and cognition.", category: "21c Parenting", axis: "magic", youtubeId: "HqWiTk4Rjok", platform: "Archives" },
+      { title: "Jean Piaget — Interview: Insights into Child Development (1974)", speaker: "Jean Piaget", description: "English-language interview with Piaget on stages of cognitive development.", category: "21c Parenting", axis: "magic", youtubeId: "Nj-1h2Qk2fE", platform: "Archives" },
+      { title: "Piaget on Piaget (Part 1)", speaker: "Jean Piaget", description: "Piaget discussing his own work and legacy in developmental psychology.", category: "21c Parenting", axis: "magic", youtubeId: "I1JWr4G8YLM", platform: "Archives" },
+    ],
+    articles: [
+      { title: "Jung Interviews & Documentaries — Playlist", author: "Various", description: "Curated YouTube playlist of Jung interviews, lectures, and documentary footage.", category: "Inquiry and Practices", axis: "magic", url: "https://www.youtube.com/playlist?list=PL2hFkpAxioqjIUnSSVEXw8iEhpMFRvhAy", source: "YouTube Playlist" },
+      { title: "Interviews de Jean Piaget — Playlist", author: "Various", description: "Curated YouTube playlist of Piaget interviews and archival footage.", category: "21c Parenting", axis: "magic", url: "https://www.youtube.com/playlist?list=PLlZdvmQB3mW666n7zTwUbBzycfDzOkwkC", source: "YouTube Playlist" },
+    ],
+  },
+  {
+    year: 2014, month: 12, theme: "Sacred Time",
+    books: [],
+    videos: [
+      { title: "Mircea Eliade — Interview before 'History of Religious Ideas' vol. 3", speaker: "Mircea Eliade", description: "Archival interview with Eliade on sacred history and religious symbolism.", category: "Inquiry and Practices", axis: "magic", youtubeId: "fZ7yLe2axjg", platform: "Archives" },
+      { title: "Mircea Eliade — Interviu (1960)", speaker: "Mircea Eliade", description: "Romanian archival interview from 1960 on myth, religion, and modernity.", category: "Inquiry and Practices", axis: "magic", youtubeId: "k8AyjjhSVQc", platform: "Archives" },
+      { title: "Mircea Eliade — Interview (1987)", speaker: "Mircea Eliade", description: "Late interview on the rediscovery of the sacred in contemporary life.", category: "Inquiry and Practices", axis: "magic", youtubeId: "S6W9se3oKJ0", platform: "Archives" },
+      { title: "How to Make Time Sacred", speaker: "Mircea Eliade (context)", description: "Video essay exploring Eliade's concepts of sacred time, ritual, and cyclical renewal.", category: "Inquiry and Practices", axis: "magic", youtubeId: "oHxJMHbZo7A", platform: "YouTube" },
+    ],
+    articles: [
+      { title: "Mircea Eliade — Interviews & Archives Playlist", author: "Various", description: "Curated playlist of Eliade interviews, lectures, and archival materials.", category: "Inquiry and Practices", axis: "magic", url: "https://www.youtube.com/playlist?list=PLHfFtq45dNHUsz0EVu59PDxoYM-aqfYNw", source: "YouTube Playlist" },
+      { title: "Feldenkrais Method Archive (IFF)", author: "International Feldenkrais Federation", description: "Official archive of Feldenkrais method documents, videos, and historical materials.", category: "Embodied Cognition", axis: "love", url: "https://feldenkrais-method.org/archive/", source: "IFF" },
+      { title: "Feldenkrais IFF Video Playlist", author: "International Feldenkrais Federation", description: "Curated YouTube playlist of Feldenkrais method demonstrations and talks.", category: "Embodied Cognition", axis: "love", url: "https://www.youtube.com/playlist?list=PL5jukNCShYrQe27cFaB_QmWlAw9zkrfUY", source: "YouTube Playlist" },
+    ],
+  },
   // === 2015 ===
   {
     year: 2015, month: 10, theme: "Memory",
     books: [],
     articles: [
       { title: "Reconsolidation and the Dynamic Nature of Memory", author: "Karim Nader", description: "Landmark paper on how memories are re-written each time they are recalled, challenging the fixed-storage model.", category: "Embodied Cognition", axis: "love", url: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4405835/", source: "PMC / Annual Review of Psychology" },
+      { title: "Henri Bergson on Why the Existence of Things Precedes Their Possibility", author: "Aeon", description: "Video essay exploring Bergson's radical inversion of possibility and reality.", category: "Narratives", axis: "magic", url: "https://aeon.co/videos/henri-bergson-on-why-the-existence-of-things-precedes-their-possibility", source: "Aeon" },
     ],
   },
   // === 2016 ===
   {
     year: 2016, month: 9, theme: "Thick Data",
     books: [],
+    videos: [
+      { title: "Henri Bergson — Hermitix Podcast", speaker: "Hermitix", description: "Deep dive into Bergson's philosophy of time, duration, and intuition.", category: "Narratives", axis: "magic", youtubeId: "dqnqOIREiic", platform: "Hermitix" },
+    ],
     podcasts: [
       { title: "The human insights missing from big data", host: "Tricia Wang", description: "TED Talk on why big data alone misses human context — and how 'thick data' fills the gap.", category: "Connected Life", axis: "open", url: "https://www.ted.com/talks/tricia_wang_the_human_insights_missing_from_big_data", platform: "TED" },
     ],
@@ -92,6 +137,9 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
   {
     year: 2019, month: 4, theme: "Sync",
     books: [],
+    videos: [
+      { title: "Simplifying Complexity", speaker: "Eric Berlow", description: "TED talk on how embracing complexity can actually simplify problem-solving.", category: "Human Dynamics and System Thinking", axis: "open", youtubeId: "UB2iYzKeej8", platform: "TED" },
+    ],
     podcasts: [
       { title: "Synchronization, Networks, and the Emergence of Complex Behavior", host: "Sean Carroll / Steven Strogatz", description: "How coupled oscillators, fireflies, and neurons synchronize — and what emergence really means.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://www.preposterousuniverse.com/podcast/2019/04/08/episode-41-steven-strogatz-on-synchronization-networks-and-the-emergence-of-complex-behavior/", platform: "Mindscape" },
     ],
@@ -110,20 +158,32 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     podcasts: [
       { title: "Lisa Feldman Barrett on Emotions, Actions, and the Brain", host: "Sean Carroll", description: "How emotions are constructed by the brain rather than triggered — implications for agency, control, and self-understanding.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://www.preposterousuniverse.com/podcast/2020/11/02/121-lisa-feldman-barrett-on-emotions-actions-and-the-brain/", platform: "Mindscape" },
     ],
+    articles: [
+      { title: "Q&A with Steve Paxton (2020)", author: "Contact Quarterly", description: "Interview with Steve Paxton on contact improvisation, movement research, and the evolution of dance practice.", category: "Tangible Play", axis: "love", url: "https://contactquarterly.com/contact-improvisation/newsletter/view/q-and-a-with-steve-paxton-2020", source: "Contact Quarterly" },
+    ],
   },
   // === 2021 ===
   {
     year: 2021, month: 1, theme: "Leading Complexity",
     books: [],
+    videos: [
+      { title: "Stanford Human Behavioral Biology — Lecture 1", speaker: "Robert Sapolsky", description: "First lecture of Sapolsky's legendary Stanford course on human behavioral biology.", category: "Human Dynamics and System Thinking", axis: "open", youtubeId: "NNnIGh9g6fA", platform: "Stanford" },
+    ],
     podcasts: [
       { title: "Compassionate Systems / Leading Complexity", host: "Peter Senge", description: "Systems leadership, compassion, and navigating complexity in organizations.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://www.youtube.com/watch?v=n2oZqfMfxKg", platform: "YouTube" },
       { title: "Can you navigate the uncertainty of change?", host: "Peter Senge", description: "Interview on leading through ambiguity and cultivating adaptive capacity.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://www.youtube.com/watch?v=v4pk8HhQ0LU", platform: "YouTube" },
       { title: "Leading System Change", host: "Peter Senge / Gary Hamel", description: "Dialogue between two management thinkers on systemic transformation.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://www.youtube.com/watch?v=ReuF8HjWCRQ", platform: "YouTube" },
     ],
+    articles: [
+      { title: "Sapolsky: Biology of Stress — Playlist", author: "Various", description: "Curated playlist on the biology and psychology of stress, featuring Sapolsky and related researchers.", category: "Embodied Cognition", axis: "love", url: "https://www.youtube.com/playlist?list=PLQyYB9LxK3ALwsfc6pssu0LJGafjlhs4i", source: "YouTube Playlist" },
+    ],
   },
   {
     year: 2021, month: 6, theme: "Leverage",
     books: [],
+    videos: [
+      { title: "The Psychology of Stress", speaker: "Robert Sapolsky", description: "Sapolsky on the biology and psychology of stress — how chronic stress reshapes body and mind.", category: "Embodied Cognition", axis: "love", youtubeId: "bEcdGK4DQSg", platform: "YouTube" },
+    ],
     podcasts: [
       { title: "Molly's Interview with Dana", host: "Donella Meadows Project", description: "Systems thinking as lived practice — Donella Meadows on leverage, feedback, and change.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://donellameadows.org/donella-meadows-legacy/audio-video/", platform: "Donella Meadows Project" },
     ],
@@ -146,6 +206,9 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "La Bhagavad-Gîtâ", author: "Texte classique", description: "Dialogue philosophique sur devoir, action, conscience (hindouisme).", category: "Inquiry and Practices", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=La+Bhagavad+Gita+livre+francais" },
       { title: "Le Parfum", author: "Patrick Süskind", description: "Roman sur l'obsession olfactive, le génie, et la monstruosité sociale.", category: "Narratives", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Patrick+Suskind+Le+Parfum" },
       { title: "Le sacré et le profane", author: "Mircea Eliade", description: "Comment les humains donnent sens au monde via le religieux/le symbolique.", category: "Inquiry and Practices", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Mircea+Eliade+Le+sacr%C3%A9+et+le+profane" },
+    ],
+    videos: [
+      { title: "How to Make Time Sacred", speaker: "Mircea Eliade (context)", description: "Video essay on Eliade's concepts of sacred time, ritual, and cyclical renewal — companion to Le sacré et le profane.", category: "Inquiry and Practices", axis: "magic", youtubeId: "oHxJMHbZo7A", platform: "YouTube" },
     ],
   },
   {
@@ -183,8 +246,12 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Shreyas Doshi on Pre-mortems, Strategy vs. Execution", host: "Lenny Rachitsky / Shreyas Doshi", description: "Product strategy, pre-mortems, and the gap between strategy and execution.", category: "Workflows", axis: "calm", url: "https://www.lennyspodcast.com/shreyas-doshi-on-pre-mortems-the-lnos-framework-planning-for-the-unexpected-more/", platform: "Lenny's Podcast" },
       { title: "Santa Fe Institute Podcasts", host: "Santa Fe Institute", description: "Hub of episodes on complexity science, networks, adaptation, and emergent behavior.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://www.santafe.edu/culture/podcasts", platform: "Santa Fe Institute" },
     ],
+    videos: [
+      { title: "TED's Secret to Great Public Speaking", speaker: "Chris Anderson", description: "The head of TED shares the key to powerful public speaking.", category: "Telling Stories", axis: "open", youtubeId: "8S0FDjFBj8o", platform: "TED" },
+    ],
     articles: [
       { title: "Emergence — Quanta Magazine Hub", author: "Quanta Magazine", description: "Collection of articles on collective behavior, complexity, and why patterns appear in nature and society.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://www.quantamagazine.org/tag/emergence/", source: "Quanta Magazine" },
+      { title: "Tom Wujec — TED Talks (Official Page)", author: "Tom Wujec", description: "Collection of Wujec's TED talks on visualization, collaboration, and wicked problems.", category: "Workflows", axis: "calm", url: "https://www.tomwujec.com/talks", source: "Tom Wujec" },
     ],
   },
   {
@@ -201,6 +268,9 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Éloge du mariage, de l'engagement et autres folies", author: "Christiane Singer", description: "Essai littéraire sur lien, engagement, sens du couple.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Christiane+Singer+%C3%89loge+du+mariage" },
       { title: "La condition de l'homme moderne", author: "Hannah Arendt", description: "Philosophie politique / modernité / condition humaine.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Hannah+Arendt+La+condition+de+l%27homme+moderne" },
       { title: "Futhark: A Handbook of Rune Magic", author: "Edred Thorsson", description: "Introduction structurée aux runes (symbolique, pratique, tradition).", category: "Sensory Rooms", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Futhark+A+Handbook+of+Rune+Magic+Edred+Thorsson" },
+    ],
+    videos: [
+      { title: "The Power of Introverts", speaker: "Susan Cain", description: "TED-Ed talk on why introverts bring unique strengths to a world that celebrates extroverts.", category: "Embodied Cognition", axis: "love", youtubeId: "c0KYU2j0TM4", platform: "TED-Ed" },
     ],
   },
   {
@@ -241,6 +311,13 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     books: [
       { title: "Dynamic Light and Shade", author: "Burne Hogarth", description: "Figure/illustration-focused guide to rendering light & shadow to create depth, form, and dramatic contrast.", category: "Tangible Play", axis: "love", amazonUrl: "https://www.amazon.com/-/zh_TW/Dynamic-Light-Shade-Burne-Hogarth/dp/0823015815" },
       { title: "Management (Canadian Edition)", author: "Stephen P. Robbins, Mary A. Coulter, Ed Leach, Mary Kilfoil", description: "Comprehensive management textbook connecting core management concepts to real-world applications.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.ca/Management-Eleventh-Canadian-Stephen-Robbins/dp/0133357279" },
+    ],
+    podcasts: [
+      { title: "Rick Rubin — The Tim Ferriss Show", host: "Tim Ferriss / Rick Rubin", description: "Deep conversation on creativity, the creative process, presence, and the mystery of making art.", category: "Inquiry and Practices", axis: "calm", url: "https://tim.blog/2023/01/12/rick-rubin-2/", platform: "Tim Ferriss Show" },
+      { title: "Rick Rubin — On Being", host: "Krista Tippett / Rick Rubin", description: "Rick Rubin on magic, everyday mystery, and getting creative — creativity as a spiritual practice.", category: "Inquiry and Practices", axis: "calm", url: "https://onbeing.org/programs/rick-rubin-magic-everyday-mystery-and-getting-creative/", platform: "On Being" },
+    ],
+    articles: [
+      { title: "Rick Rubin — Tim Ferriss Transcript", author: "Tim Ferriss", description: "Full transcript of the Rick Rubin interview on methods, creativity, and AI.", category: "Inquiry and Practices", axis: "calm", url: "https://tim.blog/2023/01/16/rick-rubin-2-transcript/", source: "Tim Ferriss Blog" },
     ],
   },
   {
@@ -287,6 +364,10 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Teresa Torres on Continuous Discovery", host: "Lenny Rachitsky / Teresa Torres", description: "Customer interviews, opportunity trees, and building a continuous discovery habit.", category: "Workflows", axis: "calm", url: "https://www.lennysnewsletter.com/p/the-ultimate-guide-to-continuous", platform: "Lenny's Newsletter" },
       { title: "Getting into the Habit of Continuous Discovery", host: "Teresa Torres", description: "How product teams can build sustainable discovery habits and integrate customer learning into weekly work.", category: "Workflows", axis: "calm", url: "https://www.producttalk.org/2023/06/continuous-discovery-habits-podcast/", platform: "Product Talk" },
     ],
+    articles: [
+      { title: "Bud Caddell — TEDxIndianapolis", author: "Bud Caddell", description: "TEDx event page featuring Bud Caddell's talk on workflows, strategy, and creative practice.", category: "Workflows", axis: "calm", url: "https://www.ted.com/tedx/events/11220", source: "TEDx" },
+      { title: "How to Make a Great Presentation — TED Playlist", author: "TED", description: "Curated TED playlist on public speaking, storytelling, and presentation craft.", category: "Telling Stories", axis: "open", url: "https://www.ted.com/playlists/574/how_to_make_a_great_presentation", source: "TED" },
+    ],
   },
   {
     year: 2023, month: 7, theme: "Voice",
@@ -307,6 +388,9 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     books: [
       { title: "The Zero Marginal Cost Society", author: "Jeremy Rifkin", description: "How networks + the Internet of Things push marginal costs down and shift capitalism toward collaborative commons.", category: "Human Dynamics and System Thinking", axis: "open", amazonUrl: "https://www.amazon.ca/Zero-Marginal-Cost-Society-Collaborative/dp/1137280115" },
       { title: "The Glass Cage", author: "Nicholas Carr", description: "A critique of automation's subtle costs: what we lose in skill, judgment, and meaning when software takes over.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.ca/Glass-Cage-How-Computers-Changing/dp/0393351637" },
+    ],
+    videos: [
+      { title: "The Clues to a Great Story", speaker: "Andrew Stanton", description: "Pixar filmmaker Andrew Stanton shares the craft of storytelling — promise, anticipation, and making the audience care.", category: "Telling Stories", axis: "magic", youtubeId: "KxDwieKpawg", platform: "TED" },
     ],
     podcasts: [
       { title: "Teresa Torres on Non-Nonsense Agile", host: "Non-Nonsense Agile / Teresa Torres", description: "Continuous discovery, outcome-driven product work, and avoiding feature factories.", category: "Workflows", axis: "calm", url: "https://www.youtube.com/watch?v=Teresa-Torres-NNA", platform: "Non-Nonsense Agile" },
@@ -331,6 +415,9 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "The Seven Day Circle", author: "Eviatar Zerubavel", description: "Sociologie de la semaine de 7 jours et de l'organisation du temps.", category: "Inquiry and Practices", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=The+Seven+Day+Circle+Eviatar+Zerubavel" },
       { title: "Damn Good Advice (for People with Talent!)", author: "George Lois", description: "Conseils créatifs/carrière par un directeur artistique mythique.", category: "Telling Stories", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Damn+Good+Advice+%28for+People+with+Talent%21%29+George+Lois" },
       { title: "The 4-Hour Workweek", author: "Tim Ferriss", description: "Design de vie: automatisation, délégation, optimisation du travail.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=The+4-Hour+Workweek+Tim+Ferriss" },
+    ],
+    videos: [
+      { title: "Nolan x Cameron — Time Travel Conversation", speaker: "Christopher Nolan / James Cameron", description: "An extraordinary conversation between two filmmakers on time, storytelling, and cinema.", category: "Narratives", axis: "magic", youtubeId: "hGrqHOp2RW8", platform: "YouTube" },
     ],
   },
   {
@@ -384,6 +471,10 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Révolte consommée: Le mythe de la contre-culture", author: "Joseph Heath & Andrew Potter", description: "Essai critique sur le mythe de la contre-culture et la consommation.", category: "Human Dynamics and System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=R%C3%A9volte+consomm%C3%A9e%3A+Le+mythe+du+grand+br%C3%BBl%C3%A9+Heath+Andrew+Potter" },
       { title: "Tribes: We Need You to Lead Us", author: "Seth Godin", description: "Créer et mener une communauté ('tribu') autour d'une idée.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Tribes%3A+We+Need+You+to+Lead+Us+Seth+Godin" },
     ],
+    videos: [
+      { title: "Steve Paxton — Talking Dance", speaker: "Steve Paxton", description: "Walker Art Center conversation with Steve Paxton on contact improvisation and the body as instrument.", category: "Tangible Play", axis: "love", youtubeId: "_82Od5NM4LI", platform: "Walker Art Center" },
+      { title: "Steve Paxton + Simone Forti — Conversation", speaker: "Steve Paxton / Simone Forti", description: "REDCAT conversation between two pioneers of postmodern dance and movement research.", category: "Tangible Play", axis: "love", youtubeId: "12j9JxDGlE4", platform: "REDCAT" },
+    ],
     podcasts: [
       { title: "From Trauma to Awakening and Flow", host: "Sounds True / Peter Levine", description: "Somatic experiencing pioneer Peter Levine on trauma resolution, embodiment, and creative flow states.", category: "Embodied Cognition", axis: "love", url: "https://www.soundstrue.com/products/from-trauma-to-awakening-and-flow", platform: "Sounds True" },
     ],
@@ -398,6 +489,10 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     podcasts: [
       { title: "Exploring Nondual Shaiva Tantra", host: "Christopher Wallis (Hareesh)", description: "Deep exploration of nondual Shaiva Tantra — consciousness, embodiment, and lived philosophy.", category: "Embodied Cognition", axis: "love", url: "https://hareesh.org/blog/exploring-nondual-shaiva-tantra", platform: "Hareesh.org" },
       { title: "Rhythm of Regulation", host: "Deb Dana", description: "Hub for polyvagal-informed practices — nervous system regulation, co-regulation, and safety.", category: "Embodied Cognition", axis: "love", url: "https://www.rhythmofregulation.com/podcast", platform: "Rhythm of Regulation" },
+      { title: "Anna Halprin — The Power of Ritual", host: "Thinking Allowed", description: "Anna Halprin on ritual, dance, healing, and the body as creative instrument.", category: "Embodied Cognition", axis: "love", url: "https://thinkingallowed.vhx.tv/videos/halprin-the-power-of-ritual", platform: "Thinking Allowed" },
+    ],
+    articles: [
+      { title: "Anna Halprin — New Thinking Allowed", author: "New Thinking Allowed", description: "Context and legacy of Anna Halprin's work on ritual, movement, and embodied practice.", category: "Embodied Cognition", axis: "love", url: "https://www.newthinkingallowed.org/the-power-of-ritual-with-anna-halprin-1920-2021/", source: "New Thinking Allowed" },
     ],
   },
   {
@@ -407,9 +502,16 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "No Bad Parts", author: "Richard C. Schwartz", description: "Introduction à l'IFS: comprendre ses 'parts' et guérir.", category: "Inquiry and Practices", axis: "love", amazonUrl: "https://www.amazon.com/s?k=No+Bad+Parts+Richard+C.+Schwartz" },
       { title: "The Creative Habit: Learn It and Use It for Life", author: "Twyla Tharp", description: "Discipline et routines concrètes pour soutenir la créativité.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=The+Creative+Habit%3A+Learn+It+and+Use+It+for+Life+Twyla+Tharp+Mark+Reiter" },
     ],
+    videos: [
+      { title: "Richard Shusterman — Philosophy and the Body", speaker: "Richard Shusterman", description: "Interview on somaesthetics, embodied philosophy, and the role of the body in cognition.", category: "Embodied Cognition", axis: "love", youtubeId: "LXBf2l_tUVI", platform: "YouTube" },
+    ],
     podcasts: [
       { title: "Freeing Teams from Operational Overload", host: "Melissa Perri / John Cutler", description: "How to free product teams from operational burden and refocus on discovery and strategy.", category: "Workflows", axis: "calm", url: "https://produxlabs.com/product-thinking/john-cutler-freeing-teams", platform: "Product Thinking" },
       { title: "Why Context Switching Slows You Down", host: "Melissa Perri", description: "The hidden cost of context switching on product teams — attention, flow, and operational drag.", category: "Workflows", axis: "calm", url: "https://produxlabs.com/product-thinking/context-switching", platform: "Product Thinking" },
+    ],
+    articles: [
+      { title: "Richard Shusterman — Video Hub", author: "Richard Shusterman", description: "Official collection of Shusterman's talks and interviews on somaesthetics and pragmatist philosophy.", category: "Embodied Cognition", axis: "love", url: "https://www.shusterman.net/video", source: "Shusterman.net" },
+      { title: "Shusterman / Somaesthetics — Playlist", author: "Various", description: "Curated YouTube playlist of talks and discussions on somaesthetics and body-mind philosophy.", category: "Embodied Cognition", axis: "love", url: "https://www.youtube.com/playlist?list=PLB4U4cLdPyeVUOc7HGz1KEC6ytIWyYt9P", source: "YouTube Playlist" },
     ],
   },
   {
@@ -418,10 +520,17 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "This Is Your Brain on Music", author: "Daniel J. Levitin", description: "Neurosciences de la musique: émotion, mémoire, attention.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.com/s?k=This+Is+Your+Brain+on+Music+Daniel+J.+Levitin" },
       { title: "L'entraînement de l'esprit", author: "Christophe André", description: "Attention, pleine conscience, entraînement mental au quotidien.", category: "Inquiry and Practices", axis: "love", amazonUrl: "https://www.amazon.com/s?k=L%27entra%C3%AEnement+de+l%27esprit+Christophe+Andr%C3%A9" },
     ],
+    videos: [
+      { title: "Carl Jung — Face to Face (alt upload)", speaker: "Carl Jung", description: "Alternative upload of the iconic 1959 BBC Face to Face interview with Carl Jung.", category: "Inquiry and Practices", axis: "magic", youtubeId: "cjxC-Ab84hQ", platform: "BBC" },
+    ],
     podcasts: [
       { title: "Product Management with John Cutler", host: "John Cutler", description: "Wide-ranging conversation on product management patterns, organizational design, and team health.", category: "Workflows", axis: "calm", url: "https://cutlefish.substack.com/podcast", platform: "The Beautiful Mess" },
       { title: "Identifying Patterns in Product", host: "John Cutler", description: "How to spot recurring patterns in product organizations and use them to drive improvement.", category: "Workflows", axis: "calm", url: "https://cutlefish.substack.com/p/identifying-patterns", platform: "The Beautiful Mess" },
       { title: "John Cutler — The Product Experience", host: "The Product Experience / John Cutler", description: "Interview on product thinking, systems, and navigating complexity in product work.", category: "Workflows", axis: "calm", url: "https://www.mindtheproduct.com/john-cutler-the-product-experience/", platform: "The Product Experience" },
+    ],
+    articles: [
+      { title: "Carl Jung — 'Man Cannot Stand a Meaningless Life' (Psyche.co)", author: "Psyche.co", description: "Video essay contextualizing Jung's famous BBC interview and his ideas on meaning.", category: "Inquiry and Practices", axis: "magic", url: "https://psyche.co/videos/man-cannot-stand-a-meaningless-life-a-conversation-with-carl-jung-at-84", source: "Psyche.co" },
+      { title: "Face to Face with Carl Jung (OpenCulture)", author: "OpenCulture", description: "Article contextualizing the 1959 BBC interview with Jung and its enduring significance.", category: "Inquiry and Practices", axis: "magic", url: "https://www.openculture.com/2024/07/face-to-face-with-carl-jung-man-cannot-stand-a-meaningless-life-1959.html", source: "OpenCulture" },
     ],
   },
   {
@@ -433,8 +542,13 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     podcasts: [
       { title: "Accessibility and Designing for Neurodiversity", host: "NN/g UX Podcast / Stéphanie Walter", description: "Practical guidance on designing for neurodivergent users — cognitive load, sensory considerations, and inclusive patterns.", category: "Embodied Cognition", axis: "love", url: "https://www.nngroup.com/articles/neurodiversity-design/", platform: "NN/g UX Podcast" },
     ],
+    videos: [
+      { title: "Nam June Paik — Symposium (Conserving/Exhibiting)", speaker: "Smithsonian", description: "Smithsonian symposium on conserving and exhibiting Nam June Paik's video art installations.", category: "Post-Broadcast", axis: "free", youtubeId: "O1LkIE0uJSw", platform: "Smithsonian" },
+    ],
     articles: [
       { title: "Neurodiversity and UX Resources", author: "Stéphanie Walter", description: "Curated bibliography and resource hub on neurodiversity in UX design — research, talks, and practical guidelines.", category: "Embodied Cognition", axis: "love", url: "https://stephaniewalter.design/blog/neurodiversity-resources/", source: "Stéphanie Walter" },
+      { title: "Nam June Paik — Interview (Smithsonian Archives)", author: "Archives of American Art", description: "Interview transcript with Nam June Paik from the Smithsonian Archives of American Art.", category: "Post-Broadcast", axis: "free", url: "https://www.aaa.si.edu/collections/items/detail/interview-nam-june-paik-12057", source: "Smithsonian" },
+      { title: "Nam June Paik — Biennale of Sydney (PDF)", author: "Vasulka Archive", description: "PDF interview with Nam June Paik from the Biennale of Sydney archives.", category: "Post-Broadcast", axis: "free", url: "https://www.vasulka.org/archive/4-25/Australia%286017%29.pdf", source: "Vasulka Archive" },
     ],
   },
   {
@@ -457,6 +571,10 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Histoire de la guerre du Péloponnèse", author: "Thucydide", description: "Récit historique majeur de la guerre Athènes–Sparte, politique et stratégie.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Thucydide+Histoire+de+la+guerre+du+P%C3%A9loponn%C3%A8se" },
       { title: "Emotional Intelligence: Self-Awareness", author: "Harvard Business Review Press", description: "Recueil d'articles HBR sur la conscience de soi au travail (décisions, leadership).", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=HBR+Emotional+Intelligence+Self-Awareness" },
     ],
+    videos: [
+      { title: "Rirkrit Tiravanija — Brilliant Ideas Ep. 77", speaker: "Rirkrit Tiravanija", description: "Bloomberg profile on Tiravanija's relational aesthetics — cooking, sharing, and art as social experience.", category: "Tangible Play", axis: "love", youtubeId: "ptbhV4HgMr0", platform: "Bloomberg" },
+      { title: "Rirkrit Tiravanija — JOUEZ/PLAY (Fondation PHI)", speaker: "Rirkrit Tiravanija", description: "Fondation PHI exhibition film on Tiravanija's participatory art and play-based installations.", category: "Tangible Play", axis: "love", youtubeId: "OQGeyuuA4IA", platform: "Fondation PHI" },
+    ],
     podcasts: [
       { title: "AccessiBrand — Neurodiversity and Accessibility", host: "AccessiBrand", description: "Practical framing for making brands and products accessible to neurodivergent audiences.", category: "Embodied Cognition", axis: "love", url: "https://www.accessibrand.com/podcast", platform: "AccessiBrand" },
       { title: "Interview: netz-barrierefrei — Accessibility-Based Product", host: "netz-barrierefrei", description: "Interview on building accessibility-first digital products and services.", category: "Embodied Cognition", axis: "love", url: "https://netz-barrierefrei.de/", platform: "netz-barrierefrei" },
@@ -469,11 +587,15 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Le loup des steppes", author: "Hermann Hesse", description: "Roman introspectif sur la dualité, la crise existentielle et la métamorphose.", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Hermann+Hesse+Le+loup+des+steppes" },
       { title: "Design Works: How to Tackle Your Toughest Innovation Challenges Through Business Design", author: "Heather M.A. Fraser", description: "Méthode de business design pour innover, cadrer, prototyper, livrer.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Design+Works+Heather+M.A.+Fraser" },
     ],
+    videos: [
+      { title: "Christopher Nolan — TENET Interview", speaker: "Christopher Nolan / Geoff Keighley", description: "Full interview on TENET — time inversion, practical filmmaking, and narrative structure.", category: "Narratives", axis: "magic", youtubeId: "_Woppb0k_2M", platform: "YouTube" },
+    ],
     podcasts: [
       { title: "Miriam Vogel (EqualAI) — Building Trust in AI Systems", host: "Heidrick & Struggles", description: "Interview with EqualAI's Miriam Vogel on responsible AI governance and building trust in AI systems.", category: "Connected Life", axis: "open", url: "https://www.heidrick.com/en/insights/podcasts", platform: "Heidrick Podcast" },
     ],
     articles: [
       { title: "AI Governance Standards — ISO 42001 + NIST AI RMF", author: "Various", description: "Overview of key AI governance frameworks — ISO 42001 and the NIST AI Risk Management Framework.", category: "Connected Life", axis: "open", url: "https://www.iso.org/standard/81230.html", source: "ISO / NIST" },
+      { title: "Christopher Nolan — Oppenheimer Extended Interview", author: "Bulletin of the Atomic Scientists", description: "Extended interview with Nolan on Oppenheimer, science, responsibility, and filmmaking.", category: "Narratives", axis: "magic", url: "https://thebulletin.org/premium/2023-07/an-extended-interview-with-christopher-nolan-director-of-oppenheimer/", source: "Bulletin of the Atomic Scientists" },
     ],
   },
   {
@@ -487,6 +609,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "EU AI Act Explained", host: "EU AI Act Explained", description: "Spotify show hub breaking down the European Union AI Act — policy, compliance, and practical implications.", category: "Connected Life", axis: "open", url: "https://open.spotify.com/show/eu-ai-act-explained", platform: "Spotify" },
       { title: "Tricia Wang on AI and Research", host: "Rosenfeld Review / Tricia Wang", description: "Tricia Wang on the gap between AI builders and users — and why research must bridge it.", category: "Connected Life", axis: "open", url: "https://rosenfeldmedia.com/rosenfeld-review-podcast/", platform: "Rosenfeld Review" },
       { title: "AI and Big Data Isn't the Answer", host: "Tech Seeking Human / Tricia Wang", description: "Why big data and AI alone don't solve human problems — thick data, context, and qualitative insight.", category: "Connected Life", axis: "open", url: "https://www.techseekinghuman.com/tricia-wang", platform: "Tech Seeking Human" },
+      { title: "Rick Rubin — Tetragrammaton", host: "Rick Rubin", description: "Rick Rubin's podcast exploring creativity, music, and the mystery of the creative process.", category: "Inquiry and Practices", axis: "calm", url: "https://podcasts.apple.com/us/podcast/tetragrammaton-with-rick-rubin/id1671669052", platform: "Apple Podcasts" },
     ],
   },
   // === 2025 ===
@@ -498,6 +621,7 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
     videos: [
       { title: "Jonathan Bélisle at CreativeMornings Montreal", speaker: "Jonathan Bélisle", description: "A talk on creative practice, worldbuilding, and designing meaningful experiences.", category: "WorldBuilders", axis: "free", youtubeId: "vK5PlnVQUqo", platform: "CreativeMornings" },
+      { title: "Nicolas Bourriaud — Altermodern", speaker: "Nicolas Bourriaud", description: "Bourriaud presents the Altermodern thesis — art beyond postmodernism, cultural nomadism, and global creolization.", category: "Post-Broadcast", axis: "free", youtubeId: "bqHMILrKpDY", platform: "Tate" },
     ],
     podcasts: [
       { title: "Maps, AI, and the Future of Reasoning", host: "Simon Wardley", description: "Wardley on mapping as strategy geometry — situational awareness, AI, and the future of reasoning.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://www.youtube.com/watch?v=wardley-maps-ai", platform: "YouTube" },
@@ -523,6 +647,9 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
     videos: [
       { title: "Jonathan Bélisle — Stories of a Near Future Collective Talk", speaker: "Jonathan Bélisle", description: "Exploring the intersection of AI and the arts, imagining near-future creative possibilities.", category: "Post-Broadcast", axis: "free", youtubeId: "3uWumNsq7gs", platform: "E-AI" },
+    ],
+    articles: [
+      { title: "Danspace Project — Steve Paxton (2025)", author: "Danspace Project", description: "Digital program documenting Steve Paxton's movement research and performance legacy.", category: "Tangible Play", axis: "love", url: "https://danspaceproject.org/digital-programs/ws2025_paxton/", source: "Danspace Project" },
     ],
   },
   {
@@ -560,6 +687,9 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     books: [
       { title: "Bliss Club", author: "June Pla", description: "Creativity and wellness themed exploration of pleasure and joy.", category: "Tangible Play", axis: "love", amazonUrl: "https://www.amazon.ca/s?k=June+Pia+Bliss+Club" },
       { title: "De l'arbre au labyrinthe", author: "Umberto Eco", description: "Essays on signs, interpretation, and knowledge structures.", category: "Telling Stories", axis: "open", amazonUrl: "https://www.amazon.ca/s?k=Umberto+Eco+De+l%27arbre+au+labyrinthe" },
+    ],
+    articles: [
+      { title: "Nicolas Bourriaud — Interview (Doors Agency, 2025)", author: "Doors Agency", description: "Interview with Bourriaud on art, ecology, and the Altermodern legacy.", category: "Post-Broadcast", axis: "free", url: "https://www.doors-agency.com/en/2025/07/22/nicolas-bourriaud-interview/", source: "Doors Agency" },
     ],
     videos: [
       { title: "Le futur de l'édition numérique jeunesse, selon Jonathan Bélisle", speaker: "Jonathan Bélisle", description: "Exploring the future of digital publishing for young audiences.", category: "Post-Broadcast", axis: "free", youtubeId: "CEukKAuEyX4", platform: "FRQSC / UQAM" },

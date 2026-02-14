@@ -8,7 +8,7 @@ import { Mic, Calendar, Compass, Mail, CheckCircle, BookOpen, Play, Music, Headp
 import { energeticAxes } from "@/data/gardens";
 import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
-import { driftMonthlyDiscoveries, driftLibraryExtras, driftLibraryArtefacts, getMonthName, axisColors } from "@/data/driftMonthlyDiscoveries";
+import { driftMonthlyDiscoveries, driftLibraryExtras, driftLibraryArtefacts, getMonthName, axisColors, type DriftAxis } from "@/data/driftMonthlyDiscoveries";
 import logoDrift from "@/assets/drift/logo-drift.jpeg";
 import { driftTools } from "@/data/driftTools";
 
@@ -16,6 +16,7 @@ const DriftLanding = () => {
   const [email, setEmail] = useState("");
   const [monthSearch, setMonthSearch] = useState("");
   const [typeFilters, setTypeFilters] = useState<Set<string>>(new Set());
+  const [axisFilters, setAxisFilters] = useState<Set<DriftAxis>>(new Set());
   const { toast } = useToast();
 
   const handleSubscribe = (e: React.FormEvent) => {
@@ -286,6 +287,42 @@ const DriftLanding = () => {
                 </button>
               )}
             </div>
+            {/* Axis filters */}
+            <div className="flex flex-wrap justify-center gap-2">
+              {(['love', 'magic', 'calm', 'open', 'free'] as const).map(axis => {
+                const active = axisFilters.has(axis);
+                const color = axisColors[axis];
+                return (
+                  <button
+                    key={axis}
+                    onClick={() => {
+                      setAxisFilters(prev => {
+                        const next = new Set(prev);
+                        if (next.has(axis)) next.delete(axis); else next.add(axis);
+                        return next;
+                      });
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all"
+                    style={active
+                      ? { backgroundColor: color, color: '#fff', borderColor: color }
+                      : { backgroundColor: 'transparent', color, borderColor: `${color}40` }
+                    }
+                  >
+                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: color }} />
+                    {axis.charAt(0).toUpperCase() + axis.slice(1)}
+                  </button>
+                );
+              })}
+              {axisFilters.size > 0 && (
+                <button
+                  onClick={() => setAxisFilters(new Set())}
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <X className="w-3 h-3" />
+                  Clear
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -296,6 +333,7 @@ const DriftLanding = () => {
 
               const filtered = driftMonthlyDiscoveries.filter(entry => {
                 const hasTypeFilter = typeFilters.size > 0;
+                const hasAxisFilter = axisFilters.size > 0;
                 const booksMatch = entry.books.some(b => matchField(b.title, b.author, b.description, b.category));
                 const videosMatch = (entry.videos || []).some(v => matchField(v.title, v.speaker, v.description, v.category));
                 const songsMatch = (entry.songs || []).some(s => matchField(s.title, s.artist, s.description, s.category));
@@ -304,6 +342,19 @@ const DriftLanding = () => {
                 const artefactsMatch = (entry.artefacts || []).some(a => matchField(a.title, a.author, a.description, a.category));
                 const toolsMatch = driftTools.filter(t => t.month === entry.month && t.year === entry.year).some(t => matchField(t.name, t.description));
                 const monthMatch = matchField(getMonthName(entry.month), String(entry.year));
+
+                // Axis filter: check if any resource in this month matches selected axes
+                if (hasAxisFilter) {
+                  const allAxes = [
+                    ...entry.books.map(b => b.axis),
+                    ...(entry.videos || []).map(v => v.axis),
+                    ...(entry.songs || []).map(s => s.axis),
+                    ...(entry.podcasts || []).map(p => p.axis),
+                    ...(entry.articles || []).map(a => a.axis),
+                  ];
+                  const axisMatch = allAxes.some(a => axisFilters.has(a));
+                  if (!axisMatch) return false;
+                }
 
                 // If type filters are active, only show months that have matching content of those types
                 if (hasTypeFilter) {
