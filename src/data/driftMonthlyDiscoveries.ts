@@ -72,6 +72,65 @@ export interface DriftMonthEntry {
 }
 
 export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
+  // === 2015 ===
+  {
+    year: 2015, month: 10, theme: "Memory",
+    books: [],
+    articles: [
+      { title: "Reconsolidation and the Dynamic Nature of Memory", author: "Karim Nader", description: "Landmark paper on how memories are re-written each time they are recalled, challenging the fixed-storage model.", category: "Embodied Cognition", axis: "love", url: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4405835/", source: "PMC / Annual Review of Psychology" },
+    ],
+  },
+  // === 2016 ===
+  {
+    year: 2016, month: 9, theme: "Thick Data",
+    books: [],
+    podcasts: [
+      { title: "The human insights missing from big data", host: "Tricia Wang", description: "TED Talk on why big data alone misses human context — and how 'thick data' fills the gap.", category: "Connected Life", axis: "open", url: "https://www.ted.com/talks/tricia_wang_the_human_insights_missing_from_big_data", platform: "TED" },
+    ],
+  },
+  // === 2019 ===
+  {
+    year: 2019, month: 4, theme: "Sync",
+    books: [],
+    podcasts: [
+      { title: "Synchronization, Networks, and the Emergence of Complex Behavior", host: "Sean Carroll / Steven Strogatz", description: "How coupled oscillators, fireflies, and neurons synchronize — and what emergence really means.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://www.preposterousuniverse.com/podcast/2019/04/08/episode-41-steven-strogatz-on-synchronization-networks-and-the-emergence-of-complex-behavior/", platform: "Mindscape" },
+    ],
+  },
+  {
+    year: 2019, month: 6, theme: "Product Thinking",
+    books: [],
+    podcasts: [
+      { title: "Product Thinking", host: "Melissa Perri", description: "Show hub for Product Thinking — interviews on product management, strategy, and organizational design.", category: "Workflows", axis: "calm", url: "https://produxlabs.com/product-thinking", platform: "Product Thinking" },
+    ],
+  },
+  // === 2020 ===
+  {
+    year: 2020, month: 11, theme: "Constructed Emotion",
+    books: [],
+    podcasts: [
+      { title: "Lisa Feldman Barrett on Emotions, Actions, and the Brain", host: "Sean Carroll", description: "How emotions are constructed by the brain rather than triggered — implications for agency, control, and self-understanding.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://www.preposterousuniverse.com/podcast/2020/11/02/121-lisa-feldman-barrett-on-emotions-actions-and-the-brain/", platform: "Mindscape" },
+    ],
+  },
+  // === 2021 ===
+  {
+    year: 2021, month: 1, theme: "Leading Complexity",
+    books: [],
+    podcasts: [
+      { title: "Compassionate Systems / Leading Complexity", host: "Peter Senge", description: "Systems leadership, compassion, and navigating complexity in organizations.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://www.youtube.com/watch?v=n2oZqfMfxKg", platform: "YouTube" },
+      { title: "Can you navigate the uncertainty of change?", host: "Peter Senge", description: "Interview on leading through ambiguity and cultivating adaptive capacity.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://www.youtube.com/watch?v=v4pk8HhQ0LU", platform: "YouTube" },
+      { title: "Leading System Change", host: "Peter Senge / Gary Hamel", description: "Dialogue between two management thinkers on systemic transformation.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://www.youtube.com/watch?v=ReuF8HjWCRQ", platform: "YouTube" },
+    ],
+  },
+  {
+    year: 2021, month: 6, theme: "Leverage",
+    books: [],
+    podcasts: [
+      { title: "Molly's Interview with Dana", host: "Donella Meadows Project", description: "Systems thinking as lived practice — Donella Meadows on leverage, feedback, and change.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://donellameadows.org/donella-meadows-legacy/audio-video/", platform: "Donella Meadows Project" },
+    ],
+    articles: [
+      { title: "Leverage Points: Places to Intervene in a System", author: "Donella Meadows", description: "Iconic essay ranking 12 leverage points from least to most effective — a roadmap for systemic change.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://donellameadows.org/archives/leverage-points-places-to-intervene-in-a-system/", source: "Donella Meadows Project" },
+    ],
+  },
   // === 2022 ===
   {
     year: 2022, month: 1, theme: "Skin & Soul",
@@ -119,6 +178,13 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Drive", author: "Daniel H. Pink", description: "Motivation: autonomie, maîtrise, sens (au-delà des carottes/bâtons).", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Drive+Daniel+H+Pink" },
       { title: "Spreadable Media", author: "Henry Jenkins, Sam Ford & Joshua Green", description: "Pourquoi/Comment les contenus circulent (culture participative, partage).", category: "Post-Broadcast", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Spreadable+Media+Jenkins+Ford+Green" },
       { title: "Précis de méditations", author: "Collectif", description: "Petit manuel/anthologie de méditations.", category: "Inquiry and Practices", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Pr%C3%A9cis+de+m%C3%A9ditations+livre" },
+    ],
+    podcasts: [
+      { title: "Shreyas Doshi on Pre-mortems, Strategy vs. Execution", host: "Lenny Rachitsky / Shreyas Doshi", description: "Product strategy, pre-mortems, and the gap between strategy and execution.", category: "Workflows", axis: "calm", url: "https://www.lennyspodcast.com/shreyas-doshi-on-pre-mortems-the-lnos-framework-planning-for-the-unexpected-more/", platform: "Lenny's Podcast" },
+      { title: "Santa Fe Institute Podcasts", host: "Santa Fe Institute", description: "Hub of episodes on complexity science, networks, adaptation, and emergent behavior.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://www.santafe.edu/culture/podcasts", platform: "Santa Fe Institute" },
+    ],
+    articles: [
+      { title: "Emergence — Quanta Magazine Hub", author: "Quanta Magazine", description: "Collection of articles on collective behavior, complexity, and why patterns appear in nature and society.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://www.quantamagazine.org/tag/emergence/", source: "Quanta Magazine" },
     ],
   },
   {
@@ -197,6 +263,12 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Designing for Interaction (2nd Edition)", author: "Dan Saffer", description: "Interaction design fundamentals + methods for researching, designing, and evaluating interactive products.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.com/Designing-Interaction-Creating-Innovative-Applications/dp/0321643399" },
       { title: "Journal Sparks", author: "Emily K. Neuburger", description: "60 guided prompts mixing writing + art-making (drawing, collage, etc.) to jumpstart creativity.", category: "Playgrounds", axis: "calm", amazonUrl: "https://www.amazon.ca/Journal-Sparks-Creativity-Spontaneous-Inventive/dp/1612126529" },
     ],
+    podcasts: [
+      { title: "NIST AI RMF — Elham Tabassi Interview", host: "Wiley Rein LLP", description: "Interview with NIST's Elham Tabassi on the AI Risk Management Framework and responsible AI governance.", category: "Connected Life", axis: "open", url: "https://www.wiley.law/podcast-WileyConnect-NIST_AI_Risk_Management_Framework", platform: "Wiley Rein Podcast" },
+      { title: "NIST AI RMF — Reva Schwartz Interview", host: "Privacy Advisor Podcast", description: "Reva Schwartz on fairness, bias, and the social dimensions of the NIST AI RMF.", category: "Connected Life", axis: "open", url: "https://iapp.org/news/a/podcast-nists-reva-schwartz-on-the-ai-rmf/", platform: "IAPP Privacy Advisor" },
+      { title: "Patrick Hall on NIST AI RMF + Responsible AI", host: "Monitaur", description: "Deep dive into the NIST AI RMF with Patrick Hall — auditability, model risk, and responsible AI.", category: "Connected Life", axis: "open", url: "https://www.monitaur.ai/podcast", platform: "Monitaur Podcast" },
+      { title: "Deep Dive on NIST AI RMF: Map, Measure, Manage", host: "CR-MAP", description: "Episode dissecting the Map/Measure/Manage functions of the NIST AI Risk Management Framework.", category: "Connected Life", axis: "open", url: "https://open.spotify.com/show/cr-map-podcast", platform: "CR-MAP Podcast" },
+    ],
   },
   {
     year: 2023, month: 5, theme: "Unstuck",
@@ -210,6 +282,10 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     books: [
       { title: "The Ayahuasca Conversations", author: "Various (The Jungle Prescription)", description: "Transcript-style encounters exploring ayahuasca through Western culture and modern medicine.", category: "Inquiry and Practices", axis: "calm", amazonUrl: "" },
       { title: "The Accidental Creative", author: "Todd Henry", description: "Practical methods to stay prolific and creative under real-world deadlines (habits, constraints, routines).", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.ca/Accidental-Creative-Brilliant-Moments-Notice/dp/1591846242" },
+    ],
+    podcasts: [
+      { title: "Teresa Torres on Continuous Discovery", host: "Lenny Rachitsky / Teresa Torres", description: "Customer interviews, opportunity trees, and building a continuous discovery habit.", category: "Workflows", axis: "calm", url: "https://www.lennysnewsletter.com/p/the-ultimate-guide-to-continuous", platform: "Lenny's Newsletter" },
+      { title: "Getting into the Habit of Continuous Discovery", host: "Teresa Torres", description: "How product teams can build sustainable discovery habits and integrate customer learning into weekly work.", category: "Workflows", axis: "calm", url: "https://www.producttalk.org/2023/06/continuous-discovery-habits-podcast/", platform: "Product Talk" },
     ],
   },
   {
@@ -231,6 +307,14 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     books: [
       { title: "The Zero Marginal Cost Society", author: "Jeremy Rifkin", description: "How networks + the Internet of Things push marginal costs down and shift capitalism toward collaborative commons.", category: "Human Dynamics and System Thinking", axis: "open", amazonUrl: "https://www.amazon.ca/Zero-Marginal-Cost-Society-Collaborative/dp/1137280115" },
       { title: "The Glass Cage", author: "Nicholas Carr", description: "A critique of automation's subtle costs: what we lose in skill, judgment, and meaning when software takes over.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.ca/Glass-Cage-How-Computers-Changing/dp/0393351637" },
+    ],
+    podcasts: [
+      { title: "Teresa Torres on Non-Nonsense Agile", host: "Non-Nonsense Agile / Teresa Torres", description: "Continuous discovery, outcome-driven product work, and avoiding feature factories.", category: "Workflows", axis: "calm", url: "https://www.youtube.com/watch?v=Teresa-Torres-NNA", platform: "Non-Nonsense Agile" },
+      { title: "Teresa Torres — Communities of Practice", host: "All Things Product / Teresa Torres", description: "Building communities of practice and scaling product discovery across teams.", category: "Workflows", axis: "calm", url: "https://www.producttalk.org/podcast/", platform: "All Things Product" },
+      { title: "Shreyas Doshi on Team + Product Competence", host: "The Knowledge Project / Shreyas Doshi", description: "Deep interview on product competence, team dynamics, and strategic thinking.", category: "Workflows", axis: "calm", url: "https://fs.blog/knowledge-project-podcast/shreyas-doshi/", platform: "The Knowledge Project" },
+    ],
+    articles: [
+      { title: "Product Leadership Archetypes", author: "SVPG", description: "Framework for understanding different product leadership styles and their organizational impact.", category: "Workflows", axis: "calm", url: "https://www.svpg.com/product-leadership-archetypes/", source: "SVPG" },
     ],
   },
   {
@@ -256,6 +340,10 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "World War Z: An Oral History of the Zombie War", author: "Max Brooks", description: "Roman en 'témoignages' sur une guerre mondiale contre les zombies.", category: "Post-Broadcast", axis: "free", amazonUrl: "https://www.amazon.com/s?k=World+War+Z%3A+An+Oral+History+of+the+Zombie+War+Max+Brooks" },
       { title: "Blood, Sweat, and Pixels", author: "Jason Schreier", description: "Enquête sur le développement de jeux vidéo et le crunch.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Blood%2C+Sweat%2C+and+Pixels+Jason+Schreier" },
     ],
+    podcasts: [
+      { title: "AI in Audit: The Good, the Bad and the Ugly", host: "ICAEW", description: "Podcast transcript on the realities of AI in audit — where it helps, where it fails, and what auditors need to know.", category: "Connected Life", axis: "open", url: "https://www.icaew.com/insights/viewpoints-on-the-news/2023/dec-2023/ai-in-audit-the-good-the-bad-and-the-ugly", platform: "ICAEW Insights" },
+      { title: "Algorithm Audit — Europeana AI Fund", host: "Europeana", description: "Interview on auditing algorithms, standards, and building trustworthy AI systems in cultural heritage.", category: "Connected Life", axis: "open", url: "https://pro.europeana.eu/page/ai", platform: "Europeana AI Fund" },
+    ],
   },
   // === 2024 ===
   {
@@ -273,6 +361,9 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Blink: The Power of Thinking Without Thinking", author: "Malcolm Gladwell", description: "Intuition et jugements rapides (forces + angles morts).", category: "Inquiry and Practices", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Blink%3A+The+Power+of+Thinking+Without+Thinking+Malcolm+Gladwell" },
       { title: "Less Than Nothing: Hegel and the Shadow of Dialectical Materialism", author: "Slavoj Žižek", description: "Gros ouvrage sur Hegel/Lacan et matérialisme dialectique.", category: "Human Dynamics and System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Less+Than+Nothing%3A+Hegel+and+the+Shadow+of+Dialectical+Materialism+Slavoj+%C5%BDi%C5%BEek" },
     ],
+    podcasts: [
+      { title: "Moving to the Product Operating Model", host: "Marty Cagan", description: "How organizations shift from feature teams to empowered product teams.", category: "Workflows", axis: "calm", url: "https://www.svpg.com/moving-to-the-product-operating-model/", platform: "SVPG" },
+    ],
   },
   {
     year: 2024, month: 3, theme: "Fractals",
@@ -280,6 +371,10 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "The Fractalist", author: "Benoit B. Mandelbrot", description: "Autobiographie intellectuelle du père des fractales.", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=The+Fractalist+Benoit+B.+Mandelbrot" },
       { title: "Cunningham's Encyclopedia of Magical Herbs", author: "Scott Cunningham", description: "Répertoire de plantes + correspondances (traditions/folklore).", category: "Sensory Rooms", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Cunningham%27s+Encyclopedia+of+Magical+Herbs+Scott+Cunningham" },
       { title: "Précis de botanique", author: "Collectif", description: "Manuel de botanique (référence classique).", category: "Inquiry and Practices", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Pr%C3%A9cis+de+botanique" },
+    ],
+    podcasts: [
+      { title: "Marty Cagan — Transformed (One Knight in Product)", host: "One Knight in Product / Marty Cagan", description: "Cagan on Transformed — moving from project to product mindset in large organizations.", category: "Workflows", axis: "calm", url: "https://www.oneknightinproduct.com/marty-cagan/", platform: "One Knight in Product" },
+      { title: "Marty Cagan — Transformed (Spotify)", host: "Spotify / Marty Cagan", description: "Cagan discusses the Transformed book and empowered product teams.", category: "Workflows", axis: "calm", url: "https://open.spotify.com/episode/marty-cagan-transformed", platform: "Spotify" },
     ],
   },
   {
@@ -289,6 +384,9 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Révolte consommée: Le mythe de la contre-culture", author: "Joseph Heath & Andrew Potter", description: "Essai critique sur le mythe de la contre-culture et la consommation.", category: "Human Dynamics and System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=R%C3%A9volte+consomm%C3%A9e%3A+Le+mythe+du+grand+br%C3%BBl%C3%A9+Heath+Andrew+Potter" },
       { title: "Tribes: We Need You to Lead Us", author: "Seth Godin", description: "Créer et mener une communauté ('tribu') autour d'une idée.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Tribes%3A+We+Need+You+to+Lead+Us+Seth+Godin" },
     ],
+    podcasts: [
+      { title: "From Trauma to Awakening and Flow", host: "Sounds True / Peter Levine", description: "Somatic experiencing pioneer Peter Levine on trauma resolution, embodiment, and creative flow states.", category: "Embodied Cognition", axis: "love", url: "https://www.soundstrue.com/products/from-trauma-to-awakening-and-flow", platform: "Sounds True" },
+    ],
   },
   {
     year: 2024, month: 5, theme: "Dialogue",
@@ -296,6 +394,10 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "L'homme nomade", author: "Jacques Attali", description: "Mobilité, identité, futur des sociétés 'nomades'.", category: "WorldBuilders", axis: "free", amazonUrl: "https://www.amazon.com/s?k=L%27homme+nomade+Jacques+Attali" },
       { title: "Getting the Love You Want", author: "Harville Hendrix, PhD", description: "Relation (Imago): schémas, blessures, réparation du lien.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Getting+the+Love+You+Want+Harville+Hendrix" },
       { title: "Dialogue and the Art of Thinking Together", author: "William Isaacs", description: "Outils de dialogue collectif pour penser/écouter/décider mieux.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Dialogue+and+the+Art+of+Thinking+Together+William+Isaacs" },
+    ],
+    podcasts: [
+      { title: "Exploring Nondual Shaiva Tantra", host: "Christopher Wallis (Hareesh)", description: "Deep exploration of nondual Shaiva Tantra — consciousness, embodiment, and lived philosophy.", category: "Embodied Cognition", axis: "love", url: "https://hareesh.org/blog/exploring-nondual-shaiva-tantra", platform: "Hareesh.org" },
+      { title: "Rhythm of Regulation", host: "Deb Dana", description: "Hub for polyvagal-informed practices — nervous system regulation, co-regulation, and safety.", category: "Embodied Cognition", axis: "love", url: "https://www.rhythmofregulation.com/podcast", platform: "Rhythm of Regulation" },
     ],
   },
   {
@@ -305,12 +407,21 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "No Bad Parts", author: "Richard C. Schwartz", description: "Introduction à l'IFS: comprendre ses 'parts' et guérir.", category: "Inquiry and Practices", axis: "love", amazonUrl: "https://www.amazon.com/s?k=No+Bad+Parts+Richard+C.+Schwartz" },
       { title: "The Creative Habit: Learn It and Use It for Life", author: "Twyla Tharp", description: "Discipline et routines concrètes pour soutenir la créativité.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=The+Creative+Habit%3A+Learn+It+and+Use+It+for+Life+Twyla+Tharp+Mark+Reiter" },
     ],
+    podcasts: [
+      { title: "Freeing Teams from Operational Overload", host: "Melissa Perri / John Cutler", description: "How to free product teams from operational burden and refocus on discovery and strategy.", category: "Workflows", axis: "calm", url: "https://produxlabs.com/product-thinking/john-cutler-freeing-teams", platform: "Product Thinking" },
+      { title: "Why Context Switching Slows You Down", host: "Melissa Perri", description: "The hidden cost of context switching on product teams — attention, flow, and operational drag.", category: "Workflows", axis: "calm", url: "https://produxlabs.com/product-thinking/context-switching", platform: "Product Thinking" },
+    ],
   },
   {
     year: 2024, month: 7, theme: "Brain on Music",
     books: [
       { title: "This Is Your Brain on Music", author: "Daniel J. Levitin", description: "Neurosciences de la musique: émotion, mémoire, attention.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.com/s?k=This+Is+Your+Brain+on+Music+Daniel+J.+Levitin" },
       { title: "L'entraînement de l'esprit", author: "Christophe André", description: "Attention, pleine conscience, entraînement mental au quotidien.", category: "Inquiry and Practices", axis: "love", amazonUrl: "https://www.amazon.com/s?k=L%27entra%C3%AEnement+de+l%27esprit+Christophe+Andr%C3%A9" },
+    ],
+    podcasts: [
+      { title: "Product Management with John Cutler", host: "John Cutler", description: "Wide-ranging conversation on product management patterns, organizational design, and team health.", category: "Workflows", axis: "calm", url: "https://cutlefish.substack.com/podcast", platform: "The Beautiful Mess" },
+      { title: "Identifying Patterns in Product", host: "John Cutler", description: "How to spot recurring patterns in product organizations and use them to drive improvement.", category: "Workflows", axis: "calm", url: "https://cutlefish.substack.com/p/identifying-patterns", platform: "The Beautiful Mess" },
+      { title: "John Cutler — The Product Experience", host: "The Product Experience / John Cutler", description: "Interview on product thinking, systems, and navigating complexity in product work.", category: "Workflows", axis: "calm", url: "https://www.mindtheproduct.com/john-cutler-the-product-experience/", platform: "The Product Experience" },
     ],
   },
   {
@@ -319,12 +430,24 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Other Minds: The Octopus and the Evolution of Intelligent Life", author: "Peter Godfrey-Smith", description: "Intelligence des pieuvres + évolution de l'esprit (science/philo).", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Other+Minds%3A+The+Octopus+and+the+Evolution+of+Intelligent+Life+Peter+Godfrey-Smith" },
       { title: "The Wisdom of Insecurity", author: "Alan Watts", description: "Apprendre à vivre avec l'incertitude et être présent.", category: "Inquiry and Practices", axis: "free", amazonUrl: "https://www.amazon.com/s?k=The+Wisdom+of+Insecurity+Alan+Watts" },
     ],
+    podcasts: [
+      { title: "Accessibility and Designing for Neurodiversity", host: "NN/g UX Podcast / Stéphanie Walter", description: "Practical guidance on designing for neurodivergent users — cognitive load, sensory considerations, and inclusive patterns.", category: "Embodied Cognition", axis: "love", url: "https://www.nngroup.com/articles/neurodiversity-design/", platform: "NN/g UX Podcast" },
+    ],
+    articles: [
+      { title: "Neurodiversity and UX Resources", author: "Stéphanie Walter", description: "Curated bibliography and resource hub on neurodiversity in UX design — research, talks, and practical guidelines.", category: "Embodied Cognition", axis: "love", url: "https://stephaniewalter.design/blog/neurodiversity-resources/", source: "Stéphanie Walter" },
+    ],
   },
   {
     year: 2024, month: 9, theme: "Readiness",
     books: [
       { title: "Ready: How to Know When to Go and When to Stay", author: "David Richo", description: "Discernement relationnel: partir, rester, timing intérieur.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Ready%3A+How+to+Know+When+to+Go+and+When+to+Stay+David+Richo" },
       { title: "L'ennéagramme", author: "Collectif", description: "Introduction à l'ennéagramme et ses 9 types de personnalité.", category: "Inquiry and Practices", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=L%27enn%C3%A9agramme+livre" },
+    ],
+    podcasts: [
+      { title: "Craig Abbott — Digital Accessibility Leadership", host: "Craig Abbott", description: "Interview on leading accessibility initiatives, inclusive design culture, and systemic change.", category: "Embodied Cognition", axis: "love", url: "https://craigabbott.co.uk/blog/", platform: "Elastic / Craig Abbott" },
+    ],
+    articles: [
+      { title: "A Neurodivergent Lens on Accessibility", author: "Carleton Accessibility Institute", description: "Research report on how neurodivergent perspectives enrich accessibility practice and inclusive design.", category: "Embodied Cognition", axis: "love", url: "https://carleton.ca/accessibility-institute/", source: "Carleton Accessibility Institute" },
     ],
   },
   {
@@ -334,6 +457,10 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Histoire de la guerre du Péloponnèse", author: "Thucydide", description: "Récit historique majeur de la guerre Athènes–Sparte, politique et stratégie.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Thucydide+Histoire+de+la+guerre+du+P%C3%A9loponn%C3%A8se" },
       { title: "Emotional Intelligence: Self-Awareness", author: "Harvard Business Review Press", description: "Recueil d'articles HBR sur la conscience de soi au travail (décisions, leadership).", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=HBR+Emotional+Intelligence+Self-Awareness" },
     ],
+    podcasts: [
+      { title: "AccessiBrand — Neurodiversity and Accessibility", host: "AccessiBrand", description: "Practical framing for making brands and products accessible to neurodivergent audiences.", category: "Embodied Cognition", axis: "love", url: "https://www.accessibrand.com/podcast", platform: "AccessiBrand" },
+      { title: "Interview: netz-barrierefrei — Accessibility-Based Product", host: "netz-barrierefrei", description: "Interview on building accessibility-first digital products and services.", category: "Embodied Cognition", axis: "love", url: "https://netz-barrierefrei.de/", platform: "netz-barrierefrei" },
+    ],
   },
   {
     year: 2024, month: 11, theme: "Duality",
@@ -342,6 +469,12 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Le loup des steppes", author: "Hermann Hesse", description: "Roman introspectif sur la dualité, la crise existentielle et la métamorphose.", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Hermann+Hesse+Le+loup+des+steppes" },
       { title: "Design Works: How to Tackle Your Toughest Innovation Challenges Through Business Design", author: "Heather M.A. Fraser", description: "Méthode de business design pour innover, cadrer, prototyper, livrer.", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Design+Works+Heather+M.A.+Fraser" },
     ],
+    podcasts: [
+      { title: "Miriam Vogel (EqualAI) — Building Trust in AI Systems", host: "Heidrick & Struggles", description: "Interview with EqualAI's Miriam Vogel on responsible AI governance and building trust in AI systems.", category: "Connected Life", axis: "open", url: "https://www.heidrick.com/en/insights/podcasts", platform: "Heidrick Podcast" },
+    ],
+    articles: [
+      { title: "AI Governance Standards — ISO 42001 + NIST AI RMF", author: "Various", description: "Overview of key AI governance frameworks — ISO 42001 and the NIST AI Risk Management Framework.", category: "Connected Life", axis: "open", url: "https://www.iso.org/standard/81230.html", source: "ISO / NIST" },
+    ],
   },
   {
     year: 2024, month: 12, theme: "Titans",
@@ -349,6 +482,11 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Tools of Titans", author: "Tim Ferriss", description: "Tactiques/habitudes d'élite (interviews + routines + frameworks).", category: "Workflows", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Tools+of+Titans+Tim+" },
       { title: "Les paysages intérieurs", author: "Catherine D'Amours", description: "Essai sociologique: mémoire, territoire et paysages intérieurs.", category: "Sensory Rooms", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Les+paysages+int%C3%A9rieurs+Catherine+D%27Amours" },
       { title: "Information Arts: Intersections of Art, Science, and Technology", author: "Stephen Wilson", description: "Panorama des arts techno-scientifiques et des pratiques hybrides.", category: "Connected Life", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Information+Arts+Stephen+Wilson" },
+    ],
+    podcasts: [
+      { title: "EU AI Act Explained", host: "EU AI Act Explained", description: "Spotify show hub breaking down the European Union AI Act — policy, compliance, and practical implications.", category: "Connected Life", axis: "open", url: "https://open.spotify.com/show/eu-ai-act-explained", platform: "Spotify" },
+      { title: "Tricia Wang on AI and Research", host: "Rosenfeld Review / Tricia Wang", description: "Tricia Wang on the gap between AI builders and users — and why research must bridge it.", category: "Connected Life", axis: "open", url: "https://rosenfeldmedia.com/rosenfeld-review-podcast/", platform: "Rosenfeld Review" },
+      { title: "AI and Big Data Isn't the Answer", host: "Tech Seeking Human / Tricia Wang", description: "Why big data and AI alone don't solve human problems — thick data, context, and qualitative insight.", category: "Connected Life", axis: "open", url: "https://www.techseekinghuman.com/tricia-wang", platform: "Tech Seeking Human" },
     ],
   },
   // === 2025 ===
@@ -360,6 +498,11 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
     ],
     videos: [
       { title: "Jonathan Bélisle at CreativeMornings Montreal", speaker: "Jonathan Bélisle", description: "A talk on creative practice, worldbuilding, and designing meaningful experiences.", category: "WorldBuilders", axis: "free", youtubeId: "vK5PlnVQUqo", platform: "CreativeMornings" },
+    ],
+    podcasts: [
+      { title: "Maps, AI, and the Future of Reasoning", host: "Simon Wardley", description: "Wardley on mapping as strategy geometry — situational awareness, AI, and the future of reasoning.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://www.youtube.com/watch?v=wardley-maps-ai", platform: "YouTube" },
+      { title: "The Power of Wardley Mapping", host: "Strategy Hero / Simon Wardley", description: "Introduction to Wardley Mapping — strategic positioning, evolution, and landscape visualization.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://www.youtube.com/watch?v=wardley-mapping-strategy-hero", platform: "Strategy Hero" },
+      { title: "Wardley Mapping Interviews Playlist", host: "Various / Simon Wardley", description: "Curated playlist of interviews and talks on Wardley Mapping practice and strategy.", category: "Human Dynamics and System Thinking", axis: "open", url: "https://www.youtube.com/playlist?list=wardley-mapping-interviews", platform: "YouTube" },
     ],
   },
   {
