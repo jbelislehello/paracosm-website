@@ -452,9 +452,13 @@ const DriftLanding = () => {
               const bookCount = driftMonthlyDiscoveries.reduce((sum, entry) => sum + entry.books.filter(b => b.axis === axis.key).length, 0);
               const extraBookCount = driftLibraryExtras.filter(b => b.axis === axis.key).length;
               const videoCount = driftMonthlyDiscoveries.reduce((sum, entry) => sum + (entry.videos || []).filter(v => v.axis === axis.key).length, 0);
+              const podcastCount = driftMonthlyDiscoveries.reduce((sum, entry) => sum + (entry.podcasts || []).filter(p => p.axis === axis.key).length, 0);
+              const articleCount = driftMonthlyDiscoveries.reduce((sum, entry) => sum + (entry.articles || []).filter(a => a.axis === axis.key).length, 0);
+              const songCount = driftMonthlyDiscoveries.reduce((sum, entry) => sum + (entry.songs || []).filter(s => s.axis === axis.key).length, 0);
               const monthlyArtefactCount = driftMonthlyDiscoveries.reduce((sum, entry) => sum + (entry.artefacts || []).filter(a => a.axis === axis.key).length, 0);
               const libraryArtefactCount = driftLibraryArtefacts.filter(a => a.axis === axis.key).length;
-              const totalCount = bookCount + extraBookCount + videoCount + monthlyArtefactCount + libraryArtefactCount;
+              const toolCount = driftTools.filter(t => t.axis === axis.key).length;
+              const totalCount = bookCount + extraBookCount + videoCount + podcastCount + articleCount + songCount + monthlyArtefactCount + libraryArtefactCount + toolCount;
 
               return (
                 <Link key={axis.key} to={`/drift/library/${axis.key}`}>
