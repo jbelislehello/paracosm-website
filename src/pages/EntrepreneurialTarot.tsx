@@ -1,16 +1,57 @@
 import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Sparkles, RotateCcw, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Sparkles, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Footer from "@/components/Footer";
 import {
   TarotCard, MajorArcanaCard, MinorArcanaCard,
-  majorArcana, minorArcana, fullDeck,
-  drawCards, drawSpread,
+  majorArcana, minorArcana,
+  drawCards,
   suitGradients, suitColors, dimensionColors,
   TarotSuit, ChordsDimension,
 } from "@/data/entrepreneurialTarot";
+
+// ─── Sacred Geometry SVG for card back ───
+const SacredGeometry = () => (
+  <svg viewBox="0 0 100 100" className="w-24 h-24 opacity-30 animate-tarot-rotate-slow">
+    <circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" strokeWidth="0.5" />
+    <circle cx="50" cy="50" r="20" fill="none" stroke="currentColor" strokeWidth="0.3" />
+    <circle cx="50" cy="50" r="10" fill="none" stroke="currentColor" strokeWidth="0.3" />
+    <polygon points="50,20 76,65 24,65" fill="none" stroke="currentColor" strokeWidth="0.4" />
+    <polygon points="50,80 24,35 76,35" fill="none" stroke="currentColor" strokeWidth="0.4" />
+    {[0, 60, 120, 180, 240, 300].map((a) => (
+      <line
+        key={a}
+        x1="50" y1="50"
+        x2={50 + 30 * Math.cos((a * Math.PI) / 180)}
+        y2={50 + 30 * Math.sin((a * Math.PI) / 180)}
+        stroke="currentColor" strokeWidth="0.2" opacity="0.5"
+      />
+    ))}
+  </svg>
+);
+
+// ─── Ambient floating particles ───
+const AmbientParticles = () => (
+  <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+    {Array.from({ length: 12 }).map((_, i) => (
+      <div
+        key={i}
+        className="absolute rounded-full animate-tarot-stars"
+        style={{
+          width: `${2 + Math.random() * 3}px`,
+          height: `${2 + Math.random() * 3}px`,
+          left: `${Math.random() * 100}%`,
+          top: `${Math.random() * 100}%`,
+          background: ['#8b5cf6', '#f59e0b', '#ef4444', '#22c55e', '#3b82f6'][i % 5],
+          animationDelay: `${i * 0.5}s`,
+          animationDuration: `${3 + Math.random() * 4}s`,
+        }}
+      />
+    ))}
+  </div>
+);
 
 // ─── Card Component ───
 const TarotCardDisplay = ({
@@ -22,13 +63,13 @@ const TarotCardDisplay = ({
   const gradient = isMajor
     ? suitGradients[(card as MajorArcanaCard).suit]
     : 'from-slate-600 to-slate-800';
-  const accentColor = isMajor
+  const glowColor = isMajor
     ? suitColors[(card as MajorArcanaCard).suit]
     : dimensionColors[(card as MinorArcanaCard).dimension];
 
   return (
     <div
-      className="w-56 h-80 cursor-pointer select-none"
+      className="w-56 h-80 cursor-pointer select-none group"
       style={{ perspective: '1000px' }}
       onClick={onClick}
     >
@@ -41,34 +82,57 @@ const TarotCardDisplay = ({
       >
         {/* Back */}
         <div
-          className="absolute inset-0 rounded-xl bg-gradient-to-br from-slate-800 to-slate-950 border-2 border-slate-600 flex items-center justify-center"
-          style={{ backfaceVisibility: 'hidden' }}
+          className="absolute inset-0 rounded-xl border-2 border-slate-600 flex items-center justify-center overflow-hidden tarot-card-back-pattern group-hover:border-amber-500/50 transition-colors duration-500"
+          style={{
+            backfaceVisibility: 'hidden',
+            background: 'linear-gradient(135deg, #1e1b4b 0%, #0f172a 50%, #1e1b4b 100%)',
+          }}
         >
-          <div className="text-center space-y-2">
-            <Sparkles className="w-10 h-10 text-amber-400 mx-auto" />
-            <p className="text-xs font-medium text-slate-400 tracking-widest uppercase">Calm Magic</p>
-            <p className="text-[10px] text-slate-500">Entrepreneurial Tarot</p>
+          {/* Shimmer overlay */}
+          <div className="absolute inset-0 animate-tarot-shimmer rounded-xl" />
+          {/* Corner ornaments */}
+          {['-top-0.5 -left-0.5', '-top-0.5 -right-0.5', '-bottom-0.5 -left-0.5', '-bottom-0.5 -right-0.5'].map((pos, i) => (
+            <div key={i} className={`absolute ${pos} w-6 h-6 border-amber-400/40 ${i < 2 ? 'border-t' : 'border-b'} ${i % 2 === 0 ? 'border-l' : 'border-r'}`} />
+          ))}
+          <div className="text-center space-y-3 z-10 text-amber-300/80">
+            <SacredGeometry />
+            <p className="text-[10px] font-medium tracking-[0.3em] uppercase">Calm Magic</p>
+            <p className="text-[8px] text-slate-500 tracking-widest">Entrepreneurial Tarot</p>
+          </div>
+          {/* Orbiting dot */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="animate-tarot-orbit">
+              <div className="w-1.5 h-1.5 rounded-full bg-amber-400/60" />
+            </div>
           </div>
         </div>
 
         {/* Front */}
         <div
-          className={`absolute inset-0 rounded-xl bg-gradient-to-br ${gradient} p-4 flex flex-col justify-between text-white shadow-xl`}
+          className={`absolute inset-0 rounded-xl bg-gradient-to-br ${gradient} p-4 flex flex-col justify-between text-white shadow-xl overflow-hidden`}
           style={{
             backfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',
+            boxShadow: flipped ? `0 0 25px ${glowColor}40, 0 0 50px ${glowColor}15` : undefined,
           }}
         >
-          <div>
+          {/* Subtle pattern on front */}
+          <div className="absolute inset-0 opacity-10"
+            style={{
+              backgroundImage: `radial-gradient(circle at 20% 80%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)`,
+              backgroundSize: '30px 30px',
+            }}
+          />
+          <div className="relative z-10">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[10px] uppercase tracking-widest opacity-80">
                 {isMajor ? (card as MajorArcanaCard).suit : (card as MinorArcanaCard).dimensionName}
               </span>
               {reversed && (
-                <span className="text-[9px] bg-white/20 px-1.5 py-0.5 rounded">Reversed</span>
+                <span className="text-[9px] bg-white/20 px-1.5 py-0.5 rounded backdrop-blur-sm">Reversed</span>
               )}
             </div>
-            <div className="text-4xl font-bold mb-1" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.3)' }}>
+            <div className="text-4xl font-bold mb-1" style={{ textShadow: `0 2px 12px ${glowColor}80` }}>
               {isMajor ? (card as MajorArcanaCard).letter : (card as MinorArcanaCard).dimension}
             </div>
             <h3 className="font-bold text-sm">{card.name}</h3>
@@ -77,7 +141,7 @@ const TarotCardDisplay = ({
             )}
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 relative z-10">
             <p className="text-[10px] italic opacity-90 leading-relaxed">"{card.question}"</p>
             <div className="border-t border-white/30 pt-2">
               <p className="text-[9px]">
@@ -98,17 +162,23 @@ const MiniCard = ({ card, onClick }: { card: TarotCard; onClick: () => void }) =
   const gradient = isMajor
     ? suitGradients[(card as MajorArcanaCard).suit]
     : 'from-slate-600 to-slate-700';
+  const glowColor = isMajor
+    ? suitColors[(card as MajorArcanaCard).suit]
+    : dimensionColors[(card as MinorArcanaCard).dimension];
 
   return (
     <button
       onClick={onClick}
-      className={`rounded-lg bg-gradient-to-br ${gradient} p-3 text-white text-left hover:scale-105 transition-transform shadow-md`}
+      className={`rounded-lg bg-gradient-to-br ${gradient} p-3 text-white text-left hover:scale-105 transition-all duration-300 shadow-md hover:shadow-lg relative overflow-hidden group`}
+      style={{ '--glow': glowColor } as React.CSSProperties}
     >
-      <div className="text-2xl font-bold">
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{ boxShadow: `inset 0 0 20px ${glowColor}30` }} />
+      <div className="text-2xl font-bold relative z-10" style={{ textShadow: `0 1px 8px ${glowColor}60` }}>
         {isMajor ? (card as MajorArcanaCard).letter : (card as MinorArcanaCard).dimension}
       </div>
-      <p className="text-xs font-semibold mt-1">{card.name}</p>
-      <p className="text-[9px] opacity-70 mt-0.5 line-clamp-2">{card.question}</p>
+      <p className="text-xs font-semibold mt-1 relative z-10">{card.name}</p>
+      <p className="text-[9px] opacity-70 mt-0.5 line-clamp-2 relative z-10">{card.question}</p>
     </button>
   );
 };
@@ -121,15 +191,16 @@ const CardDetail = ({ card, onClose }: { card: TarotCard; onClose: () => void })
     : dimensionColors[(card as MinorArcanaCard).dimension];
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in" onClick={onClose}>
       <div
-        className="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl"
+        className="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl animate-scale-in"
+        style={{ boxShadow: `0 0 40px ${accentColor}25` }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center gap-3 mb-4">
           <div
-            className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl"
-            style={{ backgroundColor: accentColor }}
+            className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg"
+            style={{ backgroundColor: accentColor, boxShadow: `0 0 20px ${accentColor}50` }}
           >
             {isMajor ? (card as MajorArcanaCard).letter : (card as MinorArcanaCard).dimension}
           </div>
@@ -190,7 +261,9 @@ const EntrepreneurialTarot = () => {
   const dimensions: ChordsDimension[] = ['C', 'H', 'O', 'R', 'D', 'S'];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/30 to-slate-950 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/30 to-slate-950 text-white relative">
+      <AmbientParticles />
+
       {/* Nav */}
       <header className="fixed w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-purple-900/30">
         <div className="container flex items-center justify-between py-3 px-4">
@@ -204,9 +277,12 @@ const EntrepreneurialTarot = () => {
       </header>
 
       {/* Hero */}
-      <section className="pt-24 pb-12 px-4 text-center">
+      <section className="pt-24 pb-12 px-4 text-center relative">
         <div className="container max-w-3xl mx-auto">
-          <Sparkles className="w-10 h-10 text-amber-400 mx-auto mb-4" />
+          <div className="relative inline-block mb-4">
+            <Sparkles className="w-10 h-10 text-amber-400 animate-tarot-float" />
+            <div className="absolute inset-0 w-10 h-10 rounded-full animate-tarot-glow" />
+          </div>
           <h1 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-amber-400 to-rose-400 mb-4">
             The Calm Magic Tarot
           </h1>
@@ -218,13 +294,13 @@ const EntrepreneurialTarot = () => {
       </section>
 
       {/* Draw Section */}
-      <section className="pb-12 px-4">
+      <section className="pb-12 px-4 relative z-10">
         <div className="container max-w-4xl mx-auto text-center">
           <div className="flex flex-wrap gap-3 justify-center mb-8">
-            <Button onClick={() => handleDraw(1)} variant="outline" className="border-purple-600 text-purple-300 hover:bg-purple-900/30">
+            <Button onClick={() => handleDraw(1)} variant="outline" className="border-purple-600 text-purple-300 hover:bg-purple-900/30 hover:shadow-[0_0_15px_rgba(139,92,246,0.3)] transition-shadow">
               Draw 1 Card
             </Button>
-            <Button onClick={() => handleDraw(3)} variant="outline" className="border-amber-600 text-amber-300 hover:bg-amber-900/30">
+            <Button onClick={() => handleDraw(3)} variant="outline" className="border-amber-600 text-amber-300 hover:bg-amber-900/30 hover:shadow-[0_0_15px_rgba(245,158,11,0.3)] transition-shadow">
               3-Card Spread
             </Button>
             {drawnCards.length > 0 && (
@@ -237,16 +313,18 @@ const EntrepreneurialTarot = () => {
           {drawnCards.length > 0 && (
             <div className="flex flex-wrap gap-6 justify-center">
               {drawnCards.map((card, idx) => (
-                <div key={card.id + idx} className="flex flex-col items-center gap-2">
+                <div key={card.id + idx} className="flex flex-col items-center gap-2 animate-fade-in" style={{ animationDelay: `${idx * 150}ms` }}>
                   {spreadMode && (
                     <p className="text-xs text-slate-500 font-medium">{spreadLabels[idx]}</p>
                   )}
-                  <TarotCardDisplay
-                    card={card}
-                    flipped={flippedCards.has(idx)}
-                    reversed={reversedCards.has(idx)}
-                    onClick={() => flipCard(idx)}
-                  />
+                  <div className={flippedCards.has(idx) ? 'animate-tarot-float' : ''} style={{ animationDelay: `${idx * 300}ms` }}>
+                    <TarotCardDisplay
+                      card={card}
+                      flipped={flippedCards.has(idx)}
+                      reversed={reversedCards.has(idx)}
+                      onClick={() => flipCard(idx)}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
@@ -259,7 +337,7 @@ const EntrepreneurialTarot = () => {
       </section>
 
       {/* Deck Browser */}
-      <section className="pb-20 px-4">
+      <section className="pb-20 px-4 relative z-10">
         <div className="container max-w-5xl mx-auto">
           <h2 className="text-xl font-bold text-center mb-6">Browse the Full Deck</h2>
           <Tabs defaultValue="magic" className="w-full">
@@ -268,7 +346,7 @@ const EntrepreneurialTarot = () => {
                 <TabsTrigger
                   key={s}
                   value={s}
-                  className="text-xs uppercase tracking-wider data-[state=active]:text-white"
+                  className="text-xs uppercase tracking-wider data-[state=active]:text-white data-[state=active]:shadow-[0_0_10px_var(--accent)]"
                   style={{ '--accent': suitColors[s] } as React.CSSProperties}
                 >
                   {s}
