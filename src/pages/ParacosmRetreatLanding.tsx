@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,6 +7,80 @@ import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
 import Footer from "@/components/Footer";
+import { drawCards, suitGradients, suitColors, TarotCard, MajorArcanaCard, MinorArcanaCard } from "@/data/entrepreneurialTarot";
+
+// ─── Mini Tarot Preview for Retreat ───
+const TarotPreviewSection = ({ t }: { t: (key: string) => string }) => {
+  const [cards, setCards] = useState<TarotCard[]>([]);
+  const [flipped, setFlipped] = useState<Set<number>>(new Set());
+  const labels = [t("retreat.tarot.past_label"), t("retreat.tarot.present_label"), t("retreat.tarot.future_label")];
+
+  const handleDraw = useCallback(() => {
+    setCards(drawCards(3));
+    setFlipped(new Set());
+  }, []);
+
+  const flipCard = (idx: number) => {
+    setFlipped((prev) => { const n = new Set(prev); n.has(idx) ? n.delete(idx) : n.add(idx); return n; });
+  };
+
+  return (
+    <section className="pb-16 px-4">
+      <div className="container max-w-5xl mx-auto text-center">
+        <Sparkles className="w-7 h-7 text-amber-500 mx-auto mb-3" />
+        <h2 className="text-2xl md:text-3xl font-bold mb-2">{t("retreat.tarot.title")}</h2>
+        <p className="text-sm text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-6">
+          {t("retreat.tarot.description")}
+        </p>
+
+        {cards.length === 0 ? (
+          <Button onClick={handleDraw} className="bg-gradient-to-r from-purple-600 to-amber-600 hover:from-amber-600 hover:to-purple-600 text-white">
+            {t("retreat.tarot.draw_prompt")}
+          </Button>
+        ) : (
+          <div className="flex flex-wrap gap-4 justify-center mb-6">
+            {cards.map((card, idx) => {
+              const isMajor = card.arcana === 'major';
+              const gradient = isMajor ? suitGradients[(card as MajorArcanaCard).suit] : 'from-slate-600 to-slate-800';
+              return (
+                <div key={card.id + idx} className="flex flex-col items-center gap-1">
+                  <p className="text-[10px] text-slate-500 font-medium">{labels[idx]}</p>
+                  <div
+                    className="w-36 h-52 cursor-pointer"
+                    style={{ perspective: '800px' }}
+                    onClick={() => flipCard(idx)}
+                  >
+                    <div
+                      className="relative w-full h-full transition-transform duration-700"
+                      style={{ transformStyle: 'preserve-3d', transform: flipped.has(idx) ? 'rotateY(180deg)' : '' }}
+                    >
+                      <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-slate-700 to-slate-900 border border-slate-600 flex items-center justify-center" style={{ backfaceVisibility: 'hidden' }}>
+                        <Sparkles className="w-6 h-6 text-amber-400" />
+                      </div>
+                      <div className={`absolute inset-0 rounded-lg bg-gradient-to-br ${gradient} p-3 text-white flex flex-col justify-between`} style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
+                        <div>
+                          <p className="text-2xl font-bold">{isMajor ? (card as MajorArcanaCard).letter : (card as MinorArcanaCard).dimension}</p>
+                          <p className="text-[10px] font-semibold">{card.name}</p>
+                        </div>
+                        <p className="text-[8px] italic opacity-90 leading-snug">"{card.question}"</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        <Link to="/tarot">
+          <Button variant="outline" className="mt-4 border-purple-300 text-purple-700 dark:text-purple-300 hover:bg-purple-50 dark:hover:bg-purple-900/20">
+            {t("retreat.tarot.explore_deck")} →
+          </Button>
+        </Link>
+      </div>
+    </section>
+  );
+};
 
 const ParacosmRetreatLanding = () => {
   const { t } = useLanguage();
@@ -150,6 +224,9 @@ const ParacosmRetreatLanding = () => {
           </div>
         </div>
       </section>
+
+      {/* Entrepreneurial Tarot Section */}
+      <TarotPreviewSection t={t} />
 
       {/* Audience & Outcomes */}
       <section className="pb-16 px-4">
