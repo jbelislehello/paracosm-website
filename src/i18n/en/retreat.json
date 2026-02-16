@@ -17,7 +17,7 @@
     "activities": {
       "0": "Sunrise meditation and labyrinth walk",
       "1": "Fire circle and communal song rituals",
-      "2": "Life mapping and symbolic art workshops",
+      "2": "Entrepreneurial Tarot reading and reflection circle",
       "3": "Oral history sharing and empathy building"
     }
   },
@@ -39,7 +39,7 @@
     "activities": {
       "0": "Alternative organizational model workshops",
       "1": "Collaborative economics simulation games",
-      "2": "Climate leadership and community mapping",
+      "2": "Personal Arcana synthesis and leadership card creation",
       "3": "Council and circle governance practice"
     }
   },
@@ -65,6 +65,15 @@
   "location": "Azores Island, Portugal",
   "venue": "Botanico House",
   "date": "August 25, 2026",
+  "tarot": {
+    "title": "The Calm Magic Entrepreneurial Tarot",
+    "description": "A reflective leadership tool drawn from the LOVE · MAGIC · CALM · OPEN · FREE quadrants. Use the tarot to explore entrepreneurial archetypes, surface blind spots, and cultivate relational intelligence.",
+    "draw_prompt": "Draw three cards to explore your leadership journey",
+    "explore_deck": "Explore the Full Deck",
+    "past_label": "Past Tension",
+    "present_label": "Present Drift",
+    "future_label": "Future Tune"
+  },
   "invitation": {
     "title": "Request Your Invitation",
     "description": "Limited spaces available. Join the invitation list for this exclusive leadership retreat.",
