@@ -2,28 +2,30 @@
 
 # Add Paracosm Retreat to Events Section
 
-## Problem
-The retreat is currently only linked from the Footer, Ecosystem section, and Tarot page -- but **not** from the "Upcoming Learning Events" section on the homepage, which is where users naturally look for upcoming events.
+## What's Missing
+The "Upcoming Learning Events" section on the homepage does not include the Paracosm Retreat. It only shows 4 events (GL!TCH Session, AI & Municipalites, Transformation Design Lab, and the Relational Intelligence Summit). The retreat is linked from the Footer, Ecosystem section, and Tarot page -- but not here, where users naturally look.
 
-## Fix
+## What We'll Do
+
+Add the retreat as a new event card in the Events section so it appears under both "All" and "Retreats" filters:
+
+- **Name**: Paracosm Retreat -- Relational Intelligence
+- **Date**: August 25-27, 2026
+- **Location**: Botanico House, Azores Island
+- **CTA**: "Request Invitation"
+- **Links to**: `/paracosm-retreat` (the existing landing page)
+
+We'll also make the button navigate within the app (instead of opening a new browser tab) since it's an internal page.
+
+## Technical Details
 
 **File: `src/components/ParacosmEventsSection.tsx`**
 
-1. Add a new event card to the `events` array:
-   - **Name**: "Paracosm Retreat -- Relational Intelligence"
-   - **Date**: August 25-27, 2026
-   - **Location**: Botanico House, Azores Island
-   - **Category**: Retreats
-   - **CTA**: "Request Invitation"
-   - **Link**: `/paracosm-retreat` (internal route)
+1. Add a new entry to the `events` array with `category: "Retreats"` and `link: "/paracosm-retreat"`
+2. Import `Link` from `react-router-dom`
+3. Update the CTA button rendering: if the link starts with `/`, wrap it in a React Router `Link`; otherwise keep the existing `<a>` tag for external URLs
 
-2. Update the CTA button rendering logic to use React Router's `Link` component for internal paths (starting with `/`) instead of an `<a>` tag, so clicking navigates within the app rather than opening a new tab.
-
-## Result
-The retreat will appear in the Events section under both "All" and "Retreats" filters, making it immediately discoverable alongside other events.
-
-## Files Changed
-| File | Action |
+| File | Change |
 |------|--------|
 | `src/components/ParacosmEventsSection.tsx` | Add retreat event + internal link handling |
 
