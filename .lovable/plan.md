@@ -1,124 +1,57 @@
 
+# Add Multi-Card Picker for Constellation Cells
 
-# Add Smooth Scroll Animations and Entrance Transitions to the Tarot Page
+## What It Does
 
-## Overview
+When a constellation grid cell contains 2 or more cards, clicking it opens a small popover menu listing all cards in that cell. Users can then pick which card to view. Single-card cells continue to select the card directly on click.
 
-Each major section of the `/tarot` page will animate into view as the user scrolls, creating an immersive, progressive reveal effect using the Intersection Observer API.
+## How It Works
 
-## What Changes
+Currently, line 99 only handles single-card cells: `onClick={() => cards.length === 1 && onCardSelect(cards[0])}`. Multi-card cells are clickable but do nothing.
 
-### 1. New reusable hook: `useScrollReveal`
-
-A custom hook wrapping `IntersectionObserver`. Returns a `ref` and a boolean `isVisible`. Once the element enters the viewport, `isVisible` flips to `true` permanently (one-shot reveal). Disconnects the observer after triggering.
-
-### 2. New CSS keyframes in `src/index.css`
-
-| Keyframe | Effect |
-|----------|--------|
-| `scroll-fade-up` | opacity 0 + translateY(30px) to full visibility, 0.7s ease-out |
-| `scroll-slide-up` | opacity 0 + translateY(40px) + scale(0.97) to full visibility, 0.8s ease-out |
-
-Both automatically respect the existing `prefers-reduced-motion` media query already in the stylesheet.
-
-### 3. Section-by-section animations on the tarot page
-
-| Section | Animation | Details |
-|---------|-----------|---------|
-| Hero | `scroll-fade-up` with staggered delays | Icon: 0ms, Title: 150ms, Subtitle: 300ms, Sub-text: 450ms |
-| Draw buttons | `scroll-fade-up` | Single reveal when scrolled into view |
-| Drawn cards | Unchanged | Already use `animate-fade-in` with stagger |
-| Tabs section | `scroll-slide-up` | Subtle scale + slide for heavier content block |
-| Footer | `scroll-fade-up` | Gentle fade in |
-
-Elements start as `opacity-0` and receive their animation class when `isVisible` becomes true.
+The fix uses the existing Radix Popover component (already installed) to show a compact picker anchored to the cell.
 
 ## Technical Details
 
-### New File
-
-| File | Purpose |
-|------|---------|
-| `src/hooks/useScrollReveal.ts` | Custom hook with configurable `threshold` (default 0.15) and `rootMargin`. Returns `{ ref, isVisible }`. |
-
-### Modified Files
+### File Modified
 
 | File | Changes |
 |------|---------|
-| `src/index.css` | Add two `@keyframes` blocks and two utility classes (`.animate-scroll-fade-up`, `.animate-scroll-slide-up`) |
-| `src/pages/EntrepreneurialTarot.tsx` | Import `useScrollReveal`. Create one instance per section (hero, draw, tabs). Conditionally apply animation classes. Hero sub-elements get individual `animation-delay` inline styles and start with `opacity-0` until visible. |
+| `src/components/tarot/ConstellationView.tsx` | Add Popover-based picker for multi-card cells |
 
-### Hook implementation
+### Changes
 
-```text
-function useScrollReveal(options?) {
-  const ref = useRef(null)
-  const [isVisible, setIsVisible] = useState(false)
+1. **Import Popover** from `@/components/ui/popover` alongside existing Tooltip imports
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        setIsVisible(true)
-        observer.disconnect()
-      }
-    }, { threshold: 0.15, ...options })
+2. **Add state** for tracking which cell's popover is open:
+   ```text
+   const [openPickerKey, setOpenPickerKey] = useState<string | null>(null);
+   ```
 
-    if (ref.current) observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [])
+3. **Wrap multi-card cells** in a `Popover` with `PopoverTrigger` on the existing button. Single-card cells keep their direct `onClick` behavior unchanged.
 
-  return { ref, isVisible }
-}
-```
+4. **PopoverContent** renders a compact list of cards in that cell, each as a clickable row showing card name and question. Clicking a row calls `onCardSelect(card)` and closes the popover.
 
-### CSS additions
+5. **Styling**: The popover uses `bg-slate-900/95 border-slate-700 backdrop-blur-xl` to match the existing tooltip aesthetic, with hover highlights on each card row and a high z-index for visibility.
+
+### Picker layout (per card row)
 
 ```text
-@keyframes scroll-fade-up {
-  from { opacity: 0; transform: translateY(30px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes scroll-slide-up {
-  from { opacity: 0; transform: translateY(40px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.animate-scroll-fade-up {
-  animation: scroll-fade-up 0.7s ease-out forwards;
-}
-
-.animate-scroll-slide-up {
-  animation: scroll-slide-up 0.8s ease-out forwards;
-}
++-----------------------------------+
+| [color dot]  Card Name            |
+|              "Core question?"     |
++-----------------------------------+
+| [color dot]  Card Name            |
+|              "Core question?"     |
++-----------------------------------+
 ```
 
-### Page integration pattern
+Each row is a button. Clicking it selects that card and closes the picker.
 
-Each section wraps its content in a div using the hook:
+### Click behavior summary
 
-```text
-const heroReveal = useScrollReveal();
-const drawReveal = useScrollReveal();
-const tabsReveal = useScrollReveal({ threshold: 0.1 });
-
-// Hero section
-<section ref={heroReveal.ref}>
-  <div className={heroReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}
-       style={{ animationDelay: '0ms' }}>
-    ...icon...
-  </div>
-  <div className={heroReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}
-       style={{ animationDelay: '150ms' }}>
-    ...title...
-  </div>
-  // etc.
-</section>
-
-// Tabs section uses slide-up variant
-<section ref={tabsReveal.ref}
-         className={tabsReveal.isVisible ? 'animate-scroll-slide-up' : 'opacity-0'}>
-  ...tabs...
-</section>
-```
-
+| Cell type | Current behavior | New behavior |
+|-----------|-----------------|--------------|
+| 0 cards | No action | No action (unchanged) |
+| 1 card | Selects card directly | Unchanged |
+| 2+ cards | Nothing happens | Opens popover picker |
