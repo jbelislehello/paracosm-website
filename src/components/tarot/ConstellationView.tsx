@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { fullDeck, TarotCard, MajorArcanaCard, MinorArcanaCard, suitColors, dimensionColors } from '@/data/entrepreneurialTarot';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 interface ConstellationViewProps {
   onCardSelect: (card: TarotCard) => void;
@@ -8,6 +9,7 @@ interface ConstellationViewProps {
 
 export default function ConstellationView({ onCardSelect }: ConstellationViewProps) {
   const [hoveredCell, setHoveredCell] = useState<string | null>(null);
+  const [openPickerKey, setOpenPickerKey] = useState<string | null>(null);
 
   // Build 8x8 grid lookup
   const gridMap = new Map<string, TarotCard[]>();
@@ -79,43 +81,75 @@ export default function ConstellationView({ onCardSelect }: ConstellationViewPro
                     const isHovered = hoveredCell === key;
                     const hasCards = cards.length > 0;
 
+                    const cellButton = (
+                      <button
+                        className={`aspect-square rounded-md transition-all duration-300 relative overflow-hidden border ${
+                          hasCards
+                            ? 'border-white/10 hover:border-white/30 cursor-pointer'
+                            : 'border-white/5 cursor-default'
+                        } ${isCenter ? 'ring-1 ring-fuchsia-500/30' : ''}`}
+                        style={{
+                          background: hasCards
+                            ? `radial-gradient(circle, ${color}20, ${color}08)`
+                            : 'rgba(255,255,255,0.02)',
+                          boxShadow: isHovered && hasCards ? `0 0 20px ${color}30` : undefined,
+                        }}
+                        onMouseEnter={() => setHoveredCell(key)}
+                        onMouseLeave={() => setHoveredCell(null)}
+                        onClick={() => cards.length === 1 && onCardSelect(cards[0])}
+                      >
+                        {hasCards && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div
+                              className="w-2 h-2 rounded-full animate-constellation-glow"
+                              style={{ backgroundColor: color, boxShadow: `0 0 8px ${color}60` }}
+                            />
+                          </div>
+                        )}
+                        {cards.length > 1 && (
+                          <div className="absolute top-0.5 right-0.5 text-[7px] text-white/50 font-mono">
+                            {cards.length}
+                          </div>
+                        )}
+                      </button>
+                    );
+
                     return (
                       <Tooltip key={key}>
                         <TooltipTrigger asChild>
-                          <button
-                            className={`aspect-square rounded-md transition-all duration-300 relative overflow-hidden border ${
-                              hasCards
-                                ? 'border-white/10 hover:border-white/30 cursor-pointer'
-                                : 'border-white/5 cursor-default'
-                            } ${isCenter ? 'ring-1 ring-fuchsia-500/30' : ''}`}
-                            style={{
-                              background: hasCards
-                                ? `radial-gradient(circle, ${color}20, ${color}08)`
-                                : 'rgba(255,255,255,0.02)',
-                              boxShadow: isHovered && hasCards ? `0 0 20px ${color}30` : undefined,
-                            }}
-                            onMouseEnter={() => setHoveredCell(key)}
-                            onMouseLeave={() => setHoveredCell(null)}
-                            onClick={() => cards.length === 1 && onCardSelect(cards[0])}
-                          >
-                            {/* Glowing node */}
-                            {hasCards && (
-                              <div
-                                className="absolute inset-0 flex items-center justify-center"
+                          {cards.length > 1 ? (
+                            <Popover open={openPickerKey === key} onOpenChange={(open) => setOpenPickerKey(open ? key : null)}>
+                              <PopoverTrigger asChild>
+                                {cellButton}
+                              </PopoverTrigger>
+                              <PopoverContent
+                                side="top"
+                                className="w-56 p-1.5 bg-slate-900/95 border-slate-700 backdrop-blur-xl z-[60]"
                               >
-                                <div
-                                  className={`w-2 h-2 rounded-full animate-constellation-glow`}
-                                  style={{ backgroundColor: color, boxShadow: `0 0 8px ${color}60` }}
-                                />
-                              </div>
-                            )}
-                            {/* Card count badge */}
-                            {cards.length > 1 && (
-                              <div className="absolute top-0.5 right-0.5 text-[7px] text-white/50 font-mono">
-                                {cards.length}
-                              </div>
-                            )}
-                          </button>
+                                {cards.map((c) => (
+                                  <button
+                                    key={c.id}
+                                    className="w-full flex items-start gap-2 px-2 py-1.5 rounded hover:bg-white/10 transition-colors text-left"
+                                    onClick={() => {
+                                      onCardSelect(c);
+                                      setOpenPickerKey(null);
+                                    }}
+                                  >
+                                    <div
+                                      className="w-2 h-2 rounded-full mt-1 shrink-0"
+                                      style={{ backgroundColor: color }}
+                                    />
+                                    <div className="min-w-0">
+                                      <p className="text-[10px] font-bold text-white truncate">{c.name}</p>
+                                      <p className="text-[9px] text-slate-400 italic truncate">"{c.question}"</p>
+                                    </div>
+                                  </button>
+                                ))}
+                              </PopoverContent>
+                            </Popover>
+                          ) : (
+                            cellButton
+                          )}
                         </TooltipTrigger>
                         {hasCards && (
                           <TooltipContent
