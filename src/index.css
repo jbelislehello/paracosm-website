@@ -552,3 +552,22 @@
 .animate-constellation-glow {
   animation: constellation-glow 3s ease-in-out infinite;
 }
+
+/* Scroll-triggered entrance animations */
+@keyframes scroll-fade-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scroll-slide-up {
+  from { opacity: 0; transform: translateY(40px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-scroll-fade-up {
+  animation: scroll-fade-up 0.7s ease-out forwards;
+}
+
+.animate-scroll-slide-up {
+  animation: scroll-slide-up 0.8s ease-out forwards;
+}
