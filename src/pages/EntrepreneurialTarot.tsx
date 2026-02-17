@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { Link } from "react-router-dom";
 import { ArrowLeft, Sparkles, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -153,6 +154,11 @@ const EntrepreneurialTarot = () => {
   const [selectedCard, setSelectedCard] = useState<TarotCard | null>(null);
   const [spreadMode, setSpreadMode] = useState(false);
 
+  const heroReveal = useScrollReveal();
+  const drawReveal = useScrollReveal();
+  const tabsReveal = useScrollReveal({ threshold: 0.1 });
+  const footerReveal = useScrollReveal({ threshold: 0.2 });
+
   const handleDraw = useCallback((count: number) => {
     const cards = drawCards(count);
     setDrawnCards(cards);
@@ -192,20 +198,23 @@ const EntrepreneurialTarot = () => {
       </header>
 
       {/* Hero */}
-      <section className="pt-24 pb-12 px-4 text-center relative overflow-hidden">
+      <section ref={heroReveal.ref} className="pt-24 pb-12 px-4 text-center relative overflow-hidden">
         <div className="container max-w-3xl mx-auto relative z-10">
-          <div className="relative inline-block mb-4">
+          <div className={`relative inline-block mb-4 ${heroReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}`}>
             <Sparkles className="w-10 h-10 text-amber-400 animate-tarot-float" />
             <div className="absolute inset-0 w-10 h-10 rounded-full animate-tarot-glow" />
           </div>
-          <h1 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-amber-400 to-rose-400 mb-4">
+          <h1 className={`text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-amber-400 to-rose-400 mb-4 ${heroReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}`}
+              style={{ animationDelay: '150ms' }}>
             The Calm Magic Tarot
           </h1>
-          <p className="text-sm md:text-base text-slate-400 max-w-2xl mx-auto mb-2">
+          <p className={`text-sm md:text-base text-slate-400 max-w-2xl mx-auto mb-2 ${heroReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}`}
+             style={{ animationDelay: '300ms' }}>
             70 entrepreneurial archetypes drawn from the LOVE · MAGIC · CALM · OPEN · FREE quadrants
             and the CHORDS dimensions. A reflective tool for relational intelligence and conscious leadership.
           </p>
-          <p className="text-xs text-slate-500">
+          <p className={`text-xs text-slate-500 ${heroReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}`}
+             style={{ animationDelay: '450ms' }}>
             Every card maps to the 8×8 Calm Magic matrix — your constellation of entrepreneurial consciousness.
           </p>
         </div>
@@ -222,7 +231,7 @@ const EntrepreneurialTarot = () => {
       </section>
 
       {/* Draw Section */}
-      <section className="pb-12 px-4 relative z-10">
+      <section ref={drawReveal.ref} className={`pb-12 px-4 relative z-10 ${drawReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}`}>
         <div className="container max-w-4xl mx-auto text-center">
           <div className="flex flex-wrap gap-3 justify-center mb-8">
             <Button onClick={() => handleDraw(1)} variant="outline" className="border-purple-600 text-purple-300 hover:bg-purple-900/30 hover:shadow-[0_0_15px_rgba(139,92,246,0.3)] transition-shadow">
@@ -265,7 +274,7 @@ const EntrepreneurialTarot = () => {
       </section>
 
       {/* Constellation + Browser + Legend */}
-      <section className="pb-20 px-4 relative z-10">
+      <section ref={tabsReveal.ref} className={`pb-20 px-4 relative z-10 ${tabsReveal.isVisible ? 'animate-scroll-slide-up' : 'opacity-0'}`}>
         <div className="container max-w-5xl mx-auto">
           <Tabs defaultValue="constellation" className="w-full">
             <TabsList className="flex flex-wrap justify-center gap-1 bg-transparent mb-8">
@@ -331,7 +340,9 @@ const EntrepreneurialTarot = () => {
       </section>
 
       {selectedCard && <CardDetail card={selectedCard} onClose={() => setSelectedCard(null)} />}
-      <Footer />
+      <div ref={footerReveal.ref} className={footerReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}>
+        <Footer />
+      </div>
     </div>
   );
 };
