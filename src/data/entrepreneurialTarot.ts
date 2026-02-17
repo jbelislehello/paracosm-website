@@ -1,6 +1,13 @@
 
-export type TarotSuit = 'love' | 'magic' | 'calm' | 'open' | 'free';
+export type TarotSuit = 'love' | 'magic' | 'calm' | 'open' | 'free' | 'weaver';
 export type ChordsDimension = 'C' | 'H' | 'O' | 'R' | 'D' | 'S';
+
+export interface MatrixPosition {
+  row: number;
+  col: number;
+  board: 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE' | 'ALL';
+  address: string; // e.g. "M4.3"
+}
 
 export interface MajorArcanaCard {
   id: string;
@@ -11,6 +18,7 @@ export interface MajorArcanaCard {
   question: string;
   upright: string;
   reversed: string;
+  matrixPosition: MatrixPosition;
 }
 
 export interface MinorArcanaCard {
@@ -23,6 +31,7 @@ export interface MinorArcanaCard {
   question: string;
   upright: string;
   reversed: string;
+  matrixPosition: MatrixPosition;
 }
 
 export type TarotCard = MajorArcanaCard | MinorArcanaCard;
@@ -33,6 +42,7 @@ export const suitColors: Record<TarotSuit, string> = {
   calm: '#22c55e',
   open: '#3b82f6',
   free: '#f59e0b',
+  weaver: '#e879f9',
 };
 
 export const suitGradients: Record<TarotSuit, string> = {
@@ -41,6 +51,7 @@ export const suitGradients: Record<TarotSuit, string> = {
   calm: 'from-green-500 to-emerald-600',
   open: 'from-blue-500 to-cyan-600',
   free: 'from-amber-500 to-yellow-600',
+  weaver: 'from-fuchsia-500 via-purple-500 to-amber-500',
 };
 
 export const dimensionColors: Record<ChordsDimension, string> = {
@@ -52,38 +63,62 @@ export const dimensionColors: Record<ChordsDimension, string> = {
   S: '#84cc16',
 };
 
-// ─── MAJOR ARCANA: 22 cards (5 suits) ───
+const suitBoardMap: Record<string, 'LOVE' | 'MAGIC' | 'CALM' | 'OPEN' | 'FREE'> = {
+  love: 'LOVE', magic: 'MAGIC', calm: 'CALM', open: 'OPEN', free: 'FREE',
+};
+
+function majorPos(suit: string, letter: string, rowIdx: number): MatrixPosition {
+  const board = suitBoardMap[suit] || 'ALL';
+  const suitIdx = ['magic', 'love', 'calm', 'open', 'free'].indexOf(suit);
+  const col = suitIdx >= 0 ? suitIdx + 1 : 4;
+  return { row: rowIdx, col, board, address: `${board[0]}${rowIdx}.${col}` };
+}
+
+// ─── MAJOR ARCANA: 22 cards (5 suits + The Weaver) ───
 export const majorArcana: MajorArcanaCard[] = [
   // MAGIC (M-A-G-I-C)
-  { id: 'magic-m', arcana: 'major', suit: 'magic', letter: 'M', name: 'Mindsets', question: 'What fundamental belief is currently shaping your strategy?', upright: 'Cognitive flexibility and growth-oriented leadership.', reversed: 'Rigid frameworks blocking creative possibility.' },
-  { id: 'magic-a', arcana: 'major', suit: 'magic', letter: 'A', name: 'Agilities', question: 'Where must you move faster—or slower—to adapt?', upright: 'Responsive pivoting and fluid execution.', reversed: 'Paralysis from over-analysis or reckless haste.' },
-  { id: 'magic-g', arcana: 'major', suit: 'magic', letter: 'G', name: 'Goals', question: 'Are your goals aligned with your deepest purpose?', upright: 'Ambitious vision grounded in meaningful direction.', reversed: 'Pursuing metrics that betray your true mission.' },
-  { id: 'magic-i', arcana: 'major', suit: 'magic', letter: 'I', name: 'Intuitions', question: 'What does your gut know that data hasn\'t revealed?', upright: 'Trusting embodied wisdom in decision-making.', reversed: 'Ignoring inner signals or confusing fear with intuition.' },
-  { id: 'magic-c', arcana: 'major', suit: 'magic', letter: 'C', name: 'Compasses', question: 'Which internal compass guides you when maps fail?', upright: 'Ethical clarity and principled navigation.', reversed: 'Lost bearings, following others\' direction blindly.' },
+  { id: 'magic-m', arcana: 'major', suit: 'magic', letter: 'M', name: 'Mindsets', question: 'What fundamental belief is currently shaping your strategy?', upright: 'Cognitive flexibility and growth-oriented leadership.', reversed: 'Rigid frameworks blocking creative possibility.', matrixPosition: majorPos('magic', 'M', 1) },
+  { id: 'magic-a', arcana: 'major', suit: 'magic', letter: 'A', name: 'Agilities', question: 'Where must you move faster—or slower—to adapt?', upright: 'Responsive pivoting and fluid execution.', reversed: 'Paralysis from over-analysis or reckless haste.', matrixPosition: majorPos('magic', 'A', 2) },
+  { id: 'magic-g', arcana: 'major', suit: 'magic', letter: 'G', name: 'Goals', question: 'Are your goals aligned with your deepest purpose?', upright: 'Ambitious vision grounded in meaningful direction.', reversed: 'Pursuing metrics that betray your true mission.', matrixPosition: majorPos('magic', 'G', 3) },
+  { id: 'magic-i', arcana: 'major', suit: 'magic', letter: 'I', name: 'Intuitions', question: 'What does your gut know that data hasn\'t revealed?', upright: 'Trusting embodied wisdom in decision-making.', reversed: 'Ignoring inner signals or confusing fear with intuition.', matrixPosition: majorPos('magic', 'I', 4) },
+  { id: 'magic-c', arcana: 'major', suit: 'magic', letter: 'C', name: 'Compasses', question: 'Which internal compass guides you when maps fail?', upright: 'Ethical clarity and principled navigation.', reversed: 'Lost bearings, following others\' direction blindly.', matrixPosition: majorPos('magic', 'C', 5) },
 
   // LOVE (L-O-V-E)
-  { id: 'love-l', arcana: 'major', suit: 'love', letter: 'L', name: 'Longevity', question: 'What are you building that will outlast you?', upright: 'Legacy thinking and sustainable creation.', reversed: 'Short-termism eroding long-term value.' },
-  { id: 'love-o', arcana: 'major', suit: 'love', letter: 'O', name: 'Oscillations', question: 'Where is the rhythm between expansion and contraction?', upright: 'Healthy cycles of growth and rest.', reversed: 'Burnout from relentless pushing or stagnation from inertia.' },
-  { id: 'love-v', arcana: 'major', suit: 'love', letter: 'V', name: 'Velocity', question: 'Is your speed serving your vision or sabotaging it?', upright: 'Momentum aligned with purpose.', reversed: 'Speed without direction, or paralytic perfectionism.' },
-  { id: 'love-e', arcana: 'major', suit: 'love', letter: 'E', name: 'Elasticity', question: 'How resilient is your organization under pressure?', upright: 'Adaptive strength and bouncing forward.', reversed: 'Brittleness masked as toughness.' },
+  { id: 'love-l', arcana: 'major', suit: 'love', letter: 'L', name: 'Longevity', question: 'What are you building that will outlast you?', upright: 'Legacy thinking and sustainable creation.', reversed: 'Short-termism eroding long-term value.', matrixPosition: majorPos('love', 'L', 1) },
+  { id: 'love-o', arcana: 'major', suit: 'love', letter: 'O', name: 'Oscillations', question: 'Where is the rhythm between expansion and contraction?', upright: 'Healthy cycles of growth and rest.', reversed: 'Burnout from relentless pushing or stagnation from inertia.', matrixPosition: majorPos('love', 'O', 2) },
+  { id: 'love-v', arcana: 'major', suit: 'love', letter: 'V', name: 'Velocity', question: 'Is your speed serving your vision or sabotaging it?', upright: 'Momentum aligned with purpose.', reversed: 'Speed without direction, or paralytic perfectionism.', matrixPosition: majorPos('love', 'V', 3) },
+  { id: 'love-e', arcana: 'major', suit: 'love', letter: 'E', name: 'Elasticity', question: 'How resilient is your organization under pressure?', upright: 'Adaptive strength and bouncing forward.', reversed: 'Brittleness masked as toughness.', matrixPosition: majorPos('love', 'E', 4) },
 
   // CALM (C-A-L-M)
-  { id: 'calm-c', arcana: 'major', suit: 'calm', letter: 'C', name: 'Constraints', question: 'What limitation is actually your greatest creative asset?', upright: 'Elegant solutions born from boundaries.', reversed: 'Feeling trapped by self-imposed limitations.' },
-  { id: 'calm-a', arcana: 'major', suit: 'calm', letter: 'A', name: 'Alignment', question: 'Are your actions, values, and vision in harmony?', upright: 'Coherence across all dimensions of leadership.', reversed: 'Saying one thing, doing another—misaligned integrity.' },
-  { id: 'calm-l', arcana: 'major', suit: 'calm', letter: 'L', name: 'Landscape', question: 'What terrain are you navigating, and what\'s hidden beyond the ridge?', upright: 'Strategic awareness and reading the environment.', reversed: 'Blind spots in market or relational landscape.' },
-  { id: 'calm-m', arcana: 'major', suit: 'calm', letter: 'M', name: 'Methods', question: 'Is your process serving the outcome, or has it become the prison?', upright: 'Disciplined practice with adaptive methodology.', reversed: 'Process worship that kills innovation.' },
+  { id: 'calm-c', arcana: 'major', suit: 'calm', letter: 'C', name: 'Constraints', question: 'What limitation is actually your greatest creative asset?', upright: 'Elegant solutions born from boundaries.', reversed: 'Feeling trapped by self-imposed limitations.', matrixPosition: majorPos('calm', 'C', 1) },
+  { id: 'calm-a', arcana: 'major', suit: 'calm', letter: 'A', name: 'Alignment', question: 'Are your actions, values, and vision in harmony?', upright: 'Coherence across all dimensions of leadership.', reversed: 'Saying one thing, doing another—misaligned integrity.', matrixPosition: majorPos('calm', 'A', 2) },
+  { id: 'calm-l', arcana: 'major', suit: 'calm', letter: 'L', name: 'Landscape', question: 'What terrain are you navigating, and what\'s hidden beyond the ridge?', upright: 'Strategic awareness and reading the environment.', reversed: 'Blind spots in market or relational landscape.', matrixPosition: majorPos('calm', 'L', 3) },
+  { id: 'calm-m', arcana: 'major', suit: 'calm', letter: 'M', name: 'Methods', question: 'Is your process serving the outcome, or has it become the prison?', upright: 'Disciplined practice with adaptive methodology.', reversed: 'Process worship that kills innovation.', matrixPosition: majorPos('calm', 'M', 4) },
 
   // OPEN (O-P-E-N)
-  { id: 'open-o', arcana: 'major', suit: 'open', letter: 'O', name: 'Ontology', question: 'What is the nature of the reality you\'re creating?', upright: 'Deep understanding of being and becoming.', reversed: 'Operating on unexamined assumptions about reality.' },
-  { id: 'open-p', arcana: 'major', suit: 'open', letter: 'P', name: 'Protocols', question: 'What agreements hold your ecosystem together?', upright: 'Clear, fair protocols enabling trust and collaboration.', reversed: 'Bureaucratic rules stifling emergence.' },
-  { id: 'open-e', arcana: 'major', suit: 'open', letter: 'E', name: 'Energy', question: 'Where is energy flowing freely, and where is it blocked?', upright: 'Vital force channeled into meaningful work.', reversed: 'Energy leaks through unresolved conflicts or misalignment.' },
-  { id: 'open-n', arcana: 'major', suit: 'open', letter: 'N', name: 'Networks', question: 'Who are the hidden connectors in your constellation?', upright: 'Rich relational networks amplifying collective intelligence.', reversed: 'Isolation or extractive networking.' },
+  { id: 'open-o', arcana: 'major', suit: 'open', letter: 'O', name: 'Ontology', question: 'What is the nature of the reality you\'re creating?', upright: 'Deep understanding of being and becoming.', reversed: 'Operating on unexamined assumptions about reality.', matrixPosition: majorPos('open', 'O', 1) },
+  { id: 'open-p', arcana: 'major', suit: 'open', letter: 'P', name: 'Protocols', question: 'What agreements hold your ecosystem together?', upright: 'Clear, fair protocols enabling trust and collaboration.', reversed: 'Bureaucratic rules stifling emergence.', matrixPosition: majorPos('open', 'P', 2) },
+  { id: 'open-e', arcana: 'major', suit: 'open', letter: 'E', name: 'Energy', question: 'Where is energy flowing freely, and where is it blocked?', upright: 'Vital force channeled into meaningful work.', reversed: 'Energy leaks through unresolved conflicts or misalignment.', matrixPosition: majorPos('open', 'E', 3) },
+  { id: 'open-n', arcana: 'major', suit: 'open', letter: 'N', name: 'Networks', question: 'Who are the hidden connectors in your constellation?', upright: 'Rich relational networks amplifying collective intelligence.', reversed: 'Isolation or extractive networking.', matrixPosition: majorPos('open', 'N', 4) },
 
   // FREE (F-R-E-E)
-  { id: 'free-f', arcana: 'major', suit: 'free', letter: 'F', name: 'Flow', question: 'When did you last lose yourself completely in your work?', upright: 'Effortless engagement and creative immersion.', reversed: 'Forcing outcomes instead of allowing emergence.' },
-  { id: 'free-r', arcana: 'major', suit: 'free', letter: 'R', name: 'Reversal', question: 'What must be unlearned before new growth can happen?', upright: 'Courageous letting go and creative destruction.', reversed: 'Clinging to what no longer serves.' },
-  { id: 'free-e1', arcana: 'major', suit: 'free', letter: 'E', name: 'Emergence', question: 'What is trying to be born through your organization?', upright: 'Sensing and midwifing the new.', reversed: 'Premature closure on what\'s still forming.' },
-  { id: 'free-e2', arcana: 'major', suit: 'free', letter: 'E', name: 'Evolution', question: 'How is your leadership evolving to meet the moment?', upright: 'Continuous transformation and adaptive growth.', reversed: 'Resisting necessary evolution out of comfort.' },
+  { id: 'free-f', arcana: 'major', suit: 'free', letter: 'F', name: 'Flow', question: 'When did you last lose yourself completely in your work?', upright: 'Effortless engagement and creative immersion.', reversed: 'Forcing outcomes instead of allowing emergence.', matrixPosition: majorPos('free', 'F', 1) },
+  { id: 'free-r', arcana: 'major', suit: 'free', letter: 'R', name: 'Reversal', question: 'What must be unlearned before new growth can happen?', upright: 'Courageous letting go and creative destruction.', reversed: 'Clinging to what no longer serves.', matrixPosition: majorPos('free', 'R', 2) },
+  { id: 'free-e1', arcana: 'major', suit: 'free', letter: 'E', name: 'Emergence', question: 'What is trying to be born through your organization?', upright: 'Sensing and midwifing the new.', reversed: 'Premature closure on what\'s still forming.', matrixPosition: majorPos('free', 'E', 3) },
+  { id: 'free-e2', arcana: 'major', suit: 'free', letter: 'E', name: 'Evolution', question: 'How is your leadership evolving to meet the moment?', upright: 'Continuous transformation and adaptive growth.', reversed: 'Resisting necessary evolution out of comfort.', matrixPosition: majorPos('free', 'E', 4) },
+
+  // THE WEAVER (22nd card — synthesis)
+  {
+    id: 'weaver',
+    arcana: 'major',
+    suit: 'weaver',
+    letter: '✦',
+    name: 'The Weaver',
+    question: 'What pattern emerges when all threads are held at once?',
+    upright: 'Integration of all dimensions—relational intelligence as living fabric.',
+    reversed: 'Fragmentation from trying to hold everything without letting any thread breathe.',
+    matrixPosition: { row: 4, col: 4, board: 'ALL', address: '✦4.4' },
+  },
 ];
 
 // ─── MINOR ARCANA: 48 cards (6 CHORDS × 8 stages) ───
@@ -97,6 +132,8 @@ const chordsData: Record<ChordsDimension, { name: string; theme: string }> = {
   D: { name: 'Design', theme: 'craft & intentionality' },
   S: { name: 'Seeds', theme: 'planting & potential' },
 };
+
+const dimColMap: Record<ChordsDimension, number> = { C: 1, H: 2, O: 3, R: 4, D: 5, S: 6 };
 
 const minorArcanaQuestions: Record<ChordsDimension, string[]> = {
   C: [
@@ -236,6 +273,12 @@ export const minorArcana: MinorArcanaCard[] = (Object.keys(chordsData) as Chords
       question: minorArcanaQuestions[dim][idx],
       upright: minorUprightReversed[dim][idx][0],
       reversed: minorUprightReversed[dim][idx][1],
+      matrixPosition: {
+        row: idx + 1,
+        col: dimColMap[dim],
+        board: 'MAGIC' as const, // Minor arcana live on the MAGIC board by default
+        address: `${dim}${idx + 1}.${dimColMap[dim]}`,
+      },
     }))
 );
 
@@ -249,4 +292,13 @@ export function drawCards(count: number): TarotCard[] {
 export function drawSpread(): { past: TarotCard; present: TarotCard; future: TarotCard } {
   const [past, present, future] = drawCards(3);
   return { past, present, future };
+}
+
+// Helper to get suit index for generative art seeding
+export function getSuitIndex(card: TarotCard): number {
+  if (card.arcana === 'major') {
+    const suits: TarotSuit[] = ['magic', 'love', 'calm', 'open', 'free', 'weaver'];
+    return suits.indexOf(card.suit) + 1;
+  }
+  return dimColMap[card.dimension];
 }

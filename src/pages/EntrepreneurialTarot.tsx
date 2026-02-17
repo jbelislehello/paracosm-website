@@ -11,26 +11,10 @@ import {
   suitGradients, suitColors, dimensionColors,
   TarotSuit, ChordsDimension,
 } from "@/data/entrepreneurialTarot";
-
-// ─── Sacred Geometry SVG for card back ───
-const SacredGeometry = () => (
-  <svg viewBox="0 0 100 100" className="w-24 h-24 opacity-30 animate-tarot-rotate-slow">
-    <circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" strokeWidth="0.5" />
-    <circle cx="50" cy="50" r="20" fill="none" stroke="currentColor" strokeWidth="0.3" />
-    <circle cx="50" cy="50" r="10" fill="none" stroke="currentColor" strokeWidth="0.3" />
-    <polygon points="50,20 76,65 24,65" fill="none" stroke="currentColor" strokeWidth="0.4" />
-    <polygon points="50,80 24,35 76,35" fill="none" stroke="currentColor" strokeWidth="0.4" />
-    {[0, 60, 120, 180, 240, 300].map((a) => (
-      <line
-        key={a}
-        x1="50" y1="50"
-        x2={50 + 30 * Math.cos((a * Math.PI) / 180)}
-        y2={50 + 30 * Math.sin((a * Math.PI) / 180)}
-        stroke="currentColor" strokeWidth="0.2" opacity="0.5"
-      />
-    ))}
-  </svg>
-);
+import EnhancedCardDisplay from "@/components/tarot/EnhancedCardDisplay";
+import ConstellationView from "@/components/tarot/ConstellationView";
+import MatrixLegend from "@/components/tarot/MatrixLegend";
+import GenerativeCardArt from "@/components/tarot/GenerativeCardArt";
 
 // ─── Ambient floating particles ───
 const AmbientParticles = () => (
@@ -53,115 +37,9 @@ const AmbientParticles = () => (
   </div>
 );
 
-// ─── Card Component ───
-const TarotCardDisplay = ({
-  card, flipped, onClick, reversed,
-}: {
-  card: TarotCard; flipped: boolean; onClick?: () => void; reversed?: boolean;
-}) => {
-  const isMajor = card.arcana === 'major';
-  const gradient = isMajor
-    ? suitGradients[(card as MajorArcanaCard).suit]
-    : 'from-slate-600 to-slate-800';
-  const glowColor = isMajor
-    ? suitColors[(card as MajorArcanaCard).suit]
-    : dimensionColors[(card as MinorArcanaCard).dimension];
-
-  return (
-    <div
-      className="w-56 h-80 cursor-pointer select-none group"
-      style={{ perspective: '1000px' }}
-      onClick={onClick}
-    >
-      <div
-        className="relative w-full h-full transition-transform duration-700"
-        style={{
-          transformStyle: 'preserve-3d',
-          transform: flipped ? 'rotateY(180deg)' : 'rotateY(0)',
-        }}
-      >
-        {/* Back */}
-        <div
-          className="absolute inset-0 rounded-xl border-2 border-slate-600 flex items-center justify-center overflow-hidden tarot-card-back-pattern group-hover:border-amber-500/50 transition-colors duration-500"
-          style={{
-            backfaceVisibility: 'hidden',
-            background: 'linear-gradient(135deg, #1e1b4b 0%, #0f172a 50%, #1e1b4b 100%)',
-          }}
-        >
-          {/* Shimmer overlay */}
-          <div className="absolute inset-0 animate-tarot-shimmer rounded-xl" />
-          {/* Corner ornaments */}
-          {['-top-0.5 -left-0.5', '-top-0.5 -right-0.5', '-bottom-0.5 -left-0.5', '-bottom-0.5 -right-0.5'].map((pos, i) => (
-            <div key={i} className={`absolute ${pos} w-6 h-6 border-amber-400/40 ${i < 2 ? 'border-t' : 'border-b'} ${i % 2 === 0 ? 'border-l' : 'border-r'}`} />
-          ))}
-          <div className="text-center space-y-3 z-10 text-amber-300/80">
-            <SacredGeometry />
-            <p className="text-[10px] font-medium tracking-[0.3em] uppercase">Calm Magic</p>
-            <p className="text-[8px] text-slate-500 tracking-widest">Entrepreneurial Tarot</p>
-          </div>
-          {/* Orbiting dot */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="animate-tarot-orbit">
-              <div className="w-1.5 h-1.5 rounded-full bg-amber-400/60" />
-            </div>
-          </div>
-        </div>
-
-        {/* Front */}
-        <div
-          className={`absolute inset-0 rounded-xl bg-gradient-to-br ${gradient} p-4 flex flex-col justify-between text-white shadow-xl overflow-hidden`}
-          style={{
-            backfaceVisibility: 'hidden',
-            transform: 'rotateY(180deg)',
-            boxShadow: flipped ? `0 0 25px ${glowColor}40, 0 0 50px ${glowColor}15` : undefined,
-          }}
-        >
-          {/* Subtle pattern on front */}
-          <div className="absolute inset-0 opacity-10"
-            style={{
-              backgroundImage: `radial-gradient(circle at 20% 80%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)`,
-              backgroundSize: '30px 30px',
-            }}
-          />
-          <div className="relative z-10">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[10px] uppercase tracking-widest opacity-80">
-                {isMajor ? (card as MajorArcanaCard).suit : (card as MinorArcanaCard).dimensionName}
-              </span>
-              {reversed && (
-                <span className="text-[9px] bg-white/20 px-1.5 py-0.5 rounded backdrop-blur-sm">Reversed</span>
-              )}
-            </div>
-            <div className="text-4xl font-bold mb-1" style={{ textShadow: `0 2px 12px ${glowColor}80` }}>
-              {isMajor ? (card as MajorArcanaCard).letter : (card as MinorArcanaCard).dimension}
-            </div>
-            <h3 className="font-bold text-sm">{card.name}</h3>
-            {!isMajor && (
-              <p className="text-[10px] opacity-70 mt-0.5">{(card as MinorArcanaCard).stage}</p>
-            )}
-          </div>
-
-          <div className="space-y-2 relative z-10">
-            <p className="text-[10px] italic opacity-90 leading-relaxed">"{card.question}"</p>
-            <div className="border-t border-white/30 pt-2">
-              <p className="text-[9px]">
-                <span className="font-semibold">{reversed ? '↓ ' : '↑ '}</span>
-                {reversed ? card.reversed : card.upright}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// ─── Mini Card for browser ───
+// ─── Mini Card with generative art ───
 const MiniCard = ({ card, onClick }: { card: TarotCard; onClick: () => void }) => {
   const isMajor = card.arcana === 'major';
-  const gradient = isMajor
-    ? suitGradients[(card as MajorArcanaCard).suit]
-    : 'from-slate-600 to-slate-700';
   const glowColor = isMajor
     ? suitColors[(card as MajorArcanaCard).suit]
     : dimensionColors[(card as MinorArcanaCard).dimension];
@@ -169,16 +47,35 @@ const MiniCard = ({ card, onClick }: { card: TarotCard; onClick: () => void }) =
   return (
     <button
       onClick={onClick}
-      className={`rounded-lg bg-gradient-to-br ${gradient} p-3 text-white text-left hover:scale-105 transition-all duration-300 shadow-md hover:shadow-lg relative overflow-hidden group`}
-      style={{ '--glow': glowColor } as React.CSSProperties}
+      className="rounded-lg text-white text-left hover:scale-105 transition-all duration-300 shadow-md hover:shadow-lg relative overflow-hidden group aspect-[3/4]"
     >
-      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-        style={{ boxShadow: `inset 0 0 20px ${glowColor}30` }} />
-      <div className="text-2xl font-bold relative z-10" style={{ textShadow: `0 1px 8px ${glowColor}60` }}>
-        {isMajor ? (card as MajorArcanaCard).letter : (card as MinorArcanaCard).dimension}
+      {/* Generative background */}
+      <div className="absolute inset-0">
+        <GenerativeCardArt
+          matrixPosition={card.matrixPosition}
+          suit={isMajor ? (card as MajorArcanaCard).suit : undefined}
+          dimension={!isMajor ? (card as MinorArcanaCard).dimension : undefined}
+          breathing={false}
+        />
       </div>
-      <p className="text-xs font-semibold mt-1 relative z-10">{card.name}</p>
-      <p className="text-[9px] opacity-70 mt-0.5 line-clamp-2 relative z-10">{card.question}</p>
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+      {/* Hover glow */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{ boxShadow: `inset 0 0 25px ${glowColor}25` }} />
+      {/* Content */}
+      <div className="relative z-10 h-full p-3 flex flex-col justify-between">
+        <div className="flex items-start justify-between">
+          <div className="text-2xl font-black" style={{ textShadow: `0 1px 10px ${glowColor}60` }}>
+            {isMajor ? (card as MajorArcanaCard).letter : (card as MinorArcanaCard).dimension}
+          </div>
+          <span className="text-[7px] font-mono opacity-40 mt-1">{card.matrixPosition.address}</span>
+        </div>
+        <div>
+          <p className="text-xs font-semibold">{card.name}</p>
+          <p className="text-[8px] opacity-60 mt-0.5 line-clamp-2">{card.question}</p>
+        </div>
+      </div>
     </button>
   );
 };
@@ -193,38 +90,56 @@ const CardDetail = ({ card, onClose }: { card: TarotCard; onClose: () => void })
   return (
     <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in" onClick={onClose}>
       <div
-        className="bg-white dark:bg-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl animate-scale-in"
-        style={{ boxShadow: `0 0 40px ${accentColor}25` }}
+        className="bg-slate-900 rounded-2xl max-w-md w-full p-6 shadow-2xl animate-scale-in border border-white/10 relative overflow-hidden"
+        style={{ boxShadow: `0 0 50px ${accentColor}20` }}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-3 mb-4">
-          <div
-            className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg"
-            style={{ backgroundColor: accentColor, boxShadow: `0 0 20px ${accentColor}50` }}
-          >
-            {isMajor ? (card as MajorArcanaCard).letter : (card as MinorArcanaCard).dimension}
-          </div>
-          <div>
-            <h3 className="font-bold text-lg">{card.name}</h3>
-            <p className="text-xs text-muted-foreground">
-              {isMajor
-                ? `${(card as MajorArcanaCard).suit.toUpperCase()} · Major Arcana`
-                : `${(card as MinorArcanaCard).dimensionName} · ${(card as MinorArcanaCard).stage}`}
-            </p>
-          </div>
+        {/* Background generative art */}
+        <div className="absolute inset-0 opacity-15">
+          <GenerativeCardArt
+            matrixPosition={card.matrixPosition}
+            suit={isMajor ? (card as MajorArcanaCard).suit : undefined}
+            dimension={!isMajor ? (card as MinorArcanaCard).dimension : undefined}
+            breathing
+          />
         </div>
-        <p className="text-sm italic text-muted-foreground mb-4">"{card.question}"</p>
-        <div className="space-y-3">
-          <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-3">
-            <p className="text-xs font-semibold text-green-700 dark:text-green-400 mb-1">↑ Upright</p>
-            <p className="text-sm">{card.upright}</p>
+
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-4">
+            <div
+              className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-xl shadow-lg"
+              style={{ backgroundColor: accentColor, boxShadow: `0 0 20px ${accentColor}50` }}
+            >
+              {isMajor ? (card as MajorArcanaCard).letter : (card as MinorArcanaCard).dimension}
+            </div>
+            <div>
+              <h3 className="font-bold text-lg text-white">{card.name}</h3>
+              <p className="text-xs text-slate-400">
+                {isMajor
+                  ? `${(card as MajorArcanaCard).suit.toUpperCase()} · Major Arcana`
+                  : `${(card as MinorArcanaCard).dimensionName} · ${(card as MinorArcanaCard).stage}`}
+                <span className="ml-2 font-mono opacity-50">{card.matrixPosition.address}</span>
+              </p>
+            </div>
           </div>
-          <div className="bg-red-50 dark:bg-red-900/20 rounded-lg p-3">
-            <p className="text-xs font-semibold text-red-700 dark:text-red-400 mb-1">↓ Reversed</p>
-            <p className="text-sm">{card.reversed}</p>
+
+          {/* Frosted question panel */}
+          <div className="bg-white/5 backdrop-blur-md rounded-lg p-3 border border-white/10 mb-4">
+            <p className="text-sm italic text-slate-300">"{card.question}"</p>
           </div>
+
+          <div className="space-y-3">
+            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3">
+              <p className="text-xs font-semibold text-emerald-400 mb-1">↑ Upright</p>
+              <p className="text-sm text-slate-200">{card.upright}</p>
+            </div>
+            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
+              <p className="text-xs font-semibold text-red-400 mb-1">↓ Reversed</p>
+              <p className="text-sm text-slate-200">{card.reversed}</p>
+            </div>
+          </div>
+          <Button onClick={onClose} variant="outline" className="w-full mt-4 border-white/20 text-white hover:bg-white/10">Close</Button>
         </div>
-        <Button onClick={onClose} variant="outline" className="w-full mt-4">Close</Button>
       </div>
     </div>
   );
@@ -277,8 +192,8 @@ const EntrepreneurialTarot = () => {
       </header>
 
       {/* Hero */}
-      <section className="pt-24 pb-12 px-4 text-center relative">
-        <div className="container max-w-3xl mx-auto">
+      <section className="pt-24 pb-12 px-4 text-center relative overflow-hidden">
+        <div className="container max-w-3xl mx-auto relative z-10">
           <div className="relative inline-block mb-4">
             <Sparkles className="w-10 h-10 text-amber-400 animate-tarot-float" />
             <div className="absolute inset-0 w-10 h-10 rounded-full animate-tarot-glow" />
@@ -286,10 +201,23 @@ const EntrepreneurialTarot = () => {
           <h1 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-amber-400 to-rose-400 mb-4">
             The Calm Magic Tarot
           </h1>
-          <p className="text-sm md:text-base text-slate-400 max-w-2xl mx-auto">
+          <p className="text-sm md:text-base text-slate-400 max-w-2xl mx-auto mb-2">
             70 entrepreneurial archetypes drawn from the LOVE · MAGIC · CALM · OPEN · FREE quadrants
             and the CHORDS dimensions. A reflective tool for relational intelligence and conscious leadership.
           </p>
+          <p className="text-xs text-slate-500">
+            Every card maps to the 8×8 Calm Magic matrix — your constellation of entrepreneurial consciousness.
+          </p>
+        </div>
+        {/* Sacred geometry background */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
+          <svg viewBox="0 0 200 200" className="w-[600px] h-[600px] animate-tarot-rotate-slow">
+            <circle cx="100" cy="100" r="80" fill="none" stroke="white" strokeWidth="0.3" />
+            <circle cx="100" cy="100" r="60" fill="none" stroke="white" strokeWidth="0.2" />
+            <circle cx="100" cy="100" r="40" fill="none" stroke="white" strokeWidth="0.2" />
+            <polygon points="100,20 176,140 24,140" fill="none" stroke="white" strokeWidth="0.3" />
+            <polygon points="100,180 24,60 176,60" fill="none" stroke="white" strokeWidth="0.3" />
+          </svg>
         </div>
       </section>
 
@@ -318,7 +246,7 @@ const EntrepreneurialTarot = () => {
                     <p className="text-xs text-slate-500 font-medium">{spreadLabels[idx]}</p>
                   )}
                   <div className={flippedCards.has(idx) ? 'animate-tarot-float' : ''} style={{ animationDelay: `${idx * 300}ms` }}>
-                    <TarotCardDisplay
+                    <EnhancedCardDisplay
                       card={card}
                       flipped={flippedCards.has(idx)}
                       reversed={reversedCards.has(idx)}
@@ -336,17 +264,19 @@ const EntrepreneurialTarot = () => {
         </div>
       </section>
 
-      {/* Deck Browser */}
+      {/* Constellation + Browser + Legend */}
       <section className="pb-20 px-4 relative z-10">
         <div className="container max-w-5xl mx-auto">
-          <h2 className="text-xl font-bold text-center mb-6">Browse the Full Deck</h2>
-          <Tabs defaultValue="magic" className="w-full">
-            <TabsList className="flex flex-wrap justify-center gap-1 bg-transparent mb-6">
+          <Tabs defaultValue="constellation" className="w-full">
+            <TabsList className="flex flex-wrap justify-center gap-1 bg-transparent mb-8">
+              <TabsTrigger value="constellation" className="text-xs uppercase tracking-wider">
+                ✦ Constellation
+              </TabsTrigger>
               {suits.map((s) => (
                 <TabsTrigger
                   key={s}
                   value={s}
-                  className="text-xs uppercase tracking-wider data-[state=active]:text-white data-[state=active]:shadow-[0_0_10px_var(--accent)]"
+                  className="text-xs uppercase tracking-wider data-[state=active]:text-white"
                   style={{ '--accent': suitColors[s] } as React.CSSProperties}
                 >
                   {s}
@@ -355,8 +285,17 @@ const EntrepreneurialTarot = () => {
               <TabsTrigger value="chords" className="text-xs uppercase tracking-wider">
                 CHORDS
               </TabsTrigger>
+              <TabsTrigger value="legend" className="text-xs uppercase tracking-wider">
+                Legend
+              </TabsTrigger>
             </TabsList>
 
+            {/* Constellation View */}
+            <TabsContent value="constellation">
+              <ConstellationView onCardSelect={setSelectedCard} />
+            </TabsContent>
+
+            {/* Suit tabs */}
             {suits.map((s) => (
               <TabsContent key={s} value={s}>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
@@ -367,6 +306,7 @@ const EntrepreneurialTarot = () => {
               </TabsContent>
             ))}
 
+            {/* CHORDS tab */}
             <TabsContent value="chords">
               {dimensions.map((dim) => (
                 <div key={dim} className="mb-6">
@@ -380,6 +320,11 @@ const EntrepreneurialTarot = () => {
                   </div>
                 </div>
               ))}
+            </TabsContent>
+
+            {/* Matrix Legend */}
+            <TabsContent value="legend">
+              <MatrixLegend />
             </TabsContent>
           </Tabs>
         </div>
