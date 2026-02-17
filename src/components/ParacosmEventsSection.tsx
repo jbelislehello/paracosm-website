@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar, MapPin, Users, ExternalLink, Wifi, BookOpen, Globe, Building, Radio } from 'lucide-react';
@@ -39,6 +40,16 @@ const events = [
     category: "Retreats",
     color: "from-purple-500 to-violet-500",
     cta: "Early Access"
+  },
+  {
+    name: "Paracosm Retreat — Relational Intelligence",
+    description: "A 3-day immersive retreat integrating the Entrepreneurial Tarot, relational intelligence frameworks, and leadership reflection at a stunning island venue.",
+    date: "August 25-27, 2026",
+    location: "Botanico House, Azores Island",
+    category: "Retreats",
+    color: "from-purple-500 to-violet-500",
+    cta: "Request Invitation",
+    link: "/paracosm-retreat"
   },
   {
     name: "GL!TCH - Relational Intelligence Summit",
@@ -126,16 +137,29 @@ const ParacosmEventsSection = () => {
                     </div>
                   </div>
 
-                  <a href={event.link || "https://app.reclaim.ai/m/jonathan-helloarchitekt"} target="_blank" rel="noopener noreferrer">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="w-full group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-blue-600 group-hover:text-white group-hover:border-transparent transition-all duration-300"
-                    >
-                      <ExternalLink className="w-4 h-4 mr-2" />
-                      {event.cta}
-                    </Button>
-                  </a>
+                  {event.link?.startsWith('/') ? (
+                    <Link to={event.link}>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-blue-600 group-hover:text-white group-hover:border-transparent transition-all duration-300"
+                      >
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        {event.cta}
+                      </Button>
+                    </Link>
+                  ) : (
+                    <a href={event.link || "https://app.reclaim.ai/m/jonathan-helloarchitekt"} target="_blank" rel="noopener noreferrer">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-blue-600 group-hover:text-white group-hover:border-transparent transition-all duration-300"
+                      >
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        {event.cta}
+                      </Button>
+                    </a>
+                  )}
                 </CardContent>
               </Card>
             );
