@@ -3,6 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
 import HeroCanvas from "./hero/HeroCanvas";
+import OracleTeaser from "./hero/OracleTeaser";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 interface HeroSectionProps {
@@ -38,6 +39,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
             <p className="text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 text-gray-700 dark:text-gray-200 leading-relaxed">
               {t("hero.design_deploy_manage")}
             </p>
+            <OracleTeaser />
           </div>
         </div>
       </div>
