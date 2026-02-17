@@ -4,30 +4,34 @@
 
 ## Overview
 
-Each major section of the `/tarot` page will animate into view as the user scrolls, creating an immersive, progressive reveal effect. This uses the Intersection Observer API for performant, scroll-triggered animations.
+Each major section of the `/tarot` page will animate into view as the user scrolls, creating an immersive, progressive reveal effect using the Intersection Observer API.
 
 ## What Changes
 
-### 1. Reusable scroll-reveal hook
+### 1. New reusable hook: `useScrollReveal`
 
-A small custom hook `useScrollReveal` wraps `IntersectionObserver`. It returns a ref and a boolean `isVisible`. When the element enters the viewport (with a configurable threshold), `isVisible` flips to `true` and stays true (one-shot reveal).
+A custom hook wrapping `IntersectionObserver`. Returns a `ref` and a boolean `isVisible`. Once the element enters the viewport, `isVisible` flips to `true` permanently (one-shot reveal). Disconnects the observer after triggering.
 
-### 2. Entrance animations on each section
+### 2. New CSS keyframes in `src/index.css`
 
-| Section | Animation |
-|---------|-----------|
-| Hero (icon, title, subtitle) | Fade up with staggered delays (icon first, then title, then text) |
-| Draw buttons | Fade up when scrolled into view |
-| Drawn cards | Already have `animate-fade-in` with staggered delays -- kept as-is |
-| Tabs section (Constellation / Browser / Legend) | Slide up from below with a slight scale |
-| Footer | Gentle fade in |
+| Keyframe | Effect |
+|----------|--------|
+| `scroll-fade-up` | opacity 0 + translateY(30px) to full visibility, 0.7s ease-out |
+| `scroll-slide-up` | opacity 0 + translateY(40px) + scale(0.97) to full visibility, 0.8s ease-out |
 
-### 3. New CSS keyframes
+Both automatically respect the existing `prefers-reduced-motion` media query already in the stylesheet.
 
-- `scroll-fade-up`: opacity 0 + translateY(30px) to opacity 1 + translateY(0), 0.7s ease-out
-- `scroll-slide-up`: opacity 0 + translateY(40px) + scale(0.97) to opacity 1 + translateY(0) + scale(1), 0.8s ease-out
+### 3. Section-by-section animations on the tarot page
 
-These respect `prefers-reduced-motion` via the existing media query that disables animations.
+| Section | Animation | Details |
+|---------|-----------|---------|
+| Hero | `scroll-fade-up` with staggered delays | Icon: 0ms, Title: 150ms, Subtitle: 300ms, Sub-text: 450ms |
+| Draw buttons | `scroll-fade-up` | Single reveal when scrolled into view |
+| Drawn cards | Unchanged | Already use `animate-fade-in` with stagger |
+| Tabs section | `scroll-slide-up` | Subtle scale + slide for heavier content block |
+| Footer | `scroll-fade-up` | Gentle fade in |
+
+Elements start as `opacity-0` and receive their animation class when `isVisible` becomes true.
 
 ## Technical Details
 
@@ -35,16 +39,16 @@ These respect `prefers-reduced-motion` via the existing media query that disable
 
 | File | Purpose |
 |------|---------|
-| `src/hooks/useScrollReveal.ts` | Custom hook: creates an IntersectionObserver, returns `{ ref, isVisible }`. Options for `threshold` (default 0.15) and `rootMargin`. Disconnects after first trigger. |
+| `src/hooks/useScrollReveal.ts` | Custom hook with configurable `threshold` (default 0.15) and `rootMargin`. Returns `{ ref, isVisible }`. |
 
 ### Modified Files
 
 | File | Changes |
 |------|---------|
-| `src/index.css` | Add `@keyframes scroll-fade-up` and `scroll-slide-up`, plus `.animate-scroll-fade-up` and `.animate-scroll-slide-up` utility classes |
-| `src/pages/EntrepreneurialTarot.tsx` | Wrap each section (`<section>`) in a div that uses `useScrollReveal`. Apply the animation class conditionally: `className={isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}`. Hero sub-elements get staggered `animation-delay`. Tabs section uses the slide-up variant. |
+| `src/index.css` | Add two `@keyframes` blocks and two utility classes (`.animate-scroll-fade-up`, `.animate-scroll-slide-up`) |
+| `src/pages/EntrepreneurialTarot.tsx` | Import `useScrollReveal`. Create one instance per section (hero, draw, tabs). Conditionally apply animation classes. Hero sub-elements get individual `animation-delay` inline styles and start with `opacity-0` until visible. |
 
-### Hook implementation sketch
+### Hook implementation
 
 ```text
 function useScrollReveal(options?) {
@@ -67,12 +71,54 @@ function useScrollReveal(options?) {
 }
 ```
 
-### Stagger pattern for hero
+### CSS additions
 
-- Sparkles icon: delay 0ms
-- Title: delay 150ms
-- Subtitle: delay 300ms
-- Sub-text: delay 450ms
+```text
+@keyframes scroll-fade-up {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-Each uses `animate-scroll-fade-up` with `animation-delay` and starts as `opacity-0` until visible.
+@keyframes scroll-slide-up {
+  from { opacity: 0; transform: translateY(40px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.animate-scroll-fade-up {
+  animation: scroll-fade-up 0.7s ease-out forwards;
+}
+
+.animate-scroll-slide-up {
+  animation: scroll-slide-up 0.8s ease-out forwards;
+}
+```
+
+### Page integration pattern
+
+Each section wraps its content in a div using the hook:
+
+```text
+const heroReveal = useScrollReveal();
+const drawReveal = useScrollReveal();
+const tabsReveal = useScrollReveal({ threshold: 0.1 });
+
+// Hero section
+<section ref={heroReveal.ref}>
+  <div className={heroReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}
+       style={{ animationDelay: '0ms' }}>
+    ...icon...
+  </div>
+  <div className={heroReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}
+       style={{ animationDelay: '150ms' }}>
+    ...title...
+  </div>
+  // etc.
+</section>
+
+// Tabs section uses slide-up variant
+<section ref={tabsReveal.ref}
+         className={tabsReveal.isVisible ? 'animate-scroll-slide-up' : 'opacity-0'}>
+  ...tabs...
+</section>
+```
 
