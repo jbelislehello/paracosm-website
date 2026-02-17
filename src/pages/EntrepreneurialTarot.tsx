@@ -182,7 +182,7 @@ const EntrepreneurialTarot = () => {
   const dimensions: ChordsDimension[] = ['C', 'H', 'O', 'R', 'D', 'S'];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-purple-950/30 to-slate-950 text-white relative">
+    <div className="min-h-screen bg-white text-slate-900 relative">
       <AmbientParticles />
 
       {/* Nav */}
