@@ -1,95 +1,78 @@
 
 
-# Make Tarot Page Readable and Add Board Equation References
+# Add Smooth Scroll Animations and Entrance Transitions to the Tarot Page
 
 ## Overview
 
-Two changes: switch the tarot page from dark to a clean white/light background for legibility, and add clear Calm Magic board equation labels to every card so each card's position in the system is immediately understandable.
+Each major section of the `/tarot` page will animate into view as the user scrolls, creating an immersive, progressive reveal effect. This uses the Intersection Observer API for performant, scroll-triggered animations.
 
-## 1. White/Light Background
+## What Changes
 
-The entire `/tarot` page currently uses `bg-gradient-to-br from-slate-950 via-purple-950/30 to-slate-950` with white text. This will be switched to a clean white background with dark text, updating all child components accordingly.
+### 1. Reusable scroll-reveal hook
 
-### Files affected:
-- **`src/pages/EntrepreneurialTarot.tsx`** -- Main page background, hero, nav bar, buttons, text colors, card detail modal, MiniCard overlay
-- **`src/components/tarot/ConstellationView.tsx`** -- Grid node colors, tooltip backgrounds, text colors
-- **`src/components/tarot/MatrixLegend.tsx`** -- Text and border colors
-- **`src/components/tarot/EnhancedCardDisplay.tsx`** -- The card back/front styling (cards themselves can stay dark as art objects on a white canvas)
+A small custom hook `useScrollReveal` wraps `IntersectionObserver`. It returns a ref and a boolean `isVisible`. When the element enters the viewport (with a configurable threshold), `isVisible` flips to `true` and stays true (one-shot reveal).
 
-### Key color swaps:
-- Page background: `bg-white text-gray-900` (or `bg-gray-50`)
-- Nav header: `bg-white/90 border-gray-200`
-- Text: `text-gray-900`, `text-gray-600`, `text-gray-400` instead of slate/white variants
-- Buttons: readable borders and text for light backgrounds
-- Card detail modal: keep dark overlay (`bg-black/60`) but update the modal panel to white with dark text
-- Constellation grid: light background cells with colored nodes
-- Ambient particles: reduce or keep subtle on light background
+### 2. Entrance animations on each section
 
-## 2. Board Equation References on Every Card
+| Section | Animation |
+|---------|-----------|
+| Hero (icon, title, subtitle) | Fade up with staggered delays (icon first, then title, then text) |
+| Draw buttons | Fade up when scrolled into view |
+| Drawn cards | Already have `animate-fade-in` with staggered delays -- kept as-is |
+| Tabs section (Constellation / Browser / Legend) | Slide up from below with a slight scale |
+| Footer | Gentle fade in |
 
-Each card will display a clear human-readable "board equation" showing its Calm Magic coordinates. The format:
+### 3. New CSS keyframes
 
-**Major Arcana example:**
-```
-MAGIC Board | Row 3: Goals | Col 2: MAGIC
-M3.2
-```
+- `scroll-fade-up`: opacity 0 + translateY(30px) to opacity 1 + translateY(0), 0.7s ease-out
+- `scroll-slide-up`: opacity 0 + translateY(40px) + scale(0.97) to opacity 1 + translateY(0) + scale(1), 0.8s ease-out
 
-**Minor Arcana example:**
-```
-CHORDS | Row 5: Drift | Col 1: Chances (C)
-C5.1
-```
-
-### Where equations appear:
-- **MiniCard** (browser grid): Small equation tag showing `Board | Stage | Dimension`
-- **EnhancedCardDisplay** (drawn cards): Equation badge on both back and front faces
-- **CardDetail modal**: Full equation breakdown with row meaning, column meaning, and board
-- **OracleTeaser** (homepage): Equation label next to coordinate badge
-
-### Data needed:
-The stage names and dimension names are already available:
-- `stages[]` array maps row index to stage name (Agendas, Lens, Maps, etc.)
-- `chordsData` maps dimension letter to full name (Chances, Heart, Observer, etc.)
-- `card.matrixPosition.board` gives the board name
-- Major cards have `suit` for board context; minor cards use CHORDS dimension for column context
-
-A small helper function will be added to `entrepreneurialTarot.ts`:
-```
-getCardEquation(card) -> {
-  board: string,       // "MAGIC" or "LOVE" etc.
-  stageName: string,   // "Goals" or "Drift" etc.
-  dimensionName: string, // "Chances" or "Heart" etc.
-  address: string      // "M3.2"
-}
-```
+These respect `prefers-reduced-motion` via the existing media query that disables animations.
 
 ## Technical Details
+
+### New File
+
+| File | Purpose |
+|------|---------|
+| `src/hooks/useScrollReveal.ts` | Custom hook: creates an IntersectionObserver, returns `{ ref, isVisible }`. Options for `threshold` (default 0.15) and `rootMargin`. Disconnects after first trigger. |
 
 ### Modified Files
 
 | File | Changes |
 |------|---------|
-| `src/data/entrepreneurialTarot.ts` | Add `getCardEquation()` helper and export `stages` array |
-| `src/pages/EntrepreneurialTarot.tsx` | White background, light-theme nav/hero/buttons/text, updated MiniCard with equation tag, updated CardDetail modal with full equation, light-themed ambient particles |
-| `src/components/tarot/EnhancedCardDisplay.tsx` | Add equation label on card back and front (cards stay dark as art objects) |
-| `src/components/tarot/ConstellationView.tsx` | Light background grid cells, dark text labels, updated tooltip styling |
-| `src/components/tarot/MatrixLegend.tsx` | Dark text on light background |
-| `src/components/hero/OracleTeaser.tsx` | Add equation label (stage + dimension name) next to coordinate badge |
+| `src/index.css` | Add `@keyframes scroll-fade-up` and `scroll-slide-up`, plus `.animate-scroll-fade-up` and `.animate-scroll-slide-up` utility classes |
+| `src/pages/EntrepreneurialTarot.tsx` | Wrap each section (`<section>`) in a div that uses `useScrollReveal`. Apply the animation class conditionally: `className={isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}`. Hero sub-elements get staggered `animation-delay`. Tabs section uses the slide-up variant. |
 
-### Card Equation Display Format
+### Hook implementation sketch
 
-On each card, the equation will read like:
+```text
+function useScrollReveal(options?) {
+  const ref = useRef(null)
+  const [isVisible, setIsVisible] = useState(false)
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setIsVisible(true)
+        observer.disconnect()
+      }
+    }, { threshold: 0.15, ...options })
+
+    if (ref.current) observer.observe(ref.current)
+    return () => observer.disconnect()
+  }, [])
+
+  return { ref, isVisible }
+}
 ```
-MAGIC Board -- Goals (Row 3) -- Col 2
-```
 
-or for minor arcana:
+### Stagger pattern for hero
 
-```
-Chances (C) -- Drift (Row 5) -- Col 1
-```
+- Sparkles icon: delay 0ms
+- Title: delay 150ms
+- Subtitle: delay 300ms
+- Sub-text: delay 450ms
 
-This makes the matrix position immediately meaningful rather than just showing a cryptic coordinate code.
+Each uses `animate-scroll-fade-up` with `animation-delay` and starts as `opacity-0` until visible.
 
