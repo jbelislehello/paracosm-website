@@ -1,57 +1,99 @@
 
-# Add Multi-Card Picker for Constellation Cells
 
-## What It Does
+# Replace Tarot Deck with 64-Card Matrix Stack
 
-When a constellation grid cell contains 2 or more cards, clicking it opens a small popover menu listing all cards in that cell. Users can then pick which card to view. Single-card cells continue to select the card directly on click.
+## Overview
 
-## How It Works
+Replace the current 70-card mixed deck (22 Major + 48 Minor) with a pure 64-card matrix deck (8 rows x 8 columns) used for all readings. Each card gets a unique description derived from the intersection of its row stage and column dimension. The Major Arcana cards remain browsable but are no longer part of the draw pool.
 
-Currently, line 99 only handles single-card cells: `onClick={() => cards.length === 1 && onCardSelect(cards[0])}`. Multi-card cells are clickable but do nothing.
+## What Changes
 
-The fix uses the existing Radix Popover component (already installed) to show a compact picker anchored to the cell.
+### 1. Expand dimensions from 6 to 8
+
+Add two new MAPS columns to complete the 8x8 grid:
+- **Column 7: P (Protocols)** -- governance, agreements, rules
+- **Column 8: Sy (Systems)** -- infrastructure, integration, architecture
+
+This adds 16 new cards (2 columns x 8 rows) to the existing 48, totaling 64.
+
+### 2. Add descriptions to all 64 cards
+
+Each card receives a 1-2 sentence `description` field explaining the meaning of that matrix intersection. Examples:
+
+| Row x Col | Description |
+|-----------|-------------|
+| Mindsets x Chances | "The mental frameworks you hold around risk-taking. Examines whether your beliefs about experimentation enable or constrain your growth." |
+| Higher Self x Systems | "Your most evolved relationship with infrastructure and integration. Asks how living systems mastery becomes an expression of sovereign leadership." |
+| Glitch x Heart | "The unexpected disruption that reveals a deeper truth about compassion. Asks what heartbreak in your organization is teaching you about authentic care." |
+
+### 3. Update draw functions
+
+`drawCards` will pull from the 64-card `matrixDeck` instead of `fullDeck`. `fullDeck` remains available for constellation/browser views.
+
+### 4. Update UI text and tabs
+
+- Hero subtitle: "64 matrix cards" instead of "70 entrepreneurial archetypes"
+- CHORDS tab: add P and Sy dimension sections
+- MatrixLegend: add Protocols and Systems to horizontal axis
+- CardDetail modal: display the new description field
 
 ## Technical Details
 
-### File Modified
+### Modified Files
 
 | File | Changes |
 |------|---------|
-| `src/components/tarot/ConstellationView.tsx` | Add Popover-based picker for multi-card cells |
+| `src/data/entrepreneurialTarot.ts` | Add `description` to `MinorArcanaCard` interface. Add `'P' | 'Sy'` to `ChordsDimension`. Add dimension data, colors, questions, upright/reversed for P and Sy. Add `matrixDescriptions` (64 entries). Create `matrixDeck` export. Update `drawCards` to use `matrixDeck`. |
+| `src/pages/EntrepreneurialTarot.tsx` | Update hero text. Add P/Sy to dimensions array. Show `description` in CardDetail modal. |
+| `src/components/tarot/MatrixLegend.tsx` | Add Protocols and Systems rows to the horizontal axis legend. |
+| `src/components/tarot/EnhancedCardDisplay.tsx` | Show truncated description on the revealed card face. |
 
-### Changes
+### Data additions
 
-1. **Import Popover** from `@/components/ui/popover` alongside existing Tooltip imports
-
-2. **Add state** for tracking which cell's popover is open:
-   ```text
-   const [openPickerKey, setOpenPickerKey] = useState<string | null>(null);
-   ```
-
-3. **Wrap multi-card cells** in a `Popover` with `PopoverTrigger` on the existing button. Single-card cells keep their direct `onClick` behavior unchanged.
-
-4. **PopoverContent** renders a compact list of cards in that cell, each as a clickable row showing card name and question. Clicking a row calls `onCardSelect(card)` and closes the popover.
-
-5. **Styling**: The popover uses `bg-slate-900/95 border-slate-700 backdrop-blur-xl` to match the existing tooltip aesthetic, with hover highlights on each card row and a high z-index for visibility.
-
-### Picker layout (per card row)
-
+**New types:**
 ```text
-+-----------------------------------+
-| [color dot]  Card Name            |
-|              "Core question?"     |
-+-----------------------------------+
-| [color dot]  Card Name            |
-|              "Core question?"     |
-+-----------------------------------+
+ChordsDimension: 'C' | 'H' | 'O' | 'R' | 'D' | 'S' | 'P' | 'Sy'
 ```
 
-Each row is a button. Clicking it selects that card and closes the picker.
+**New dimension entries:**
+```text
+P: { name: 'Protocols', theme: 'governance & agreements' }
+Sy: { name: 'Systems', theme: 'infrastructure & architecture' }
+```
 
-### Click behavior summary
+**New card interface field:**
+```text
+MinorArcanaCard {
+  ...existing fields
+  description: string  // 1-2 sentence narrative
+}
+```
 
-| Cell type | Current behavior | New behavior |
-|-----------|-----------------|--------------|
-| 0 cards | No action | No action (unchanged) |
-| 1 card | Selects card directly | Unchanged |
-| 2+ cards | Nothing happens | Opens popover picker |
+**Description pattern** -- 64 unique descriptions, each combining the row's stage theme with the column's dimension theme. All 64 will be hand-written to ensure quality and relevance to entrepreneurial leadership.
+
+**New exports:**
+```text
+matrixDeck: MinorArcanaCard[]  // all 64 cards (8 dimensions x 8 stages)
+
+drawCards(count) now uses matrixDeck instead of fullDeck
+fullDeck remains for constellation/browser views
+```
+
+### UI changes
+
+**CardDetail modal** -- new description panel between question and upright/reversed:
+```text
+"Card question here?"
+
+[Description in a subtle frosted panel]
+
+Upright: ...
+Reversed: ...
+```
+
+**Hero text update:** "64 matrix archetypes" replacing "70 entrepreneurial archetypes"
+
+**CHORDS tab:** P and Sy sections added after S, each showing 8 cards in a grid.
+
+**MatrixLegend:** Two new rows in horizontal axis for P (Protocols) and Sy (Systems).
+
