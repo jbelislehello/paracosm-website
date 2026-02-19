@@ -54,7 +54,7 @@ const LandingPage = () => {
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       {/* Navigation */}
       <header className="fixed w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
-        <div className="container flex items-center justify-between py-3 px-4">
+        <div className="container max-w-7xl mx-auto flex items-center justify-between py-3 px-6">
           <div className="flex items-center gap-2">
             <img src={logoParacosm} alt="Paracosm" className="bg-white rounded-lg p-1 w-8 h-8 object-contain" />
             <span className="font-bold text-slate-900 dark:text-white text-sm">Paracosm</span>
