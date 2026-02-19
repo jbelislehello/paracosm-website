@@ -75,11 +75,6 @@ const LandingPage = () => {
           {/* Right-side actions */}
           <div className="flex items-center gap-2 flex-shrink-0">
             <LanguageSwitcher />
-            <a href="#contact" className="hidden lg:block">
-              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300" size="sm">
-                <span className="text-sm">Get Started</span>
-              </Button>
-            </a>
             {/* Mobile Menu */}
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
               <SheetTrigger asChild className="lg:hidden">
