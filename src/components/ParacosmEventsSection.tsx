@@ -33,6 +33,16 @@ const events = [
     cta: "Join Waitlist"
   },
   {
+    name: "GL!TCH — The Imagination of Women",
+    description: "A structured creative lab using narrative rupture to reveal suppressed feminine and queer imaginaries. Participants leave with a Glitch Map, a working prototype, and a shared vocabulary for sustaining transformation. Accepted at the Sustainability, Temporalities and Futures conference.",
+    date: "June 9-10, 2026",
+    location: "Turku, Finland",
+    category: "Events",
+    color: "from-orange-500 to-amber-500",
+    cta: "Learn More",
+    link: "https://futuresconference2026.com/"
+  },
+  {
     name: "Transformation Design Lab",
     description: "Learn to create diegetic prototypes and bridge the gap between vision and implementation through our proven methodology.",
     date: "Summer 2026",
