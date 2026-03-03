@@ -20,8 +20,8 @@ const events = [
     location: "Montreal Convention Centre",
     category: "Learning Organizations",
     color: "from-blue-500 to-indigo-500",
-    cta: "Get Tickets",
-    link: "https://my.weezevent.com/e-ai-2026"
+    cta: "View Presentation",
+    link: "https://www.beautiful.ai/player/-OmpqZeoUAksIU7UF7lT"
   },
   {
     name: "AI & Municipalités — GL!TCH Summit",
