@@ -21,7 +21,9 @@ const events = [
     category: "Learning Organizations",
     color: "from-blue-500 to-indigo-500",
     cta: "View Presentation",
-    link: "https://www.beautiful.ai/player/-OmpqZeoUAksIU7UF7lT"
+    link: "https://www.beautiful.ai/player/-OmpqZeoUAksIU7UF7lT",
+    secondaryCta: "Read Newsletter Article",
+    secondaryLink: "https://www.linkedin.com/pulse/b%25C3%25A2tir-une-entreprise-apprenante-%25C3%25A0-l%25C3%25A8re-de-lia-jonathan-belisle-xxyue"
   },
   {
     name: "AI & Municipalités — GL!TCH Summit",
@@ -167,6 +169,19 @@ const ParacosmEventsSection = () => {
                       >
                         <ExternalLink className="w-4 h-4 mr-2" />
                         {event.cta}
+                      </Button>
+                    </a>
+                  )}
+
+                  {event.secondaryLink && (
+                    <a href={event.secondaryLink} target="_blank" rel="noopener noreferrer">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all duration-300"
+                      >
+                        <BookOpen className="w-4 h-4 mr-2" />
+                        {event.secondaryCta}
                       </Button>
                     </a>
                   )}
