@@ -168,6 +168,10 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
         <TabsContent value="session" className="space-y-4">
           <GlitchSessionTimer />
         </TabsContent>
+
+        <TabsContent value="observatory" className="space-y-4">
+          <AIObservatoryModel />
+        </TabsContent>
       </Tabs>
 
       {/* Board Entry Gate Modal */}
