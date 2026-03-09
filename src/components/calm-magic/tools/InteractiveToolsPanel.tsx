@@ -52,7 +52,8 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
       'LearningOrganizationDashboard': 'pathways',
       'CulturalUnitTests': 'lens',
       'OECDInsightMatcher': 'oecd',
-      'GlitchSessionTimer': 'session'
+      'GlitchSessionTimer': 'session',
+      'AIObservatoryModel': 'observatory'
     };
 
     const targetTab = toolTabMap[toolName] || 'framework';
