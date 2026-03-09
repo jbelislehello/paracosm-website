@@ -14,6 +14,7 @@ import ClientRecommendations from './ClientRecommendations';
 import BoardEntryGate from '../BoardEntryGate';
 import { OECDInsightMatcher } from '../OECDInsightMatcher';
 import GlitchSessionTimer from './GlitchSessionTimer';
+import AIObservatoryModel from './AIObservatoryModel';
 import { Compass, ArrowRight } from 'lucide-react';
 
 interface InteractiveToolsPanelProps {
@@ -51,7 +52,8 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
       'LearningOrganizationDashboard': 'pathways',
       'CulturalUnitTests': 'lens',
       'OECDInsightMatcher': 'oecd',
-      'GlitchSessionTimer': 'session'
+      'GlitchSessionTimer': 'session',
+      'AIObservatoryModel': 'observatory'
     };
 
     const targetTab = toolTabMap[toolName] || 'framework';
@@ -98,7 +100,7 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
       )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-10">
+        <TabsList className="grid w-full grid-cols-11">
           <TabsTrigger value="assessment">🎯 Assessment</TabsTrigger>
           <TabsTrigger value="recommendations" disabled={!recommendations}>📋 Recommendations</TabsTrigger>
           <TabsTrigger value="framework">📊 Framework</TabsTrigger>
@@ -109,6 +111,7 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
           <TabsTrigger value="pathways">✨ Pathways</TabsTrigger>
           <TabsTrigger value="oecd">🏛️ OECD</TabsTrigger>
           <TabsTrigger value="session">⏱️ Session</TabsTrigger>
+          <TabsTrigger value="observatory">🔭 Observatory</TabsTrigger>
         </TabsList>
 
         <TabsContent value="assessment" className="space-y-4">
@@ -164,6 +167,10 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
 
         <TabsContent value="session" className="space-y-4">
           <GlitchSessionTimer />
+        </TabsContent>
+
+        <TabsContent value="observatory" className="space-y-4">
+          <AIObservatoryModel />
         </TabsContent>
       </Tabs>
 
