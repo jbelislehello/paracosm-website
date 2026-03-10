@@ -779,7 +779,9 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
   },
   {
     year: 2026, month: 3, theme: "Learning Architectures",
-    books: [],
+    books: [
+      { title: "Crafting Worthy Futures", author: "Itai Talmi", description: "Humanizing organizations — leadership, culture, and systemic change for crafting worthy futures.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.itaitalmi.com" },
+    ],
     articles: [
       { title: "Your Ideas and Relationships Are Geometries", author: "Jonathan Bélisle", description: "Consciousness as a manifold — navigating preferable futures through adjacent topologies and the Calm Magic Board as a living PRD engine.", category: "Human Dynamics & System Thinking", axis: "open", url: "https://www.linkedin.com/pulse/your-ideas-relationships-geometries-preferable-future-belisle-9rwwe", source: "LinkedIn" },
       { title: "AI System Telemetry Architecture", author: "Jonathan Bélisle", description: "Multi-tier telemetry framework for AI systems — strategic, operational, and tactical signals for learning organizations.", category: "Human Dynamics & System Thinking", axis: "open", url: "https://www.linkedin.com/pulse/ai-system-telemetry-architecture-jonathan-belisle-k5lke", source: "LinkedIn" },
