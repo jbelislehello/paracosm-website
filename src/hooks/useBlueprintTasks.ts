@@ -28,7 +28,6 @@ export function useBlueprintTasks(projectId: string | null | undefined) {
       .from('tasks')
       .select('id, title, status, priority, category, notes, goal, due_date, created_at')
       .eq('user_id', user.user.id)
-      .like('category', '%-magic')
       .or('category.like.%-calm,category.like.%-free,category.like.%-magic')
       .order('created_at', { ascending: false });
 
