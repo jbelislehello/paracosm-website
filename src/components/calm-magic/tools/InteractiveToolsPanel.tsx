@@ -15,6 +15,7 @@ import BoardEntryGate from '../BoardEntryGate';
 import { OECDInsightMatcher } from '../OECDInsightMatcher';
 import GlitchSessionTimer from './GlitchSessionTimer';
 import AIObservatoryModel from './AIObservatoryModel';
+import ServiceBlueprintObservatory from './ServiceBlueprintObservatory';
 import { Compass, ArrowRight } from 'lucide-react';
 
 interface InteractiveToolsPanelProps {
