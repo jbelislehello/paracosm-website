@@ -777,6 +777,19 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "FNC09 — Psychogéographie et réalité augmentée", speaker: "Jonathan Bélisle", description: "Exploring psychogeography and augmented reality as tools for reimagining urban spaces.", category: "Tangible Play", axis: "love", youtubeId: "7jVV-476Bog", platform: "LienMultimédia" },
     ],
   },
+  {
+    year: 2026, month: 3, theme: "Learning Architectures",
+    books: [],
+    articles: [
+      { title: "Your Ideas and Relationships Are Geometries", author: "Jonathan Bélisle", description: "Consciousness as a manifold — navigating preferable futures through adjacent topologies and the Calm Magic Board as a living PRD engine.", category: "Human Dynamics & System Thinking", axis: "open", url: "https://www.linkedin.com/pulse/your-ideas-relationships-geometries-preferable-future-belisle-9rwwe", source: "LinkedIn" },
+      { title: "AI System Telemetry Architecture", author: "Jonathan Bélisle", description: "Multi-tier telemetry framework for AI systems — strategic, operational, and tactical signals for learning organizations.", category: "Human Dynamics & System Thinking", axis: "open", url: "https://www.linkedin.com/pulse/ai-system-telemetry-architecture-jonathan-belisle-k5lke", source: "LinkedIn" },
+      { title: "Bâtir une entreprise apprenante à l'ère de l'IA", author: "Jonathan Bélisle", description: "Building a learning organization in the AI era — why the strategic question is organizational, not technological.", category: "Human Dynamics & System Thinking", axis: "open", url: "https://www.linkedin.com/pulse/b%C3%A2tir-une-entreprise-apprenante-%C3%A0-l%C3%A8re-de-lia-jonathan-belisle-xxyue", source: "LinkedIn" },
+    ],
+    videos: [
+      { title: "Paracosm — Reel", speaker: "Jonathan Bélisle", description: "Visual reel showcasing the Paracosm creative ecosystem and its applied poetry approach.", category: "Storyworlds", axis: "free", youtubeId: "", platform: "Instagram" },
+      { title: "Calm Magic Board — Presentation Deck", speaker: "Jonathan Bélisle", description: "Interactive presentation deck for the Calm Magic Board methodology and living PRD framework.", category: "Workflows", axis: "calm", youtubeId: "", platform: "Beautiful.ai" },
+    ],
+  },
 ];
 
 export const driftLibraryExtras: DriftBook[] = [
