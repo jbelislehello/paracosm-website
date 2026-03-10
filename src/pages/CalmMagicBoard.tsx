@@ -1874,6 +1874,7 @@ const CalmMagicBoard = () => {
               insideBoard={true}
               currentSeason={currentSeason}
               visitedTilesCount={visitedTiles.size}
+              projectId={activeProjectId}
             />
           </div>
         )}

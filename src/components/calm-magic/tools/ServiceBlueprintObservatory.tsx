@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import {
   getPrdObservatoryMapping,
   getCrossLayerDependencies,
@@ -15,208 +14,288 @@ import {
   type RiskLevel,
 } from '@/utils/serviceBlueprintMapping';
 import {
-  Layout, ArrowDown, CheckCircle2, AlertTriangle, XCircle,
-  ChevronDown, Sparkles, Users, Server, Eye
+  Layout, CheckCircle2, AlertTriangle, XCircle,
+  ChevronRight, Sparkles, Users, Server, ArrowRight,
+  Layers, Target, Shield
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-
-interface PrdData {
-  [key: string]: string | null | undefined;
-}
+import type { PrdRecord } from '@/hooks/useProjectPrd';
 
 interface ServiceBlueprintObservatoryProps {
-  prdData?: PrdData | null;
+  prdData?: PrdRecord | null;
+  isLoading?: boolean;
 }
 
-const TIER_CONFIG: Record<Tier, { label: string; lane: string; icon: React.ElementType; badgeCls: string; barCls: string }> = {
+const TIER_CONFIG: Record<Tier, { label: string; lane: string; laneDesc: string; icon: React.ElementType; accentClass: string; barClass: string; dotClass: string }> = {
   magic: {
-    label: 'MAGIC — Strategy',
+    label: 'Strategic Intelligence',
     lane: 'Backstage',
+    laneDesc: 'Organizational decisions & governance',
     icon: Sparkles,
-    badgeCls: 'bg-purple-100 text-purple-800 dark:bg-purple-900/40 dark:text-purple-300',
-    barCls: '[&>div]:bg-purple-500',
+    accentClass: 'border-purple-500/30 bg-purple-500/5',
+    barClass: '[&>div]:bg-purple-500',
+    dotClass: 'bg-purple-500',
   },
   calm: {
-    label: 'CALM — Experience',
+    label: 'Human Experience',
     lane: 'Frontstage',
+    laneDesc: 'User-facing touchpoints & interactions',
     icon: Users,
-    badgeCls: 'bg-teal-100 text-teal-800 dark:bg-teal-900/40 dark:text-teal-300',
-    barCls: '[&>div]:bg-teal-500',
+    accentClass: 'border-teal-500/30 bg-teal-500/5',
+    barClass: '[&>div]:bg-teal-500',
+    dotClass: 'bg-teal-500',
   },
   free: {
-    label: 'FREE — Infrastructure',
+    label: 'Infrastructure',
     lane: 'Support',
+    laneDesc: 'Technical systems & deployment',
     icon: Server,
-    badgeCls: 'bg-slate-100 text-slate-800 dark:bg-slate-900/40 dark:text-slate-300',
-    barCls: '[&>div]:bg-slate-500',
+    accentClass: 'border-slate-500/30 bg-slate-500/5',
+    barClass: '[&>div]:bg-slate-500',
+    dotClass: 'bg-slate-500',
   },
 };
 
-const SEASON_EMOJI: Record<Season, string> = {
-  POLLENS: '🌸',
-  NOEMS: '💡',
-  POEMS: '📖',
-  TOTEMS: '💎',
-  ANTHEMS: '🎵',
+const SEASON_META: Record<Season, { emoji: string; color: string }> = {
+  POLLENS: { emoji: '🌸', color: 'text-rose-500' },
+  NOEMS: { emoji: '💡', color: 'text-violet-500' },
+  POEMS: { emoji: '📖', color: 'text-blue-500' },
+  TOTEMS: { emoji: '💎', color: 'text-emerald-500' },
+  ANTHEMS: { emoji: '🎵', color: 'text-amber-500' },
 };
 
-const RiskBadge: React.FC<{ risk: RiskLevel }> = ({ risk }) => {
-  if (risk === 'low') return <Badge className="bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300 text-[10px]"><CheckCircle2 className="w-3 h-3 mr-1" />Low</Badge>;
-  if (risk === 'medium') return <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 text-[10px]"><AlertTriangle className="w-3 h-3 mr-1" />Med</Badge>;
-  return <Badge className="bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300 text-[10px]"><XCircle className="w-3 h-3 mr-1" />High</Badge>;
+const RiskIcon: React.FC<{ risk: RiskLevel; className?: string }> = ({ risk, className }) => {
+  if (risk === 'low') return <CheckCircle2 className={cn('w-3.5 h-3.5 text-green-500', className)} />;
+  if (risk === 'medium') return <AlertTriangle className={cn('w-3.5 h-3.5 text-amber-500', className)} />;
+  return <XCircle className={cn('w-3.5 h-3.5 text-red-500', className)} />;
 };
 
-const ServiceBlueprintObservatory: React.FC<ServiceBlueprintObservatoryProps> = ({ prdData = null }) => {
+const ServiceBlueprintObservatory: React.FC<ServiceBlueprintObservatoryProps> = ({ prdData = null, isLoading = false }) => {
   const matrix = getPrdObservatoryMapping(prdData);
   const dependencies = getCrossLayerDependencies();
-  const [expandedCells, setExpandedCells] = useState<Set<string>>(new Set());
-
-  const toggleCell = (key: string) => {
-    setExpandedCells(prev => {
-      const next = new Set(prev);
-      next.has(key) ? next.delete(key) : next.add(key);
-      return next;
-    });
-  };
+  const [expandedCell, setExpandedCell] = useState<string | null>(null);
 
   const getCell = (season: Season, tier: Tier) =>
     matrix.cells.find(c => c.season === season && c.tier === tier)!;
 
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 via-teal-500 to-slate-500 flex items-center justify-center">
-          <Layout className="w-5 h-5 text-white" />
-        </div>
-        <div>
-          <h2 className="text-xl font-bold text-foreground">Service Blueprint Observatory</h2>
-          <p className="text-sm text-muted-foreground">
-            PRD seasons × Observatory tiers — readiness, risk & de-risking actions
-          </p>
-        </div>
-        <Badge variant="outline" className="ml-auto text-xs">
-          {matrix.overallReadiness}% overall
-        </Badge>
-      </div>
+  if (isLoading) {
+    return (
+      <Card className="border-border/50">
+        <CardContent className="py-16 text-center">
+          <div className="animate-pulse space-y-3">
+            <div className="h-6 bg-muted rounded w-1/3 mx-auto" />
+            <div className="h-4 bg-muted rounded w-1/2 mx-auto" />
+            <div className="h-40 bg-muted rounded mt-6" />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
-      {/* Swimlane Legend */}
-      <div className="flex flex-wrap gap-2">
+  const noPrd = !prdData;
+  const highRiskCount = matrix.cells.filter(c => c.risk === 'high').length;
+  const readyCellCount = matrix.cells.filter(c => c.risk === 'low').length;
+
+  return (
+    <TooltipProvider>
+      <div className="space-y-6">
+        {/* Header with overall metrics */}
+        <div className="flex items-start gap-4">
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-purple-500 via-teal-500 to-slate-500 flex items-center justify-center shadow-md">
+            <Layout className="w-5 h-5 text-white" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h2 className="text-lg font-bold text-foreground tracking-tight">Service Blueprint</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              AI initiative readiness across strategy, experience & infrastructure
+            </p>
+          </div>
+        </div>
+
+        {/* KPI Bar */}
+        <div className="grid grid-cols-3 gap-3">
+          <div className="flex items-center gap-2 p-3 rounded-lg border border-border/50 bg-muted/30">
+            <Target className="w-4 h-4 text-primary" />
+            <div>
+              <p className="text-xs text-muted-foreground">Overall</p>
+              <p className="text-lg font-bold text-foreground">{matrix.overallReadiness}%</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 p-3 rounded-lg border border-border/50 bg-muted/30">
+            <Shield className="w-4 h-4 text-green-500" />
+            <div>
+              <p className="text-xs text-muted-foreground">Ready</p>
+              <p className="text-lg font-bold text-foreground">{readyCellCount}/15</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 p-3 rounded-lg border border-border/50 bg-muted/30">
+            <AlertTriangle className="w-4 h-4 text-red-500" />
+            <div>
+              <p className="text-xs text-muted-foreground">At Risk</p>
+              <p className="text-lg font-bold text-foreground">{highRiskCount}</p>
+            </div>
+          </div>
+        </div>
+
+        {noPrd && (
+          <div className="p-4 rounded-lg border border-amber-500/30 bg-amber-500/5 text-sm text-amber-700 dark:text-amber-300">
+            No PRD data available. Complete your season journey and compile fragments to populate this blueprint.
+          </div>
+        )}
+
+        {/* Swimlane Blueprint Matrix */}
         {TIERS.map(tier => {
           const cfg = TIER_CONFIG[tier];
           const Icon = cfg.icon;
+          const tierCells = SEASONS.map(s => getCell(s, tier));
+          const tierReadiness = tierCells.length > 0
+            ? Math.round(tierCells.reduce((sum, c) => sum + c.readiness, 0) / tierCells.length)
+            : 0;
+
           return (
-            <div key={tier} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Icon className="w-3.5 h-3.5" />
-              <span className="font-medium">{cfg.lane}</span>
-              <span className="opacity-60">({cfg.label})</span>
-            </div>
+            <Card key={tier} className={cn('overflow-hidden border', cfg.accentClass)}>
+              {/* Lane Header */}
+              <CardHeader className="py-3 px-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className={cn('w-7 h-7 rounded-lg flex items-center justify-center', cfg.accentClass)}>
+                      <Icon className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-sm font-semibold">{cfg.lane}</CardTitle>
+                      <p className="text-[10px] text-muted-foreground">{cfg.laneDesc}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Progress value={tierReadiness} className={cn('w-20 h-1.5', cfg.barClass)} />
+                    <span className="text-xs font-mono text-muted-foreground w-8 text-right">{tierReadiness}%</span>
+                  </div>
+                </div>
+              </CardHeader>
+
+              {/* Season Touchpoints Row */}
+              <CardContent className="pt-0 pb-3 px-4">
+                <div className="flex gap-2 overflow-x-auto pb-1">
+                  {SEASONS.map((season, idx) => {
+                    const cell = getCell(season, tier);
+                    const meta = SEASON_META[season];
+                    const cellKey = `${season}-${tier}`;
+                    const isExpanded = expandedCell === cellKey;
+                    const actionText = getDeRiskingActions(season, tier, cell.readiness);
+
+                    return (
+                      <React.Fragment key={season}>
+                        <div
+                          className={cn(
+                            'flex-1 min-w-[140px] rounded-lg border p-3 cursor-pointer transition-all',
+                            'hover:shadow-md hover:border-primary/30',
+                            isExpanded ? 'border-primary/40 shadow-sm bg-background' : 'border-border/30 bg-background/50',
+                            cell.risk === 'high' && 'border-red-500/20',
+                          )}
+                          onClick={() => setExpandedCell(isExpanded ? null : cellKey)}
+                        >
+                          {/* Touchpoint Header */}
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm">{meta.emoji}</span>
+                            <RiskIcon risk={cell.risk} />
+                          </div>
+
+                          {/* Label */}
+                          <p className="text-xs font-medium text-foreground leading-tight mb-1.5">
+                            {cell.label}
+                          </p>
+
+                          {/* Readiness Bar */}
+                          <Progress value={cell.readiness} className={cn('h-1', cfg.barClass)} />
+                          <p className="text-[10px] text-muted-foreground mt-1 font-mono">{cell.readiness}%</p>
+
+                          {/* De-risking Action */}
+                          <p className="text-[10px] text-muted-foreground mt-2 leading-tight line-clamp-2">
+                            {actionText}
+                          </p>
+
+                          {/* Expanded Fields */}
+                          {isExpanded && (
+                            <div className="mt-3 pt-2 border-t border-border/30 space-y-1.5">
+                              <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider">PRD Fields</p>
+                              {cell.fields.map(f => (
+                                <div key={f.key} className="flex items-center gap-1.5 text-[11px]">
+                                  {f.filled ? (
+                                    <CheckCircle2 className="w-3 h-3 text-green-500 flex-shrink-0" />
+                                  ) : (
+                                    <XCircle className="w-3 h-3 text-muted-foreground/30 flex-shrink-0" />
+                                  )}
+                                  <span className={cn(
+                                    f.filled ? 'text-foreground' : 'text-muted-foreground/50'
+                                  )}>
+                                    {f.label}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Flow connector between touchpoints */}
+                        {idx < SEASONS.length - 1 && (
+                          <div className="flex items-center justify-center flex-shrink-0 pt-6">
+                            <ArrowRight className="w-3 h-3 text-muted-foreground/30" />
+                          </div>
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
           );
         })}
-      </div>
 
-      {/* Matrix */}
-      {SEASONS.map(season => (
-        <Card key={season} className="border-border/50 overflow-hidden">
-          <CardHeader className="py-3 pb-2">
-            <CardTitle className="text-sm flex items-center gap-2">
-              <span className="text-lg">{SEASON_EMOJI[season]}</span>
-              {season}
-              {/* Tier readiness dots */}
-              <div className="flex gap-1 ml-auto">
-                {TIERS.map(tier => {
-                  const cell = getCell(season, tier);
-                  return (
-                    <div
-                      key={tier}
-                      className={cn(
-                        'w-2.5 h-2.5 rounded-full',
-                        tier === 'magic' && 'bg-purple-500',
-                        tier === 'calm' && 'bg-teal-500',
-                        tier === 'free' && 'bg-slate-500',
-                        cell.readiness === 0 && 'opacity-20',
-                        cell.readiness > 0 && cell.readiness < 75 && 'opacity-60',
-                      )}
-                      title={`${TIER_CONFIG[tier].label}: ${cell.readiness}%`}
-                    />
-                  );
-                })}
-              </div>
+        {/* Cross-Layer Dependencies */}
+        <Card className="border-dashed border-primary/20">
+          <CardHeader className="py-3 px-4">
+            <CardTitle className="text-xs flex items-center gap-2 text-muted-foreground">
+              <Layers className="w-3.5 h-3.5" />
+              Cross-Layer Dependencies
             </CardTitle>
           </CardHeader>
-          <CardContent className="pt-0 pb-3">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              {TIERS.map(tier => {
-                const cell = getCell(season, tier);
-                const cfg = TIER_CONFIG[tier];
-                const cellKey = `${season}-${tier}`;
-                const isOpen = expandedCells.has(cellKey);
-                const actionText = getDeRiskingActions(season, tier, cell.readiness);
+          <CardContent className="pt-0 pb-3 px-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {dependencies.map((dep, i) => {
+                const fromCell = getCell(dep.from.season, dep.from.tier);
+                const toCell = getCell(dep.to.season, dep.to.tier);
+                const bothReady = fromCell.risk === 'low' && toCell.risk === 'low';
+                const hasRisk = fromCell.risk === 'high' || toCell.risk === 'high';
 
                 return (
-                  <Collapsible key={tier} open={isOpen} onOpenChange={() => toggleCell(cellKey)}>
-                    <div className="rounded-lg border border-border/40 bg-muted/20 p-3 space-y-2">
-                      <CollapsibleTrigger className="w-full">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-1.5">
-                            <Badge className={cn(cfg.badgeCls, 'text-[10px] px-1.5 py-0')}>{cfg.lane}</Badge>
-                            <RiskBadge risk={cell.risk} />
-                          </div>
-                          <ChevronDown className={cn('w-3.5 h-3.5 text-muted-foreground transition-transform', isOpen && 'rotate-180')} />
-                        </div>
-                      </CollapsibleTrigger>
-
-                      <p className="text-xs font-medium text-foreground">{cell.label}</p>
-
-                      <Progress value={cell.readiness} className={cn('h-1.5', cfg.barCls)} />
-
-                      <p className="text-[10px] text-muted-foreground leading-tight">{actionText}</p>
-
-                      <CollapsibleContent>
-                        <div className="mt-2 pt-2 border-t border-border/30 space-y-1">
-                          {cell.fields.map(f => (
-                            <div key={f.key} className="flex items-center gap-1.5 text-[10px]">
-                              {f.filled ? (
-                                <CheckCircle2 className="w-3 h-3 text-green-500" />
-                              ) : (
-                                <XCircle className="w-3 h-3 text-muted-foreground/40" />
-                              )}
-                              <span className={cn(f.filled ? 'text-foreground' : 'text-muted-foreground/60')}>
-                                {f.label}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </CollapsibleContent>
-                    </div>
-                  </Collapsible>
+                  <Tooltip key={i}>
+                    <TooltipTrigger asChild>
+                      <div className={cn(
+                        'flex items-center gap-2 text-xs p-2.5 rounded-md border transition-colors',
+                        bothReady ? 'border-green-500/20 bg-green-500/5' :
+                        hasRisk ? 'border-red-500/20 bg-red-500/5' :
+                        'border-border/30 bg-muted/30'
+                      )}>
+                        <div className={cn('w-2 h-2 rounded-full flex-shrink-0',
+                          bothReady ? 'bg-green-500' : hasRisk ? 'bg-red-500 animate-pulse' : 'bg-amber-500'
+                        )} />
+                        <span className="text-muted-foreground leading-tight">{dep.label}</span>
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p className="text-xs">
+                        {dep.from.season}/{dep.from.tier} ({fromCell.readiness}%) →{' '}
+                        {dep.to.season}/{dep.to.tier} ({toCell.readiness}%)
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
                 );
               })}
             </div>
           </CardContent>
         </Card>
-      ))}
-
-      {/* Cross-Layer Dependencies */}
-      <Card className="border-dashed border-primary/30">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm flex items-center gap-2">
-            <Eye className="w-4 h-4" />
-            Cross-Layer Dependencies
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {dependencies.map((dep, i) => (
-              <div key={i} className="flex items-center gap-2 text-xs text-muted-foreground p-2 rounded-md bg-muted/50">
-                <div className={`w-2 h-2 rounded-full bg-gradient-to-r ${dep.color} animate-pulse`} />
-                <span className="leading-tight">{dep.label}</span>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+      </div>
+    </TooltipProvider>
   );
 };
 
