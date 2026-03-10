@@ -173,7 +173,11 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
         </TabsContent>
 
         <TabsContent value="observatory" className="space-y-4">
-          <AIObservatoryModel />
+          <AIObservatoryModel onNavigateToBlueprint={() => setActiveTab('blueprint')} />
+        </TabsContent>
+
+        <TabsContent value="blueprint" className="space-y-4">
+          <ServiceBlueprintObservatory />
         </TabsContent>
       </Tabs>
 

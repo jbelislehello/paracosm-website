@@ -244,6 +244,20 @@ const AIObservatoryModel: React.FC<AIObservatoryModelProps> = ({ onNavigateToBlu
           </div>
         </CardContent>
       </Card>
+
+      {/* Navigate to Blueprint */}
+      {onNavigateToBlueprint && (
+        <div className="flex justify-center">
+          <Button
+            variant="outline"
+            onClick={onNavigateToBlueprint}
+            className="gap-2"
+          >
+            <Layout className="w-4 h-4" />
+            View Service Blueprint
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

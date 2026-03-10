@@ -216,6 +216,17 @@ const SeasonSection: React.FC<{
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {/* Observatory readiness dots */}
+            {(() => {
+              const tierReadiness = getSeasonTierReadiness(prdData, season);
+              return (
+                <div className="flex gap-1 mr-2" title="MAGIC / CALM / FREE readiness">
+                  <div className={cn('w-2 h-2 rounded-full bg-purple-500', tierReadiness.magic === 0 && 'opacity-20', tierReadiness.magic > 0 && tierReadiness.magic < 75 && 'opacity-60')} />
+                  <div className={cn('w-2 h-2 rounded-full bg-teal-500', tierReadiness.calm === 0 && 'opacity-20', tierReadiness.calm > 0 && tierReadiness.calm < 75 && 'opacity-60')} />
+                  <div className={cn('w-2 h-2 rounded-full bg-slate-500', tierReadiness.free === 0 && 'opacity-20', tierReadiness.free > 0 && tierReadiness.free < 75 && 'opacity-60')} />
+                </div>
+              );
+            })()}
             <Badge 
               variant={isComplete ? 'default' : hasAnyContent ? 'secondary' : 'outline'}
               className={cn(
