@@ -185,7 +185,7 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
         </TabsContent>
 
         <TabsContent value="blueprint" className="space-y-4">
-          <ServiceBlueprintObservatory prdData={prdData} isLoading={prdLoading} />
+          <ServiceBlueprintObservatory prdData={prdData} isLoading={prdLoading} projectId={projectId} />
         </TabsContent>
       </Tabs>
 
