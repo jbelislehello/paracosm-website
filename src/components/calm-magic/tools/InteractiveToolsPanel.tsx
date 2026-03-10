@@ -54,7 +54,8 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
       'CulturalUnitTests': 'lens',
       'OECDInsightMatcher': 'oecd',
       'GlitchSessionTimer': 'session',
-      'AIObservatoryModel': 'observatory'
+      'AIObservatoryModel': 'observatory',
+      'ServiceBlueprintObservatory': 'blueprint'
     };
 
     const targetTab = toolTabMap[toolName] || 'framework';
