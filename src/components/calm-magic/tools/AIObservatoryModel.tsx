@@ -3,9 +3,10 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Button } from '@/components/ui/button';
 import { 
   Telescope, Eye, Cpu, ArrowDown, Orbit, 
-  Sparkles, Users, Server, FileText 
+  Sparkles, Users, Server, FileText, Layout 
 } from 'lucide-react';
 
 // --- Data ---
@@ -91,7 +92,11 @@ const prdModules = [
 
 // --- Component ---
 
-const AIObservatoryModel: React.FC = () => {
+interface AIObservatoryModelProps {
+  onNavigateToBlueprint?: () => void;
+}
+
+const AIObservatoryModel: React.FC<AIObservatoryModelProps> = ({ onNavigateToBlueprint }) => {
   const [telemetryValues, setTelemetryValues] = useState<Record<string, number>>({});
 
   // Initialize and animate telemetry
@@ -239,6 +244,20 @@ const AIObservatoryModel: React.FC = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Navigate to Blueprint */}
+      {onNavigateToBlueprint && (
+        <div className="flex justify-center">
+          <Button
+            variant="outline"
+            onClick={onNavigateToBlueprint}
+            className="gap-2"
+          >
+            <Layout className="w-4 h-4" />
+            View Service Blueprint
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

@@ -15,6 +15,7 @@ import BoardEntryGate from '../BoardEntryGate';
 import { OECDInsightMatcher } from '../OECDInsightMatcher';
 import GlitchSessionTimer from './GlitchSessionTimer';
 import AIObservatoryModel from './AIObservatoryModel';
+import ServiceBlueprintObservatory from './ServiceBlueprintObservatory';
 import { Compass, ArrowRight } from 'lucide-react';
 
 interface InteractiveToolsPanelProps {
@@ -53,7 +54,8 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
       'CulturalUnitTests': 'lens',
       'OECDInsightMatcher': 'oecd',
       'GlitchSessionTimer': 'session',
-      'AIObservatoryModel': 'observatory'
+      'AIObservatoryModel': 'observatory',
+      'ServiceBlueprintObservatory': 'blueprint'
     };
 
     const targetTab = toolTabMap[toolName] || 'framework';
@@ -100,9 +102,9 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
       )}
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-11">
+        <TabsList className="grid w-full grid-cols-12">
           <TabsTrigger value="assessment">🎯 Assessment</TabsTrigger>
-          <TabsTrigger value="recommendations" disabled={!recommendations}>📋 Recommendations</TabsTrigger>
+          <TabsTrigger value="recommendations" disabled={!recommendations}>📋 Recs</TabsTrigger>
           <TabsTrigger value="framework">📊 Framework</TabsTrigger>
           <TabsTrigger value="lens">🔍 Lens</TabsTrigger>
           <TabsTrigger value="journey">🗺️ Journey</TabsTrigger>
@@ -112,6 +114,7 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
           <TabsTrigger value="oecd">🏛️ OECD</TabsTrigger>
           <TabsTrigger value="session">⏱️ Session</TabsTrigger>
           <TabsTrigger value="observatory">🔭 Observatory</TabsTrigger>
+          <TabsTrigger value="blueprint">📐 Blueprint</TabsTrigger>
         </TabsList>
 
         <TabsContent value="assessment" className="space-y-4">
@@ -170,7 +173,11 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
         </TabsContent>
 
         <TabsContent value="observatory" className="space-y-4">
-          <AIObservatoryModel />
+          <AIObservatoryModel onNavigateToBlueprint={() => setActiveTab('blueprint')} />
+        </TabsContent>
+
+        <TabsContent value="blueprint" className="space-y-4">
+          <ServiceBlueprintObservatory />
         </TabsContent>
       </Tabs>
 
