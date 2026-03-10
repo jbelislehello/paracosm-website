@@ -16,6 +16,7 @@ import { OECDInsightMatcher } from '../OECDInsightMatcher';
 import GlitchSessionTimer from './GlitchSessionTimer';
 import AIObservatoryModel from './AIObservatoryModel';
 import ServiceBlueprintObservatory from './ServiceBlueprintObservatory';
+import { useProjectPrd } from '@/hooks/useProjectPrd';
 import { Compass, ArrowRight } from 'lucide-react';
 
 interface InteractiveToolsPanelProps {
@@ -24,6 +25,7 @@ interface InteractiveToolsPanelProps {
   insideBoard?: boolean;
   currentSeason?: string;
   visitedTilesCount?: number;
+  projectId?: string | null;
 }
 
 const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
@@ -31,11 +33,15 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
   onStateChange,
   insideBoard = false,
   currentSeason,
-  visitedTilesCount
+  visitedTilesCount,
+  projectId,
 }) => {
   const [recommendations, setRecommendations] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('assessment');
   const [showBoardGate, setShowBoardGate] = useState(false);
+
+  // Fetch real PRD data for Observatory & Blueprint
+  const { prdData, isLoading: prdLoading } = useProjectPrd(projectId);
 
   const handleRecommendationsReady = (recs: any) => {
     setRecommendations(recs);
@@ -43,7 +49,6 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
   };
 
   const handleStartJourney = (toolName: string) => {
-    // Map tool names to tab values
     const toolTabMap: { [key: string]: string } = {
       'CalmMagicCompass': 'compass',
       'EmotionalStagesFramework': 'framework',
@@ -173,11 +178,14 @@ const InteractiveToolsPanel: React.FC<InteractiveToolsPanelProps> = ({
         </TabsContent>
 
         <TabsContent value="observatory" className="space-y-4">
-          <AIObservatoryModel onNavigateToBlueprint={() => setActiveTab('blueprint')} />
+          <AIObservatoryModel
+            onNavigateToBlueprint={() => setActiveTab('blueprint')}
+            prdData={prdData}
+          />
         </TabsContent>
 
         <TabsContent value="blueprint" className="space-y-4">
-          <ServiceBlueprintObservatory />
+          <ServiceBlueprintObservatory prdData={prdData} isLoading={prdLoading} />
         </TabsContent>
       </Tabs>
 
