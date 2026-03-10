@@ -67,7 +67,7 @@ export function useProjectPrd(projectId: string | null | undefined) {
         .maybeSingle();
 
       if (!cancelled) {
-        setPrdData(error ? null : (data as PrdRecord | null));
+        setPrdData(error ? null : (data as unknown as PrdRecord | null));
         setIsLoading(false);
       }
     };
