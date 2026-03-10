@@ -218,7 +218,7 @@ const SeasonSection: React.FC<{
           <div className="flex items-center gap-2">
             {/* Observatory readiness dots */}
             {(() => {
-              const tierReadiness = getSeasonTierReadiness(prdData, season);
+              const tierReadiness = getSeasonTierReadiness(prdData as Record<string, string | null | undefined>, season);
               return (
                 <div className="flex gap-1 mr-2" title="MAGIC / CALM / FREE readiness">
                   <div className={cn('w-2 h-2 rounded-full bg-purple-500', tierReadiness.magic === 0 && 'opacity-20', tierReadiness.magic > 0 && tierReadiness.magic < 75 && 'opacity-60')} />
