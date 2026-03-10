@@ -92,7 +92,11 @@ const prdModules = [
 
 // --- Component ---
 
-const AIObservatoryModel: React.FC = () => {
+interface AIObservatoryModelProps {
+  onNavigateToBlueprint?: () => void;
+}
+
+const AIObservatoryModel: React.FC<AIObservatoryModelProps> = ({ onNavigateToBlueprint }) => {
   const [telemetryValues, setTelemetryValues] = useState<Record<string, number>>({});
 
   // Initialize and animate telemetry
