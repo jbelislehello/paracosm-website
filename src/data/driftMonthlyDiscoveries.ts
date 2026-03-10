@@ -786,8 +786,9 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Bâtir une entreprise apprenante à l'ère de l'IA", author: "Jonathan Bélisle", description: "Building a learning organization in the AI era — why the strategic question is organizational, not technological.", category: "Human Dynamics & System Thinking", axis: "open", url: "https://www.linkedin.com/pulse/b%C3%A2tir-une-entreprise-apprenante-%C3%A0-l%C3%A8re-de-lia-jonathan-belisle-xxyue", source: "LinkedIn" },
     ],
     videos: [
-      { title: "Paracosm — Reel", speaker: "Jonathan Bélisle", description: "Visual reel showcasing the Paracosm creative ecosystem and its applied poetry approach.", category: "Storyworlds", axis: "free", youtubeId: "", platform: "Instagram" },
+      { title: "Paracosm — Architecture of Experience", speaker: "Jonathan Bélisle", description: "Visual reel showcasing the Paracosm creative ecosystem and its applied poetry approach.", category: "Storyworlds", axis: "free", youtubeId: "0FUFewGHLLg", platform: "YouTube" },
       { title: "Calm Magic Board — Presentation Deck", speaker: "Jonathan Bélisle", description: "Interactive presentation deck for the Calm Magic Board methodology and living PRD framework.", category: "Workflows", axis: "calm", youtubeId: "", platform: "Beautiful.ai" },
+      { title: "Calm Magic — Short", speaker: "Jonathan Bélisle", description: "Quick vertical format overview of the Calm Magic methodology and its five axes.", category: "Workflows", axis: "calm", youtubeId: "CLsY8Bs1bDk", platform: "YouTube" },
     ],
   },
 ];

@@ -47,4 +47,5 @@ export const driftTools: DriftTool[] = [
   { name: "Antigravity", description: "Creative tool for exploring ideas beyond conventional constraints", startingPrice: "Free", axis: "free", month: 12, year: 2024, url: "https://antigravity.dev" },
   { name: "Calm Magic Synthesis", description: "Interactive synthesis app for the Calm Magic methodology and learning organization frameworks", startingPrice: "Free", axis: "calm", month: 3, year: 2026, url: "https://calm-magic-synthesis.lovable.app" },
   { name: "Paracosm Platform", description: "Creative ecosystem platform for applied poetry, transmedia storytelling, and experience architecture", startingPrice: "Free", axis: "free", month: 3, year: 2026, url: "https://paracosm.helloarchitekt.com" },
+  { name: "Itai Talmi", description: "Humanizing organizations — crafting worthy futures through leadership, culture, and systemic change", startingPrice: "Custom", axis: "love", month: 3, year: 2026, url: "https://www.itaitalmi.com" },
 ];
