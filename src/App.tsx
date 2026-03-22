@@ -88,6 +88,7 @@ function App() {
                   <Route path="/glitch-methodology" element={<GlitchMethodology />} />
                   <Route path="/tonalli" element={<Tonalli />} />
                   <Route path="/tarot" element={<EntrepreneurialTarot />} />
+                  <Route path="/design-system" element={<DesignSystemShowcase />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
                 <Toaster />
