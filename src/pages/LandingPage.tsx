@@ -10,19 +10,22 @@ import ParacosmUniverseSection from "@/components/ParacosmUniverseSection";
 import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
 import ServicesShowcase from "@/components/ServicesShowcase";
 import SocialProofSection from "@/components/SocialProofSection";
+import OnboardingGuide from "@/components/OnboardingGuide";
 
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
 import FAQSection from "@/components/FAQSection";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Zap, Heart, ChevronDown, Users, Menu, Grid3x3, Sparkles, Brain, Lightbulb, FileText } from 'lucide-react';
+import { Zap, Heart, ChevronDown, Users, Menu, Grid3x3, Sparkles, Brain, Lightbulb, FileText, Compass, ArrowRight } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const LandingPage = () => {
   const [isCalmMagicAssistantOpen, setIsCalmMagicAssistantOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [onboardingOpen, setOnboardingOpen] = useState(false);
   const { t } = useLanguage();
 
   useEffect(() => {
@@ -147,6 +150,18 @@ const LandingPage = () => {
                 </Link>
               </div>
               
+              <div className="flex flex-col sm:flex-row items-center gap-2 mb-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setOnboardingOpen(true)}
+                  className="gap-2 text-primary border-primary/30 hover:bg-primary/10"
+                >
+                  <Compass className="w-4 h-4" />
+                  Find Your Path
+                </Button>
+              </div>
+
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-4 sm:mb-6 px-2">
                 Choose your pathway to expansive leadership through proven methodologies that create lasting change
               </p>
@@ -175,7 +190,60 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
-      
+      {/* Onboarding Guide */}
+      <OnboardingGuide triggerOpen={onboardingOpen} onClose={() => setOnboardingOpen(false)} />
+
+      {/* Spring 2026 Featured Offer */}
+      <section className="py-12 px-4 bg-gradient-to-r from-primary/5 via-accent/10 to-primary/5">
+        <div className="container mx-auto max-w-4xl">
+          <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-card p-6 md:p-10 shadow-lg">
+            <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2" />
+            <Badge className="mb-3 bg-primary/10 text-primary border-primary/20">Limited to 5 slots / month</Badge>
+            <h2 className="text-2xl md:text-3xl font-bold mb-2">Spring 2026 — From Idea to Software</h2>
+            <p className="text-muted-foreground mb-6 text-sm md:text-base">
+              When you're stuck, I cut through it fast. I help people make the decisions they're avoiding when things get complex.
+            </p>
+
+            {/* Core Engine */}
+            <div className="flex flex-wrap items-center justify-center gap-2 mb-8 text-xs font-semibold">
+              {['Clarity', 'Decision', 'Alignment', 'Action'].map((step, i) => (
+                <span key={step} className="flex items-center gap-1">
+                  <span className="px-3 py-1.5 rounded-full bg-primary/10 text-primary">{step}</span>
+                  {i < 3 && <ArrowRight className="w-3 h-3 text-muted-foreground" />}
+                </span>
+              ))}
+            </div>
+
+            {/* 3 Tiers */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              {[
+                { name: 'Clarity Reset', duration: '7 days', price: '$800', desc: 'From confusion to a clear, executable decision' },
+                { name: 'Decision Sprint', duration: '14 days', price: '$1,500', desc: 'AI-augmented analysis with accountability loop' },
+                { name: 'Strategic Intervention', duration: 'Monthly', price: '$2,800', desc: 'Full Board access + ongoing strategic support' },
+              ].map((tier) => (
+                <div key={tier.name} className="border rounded-xl p-4 bg-accent/30 hover:bg-accent/50 transition-colors text-center">
+                  <p className="font-bold text-sm">{tier.name}</p>
+                  <p className="text-xs text-muted-foreground">{tier.duration}</p>
+                  <p className="text-lg font-bold text-primary mt-1">{tier.price}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{tier.desc}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link to="/calm-magic-assistant#spring-offer">
+                <Button className="gap-2">
+                  <Zap className="w-4 h-4" /> View Full Offer
+                </Button>
+              </Link>
+              <a href="mailto:jbelisle@helloarchitekt.com?subject=Spring%202026%20—%20From%20Idea%20to%20Software">
+                <Button variant="outline" className="gap-2">Get Started</Button>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Intention Design Philosophy Section */}
       <section className="py-20 px-4 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800">
         <div className="container mx-auto max-w-5xl">
@@ -390,6 +458,11 @@ const LandingPage = () => {
       </section>
       
       {/* Footer */}
+      <div className="text-center py-4 border-t border-border/50">
+        <Link to="/design-system" className="text-xs text-muted-foreground hover:text-primary transition-colors">
+          View Design System & Journey Map
+        </Link>
+      </div>
       <Footer />
     </div>
   );
