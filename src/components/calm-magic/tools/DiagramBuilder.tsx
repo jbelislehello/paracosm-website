@@ -308,7 +308,7 @@ export const DiagramBuilder: React.FC<DiagramBuilderProps> = ({ onSave }) => {
       const shapeData = target.get('shapeData') as ShapeData;
       
       if (shapeData) {
-        const pointer = canvas.getPointer(e.e);
+        const pointer = canvas.getViewportPoint(e.e);
         const port = findNearestPort(target, pointer.x, pointer.y);
         const portPos = getPortPosition(target, port);
         
@@ -330,7 +330,7 @@ export const DiagramBuilder: React.FC<DiagramBuilderProps> = ({ onSave }) => {
     const handleMouseMove = (e: any) => {
       if (!connectingFrom || !tempLine) return;
       
-      const pointer = canvas.getPointer(e.e);
+      const pointer = canvas.getViewportPoint(e.e);
       tempLine.set({ x2: pointer.x, y2: pointer.y });
       canvas.renderAll();
     };
@@ -349,7 +349,7 @@ export const DiagramBuilder: React.FC<DiagramBuilderProps> = ({ onSave }) => {
         const targetData = e.target.get('shapeData') as ShapeData;
         
         if (targetData && targetData.id !== connectingFrom.shapeId) {
-          const pointer = canvas.getPointer(e.e);
+          const pointer = canvas.getViewportPoint(e.e);
           const toPort = findNearestPort(e.target, pointer.x, pointer.y);
           
           const fromShape = Array.from(shapes.values()).find(

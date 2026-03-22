@@ -87,6 +87,8 @@ export const SketchPad: React.FC<SketchPadProps> = ({ onSave, initialData }) => 
       const rect = new Rect({
         left: 100,
         top: 100,
+        originX: 'left',
+        originY: 'top',
         fill: 'transparent',
         stroke: activeColor,
         strokeWidth: strokeWidth,
@@ -100,6 +102,8 @@ export const SketchPad: React.FC<SketchPadProps> = ({ onSave, initialData }) => 
       const circle = new Circle({
         left: 100,
         top: 100,
+        originX: 'left',
+        originY: 'top',
         fill: 'transparent',
         stroke: activeColor,
         strokeWidth: strokeWidth,
@@ -120,6 +124,8 @@ export const SketchPad: React.FC<SketchPadProps> = ({ onSave, initialData }) => 
       const text = new IText('Type here...', {
         left: 100,
         top: 100,
+        originX: 'left',
+        originY: 'top',
         fill: activeColor,
         fontSize: 16,
         fontFamily: 'system-ui',
