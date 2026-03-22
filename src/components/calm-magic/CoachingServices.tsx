@@ -205,6 +205,38 @@ const CoachingServices: React.FC = () => {
         </div>
       </div>
 
+      {/* ── Social Proof ── */}
+      <div className="bg-muted/30 rounded-2xl p-8 md:p-12">
+        <h3 className="text-xl font-bold text-center mb-8">What Clients Say</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            {
+              quote: "Jonathan helped me see the structural pattern I'd been blind to for months. One session completely reframed how I approached my product strategy.",
+              name: "Marie-Ève L.",
+              role: "Product Director, SaaS startup",
+            },
+            {
+              quote: "I came in overwhelmed by competing priorities. I left with three clear decisions and the confidence to execute. The AI-augmented analysis was unlike anything I've experienced.",
+              name: "Sébastien D.",
+              role: "Founder & CEO",
+            },
+            {
+              quote: "What sets Jonathan apart is his ability to hold both the emotional and strategic layers simultaneously. He doesn't just coach — he architects clarity.",
+              name: "Annika R.",
+              role: "VP of Innovation",
+            },
+          ].map((t, i) => (
+            <div key={i} className="space-y-4">
+              <p className="text-sm italic text-muted-foreground leading-relaxed">"{t.quote}"</p>
+              <div>
+                <p className="font-semibold text-sm">{t.name}</p>
+                <p className="text-xs text-muted-foreground">{t.role}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* ── Deep Transformation Programs ── */}
       <div>
         <div className="text-center mb-12">
