@@ -1,20 +1,23 @@
 
 
-# Add LinkedIn Newsletter Link to E-AI Event Card
+# Spring Offer: "From Idea to Software" — Clarity Sprint
 
-## Change
+## What
 
-Add a secondary link to the GL!TCH E-AI event card for the LinkedIn Calm Magic newsletter article. 
+Replace the existing 3-package coaching layout in `CoachingServices.tsx` with a new **Spring 2026 featured offer** at the top, followed by the existing packages as secondary options. The spring offer packages the compressed Calm Magic method into 3 tiers: a 7-day sprint, a 14-day intensive, and an ongoing retainer.
 
-### File: `src/components/ParacosmEventsSection.tsx`
+## Design
 
-**Data model change (line 15-25):** Add an optional `secondaryLink` and `secondaryCta` field to the E-AI event object:
-```ts
-secondaryCta: "Read Newsletter Article",
-secondaryLink: "https://www.linkedin.com/pulse/b%25C3%25A2tir-une-entreprise-apprenante-%25C3%25A0-l%25C3%25A8re-de-lia-jonathan-belisle-xxyue"
-```
+A prominent hero-style card at the top with the core positioning: **"When you're stuck, I cut through it fast."** followed by the 4-phase method (Entry → Deconstruction → Rebuild → Execution Loop), then 3 pricing tiers.
 
-**Rendering change (around lines 150-175):** After the main CTA button, render the secondary link if present — a second outline button with a `BookOpen` icon (already imported but unused). Same styling as the primary CTA but always visible as a secondary action.
+### Spring Offer Section (new, above existing packages)
 
-No new files or dependencies needed.
+**Headline**: "Spring 2026 — From Idea to Software"
+**Subline**: "I help people make the decisions they're avoiding when things get complex."
+**Core engine displayed**: Clarity → Decision → Alignment → Action (4-step horizontal flow with icons)
 
+**3 Offer Tiers:**
+
+| Tier | Name | Duration | What's included | Price |
+|------|------|----------|----------------|-------|
+| 1 | Clarity Reset | 7 days | 45-min diagnostic call, situation deconstruction (facts/assumptions/emotions/systems), 1-3 clear decisions, async support + 1 follow
