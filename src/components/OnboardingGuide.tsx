@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, ArrowLeft, Compass, Brain, Users, Zap, Sparkles, BookOpen, Target, Building } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const STORAGE_KEY = 'paracosm-onboarding-completed';
 const PROFILE_KEY = 'paracosm-onboarding-profile';
@@ -24,26 +25,6 @@ interface Recommendation {
   ctaLabel: string;
   ctaHref: string;
 }
-
-const needs = [
-  { id: 'clarity', label: 'I need clarity on a stuck decision', icon: Target, description: 'You have a specific decision or situation causing confusion' },
-  { id: 'learning-org', label: 'I want to build a learning organization', icon: Building, description: 'Transform your organization into one that continuously evolves' },
-  { id: 'ai-strategy', label: 'I need AI strategy & governance', icon: Brain, description: 'Navigate AI transformation with clear strategic frameworks' },
-  { id: 'relational', label: 'I want to develop relational intelligence', icon: Users, description: 'Strengthen team dynamics and interpersonal capacity' },
-];
-
-const maturities = [
-  { id: 'exploring', label: 'Exploring', icon: Compass, description: 'New to AI and transformation — seeking orientation' },
-  { id: 'practicing', label: 'Practicing', icon: BookOpen, description: 'Some experience — seeking structure and methodology' },
-  { id: 'leading', label: 'Leading', icon: Sparkles, description: 'Experienced — seeking advanced tools and frameworks' },
-];
-
-const capabilities = [
-  { id: 'solo', label: 'Solo Practitioner', description: 'Freelancer or independent professional' },
-  { id: 'small-team', label: 'Small Team (2-10)', description: 'Startup or small business team' },
-  { id: 'organization', label: 'Organization (10+)', description: 'Mid-size company or department' },
-  { id: 'enterprise', label: 'Enterprise', description: 'Large-scale organization' },
-];
 
 function getRecommendation(profile: OnboardingProfile): Recommendation {
   const { need, maturity, capability } = profile;
@@ -117,6 +98,27 @@ const OnboardingGuide = ({ triggerOpen, onClose }: OnboardingGuideProps) => {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
   const [profile, setProfile] = useState<OnboardingProfile>({ need: '', maturity: '', capability: '' });
+  const { t } = useLanguage();
+
+  const needs = [
+    { id: 'clarity', label: t('landing.onboarding_need_clarity'), icon: Target, description: t('landing.onboarding_need_clarity_desc') },
+    { id: 'learning-org', label: t('landing.onboarding_need_learning'), icon: Building, description: t('landing.onboarding_need_learning_desc') },
+    { id: 'ai-strategy', label: t('landing.onboarding_need_ai'), icon: Brain, description: t('landing.onboarding_need_ai_desc') },
+    { id: 'relational', label: t('landing.onboarding_need_relational'), icon: Users, description: t('landing.onboarding_need_relational_desc') },
+  ];
+
+  const maturities = [
+    { id: 'exploring', label: t('landing.onboarding_exploring'), icon: Compass, description: t('landing.onboarding_exploring_desc') },
+    { id: 'practicing', label: t('landing.onboarding_practicing'), icon: BookOpen, description: t('landing.onboarding_practicing_desc') },
+    { id: 'leading', label: t('landing.onboarding_leading'), icon: Sparkles, description: t('landing.onboarding_leading_desc') },
+  ];
+
+  const capabilities = [
+    { id: 'solo', label: t('landing.onboarding_solo'), description: t('landing.onboarding_solo_desc') },
+    { id: 'small-team', label: t('landing.onboarding_small_team'), description: t('landing.onboarding_small_team_desc') },
+    { id: 'organization', label: t('landing.onboarding_organization'), description: t('landing.onboarding_organization_desc') },
+    { id: 'enterprise', label: t('landing.onboarding_enterprise'), description: t('landing.onboarding_enterprise_desc') },
+  ];
 
   useEffect(() => {
     if (triggerOpen) {
@@ -152,24 +154,22 @@ const OnboardingGuide = ({ triggerOpen, onClose }: OnboardingGuideProps) => {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Compass className="w-5 h-5 text-primary" />
-            {step < 3 ? 'Find Your Path' : 'Your Recommended Path'}
+            {step < 3 ? t('landing.onboarding_find_path') : t('landing.onboarding_recommended')}
           </DialogTitle>
           <DialogDescription>
-            {step === 0 && 'What brings you here today?'}
-            {step === 1 && 'What\'s your experience level with AI & transformation?'}
-            {step === 2 && 'What\'s your organizational context?'}
-            {step === 3 && 'Based on your answers, here\'s where to start.'}
+            {step === 0 && t('landing.onboarding_step0')}
+            {step === 1 && t('landing.onboarding_step1')}
+            {step === 2 && t('landing.onboarding_step2')}
+            {step === 3 && t('landing.onboarding_step3')}
           </DialogDescription>
         </DialogHeader>
 
-        {/* Progress */}
         <div className="flex gap-1 mb-2">
           {[0, 1, 2, 3].map((s) => (
             <div key={s} className={`h-1 flex-1 rounded-full transition-colors ${s <= step ? 'bg-primary' : 'bg-muted'}`} />
           ))}
         </div>
 
-        {/* Step 0 — Need */}
         {step === 0 && (
           <div className="space-y-2">
             {needs.map((n) => (
@@ -188,7 +188,6 @@ const OnboardingGuide = ({ triggerOpen, onClose }: OnboardingGuideProps) => {
           </div>
         )}
 
-        {/* Step 1 — Maturity */}
         {step === 1 && (
           <div className="space-y-2">
             {maturities.map((m) => (
@@ -207,7 +206,6 @@ const OnboardingGuide = ({ triggerOpen, onClose }: OnboardingGuideProps) => {
           </div>
         )}
 
-        {/* Step 2 — Capability */}
         {step === 2 && (
           <div className="space-y-2">
             {capabilities.map((c) => (
@@ -223,7 +221,6 @@ const OnboardingGuide = ({ triggerOpen, onClose }: OnboardingGuideProps) => {
           </div>
         )}
 
-        {/* Step 3 — Recommendation */}
         {step === 3 && recommendation && (
           <Card className="border-primary/30 bg-accent/20">
             <CardContent className="p-4 space-y-3">
@@ -239,12 +236,12 @@ const OnboardingGuide = ({ triggerOpen, onClose }: OnboardingGuideProps) => {
                 </a>
                 <Link to={recommendation.route} onClick={handleClose}>
                   <Button variant="outline" className="w-full gap-2">
-                    Learn More <ArrowRight className="w-4 h-4" />
+                    {t('landing.onboarding_learn_more')} <ArrowRight className="w-4 h-4" />
                   </Button>
                 </Link>
                 <Link to={recommendation.caseStudyRoute} onClick={handleClose}>
                   <Button variant="ghost" size="sm" className="w-full text-xs">
-                    View Case Studies
+                    {t('landing.onboarding_view_cases')}
                   </Button>
                 </Link>
               </div>
@@ -252,16 +249,15 @@ const OnboardingGuide = ({ triggerOpen, onClose }: OnboardingGuideProps) => {
           </Card>
         )}
 
-        {/* Navigation */}
         <div className="flex justify-between pt-2">
           {step > 0 && step < 3 ? (
             <Button variant="ghost" size="sm" onClick={() => setStep(step - 1)}>
-              <ArrowLeft className="w-4 h-4 mr-1" /> Back
+              <ArrowLeft className="w-4 h-4 mr-1" /> {t('landing.onboarding_back')}
             </Button>
           ) : <div />}
           {step === 3 && (
             <Button variant="ghost" size="sm" onClick={handleClose}>
-              Close
+              {t('landing.onboarding_close')}
             </Button>
           )}
         </div>
