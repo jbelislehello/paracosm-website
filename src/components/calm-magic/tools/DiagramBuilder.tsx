@@ -330,7 +330,7 @@ export const DiagramBuilder: React.FC<DiagramBuilderProps> = ({ onSave }) => {
     const handleMouseMove = (e: any) => {
       if (!connectingFrom || !tempLine) return;
       
-      const pointer = canvas.getPointer(e.e);
+      const pointer = canvas.getViewportPoint(e.e);
       tempLine.set({ x2: pointer.x, y2: pointer.y });
       canvas.renderAll();
     };
