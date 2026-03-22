@@ -458,6 +458,11 @@ const LandingPage = () => {
       </section>
       
       {/* Footer */}
+      <div className="text-center py-4 border-t border-border/50">
+        <Link to="/design-system" className="text-xs text-muted-foreground hover:text-primary transition-colors">
+          View Design System & Journey Map
+        </Link>
+      </div>
       <Footer />
     </div>
   );
