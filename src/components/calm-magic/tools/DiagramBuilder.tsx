@@ -308,7 +308,7 @@ export const DiagramBuilder: React.FC<DiagramBuilderProps> = ({ onSave }) => {
       const shapeData = target.get('shapeData') as ShapeData;
       
       if (shapeData) {
-        const pointer = canvas.getPointer(e.e);
+        const pointer = canvas.getViewportPoint(e.e);
         const port = findNearestPort(target, pointer.x, pointer.y);
         const portPos = getPortPosition(target, port);
         
