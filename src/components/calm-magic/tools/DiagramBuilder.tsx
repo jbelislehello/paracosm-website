@@ -349,7 +349,7 @@ export const DiagramBuilder: React.FC<DiagramBuilderProps> = ({ onSave }) => {
         const targetData = e.target.get('shapeData') as ShapeData;
         
         if (targetData && targetData.id !== connectingFrom.shapeId) {
-          const pointer = canvas.getPointer(e.e);
+          const pointer = canvas.getViewportPoint(e.e);
           const toPort = findNearestPort(e.target, pointer.x, pointer.y);
           
           const fromShape = Array.from(shapes.values()).find(
