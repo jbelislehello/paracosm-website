@@ -92,12 +92,12 @@ const LandingPage = () => {
                     <Grid3x3 className="h-4 w-4" />
                     Calm Magic
                   </Link>
+                  <Link to="/design-system" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors flex items-center gap-2">
+                    <Lightbulb className="h-4 w-4" />
+                    Why It Works
+                  </Link>
                   <Link to="/drift" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Drift</Link>
                   <Link to="/tonalli" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Tonalli</Link>
-                  <Link to="/tarot" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors flex items-center gap-2">
-                    <Sparkles className="h-4 w-4" />
-                    Tarot
-                  </Link>
                   <a href="#events" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Events</a>
                   <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Contact</a>
                 </nav>
