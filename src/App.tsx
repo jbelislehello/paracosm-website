@@ -31,6 +31,7 @@ import CalmMagicVisualization from "./pages/CalmMagicVisualization";
 import CalmMagicJournal from "./pages/CalmMagicJournal";
 import ProjectsDashboard from "./pages/ProjectsDashboard";
 import Pricing from "./pages/Pricing";
+import DesignSystemShowcase from "./pages/DesignSystemShowcase";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import SubscriptionCanceled from "./pages/SubscriptionCanceled";
 import PatternEncyclopedia from "./pages/PatternEncyclopedia";
