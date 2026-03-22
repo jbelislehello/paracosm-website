@@ -25,6 +25,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 const LandingPage = () => {
   const [isCalmMagicAssistantOpen, setIsCalmMagicAssistantOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [onboardingOpen, setOnboardingOpen] = useState(false);
   const { t } = useLanguage();
 
   useEffect(() => {
