@@ -10,13 +10,15 @@ import ParacosmUniverseSection from "@/components/ParacosmUniverseSection";
 import CalmMagicAssistant from "@/components/calm-magic/CalmMagicAssistant";
 import ServicesShowcase from "@/components/ServicesShowcase";
 import SocialProofSection from "@/components/SocialProofSection";
+import OnboardingGuide from "@/components/OnboardingGuide";
 
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
 import FAQSection from "@/components/FAQSection";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Zap, Heart, ChevronDown, Users, Menu, Grid3x3, Sparkles, Brain, Lightbulb, FileText } from 'lucide-react';
+import { Zap, Heart, ChevronDown, Users, Menu, Grid3x3, Sparkles, Brain, Lightbulb, FileText, Compass, ArrowRight } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 
