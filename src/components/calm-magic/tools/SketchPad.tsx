@@ -124,6 +124,8 @@ export const SketchPad: React.FC<SketchPadProps> = ({ onSave, initialData }) => 
       const text = new IText('Type here...', {
         left: 100,
         top: 100,
+        originX: 'left',
+        originY: 'top',
         fill: activeColor,
         fontSize: 16,
         fontFamily: 'system-ui',
