@@ -205,6 +205,45 @@ const CoachingServices: React.FC = () => {
         </div>
       </div>
 
+      {/* ── Spring Offer FAQ ── */}
+      <div className="max-w-3xl mx-auto space-y-4">
+        <h3 className="text-xl font-bold text-center mb-6">Frequently Asked Questions</h3>
+        {[
+          {
+            q: "How does the process start?",
+            a: "It starts with a diagnostic call where I map where you're stuck, what decision you're avoiding, and what's emotionally blocking you. You leave with one sharp insight before we even begin the formal engagement.",
+          },
+          {
+            q: "What's the difference between the three tiers?",
+            a: "Clarity Reset (7 days) is a focused sprint for one specific decision. Decision Sprint (14 days) adds AI-augmented pattern analysis and an accountability loop. Strategic Intervention is an ongoing monthly retainer with full Board access, PRD prototyping, and weekly calls.",
+          },
+          {
+            q: "Do I need to know anything about AI?",
+            a: "No. The AI-augmented layer works behind the scenes — I use it as a pattern recognition and scenario generation tool. You interact with me, not with tools.",
+          },
+          {
+            q: "What kind of outcomes can I expect?",
+            a: "You'll walk away with 1-3 clear, executable decisions, a reframed narrative of your situation, and (for Sprint and Intervention tiers) an accountability structure to prevent drift.",
+          },
+          {
+            q: "Can I upgrade mid-engagement?",
+            a: "Yes. If a Clarity Reset reveals deeper complexity, we can upgrade to a Decision Sprint or Strategic Intervention. The initial investment applies toward the upgrade.",
+          },
+          {
+            q: "How do I pay?",
+            a: "Payment is upfront via e-transfer, credit card, or invoice. For enterprise engagements, custom billing arrangements are available.",
+          },
+        ].map((faq, i) => (
+          <details key={i} className="group border rounded-lg">
+            <summary className="flex items-center justify-between p-4 cursor-pointer font-medium text-sm hover:bg-accent/50 transition-colors">
+              {faq.q}
+              <ArrowRight className="w-4 h-4 text-muted-foreground transition-transform group-open:rotate-90" />
+            </summary>
+            <p className="px-4 pb-4 text-sm text-muted-foreground leading-relaxed">{faq.a}</p>
+          </details>
+        ))}
+      </div>
+
       {/* ── Social Proof ── */}
       <div className="bg-muted/30 rounded-2xl p-8 md:p-12">
         <h3 className="text-xl font-bold text-center mb-8">What Clients Say</h3>
