@@ -102,6 +102,8 @@ export const SketchPad: React.FC<SketchPadProps> = ({ onSave, initialData }) => 
       const circle = new Circle({
         left: 100,
         top: 100,
+        originX: 'left',
+        originY: 'top',
         fill: 'transparent',
         stroke: activeColor,
         strokeWidth: strokeWidth,
