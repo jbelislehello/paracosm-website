@@ -150,6 +150,18 @@ const LandingPage = () => {
                 </Link>
               </div>
               
+              <div className="flex flex-col sm:flex-row items-center gap-2 mb-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setOnboardingOpen(true)}
+                  className="gap-2 text-primary border-primary/30 hover:bg-primary/10"
+                >
+                  <Compass className="w-4 h-4" />
+                  Find Your Path
+                </Button>
+              </div>
+
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-4 sm:mb-6 px-2">
                 Choose your pathway to expansive leadership through proven methodologies that create lasting change
               </p>
