@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      book_preorders: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          language: string
+          name: string
+          role: string | null
+          source: string | null
+          tier: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          language?: string
+          name: string
+          role?: string | null
+          source?: string | null
+          tier?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          language?: string
+          name?: string
+          role?: string | null
+          source?: string | null
+          tier?: string
+        }
+        Relationships: []
+      }
       debts: {
         Row: {
           amount: number
