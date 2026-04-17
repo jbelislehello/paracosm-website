@@ -12,6 +12,7 @@ import ServicesShowcase from "@/components/ServicesShowcase";
 import SocialProofSection from "@/components/SocialProofSection";
 import OnboardingGuide from "@/components/OnboardingGuide";
 import CollapsibleSection from "@/components/CollapsibleSection";
+import BookAnnouncementBanner from "@/components/BookAnnouncementBanner";
 
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
@@ -19,7 +20,7 @@ import FAQSection from "@/components/FAQSection";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Zap, Heart, ChevronDown, Users, Menu, Grid3x3, Sparkles, Brain, Lightbulb, FileText, Compass, ArrowRight, Briefcase, Globe, MessageSquare, GraduationCap, Handshake, HelpCircle } from 'lucide-react';
+import { Zap, Heart, ChevronDown, Users, Menu, Grid3x3, Sparkles, Brain, Lightbulb, FileText, Compass, ArrowRight, Briefcase, Globe, MessageSquare, GraduationCap, Handshake, HelpCircle, BookOpen } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -44,6 +45,7 @@ const LandingPage = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+      <BookAnnouncementBanner />
       {/* Navigation */}
       <header className="fixed w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
         <div className="container max-w-7xl mx-auto flex items-center justify-between py-3 px-6">
@@ -166,6 +168,47 @@ const LandingPage = () => {
       </section>
 
       <OnboardingGuide triggerOpen={onboardingOpen} onClose={() => setOnboardingOpen(false)} />
+
+      {/* NEW BOOK Promo — between Hero and Spring 2026 */}
+      <section className="py-10 px-4 bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+        <div className="container mx-auto max-w-5xl">
+          <Link to="/book" className="block group">
+            <div className="relative overflow-hidden rounded-2xl border border-purple-500/30 bg-gradient-to-r from-slate-900 via-purple-900/40 to-slate-900 p-6 md:p-8 hover:border-purple-400/50 transition-all">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-pink-600/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-600/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
+
+              <div className="relative grid md:grid-cols-[auto_1fr_auto] gap-6 items-center">
+                <div className="flex justify-center md:justify-start">
+                  <div className="w-20 md:w-28 aspect-[3/4] rounded-md bg-gradient-to-br from-purple-900 via-slate-900 to-pink-900 border border-purple-400/30 shadow-2xl flex items-center justify-center">
+                    <BookOpen className="w-8 h-8 md:w-10 md:h-10 text-purple-200" />
+                  </div>
+                </div>
+                <div className="text-center md:text-left">
+                  <Badge className="mb-2 bg-white/10 text-white border-white/20 hover:bg-white/15">
+                    <Sparkles className="w-3 h-3 mr-1" />
+                    {t('book.banner_label')}
+                  </Badge>
+                  <h2 className="text-2xl md:text-3xl font-bold text-white mb-1">
+                    {t('book.hero_title')}
+                  </h2>
+                  <p className="text-purple-100/80 text-sm md:text-base mb-2">
+                    {t('book.hero_subtitle')}
+                  </p>
+                  <p className="text-xs md:text-sm text-white/60">
+                    {t('book.section_book_summary')}
+                  </p>
+                </div>
+                <div className="flex justify-center md:justify-end">
+                  <Button className="bg-white text-slate-900 hover:bg-white/90 font-semibold gap-2">
+                    {t('book.banner_cta')}
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </Link>
+        </div>
+      </section>
 
       {/* Spring 2026 Featured Offer — Always expanded */}
       <section id="spring-offer-home" className="py-12 px-4 bg-gradient-to-r from-primary/5 via-accent/10 to-primary/5">
