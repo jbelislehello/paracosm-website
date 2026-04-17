@@ -26,8 +26,20 @@ interface Recommendation {
   ctaHref: string;
 }
 
-function getRecommendation(profile: OnboardingProfile): Recommendation {
+function getRecommendation(profile: OnboardingProfile, t: (k: string) => string): Recommendation {
   const { need, maturity, capability } = profile;
+
+  if (need === 'book') {
+    return {
+      offering: t('book.onboarding_book_offering'),
+      description: t('book.onboarding_book_description'),
+      startingPoint: t('book.onboarding_book_starting'),
+      route: '/book',
+      caseStudyRoute: '/book#waitlist',
+      ctaLabel: t('book.onboarding_book_cta'),
+      ctaHref: '/book#waitlist',
+    };
+  }
 
   if (need === 'clarity') {
     if (maturity === 'exploring' || capability === 'solo') {
@@ -101,6 +113,7 @@ const OnboardingGuide = ({ triggerOpen, onClose }: OnboardingGuideProps) => {
   const { t } = useLanguage();
 
   const needs = [
+    { id: 'book', label: t('book.onboarding_book_label'), icon: BookOpen, description: t('book.onboarding_book_desc') },
     { id: 'clarity', label: t('landing.onboarding_need_clarity'), icon: Target, description: t('landing.onboarding_need_clarity_desc') },
     { id: 'learning-org', label: t('landing.onboarding_need_learning'), icon: Building, description: t('landing.onboarding_need_learning_desc') },
     { id: 'ai-strategy', label: t('landing.onboarding_need_ai'), icon: Brain, description: t('landing.onboarding_need_ai_desc') },
@@ -146,7 +159,7 @@ const OnboardingGuide = ({ triggerOpen, onClose }: OnboardingGuideProps) => {
     localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
   };
 
-  const recommendation = step === 3 ? getRecommendation(profile) : null;
+  const recommendation = step === 3 ? getRecommendation(profile, t) : null;
 
   return (
     <Dialog open={open} onOpenChange={(val) => { if (!val) handleClose(); else setOpen(true); }}>
@@ -188,7 +201,15 @@ const OnboardingGuide = ({ triggerOpen, onClose }: OnboardingGuideProps) => {
           </div>
         )}
 
-        {step === 1 && (
+        {step === 1 && profile.need === 'book' && (() => {
+          // Skip steps 1 & 2 for book path — go straight to recommendation
+          setProfile({ ...profile, maturity: 'exploring', capability: 'solo' });
+          setStep(3);
+          handleComplete();
+          return null;
+        })()}
+
+        {step === 1 && profile.need !== 'book' && (
           <div className="space-y-2">
             {maturities.map((m) => (
               <button
