@@ -1,54 +1,27 @@
 
-## Goal
+The user wants me to test the book launch end-to-end. This is an explicit testing request, so browser automation is appropriate.
 
-Launch a dedicated book promotion experience for **Calm Magic** that positions the framework as essential for the agentic era — covering relational intelligence, pragmatic imagination, creative ideation, and existential design — with a clear bridge to Crewdle.ai as the operational orchestrator that uses Calm Magic's design + systems thinking.
+Test plan:
+1. Navigate to `/book` — verify hero, pillars, chapters, bridge, form render
+2. Switch language FR ↔ EN — verify translations load
+3. Submit waitlist form with test data — verify Supabase insert + success toast
+4. Navigate to `/` and dismiss the announcement banner — verify localStorage persistence
+5. Open onboarding guide — verify new "I want to read the book" path routes to `/book`
 
-## Approach
+Mobile viewport (390x591) is the current view, which matches a real user scenario.
 
-Add a high-conversion **Book Launch** section + dedicated **/book** page, integrated into the existing landing page hierarchy (above Spring 2026 to capture launch energy), fully bilingual (FR/EN), and tied to lead capture for pre-orders / waitlist.
+Note: The form will write a real row to `book_preorders`. I'll use a clearly-marked test entry (`test+lovable@helloarchitekt.com`, name "Lovable Test") so you can identify and delete it later if you want.
 
-## What I'll build
+Since this is a straightforward QA pass with no code changes planned, I'll execute it directly once you approve switching to default mode. If I find bugs along the way, I'll stop and report before fixing.
 
-### 1. New `/book` page — `src/pages/BookLaunch.tsx`
-A focused landing page with these sections:
-- **Hero**: Book cover mockup (CSS 3D tilt) + title, subtitle, "Pre-order / Join waitlist" CTA
-- **The Thesis**: 4 pillars as cards — Relational Intelligence · Pragmatic Imagination · Creative Ideation · Existential Design
-- **Why Now (Agentic Era)**: Short manifesto on preferable futures + worldbuilding
-- **What's Inside**: Chapter overview (collapsible accordion, ~7 chapters mapped to Calm Magic phases: GL!TCH → DRIFT → TUNE → LOVE → MAGIC → CALM → FREE)
-- **From Framework to Operations**: Visual bridge showing Calm Magic (thinking) → Crewdle.ai (orchestration/building) — uses the existing transformation-design-pipeline
-- **Author / Practitioner Bio**: Short Jonathan bio + credentials
-- **Pre-order form**: Email capture (name, email, role, interest tier: Reader / Practitioner / Org License)
-- **Endorsements placeholder** + FAQ
+## What I'll do
 
-### 2. Landing page integration — `src/pages/LandingPage.tsx`
-- Add a **"New Book" announcement banner** at the very top (dismissible, sticky) → links to `/book`
-- Add a **collapsible "Book" section** between Hero and Spring 2026 offer
-- Update `OnboardingGuide.tsx` to add a 4th path option: **"I want to read the book"** → routes to `/book`
+1. `navigate_to_sandbox` → `/book` (mobile 390x591), screenshot, verify sections
+2. Click language switcher → FR, screenshot, verify translated copy
+3. Switch back to EN, fill the waitlist form (name, email, role, tier=Reader), submit, verify success toast + check Supabase row
+4. Navigate to `/`, verify banner is visible, click X to dismiss, reload to confirm `localStorage` persistence
+5. Trigger onboarding (or wait for auto-trigger), select "I want to read the book", verify redirect to `/book`
 
-### 3. Lead capture (Lovable Cloud)
-- New table `book_preorders` (name, email, role, tier, language, source, created_at)
-- RLS: public INSERT, admin SELECT only (via existing `has_role` function)
-- Simple submit handler in the pre-order form using supabase client
+## Deliverable
 
-### 4. Bilingual i18n
-- New module `src/i18n/{en,fr}/book.json` (~60 keys: hero, pillars, chapters, bridge, form, FAQ)
-- Register `'book'` in `LanguageContext.tsx`
-
-### 5. Routing
-- Add `<Route path="/book" element={<BookLaunch />} />` in `src/App.tsx`
-
-### 6. Visual assets
-- Generate a book cover image (gradient + title typography) saved to `src/assets/calm-magic-book-cover.jpg` via the image generator
-- Use existing brand palette (agent-blue / agent-purple / agent-pink)
-
-## Technical notes
-- All copy goes through `t('book.*')` — no hardcoded strings
-- Form uses existing shadcn `Form` + `react-hook-form` + `zod` validation
-- Chapter accordion uses existing shadcn `Accordion`
-- Banner persists dismissal in `localStorage` (`paracosm-book-banner-dismissed`)
-- No new npm dependencies
-
-## Out of scope (ask if you want them)
-- Stripe/Paddle pre-order payments (currently email waitlist only)
-- Sample chapter PDF download
-- Author email automation / drip sequence
+A concise pass/fail report for each step, screenshots of key states, and a list of any bugs found (with proposed fixes if applicable).
