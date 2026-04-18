@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 type Language = 'en' | 'fr';
@@ -23,12 +22,25 @@ interface LanguageProviderProps {
   children: React.ReactNode;
 }
 
+const TRANSLATION_MODULES = [
+  'navigation',
+  'hero',
+  'leadership-roles',
+  'coaching-approach',
+  'retreat',
+  'common',
+  'about',
+  'case-studies',
+  'client-assessment',
+  'landing',
+  'book',
+] as const;
+
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
   const [language, setLanguage] = useState<Language>('en');
   const [translations, setTranslations] = useState<Record<string, any>>({});
 
   useEffect(() => {
-    // Load saved language preference
     const savedLanguage = localStorage.getItem('language') as Language;
     if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'fr')) {
       setLanguage(savedLanguage);
@@ -36,36 +48,28 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   }, []);
 
   useEffect(() => {
-    // Load all translation modules when language changes
     const loadTranslations = async () => {
       try {
-        const modules = [
-          'navigation',
-          'hero', 
-          'leadership-roles',
-          'coaching-approach',
-          'retreat',
-          'common',
-          'about',
-          'case-studies',
-          'client-assessment',
-          'landing',
-          'book'
-        ];
+        const settledModules = await Promise.allSettled(
+          TRANSLATION_MODULES.map(async (moduleName) => {
+            const response = await import(`../i18n/${language}/${moduleName}.json`);
+            return {
+              key: moduleName.replace('-', '_'),
+              value: response.default,
+            };
+          })
+        );
 
         const loadedTranslations: Record<string, any> = {};
 
-        for (const module of modules) {
-          try {
-            const response = await import(`../i18n/${language}/${module}.json`);
-            // Store each module under its own key to preserve structure
-            loadedTranslations[module.replace('-', '_')] = response.default;
-          } catch (error) {
-            console.warn(`Failed to load translation module: ${module}`, error);
+        settledModules.forEach((result, index) => {
+          if (result.status === 'fulfilled') {
+            loadedTranslations[result.value.key] = result.value.value;
+          } else {
+            console.warn(`Failed to load translation module: ${TRANSLATION_MODULES[index]}`, result.reason);
           }
-        }
+        });
 
-        // Also merge common module content directly for backward compatibility
         if (loadedTranslations.common) {
           Object.assign(loadedTranslations, loadedTranslations.common);
         }
@@ -83,12 +87,11 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   const t = (key: string): string => {
     const keys = key.split('.');
     let value: any = translations;
-    
+
     for (const k of keys) {
       value = value?.[k];
     }
-    
-    // Ensure we always return a string
+
     return typeof value === 'string' ? value : key;
   };
 
