@@ -1,0 +1,1 @@
+DELETE FROM public.book_preorders WHERE email = 'test+preorder@helloarchitekt.com';
