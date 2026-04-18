@@ -133,6 +133,19 @@ const BookLaunch = () => {
   );
 
   const onSubmit = async (values: FormValues) => {
+    // Honeypot: silently drop bot submissions
+    if (honeypotRef.current?.value) {
+      setSubmitted(true);
+      form.reset();
+      return;
+    }
+    // Min time-on-page: humans take >2s to fill form
+    if (Date.now() - formMountedAt.current < 2000) {
+      setSubmitted(true);
+      form.reset();
+      return;
+    }
+
     const { error } = await supabase.from("book_preorders").insert({
       name: values.name,
       email: values.email,
