@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -109,6 +109,10 @@ const BookLaunch = () => {
     defaultValues: { name: "", email: "", role: "", tier: "reader" },
   });
 
+  // Spam protection: honeypot field + min time-on-page
+  const honeypotRef = useRef<HTMLInputElement>(null);
+  const formMountedAt = useRef<number>(Date.now());
+
   const playbooks = useMemo(
     () =>
       (["glitch", "drift", "tune"] as const).map((key) => ({
@@ -129,6 +133,19 @@ const BookLaunch = () => {
   );
 
   const onSubmit = async (values: FormValues) => {
+    // Honeypot: silently drop bot submissions
+    if (honeypotRef.current?.value) {
+      setSubmitted(true);
+      form.reset();
+      return;
+    }
+    // Min time-on-page: humans take >2s to fill form
+    if (Date.now() - formMountedAt.current < 2000) {
+      setSubmitted(true);
+      form.reset();
+      return;
+    }
+
     const { error } = await supabase.from("book_preorders").insert({
       name: values.name,
       email: values.email,
@@ -498,6 +515,18 @@ const BookLaunch = () => {
                 ) : (
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                      {/* Honeypot field — hidden from humans, bots will fill it */}
+                      <div aria-hidden="true" className="absolute left-[-9999px] h-0 w-0 overflow-hidden" tabIndex={-1}>
+                        <label htmlFor="website_url">Leave this field empty</label>
+                        <input
+                          ref={honeypotRef}
+                          id="website_url"
+                          name="website_url"
+                          type="text"
+                          autoComplete="off"
+                          tabIndex={-1}
+                        />
+                      </div>
                       <FormField
                         control={form.control}
                         name="name"
