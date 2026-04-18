@@ -515,6 +515,18 @@ const BookLaunch = () => {
                 ) : (
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                      {/* Honeypot field — hidden from humans, bots will fill it */}
+                      <div aria-hidden="true" className="absolute left-[-9999px] h-0 w-0 overflow-hidden" tabIndex={-1}>
+                        <label htmlFor="website_url">Leave this field empty</label>
+                        <input
+                          ref={honeypotRef}
+                          id="website_url"
+                          name="website_url"
+                          type="text"
+                          autoComplete="off"
+                          tabIndex={-1}
+                        />
+                      </div>
                       <FormField
                         control={form.control}
                         name="name"
