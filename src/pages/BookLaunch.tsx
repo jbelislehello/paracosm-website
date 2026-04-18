@@ -109,6 +109,10 @@ const BookLaunch = () => {
     defaultValues: { name: "", email: "", role: "", tier: "reader" },
   });
 
+  // Spam protection: honeypot field + min time-on-page
+  const honeypotRef = useRef<HTMLInputElement>(null);
+  const formMountedAt = useRef<number>(Date.now());
+
   const playbooks = useMemo(
     () =>
       (["glitch", "drift", "tune"] as const).map((key) => ({
