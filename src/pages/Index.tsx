@@ -169,9 +169,11 @@ const Index = () => {
       <section id="hero">
         <HeroSection onDiscoverFramework={handleDiscoverFramework} />
       </section>
+
+      <GradientDivider />
       
       {/* AI Leadership Section */}
-      <section id="ai-leadership" className="py-12 md:py-20 px-4 bg-gradient-to-r from-blue-50 via-purple-50 to-slate-50 dark:from-blue-950/20 dark:via-purple-950/20">
+      <section id="ai-leadership" ref={aiLeadershipReveal.ref} className={`py-12 md:py-20 px-4 bg-gradient-to-r from-blue-50 via-purple-50 to-slate-50 dark:from-blue-950/20 dark:via-purple-950/20 opacity-0 ${aiLeadershipReveal.isVisible ? 'animate-scroll-fade-up' : ''}`}>
         <div className="container max-w-6xl mx-auto">
           <div className="text-center mb-10 md:mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600">
@@ -196,7 +198,7 @@ const Index = () => {
             {/* Phase Overview Cards */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-8 md:mb-12">
               {/* Phase 1 Card */}
-              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-blue-200 dark:border-blue-800 overflow-hidden">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-blue-200 dark:border-blue-800 overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition-all duration-300">
                 <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-white">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
@@ -238,7 +240,7 @@ const Index = () => {
               </div>
 
               {/* Phase 2 Card */}
-              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-purple-200 dark:border-purple-800 overflow-hidden">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-purple-200 dark:border-purple-800 overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition-all duration-300">
                 <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-6 text-white">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
