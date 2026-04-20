@@ -392,8 +392,10 @@ const Index = () => {
         </div>
       </section>
 
+      <GradientDivider />
+
       {/* Living PRD Section */}
-      <section id="living-prd" className="py-12 md:py-16 px-4 bg-gradient-to-r from-blue-50 via-purple-50 to-rose-50 dark:from-blue-950/20 dark:via-purple-950/20 dark:to-rose-950/20">
+      <section id="living-prd" ref={livingPrdReveal.ref} className={`py-12 md:py-16 px-4 bg-gradient-to-r from-blue-50 via-purple-50 to-rose-50 dark:from-blue-950/20 dark:via-purple-950/20 dark:to-rose-950/20 opacity-0 ${livingPrdReveal.isVisible ? 'animate-scroll-slide-up' : ''}`}>
         <div className="container max-w-6xl mx-auto">
           <div className="text-center mb-8 md:mb-12">
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-rose-600">
@@ -449,8 +451,10 @@ const Index = () => {
         </div>
       </section>
 
+      <GradientDivider />
+
       {/* Relational Innovation Bridge Section */}
-      <section id="relational" className="py-12 md:py-16 px-4 bg-gradient-to-r from-rose-50 to-purple-50 dark:from-rose-950/20 dark:to-purple-950/20">
+      <section id="relational" ref={relationalReveal.ref} className={`py-12 md:py-16 px-4 bg-gradient-to-r from-rose-50 to-purple-50 dark:from-rose-950/20 dark:to-purple-950/20 opacity-0 ${relationalReveal.isVisible ? 'animate-scroll-fade-up' : ''}`}>
         <div className="container max-w-6xl mx-auto text-center">
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-purple-600">
             Bridge to Relational Innovation
@@ -476,8 +480,10 @@ const Index = () => {
         </div>
       </section>
 
+      <GradientDivider />
+
       {/* Tonalli Initiative */}
-      <section className="py-12 md:py-16 px-4 bg-gradient-to-b from-slate-900 to-slate-950">
+      <section ref={tonalliReveal.ref} className={`py-12 md:py-16 px-4 bg-gradient-to-b from-slate-900 to-slate-950 opacity-0 ${tonalliReveal.isVisible ? 'animate-scroll-slide-up' : ''}`}>
         <div className="container max-w-4xl mx-auto">
           <div className="relative rounded-2xl overflow-hidden border border-amber-500/20 bg-gradient-to-br from-amber-950/40 via-slate-900 to-slate-950 p-8 md:p-12">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(245,158,11,0.08),transparent_60%)]" />
@@ -514,9 +520,11 @@ const Index = () => {
           </div>
         </div>
       </section>
-      
+
+      <GradientDivider />
+
       {/* Contact Section */}
-      <section id="contact">
+      <section id="contact" ref={contactReveal.ref} className={`opacity-0 ${contactReveal.isVisible ? 'animate-scroll-fade-up' : ''}`}>
         <ContactSection />
       </section>
       
