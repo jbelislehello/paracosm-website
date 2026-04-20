@@ -9,11 +9,13 @@ import ProductDevelopmentAssistant from "@/components/ProductDevelopmentAssistan
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
 import MobileSectionNav from "@/components/MobileSectionNav";
+import GradientDivider from "@/components/GradientDivider";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Bot, Brain, TrendingUp, Target, Cog, Compass, Zap, Heart, Users, Menu, X, Mic, Eye } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const MOBILE_NAV_SECTIONS = [
   { id: "hero", label: "Home" },
@@ -30,6 +32,11 @@ const Index = () => {
   const [headerVisible, setHeaderVisible] = useState(true);
   const lastScrollY = useRef(0);
   const { t } = useLanguage();
+  const aiLeadershipReveal = useScrollReveal();
+  const livingPrdReveal = useScrollReveal();
+  const relationalReveal = useScrollReveal();
+  const tonalliReveal = useScrollReveal();
+  const contactReveal = useScrollReveal();
 
   // Smart header hide/show on scroll
   const handleScroll = useCallback(() => {
@@ -162,9 +169,11 @@ const Index = () => {
       <section id="hero">
         <HeroSection onDiscoverFramework={handleDiscoverFramework} />
       </section>
+
+      <GradientDivider />
       
       {/* AI Leadership Section */}
-      <section id="ai-leadership" className="py-12 md:py-20 px-4 bg-gradient-to-r from-blue-50 via-purple-50 to-slate-50 dark:from-blue-950/20 dark:via-purple-950/20">
+      <section id="ai-leadership" ref={aiLeadershipReveal.ref} className={`py-12 md:py-20 px-4 bg-gradient-to-r from-blue-50 via-purple-50 to-slate-50 dark:from-blue-950/20 dark:via-purple-950/20 opacity-0 ${aiLeadershipReveal.isVisible ? 'animate-scroll-fade-up' : ''}`}>
         <div className="container max-w-6xl mx-auto">
           <div className="text-center mb-10 md:mb-16">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600">
@@ -189,7 +198,7 @@ const Index = () => {
             {/* Phase Overview Cards */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 mb-8 md:mb-12">
               {/* Phase 1 Card */}
-              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-blue-200 dark:border-blue-800 overflow-hidden">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-blue-200 dark:border-blue-800 overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition-all duration-300">
                 <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6 text-white">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
@@ -231,7 +240,7 @@ const Index = () => {
               </div>
 
               {/* Phase 2 Card */}
-              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-purple-200 dark:border-purple-800 overflow-hidden">
+              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-purple-200 dark:border-purple-800 overflow-hidden hover:-translate-y-1 hover:shadow-2xl transition-all duration-300">
                 <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-6 text-white">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center">
@@ -383,8 +392,10 @@ const Index = () => {
         </div>
       </section>
 
+      <GradientDivider />
+
       {/* Living PRD Section */}
-      <section id="living-prd" className="py-12 md:py-16 px-4 bg-gradient-to-r from-blue-50 via-purple-50 to-rose-50 dark:from-blue-950/20 dark:via-purple-950/20 dark:to-rose-950/20">
+      <section id="living-prd" ref={livingPrdReveal.ref} className={`py-12 md:py-16 px-4 bg-gradient-to-r from-blue-50 via-purple-50 to-rose-50 dark:from-blue-950/20 dark:via-purple-950/20 dark:to-rose-950/20 opacity-0 ${livingPrdReveal.isVisible ? 'animate-scroll-slide-up' : ''}`}>
         <div className="container max-w-6xl mx-auto">
           <div className="text-center mb-8 md:mb-12">
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-rose-600">
@@ -440,8 +451,10 @@ const Index = () => {
         </div>
       </section>
 
+      <GradientDivider />
+
       {/* Relational Innovation Bridge Section */}
-      <section id="relational" className="py-12 md:py-16 px-4 bg-gradient-to-r from-rose-50 to-purple-50 dark:from-rose-950/20 dark:to-purple-950/20">
+      <section id="relational" ref={relationalReveal.ref} className={`py-12 md:py-16 px-4 bg-gradient-to-r from-rose-50 to-purple-50 dark:from-rose-950/20 dark:to-purple-950/20 opacity-0 ${relationalReveal.isVisible ? 'animate-scroll-fade-up' : ''}`}>
         <div className="container max-w-6xl mx-auto text-center">
           <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-rose-600 to-purple-600">
             Bridge to Relational Innovation
@@ -467,8 +480,10 @@ const Index = () => {
         </div>
       </section>
 
+      <GradientDivider />
+
       {/* Tonalli Initiative */}
-      <section className="py-12 md:py-16 px-4 bg-gradient-to-b from-slate-900 to-slate-950">
+      <section ref={tonalliReveal.ref} className={`py-12 md:py-16 px-4 bg-gradient-to-b from-slate-900 to-slate-950 opacity-0 ${tonalliReveal.isVisible ? 'animate-scroll-slide-up' : ''}`}>
         <div className="container max-w-4xl mx-auto">
           <div className="relative rounded-2xl overflow-hidden border border-amber-500/20 bg-gradient-to-br from-amber-950/40 via-slate-900 to-slate-950 p-8 md:p-12">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(245,158,11,0.08),transparent_60%)]" />
@@ -505,9 +520,11 @@ const Index = () => {
           </div>
         </div>
       </section>
-      
+
+      <GradientDivider />
+
       {/* Contact Section */}
-      <section id="contact">
+      <section id="contact" ref={contactReveal.ref} className={`opacity-0 ${contactReveal.isVisible ? 'animate-scroll-fade-up' : ''}`}>
         <ContactSection />
       </section>
       
