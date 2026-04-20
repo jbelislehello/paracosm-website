@@ -9,11 +9,13 @@ import ProductDevelopmentAssistant from "@/components/ProductDevelopmentAssistan
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
 import MobileSectionNav from "@/components/MobileSectionNav";
+import GradientDivider from "@/components/GradientDivider";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Bot, Brain, TrendingUp, Target, Cog, Compass, Zap, Heart, Users, Menu, X, Mic, Eye } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const MOBILE_NAV_SECTIONS = [
   { id: "hero", label: "Home" },
@@ -30,6 +32,11 @@ const Index = () => {
   const [headerVisible, setHeaderVisible] = useState(true);
   const lastScrollY = useRef(0);
   const { t } = useLanguage();
+  const aiLeadershipReveal = useScrollReveal();
+  const livingPrdReveal = useScrollReveal();
+  const relationalReveal = useScrollReveal();
+  const tonalliReveal = useScrollReveal();
+  const contactReveal = useScrollReveal();
 
   // Smart header hide/show on scroll
   const handleScroll = useCallback(() => {
