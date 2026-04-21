@@ -82,6 +82,8 @@ const Index = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+      {/* Generative particle background */}
+      <GenerativeBackground />
       {/* Navigation */}
       <header 
         className={`fixed w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md transition-transform duration-300 ${
