@@ -353,6 +353,25 @@ const Index = () => {
             </div>
           )}
           
+          {/* Knowledge Object Constellation */}
+          <div className="mb-12 md:mb-16">
+            <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-3 md:mb-4">Knowledge Object Constellation</h3>
+            <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-10 md:mb-16 px-2 text-sm md:text-base">
+              Explore the interconnected governance layers — from ontological foundations to actionable pick-lists — 
+              that power coherent AI leadership.
+            </p>
+            <KnowledgeConstellation />
+          </div>
+
+          {/* Living Organism Viz */}
+          <div className="mb-12 md:mb-16 flex flex-col items-center">
+            <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-3 md:mb-4">The Living System</h3>
+            <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-6 px-2 text-sm md:text-base">
+              Five interconnected axes — LOVE, MAGIC, CALM, OPEN, FREE — breathing as one organism.
+            </p>
+            <LivingOrganismViz />
+          </div>
+
           {/* Network Visualization - Agentic Context */}
           <div className="mb-12 md:mb-16">
             <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center mb-3 md:mb-4">Visualize Your Agentic Network</h3>
