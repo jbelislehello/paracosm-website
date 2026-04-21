@@ -16,6 +16,9 @@ import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import GenerativeBackground from "@/components/GenerativeBackground";
+import KnowledgeConstellation from "@/components/KnowledgeConstellation";
+import LivingOrganismViz from "@/components/LivingOrganismViz";
 
 const MOBILE_NAV_SECTIONS = [
   { id: "hero", label: "Home" },
