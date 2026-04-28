@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,12 +29,19 @@ interface GetDemoDialogProps {
 
 const GetDemoDialog = ({ open, onOpenChange }: GetDemoDialogProps) => {
   const [form, setForm] = useState({ name: "", email: "", company: "", message: "" });
+  const [website, setWebsite] = useState(""); // honeypot
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const openedAtRef = useRef<number>(Date.now());
+
+  useEffect(() => {
+    if (open) openedAtRef.current = Date.now();
+  }, [open]);
 
   const reset = () => {
     setForm({ name: "", email: "", company: "", message: "" });
+    setWebsite("");
     setErrors({});
     setSuccess(false);
   };
@@ -54,7 +61,11 @@ const GetDemoDialog = ({ open, onOpenChange }: GetDemoDialogProps) => {
     setSubmitting(true);
     try {
       const { data, error } = await supabase.functions.invoke("send-demo-request", {
-        body: parsed.data,
+        body: {
+          ...parsed.data,
+          website, // honeypot — must stay empty
+          elapsedMs: Date.now() - openedAtRef.current,
+        },
       });
       if (error) throw error;
       if (!data?.success) throw new Error(data?.error || "Submission failed");
@@ -103,6 +114,29 @@ const GetDemoDialog = ({ open, onOpenChange }: GetDemoDialogProps) => {
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Honeypot — hidden from real users; bots fill it. */}
+              <div
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  left: "-10000px",
+                  top: "auto",
+                  width: "1px",
+                  height: "1px",
+                  overflow: "hidden",
+                }}
+              >
+                <label htmlFor="website">Website</label>
+                <input
+                  id="website"
+                  name="website"
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={website}
+                  onChange={(e) => setWebsite(e.target.value)}
+                />
+              </div>
               <div className="space-y-1.5">
                 <Label htmlFor="demo-name">Name *</Label>
                 <Input
