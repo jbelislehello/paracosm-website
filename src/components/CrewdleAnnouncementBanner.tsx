@@ -1,10 +1,21 @@
 import { useEffect, useState } from "react";
-import { Sparkles, X, ArrowRight } from "lucide-react";
+import { Sparkles, X, ArrowRight, ExternalLink } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 const STORAGE_KEY = "crewdle-cdo-banner-dismissed-v1";
 
 const CrewdleAnnouncementBanner = () => {
   const [visible, setVisible] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     const dismissed = localStorage.getItem(STORAGE_KEY);
@@ -18,35 +29,104 @@ const CrewdleAnnouncementBanner = () => {
     setVisible(false);
   };
 
+  const openModal = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setModalOpen(true);
+  };
+
   if (!visible) return null;
 
   return (
-    <div className="relative w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 text-white animate-gradient-shift">
-      <a
-        href="https://crewdle.com"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="container max-w-7xl mx-auto flex items-center justify-center gap-2 sm:gap-3 px-10 py-2 text-xs sm:text-sm font-medium hover:opacity-95 transition-opacity"
-      >
-        <Sparkles className="w-4 h-4 flex-shrink-0 animate-pulse" />
-        <span className="hidden sm:inline font-semibold uppercase tracking-wider text-[10px] bg-white/20 px-2 py-0.5 rounded">
-          New Role · May 2026
-        </span>
-        <span className="truncate">
-          Jonathan Bélisle joins <strong>Crewdle</strong> as Fractional Chief Design Officer
-        </span>
-        <span className="hidden md:inline-flex items-center gap-1 font-semibold underline-offset-2 hover:underline">
-          Learn more <ArrowRight className="w-3.5 h-3.5" />
-        </span>
-      </a>
-      <button
-        onClick={handleDismiss}
-        aria-label="Dismiss announcement"
-        className="absolute top-1/2 right-2 sm:right-4 -translate-y-1/2 p-1 rounded hover:bg-white/20 transition-colors"
-      >
-        <X className="w-4 h-4" />
-      </button>
-    </div>
+    <>
+      <div className="relative w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 text-white">
+        <button
+          onClick={openModal}
+          className="container max-w-7xl mx-auto flex items-center justify-center gap-2 sm:gap-3 px-10 py-2 text-xs sm:text-sm font-medium hover:opacity-95 transition-opacity w-full"
+        >
+          <Sparkles className="w-4 h-4 flex-shrink-0 animate-pulse" />
+          <span className="hidden sm:inline font-semibold uppercase tracking-wider text-[10px] bg-white/20 px-2 py-0.5 rounded">
+            New Role · May 2026
+          </span>
+          <span className="truncate">
+            Jonathan Bélisle joins <strong>Crewdle</strong> as Fractional Chief Design Officer
+          </span>
+          <span className="hidden md:inline-flex items-center gap-1 font-semibold underline-offset-2 hover:underline">
+            Learn more <ArrowRight className="w-3.5 h-3.5" />
+          </span>
+        </button>
+        <button
+          onClick={handleDismiss}
+          aria-label="Dismiss announcement"
+          className="absolute top-1/2 right-2 sm:right-4 -translate-y-1/2 p-1 rounded hover:bg-white/20 transition-colors"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+
+      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <Badge className="w-fit bg-gradient-to-r from-emerald-600 to-cyan-600 text-white border-0 mb-2">
+              New Role · May 2026
+            </Badge>
+            <DialogTitle className="text-2xl">
+              Fractional Chief Design Officer at Crewdle
+            </DialogTitle>
+            <DialogDescription className="text-base pt-1">
+              Jonathan Bélisle joins Crewdle to lead design strategy at the
+              intersection of distributed AI, edge computing, and human-centered
+              experience.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 text-sm text-muted-foreground">
+            <div>
+              <h4 className="font-semibold text-foreground mb-1">The Role</h4>
+              <p>
+                As Fractional CDO, Jonathan shapes Crewdle's product design
+                language, design operations, and the experience layer of its
+                edge-AI platform — bringing 25+ years of UX strategy, speculative
+                storytelling, and ethical AI governance into a single design
+                practice.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-foreground mb-1">Background</h4>
+              <p>
+                Founder of Paracosm and Hello, Architekt!. Former Head of Design
+                at Prodago, DesignOps Director at Behaviour Interactive, and
+                speculative storytelling consultant at The Greenhouse @ Deloitte.
+                Creator of Calm Magic and the Wuxia the Fox transmedia universe.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold text-foreground mb-1">Effective</h4>
+              <p>May 2026 · Fractional engagement</p>
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button variant="outline" onClick={() => setModalOpen(false)}>
+              Close
+            </Button>
+            <Button
+              asChild
+              className="bg-gradient-to-r from-emerald-600 to-cyan-600 hover:opacity-90 text-white border-0"
+            >
+              <a
+                href="https://crewdle.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Visit crewdle.com <ExternalLink className="w-4 h-4 ml-2" />
+              </a>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
