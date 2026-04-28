@@ -78,7 +78,7 @@ const CrewdleAnnouncementBanner = () => {
             New Role · May 2026
           </span>
           <span className="truncate">
-            Jonathan Bélisle joins <strong>Crewdle</strong> as Fractional Chief Design Officer
+            Jonathan Bélisle joins <strong>Crewdle</strong> as Fractional CDO — Applied Agentic AI for Organizational Transformation
           </span>
           <span className="hidden md:inline-flex items-center gap-1 font-semibold underline-offset-2 hover:underline">
             {hasOpenedBefore ? "View again" : "Learn more"} <ArrowRight className="w-3.5 h-3.5" />
@@ -101,11 +101,15 @@ const CrewdleAnnouncementBanner = () => {
             </Badge>
             <DialogTitle className="text-2xl">
               Fractional Chief Design Officer at Crewdle
+              <span className="block text-base font-normal text-muted-foreground mt-1">
+                Applied Agentic AI for Organizational Transformation
+              </span>
             </DialogTitle>
             <DialogDescription className="text-base pt-1">
-              Jonathan Bélisle joins Crewdle to lead design strategy at the
-              intersection of distributed AI, edge computing, and human-centered
-              experience.
+              Jonathan Bélisle joins Crewdle to design and deploy applied
+              agentic AI systems that drive organizational transformation —
+              translating distributed AI and edge computing into living,
+              human-centered operating models.
             </DialogDescription>
           </DialogHeader>
 
@@ -113,11 +117,13 @@ const CrewdleAnnouncementBanner = () => {
             <div>
               <h4 className="font-semibold text-foreground mb-1">The Role</h4>
               <p>
-                As Fractional CDO, Jonathan shapes Crewdle's product design
-                language, design operations, and the experience layer of its
-                edge-AI platform — bringing 25+ years of UX strategy, speculative
-                storytelling, and ethical AI governance into a single design
-                practice.
+                As Fractional CDO, Jonathan leads Crewdle's practice in{" "}
+                <strong>Applied Agentic AI for Organizational Transformation</strong>
+                {" "}— architecting agent ecosystems, design operations, and the
+                experience layer of Crewdle's edge-AI platform. The mandate
+                bridges 25+ years of UX strategy, speculative storytelling, and
+                ethical AI governance into a single applied practice that
+                reshapes how organizations think, decide, and act.
               </p>
             </div>
 
