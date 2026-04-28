@@ -287,18 +287,24 @@ export const HexagramOracle: React.FC<HexagramOracleProps> = ({
             {/* Interpretation */}
             <ScrollArea className="h-40">
               <div className="prose prose-sm dark:prose-invert">
-                {reading.interpretation.split('\n\n').map((para, idx) => (
-                  <p key={idx} className="text-sm text-muted-foreground mb-2">
-                    {para.startsWith('**') ? (
-                      <span dangerouslySetInnerHTML={{ 
-                        __html: para.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                      }} />
-                    ) : para.startsWith('*') ? (
-                      <em>{para.replace(/\*/g, '')}</em>
-                    ) : para}
-                  </p>
-                ))}
+                {reading.interpretation.split('\n\n').map((para, idx) => {
+                  // Safely render bold (**text**) and italic (*text*) without
+                  // dangerouslySetInnerHTML to prevent XSS from AI-generated content.
+                  const tokens = para.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g).filter(Boolean);
+                  return (
+                    <p key={idx} className="text-sm text-muted-foreground mb-2">
+                      {tokens.map((tok, i) => {
+                        if (/^\*\*[^*]+\*\*$/.test(tok)) {
+                          return <strong key={i}>{tok.slice(2, -2)}</strong>;
+                        }
+                        if (/^\*[^*]+\*$/.test(tok)) {
+                          return <em key={i}>{tok.slice(1, -1)}</em>;
+                        }
+                        return <span key={i}>{tok}</span>;
+                      })}
+                    </p>
+                  );
+                })}
               </div>
             </ScrollArea>
 
