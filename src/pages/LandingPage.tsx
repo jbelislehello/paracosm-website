@@ -13,6 +13,7 @@ import SocialProofSection from "@/components/SocialProofSection";
 import OnboardingGuide from "@/components/OnboardingGuide";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import BookAnnouncementBanner from "@/components/BookAnnouncementBanner";
+import CrewdleAnnouncementBanner from "@/components/CrewdleAnnouncementBanner";
 
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
@@ -45,6 +46,7 @@ const LandingPage = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+      <CrewdleAnnouncementBanner />
       <BookAnnouncementBanner />
       {/* Navigation */}
       <header className="fixed w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
