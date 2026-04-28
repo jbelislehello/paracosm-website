@@ -25,7 +25,28 @@ const CrewdleAnnouncementBanner = () => {
   useEffect(() => {
     const dismissed = localStorage.getItem(STORAGE_KEY);
     if (!dismissed) setVisible(true);
-    setHasOpenedBefore(!!localStorage.getItem(MODAL_OPENED_KEY));
+
+    const openedBefore = !!localStorage.getItem(MODAL_OPENED_KEY);
+    setHasOpenedBefore(openedBefore);
+
+    // Auto-open logic:
+    // - First-time visitors (banner not dismissed, modal never opened): open after 1.5s
+    // - Returning visitors who saw it: re-surface only if 7+ days have passed
+    if (dismissed) return;
+    const lastShownRaw = localStorage.getItem(MODAL_LAST_SHOWN_KEY);
+    const lastShown = lastShownRaw ? parseInt(lastShownRaw, 10) : 0;
+    const elapsed = Date.now() - lastShown;
+    const shouldAutoOpen = !openedBefore || elapsed > REOPEN_INTERVAL_MS;
+
+    if (shouldAutoOpen) {
+      const timer = setTimeout(() => {
+        localStorage.setItem(MODAL_OPENED_KEY, "true");
+        localStorage.setItem(MODAL_LAST_SHOWN_KEY, Date.now().toString());
+        setHasOpenedBefore(true);
+        setModalOpen(true);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   const handleDismiss = (e: React.MouseEvent) => {
@@ -60,7 +81,7 @@ const CrewdleAnnouncementBanner = () => {
             Jonathan Bélisle joins <strong>Crewdle</strong> as Fractional Chief Design Officer
           </span>
           <span className="hidden md:inline-flex items-center gap-1 font-semibold underline-offset-2 hover:underline">
-            Learn more <ArrowRight className="w-3.5 h-3.5" />
+            {hasOpenedBefore ? "View again" : "Learn more"} <ArrowRight className="w-3.5 h-3.5" />
           </span>
         </button>
         <button
