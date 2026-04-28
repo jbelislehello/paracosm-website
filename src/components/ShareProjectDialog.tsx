@@ -168,21 +168,13 @@ export const ShareProjectDialog: React.FC<ShareProjectDialogProps> = ({
           return;
         }
 
-        // Call edge function to check if user exists
-        const { data: lookupData, error: lookupError } = await supabase.functions.invoke(
-          'lookup-user-by-email',
-          { body: { email: trimmedInput } }
-        );
-
-        if (lookupError) throw lookupError;
-
-        if (lookupData?.exists && lookupData?.userId) {
-          // User exists - add as collaborator directly
-          await addCollaboratorById(lookupData.userId);
-        } else {
-          // User doesn't exist - create pending invitation
-          await createPendingInvitation(trimmedInput);
-        }
+        // Always create a pending invitation by email.
+        // For security (prevent user enumeration + UUID harvesting), the
+        // lookup function no longer returns user UUIDs to non-admins.
+        // Existing users will see and accept the invitation; new users
+        // get auto-resolved via the resolve_pending_invitations trigger
+        // when they sign up with the matching email.
+        await createPendingInvitation(trimmedInput);
       } else if (isUUID) {
         // Direct UUID entry
         await addCollaboratorById(trimmedInput);
