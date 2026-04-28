@@ -14,6 +14,7 @@ import OnboardingGuide from "@/components/OnboardingGuide";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import BookAnnouncementBanner from "@/components/BookAnnouncementBanner";
 import CrewdleAnnouncementBanner from "@/components/CrewdleAnnouncementBanner";
+import AgenticEcosystemHero from "@/components/AgenticEcosystemHero";
 
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
@@ -170,6 +171,9 @@ const LandingPage = () => {
       </section>
 
       <OnboardingGuide triggerOpen={onboardingOpen} onClose={() => setOnboardingOpen(false)} />
+
+      {/* Agentic Ecosystems — service hero with interactive D3 viz */}
+      <AgenticEcosystemHero />
 
       {/* NEW BOOK Promo — between Hero and Spring 2026 */}
       <section className="py-10 px-4 bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
