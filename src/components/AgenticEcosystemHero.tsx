@@ -3,6 +3,7 @@ import * as d3 from "d3";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Sparkles, Network, Zap, Brain } from "lucide-react";
+import GetDemoDialog from "@/components/GetDemoDialog";
 
 /**
  * AgenticEcosystemHero
@@ -57,6 +58,7 @@ const AgenticEcosystemHero = () => {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeAgent, setActiveAgent] = useState<string | null>(null);
+  const [demoOpen, setDemoOpen] = useState(false);
 
   useEffect(() => {
     if (!svgRef.current || !containerRef.current) return;
@@ -232,9 +234,6 @@ const AgenticEcosystemHero = () => {
     };
   }, []);
 
-  const scrollToContact = () => {
-    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-  };
 
   return (
     <section className="relative overflow-hidden border-y border-border bg-gradient-to-b from-background via-background to-muted/30">
@@ -299,7 +298,7 @@ const AgenticEcosystemHero = () => {
           <div className="mt-8 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
             <Button
               size="lg"
-              onClick={scrollToContact}
+              onClick={() => setDemoOpen(true)}
               className="group gap-2 bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-95"
             >
               Get a demo
@@ -352,6 +351,8 @@ const AgenticEcosystemHero = () => {
           </div>
         </div>
       </div>
+
+      <GetDemoDialog open={demoOpen} onOpenChange={setDemoOpen} />
     </section>
   );
 };
