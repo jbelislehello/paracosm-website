@@ -12,14 +12,20 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 const STORAGE_KEY = "crewdle-cdo-banner-dismissed-v1";
+const MODAL_OPENED_KEY = "crewdle-cdo-modal-opened-v1";
+const MODAL_LAST_SHOWN_KEY = "crewdle-cdo-modal-last-shown-v1";
+// Re-surface the modal at most once every 7 days for users who've already seen it
+const REOPEN_INTERVAL_MS = 7 * 24 * 60 * 60 * 1000;
 
 const CrewdleAnnouncementBanner = () => {
   const [visible, setVisible] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [hasOpenedBefore, setHasOpenedBefore] = useState(false);
 
   useEffect(() => {
     const dismissed = localStorage.getItem(STORAGE_KEY);
     if (!dismissed) setVisible(true);
+    setHasOpenedBefore(!!localStorage.getItem(MODAL_OPENED_KEY));
   }, []);
 
   const handleDismiss = (e: React.MouseEvent) => {
@@ -31,6 +37,9 @@ const CrewdleAnnouncementBanner = () => {
 
   const openModal = (e: React.MouseEvent) => {
     e.preventDefault();
+    localStorage.setItem(MODAL_OPENED_KEY, "true");
+    localStorage.setItem(MODAL_LAST_SHOWN_KEY, Date.now().toString());
+    setHasOpenedBefore(true);
     setModalOpen(true);
   };
 
