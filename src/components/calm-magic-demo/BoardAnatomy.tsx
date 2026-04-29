@@ -1,34 +1,144 @@
-import { motion } from "framer-motion";
-import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { Layers, Eye, Compass, Music2, Frame } from "lucide-react";
 
-const ROWS = [
-  { letter: "M", label: "Mindsets", group: "AGENDAS" },
-  { letter: "A", label: "Agilities", group: "AGENDAS" },
-  { letter: "G", label: "Goals", group: "AGENDAS" },
-  { letter: "L", label: "Landscape · Intuitions", group: "LENS" },
-  { letter: "E", label: "Energy · Compasses", group: "LENS" },
-  { letter: "S", label: "Synergies", group: "LENS" },
-  { letter: "M", label: "Methodology", group: "MAPS" },
-  { letter: "A", label: "Architecture", group: "MAPS" },
+const ROW_LETTERS = ["M", "A", "G", "L", "E", "S", "M", "A"];
+const COL_LETTERS = ["C", "H", "O", "R", "D", "S", "P", "S"];
+
+type Region = {
+  rows: [number, number];
+  cols: [number, number];
+};
+
+type Module = {
+  id: string;
+  step: string;
+  title: string;
+  short: string;
+  body: string;
+  takeaway: string;
+  icon: typeof Layers;
+  region: Region;
+  rowHighlights?: number[];
+  colHighlights?: number[];
+};
+
+const MODULES: Module[] = [
+  {
+    id: "agendas",
+    step: "01",
+    title: "AGENDAS — the inner foundation",
+    short: "Mindsets · Agilities · Goals",
+    body:
+      "The first three rows hold what every transformation actually starts with: the inner stance of the people doing the work. Mindsets shape what's thinkable, Agilities shape how movement happens, Goals synthesize both into intent.",
+    takeaway:
+      "If a roadmap doesn't sit on top of grounded mindsets, it will be silently rejected by the body of the team.",
+    icon: Layers,
+    region: { rows: [0, 2], cols: [0, 7] },
+    rowHighlights: [0, 1, 2],
+  },
+  {
+    id: "lens",
+    step: "02",
+    title: "LENS — consciousness expansion",
+    short: "Landscape · Energy · Synergies",
+    body:
+      "Rows 4–6 are where MAGIC fully deploys. Intuitions live inside Landscape, Compasses live inside Energy, and Synergies marks the moment the system moves above its fully-deployed state into integrated action.",
+    takeaway:
+      "This is where the board stops describing the org and starts revealing what the org could become.",
+    icon: Eye,
+    region: { rows: [3, 5], cols: [0, 7] },
+    rowHighlights: [3, 4, 5],
+  },
+  {
+    id: "chords",
+    step: "03",
+    title: "CHORDS — relational dimensions",
+    short: "Chances · Heart · Observer · Reversal · Design · Seeds",
+    body:
+      "Six columns turn every row into a relational chord. A tile isn't just 'a goal' — it's a goal seen through Heart, or a mindset seen through Reversal. The intersections are where the methodology breathes.",
+    takeaway:
+      "Six dimensions × eight rows = forty-eight ways to look at any single moment.",
+    icon: Music2,
+    region: { rows: [0, 7], cols: [0, 5] },
+    colHighlights: [0, 1, 2, 3, 4, 5],
+  },
+  {
+    id: "maps",
+    step: "04",
+    title: "MAPS — the boundary frame",
+    short: "Methodology · Architecture · Protocols · Systems",
+    body:
+      "MAPS isn't a layer on top of the work. It surrounds it. Methodology and Architecture form the bottom rows. Protocols and Systems form the right columns. The corners are where all four converge into governance.",
+    takeaway:
+      "The execution frame holds the relational interior — never the other way around.",
+    icon: Frame,
+    region: { rows: [6, 7], cols: [6, 7] },
+    rowHighlights: [6, 7],
+    colHighlights: [6, 7],
+  },
+  {
+    id: "intersection",
+    step: "05",
+    title: "The tile — where it all meets",
+    short: "Every tile is an ontological coordinate",
+    body:
+      "A single tile is the intersection of an inner agenda (its row), a relational dimension (its column), a felt state, an archetypal pattern, and a piece of captured knowledge. Click any tile on the live board and the full ontology opens beneath it.",
+    takeaway:
+      "The board doesn't store information — it stores relationships between information.",
+    icon: Compass,
+    region: { rows: [4, 4], cols: [4, 4] },
+    rowHighlights: [4],
+    colHighlights: [4],
+  },
 ];
 
-const COLS = [
-  { letter: "C", label: "Chances" },
-  { letter: "H", label: "Heart" },
-  { letter: "O", label: "Observer" },
-  { letter: "R", label: "Reversal" },
-  { letter: "D", label: "Design" },
-  { letter: "S", label: "Seeds" },
-  { letter: "P", label: "Protocols" },
-  { letter: "S", label: "Systems" },
-];
+const inRegion = (r: number, c: number, region: Region) =>
+  r >= region.rows[0] && r <= region.rows[1] && c >= region.cols[0] && c <= region.cols[1];
 
 const BoardAnatomy = () => {
-  const [hovered, setHovered] = useState<{ r: number; c: number } | null>(null);
+  const [activeIdx, setActiveIdx] = useState(0);
+  const moduleRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const userClickRef = useRef(false);
+  const clickTimeoutRef = useRef<number | null>(null);
+
+  // Sync active module with scroll position via IntersectionObserver
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (userClickRef.current) return;
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (visible[0]) {
+          const idx = Number((visible[0].target as HTMLElement).dataset.idx);
+          if (!Number.isNaN(idx)) setActiveIdx(idx);
+        }
+      },
+      { rootMargin: "-40% 0px -40% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+    moduleRefs.current.forEach((el) => el && observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  const handleStepClick = (idx: number) => {
+    setActiveIdx(idx);
+    userClickRef.current = true;
+    moduleRefs.current[idx]?.scrollIntoView({ behavior: "smooth", block: "center" });
+    if (clickTimeoutRef.current) window.clearTimeout(clickTimeoutRef.current);
+    // Re-enable scroll-driven sync after the smooth scroll settles
+    clickTimeoutRef.current = window.setTimeout(() => {
+      userClickRef.current = false;
+    }, 900);
+  };
+
+  const active = MODULES[activeIdx];
+  const ActiveIcon = active.icon;
 
   return (
     <section id="anatomy" className="relative py-20 md:py-32">
       <div className="container mx-auto max-w-7xl px-6">
+        {/* Header */}
         <div className="mx-auto mb-16 max-w-3xl text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
             01 · The Board
@@ -37,43 +147,170 @@ const BoardAnatomy = () => {
             64 tiles. 3 vertical stages. 2 horizontal alphabets.
           </h2>
           <p className="mt-5 text-lg text-muted-foreground">
-            The Calm Magic board is an 8×8 ontological matrix. Every tile is the
-            intersection of an inner agenda (rows) and a relational dimension
-            (columns) — a coordinate where conversation becomes structure.
+            Click a module — or scroll — to walk through the anatomy of the
+            Calm Magic board. The matrix on the right responds in real time.
           </p>
         </div>
 
-        <div className="grid gap-12 lg:grid-cols-[1.05fr_1fr] lg:items-start">
-          {/* Annotated matrix */}
-          <div className="relative">
-            <div className="rounded-3xl border border-border bg-card p-6 shadow-xl md:p-8">
-              {/* Column headers */}
-              <div className="ml-10 mb-2 grid grid-cols-8 gap-1.5">
-                {COLS.map((c, i) => (
-                  <div
-                    key={i}
-                    className={`text-center text-[10px] font-bold uppercase tracking-wider transition-colors ${
-                      hovered?.c === i ? "text-primary" : "text-muted-foreground"
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-14">
+          {/* ── Left: scrollytelling rail ───────────────────────────── */}
+          <div className="space-y-4 lg:space-y-6">
+            {/* Step pills (sticky on mobile) */}
+            <div className="sticky top-16 z-20 -mx-6 flex gap-2 overflow-x-auto bg-background/90 px-6 py-3 backdrop-blur-md lg:static lg:mx-0 lg:flex-wrap lg:bg-transparent lg:px-0 lg:py-0 lg:backdrop-blur-none">
+              {MODULES.map((m, i) => {
+                const isActive = i === activeIdx;
+                return (
+                  <button
+                    key={m.id}
+                    onClick={() => handleStepClick(i)}
+                    aria-current={isActive ? "step" : undefined}
+                    className={`flex-shrink-0 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all ${
+                      isActive
+                        ? "border-primary bg-primary text-primary-foreground shadow-md"
+                        : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground"
                     }`}
                   >
-                    {c.letter}
+                    <span className="opacity-70">{m.step}</span>
+                    <span className="mx-1.5 opacity-30">·</span>
+                    {m.id.toUpperCase()}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Module cards */}
+            <div className="space-y-6">
+              {MODULES.map((m, i) => {
+                const isActive = i === activeIdx;
+                const Icon = m.icon;
+                return (
+                  <motion.div
+                    key={m.id}
+                    ref={(el) => (moduleRefs.current[i] = el)}
+                    data-idx={i}
+                    onClick={() => handleStepClick(i)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        handleStepClick(i);
+                      }
+                    }}
+                    initial={false}
+                    animate={{
+                      opacity: isActive ? 1 : 0.55,
+                      scale: isActive ? 1 : 0.985,
+                    }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    className={`cursor-pointer rounded-3xl border bg-card p-7 shadow-sm transition-colors ${
+                      isActive
+                        ? "border-primary/60 shadow-xl ring-1 ring-primary/20"
+                        : "border-border hover:border-primary/30"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={`flex h-11 w-11 items-center justify-center rounded-xl transition-colors ${
+                          isActive
+                            ? "bg-gradient-to-br from-primary to-accent text-primary-foreground"
+                            : "bg-primary/10 text-primary"
+                        }`}
+                      >
+                        <Icon className="h-5 w-5" />
+                      </span>
+                      <div>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                          Module {m.step}
+                        </p>
+                        <h3 className="text-xl font-bold text-foreground">{m.title}</h3>
+                      </div>
+                    </div>
+
+                    <p className="mt-4 text-sm font-medium text-foreground/90">{m.short}</p>
+
+                    <AnimatePresence initial={false}>
+                      {isActive && (
+                        <motion.div
+                          key="body"
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.35, ease: "easeOut" }}
+                          className="overflow-hidden"
+                        >
+                          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                            {m.body}
+                          </p>
+                          <div className="mt-5 rounded-xl border border-primary/20 bg-primary/5 p-4">
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                              Takeaway
+                            </p>
+                            <p className="mt-1 text-sm text-foreground">{m.takeaway}</p>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ── Right: sticky responsive matrix ─────────────────────── */}
+          <div className="lg:sticky lg:top-28 lg:h-fit">
+            <div className="rounded-3xl border border-border bg-card p-6 shadow-2xl md:p-8">
+              {/* Active module banner */}
+              <div className="mb-5 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-accent text-primary-foreground">
+                    <ActiveIcon className="h-4 w-4" />
+                  </span>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                      Now showing · {active.step}
+                    </p>
+                    <p className="text-sm font-semibold text-foreground">{active.short}</p>
                   </div>
-                ))}
+                </div>
+                <span className="text-[10px] font-medium text-muted-foreground">
+                  {activeIdx + 1} / {MODULES.length}
+                </span>
               </div>
 
-              <div className="flex gap-2">
-                {/* Row headers */}
-                <div className="flex w-8 flex-col gap-1.5">
-                  {ROWS.map((r, i) => (
+              {/* Column headers */}
+              <div className="ml-9 mb-1.5 grid grid-cols-8 gap-1.5">
+                {COL_LETTERS.map((letter, i) => {
+                  const hi = active.colHighlights?.includes(i) ?? false;
+                  return (
                     <div
                       key={i}
-                      className={`flex aspect-square items-center justify-center text-[10px] font-bold uppercase transition-colors ${
-                        hovered?.r === i ? "text-primary" : "text-muted-foreground"
+                      className={`text-center text-[10px] font-bold uppercase tracking-wider transition-colors ${
+                        hi ? "text-primary" : "text-muted-foreground/60"
                       }`}
                     >
-                      {r.letter}
+                      {letter}
                     </div>
-                  ))}
+                  );
+                })}
+              </div>
+
+              <div className="flex gap-1.5">
+                {/* Row headers */}
+                <div className="flex w-7 flex-col gap-1.5">
+                  {ROW_LETTERS.map((letter, i) => {
+                    const hi = active.rowHighlights?.includes(i) ?? false;
+                    return (
+                      <div
+                        key={i}
+                        className={`flex aspect-square items-center justify-center text-[10px] font-bold uppercase transition-colors ${
+                          hi ? "text-primary" : "text-muted-foreground/60"
+                        }`}
+                      >
+                        {letter}
+                      </div>
+                    );
+                  })}
                 </div>
 
                 {/* Matrix */}
@@ -81,101 +318,39 @@ const BoardAnatomy = () => {
                   {Array.from({ length: 64 }).map((_, i) => {
                     const r = Math.floor(i / 8);
                     const c = i % 8;
-                    const isAgendas = r < 3;
-                    const isLens = r >= 3 && r < 6;
-                    const isMaps = r >= 6 || c >= 6;
-                    const hi = hovered?.r === r || hovered?.c === c;
+                    const isActiveCell = inRegion(r, c, active.region);
                     return (
-                      <button
+                      <motion.div
                         key={i}
-                        onMouseEnter={() => setHovered({ r, c })}
-                        onMouseLeave={() => setHovered(null)}
-                        className="aspect-square rounded-md transition-all duration-200"
+                        initial={false}
+                        animate={{
+                          opacity: isActiveCell ? 1 : 0.18,
+                          scale: isActiveCell ? 1 : 0.94,
+                        }}
+                        transition={{
+                          duration: 0.45,
+                          delay: isActiveCell ? (r + c) * 0.012 : 0,
+                          ease: "easeOut",
+                        }}
+                        className="aspect-square rounded-md"
                         style={{
-                          background: isMaps
-                            ? `hsl(var(--primary) / ${hi ? 0.6 : 0.25})`
-                            : isLens
-                            ? `hsl(var(--accent) / ${hi ? 0.55 : 0.28})`
-                            : `hsl(var(--primary) / ${hi ? 0.45 : 0.18})`,
-                          transform: hi ? "scale(1.08)" : "scale(1)",
+                          background: isActiveCell
+                            ? `linear-gradient(135deg, hsl(var(--primary) / 0.7), hsl(var(--accent) / 0.6))`
+                            : `hsl(var(--muted-foreground) / 0.18)`,
+                          boxShadow: isActiveCell
+                            ? "0 4px 14px hsl(var(--primary) / 0.25)"
+                            : "none",
                         }}
                       />
                     );
                   })}
                 </div>
               </div>
+
+              <p className="mt-5 text-center text-[11px] text-muted-foreground">
+                Highlighted region updates as you click or scroll between modules.
+              </p>
             </div>
-
-            <div className="mt-4 flex flex-wrap justify-center gap-3 text-xs text-muted-foreground">
-              <span className="inline-flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded bg-primary/30" /> AGENDAS
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded bg-accent/40" /> LENS
-              </span>
-              <span className="inline-flex items-center gap-1.5">
-                <span className="h-3 w-3 rounded bg-primary/50" /> MAPS frame
-              </span>
-            </div>
-          </div>
-
-          {/* Annotations */}
-          <div className="space-y-5">
-            <motion.div
-              initial={{ opacity: 0, x: 16 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              className="rounded-2xl border border-border bg-card p-6"
-            >
-              <p className="text-xs font-bold uppercase tracking-widest text-primary">Rows 1–3 · AGENDAS</p>
-              <h3 className="mt-1 text-xl font-semibold">Mindsets · Agilities · Goals</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                The inner foundation. What you think, how you move, what you're aiming for.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 16 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="rounded-2xl border border-border bg-card p-6"
-            >
-              <p className="text-xs font-bold uppercase tracking-widest text-primary">Rows 4–6 · LENS</p>
-              <h3 className="mt-1 text-xl font-semibold">Landscape · Energy · Synergies</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Consciousness expansion. MAGIC fully deploys here — Intuitions live inside Landscape, Compasses inside Energy.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 16 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="rounded-2xl border border-border bg-card p-6"
-            >
-              <p className="text-xs font-bold uppercase tracking-widest text-primary">Rows 7–8 + Cols 7–8 · MAPS</p>
-              <h3 className="mt-1 text-xl font-semibold">Methodology · Architecture · Protocols · Systems</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                A boundary frame. MAPS doesn't sit on top of the work — it surrounds and supports it.
-              </p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 16 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="rounded-2xl border border-primary/30 bg-primary/5 p-6"
-            >
-              <p className="text-xs font-bold uppercase tracking-widest text-primary">Cols 1–6 · CHORDS</p>
-              <h3 className="mt-1 text-xl font-semibold">Chances · Heart · Observer · Reversal · Design · Seeds</h3>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Six relational dimensions every tile passes through. Hover the matrix to see how rows and columns intersect.
-              </p>
-            </motion.div>
           </div>
         </div>
       </div>
