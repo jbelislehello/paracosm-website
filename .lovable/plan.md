@@ -1,55 +1,57 @@
-## Interactive scrollytelling stepper for Board Anatomy
+## Sync a full Calm Magic explanation panel with the active module
 
-Replace the current hover-only `BoardAnatomy.tsx` with a true scrollytelling experience: a **clickable left rail of 5 modules** synced with a **sticky live matrix** on the right. Clicking a module animates the matrix to highlight the relevant region; scrolling the rail does the same automatically via `IntersectionObserver`.
+Today the right column shows the live matrix only. The body copy lives inside the left-hand cards. I'll add a **dedicated Explanation Panel above the matrix in the sticky right column** that swaps its full contents instantly (fade + slide, ~250ms) the moment `activeIdx` changes — whether the user clicks a step pill, clicks a card, or scrolls.
 
-### Layout
+### What the panel shows
+
+Every module gets four new structured fields. The panel renders them as labeled blocks so the visitor reads a complete Calm Magic explanation at a glance:
 
 ```text
-┌─────────────────────────────┬──────────────────────────────┐
-│  STEP PILLS (sticky on top) │                              │
-│  [01·AGENDAS] [02·LENS] …   │                              │
-│                             │   ╔══════════════════════╗   │
-│  ┌───────────────────────┐  │   ║ Now showing · 02     ║   │
-│  │ 01 · AGENDAS          │  │   ║                      ║   │
-│  │ Mindsets·Agilities·…  │  │   ║   8×8 LIVE MATRIX    ║   │
-│  │ [body + takeaway]     │  │   ║   (region highlights ║   │
-│  └───────────────────────┘  │   ║    fade in/out)      ║   │
-│  ┌───────────────────────┐  │   ║                      ║   │
-│  │ 02 · LENS  ◀ ACTIVE   │  │   ╚══════════════════════╝   │
-│  └───────────────────────┘  │       (sticky on desktop)    │
-│  … 03, 04, 05               │                              │
-└─────────────────────────────┴──────────────────────────────┘
+╔══════════════════════════════════════════╗
+║  [icon] 02 · LENS                        ║
+║  Landscape · Energy · Synergies          ║
+║                                          ║
+║  PRINCIPLE                               ║
+║  Once the inner ground is held,          ║
+║  perception widens. LENS rows let the    ║
+║  system see itself.                      ║
+║                                          ║
+║  HOW IT WORKS                            ║
+║  • Row 4 · Landscape — terrain &         ║
+║    Intuitions (the I of MAGIC)           ║
+║  • Row 5 · Energy — flow & Compasses     ║
+║  • Row 6 · Synergies — integration       ║
+║                                          ║
+║  IN PRACTICE                             ║
+║  Tiles light up when teams report        ║
+║  "I can suddenly see what we're doing."  ║
+║                                          ║
+║  CONNECTS TO                             ║
+║  [Builds on AGENDAS] [Unlocks NOEMS…]    ║
+╚══════════════════════════════════════════╝
+            ▼ live matrix below ▼
 ```
 
-### Five modules
+### Implementation
 
-| # | Module | Region highlighted |
-|---|---|---|
-| 01 | AGENDAS — Mindsets · Agilities · Goals | rows 1–3, all cols |
-| 02 | LENS — Landscape · Energy · Synergies | rows 4–6, all cols |
-| 03 | CHORDS — six relational dimensions | all rows, cols 1–6 |
-| 04 | MAPS — Methodology · Architecture · Protocols · Systems | rows 7–8 + cols 7–8 (frame) |
-| 05 | The tile — where it all meets | one cell at the intersection |
+Single file: `src/components/calm-magic-demo/BoardAnatomy.tsx`.
 
-Each module card shows: step number, icon, title, short label, expanded body + a "Takeaway" callout — only when active (collapses when not).
+1. **Extend the `Module` type** with four new fields:
+   - `principle: string` — one-sentence why
+   - `mechanic: string[]` — bulleted breakdown of rows/cols at play
+   - `inPractice: string` — concrete usage moment
+   - `connects: string[]` — chips linking to other modules / seasons
 
-### Interaction model
+2. **Author content** for all five modules (AGENDAS, LENS, CHORDS, MAPS, Tile) using existing project memory — the 8×8 matrix structure doc, the triple-engine concept, the polyvagal/hexagram/fragment tile model, and the PRD compiler.
 
-- **Click a step pill or any module card** → smooth-scrolls that module into view, marks it active.
-- **Scrolling the page** → an `IntersectionObserver` (rootMargin `-40% 0% -40% 0%`) detects which module is in the viewport center and updates the active state.
-- A short `userClickRef` lockout (~900ms) prevents the scroll observer from fighting smooth-scroll animations triggered by clicks.
-- **Matrix region animation**: active cells fade to full opacity + primary→accent gradient with a staggered delay; inactive cells dim to 18% opacity. Row/column header letters tint to primary when their index is in the active region.
-- The right column is `lg:sticky top-28` so the matrix stays in view while the rail scrolls. On mobile the matrix stacks below and step pills become a horizontally-scrollable sticky bar.
-- Keyboard accessible: cards have `role="button"`, `tabIndex={0}`, Enter/Space activate.
+3. **Add `<ExplanationPanel module={active} />`** rendered above the matrix inside the sticky right card. Wrap it in `<AnimatePresence mode="wait">` keyed on `activeIdx` so the entire panel cross-fades + slides 8px on every change. Duration ~250ms with `easeOut`.
 
-### Technical details
+4. **Keep the left-rail cards** but slim them down: the click/scroll target stays, the short label stays, but the long body + takeaway is **removed from the cards** (they're now in the panel) — this avoids duplicating copy. The cards become navigation, the panel becomes the read.
 
-- Single file change: rewrite `src/components/calm-magic-demo/BoardAnatomy.tsx`.
-- Uses already-installed `framer-motion` (`motion`, `AnimatePresence`) and `lucide-react` icons (`Layers`, `Eye`, `Music2`, `Frame`, `Compass`).
-- All colors via design tokens (`--primary`, `--accent`, `--muted-foreground`) — no hard-coded colors.
-- No new deps, no route or data changes, the section keeps its existing `id="anatomy"` anchor so the hero CTA still scrolls here.
+5. **Mobile**: on small screens the right column already stacks below the rail. The panel renders inline above the matrix, so scrolling the rail still updates the panel + matrix above it via the existing IntersectionObserver — no behavior change needed.
 
 ### Out of scope
 
-- The other demo sections (Seasons, Tolerance, Tile, Constellation, PRD layers) are untouched.
-- No analytics events on step changes (can add later if you want).
+- No changes to other demo sections.
+- No new dependencies (uses existing framer-motion + lucide-react).
+- No copy in i18n yet (English only, matching the rest of the demo page).
