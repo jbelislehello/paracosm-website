@@ -304,13 +304,9 @@ const AgenticEcosystemHero = () => {
               Get a demo
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
-            <a
-              href="https://app.reclaim.ai/m/jonathan-helloarchitekt"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="/calm-magic-demo">
               <Button size="lg" variant="outline" className="gap-2">
-                Book a 30-min intro
+                See Calm Magic in action
               </Button>
             </a>
           </div>
