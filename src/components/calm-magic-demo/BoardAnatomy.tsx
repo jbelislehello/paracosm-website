@@ -21,6 +21,11 @@ type Module = {
   region: Region;
   rowHighlights?: number[];
   colHighlights?: number[];
+  // Extended fields powering the synced explanation panel
+  principle: string;
+  mechanic: string[];
+  inPractice: string;
+  connects: string[];
 };
 
 const MODULES: Module[] = [
@@ -36,6 +41,16 @@ const MODULES: Module[] = [
     icon: Layers,
     region: { rows: [0, 2], cols: [0, 7] },
     rowHighlights: [0, 1, 2],
+    principle:
+      "Transformation begins in the body, not the slide deck. Calm Magic refuses to start with execution.",
+    mechanic: [
+      "Row 1 · Mindsets — what is currently thinkable for this team",
+      "Row 2 · Agilities — how movement actually happens here",
+      "Row 3 · Goals — the synthesis of mindset + agility into intent",
+    ],
+    inPractice:
+      "A leader maps three felt mindsets, three lived agilities — then watches Goals emerge instead of being declared.",
+    connects: ["Held by MAPS", "Feeds the POLLENS season"],
   },
   {
     id: "lens",
@@ -49,6 +64,16 @@ const MODULES: Module[] = [
     icon: Eye,
     region: { rows: [3, 5], cols: [0, 7] },
     rowHighlights: [3, 4, 5],
+    principle:
+      "Once the inner ground is held, perception widens. LENS rows let the system see itself.",
+    mechanic: [
+      "Row 4 · Landscape — terrain & Intuitions (the I of MAGIC)",
+      "Row 5 · Energy — flow & Compasses (the C of MAGIC)",
+      "Row 6 · Synergies — moving above fully-deployed MAGIC into integration",
+    ],
+    inPractice:
+      "Tiles in this band light up when teams report 'I can suddenly see what we're actually doing.' That signal feeds the agentic compass.",
+    connects: ["Builds on AGENDAS", "Unlocks NOEMS & POEMS"],
   },
   {
     id: "chords",
@@ -62,6 +87,19 @@ const MODULES: Module[] = [
     icon: Music2,
     region: { rows: [0, 7], cols: [0, 5] },
     colHighlights: [0, 1, 2, 3, 4, 5],
+    principle:
+      "A tile is never single-voiced. CHORDS make every cell harmonic — readable through six relational lenses at once.",
+    mechanic: [
+      "C · Chances — what risk is being taken",
+      "H · Heart — what is loved or grieved",
+      "O · Observer — what is being noticed",
+      "R · Reversal — what could flip or renew",
+      "D · Design — what is being shaped",
+      "S · Seeds — what is being planted forward",
+    ],
+    inPractice:
+      "Stuck on a goal? Re-read it through Heart, then through Reversal. The block usually lives in the column you've been avoiding.",
+    connects: ["Cross-cuts every row", "Drives the Constellation view"],
   },
   {
     id: "maps",
@@ -76,6 +114,17 @@ const MODULES: Module[] = [
     region: { rows: [6, 7], cols: [6, 7] },
     rowHighlights: [6, 7],
     colHighlights: [6, 7],
+    principle:
+      "Execution is a container, not a verdict. MAPS frames the interior so it can stay relational under pressure.",
+    mechanic: [
+      "Row 7 · Methodology — how the work becomes repeatable",
+      "Row 8 · Architecture — how the work becomes structurable",
+      "Col 7 · Protocols — agreements that govern interaction",
+      "Col 8 · Systems — the technical & operational substrate",
+    ],
+    inPractice:
+      "The four corner tiles are governance hot-spots — where Methodology × Systems collide. They're where the AI Observatory plugs in.",
+    connects: ["Wraps AGENDAS, LENS & CHORDS", "Outputs to TOTEMS & ANTHEMS"],
   },
   {
     id: "intersection",
@@ -90,6 +139,18 @@ const MODULES: Module[] = [
     region: { rows: [4, 4], cols: [4, 4] },
     rowHighlights: [4],
     colHighlights: [4],
+    principle:
+      "Every tile is the smallest unit of relational intelligence — a coordinate where four ontologies meet.",
+    mechanic: [
+      "Row coordinate — which inner agenda",
+      "Column coordinate — which relational dimension",
+      "Felt state — polyvagal check-in",
+      "Archetypal pattern — I Ching hexagram lens",
+      "Knowledge fragment — the captured insight",
+    ],
+    inPractice:
+      "Open one tile and you get a four-faced card: felt state, hexagram, fragment, and an agentic prompt — the whole methodology in 64 pixels.",
+    connects: ["Composes the entire 8×8 board", "Feeds the PRD compiler 1:1"],
   },
 ];
 
@@ -228,29 +289,9 @@ const BoardAnatomy = () => {
                     </div>
 
                     <p className="mt-4 text-sm font-medium text-foreground/90">{m.short}</p>
-
-                    <AnimatePresence initial={false}>
-                      {isActive && (
-                        <motion.div
-                          key="body"
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.35, ease: "easeOut" }}
-                          className="overflow-hidden"
-                        >
-                          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                            {m.body}
-                          </p>
-                          <div className="mt-5 rounded-xl border border-primary/20 bg-primary/5 p-4">
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
-                              Takeaway
-                            </p>
-                            <p className="mt-1 text-sm text-foreground">{m.takeaway}</p>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      {isActive ? "Showing in the panel →" : "Tap to open in the panel →"}
+                    </p>
                   </motion.div>
                 );
               })}
@@ -276,6 +317,76 @@ const BoardAnatomy = () => {
                 <span className="text-[10px] font-medium text-muted-foreground">
                   {activeIdx + 1} / {MODULES.length}
                 </span>
+              </div>
+
+              {/* ── Synced explanation panel ─────────────────────────── */}
+              <div className="mb-6 overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-card to-accent/5 p-5">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={active.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                  >
+                    <h3 className="text-lg font-bold leading-tight text-foreground">
+                      {active.title}
+                    </h3>
+
+                    <div className="mt-4">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                        Principle
+                      </p>
+                      <p className="mt-1 text-sm leading-relaxed text-foreground/90">
+                        {active.principle}
+                      </p>
+                    </div>
+
+                    <div className="mt-4">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                        How it works
+                      </p>
+                      <ul className="mt-2 space-y-1.5">
+                        {active.mechanic.map((m) => (
+                          <li
+                            key={m}
+                            className="flex gap-2 text-xs leading-relaxed text-muted-foreground"
+                          >
+                            <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-primary/70" />
+                            <span>{m}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="mt-4">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                        In practice
+                      </p>
+                      <p className="mt-1 text-sm leading-relaxed text-foreground/90">
+                        {active.inPractice}
+                      </p>
+                    </div>
+
+                    <div className="mt-4 rounded-xl border border-primary/20 bg-primary/5 p-3">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                        Takeaway
+                      </p>
+                      <p className="mt-1 text-sm text-foreground">{active.takeaway}</p>
+                    </div>
+
+                    <div className="mt-4 flex flex-wrap gap-1.5">
+                      {active.connects.map((c) => (
+                        <span
+                          key={c}
+                          className="rounded-full border border-border bg-background/60 px-2.5 py-1 text-[10px] font-medium text-muted-foreground"
+                        >
+                          {c}
+                        </span>
+                      ))}
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
               </div>
 
               {/* Column headers */}
