@@ -289,29 +289,9 @@ const BoardAnatomy = () => {
                     </div>
 
                     <p className="mt-4 text-sm font-medium text-foreground/90">{m.short}</p>
-
-                    <AnimatePresence initial={false}>
-                      {isActive && (
-                        <motion.div
-                          key="body"
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.35, ease: "easeOut" }}
-                          className="overflow-hidden"
-                        >
-                          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                            {m.body}
-                          </p>
-                          <div className="mt-5 rounded-xl border border-primary/20 bg-primary/5 p-4">
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
-                              Takeaway
-                            </p>
-                            <p className="mt-1 text-sm text-foreground">{m.takeaway}</p>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      {isActive ? "Showing in the panel →" : "Tap to open in the panel →"}
+                    </p>
                   </motion.div>
                 );
               })}
