@@ -319,6 +319,76 @@ const BoardAnatomy = () => {
                 </span>
               </div>
 
+              {/* ── Synced explanation panel ─────────────────────────── */}
+              <div className="mb-6 overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-card to-accent/5 p-5">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={active.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                  >
+                    <h3 className="text-lg font-bold leading-tight text-foreground">
+                      {active.title}
+                    </h3>
+
+                    <div className="mt-4">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                        Principle
+                      </p>
+                      <p className="mt-1 text-sm leading-relaxed text-foreground/90">
+                        {active.principle}
+                      </p>
+                    </div>
+
+                    <div className="mt-4">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                        How it works
+                      </p>
+                      <ul className="mt-2 space-y-1.5">
+                        {active.mechanic.map((m) => (
+                          <li
+                            key={m}
+                            className="flex gap-2 text-xs leading-relaxed text-muted-foreground"
+                          >
+                            <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-primary/70" />
+                            <span>{m}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="mt-4">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                        In practice
+                      </p>
+                      <p className="mt-1 text-sm leading-relaxed text-foreground/90">
+                        {active.inPractice}
+                      </p>
+                    </div>
+
+                    <div className="mt-4 rounded-xl border border-primary/20 bg-primary/5 p-3">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                        Takeaway
+                      </p>
+                      <p className="mt-1 text-sm text-foreground">{active.takeaway}</p>
+                    </div>
+
+                    <div className="mt-4 flex flex-wrap gap-1.5">
+                      {active.connects.map((c) => (
+                        <span
+                          key={c}
+                          className="rounded-full border border-border bg-background/60 px-2.5 py-1 text-[10px] font-medium text-muted-foreground"
+                        >
+                          {c}
+                        </span>
+                      ))}
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
               {/* Column headers */}
               <div className="ml-9 mb-1.5 grid grid-cols-8 gap-1.5">
                 {COL_LETTERS.map((letter, i) => {
