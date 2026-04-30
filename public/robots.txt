@@ -12,3 +12,5 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://paracosm.helloarchitekt.com/sitemap.xml

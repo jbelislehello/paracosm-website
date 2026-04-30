@@ -17,6 +17,8 @@ export interface RouteMeta {
   label: string | ((params: Record<string, string>) => string);
   /** Parent route path. `null` for the root. Defaults to "/" when omitted. */
   parent?: string | null;
+  /** Exclude from sitemap.xml (e.g. auth, admin, dashboard). */
+  noindex?: boolean;
 }
 
 export const ROUTE_REGISTRY: RouteMeta[] = [
