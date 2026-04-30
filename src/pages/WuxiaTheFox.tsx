@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
 import { usePageSeo } from "@/hooks/usePageSeo";
-import { creativeWorkSchema, breadcrumbSchema } from "@/lib/structuredData";
+import { creativeWorkSchema } from "@/lib/structuredData";
 
 const WuxiaTheFox = () => {
   usePageSeo({
