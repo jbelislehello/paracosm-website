@@ -104,10 +104,6 @@ const ParacosmRetreatLanding = () => {
         locationName: "Azores",
         locationAddress: { country: "PT" },
       }),
-      breadcrumbSchema([
-        { name: "Home", path: "/" },
-        { name: "Paracosm Retreat", path: "/paracosm-retreat" },
-      ]),
     ],
   });
 
