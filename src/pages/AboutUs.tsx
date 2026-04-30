@@ -25,10 +25,6 @@ const AboutUs = () => {
           "Meet Paracosm — a coaching practice for executives and innovators building Learning Organizations through AI systems mastery and relational intelligence.",
         url: "/about-us",
       }),
-      breadcrumbSchema([
-        { name: "Home", path: "/" },
-        { name: "About", path: "/about-us" },
-      ]),
     ],
   });
 
