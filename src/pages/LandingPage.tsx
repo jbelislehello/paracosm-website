@@ -48,7 +48,7 @@ const LandingPage = () => {
           "Paracosm builds Learning Organizations for executives and innovators — AI systems mastery, relational intelligence, and the Calm Magic methodology.",
         url: "/",
       }),
-      breadcrumbSchema([{ name: "Home", path: "/" }]),
+      
     ],
   });
 
