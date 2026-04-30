@@ -793,6 +793,13 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "Calm Magic — Short", speaker: "Jonathan Bélisle", description: "Quick vertical format overview of the Calm Magic methodology and its five axes.", category: "Workflows", axis: "calm", youtubeId: "CLsY8Bs1bDk", platform: "YouTube" },
     ],
   },
+  {
+    year: 2026, month: 4, theme: "Relationship Model",
+    books: [],
+    articles: [
+      { title: "★ Featured — The Relationship Model", author: "Jonathan Bélisle", description: "Latest article: a framework for thinking about relationships as the primary substrate of organizations, products, and learning systems. Read this first — it threads through every tool curated this month.", category: "Human Dynamics & System Thinking", axis: "love", url: "https://www.linkedin.com/pulse/relationship-model-jonathan-belisle-mdgne", source: "LinkedIn" },
+    ],
+  },
 ];
 
 export const driftLibraryExtras: DriftBook[] = [
