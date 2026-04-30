@@ -10,7 +10,7 @@ import { SUBSCRIPTION_TIERS, SubscriptionTier } from '@/data/subscriptionTiers';
 import { useToast } from '@/hooks/use-toast';
 import Footer from '@/components/Footer';
 import { usePageSeo } from '@/hooks/usePageSeo';
-import { webPageSchema, offerCatalogSchema, breadcrumbSchema } from '@/lib/structuredData';
+import { webPageSchema, offerCatalogSchema } from '@/lib/structuredData';
 
 const PricingCard: React.FC<{ 
   tierKey: string;
