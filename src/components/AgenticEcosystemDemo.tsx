@@ -530,7 +530,13 @@ const AgenticEcosystemDemo = () => {
             agents converge — research, critique, curate. The Orchestrator routes
             attention between the two so organizations can{" "}
             <strong className="text-foreground">invent and integrate</strong> in the
-            same loop.
+            same loop.{" "}
+            <Link
+              to="/dream-and-learn"
+              className="text-primary underline-offset-4 hover:underline inline-flex items-center gap-1"
+            >
+              Learn about the module <ArrowRight className="h-3 w-3" />
+            </Link>
           </p>
         </div>
 
