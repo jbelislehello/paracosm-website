@@ -186,10 +186,6 @@ const Pricing: React.FC = () => {
           { name: "Team Subscriptions", description: "Multi-seat team plans." },
         ],
       }),
-      breadcrumbSchema([
-        { name: "Home", path: "/" },
-        { name: "Pricing", path: "/pricing" },
-      ]),
     ],
   });
 
