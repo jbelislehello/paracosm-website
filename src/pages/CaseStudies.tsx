@@ -35,10 +35,6 @@ const CaseStudies: React.FC = () => {
           url: cs?.slug ? `/case-studies#${cs.slug}` : undefined,
         })),
       }),
-      breadcrumbSchema([
-        { name: "Home", path: "/" },
-        { name: "Case Studies", path: "/case-studies" },
-      ]),
     ],
   });
 
