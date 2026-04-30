@@ -8,6 +8,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
 import Footer from "@/components/Footer";
 import { drawCards, suitGradients, suitColors, TarotCard, MajorArcanaCard, MinorArcanaCard } from "@/data/entrepreneurialTarot";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 // ─── Mini Tarot Preview for Retreat ───
 const TarotPreviewSection = ({ t }: { t: (key: string) => string }) => {
@@ -87,6 +88,12 @@ const ParacosmRetreatLanding = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+
+  usePageSeo({
+    title: "Paracosm Retreat — Azores 2026 | Leadership, AI & Relational Intelligence",
+    description: "Our 2026 flagship retreat in the Azores: an immersive experience for executives and innovators integrating AI systems mastery, somatic practice, and the Calm Magic methodology.",
+    path: "/paracosm-retreat",
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

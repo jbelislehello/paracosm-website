@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight, ExternalLink } from 'lucide-react';
@@ -6,13 +6,16 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import Footer from '@/components/Footer';
+import { usePageSeo } from '@/hooks/usePageSeo';
 
 const AboutUs = () => {
   const { t } = useLanguage();
 
-  useEffect(() => {
-    document.title = t("page_titles.about_us");
-  }, [t]);
+  usePageSeo({
+    title: t("page_titles.about_us"),
+    description: "Meet Paracosm — a coaching practice for executives and innovators building Learning Organizations through AI systems mastery and relational intelligence.",
+    path: "/about-us",
+  });
 
   const timelineEvents = [
     {

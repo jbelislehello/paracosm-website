@@ -9,6 +9,7 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { SUBSCRIPTION_TIERS, SubscriptionTier } from '@/data/subscriptionTiers';
 import { useToast } from '@/hooks/use-toast';
 import Footer from '@/components/Footer';
+import { usePageSeo } from '@/hooks/usePageSeo';
 
 const PricingCard: React.FC<{ 
   tierKey: string;
@@ -162,6 +163,12 @@ const PricingCard: React.FC<{
 const Pricing: React.FC = () => {
   const { user } = useUserSession();
   const { tier: currentTier, isLoading, createCheckout, openCustomerPortal } = useSubscription();
+
+  usePageSeo({
+    title: "Pricing — Coaching, Calm Magic & PRD plans | Paracosm",
+    description: "Choose your Paracosm pathway: Calm Magic methodology, PRD compiler, executive coaching, and team subscriptions.",
+    path: "/pricing",
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-500/5 via-purple-500/5 to-indigo-500/5">

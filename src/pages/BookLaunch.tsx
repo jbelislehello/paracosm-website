@@ -46,6 +46,7 @@ import bookCover from "@/assets/calm-magic-book-cover.jpg";
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import transmediaMap from "@/assets/drift/transmediamap.jpg";
 import gameplanImage from "@/assets/drift/JonathanBelisle-gameplan.jpg";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 const pillars = [
   { icon: Heart, key: "relational" },
@@ -79,9 +80,11 @@ const BookLaunch = () => {
   const { t, language } = useLanguage();
   const [submitted, setSubmitted] = useState(false);
 
-  useEffect(() => {
-    document.title = t("book.page_title");
-  }, [t]);
+  usePageSeo({
+    title: t("book.page_title"),
+    description: "A new book on building Learning Organizations — combining AI systems mastery and relational intelligence. Reserve your copy.",
+    path: "/book",
+  });
 
   const formSchema = useMemo(
     () =>

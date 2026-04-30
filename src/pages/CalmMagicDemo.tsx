@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import DemoHero from "@/components/calm-magic-demo/DemoHero";
@@ -14,22 +14,17 @@ import DemoCTA from "@/components/calm-magic-demo/DemoCTA";
 import GetDemoDialog from "@/components/GetDemoDialog";
 import GradientDivider from "@/components/GradientDivider";
 import Footer from "@/components/Footer";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 const CalmMagicDemo = () => {
   const [demoOpen, setDemoOpen] = useState(false);
 
-  useEffect(() => {
-    document.title = "Calm Magic — A Relational Intelligence Methodology | Paracosm";
-    const meta =
-      document.querySelector('meta[name="description"]') ??
-      document.head.appendChild(
-        Object.assign(document.createElement("meta"), { name: "description" })
-      );
-    meta.setAttribute(
-      "content",
-      "Calm Magic is a relational intelligence methodology for organizational transformation — an 8×8 board that turns conversation into a living product nervous system."
-    );
-  }, []);
+  usePageSeo({
+    title: "Calm Magic — A Relational Intelligence Methodology | Paracosm",
+    description:
+      "Calm Magic is a relational intelligence methodology for organizational transformation — an 8×8 board that turns conversation into a living product nervous system.",
+    path: "/calm-magic-demo",
+  });
 
   return (
     <div className="min-h-screen bg-background text-foreground">

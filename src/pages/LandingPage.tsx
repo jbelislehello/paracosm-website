@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import CoachingApproachSection from "@/components/CoachingApproachSection";
@@ -25,6 +25,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Zap, Heart, ChevronDown, Users, Menu, Grid3x3, Sparkles, Brain, Lightbulb, FileText, Compass, ArrowRight, Briefcase, Globe, MessageSquare, GraduationCap, Handshake, HelpCircle, BookOpen } from 'lucide-react';
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 const LandingPage = () => {
   const [isCalmMagicAssistantOpen, setIsCalmMagicAssistantOpen] = useState(false);
@@ -32,9 +33,12 @@ const LandingPage = () => {
   const [onboardingOpen, setOnboardingOpen] = useState(false);
   const { t } = useLanguage();
 
-  useEffect(() => {
-    document.title = t("page_titles.choose_coaching_path");
-  }, [t]);
+  usePageSeo({
+    title: t("page_titles.choose_coaching_path"),
+    description:
+      "Paracosm builds Learning Organizations for executives and innovators — AI systems mastery, relational intelligence, and the Calm Magic methodology.",
+    path: "/",
+  });
 
   const handleStartCoaching = () => {
     setIsCalmMagicAssistantOpen(true);
