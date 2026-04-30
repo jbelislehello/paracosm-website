@@ -92,6 +92,7 @@ export const usePageSeo = ({
   host = CANONICAL_HOST,
   ogType = "website",
   jsonLd,
+  autoBreadcrumb = true,
 }: PageSeo) => {
   const ldKey = jsonLd ? JSON.stringify(jsonLd) : "";
 
@@ -115,18 +116,30 @@ export const usePageSeo = ({
     upsertMeta('meta[name="twitter:description"]', { name: "twitter:description", content: description });
     upsertMeta('meta[name="twitter:image"]', { name: "twitter:image", content: image });
 
-    // Page-scoped JSON-LD: clear any previously-injected page schemas
+    // Compose the final JSON-LD list: caller-supplied schemas plus, if
+    // enabled and not already provided, an auto-derived BreadcrumbList.
+    const supplied: JsonLd[] = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+    const hasBreadcrumb = supplied.some(
+      (s) => (s as { ["@type"]?: unknown })["@type"] === "BreadcrumbList",
+    );
+
+    const list: JsonLd[] = [...supplied];
+    if (autoBreadcrumb && !hasBreadcrumb) {
+      const trail = breadcrumbsFor(path);
+      if (trail.length > 0) {
+        list.push(breadcrumbSchema(trail) as JsonLd);
+      }
+    }
+
+    // Page-scoped JSON-LD: clear previously-injected page schemas
     // (global schemas in index.html are untouched), then inject fresh.
     clearPageJsonLd();
-    if (jsonLd) {
-      const list = Array.isArray(jsonLd) ? jsonLd : [jsonLd];
-      injectJsonLd(list);
-    }
+    if (list.length) injectJsonLd(list);
 
     return () => {
       clearPageJsonLd();
     };
-  }, [title, description, path, image, host, ogType, ldKey]);
+  }, [title, description, path, image, host, ogType, ldKey, autoBreadcrumb]);
 };
 
 export default usePageSeo;
