@@ -22,6 +22,13 @@ export interface PageSeo {
   ogType?: string;
   /** Optional JSON-LD structured data — single object or array of schema.org objects */
   jsonLd?: JsonLd | JsonLd[];
+  /**
+   * Auto-inject a BreadcrumbList derived from the route registry.
+   * Defaults to true. Set to false to opt out (or supply your own
+   * BreadcrumbList in `jsonLd` — auto-injection is skipped automatically
+   * when one is detected).
+   */
+  autoBreadcrumb?: boolean;
 }
 
 const upsertMeta = (
