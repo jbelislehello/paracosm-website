@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
 import { usePageSeo } from "@/hooks/usePageSeo";
-import { productSchema, breadcrumbSchema } from "@/lib/structuredData";
+import { productSchema } from "@/lib/structuredData";
 
 const Tonalli = () => {
   usePageSeo({
