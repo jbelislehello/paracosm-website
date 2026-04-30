@@ -19,10 +19,6 @@ const Tonalli = () => {
         url: "/tonalli",
         category: "Creative Operating System",
       }),
-      breadcrumbSchema([
-        { name: "Home", path: "/" },
-        { name: "Tonalli", path: "/tonalli" },
-      ]),
     ],
   });
   return (
