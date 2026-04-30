@@ -17,10 +17,6 @@ const GlitchMethodology = () => {
         url: "/glitch-methodology",
         datePublished: "2025-01-01",
       }),
-      breadcrumbSchema([
-        { name: "Home", path: "/" },
-        { name: "GL!TCH Methodology", path: "/glitch-methodology" },
-      ]),
     ],
   });
   return (
