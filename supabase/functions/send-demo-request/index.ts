@@ -1,7 +1,7 @@
 import { corsHeaders } from "https://esm.sh/@supabase/supabase-js@2.95.0/cors";
 import { z } from "https://esm.sh/zod@3.23.8";
 
-const GATEWAY_URL = "https://connector-gateway.lovable.dev/resend";
+const RESEND_API_URL = "https://api.resend.com";
 
 const BodySchema = z.object({
   name: z.string().trim().min(1).max(120),
@@ -45,9 +45,7 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
     if (!RESEND_API_KEY) throw new Error("RESEND_API_KEY is not configured");
 
     const parsed = BodySchema.safeParse(await req.json());
@@ -99,12 +97,11 @@ Deno.serve(async (req) => {
       <p>${escapeHtml(message).replace(/\n/g, "<br/>")}</p>
     `;
 
-    const res = await fetch(`${GATEWAY_URL}/emails`, {
+    const res = await fetch(`${RESEND_API_URL}/emails`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "X-Connection-Api-Key": RESEND_API_KEY,
+        Authorization: `Bearer ${RESEND_API_KEY}`,
       },
       body: JSON.stringify({
         from: "Paracosm <onboarding@resend.dev>",
