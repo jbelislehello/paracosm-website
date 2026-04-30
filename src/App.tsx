@@ -45,6 +45,7 @@ const EntrepreneurialTarot = lazy(() => import("./pages/EntrepreneurialTarot"));
 const Settings = lazy(() => import("./pages/Settings"));
 const AdminSubscriptions = lazy(() => import("./pages/AdminSubscriptions"));
 const BookLaunch = lazy(() => import("./pages/BookLaunch"));
+const DreamAndLearn = lazy(() => import("./pages/DreamAndLearn"));
 const CalmMagicDemo = lazy(() => import("./pages/CalmMagicDemo"));
 
 const queryClient = new QueryClient();
@@ -104,6 +105,7 @@ function App() {
                     <Route path="/tonalli" element={<Tonalli />} />
                     <Route path="/tarot" element={<EntrepreneurialTarot />} />
                     <Route path="/book" element={<BookLaunch />} />
+                    <Route path="/dream-and-learn" element={<DreamAndLearn />} />
                     <Route path="/design-system" element={<DesignSystemShowcase />} />
                     <Route path="/calm-magic-demo" element={<CalmMagicDemo />} />
                     <Route path="*" element={<NotFound />} />
