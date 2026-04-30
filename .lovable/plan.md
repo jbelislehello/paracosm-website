@@ -1,60 +1,53 @@
 ## Goal
 
-Make breadcrumbs a derived value of the route graph instead of a hand-maintained array per page. JSON-LD `BreadcrumbList` will always match the visible navigation because both come from the same source.
+The current `BreadcrumbList` JSON-LD already emits absolute URLs via `abs(path)`, but three gaps remain:
 
-## Approach
+1. The host is hardcoded to `paracosm.helloarchitekt.com` — pages served on `calm-magic.com` (a configured custom domain) would still link breadcrumbs back to Paracosm.
+2. Each `ListItem` uses a bare string `item: "https://..."`. Google's documented pattern uses the nested `{ "@type": "Thing", "@id": "..." , "name": "..." }` form, which is more robust for rich results.
+3. The visible-UI hook `useAutoBreadcrumbs` still returns relative paths only, so any header/breadcrumb component cannot easily render canonical anchors.
 
-### 1. New `src/lib/routeRegistry.ts` — single source of truth
+## Changes
 
-A typed array of `RouteMeta` describing every canonical/shareable route:
+### 1. `src/lib/structuredData.ts`
 
-```ts
-interface RouteMeta {
-  path: string;                          // "/drift/library/:axis"
-  label: string | ((params) => string);  // "Drift Library — MAGIC"
-  parent?: string | null;                // "/drift" (defaults to "/")
-}
-```
+- Add an optional `host` parameter to `breadcrumbSchema(items, options?)`:
+  ```ts
+  breadcrumbSchema(items, { host }?: { host?: string })
+  ```
+  Resolve each path with a local `abs(path, host)` helper that prefers the supplied host, falling back to `CANONICAL_HOST`.
+- Switch each `ListItem` to the nested form:
+  ```json
+  {
+    "@type": "ListItem",
+    "position": 1,
+    "name": "Home",
+    "item": {
+      "@type": "WebPage",
+      "@id": "https://paracosm.helloarchitekt.com/"
+    }
+  }
+  ```
+  This keeps backward compatibility with current consumers (the `name` is unchanged) and aligns with Google's BreadcrumbList examples.
 
-Registry covers all public routes currently in `App.tsx`: `/`, `/about-us`, `/case-studies`, `/pricing`, `/book`, `/glitch-methodology`, `/calm-magic-demo`, `/dream-and-learn`, `/paracosm-retreat`, `/wuxia`, `/tonalli`, `/tarot`, `/pattern-encyclopedia`, `/agentic-ux`, `/design-system`, plus the `/drift/*` and `/calm-magic-board/*` hierarchies.
+### 2. `src/hooks/usePageSeo.ts`
 
-Exports:
-- `breadcrumbsFor(pathname): BreadcrumbItem[]` — matches pathname against patterns (supports `:params`), walks the `parent` chain up to Home.
-- `labelForPath(pathname): string | undefined` — single label lookup.
+- Pass the resolved `host` through to `breadcrumbSchema(trail, { host })` so a page rendered under `calm-magic.com` produces breadcrumb URLs on that host.
 
-Self-contained pattern matcher (no extra deps). Always prepends Home unless the path itself is `/`. Falls back to `[{ name: "Home", path: "/" }]` for unknown routes.
+### 3. `src/hooks/useAutoBreadcrumbs.ts`
 
-### 2. Auto-breadcrumb hook `src/hooks/useAutoBreadcrumbs.ts`
+- Extend the hook signature to optionally return absolute URLs:
+  ```ts
+  useAutoBreadcrumbs({ absolute?: boolean; host?: string } = {})
+  ```
+  Default behavior (relative paths) is preserved so existing call sites are unaffected. When `absolute: true`, each item's `path` is prefixed with the canonical host.
 
-```ts
-const useAutoBreadcrumbs = () => {
-  const { pathname } = useLocation();
-  return useMemo(() => breadcrumbsFor(pathname), [pathname]);
-};
-```
+### 4. Quick verification
 
-Optional convenience for visible UI breadcrumbs later.
-
-### 3. Extend `usePageSeo` to auto-inject breadcrumbs
-
-Add an opt-in flag `autoBreadcrumb?: boolean` (default `true`):
-- When `true` and no manually-supplied `BreadcrumbList` exists in `jsonLd`, call `breadcrumbsFor(path)` and append a `breadcrumbSchema(...)` to the injected JSON-LD.
-- When `false`, behave exactly as today.
-- Detect existing `BreadcrumbList` by checking `@type === "BreadcrumbList"` in the supplied schemas to avoid duplicates.
-
-This means new pages get correct breadcrumb JSON-LD for free as soon as they call `usePageSeo({ path: "/foo" })`.
-
-### 4. Remove redundant `breadcrumbSchema(...)` calls
-
-In each canonical page that currently passes a hand-rolled breadcrumb (Landing, CalmMagicDemo, DreamAndLearn, ParacosmRetreatLanding, GlitchMethodology, BookLaunch, Pricing, AboutUs, CaseStudies, WuxiaTheFox, Tonalli), drop the `breadcrumbSchema([...])` entry from `jsonLd` and rely on the automatic injection. Keep all other schemas (Product / Article / Event / etc.) untouched.
-
-### 5. Validation
-
-- Type-check via the build.
-- Manually verify in browser devtools on `/`, `/calm-magic-demo`, `/dream-and-learn`, `/calm-magic-board/prds/abc` that exactly one `BreadcrumbList` JSON-LD block is emitted and the trail matches what the user would visually expect (Home → … → current).
+- `rg` for existing `useAutoBreadcrumbs(` call sites to confirm no breakage (signature is additive).
+- Manual smoke: load `/drift/library/calm` in preview, view source for the injected `<script type="application/ld+json" data-page-seo="true">` block, confirm itemListElements use the nested `item.@id` shape with absolute URLs.
 
 ## Out of scope
 
-- Visible breadcrumb UI components (registry + hook are ready when you want them; not adding them to layouts now).
-- Localized labels (English only for now; can swap to `t()` keys later by changing `RouteMeta.label`).
-- Auth/admin-only routes outside the public set above.
+- No changes to per-page schemas (Article, Product, Event, etc.) — those already use `abs()`.
+- No new visible UI; the UI hook change is opt-in.
+- No multi-language alternates; `hreflang` is a separate concern from breadcrumb canonicality.

@@ -215,8 +215,15 @@ export const itemListSchema = (args: {
   })),
 });
 
+const absWithHost = (path: string, host?: string) => {
+  if (path.startsWith("http")) return path;
+  const base = host ?? CANONICAL_HOST;
+  return `${base}${path.startsWith("/") ? path : `/${path}`}`;
+};
+
 export const breadcrumbSchema = (
   items: Array<{ name: string; path: string }>,
+  options: { host?: string } = {},
 ): Record<string, unknown> => ({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
@@ -224,7 +231,12 @@ export const breadcrumbSchema = (
     "@type": "ListItem",
     position: idx + 1,
     name: it.name,
-    item: abs(it.path),
+    item: {
+      "@type": "WebPage",
+      "@id": absWithHost(it.path, options.host),
+      url: absWithHost(it.path, options.host),
+      name: it.name,
+    },
   })),
 });
 
