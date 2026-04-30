@@ -33,10 +33,6 @@ const CalmMagicDemo = () => {
         url: "/calm-magic-demo",
         category: "Relational Intelligence Methodology",
       }),
-      breadcrumbSchema([
-        { name: "Home", path: "/" },
-        { name: "Calm Magic", path: "/calm-magic-demo" },
-      ]),
     ],
   });
 
