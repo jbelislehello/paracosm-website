@@ -7,9 +7,16 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import CaseStudiesSection from '@/components/case-studies/CaseStudiesSection';
 import Footer from '@/components/Footer';
+import { usePageSeo } from '@/hooks/usePageSeo';
 
 const CaseStudies: React.FC = () => {
   const { t } = useLanguage();
+
+  usePageSeo({
+    title: "Case Studies — Learning Organizations in practice | Paracosm",
+    description: "Real engagements where Paracosm helped executives and innovators build Learning Organizations using AI systems and relational intelligence.",
+    path: "/case-studies",
+  });
 
   return (
     <div className="min-h-screen bg-background">

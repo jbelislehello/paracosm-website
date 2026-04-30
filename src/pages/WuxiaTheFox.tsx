@@ -4,8 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 const WuxiaTheFox = () => {
+  usePageSeo({
+    title: "Wuxia the Fox — The Paracosm transmedia universe & story guide",
+    description: "Meet Wuxia the Fox — the consent guardian and story guide of the Paracosm transmedia universe, bridging ancient wisdom and AI ethics.",
+    path: "/wuxia",
+  });
   const books = [
     {
       number: 1,

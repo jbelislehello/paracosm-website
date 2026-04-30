@@ -88,6 +88,12 @@ const ParacosmRetreatLanding = () => {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
+  usePageSeo({
+    title: "Paracosm Retreat — Azores 2026 | Leadership, AI & Relational Intelligence",
+    description: "Our 2026 flagship retreat in the Azores: an immersive experience for executives and innovators integrating AI systems mastery, somatic practice, and the Calm Magic methodology.",
+    path: "/paracosm-retreat",
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim()) {

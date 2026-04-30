@@ -1,8 +1,14 @@
 import { Search, Waves, Sparkles, ArrowRight, Clock, Users, Zap, FileText, Code, Megaphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 const GlitchMethodology = () => {
+  usePageSeo({
+    title: "GL!TCH Methodology — A 25-minute live cycle for relational intelligence | Paracosm",
+    description: "GL!TCH is a 25-minute live facilitation methodology for cultural, interface, and inner script work — grounded in the Calm Magic framework.",
+    path: "/glitch-methodology",
+  });
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
       {/* Header */}

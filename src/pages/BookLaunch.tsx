@@ -79,9 +79,11 @@ const BookLaunch = () => {
   const { t, language } = useLanguage();
   const [submitted, setSubmitted] = useState(false);
 
-  useEffect(() => {
-    document.title = t("book.page_title");
-  }, [t]);
+  usePageSeo({
+    title: t("book.page_title"),
+    description: "A new book on building Learning Organizations — combining AI systems mastery and relational intelligence. Reserve your copy.",
+    path: "/book",
+  });
 
   const formSchema = useMemo(
     () =>
