@@ -741,9 +741,15 @@ const AgenticEcosystemDemo = () => {
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </a>
+            <Link to="/dream-and-learn">
+              <Button size="lg" variant="outline" className="gap-2 border-primary/40">
+                <Sparkles className="h-4 w-4" />
+                Learn about Dream &amp; Learn
+              </Button>
+            </Link>
             <Link to="/drift/2026/04">
-              <Button size="lg" variant="outline" className="gap-2">
-                Read the April Drift — Relationship Model
+              <Button size="lg" variant="ghost" className="gap-2">
+                Read April Drift — Relationship Model
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
