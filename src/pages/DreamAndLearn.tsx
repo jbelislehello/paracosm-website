@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
 import Footer from "@/components/Footer";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 /**
  * DreamAndLearn
@@ -125,9 +126,12 @@ const faq = [
 ];
 
 const DreamAndLearn = () => {
-  useEffect(() => {
-    document.title = "Dream & Learn — AI orchestration & inventivity · Paracosm × Crewdle";
-  }, []);
+  usePageSeo({
+    title: "Dream & Learn — AI orchestration & inventivity · Paracosm × Crewdle",
+    description:
+      "Build, experiment, and orchestrate an agentic ecosystem with the Crewdle Dream & Learn module. Compose divergent and convergent agents, run live loops, and ship with consent and provenance.",
+    path: "/dream-and-learn",
+  });
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-background via-muted/20 to-background">
