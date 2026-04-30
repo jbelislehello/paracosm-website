@@ -46,6 +46,7 @@ import bookCover from "@/assets/calm-magic-book-cover.jpg";
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import transmediaMap from "@/assets/drift/transmediamap.jpg";
 import gameplanImage from "@/assets/drift/JonathanBelisle-gameplan.jpg";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 const pillars = [
   { icon: Heart, key: "relational" },

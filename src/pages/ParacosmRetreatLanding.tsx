@@ -8,6 +8,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { toast } from "sonner";
 import Footer from "@/components/Footer";
 import { drawCards, suitGradients, suitColors, TarotCard, MajorArcanaCard, MinorArcanaCard } from "@/data/entrepreneurialTarot";
+import { usePageSeo } from "@/hooks/usePageSeo";
 
 // ─── Mini Tarot Preview for Retreat ───
 const TarotPreviewSection = ({ t }: { t: (key: string) => string }) => {
