@@ -14,6 +14,7 @@ import OnboardingGuide from "@/components/OnboardingGuide";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import BookAnnouncementBanner from "@/components/BookAnnouncementBanner";
 import AgenticEcosystemHero from "@/components/AgenticEcosystemHero";
+import AgenticEcosystemDemo from "@/components/AgenticEcosystemDemo";
 
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
