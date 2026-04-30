@@ -141,10 +141,6 @@ const DreamAndLearn = () => {
         brand: "Crewdle × Paracosm",
         category: "AI Orchestration Platform",
       }),
-      breadcrumbSchema([
-        { name: "Home", path: "/" },
-        { name: "Dream & Learn", path: "/dream-and-learn" },
-      ]),
     ],
   });
 
