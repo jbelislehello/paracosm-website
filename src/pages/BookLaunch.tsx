@@ -93,10 +93,6 @@ const BookLaunch = () => {
         url: "/book",
         inLanguage: language === "fr" ? "fr" : "en",
       }),
-      breadcrumbSchema([
-        { name: "Home", path: "/" },
-        { name: "Book", path: "/book" },
-      ]),
     ],
   });
 
