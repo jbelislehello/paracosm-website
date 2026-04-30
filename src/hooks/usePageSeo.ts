@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import { breadcrumbsFor } from "@/lib/routeRegistry";
+import { breadcrumbSchema } from "@/lib/structuredData";
 
 const CANONICAL_HOST = "https://paracosm.helloarchitekt.com";
 const DEFAULT_IMAGE = `${CANONICAL_HOST}/og-image.jpeg`;
