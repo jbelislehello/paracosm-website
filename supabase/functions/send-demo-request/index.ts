@@ -17,7 +17,7 @@ const BodySchema = z.object({
 // Best-effort in-memory rate limit (per edge function instance).
 // NOT a strong guarantee — instances are ephemeral and not shared across regions.
 const RATE_WINDOW_MS = 60_000;
-const RATE_MAX = 3;
+const RATE_MAX = 1;
 const recentRequests = new Map<string, number[]>();
 
 function isRateLimited(key: string): boolean {
