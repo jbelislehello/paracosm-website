@@ -26,7 +26,7 @@ import { Zap, Heart, ChevronDown, Users, Menu, Grid3x3, Sparkles, Brain, Lightbu
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { usePageSeo } from "@/hooks/usePageSeo";
-import { orgSchema, websiteSchema, webPageSchema, breadcrumbSchema } from "@/lib/structuredData";
+import { orgSchema, websiteSchema, webPageSchema } from "@/lib/structuredData";
 
 const LandingPage = () => {
   const [isCalmMagicAssistantOpen, setIsCalmMagicAssistantOpen] = useState(false);
