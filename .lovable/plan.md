@@ -1,79 +1,103 @@
-## Interactive Agentic Ecosystem Demo — with Crewdle "Dream & Learn" module
+## Crewdle Dream & Learn — module landing page
 
-Build a new dedicated section that goes beyond the existing hero force-graph. The hero teases the concept; this new section lets visitors **play** with a richer simulation and introduces the **Crewdle Dream & Learn** module as the bridge between Paracosm's Calm Magic methodology and Crewdle's edge-AI orchestration platform.
+Add a dedicated route that explains the module in depth and routes visitors back into the interactive demo + Crewdle + booking. Surface a clear link from the existing demo section so visitors can go from "play with it" to "understand and engage."
 
-### Where it lives
+### New route
 
-New component `src/components/AgenticEcosystemDemo.tsx`, mounted in `src/pages/LandingPage.tsx` directly after `<AgenticEcosystemHero />` (around line 175), inside a `CollapsibleSection` so it doesn't bloat the scroll.
+`/dream-and-learn` → new page `src/pages/DreamAndLearn.tsx`.
 
-### Layout (3 panes, responsive)
+Registered in `src/App.tsx` alongside other public landing pages (right after `/book`). Public, no auth.
+
+### Page structure
 
 ```text
-┌──────────────────────────────────────────────────────────────────┐
-│  Header: "See an Agentic Ecosystem think — live"                 │
-│  Badge: Powered by Crewdle · Dream & Learn module                │
-├─────────────────────┬────────────────────────┬───────────────────┤
-│  LEFT (controls)    │  CENTER (D3 graph)     │  RIGHT (Chord +   │
-│  • Scenario picker  │  Force-directed        │   activity log)   │
-│  • Run / Step / Stop│  agent network with    │  D3 chord diagram │
-│  • Agent toggles    │  pulses traveling      │  shows message    │
-│  • Dream ↔ Learn    │  along edges           │  flow density     │
-│    mode switch      │                        │  between agents   │
-└─────────────────────┴────────────────────────┴───────────────────┘
+1. Hero
+   • Badge: "Powered by Crewdle · AI orchestration & inventivity"
+   • H1: "Dream & Learn — build, experiment, orchestrate your agentic ecosystem"
+   • Subtitle: one-sentence promise
+   • Primary CTA: "Try the live demo" → /#agentic-demo
+   • Secondary CTA: "Book a discovery call" → Reclaim link
+
+2. The three verbs (Build · Experiment · Orchestrate)
+   3-card grid, one per verb. Each card:
+     - Icon (Hammer / Beaker / Network)
+     - 2-line definition
+     - 3 bullet outcomes
+     - Inline mini-illustration (svg, design-token themed)
+
+3. How it works — 5-step flow
+   Horizontal stepper:
+   (1) Frame the brief → (2) Compose Dream agents →
+   (3) Compose Learn agents → (4) Orchestrate the loop →
+   (5) Ship + measure
+   Each step: short paragraph + the Calm Magic axis it maps to
+   (LOVE / MAGIC / CALM / OPEN / FREE) so it ties to existing ontology.
+
+4. Dream vs. Learn — side-by-side
+   Two columns:
+     Dream agents (accent color): Vision · Storyteller · Speculator ·
+       Mythographer · Composer — divergent, inventive, generative
+     Learn agents (primary color): Researcher · Pattern · Critic ·
+       Curator · Tutor — convergent, integrative, evidentiary
+   Below: "The Orchestrator routes attention between the two halves."
+
+5. Why Crewdle (the platform link)
+   • Edge-AI execution close to the data
+   • Consent + provenance preserved end-to-end
+   • Distributed orchestration without vendor lock-in
+   External link to crewdle.com with logo treatment
+   Note: Jonathan Bélisle is Fractional CDO, leading the Dream & Learn module
+
+6. Use cases (4-card grid)
+   Mirrors the demo scenarios:
+     • Onboard a new client
+     • Generate a speculative scenario
+     • Audit an AI policy
+     • Run a Glitch session
+   Each card → "See it in the demo" deep-link to /#agentic-demo
+
+7. FAQ (collapsible, 4 items)
+   - "Do I need to know how to code?"
+   - "Where does my data live?"
+   - "How does this connect to the Calm Magic board / PRD?"
+   - "How do we start?"
+
+8. Final CTA
+   • Primary: Book discovery call
+   • Secondary: Read the April Drift "Relationship Model"
+   • Tertiary: View Crewdle
 ```
 
-On mobile: stacks vertically (controls → graph → chord+log).
+All form/contact CTAs route to existing flows — no new contact form (project rule already routes mail to jbelisle@helloarchitekt.com via existing Reclaim/contact components).
 
-### Three integrated visualizations (all design-token themed)
+### Demo-section link
 
-1. **D3 force-directed agent network** (center). Reuses the pattern from `AgenticEcosystemHero` but expanded:
-   - 12 nodes: 1 Orchestrator, 1 Shared Context, 5 Dream agents (Vision, Storyteller, Speculator, Mythographer, Composer), 5 Learn agents (Researcher, Pattern, Critic, Curator, Tutor).
-   - Color-coded by mode (Dream = accent, Learn = primary, Orchestrator = foreground).
-   - Edges pulse when a message travels; thickness = recent traffic.
-   - Click a node → highlights its 1-hop neighborhood + opens a tooltip.
+Update `src/components/AgenticEcosystemDemo.tsx`:
+- Add a third button in the final CTA cluster: **"Learn about the Dream & Learn module" → `/dream-and-learn`**
+- Add a small "Learn more" link in the header subtitle pointing to the same page.
 
-2. **D3 chord diagram** (right top). Built with `d3.chord()` + `d3.ribbon()`:
-   - 10×10 matrix of agent-to-agent message counts updated in real time by the simulation tick.
-   - Hovering a ribbon highlights the same edge in the force graph (shared `hoveredEdge` state).
+### Landing page nav (optional, lightweight)
 
-3. **Activity log / sparkline** (right bottom). Scrolling list of simulated messages (`Vision → Composer: "expand metaphor"`) with a tiny inline sparkline of total throughput over the last 30 ticks.
-
-### Interaction model
-
-- **Scenarios** (left dropdown): "Onboard a new client", "Generate a speculative scenario", "Audit an AI policy", "Run a Glitch session". Each loads a different message-routing pattern.
-- **Run / Step / Pause** controls drive a `setInterval` tick (250ms) that emits messages along weighted edges using a small Markov-style transition table per scenario.
-- **Dream ↔ Learn switch**: dims the opposite half of the graph and biases the transition table — concretely shows what each module emphasizes.
-- **Agent toggles**: disable an agent → orchestrator reroutes; visitors see resilience.
-
-### Crewdle "Dream & Learn" framing
-
-Above the demo, a short editorial block:
-
-> **Dream & Learn** — the AI orchestration & inventivity module Jonathan is building inside Crewdle's edge-AI platform. *Dream* agents diverge: speculate, story, compose. *Learn* agents converge: research, critique, curate. The Orchestrator routes attention between the two so organizations can *invent and integrate* in the same loop.
-
-Includes:
-- Inline link to crewdle.com (external)
-- Link to the April Drift edition for the deeper "Relationship Model" article
-- "Book a discovery call" CTA → existing Reclaim link
-
-### Technical notes
-
-- Pure client-side; no backend. All state in React + refs.
-- D3 v7 already installed (`d3` ^7.9.0, `@types/d3`).
-- Use `useRef` for the simulation + chord matrix; `useState` for UI (scenario, mode, hovered edge, paused).
-- Single `useEffect` builds the force sim; a separate `useEffect` runs the tick loop and updates both viz refs in lockstep.
-- All colors via design tokens (`hsl(var(--primary))`, `--accent`, `--muted-foreground`); no hard-coded hex.
-- Wrap the section in `CollapsibleSection` (already used elsewhere) with default `open={false}` on mobile to respect Landing Scannability rule, `open={true}` on desktop.
-- Add an `id="agentic-demo"` anchor for nav linking.
+In `src/pages/LandingPage.tsx`, where the existing nav links live (no menu refactor), add a single inline link from the hero/services area to `/dream-and-learn`. If that adds noise, skip — the demo section's CTAs are sufficient.
 
 ### Files
 
-- **Create**: `src/components/AgenticEcosystemDemo.tsx` (the section + 3 sub-viz, ~350 LOC).
-- **Create**: `src/components/agentic-demo/scenarios.ts` (scenario configs + transition tables).
-- **Edit**: `src/pages/LandingPage.tsx` — import + mount after `<AgenticEcosystemHero />`.
+- **Create**: `src/pages/DreamAndLearn.tsx` (~350 LOC, sections above)
+- **Edit**: `src/App.tsx` — add `<Route path="/dream-and-learn" element={<DreamAndLearn />} />` + import
+- **Edit**: `src/components/AgenticEcosystemDemo.tsx` — add the new "Learn about the module" CTA + header link
+
+### Design tokens & rules
+
+- All colors via tokens (`--primary` for Learn, `--accent` for Dream, `--foreground`/`--muted-foreground` for chrome). No hex.
+- Reuse shadcn `Card`, `Button`, `Badge`, `Accordion` (FAQ), `Separator`.
+- `framer-motion` micro-animations on the stepper + verb cards (already installed).
+- Page wrapped in the same gradient background pattern used by `LandingPage` / `AboutUs` for visual consistency.
+- Mobile: all grids collapse to single column; stepper becomes vertical timeline.
+- Footer: import existing `Footer` component for consistency.
+- Page title set via `document.title` in `useEffect`.
 
 ### Out of scope
 
-- No persistence / Supabase writes.
-- No new i18n keys for v1 (English copy inline; can be extracted later per Bilingual Architecture rule).
-- No real Crewdle API integration — this is a conceptual demo of the Dream & Learn module.
+- No new i18n keys for v1 — copy is English inline (per Bilingual Architecture rule, can be extracted later)
+- No backend / Supabase changes
+- No real Crewdle API integration — same conceptual framing as the existing demo
