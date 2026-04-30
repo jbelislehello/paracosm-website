@@ -15,6 +15,7 @@ import GetDemoDialog from "@/components/GetDemoDialog";
 import GradientDivider from "@/components/GradientDivider";
 import Footer from "@/components/Footer";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import { productSchema, breadcrumbSchema } from "@/lib/structuredData";
 
 const CalmMagicDemo = () => {
   const [demoOpen, setDemoOpen] = useState(false);
@@ -24,6 +25,19 @@ const CalmMagicDemo = () => {
     description:
       "Calm Magic is a relational intelligence methodology for organizational transformation — an 8×8 board that turns conversation into a living product nervous system.",
     path: "/calm-magic-demo",
+    jsonLd: [
+      productSchema({
+        name: "Calm Magic",
+        description:
+          "An 8×8 board methodology that turns conversation into a living product nervous system — five seasons across LOVE, MAGIC, CALM, OPEN, FREE.",
+        url: "/calm-magic-demo",
+        category: "Relational Intelligence Methodology",
+      }),
+      breadcrumbSchema([
+        { name: "Home", path: "/" },
+        { name: "Calm Magic", path: "/calm-magic-demo" },
+      ]),
+    ],
   });
 
   return (

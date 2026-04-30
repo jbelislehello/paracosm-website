@@ -8,6 +8,8 @@ import LanguageSwitcher from '@/components/LanguageSwitcher';
 import CaseStudiesSection from '@/components/case-studies/CaseStudiesSection';
 import Footer from '@/components/Footer';
 import { usePageSeo } from '@/hooks/usePageSeo';
+import { webPageSchema, breadcrumbSchema, itemListSchema } from '@/lib/structuredData';
+import { caseStudies } from '@/data/caseStudies';
 
 const CaseStudies: React.FC = () => {
   const { t } = useLanguage();
@@ -16,6 +18,28 @@ const CaseStudies: React.FC = () => {
     title: "Case Studies — Learning Organizations in practice | Paracosm",
     description: "Real engagements where Paracosm helped executives and innovators build Learning Organizations using AI systems and relational intelligence.",
     path: "/case-studies",
+    jsonLd: [
+      webPageSchema({
+        type: "CollectionPage",
+        title: "Case Studies — Learning Organizations in practice | Paracosm",
+        description:
+          "Real engagements where Paracosm helped executives and innovators build Learning Organizations using AI systems and relational intelligence.",
+        url: "/case-studies",
+      }),
+      itemListSchema({
+        name: "Paracosm Case Studies",
+        url: "/case-studies",
+        items: (Array.isArray(caseStudies) ? caseStudies : []).map((cs: any) => ({
+          name: cs?.title ?? cs?.name ?? "Case Study",
+          description: cs?.summary ?? cs?.description,
+          url: cs?.slug ? `/case-studies#${cs.slug}` : undefined,
+        })),
+      }),
+      breadcrumbSchema([
+        { name: "Home", path: "/" },
+        { name: "Case Studies", path: "/case-studies" },
+      ]),
+    ],
   });
 
   return (

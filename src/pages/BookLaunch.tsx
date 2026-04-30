@@ -47,6 +47,7 @@ import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import transmediaMap from "@/assets/drift/transmediamap.jpg";
 import gameplanImage from "@/assets/drift/JonathanBelisle-gameplan.jpg";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import { bookSchema, breadcrumbSchema } from "@/lib/structuredData";
 
 const pillars = [
   { icon: Heart, key: "relational" },
@@ -84,6 +85,19 @@ const BookLaunch = () => {
     title: t("book.page_title"),
     description: "A new book on building Learning Organizations — combining AI systems mastery and relational intelligence. Reserve your copy.",
     path: "/book",
+    jsonLd: [
+      bookSchema({
+        name: "Building Learning Organizations",
+        description:
+          "A new book on building Learning Organizations — combining AI systems mastery and relational intelligence.",
+        url: "/book",
+        inLanguage: language === "fr" ? "fr" : "en",
+      }),
+      breadcrumbSchema([
+        { name: "Home", path: "/" },
+        { name: "Book", path: "/book" },
+      ]),
+    ],
   });
 
   const formSchema = useMemo(

@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import Footer from "@/components/Footer";
 import { drawCards, suitGradients, suitColors, TarotCard, MajorArcanaCard, MinorArcanaCard } from "@/data/entrepreneurialTarot";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import { eventSchema, breadcrumbSchema } from "@/lib/structuredData";
 
 // ─── Mini Tarot Preview for Retreat ───
 const TarotPreviewSection = ({ t }: { t: (key: string) => string }) => {
@@ -93,6 +94,21 @@ const ParacosmRetreatLanding = () => {
     title: "Paracosm Retreat — Azores 2026 | Leadership, AI & Relational Intelligence",
     description: "Our 2026 flagship retreat in the Azores: an immersive experience for executives and innovators integrating AI systems mastery, somatic practice, and the Calm Magic methodology.",
     path: "/paracosm-retreat",
+    jsonLd: [
+      eventSchema({
+        name: "Paracosm Retreat — Azores 2026",
+        description:
+          "Flagship 2026 retreat in the Azores integrating AI systems mastery, somatic practice, and the Calm Magic methodology for executives and innovators.",
+        url: "/paracosm-retreat",
+        startDate: "2026-09-01",
+        locationName: "Azores",
+        locationAddress: { country: "PT" },
+      }),
+      breadcrumbSchema([
+        { name: "Home", path: "/" },
+        { name: "Paracosm Retreat", path: "/paracosm-retreat" },
+      ]),
+    ],
   });
 
   const handleSubmit = (e: React.FormEvent) => {
