@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import CoachingApproachSection from "@/components/CoachingApproachSection";

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+// useEffect no longer needed — SEO handled by usePageSeo hook
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
