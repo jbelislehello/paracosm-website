@@ -10,6 +10,7 @@ import { SUBSCRIPTION_TIERS, SubscriptionTier } from '@/data/subscriptionTiers';
 import { useToast } from '@/hooks/use-toast';
 import Footer from '@/components/Footer';
 import { usePageSeo } from '@/hooks/usePageSeo';
+import { webPageSchema, offerCatalogSchema, breadcrumbSchema } from '@/lib/structuredData';
 
 const PricingCard: React.FC<{ 
   tierKey: string;
@@ -168,6 +169,28 @@ const Pricing: React.FC = () => {
     title: "Pricing — Coaching, Calm Magic & PRD plans | Paracosm",
     description: "Choose your Paracosm pathway: Calm Magic methodology, PRD compiler, executive coaching, and team subscriptions.",
     path: "/pricing",
+    jsonLd: [
+      webPageSchema({
+        title: "Pricing — Coaching, Calm Magic & PRD plans | Paracosm",
+        description:
+          "Choose your Paracosm pathway: Calm Magic methodology, PRD compiler, executive coaching, and team subscriptions.",
+        url: "/pricing",
+      }),
+      offerCatalogSchema({
+        name: "Paracosm Plans",
+        url: "/pricing",
+        offers: [
+          { name: "Calm Magic", description: "Relational intelligence methodology and board access." },
+          { name: "PRD Compiler", description: "Compile organizational PRDs from conversation." },
+          { name: "Executive Coaching", description: "1:1 leadership coaching pathways." },
+          { name: "Team Subscriptions", description: "Multi-seat team plans." },
+        ],
+      }),
+      breadcrumbSchema([
+        { name: "Home", path: "/" },
+        { name: "Pricing", path: "/pricing" },
+      ]),
+    ],
   });
 
   return (

@@ -2,12 +2,26 @@ import { Search, Waves, Sparkles, ArrowRight, Clock, Users, Zap, FileText, Code,
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import { articleSchema, breadcrumbSchema } from "@/lib/structuredData";
 
 const GlitchMethodology = () => {
   usePageSeo({
     title: "GL!TCH Methodology — A 25-minute live cycle for relational intelligence | Paracosm",
     description: "GL!TCH is a 25-minute live facilitation methodology for cultural, interface, and inner script work — grounded in the Calm Magic framework.",
     path: "/glitch-methodology",
+    jsonLd: [
+      articleSchema({
+        title: "GL!TCH Methodology — A 25-minute live cycle for relational intelligence",
+        description:
+          "GL!TCH is a 25-minute live facilitation methodology for cultural, interface, and inner script work — grounded in the Calm Magic framework.",
+        url: "/glitch-methodology",
+        datePublished: "2025-01-01",
+      }),
+      breadcrumbSchema([
+        { name: "Home", path: "/" },
+        { name: "GL!TCH Methodology", path: "/glitch-methodology" },
+      ]),
+    ],
   });
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">

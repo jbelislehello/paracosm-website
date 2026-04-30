@@ -4,12 +4,26 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import { productSchema, breadcrumbSchema } from "@/lib/structuredData";
 
 const Tonalli = () => {
   usePageSeo({
     title: "Tonalli — A Creative OS with Voice and Spatial branches | Paracosm",
     description: "Tonalli is Paracosm's Creative Operating System — voice computing and spatial interfaces for relational, consent-aware experiences.",
     path: "/tonalli",
+    jsonLd: [
+      productSchema({
+        name: "Tonalli",
+        description:
+          "Paracosm's Creative Operating System — voice computing and spatial interfaces for relational, consent-aware experiences.",
+        url: "/tonalli",
+        category: "Creative Operating System",
+      }),
+      breadcrumbSchema([
+        { name: "Home", path: "/" },
+        { name: "Tonalli", path: "/tonalli" },
+      ]),
+    ],
   });
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">

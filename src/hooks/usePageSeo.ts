@@ -3,6 +3,8 @@ import { useEffect } from "react";
 const CANONICAL_HOST = "https://paracosm.helloarchitekt.com";
 const DEFAULT_IMAGE = `${CANONICAL_HOST}/og-image.jpeg`;
 
+export type JsonLd = Record<string, unknown>;
+
 export interface PageSeo {
   /** Page title shown in the tab and OG/Twitter title */
   title: string;
@@ -16,6 +18,8 @@ export interface PageSeo {
   host?: string;
   /** og:type — defaults to "website" */
   ogType?: string;
+  /** Optional JSON-LD structured data — single object or array of schema.org objects */
+  jsonLd?: JsonLd | JsonLd[];
 }
 
 const upsertMeta = (
@@ -43,10 +47,33 @@ const upsertCanonical = (href: string) => {
   link.setAttribute("href", href);
 };
 
+const PAGE_LD_ATTR = "data-page-seo";
+
+const clearPageJsonLd = () => {
+  document.head
+    .querySelectorAll(`script[type="application/ld+json"][${PAGE_LD_ATTR}="true"]`)
+    .forEach((node) => node.remove());
+};
+
+const injectJsonLd = (schemas: JsonLd[]) => {
+  schemas.forEach((schema) => {
+    const script = document.createElement("script");
+    script.setAttribute("type", "application/ld+json");
+    script.setAttribute(PAGE_LD_ATTR, "true");
+    try {
+      script.textContent = JSON.stringify(schema);
+      document.head.appendChild(script);
+    } catch {
+      // ignore malformed schema
+    }
+  });
+};
+
 /**
- * Update document title, canonical URL, description, and OG/Twitter
- * meta tags for the current page. Call once per page, near the top
- * of the component, with stable strings.
+ * Update document title, canonical URL, description, OG/Twitter
+ * meta tags, and (optionally) JSON-LD structured data for the
+ * current page. Call once per page, near the top of the component,
+ * with stable strings.
  */
 export const usePageSeo = ({
   title,
@@ -55,7 +82,10 @@ export const usePageSeo = ({
   image = DEFAULT_IMAGE,
   host = CANONICAL_HOST,
   ogType = "website",
+  jsonLd,
 }: PageSeo) => {
+  const ldKey = jsonLd ? JSON.stringify(jsonLd) : "";
+
   useEffect(() => {
     const url = `${host}${path.startsWith("/") ? path : `/${path}`}`;
 
@@ -75,7 +105,19 @@ export const usePageSeo = ({
     upsertMeta('meta[name="twitter:title"]', { name: "twitter:title", content: title });
     upsertMeta('meta[name="twitter:description"]', { name: "twitter:description", content: description });
     upsertMeta('meta[name="twitter:image"]', { name: "twitter:image", content: image });
-  }, [title, description, path, image, host, ogType]);
+
+    // Page-scoped JSON-LD: clear any previously-injected page schemas
+    // (global schemas in index.html are untouched), then inject fresh.
+    clearPageJsonLd();
+    if (jsonLd) {
+      const list = Array.isArray(jsonLd) ? jsonLd : [jsonLd];
+      injectJsonLd(list);
+    }
+
+    return () => {
+      clearPageJsonLd();
+    };
+  }, [title, description, path, image, host, ogType, ldKey]);
 };
 
 export default usePageSeo;

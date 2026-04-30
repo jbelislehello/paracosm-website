@@ -1,55 +1,60 @@
 ## Goal
 
-Give every shareable page its own canonical URL and unique social preview metadata (title, description, og:url, og:title, og:image, twitter card) — so when you share a link to the Calm Magic demo or Dream & Learn page, the URL and preview reflect that specific page rather than the homepage.
+Add page-level JSON-LD structured data (Organization / Article / Product / Event / FAQ) so each canonical URL emits rich-result-friendly schema.org metadata, alongside the canonical/OG tags already wired up via `usePageSeo`.
 
 ## Approach
 
-Currently `index.html` hard-codes a single canonical (`https://paracosm.helloarchitekt.com/`) and OG block, and only `document.title` is updated per page. We'll introduce a tiny reusable hook that updates the canonical link + OG/Twitter meta tags on mount, then call it from each page.
+Extend the existing `usePageSeo` hook to optionally inject one or more JSON-LD blocks into `<head>`, then call it on each canonical page with the appropriate schema type. This keeps SEO concerns in one place and avoids per-page boilerplate.
 
-No new dependencies (no react-helmet) — a lightweight hook keeps bundle size flat and matches the existing pattern already used in `CalmMagicDemo.tsx`.
+### 1. Extend `src/hooks/usePageSeo.ts`
 
-## Changes
+- Add an optional `jsonLd?: Record<string, unknown> | Record<string, unknown>[]` field to `PageSeo`.
+- On mount/update:
+  - Remove any previously injected `<script type="application/ld+json" data-page-seo="true">` tags (so navigation between pages doesn't accumulate stale schemas).
+  - For each provided schema object, append a fresh `<script type="application/ld+json" data-page-seo="true">` containing `JSON.stringify(schema)`.
+- On unmount, remove the page-scoped JSON-LD scripts so the global schemas in `index.html` (Organization, FAQ, Events) remain untouched.
+- The static schemas already present in `index.html` (ProfessionalService, FAQPage, Events) stay as-is — they describe the brand globally. Page schemas are additive.
 
-### 1. New hook — `src/hooks/usePageSeo.ts`
-A small utility that, given `{ title, description, path, image? }`:
-- sets `document.title`
-- upserts `<link rel="canonical">` to `https://paracosm.helloarchitekt.com{path}`
-- upserts `<meta name="description">`
-- upserts `<meta property="og:title">`, `og:description`, `og:url`, `og:image`, `og:type`
-- upserts `<meta name="twitter:title">`, `twitter:description`, `twitter:image`, `twitter:card`
+### 2. Create `src/lib/structuredData.ts`
 
-Uses the project's primary custom domain (`paracosm.helloarchitekt.com`) as the canonical host so shared links unify there regardless of which deployment URL the visitor opened.
+A small helper module exposing typed builders so each page stays declarative:
 
-### 2. Apply per-page SEO
+- `orgSchema()` — reusable `Organization` reference (name, url, logo, sameAs).
+- `webPageSchema({ title, description, url })` — generic `WebPage` with `isPartOf` Organization.
+- `articleSchema({ title, description, url, image, datePublished, author })` — for content pages.
+- `productSchema({ name, description, url, image, brand })` — for product/methodology pages.
+- `eventSchema({ name, description, startDate, location, url })` — for retreat/summit pages.
+- `breadcrumbSchema(items)` — `BreadcrumbList` for nested pages.
 
-Update these pages to call `usePageSeo` with unique values:
+All builders return plain JSON-LD objects compatible with the new `jsonLd` field.
 
-| Page | Path | Canonical |
+### 3. Wire schemas into canonical pages
+
+Pass the right schema(s) to `usePageSeo({ ..., jsonLd: [...] })` on each canonical page:
+
+| Page | Route | Schemas |
 |---|---|---|
-| `LandingPage.tsx` | `/` | `https://paracosm.helloarchitekt.com/` |
-| `CalmMagicDemo.tsx` | `/calm-magic-demo` (current route) | `…/calm-magic-demo` |
-| `DreamAndLearn.tsx` | `/dream-and-learn` | `…/dream-and-learn` |
-| `ParacosmRetreatLanding.tsx` | `/retreat` | `…/retreat` |
-| `Drift.tsx`, `GlitchMethodology.tsx`, `BookLaunch.tsx`, `Pricing.tsx`, `AboutUs.tsx`, `CaseStudies.tsx`, `WuxiaTheFox.tsx`, `Tonalli.tsx` | their existing routes | matching canonical URLs |
+| LandingPage | `/` | `Organization` + `WebSite` (with `SearchAction` if applicable) + `BreadcrumbList` |
+| CalmMagicDemo | `/calm-magic-demo` | `Product` (Calm Magic methodology) + `BreadcrumbList` |
+| DreamAndLearn | `/dream-and-learn` | `Product` (Dream & Learn module) + `BreadcrumbList` |
+| ParacosmRetreatLanding | `/paracosm-retreat` | `Event` (Azores 2026) + `BreadcrumbList` |
+| GlitchMethodology | `/glitch-methodology` | `Article` + `BreadcrumbList` |
+| BookLaunch | `/book` | `Book` (or `Product`) + `BreadcrumbList` |
+| Pricing | `/pricing` | `WebPage` + `OfferCatalog` referencing tiers + `BreadcrumbList` |
+| AboutUs | `/about-us` | `AboutPage` + `Organization` + `BreadcrumbList` |
+| CaseStudies | `/case-studies` | `CollectionPage` + `ItemList` of cases + `BreadcrumbList` |
+| WuxiaTheFox | `/wuxia` | `CreativeWork` + `BreadcrumbList` |
+| Tonalli | `/tonalli` | `Product` (Creative OS) + `BreadcrumbList` |
 
-I'll confirm each route by reading `src/App.tsx` before wiring values.
+All schemas use the `https://paracosm.helloarchitekt.com` canonical host (matching `CANONICAL_HOST`) and `og-image.jpeg` as the default `image`.
 
-Each page gets:
-- a unique title (most already have one — kept/refined)
-- a unique description tuned to that page's offering
-- its specific canonical path
+### 4. Validation
 
-### 3. Clean `index.html`
-Keep the homepage canonical/OG as the default fallback (for crawlers hitting before JS executes), but the per-page hook will override at runtime for SPAs and for social scrapers that execute JS (LinkedIn/Twitter generally use the static HTML, so the homepage default remains as a sensible baseline).
+- Local sanity check: in browser devtools, confirm exactly one set of `script[type="application/ld+json"][data-page-seo="true"]` exists per page, and that route changes swap them cleanly.
+- Recommend the user run the canonical URLs through Google's Rich Results Test after deploy. (Note: like OG tags, JSON-LD is injected at runtime, so non-JS scrapers won't see it. Google does execute JS for Rich Results, so this works for search; if rich previews on social are required, that's a separate prerendering task.)
 
-### 4. Optional small enhancement
-For the Calm Magic demo, since `calm-magic.com` is also a custom domain, I'll keep canonical pointed at the `paracosm.helloarchitekt.com/calm-magic-demo` URL for SEO consolidation. Let me know if you'd rather canonicalize Calm Magic pages to `calm-magic.com` instead — happy to switch.
+## Out of scope
 
-## Files
-
-- **Create:** `src/hooks/usePageSeo.ts`
-- **Edit:** `src/pages/LandingPage.tsx`, `src/pages/CalmMagicDemo.tsx`, `src/pages/DreamAndLearn.tsx`, plus the additional landing-style pages listed above.
-
-## Note on social previews
-
-Social platforms (LinkedIn, Facebook, Twitter, iMessage) read the static HTML — they do **not** execute React. The runtime hook gives Google + browser tabs unique canonicals immediately, but to get unique preview cards per page on social shares we'd need either prerendering or static `index.html`-injected meta. If unique social card images per page matter to you, tell me and I'll add a follow-up plan for prerendering those routes.
+- Prerendering / SSR for non-JS scrapers.
+- Modifying the existing global schemas in `index.html`.
+- Schemas for auth, dashboard, settings, or admin pages (not canonical/shareable).

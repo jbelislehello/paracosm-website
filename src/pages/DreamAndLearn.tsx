@@ -28,6 +28,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import Footer from "@/components/Footer";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import { productSchema, breadcrumbSchema } from "@/lib/structuredData";
 
 /**
  * DreamAndLearn
@@ -131,6 +132,20 @@ const DreamAndLearn = () => {
     description:
       "Build, experiment, and orchestrate an agentic ecosystem with the Crewdle Dream & Learn module. Compose divergent and convergent agents, run live loops, and ship with consent and provenance.",
     path: "/dream-and-learn",
+    jsonLd: [
+      productSchema({
+        name: "Dream & Learn",
+        description:
+          "Crewdle's Dream & Learn module — compose divergent and convergent agents, run live loops, and orchestrate an agentic ecosystem with consent and provenance.",
+        url: "/dream-and-learn",
+        brand: "Crewdle × Paracosm",
+        category: "AI Orchestration Platform",
+      }),
+      breadcrumbSchema([
+        { name: "Home", path: "/" },
+        { name: "Dream & Learn", path: "/dream-and-learn" },
+      ]),
+    ],
   });
 
   return (

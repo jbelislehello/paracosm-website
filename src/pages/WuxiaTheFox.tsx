@@ -5,12 +5,25 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import { creativeWorkSchema, breadcrumbSchema } from "@/lib/structuredData";
 
 const WuxiaTheFox = () => {
   usePageSeo({
     title: "Wuxia the Fox — The Paracosm transmedia universe & story guide",
     description: "Meet Wuxia the Fox — the consent guardian and story guide of the Paracosm transmedia universe, bridging ancient wisdom and AI ethics.",
     path: "/wuxia",
+    jsonLd: [
+      creativeWorkSchema({
+        name: "Wuxia the Fox",
+        description:
+          "The consent guardian and story guide of the Paracosm transmedia universe, bridging ancient wisdom and AI ethics.",
+        url: "/wuxia",
+      }),
+      breadcrumbSchema([
+        { name: "Home", path: "/" },
+        { name: "Wuxia", path: "/wuxia" },
+      ]),
+    ],
   });
   const books = [
     {
