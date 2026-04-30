@@ -7,7 +7,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import Footer from '@/components/Footer';
 import { usePageSeo } from '@/hooks/usePageSeo';
-import { orgSchema, webPageSchema, breadcrumbSchema } from '@/lib/structuredData';
+import { orgSchema, webPageSchema } from '@/lib/structuredData';
 
 const AboutUs = () => {
   const { t } = useLanguage();
