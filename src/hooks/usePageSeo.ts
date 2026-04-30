@@ -127,7 +127,7 @@ export const usePageSeo = ({
     if (autoBreadcrumb && !hasBreadcrumb) {
       const trail = breadcrumbsFor(path);
       if (trail.length > 0) {
-        list.push(breadcrumbSchema(trail) as JsonLd);
+        list.push(breadcrumbSchema(trail, { host }) as JsonLd);
       }
     }
 
