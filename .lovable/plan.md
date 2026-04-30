@@ -1,103 +1,55 @@
-## Crewdle Dream & Learn — module landing page
+## Goal
 
-Add a dedicated route that explains the module in depth and routes visitors back into the interactive demo + Crewdle + booking. Surface a clear link from the existing demo section so visitors can go from "play with it" to "understand and engage."
+Give every shareable page its own canonical URL and unique social preview metadata (title, description, og:url, og:title, og:image, twitter card) — so when you share a link to the Calm Magic demo or Dream & Learn page, the URL and preview reflect that specific page rather than the homepage.
 
-### New route
+## Approach
 
-`/dream-and-learn` → new page `src/pages/DreamAndLearn.tsx`.
+Currently `index.html` hard-codes a single canonical (`https://paracosm.helloarchitekt.com/`) and OG block, and only `document.title` is updated per page. We'll introduce a tiny reusable hook that updates the canonical link + OG/Twitter meta tags on mount, then call it from each page.
 
-Registered in `src/App.tsx` alongside other public landing pages (right after `/book`). Public, no auth.
+No new dependencies (no react-helmet) — a lightweight hook keeps bundle size flat and matches the existing pattern already used in `CalmMagicDemo.tsx`.
 
-### Page structure
+## Changes
 
-```text
-1. Hero
-   • Badge: "Powered by Crewdle · AI orchestration & inventivity"
-   • H1: "Dream & Learn — build, experiment, orchestrate your agentic ecosystem"
-   • Subtitle: one-sentence promise
-   • Primary CTA: "Try the live demo" → /#agentic-demo
-   • Secondary CTA: "Book a discovery call" → Reclaim link
+### 1. New hook — `src/hooks/usePageSeo.ts`
+A small utility that, given `{ title, description, path, image? }`:
+- sets `document.title`
+- upserts `<link rel="canonical">` to `https://paracosm.helloarchitekt.com{path}`
+- upserts `<meta name="description">`
+- upserts `<meta property="og:title">`, `og:description`, `og:url`, `og:image`, `og:type`
+- upserts `<meta name="twitter:title">`, `twitter:description`, `twitter:image`, `twitter:card`
 
-2. The three verbs (Build · Experiment · Orchestrate)
-   3-card grid, one per verb. Each card:
-     - Icon (Hammer / Beaker / Network)
-     - 2-line definition
-     - 3 bullet outcomes
-     - Inline mini-illustration (svg, design-token themed)
+Uses the project's primary custom domain (`paracosm.helloarchitekt.com`) as the canonical host so shared links unify there regardless of which deployment URL the visitor opened.
 
-3. How it works — 5-step flow
-   Horizontal stepper:
-   (1) Frame the brief → (2) Compose Dream agents →
-   (3) Compose Learn agents → (4) Orchestrate the loop →
-   (5) Ship + measure
-   Each step: short paragraph + the Calm Magic axis it maps to
-   (LOVE / MAGIC / CALM / OPEN / FREE) so it ties to existing ontology.
+### 2. Apply per-page SEO
 
-4. Dream vs. Learn — side-by-side
-   Two columns:
-     Dream agents (accent color): Vision · Storyteller · Speculator ·
-       Mythographer · Composer — divergent, inventive, generative
-     Learn agents (primary color): Researcher · Pattern · Critic ·
-       Curator · Tutor — convergent, integrative, evidentiary
-   Below: "The Orchestrator routes attention between the two halves."
+Update these pages to call `usePageSeo` with unique values:
 
-5. Why Crewdle (the platform link)
-   • Edge-AI execution close to the data
-   • Consent + provenance preserved end-to-end
-   • Distributed orchestration without vendor lock-in
-   External link to crewdle.com with logo treatment
-   Note: Jonathan Bélisle is Fractional CDO, leading the Dream & Learn module
+| Page | Path | Canonical |
+|---|---|---|
+| `LandingPage.tsx` | `/` | `https://paracosm.helloarchitekt.com/` |
+| `CalmMagicDemo.tsx` | `/calm-magic-demo` (current route) | `…/calm-magic-demo` |
+| `DreamAndLearn.tsx` | `/dream-and-learn` | `…/dream-and-learn` |
+| `ParacosmRetreatLanding.tsx` | `/retreat` | `…/retreat` |
+| `Drift.tsx`, `GlitchMethodology.tsx`, `BookLaunch.tsx`, `Pricing.tsx`, `AboutUs.tsx`, `CaseStudies.tsx`, `WuxiaTheFox.tsx`, `Tonalli.tsx` | their existing routes | matching canonical URLs |
 
-6. Use cases (4-card grid)
-   Mirrors the demo scenarios:
-     • Onboard a new client
-     • Generate a speculative scenario
-     • Audit an AI policy
-     • Run a Glitch session
-   Each card → "See it in the demo" deep-link to /#agentic-demo
+I'll confirm each route by reading `src/App.tsx` before wiring values.
 
-7. FAQ (collapsible, 4 items)
-   - "Do I need to know how to code?"
-   - "Where does my data live?"
-   - "How does this connect to the Calm Magic board / PRD?"
-   - "How do we start?"
+Each page gets:
+- a unique title (most already have one — kept/refined)
+- a unique description tuned to that page's offering
+- its specific canonical path
 
-8. Final CTA
-   • Primary: Book discovery call
-   • Secondary: Read the April Drift "Relationship Model"
-   • Tertiary: View Crewdle
-```
+### 3. Clean `index.html`
+Keep the homepage canonical/OG as the default fallback (for crawlers hitting before JS executes), but the per-page hook will override at runtime for SPAs and for social scrapers that execute JS (LinkedIn/Twitter generally use the static HTML, so the homepage default remains as a sensible baseline).
 
-All form/contact CTAs route to existing flows — no new contact form (project rule already routes mail to jbelisle@helloarchitekt.com via existing Reclaim/contact components).
+### 4. Optional small enhancement
+For the Calm Magic demo, since `calm-magic.com` is also a custom domain, I'll keep canonical pointed at the `paracosm.helloarchitekt.com/calm-magic-demo` URL for SEO consolidation. Let me know if you'd rather canonicalize Calm Magic pages to `calm-magic.com` instead — happy to switch.
 
-### Demo-section link
+## Files
 
-Update `src/components/AgenticEcosystemDemo.tsx`:
-- Add a third button in the final CTA cluster: **"Learn about the Dream & Learn module" → `/dream-and-learn`**
-- Add a small "Learn more" link in the header subtitle pointing to the same page.
+- **Create:** `src/hooks/usePageSeo.ts`
+- **Edit:** `src/pages/LandingPage.tsx`, `src/pages/CalmMagicDemo.tsx`, `src/pages/DreamAndLearn.tsx`, plus the additional landing-style pages listed above.
 
-### Landing page nav (optional, lightweight)
+## Note on social previews
 
-In `src/pages/LandingPage.tsx`, where the existing nav links live (no menu refactor), add a single inline link from the hero/services area to `/dream-and-learn`. If that adds noise, skip — the demo section's CTAs are sufficient.
-
-### Files
-
-- **Create**: `src/pages/DreamAndLearn.tsx` (~350 LOC, sections above)
-- **Edit**: `src/App.tsx` — add `<Route path="/dream-and-learn" element={<DreamAndLearn />} />` + import
-- **Edit**: `src/components/AgenticEcosystemDemo.tsx` — add the new "Learn about the module" CTA + header link
-
-### Design tokens & rules
-
-- All colors via tokens (`--primary` for Learn, `--accent` for Dream, `--foreground`/`--muted-foreground` for chrome). No hex.
-- Reuse shadcn `Card`, `Button`, `Badge`, `Accordion` (FAQ), `Separator`.
-- `framer-motion` micro-animations on the stepper + verb cards (already installed).
-- Page wrapped in the same gradient background pattern used by `LandingPage` / `AboutUs` for visual consistency.
-- Mobile: all grids collapse to single column; stepper becomes vertical timeline.
-- Footer: import existing `Footer` component for consistency.
-- Page title set via `document.title` in `useEffect`.
-
-### Out of scope
-
-- No new i18n keys for v1 — copy is English inline (per Bilingual Architecture rule, can be extracted later)
-- No backend / Supabase changes
-- No real Crewdle API integration — same conceptual framing as the existing demo
+Social platforms (LinkedIn, Facebook, Twitter, iMessage) read the static HTML — they do **not** execute React. The runtime hook gives Google + browser tabs unique canonicals immediately, but to get unique preview cards per page on social shares we'd need either prerendering or static `index.html`-injected meta. If unique social card images per page matter to you, tell me and I'll add a follow-up plan for prerendering those routes.
