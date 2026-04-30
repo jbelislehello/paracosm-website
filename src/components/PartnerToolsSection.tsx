@@ -1,64 +1,93 @@
-
 import React from 'react';
-import { usePartnerTools } from '@/context/PartnerToolsContext';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ArrowRight, Sparkles, Compass } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
+/**
+ * Announcement section (replaces the previous Partner Tools grid).
+ *
+ * Surfaces Jonathan Bélisle's current role — Principal Systems Auteur
+ * & Fractional Chief Design Officer — alongside the hero positioning
+ * line ("Building Learning Organizations"). All curated partner tools
+ * have been moved into the April 2026 edition of Drift.
+ */
 const PartnerToolsSection: React.FC = () => {
-  const { tools } = usePartnerTools();
-  
-  const categoryColors: Record<string, string> = {
-    voice: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200',
-    mcp: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-200',
-    ai: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-    database: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-    development: 'bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200',
-    integration: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-    collaboration: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
-  };
-
-  const categoryLabels: Record<string, string> = {
-    voice: 'Voice Computing & Affective Computing',
-    mcp: 'MCP',
-    ai: 'AI',
-    database: 'Database',
-    development: 'Development',
-    integration: 'Integration',
-    collaboration: 'Collaboration',
-  };
+  const { t } = useLanguage();
 
   return (
-    <section className="py-16 px-4 bg-slate-100 dark:bg-slate-800/50">
-      <div className="container max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-4">Partner Tools & Services</h2>
-        <p className="text-slate-600 dark:text-slate-300 text-center max-w-3xl mx-auto mb-16">
-          Explore our ecosystem of trusted partner tools and services to enhance your agent workflows.
-        </p>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tools.map((tool, index) => (
-            <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-2">
-                <div className="flex justify-between items-start">
-                  <CardTitle className="text-xl">{tool.name}</CardTitle>
-                  <Badge className={categoryColors[tool.category]}>
-                    {categoryLabels[tool.category] || tool.category}
-                  </Badge>
-                </div>
-                <CardDescription>{tool.description}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <a 
-                  href={tool.url} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-sm font-medium text-agent-purple hover:underline"
+    <section className="py-20 px-4 bg-gradient-to-br from-slate-100 via-white to-slate-100 dark:from-slate-900 dark:via-slate-950 dark:to-slate-900">
+      <div className="container max-w-5xl mx-auto">
+        <div className="relative overflow-hidden rounded-3xl border border-primary/20 bg-card/80 backdrop-blur-sm shadow-xl p-8 md:p-12">
+          {/* Ambient backdrop */}
+          <div className="pointer-events-none absolute inset-0">
+            <div className="absolute -top-24 -left-24 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
+            <div className="absolute -bottom-24 -right-24 h-80 w-80 rounded-full bg-accent/10 blur-3xl" />
+          </div>
+
+          <div className="relative space-y-6 text-center md:text-left">
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
+              <Badge className="gap-1 border-primary/30 bg-primary/10 text-primary hover:bg-primary/15">
+                <Sparkles className="h-3 w-3" />
+                Now in residence
+              </Badge>
+              <Badge variant="outline" className="border-accent/40 text-accent">
+                Jonathan Bélisle
+              </Badge>
+            </div>
+
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight">
+              <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
+                Principal Systems Auteur
+              </span>
+              <span className="block text-foreground/90 mt-1">
+                &amp; Fractional Chief Design Officer
+              </span>
+            </h2>
+
+            <p className="text-lg md:text-xl text-foreground/80 font-medium max-w-3xl">
+              {t('landing.hero_headline')}
+            </p>
+
+            <p className="text-base md:text-lg text-muted-foreground max-w-3xl">
+              {t('landing.hero_description')}
+            </p>
+
+            <p className="text-sm md:text-base text-muted-foreground/90 max-w-3xl">
+              {t('landing.hero_long_description')}
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center md:items-start gap-3 pt-2">
+              <a
+                href="https://app.reclaim.ai/m/jonathan-helloarchitekt"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button
+                  size="lg"
+                  className="group gap-2 bg-gradient-to-r from-primary to-accent text-primary-foreground hover:opacity-95"
                 >
-                  Learn more →
-                </a>
-              </CardContent>
-            </Card>
-          ))}
+                  Book a discovery call
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Button>
+              </a>
+              <Link to="/drift/2026/04">
+                <Button size="lg" variant="outline" className="gap-2">
+                  <Compass className="h-4 w-4" />
+                  See April Drift — partner toolkit
+                </Button>
+              </Link>
+            </div>
+
+            <p className="text-xs text-muted-foreground pt-2">
+              The full partner-tools toolkit now lives inside the{' '}
+              <Link to="/drift/2026/04" className="text-primary underline-offset-4 hover:underline">
+                April 2026 edition of Drift — "Relationship Model"
+              </Link>
+              , organized across the five Calm Magic axes (Love, Magic, Calm, Open, Free).
+            </p>
+          </div>
         </div>
       </div>
     </section>
