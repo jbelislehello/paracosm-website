@@ -19,10 +19,6 @@ const WuxiaTheFox = () => {
           "The consent guardian and story guide of the Paracosm transmedia universe, bridging ancient wisdom and AI ethics.",
         url: "/wuxia",
       }),
-      breadcrumbSchema([
-        { name: "Home", path: "/" },
-        { name: "Wuxia", path: "/wuxia" },
-      ]),
     ],
   });
   const books = [
