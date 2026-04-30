@@ -2,7 +2,7 @@ import { Search, Waves, Sparkles, ArrowRight, Clock, Users, Zap, FileText, Code,
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { usePageSeo } from "@/hooks/usePageSeo";
-import { articleSchema, breadcrumbSchema } from "@/lib/structuredData";
+import { articleSchema } from "@/lib/structuredData";
 
 const GlitchMethodology = () => {
   usePageSeo({
@@ -17,10 +17,6 @@ const GlitchMethodology = () => {
         url: "/glitch-methodology",
         datePublished: "2025-01-01",
       }),
-      breadcrumbSchema([
-        { name: "Home", path: "/" },
-        { name: "GL!TCH Methodology", path: "/glitch-methodology" },
-      ]),
     ],
   });
   return (

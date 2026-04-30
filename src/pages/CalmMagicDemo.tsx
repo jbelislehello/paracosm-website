@@ -15,7 +15,7 @@ import GetDemoDialog from "@/components/GetDemoDialog";
 import GradientDivider from "@/components/GradientDivider";
 import Footer from "@/components/Footer";
 import { usePageSeo } from "@/hooks/usePageSeo";
-import { productSchema, breadcrumbSchema } from "@/lib/structuredData";
+import { productSchema } from "@/lib/structuredData";
 
 const CalmMagicDemo = () => {
   const [demoOpen, setDemoOpen] = useState(false);
@@ -33,10 +33,6 @@ const CalmMagicDemo = () => {
         url: "/calm-magic-demo",
         category: "Relational Intelligence Methodology",
       }),
-      breadcrumbSchema([
-        { name: "Home", path: "/" },
-        { name: "Calm Magic", path: "/calm-magic-demo" },
-      ]),
     ],
   });
 

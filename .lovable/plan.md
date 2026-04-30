@@ -1,60 +1,60 @@
 ## Goal
 
-Add page-level JSON-LD structured data (Organization / Article / Product / Event / FAQ) so each canonical URL emits rich-result-friendly schema.org metadata, alongside the canonical/OG tags already wired up via `usePageSeo`.
+Make breadcrumbs a derived value of the route graph instead of a hand-maintained array per page. JSON-LD `BreadcrumbList` will always match the visible navigation because both come from the same source.
 
 ## Approach
 
-Extend the existing `usePageSeo` hook to optionally inject one or more JSON-LD blocks into `<head>`, then call it on each canonical page with the appropriate schema type. This keeps SEO concerns in one place and avoids per-page boilerplate.
+### 1. New `src/lib/routeRegistry.ts` — single source of truth
 
-### 1. Extend `src/hooks/usePageSeo.ts`
+A typed array of `RouteMeta` describing every canonical/shareable route:
 
-- Add an optional `jsonLd?: Record<string, unknown> | Record<string, unknown>[]` field to `PageSeo`.
-- On mount/update:
-  - Remove any previously injected `<script type="application/ld+json" data-page-seo="true">` tags (so navigation between pages doesn't accumulate stale schemas).
-  - For each provided schema object, append a fresh `<script type="application/ld+json" data-page-seo="true">` containing `JSON.stringify(schema)`.
-- On unmount, remove the page-scoped JSON-LD scripts so the global schemas in `index.html` (Organization, FAQ, Events) remain untouched.
-- The static schemas already present in `index.html` (ProfessionalService, FAQPage, Events) stay as-is — they describe the brand globally. Page schemas are additive.
+```ts
+interface RouteMeta {
+  path: string;                          // "/drift/library/:axis"
+  label: string | ((params) => string);  // "Drift Library — MAGIC"
+  parent?: string | null;                // "/drift" (defaults to "/")
+}
+```
 
-### 2. Create `src/lib/structuredData.ts`
+Registry covers all public routes currently in `App.tsx`: `/`, `/about-us`, `/case-studies`, `/pricing`, `/book`, `/glitch-methodology`, `/calm-magic-demo`, `/dream-and-learn`, `/paracosm-retreat`, `/wuxia`, `/tonalli`, `/tarot`, `/pattern-encyclopedia`, `/agentic-ux`, `/design-system`, plus the `/drift/*` and `/calm-magic-board/*` hierarchies.
 
-A small helper module exposing typed builders so each page stays declarative:
+Exports:
+- `breadcrumbsFor(pathname): BreadcrumbItem[]` — matches pathname against patterns (supports `:params`), walks the `parent` chain up to Home.
+- `labelForPath(pathname): string | undefined` — single label lookup.
 
-- `orgSchema()` — reusable `Organization` reference (name, url, logo, sameAs).
-- `webPageSchema({ title, description, url })` — generic `WebPage` with `isPartOf` Organization.
-- `articleSchema({ title, description, url, image, datePublished, author })` — for content pages.
-- `productSchema({ name, description, url, image, brand })` — for product/methodology pages.
-- `eventSchema({ name, description, startDate, location, url })` — for retreat/summit pages.
-- `breadcrumbSchema(items)` — `BreadcrumbList` for nested pages.
+Self-contained pattern matcher (no extra deps). Always prepends Home unless the path itself is `/`. Falls back to `[{ name: "Home", path: "/" }]` for unknown routes.
 
-All builders return plain JSON-LD objects compatible with the new `jsonLd` field.
+### 2. Auto-breadcrumb hook `src/hooks/useAutoBreadcrumbs.ts`
 
-### 3. Wire schemas into canonical pages
+```ts
+const useAutoBreadcrumbs = () => {
+  const { pathname } = useLocation();
+  return useMemo(() => breadcrumbsFor(pathname), [pathname]);
+};
+```
 
-Pass the right schema(s) to `usePageSeo({ ..., jsonLd: [...] })` on each canonical page:
+Optional convenience for visible UI breadcrumbs later.
 
-| Page | Route | Schemas |
-|---|---|---|
-| LandingPage | `/` | `Organization` + `WebSite` (with `SearchAction` if applicable) + `BreadcrumbList` |
-| CalmMagicDemo | `/calm-magic-demo` | `Product` (Calm Magic methodology) + `BreadcrumbList` |
-| DreamAndLearn | `/dream-and-learn` | `Product` (Dream & Learn module) + `BreadcrumbList` |
-| ParacosmRetreatLanding | `/paracosm-retreat` | `Event` (Azores 2026) + `BreadcrumbList` |
-| GlitchMethodology | `/glitch-methodology` | `Article` + `BreadcrumbList` |
-| BookLaunch | `/book` | `Book` (or `Product`) + `BreadcrumbList` |
-| Pricing | `/pricing` | `WebPage` + `OfferCatalog` referencing tiers + `BreadcrumbList` |
-| AboutUs | `/about-us` | `AboutPage` + `Organization` + `BreadcrumbList` |
-| CaseStudies | `/case-studies` | `CollectionPage` + `ItemList` of cases + `BreadcrumbList` |
-| WuxiaTheFox | `/wuxia` | `CreativeWork` + `BreadcrumbList` |
-| Tonalli | `/tonalli` | `Product` (Creative OS) + `BreadcrumbList` |
+### 3. Extend `usePageSeo` to auto-inject breadcrumbs
 
-All schemas use the `https://paracosm.helloarchitekt.com` canonical host (matching `CANONICAL_HOST`) and `og-image.jpeg` as the default `image`.
+Add an opt-in flag `autoBreadcrumb?: boolean` (default `true`):
+- When `true` and no manually-supplied `BreadcrumbList` exists in `jsonLd`, call `breadcrumbsFor(path)` and append a `breadcrumbSchema(...)` to the injected JSON-LD.
+- When `false`, behave exactly as today.
+- Detect existing `BreadcrumbList` by checking `@type === "BreadcrumbList"` in the supplied schemas to avoid duplicates.
 
-### 4. Validation
+This means new pages get correct breadcrumb JSON-LD for free as soon as they call `usePageSeo({ path: "/foo" })`.
 
-- Local sanity check: in browser devtools, confirm exactly one set of `script[type="application/ld+json"][data-page-seo="true"]` exists per page, and that route changes swap them cleanly.
-- Recommend the user run the canonical URLs through Google's Rich Results Test after deploy. (Note: like OG tags, JSON-LD is injected at runtime, so non-JS scrapers won't see it. Google does execute JS for Rich Results, so this works for search; if rich previews on social are required, that's a separate prerendering task.)
+### 4. Remove redundant `breadcrumbSchema(...)` calls
+
+In each canonical page that currently passes a hand-rolled breadcrumb (Landing, CalmMagicDemo, DreamAndLearn, ParacosmRetreatLanding, GlitchMethodology, BookLaunch, Pricing, AboutUs, CaseStudies, WuxiaTheFox, Tonalli), drop the `breadcrumbSchema([...])` entry from `jsonLd` and rely on the automatic injection. Keep all other schemas (Product / Article / Event / etc.) untouched.
+
+### 5. Validation
+
+- Type-check via the build.
+- Manually verify in browser devtools on `/`, `/calm-magic-demo`, `/dream-and-learn`, `/calm-magic-board/prds/abc` that exactly one `BreadcrumbList` JSON-LD block is emitted and the trail matches what the user would visually expect (Home → … → current).
 
 ## Out of scope
 
-- Prerendering / SSR for non-JS scrapers.
-- Modifying the existing global schemas in `index.html`.
-- Schemas for auth, dashboard, settings, or admin pages (not canonical/shareable).
+- Visible breadcrumb UI components (registry + hook are ready when you want them; not adding them to layouts now).
+- Localized labels (English only for now; can swap to `t()` keys later by changing `RouteMeta.label`).
+- Auth/admin-only routes outside the public set above.

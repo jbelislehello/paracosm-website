@@ -10,7 +10,7 @@ import { SUBSCRIPTION_TIERS, SubscriptionTier } from '@/data/subscriptionTiers';
 import { useToast } from '@/hooks/use-toast';
 import Footer from '@/components/Footer';
 import { usePageSeo } from '@/hooks/usePageSeo';
-import { webPageSchema, offerCatalogSchema, breadcrumbSchema } from '@/lib/structuredData';
+import { webPageSchema, offerCatalogSchema } from '@/lib/structuredData';
 
 const PricingCard: React.FC<{ 
   tierKey: string;
@@ -186,10 +186,6 @@ const Pricing: React.FC = () => {
           { name: "Team Subscriptions", description: "Multi-seat team plans." },
         ],
       }),
-      breadcrumbSchema([
-        { name: "Home", path: "/" },
-        { name: "Pricing", path: "/pricing" },
-      ]),
     ],
   });
 

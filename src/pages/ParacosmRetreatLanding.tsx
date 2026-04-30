@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import Footer from "@/components/Footer";
 import { drawCards, suitGradients, suitColors, TarotCard, MajorArcanaCard, MinorArcanaCard } from "@/data/entrepreneurialTarot";
 import { usePageSeo } from "@/hooks/usePageSeo";
-import { eventSchema, breadcrumbSchema } from "@/lib/structuredData";
+import { eventSchema } from "@/lib/structuredData";
 
 // ─── Mini Tarot Preview for Retreat ───
 const TarotPreviewSection = ({ t }: { t: (key: string) => string }) => {
@@ -104,10 +104,6 @@ const ParacosmRetreatLanding = () => {
         locationName: "Azores",
         locationAddress: { country: "PT" },
       }),
-      breadcrumbSchema([
-        { name: "Home", path: "/" },
-        { name: "Paracosm Retreat", path: "/paracosm-retreat" },
-      ]),
     ],
   });
 

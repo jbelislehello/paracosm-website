@@ -47,7 +47,7 @@ import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import transmediaMap from "@/assets/drift/transmediamap.jpg";
 import gameplanImage from "@/assets/drift/JonathanBelisle-gameplan.jpg";
 import { usePageSeo } from "@/hooks/usePageSeo";
-import { bookSchema, breadcrumbSchema } from "@/lib/structuredData";
+import { bookSchema } from "@/lib/structuredData";
 
 const pillars = [
   { icon: Heart, key: "relational" },
@@ -93,10 +93,6 @@ const BookLaunch = () => {
         url: "/book",
         inLanguage: language === "fr" ? "fr" : "en",
       }),
-      breadcrumbSchema([
-        { name: "Home", path: "/" },
-        { name: "Book", path: "/book" },
-      ]),
     ],
   });
 

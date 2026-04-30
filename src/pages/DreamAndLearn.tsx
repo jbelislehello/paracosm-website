@@ -28,7 +28,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import Footer from "@/components/Footer";
 import { usePageSeo } from "@/hooks/usePageSeo";
-import { productSchema, breadcrumbSchema } from "@/lib/structuredData";
+import { productSchema } from "@/lib/structuredData";
 
 /**
  * DreamAndLearn
@@ -141,10 +141,6 @@ const DreamAndLearn = () => {
         brand: "Crewdle × Paracosm",
         category: "AI Orchestration Platform",
       }),
-      breadcrumbSchema([
-        { name: "Home", path: "/" },
-        { name: "Dream & Learn", path: "/dream-and-learn" },
-      ]),
     ],
   });
 

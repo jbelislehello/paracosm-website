@@ -8,7 +8,7 @@ import LanguageSwitcher from '@/components/LanguageSwitcher';
 import CaseStudiesSection from '@/components/case-studies/CaseStudiesSection';
 import Footer from '@/components/Footer';
 import { usePageSeo } from '@/hooks/usePageSeo';
-import { webPageSchema, breadcrumbSchema, itemListSchema } from '@/lib/structuredData';
+import { webPageSchema, itemListSchema } from '@/lib/structuredData';
 import { caseStudies } from '@/data/caseStudies';
 
 const CaseStudies: React.FC = () => {
@@ -35,10 +35,6 @@ const CaseStudies: React.FC = () => {
           url: cs?.slug ? `/case-studies#${cs.slug}` : undefined,
         })),
       }),
-      breadcrumbSchema([
-        { name: "Home", path: "/" },
-        { name: "Case Studies", path: "/case-studies" },
-      ]),
     ],
   });
 
