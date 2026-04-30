@@ -50,11 +50,17 @@ export function sitemapPlugin(): Plugin {
       // Spin up a one-shot SSR-capable server to load the TS module
       // through the same Vite resolution used in dev.
       const { createServer } = await import("vite");
+      const path = await import("path");
+      const { fileURLToPath } = await import("url");
+      const here = path.dirname(fileURLToPath(import.meta.url));
       const server = await createServer({
         configFile: false,
         server: { middlewareMode: true },
         appType: "custom",
         logLevel: "silent",
+        resolve: {
+          alias: { "@": path.resolve(here, "./src") },
+        },
       });
       try {
         const xml = await loadSitemap((id) => server.ssrLoadModule(id));
