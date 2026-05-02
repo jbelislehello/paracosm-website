@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Sparkles, Network, Zap, Brain, FileText } from "lucide-react";
 import GetDemoDialog from "@/components/GetDemoDialog";
+import { trackEvent } from "@/lib/analytics";
 
 const DECK_DRAFT_KEY = "agentic-deck-draft";
 const HERO_DECK_PREFILL = {
