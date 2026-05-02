@@ -461,6 +461,16 @@ const BookLaunch = () => {
                 </div>
               ))}
             </div>
+
+            <div className="mt-8 text-center">
+              <Link
+                to="/lineage"
+                className="inline-flex items-center gap-2 text-sm font-medium text-fuchsia-300 hover:text-fuchsia-200"
+              >
+                See the full lineage matrix — Calm Magic vs. Design Thinking, Theory U, Cynefin, Speculative Design
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
           </div>
         </section>
 
