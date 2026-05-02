@@ -354,7 +354,7 @@ const AgenticEcosystemHero = () => {
 
           <button
             type="button"
-            onClick={handleGenerateDeck}
+            onClick={() => handleGenerateDeck("text_link")}
             className="mt-3 text-left text-sm text-primary underline-offset-4 hover:underline"
           >
             Or generate a tailored deck from paracosm.helloarchitekt.com →
