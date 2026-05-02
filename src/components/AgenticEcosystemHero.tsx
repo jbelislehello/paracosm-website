@@ -332,12 +332,29 @@ const AgenticEcosystemHero = () => {
               Get a demo
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
+            <Button
+              size="lg"
+              variant="secondary"
+              onClick={handleGenerateDeck}
+              className="group gap-2"
+            >
+              <FileText className="h-4 w-4" />
+              Generate a deck
+            </Button>
             <a href="/calm-magic-demo">
               <Button size="lg" variant="outline" className="gap-2">
                 See Calm Magic in action
               </Button>
             </a>
           </div>
+
+          <button
+            type="button"
+            onClick={handleGenerateDeck}
+            className="mt-3 text-left text-sm text-primary underline-offset-4 hover:underline"
+          >
+            Or generate a tailored deck from paracosm.helshelloarchitekt.com →
+          </button>
 
           <p className="mt-3 text-xs text-muted-foreground">
             Click any agent in the visualization to watch the orchestrator
