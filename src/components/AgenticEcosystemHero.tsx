@@ -1,9 +1,22 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import * as d3 from "d3";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Sparkles, Network, Zap, Brain } from "lucide-react";
+import { ArrowRight, Sparkles, Network, Zap, Brain, FileText } from "lucide-react";
 import GetDemoDialog from "@/components/GetDemoDialog";
+
+const DECK_DRAFT_KEY = "agentic-deck-draft";
+const HERO_DECK_PREFILL = {
+  selectedUrls: [],
+  audience: "founder",
+  tone: "visionary",
+  length: "standard" as const,
+  intent:
+    "Introduce our Agentic Ecosystems service: orchestrator + shared context + specialized agents, with observable, human-aligned coordination.",
+  outline: null,
+  currentSlideIdx: 0,
+};
 
 /**
  * AgenticEcosystemHero
