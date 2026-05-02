@@ -347,17 +347,28 @@ const AgenticEcosystemDeck = () => {
 
       <main className="container mx-auto px-4 py-10">
         {step === 1 && (
-          <StepSource
-            discovering={discovering}
-            discoveredUrls={discoveredUrls}
-            selectedUrls={draft.selectedUrls}
-            onToggle={toggleUrl}
-            onRefresh={discover}
-            customUrl={customUrl}
-            setCustomUrl={setCustomUrl}
-            onAddCustom={addCustomUrl}
-            onContinue={() => setStep(2)}
-          />
+          <div className="mx-auto max-w-3xl space-y-8">
+            <QuestionResonancePanel
+              defaultQuestion={draft.intent}
+              onMapped={(m) =>
+                setDraft((d) => ({
+                  ...d,
+                  intent: d.intent && d.intent.trim().length > 0 ? d.intent : m.question,
+                }))
+              }
+            />
+            <StepSource
+              discovering={discovering}
+              discoveredUrls={discoveredUrls}
+              selectedUrls={draft.selectedUrls}
+              onToggle={toggleUrl}
+              onRefresh={discover}
+              customUrl={customUrl}
+              setCustomUrl={setCustomUrl}
+              onAddCustom={addCustomUrl}
+              onContinue={() => setStep(2)}
+            />
+          </div>
         )}
         {step === 2 && (
           <StepAudience
