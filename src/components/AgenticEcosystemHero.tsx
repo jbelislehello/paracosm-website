@@ -339,7 +339,7 @@ const AgenticEcosystemHero = () => {
             <Button
               size="lg"
               variant="secondary"
-              onClick={handleGenerateDeck}
+              onClick={() => handleGenerateDeck("primary_button")}
               className="group gap-2"
             >
               <FileText className="h-4 w-4" />
