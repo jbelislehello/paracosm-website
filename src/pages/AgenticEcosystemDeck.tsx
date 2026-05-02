@@ -95,6 +95,46 @@ const AgenticEcosystemDeck = () => {
   const [progressLabel, setProgressLabel] = useState("");
   const [progressValue, setProgressValue] = useState(0);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("prefill") !== "hero") return;
+    const hasOutline = !!draft.outline;
+    if (hasOutline) {
+      toast("You have a draft in progress.", {
+        description: "Continue editing or start fresh from the hero prefill.",
+        action: {
+          label: "Start fresh",
+          onClick: () => {
+            setDraft({
+              ...DEFAULT_DRAFT,
+              audience: "founder",
+              tone: "visionary",
+              length: "standard",
+              intent:
+                "Introduce our Agentic Ecosystems service: orchestrator + shared context + specialized agents, with observable, human-aligned coordination.",
+            });
+            setStep(1);
+          },
+        },
+      });
+    } else {
+      setDraft((d) => ({
+        ...d,
+        audience: d.audience || "founder",
+        tone: d.tone || "visionary",
+        length: d.length || "standard",
+        intent:
+          d.intent && d.intent.trim().length > 0
+            ? d.intent
+            : "Introduce our Agentic Ecosystems service: orchestrator + shared context + specialized agents, with observable, human-aligned coordination.",
+      }));
+      toast.success("Prefilled from the Agentic Ecosystem hero");
+    }
+    setSearchParams({}, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(draft));
