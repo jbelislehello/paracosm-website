@@ -1,9 +1,22 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import * as d3 from "d3";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Sparkles, Network, Zap, Brain } from "lucide-react";
+import { ArrowRight, Sparkles, Network, Zap, Brain, FileText } from "lucide-react";
 import GetDemoDialog from "@/components/GetDemoDialog";
+
+const DECK_DRAFT_KEY = "agentic-deck-draft";
+const HERO_DECK_PREFILL = {
+  selectedUrls: [],
+  audience: "founder",
+  tone: "visionary",
+  length: "standard" as const,
+  intent:
+    "Introduce our Agentic Ecosystems service: orchestrator + shared context + specialized agents, with observable, human-aligned coordination.",
+  outline: null,
+  currentSlideIdx: 0,
+};
 
 /**
  * AgenticEcosystemHero
@@ -59,6 +72,21 @@ const AgenticEcosystemHero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeAgent, setActiveAgent] = useState<string | null>(null);
   const [demoOpen, setDemoOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleGenerateDeck = () => {
+    try {
+      const raw = localStorage.getItem(DECK_DRAFT_KEY);
+      const existing = raw ? JSON.parse(raw) : null;
+      const hasWork = existing && (existing.outline || (existing.intent && existing.intent.trim().length > 0));
+      if (!hasWork) {
+        localStorage.setItem(DECK_DRAFT_KEY, JSON.stringify(HERO_DECK_PREFILL));
+      }
+    } catch {
+      /* ignore */
+    }
+    navigate("/agentic-ecosystem-deck?prefill=hero");
+  };
 
   useEffect(() => {
     if (!svgRef.current || !containerRef.current) return;
@@ -304,12 +332,29 @@ const AgenticEcosystemHero = () => {
               Get a demo
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
+            <Button
+              size="lg"
+              variant="secondary"
+              onClick={handleGenerateDeck}
+              className="group gap-2"
+            >
+              <FileText className="h-4 w-4" />
+              Generate a deck
+            </Button>
             <a href="/calm-magic-demo">
               <Button size="lg" variant="outline" className="gap-2">
                 See Calm Magic in action
               </Button>
             </a>
           </div>
+
+          <button
+            type="button"
+            onClick={handleGenerateDeck}
+            className="mt-3 text-left text-sm text-primary underline-offset-4 hover:underline"
+          >
+            Or generate a tailored deck from paracosm.helloarchitekt.com →
+          </button>
 
           <p className="mt-3 text-xs text-muted-foreground">
             Click any agent in the visualization to watch the orchestrator
