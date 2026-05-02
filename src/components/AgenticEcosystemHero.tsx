@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Sparkles, Network, Zap, Brain, FileText } from "lucide-react";
 import GetDemoDialog from "@/components/GetDemoDialog";
+import { trackEvent } from "@/lib/analytics";
 
 const DECK_DRAFT_KEY = "agentic-deck-draft";
 const HERO_DECK_PREFILL = {
@@ -74,17 +75,20 @@ const AgenticEcosystemHero = () => {
   const [demoOpen, setDemoOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleGenerateDeck = () => {
+  const handleGenerateDeck = (source: "primary_button" | "text_link" = "primary_button") => {
+    let prefilled = false;
     try {
       const raw = localStorage.getItem(DECK_DRAFT_KEY);
       const existing = raw ? JSON.parse(raw) : null;
       const hasWork = existing && (existing.outline || (existing.intent && existing.intent.trim().length > 0));
       if (!hasWork) {
         localStorage.setItem(DECK_DRAFT_KEY, JSON.stringify(HERO_DECK_PREFILL));
+        prefilled = true;
       }
     } catch {
       /* ignore */
     }
+    void trackEvent("hero_generate_deck_clicked", { source, prefilled });
     navigate("/agentic-ecosystem-deck?prefill=hero");
   };
 
@@ -335,7 +339,7 @@ const AgenticEcosystemHero = () => {
             <Button
               size="lg"
               variant="secondary"
-              onClick={handleGenerateDeck}
+              onClick={() => handleGenerateDeck("primary_button")}
               className="group gap-2"
             >
               <FileText className="h-4 w-4" />
@@ -350,7 +354,7 @@ const AgenticEcosystemHero = () => {
 
           <button
             type="button"
-            onClick={handleGenerateDeck}
+            onClick={() => handleGenerateDeck("text_link")}
             className="mt-3 text-left text-sm text-primary underline-offset-4 hover:underline"
           >
             Or generate a tailored deck from paracosm.helloarchitekt.com →

@@ -24,6 +24,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { exportDeckToPptx, type DeckOutline, type DeckSlide } from "@/lib/deck/exportPptx";
 import { ALLOWED_HOST, isAllowedSourceUrl } from "@/lib/deck/sourceGuard";
+import { trackEvent } from "@/lib/analytics";
 
 type Step = 1 | 2 | 3 | 4;
 
@@ -96,6 +97,13 @@ const AgenticEcosystemDeck = () => {
   const [progressValue, setProgressValue] = useState(0);
 
   const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    void trackEvent("deck_wizard_viewed", {
+      prefill: searchParams.get("prefill") ?? null,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (searchParams.get("prefill") !== "hero") return;
@@ -258,6 +266,13 @@ const AgenticEcosystemDeck = () => {
       setProgressLabel("Done");
       setProgressValue(100);
       setStep(4);
+      void trackEvent("deck_wizard_outline_generated", {
+        slideCount: finalOutline?.slides?.length ?? 0,
+        audience: draft.audience,
+        tone: draft.tone,
+        length: draft.length,
+        sourceCount: draft.selectedUrls.length,
+      });
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Generation failed";
       toast.error(msg);
@@ -364,7 +379,15 @@ const AgenticEcosystemDeck = () => {
             onUpdate={updateSlide}
             onRemove={removeSlide}
             onAddBlank={addBlankSlide}
-            onExport={() => exportDeckToPptx(draft.outline!)}
+            onExport={() => {
+              exportDeckToPptx(draft.outline!);
+              void trackEvent("deck_exported", {
+                slideCount: draft.outline!.slides.length,
+                audience: draft.audience,
+                tone: draft.tone,
+                length: draft.length,
+              });
+            }}
             onStartOver={startOver}
           />
         )}
