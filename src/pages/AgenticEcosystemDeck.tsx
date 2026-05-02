@@ -266,6 +266,13 @@ const AgenticEcosystemDeck = () => {
       setProgressLabel("Done");
       setProgressValue(100);
       setStep(4);
+      void trackEvent("deck_wizard_outline_generated", {
+        slideCount: finalOutline?.slides?.length ?? 0,
+        audience: draft.audience,
+        tone: draft.tone,
+        length: draft.length,
+        sourceCount: draft.selectedUrls.length,
+      });
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Generation failed";
       toast.error(msg);
