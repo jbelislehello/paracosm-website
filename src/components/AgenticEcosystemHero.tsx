@@ -72,6 +72,21 @@ const AgenticEcosystemHero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeAgent, setActiveAgent] = useState<string | null>(null);
   const [demoOpen, setDemoOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleGenerateDeck = () => {
+    try {
+      const raw = localStorage.getItem(DECK_DRAFT_KEY);
+      const existing = raw ? JSON.parse(raw) : null;
+      const hasWork = existing && (existing.outline || (existing.intent && existing.intent.trim().length > 0));
+      if (!hasWork) {
+        localStorage.setItem(DECK_DRAFT_KEY, JSON.stringify(HERO_DECK_PREFILL));
+      }
+    } catch {
+      /* ignore */
+    }
+    navigate("/agentic-ecosystem-deck?prefill=hero");
+  };
 
   useEffect(() => {
     if (!svgRef.current || !containerRef.current) return;
