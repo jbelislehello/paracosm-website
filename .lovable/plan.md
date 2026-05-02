@@ -1,98 +1,109 @@
 ## Goal
 
-Track conversion from the hero "Generate a deck" CTA → arrival on the deck wizard, so you can measure click-through and drop-off.
+Build a "Resonance" feature: the user types a question, an AI maps it onto the five Calm Magic axes (MAGIC · LOVE · CALM · OPEN · FREE) with a 0–100 score per axis and the most relevant real tile prompts, and the UI visualizes that mapping as a board.
 
-## Approach
+## Architecture
 
-No third-party analytics is wired into this project today (no GA, Plausible, PostHog, or `dataLayer` in `index.html`). Rather than introducing a vendor, store events in a new lightweight Supabase table you fully own and can query from the dashboard or SQL editor.
+```
+Question
+   │
+   ▼
+[edge: map-question-to-board]
+   ├── Lovable AI (gemini-3-flash-preview) with tool_call → {axis, score, rationale, tile_hints[]}
+   └── Token-overlap match of tile_hints against public.tiles.short_prompt
+   │
+   ▼
+{ axes: [{ axis, score, rationale, tile_hints, tiles:[{id, prompt}] }, …×5] }
+   │
+   ▼
+<ResonanceMap /> visualizer
+```
 
 ## Changes
 
-### 1. New table `public.analytics_events` (migration)
+### 1. New edge function `supabase/functions/map-question-to-board/index.ts`
 
-```sql
-create table public.analytics_events (
-  id uuid primary key default gen_random_uuid(),
-  event_name text not null,
-  properties jsonb not null default '{}'::jsonb,
-  session_id text,
-  user_id uuid,
-  path text,
-  referrer text,
-  created_at timestamptz not null default now()
-);
+- POST `{ question: string }` (3+ chars, validated).
+- Calls Lovable AI Gateway with **tool calling** to enforce structured output:
+  ```ts
+  { axes: [{ axis: "MAGIC"|"LOVE"|"CALM"|"OPEN"|"FREE",
+             score: 0..100, rationale: string,
+             tile_hints: string[] /* 1-3 short prompts */ }] }
+  ```
+- System prompt explicitly defines what each axis means (MAGIC=imagination/futures, LOVE=care/relationships, CALM=rigor/governance, OPEN=ontology/workflow, FREE=outcomes/sovereignty) and instructs the model to discriminate (not flat 50/50/50/50/50).
+- Normalizes to all 5 axes in canonical order (fills missing with score 0).
+- **Enrichment**: pulls `id, board, short_prompt` from `public.tiles` via service-role, then for each `tile_hint` finds the highest token-overlap tile within that axis's board (`MAGIC`/`LOVE`/`CALM`/`OPEN`/`FREE`). Returns the matched real tile `{id, prompt}` so the UI can link to actual board positions.
+- Surfaces 429/402 with friendly messages per Lovable AI rules.
+- CORS open. No JWT required (read-only mapping, no PII written).
 
-create index analytics_events_event_name_created_at_idx
-  on public.analytics_events (event_name, created_at desc);
+### 2. New shared type `src/lib/resonance.ts`
 
-alter table public.analytics_events enable row level security;
-
--- Anyone (including anon visitors) may insert events
-create policy "anyone can insert analytics events"
-  on public.analytics_events for insert
-  to anon, authenticated
-  with check (true);
-
--- Only admins may read
-create policy "admins can read analytics events"
-  on public.analytics_events for select
-  to authenticated
-  using (public.has_role(auth.uid(), 'admin'));
+```ts
+export type CalmMagicAxis = "MAGIC" | "LOVE" | "CALM" | "OPEN" | "FREE";
+export interface AxisResonance {
+  axis: CalmMagicAxis;
+  score: number;          // 0–100
+  rationale: string;
+  tile_hints: string[];
+  tiles: { id: number; prompt: string }[];
+}
+export interface ResonanceMap {
+  question: string;
+  axes: AxisResonance[];
+}
+export const AXIS_ORDER: CalmMagicAxis[] = ["MAGIC","LOVE","CALM","OPEN","FREE"];
+export const AXIS_TOKEN: Record<CalmMagicAxis, string> = {
+  MAGIC: "primary",
+  LOVE:  "accent",
+  CALM:  "muted-foreground",
+  OPEN:  "foreground",
+  FREE:  "primary",
+};
 ```
 
-No update/delete policies — events are append-only.
+(Colors stay as design-token references — no hex.)
 
-### 2. `src/lib/analytics.ts` (new)
+### 3. New component `src/components/resonance/ResonanceMap.tsx`
 
-Tiny client util:
-- `trackEvent(name, properties?)` — fire-and-forget insert into `analytics_events`.
-- Generates a per-browser `session_id` stored in `sessionStorage` (`anon-session-id`) so we can stitch click → arrival.
-- Captures `path` (`window.location.pathname`) and `referrer` automatically.
-- Includes the current `auth.uid()` if a Supabase session exists.
-- Swallows errors silently — analytics must never break UX.
-- Also pushes to `window.dataLayer` if present, so a future GA4/GTM install Just Works.
+A self-contained visualization, usable anywhere:
 
-### 3. Wire the events
+- Header: the user's question in quotes.
+- Five horizontal rows (one per axis) with:
+  - Axis label + small chip showing rank (#1 dominant, etc.).
+  - Animated bar (`framer-motion`) widthening from 0 → score%.
+  - Score number on the right.
+  - Underneath: the matched tile prompts as small `<Badge>`s; clicking a badge calls an optional `onTileClick(id)` prop.
+- Below the bars: short "Why this resonates" expandable section listing each axis's `rationale`.
+- Empty/loading skeletons handled inline.
+- All colors via tokens (`bg-primary/15`, `text-accent`, etc.).
 
-**`src/components/AgenticEcosystemHero.tsx`**
-- In `handleGenerateDeck`, call `trackEvent("hero_generate_deck_clicked", { source: "primary_button" })` for the main button, and `{ source: "text_link" }` for the underlined link variant (split into two thin handlers).
+### 4. New component `src/components/resonance/QuestionResonancePanel.tsx`
 
-**`src/pages/AgenticEcosystemDeck.tsx`**
-- On mount, call `trackEvent("deck_wizard_viewed", { prefill: searchParams.get("prefill") ?? null })`.
-- When the user reaches step 4 (slide editor), call `trackEvent("deck_wizard_outline_generated", { slideCount: outline.slides.length })`.
-- On successful pptx export, call `trackEvent("deck_exported", { slideCount, audience, tone, length })`.
+A drop-in panel containing:
+- A `<Textarea>` ("Ask the question your team is sitting with…") with a submit button.
+- Three example chips ("How do we onboard an enterprise client?", "What governance fits an autonomous design team?", "Where does Calm Magic meet OECD AI?") that prefill the textarea.
+- Calls `supabase.functions.invoke("map-question-to-board", { body: { question } })`.
+- Shows a `<Loader2>` spinner during the call and an inline error toast for 429/402.
+- Renders `<ResonanceMap />` when the result lands.
+- Fires `analytics.trackEvent("resonance_question_submitted", { length })` and `"resonance_returned" { topAxis, topScore, latencyMs }`.
 
-This gives you the full funnel:
-```
-hero_generate_deck_clicked
-  → deck_wizard_viewed (prefill=hero)
-    → deck_wizard_outline_generated
-      → deck_exported
-```
+### 5. Wire into the deck wizard
 
-### 4. Querying conversion
+`src/pages/AgenticEcosystemDeck.tsx`:
+- Insert `<QuestionResonancePanel />` at the top of Step 1, above the source picker.
+- The returned `ResonanceMap` is stashed in the existing `Draft` (no schema change needed — rides inside localStorage). When present, the wizard's `intent` textarea is auto-prefilled with the question text and the wizard passes `{ resonance }` into the eventual `compose-deck` body so future improvements can use it. (For this task we render only — no compose-deck change required.)
 
-You can run this from the SQL editor any time:
+### 6. Standalone demo route
 
-```sql
-with clicks as (
-  select count(*) as n from analytics_events
-  where event_name = 'hero_generate_deck_clicked'
-    and created_at > now() - interval '30 days'
-),
-views as (
-  select count(*) as n from analytics_events
-  where event_name = 'deck_wizard_viewed'
-    and properties->>'prefill' = 'hero'
-    and created_at > now() - interval '30 days'
-)
-select clicks.n as hero_clicks, views.n as wizard_arrivals,
-       round(100.0 * views.n / nullif(clicks.n, 0), 1) as conversion_pct
-from clicks, views;
-```
+Add `/resonance` route mounting a tiny page that just shows `<QuestionResonancePanel />` so the feature is shareable on its own (linked from the Crewdle "Dream & Learn" page in a follow-up).
+
+### 7. No DB migration
+
+The `tiles` table is already public-readable and contains exactly what we need. The `analytics_events` table created earlier captures the new events. Nothing else to add.
 
 ## Notes
 
-- No PII collected — only session id, path, referrer, and event-specific properties.
-- Append-only with admin-gated reads keeps the table safe even though anon can write.
-- Future-proof: if you later add GA4/PostHog, the same `trackEvent` call can fan out to it without touching components.
+- Strict token-overlap match keeps the function deterministic and prevents the AI from hallucinating tile IDs.
+- All AI calls go through Lovable AI Gateway via the edge function — no client-side AI calls, no model name in the frontend.
+- `map-question-to-board` is read-only (it does not write any rows), so RLS isn't a concern.
+- Future: a follow-up can use this `ResonanceMap` to (a) bias `compose-deck`, (b) jump the user to the matching tiles on the actual Calm Magic board page, (c) feed the Crewdle "Learn" critic pass.
