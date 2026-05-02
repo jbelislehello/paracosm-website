@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   ArrowLeft, ArrowRight, Loader2, CheckCircle2, Sparkles,
   Download, Play, Plus, Trash2, RefreshCw, ExternalLink, AlertCircle,
