@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      agentic_decks: {
+        Row: {
+          audience: string
+          created_at: string
+          id: string
+          length_preset: string
+          outline: Json | null
+          slides: Json | null
+          source_urls: string[]
+          title: string
+          tone: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          audience?: string
+          created_at?: string
+          id?: string
+          length_preset?: string
+          outline?: Json | null
+          slides?: Json | null
+          source_urls?: string[]
+          title?: string
+          tone?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          audience?: string
+          created_at?: string
+          id?: string
+          length_preset?: string
+          outline?: Json | null
+          slides?: Json | null
+          source_urls?: string[]
+          title?: string
+          tone?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       book_preorders: {
         Row: {
           created_at: string
