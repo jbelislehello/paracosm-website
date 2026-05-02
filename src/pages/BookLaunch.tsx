@@ -473,6 +473,11 @@ const BookLaunch = () => {
             </div>
           </div>
         </section>
+
+        <section className="bg-slate-900/50 px-6 py-20">
+          <div className="container mx-auto max-w-3xl text-center">
+            <Badge variant="outline" className="mb-3 border-white/20 text-white/70">
+              {t("book.author_eyebrow")}
             </Badge>
             <h2 className="mb-2 text-3xl font-bold md:text-4xl">{t("book.author_name")}</h2>
             <p className="mb-6 text-fuchsia-300">{t("book.author_role")}</p>
