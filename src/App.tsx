@@ -49,6 +49,7 @@ const DreamAndLearn = lazy(() => import("./pages/DreamAndLearn"));
 const CalmMagicDemo = lazy(() => import("./pages/CalmMagicDemo"));
 const Lineage = lazy(() => import("./pages/Lineage"));
 const AgenticEcosystemDeck = lazy(() => import("./pages/AgenticEcosystemDeck"));
+const ResonanceDemo = lazy(() => import("./pages/ResonanceDemo"));
 
 const queryClient = new QueryClient();
 
@@ -112,6 +113,7 @@ function App() {
                     <Route path="/calm-magic-demo" element={<CalmMagicDemo />} />
                     <Route path="/lineage" element={<Lineage />} />
                     <Route path="/agentic-ecosystem-deck" element={<AgenticEcosystemDeck />} />
+                    <Route path="/resonance" element={<ResonanceDemo />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Suspense>
