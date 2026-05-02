@@ -99,6 +99,13 @@ const AgenticEcosystemDeck = () => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
+    void trackEvent("deck_wizard_viewed", {
+      prefill: searchParams.get("prefill") ?? null,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
     if (searchParams.get("prefill") !== "hero") return;
     const hasOutline = !!draft.outline;
     if (hasOutline) {
