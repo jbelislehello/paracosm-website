@@ -39,6 +39,7 @@ export const ROUTE_REGISTRY: RouteMeta[] = [
   { path: "/pattern-encyclopedia", label: "Pattern Encyclopedia" },
   { path: "/agentic-ux", label: "Agentic UX" },
   { path: "/design-system", label: "Design System" },
+  { path: "/lineage", label: "Lineage & Comparables", parent: "/book" },
 
   // Drift hierarchy
   { path: "/drift", label: "Drift" },

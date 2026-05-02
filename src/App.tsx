@@ -47,6 +47,7 @@ const AdminSubscriptions = lazy(() => import("./pages/AdminSubscriptions"));
 const BookLaunch = lazy(() => import("./pages/BookLaunch"));
 const DreamAndLearn = lazy(() => import("./pages/DreamAndLearn"));
 const CalmMagicDemo = lazy(() => import("./pages/CalmMagicDemo"));
+const Lineage = lazy(() => import("./pages/Lineage"));
 
 const queryClient = new QueryClient();
 
@@ -108,6 +109,7 @@ function App() {
                     <Route path="/dream-and-learn" element={<DreamAndLearn />} />
                     <Route path="/design-system" element={<DesignSystemShowcase />} />
                     <Route path="/calm-magic-demo" element={<CalmMagicDemo />} />
+                    <Route path="/lineage" element={<Lineage />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Suspense>
