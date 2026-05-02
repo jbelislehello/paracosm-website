@@ -353,7 +353,7 @@ const AgenticEcosystemHero = () => {
             onClick={handleGenerateDeck}
             className="mt-3 text-left text-sm text-primary underline-offset-4 hover:underline"
           >
-            Or generate a tailored deck from paracosm.helshelloarchitekt.com →
+            Or generate a tailored deck from paracosm.helloarchitekt.com →
           </button>
 
           <p className="mt-3 text-xs text-muted-foreground">
