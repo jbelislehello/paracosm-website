@@ -244,9 +244,19 @@ const AgenticEcosystemDeck = () => {
           pages,
         },
       });
-      if (outlineRes.error) throw outlineRes.error;
+      if (outlineRes.error) {
+        const detail = (outlineRes.data as { error?: string } | null)?.error;
+        throw new Error(detail || outlineRes.error.message || "Outline step failed");
+      }
       const outline = outlineRes.data?.outline as DeckOutline | undefined;
-      if (!outline) throw new Error("AI returned no outline.");
+      if (!outline) {
+        const detail = (outlineRes.data as { error?: string } | null)?.error;
+        throw new Error(detail || "AI returned no outline.");
+      }
+      const outlineWarnings = (outlineRes.data as { warnings?: string[] } | null)?.warnings;
+      if (outlineWarnings?.length) {
+        toast.warning(`Outline repaired: ${outlineWarnings[0]}`);
+      }
 
       setProgressLabel("Filling in slide bodies…");
       setProgressValue(80);
