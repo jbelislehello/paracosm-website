@@ -75,17 +75,20 @@ const AgenticEcosystemHero = () => {
   const [demoOpen, setDemoOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleGenerateDeck = () => {
+  const handleGenerateDeck = (source: "primary_button" | "text_link" = "primary_button") => {
+    let prefilled = false;
     try {
       const raw = localStorage.getItem(DECK_DRAFT_KEY);
       const existing = raw ? JSON.parse(raw) : null;
       const hasWork = existing && (existing.outline || (existing.intent && existing.intent.trim().length > 0));
       if (!hasWork) {
         localStorage.setItem(DECK_DRAFT_KEY, JSON.stringify(HERO_DECK_PREFILL));
+        prefilled = true;
       }
     } catch {
       /* ignore */
     }
+    void trackEvent("hero_generate_deck_clicked", { source, prefilled });
     navigate("/agentic-ecosystem-deck?prefill=hero");
   };
 
