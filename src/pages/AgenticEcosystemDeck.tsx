@@ -379,7 +379,15 @@ const AgenticEcosystemDeck = () => {
             onUpdate={updateSlide}
             onRemove={removeSlide}
             onAddBlank={addBlankSlide}
-            onExport={() => exportDeckToPptx(draft.outline!)}
+            onExport={() => {
+              exportDeckToPptx(draft.outline!);
+              void trackEvent("deck_exported", {
+                slideCount: draft.outline!.slides.length,
+                audience: draft.audience,
+                tone: draft.tone,
+                length: draft.length,
+              });
+            }}
             onStartOver={startOver}
           />
         )}
