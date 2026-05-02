@@ -313,11 +313,36 @@ const Lineage = () => {
                 </ul>
               </Card>
 
+              <Card className="border-l-4 border-l-emerald-500 bg-card/60 p-6 backdrop-blur-sm">
+                <div className="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+                  Our stance — celebrating methodological clarity
+                </div>
+                <p className="mt-4 text-sm leading-relaxed text-foreground">
+                  Calm Magic openly celebrates work like IAD. The industry is
+                  saturated with vibes, loose mental models, and frameworks
+                  that confuse a slide deck with a discipline. Rigorous,
+                  design-theoretic articulation — named constructs, modules,
+                  glossaries, canonical artefacts — is exactly the kind of
+                  foundation an agentic era needs. Without it, every team
+                  re-invents shaky vocabulary every quarter.
+                </p>
+                <p className="mt-3 text-sm leading-relaxed text-foreground">
+                  We treat methodological clarity as a public good. Where IAD
+                  formalises the grammar of meaning, Calm Magic operationalises
+                  a grammar of intention, relational capacity, and preferable
+                  futures. Different jobs, same commitment: name the
+                  constructs, stabilise the vocabulary, make the practice
+                  inspectable.
+                </p>
+              </Card>
+
               <p className="text-foreground">
                 If Calm Magic is the practice, IAD is part of the deeper
                 grammar that makes practices like it legible. They are doing
                 different jobs at different altitudes — and that is exactly why
-                they're worth reading together.
+                they're worth reading together. We are better off as an
+                industry when serious frameworks exist, are named, and can be
+                argued with.
               </p>
 
               <div>
