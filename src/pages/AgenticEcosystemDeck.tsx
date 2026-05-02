@@ -24,6 +24,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { exportDeckToPptx, type DeckOutline, type DeckSlide } from "@/lib/deck/exportPptx";
 import { ALLOWED_HOST, isAllowedSourceUrl } from "@/lib/deck/sourceGuard";
+import { trackEvent } from "@/lib/analytics";
 
 type Step = 1 | 2 | 3 | 4;
 
