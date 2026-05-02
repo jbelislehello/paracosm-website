@@ -65,3 +65,12 @@ verify_jwt = true
 
 [functions.admin-manage-override]
 verify_jwt = true
+
+[functions.discover-paracosm-pages]
+verify_jwt = false
+
+[functions.scrape-paracosm-pages]
+verify_jwt = false
+
+[functions.compose-deck]
+verify_jwt = false
