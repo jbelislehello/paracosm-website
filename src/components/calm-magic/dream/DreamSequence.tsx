@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import ReactMarkdown from 'react-markdown';
 import { AXIS_META, type DreamAxis } from '@/data/dreamPrompts';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Copy, ExternalLink, Check } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface DreamSequenceProps {
   question: string;
@@ -14,9 +16,13 @@ interface DreamSequenceProps {
 interface AxisState {
   key: DreamAxis;
   tile_keys: string[];
+  tile_ids: number[];
+  maturity: number;
   narration: string;
   done: boolean;
 }
+
+const AXIS_ORDER: DreamAxis[] = ['love', 'magic', 'calm', 'open', 'free'];
 
 const DreamSequence: React.FC<DreamSequenceProps> = ({ question, file, onRestart }) => {
   const [axes, setAxes] = useState<AxisState[]>([]);
@@ -24,6 +30,8 @@ const DreamSequence: React.FC<DreamSequenceProps> = ({ question, file, onRestart
   const [summary, setSummary] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
+  const [shareSlug, setShareSlug] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
   const startedRef = useRef(false);
 
   useEffect(() => {
@@ -39,9 +47,7 @@ const DreamSequence: React.FC<DreamSequenceProps> = ({ question, file, onRestart
         const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/dream-prd-analysis`;
         const resp = await fetch(url, {
           method: 'POST',
-          headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
+          headers: { Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
           body: form,
         });
 
@@ -66,7 +72,6 @@ const DreamSequence: React.FC<DreamSequenceProps> = ({ question, file, onRestart
           while ((sepIdx = buf.indexOf('\n\n')) !== -1) {
             const block = buf.slice(0, sepIdx);
             buf = buf.slice(sepIdx + 2);
-
             const lines = block.split('\n');
             let event = 'message';
             let data = '';
@@ -79,7 +84,14 @@ const DreamSequence: React.FC<DreamSequenceProps> = ({ question, file, onRestart
             try { payload = JSON.parse(data); } catch { continue; }
 
             if (event === 'axis_begin') {
-              setAxes((prev) => [...prev, { key: payload.key, tile_keys: payload.tile_keys || [], narration: '', done: false }]);
+              setAxes((prev) => [...prev, {
+                key: payload.key,
+                tile_keys: payload.tile_keys || [],
+                tile_ids: payload.tile_ids || [],
+                maturity: typeof payload.maturity === 'number' ? payload.maturity : 0,
+                narration: '',
+                done: false,
+              }]);
               setActiveAxis(payload.key);
             } else if (event === 'narration') {
               setAxes((prev) => prev.map((a) => a.key === payload.key ? { ...a, narration: a.narration + payload.delta } : a));
@@ -87,6 +99,8 @@ const DreamSequence: React.FC<DreamSequenceProps> = ({ question, file, onRestart
               setAxes((prev) => prev.map((a) => a.key === payload.key ? { ...a, done: true } : a));
             } else if (event === 'summary') {
               setSummary(payload.text || '');
+            } else if (event === 'saved') {
+              setShareSlug(payload.share_slug || null);
             } else if (event === 'done') {
               setDone(true);
               setActiveAxis(null);
@@ -101,7 +115,6 @@ const DreamSequence: React.FC<DreamSequenceProps> = ({ question, file, onRestart
     run();
   }, [file, question]);
 
-  const AXIS_ORDER: DreamAxis[] = ['love', 'magic', 'calm', 'open', 'free'];
   const axisProgress = (key: DreamAxis): number => {
     const a = axes.find(x => x.key === key);
     if (!a) return 0;
@@ -111,6 +124,19 @@ const DreamSequence: React.FC<DreamSequenceProps> = ({ question, file, onRestart
   const overallPct = Math.min(100, Math.round(
     (AXIS_ORDER.reduce((s, k) => s + axisProgress(k), 0) / 5) * 95 + (summary ? 5 : 0)
   ));
+
+  const shareUrl = shareSlug ? `${window.location.origin}/dream/${shareSlug}` : '';
+  const copyShare = async () => {
+    if (!shareUrl) return;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      toast.success('Share link copied');
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error('Could not copy link');
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -168,13 +194,14 @@ const DreamSequence: React.FC<DreamSequenceProps> = ({ question, file, onRestart
         </Card>
       )}
 
-      {/* The five-axis "board" answering itself */}
+      {/* Five-axis board */}
       <div className="grid gap-3 md:grid-cols-5">
-        {(['love','magic','calm','open','free'] as DreamAxis[]).map((key) => {
+        {AXIS_ORDER.map((key) => {
           const meta = AXIS_META[key];
           const axisState = axes.find(a => a.key === key);
           const isActive = activeAxis === key;
           const isLit = !!axisState;
+          const maturity = axisState?.maturity ?? 0;
           return (
             <Card
               key={key}
@@ -188,10 +215,23 @@ const DreamSequence: React.FC<DreamSequenceProps> = ({ question, file, onRestart
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${meta.gradient} opacity-10 ${isActive ? 'animate-pulse' : ''}`} />
               <div className="relative">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xl" style={{ color: meta.color }}>{meta.symbol}</span>
-                  <span className="text-xs font-bold tracking-widest" style={{ color: meta.color }}>{meta.label}</span>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl" style={{ color: meta.color }}>{meta.symbol}</span>
+                    <span className="text-xs font-bold tracking-widest" style={{ color: meta.color }}>{meta.label}</span>
+                  </div>
+                  {isLit && (
+                    <span className="text-[10px] tabular-nums font-mono" style={{ color: meta.color }}>
+                      {Math.round(maturity * 100)}%
+                    </span>
+                  )}
                 </div>
+                {isLit && (
+                  <div className="h-1 w-full rounded-full bg-muted overflow-hidden mb-2">
+                    <div className="h-full transition-all duration-700"
+                      style={{ width: `${maturity * 100}%`, backgroundColor: meta.color }} />
+                  </div>
+                )}
                 <div className="space-y-1 min-h-[3rem]">
                   {axisState?.tile_keys.map((t, i) => (
                     <div
@@ -202,6 +242,20 @@ const DreamSequence: React.FC<DreamSequenceProps> = ({ question, file, onRestart
                       {t}
                     </div>
                   ))}
+                  {axisState?.tile_ids && axisState.tile_ids.length > 0 && (
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {axisState.tile_ids.map((id) => (
+                        <span
+                          key={id}
+                          className="text-[9px] font-mono tabular-nums px-1 py-0.5 rounded border animate-fade-in"
+                          style={{ borderColor: meta.color, color: meta.color }}
+                          title={`Tile #${id}`}
+                        >
+                          #{id}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </Card>
@@ -209,7 +263,6 @@ const DreamSequence: React.FC<DreamSequenceProps> = ({ question, file, onRestart
         })}
       </div>
 
-      {/* Streaming narration */}
       <Card className="p-4 min-h-[160px] bg-muted/20">
         {axes.length === 0 && !error ? (
           <div className="flex items-center justify-center gap-2 text-muted-foreground py-8">
@@ -240,6 +293,21 @@ const DreamSequence: React.FC<DreamSequenceProps> = ({ question, file, onRestart
           </div>
         )}
       </Card>
+
+      {done && shareSlug && (
+        <Card className="p-4 space-y-2">
+          <p className="text-xs uppercase tracking-wider text-muted-foreground">Share this dream</p>
+          <div className="flex gap-2">
+            <Input value={shareUrl} readOnly className="font-mono text-xs" />
+            <Button variant="outline" size="icon" onClick={copyShare} aria-label="Copy share link">
+              {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+            </Button>
+            <Button variant="outline" size="icon" asChild aria-label="Open share link">
+              <a href={shareUrl} target="_blank" rel="noopener noreferrer"><ExternalLink className="w-4 h-4" /></a>
+            </Button>
+          </div>
+        </Card>
+      )}
 
       {done && (
         <div className="text-center">

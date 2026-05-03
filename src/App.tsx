@@ -20,6 +20,7 @@ const RelationalHealing = lazy(() => import("./pages/RelationalHealing"));
 const CaseStudies = lazy(() => import("./pages/CaseStudies"));
 const AboutUs = lazy(() => import("./pages/AboutUs"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const DreamShare = lazy(() => import("./pages/DreamShare"));
 const CalmMagicBoard = lazy(() => import("./pages/CalmMagicBoard"));
 const CalmMagicAuth = lazy(() => import("./pages/CalmMagicAuth"));
 const GlitchAuth = lazy(() => import("./pages/GlitchAuth"));
@@ -114,6 +115,7 @@ function App() {
                     <Route path="/lineage" element={<Lineage />} />
                     <Route path="/agentic-ecosystem-deck" element={<AgenticEcosystemDeck />} />
                     <Route path="/resonance" element={<ResonanceDemo />} />
+                    <Route path="/dream/:slug" element={<DreamShare />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Suspense>
