@@ -2,6 +2,7 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import QuestionResonancePanel from "@/components/resonance/QuestionResonancePanel";
+import LivingGeometryAmbient from "@/components/landing/LivingGeometryAmbient";
 
 interface FrameworkHeroProps {
   onScrollToMethod: () => void;
@@ -13,7 +14,8 @@ export default function FrameworkHero({ onScrollToMethod }: FrameworkHeroProps) 
       id="framework-hero"
       className="relative pt-24 pb-12 px-4 overflow-hidden bg-gradient-to-b from-background via-background to-muted/30"
     >
-      <div className="container max-w-6xl mx-auto">
+      <LivingGeometryAmbient />
+      <div className="container max-w-6xl mx-auto relative">
         <div className="grid lg:grid-cols-[1.1fr_1fr] gap-10 items-start">
           {/* Left: Promise */}
           <div className="space-y-6 lg:pt-8">

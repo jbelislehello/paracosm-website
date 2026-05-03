@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TorusPhase, TORUS_PHASES } from '@/types/journal-expansion';
+import { useBreathingPulse } from '@/hooks/useBreathingPulse';
 
 interface TorusRelationnelProps {
   currentPhase: TorusPhase;
@@ -14,11 +15,16 @@ export const TorusRelationnel: React.FC<TorusRelationnelProps> = ({
   onPhaseChange
 }) => {
   const currentIndex = PHASE_ORDER.indexOf(currentPhase);
+  const breath = useBreathingPulse();
+  // Continuously rotating tangent on the ring
+  const tangentAngle = (performance.now() / 5500) % (Math.PI * 2);
+  const tx = 50 + 45 * Math.cos(tangentAngle);
+  const ty = 50 + 45 * Math.sin(tangentAngle);
 
   return (
     <Card className="bg-background/50 backdrop-blur">
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm">Torus Relationnel</CardTitle>
+        <CardTitle className="text-sm font-serif italic">Torus Relationnel</CardTitle>
       </CardHeader>
       <CardContent>
         {/* Torus Visualization */}
@@ -32,8 +38,9 @@ export const TorusRelationnel: React.FC<TorusRelationnelProps> = ({
               fill="none"
               stroke="hsl(var(--border))"
               strokeWidth="2"
+              opacity={0.7 + breath * 0.3}
             />
-            
+
             {/* Phase segments */}
             {PHASE_ORDER.map((phase, idx) => {
               const angle = (idx * 90 - 90) * (Math.PI / 180);
@@ -74,7 +81,11 @@ export const TorusRelationnel: React.FC<TorusRelationnelProps> = ({
             })}
             
             {/* Center point */}
-            <circle cx="50" cy="50" r="8" fill="hsl(var(--background))" stroke="hsl(var(--primary))" strokeWidth="2" />
+            <circle cx="50" cy="50" r={6 + breath * 2} fill="hsl(var(--background))" stroke="hsl(var(--primary))" strokeWidth="2" />
+
+            {/* Tangent — continuous progression */}
+            <line x1="50" y1="50" x2={tx} y2={ty} stroke="hsl(var(--primary) / 0.6)" strokeWidth="1.2" />
+            <circle cx={tx} cy={ty} r="2" fill="hsl(var(--primary))" />
             
             {/* Flow arrows */}
             <path
@@ -101,6 +112,9 @@ export const TorusRelationnel: React.FC<TorusRelationnelProps> = ({
             </defs>
           </svg>
         </div>
+        <p className="text-[10px] italic text-muted-foreground text-center -mt-2 mb-2 font-serif">
+          Approche → Ouverture → Intensité → Retrait —<br/>the four fundamental forms of contact
+        </p>
 
         {/* Phase Labels */}
         <div className="grid grid-cols-2 gap-2 text-center">
