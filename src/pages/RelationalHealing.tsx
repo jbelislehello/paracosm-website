@@ -7,6 +7,7 @@ import { Heart, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 import BoardEntryGate from "@/components/calm-magic/BoardEntryGate";
+import WhyItWorksRecap from "@/components/resonance/WhyItWorksRecap";
 
 const RelationalHealing = () => {
   const { t } = useLanguage();
@@ -49,6 +50,10 @@ const RelationalHealing = () => {
           </Button>
         </div>
       </header>
+
+      <div className="pt-20">
+        <WhyItWorksRecap lens="coaching" />
+      </div>
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
