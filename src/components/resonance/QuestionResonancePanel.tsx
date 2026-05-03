@@ -109,7 +109,12 @@ export default function QuestionResonancePanel({
         </div>
       </div>
 
-      {result && <ResonanceMap data={result} onTileClick={onTileClick} />}
+      {result && (
+        <>
+          <ResonanceMap data={result} onTileClick={onTileClick} />
+          <PathSuggestion data={result} />
+        </>
+      )}
     </div>
   );
 }
