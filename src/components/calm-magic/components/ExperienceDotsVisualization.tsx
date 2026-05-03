@@ -763,15 +763,29 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
             <div>
               <h4 className="font-medium mb-2">Calm Magic Forces</h4>
               <div className="grid grid-cols-2 gap-2 text-xs">
-                {(['sovereignty', 'memory', 'intimacy', 'novelty'] as const).map(force => (
-                  <div key={force} className="flex items-center gap-2">
-                    <div
-                      className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: getForceColor(force) }}
-                    />
-                    <span className="capitalize">{force}</span>
-                  </div>
-                ))}
+                {(['sovereignty', 'memory', 'intimacy', 'novelty'] as const).map(force => {
+                  const isActive = activeRegion === force;
+                  return (
+                    <button
+                      key={force}
+                      type="button"
+                      onMouseEnter={() => setActiveRegion(force)}
+                      onMouseLeave={() => setActiveRegion((prev) => (prev === force ? null : prev))}
+                      onFocus={() => setActiveRegion(force)}
+                      onBlur={() => setActiveRegion((prev) => (prev === force ? null : prev))}
+                      className={`flex items-center gap-2 rounded-md px-2 py-1 text-left transition-all duration-200 ${
+                        isActive ? 'ring-2 ring-offset-1 ring-purple-400 bg-purple-50/60 dark:bg-purple-950/30' : ''
+                      }`}
+                      style={isActive ? { boxShadow: `0 0 0 1px ${getForceColor(force)}40` } : undefined}
+                    >
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: getForceColor(force) }}
+                      />
+                      <span className={`capitalize ${isActive ? 'font-semibold' : ''}`}>{force}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
             
