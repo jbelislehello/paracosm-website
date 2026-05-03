@@ -14,10 +14,24 @@ Object.defineProperty(window, "matchMedia", {
   }),
 });
 
-// AudioContext stub (component instantiates one)
+class FakeResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+// @ts-expect-error test stub
+window.ResizeObserver = FakeResizeObserver;
+
 class FakeAudioContext {
-  createOscillator() { return { connect() {}, start() {}, stop() {}, frequency: { value: 0 }, type: "" }; }
-  createGain() { return { connect() {}, gain: { value: 0, setValueAtTime() {}, exponentialRampToValueAtTime() {} } }; }
+  createOscillator() {
+    return { connect() {}, start() {}, stop() {}, frequency: { value: 0 }, type: "" };
+  }
+  createGain() {
+    return {
+      connect() {},
+      gain: { value: 0, setValueAtTime() {}, exponentialRampToValueAtTime() {} },
+    };
+  }
   get destination() { return {}; }
   get currentTime() { return 0; }
   close() { return Promise.resolve(); }
