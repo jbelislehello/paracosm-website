@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import BoardEntryGate from '../BoardEntryGate';
 
-type ViewMode = 'journey' | 'spiral' | 'tests' | 'learning' | 'overview' | 'tools';
+type ViewMode = 'journey' | 'spiral' | 'tests' | 'learning' | 'overview' | 'tools' | 'dream';
 
 interface ViewModeNavigationProps {
   viewMode: ViewMode;
@@ -22,7 +22,8 @@ const ViewModeNavigation: React.FC<ViewModeNavigationProps> = ({
     { key: 'tests' as const, label: '🧪 Tests', desc: 'Cultural' },
     { key: 'learning' as const, label: '📊 Learning', desc: 'Organization' },
     { key: 'overview' as const, label: '🎯 Overview', desc: 'Framework' },
-    { key: 'tools' as const, label: '🛠️ Tools', desc: 'Interactive' }
+    { key: 'tools' as const, label: '🛠️ Tools', desc: 'Interactive' },
+    { key: 'dream' as const, label: '✨ Dream', desc: 'Board self-answers' }
   ];
 
   return (

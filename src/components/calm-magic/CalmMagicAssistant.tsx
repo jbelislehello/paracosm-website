@@ -38,7 +38,7 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
   
   // State management
   const [currentLandscape, setCurrentLandscape] = useState(0);
-  const [viewMode, setViewMode] = useState<'journey' | 'spiral' | 'tests' | 'learning' | 'overview' | 'tools'>('tools');
+  const [viewMode, setViewMode] = useState<'journey' | 'spiral' | 'tests' | 'learning' | 'overview' | 'tools' | 'dream'>('tools');
   const [emotionalState, setEmotionalState] = useState<Partial<EmotionalState>>({
     love_level: 50,
     magic_level: 50,
@@ -109,7 +109,7 @@ const CalmMagicAssistant: React.FC<CalmMagicAssistantProps> = ({
     'Achieving sovereign integration'
   ];
 
-  const handleViewModeChange = (mode: 'journey' | 'spiral' | 'tests' | 'learning' | 'overview' | 'tools') => {
+  const handleViewModeChange = (mode: 'journey' | 'spiral' | 'tests' | 'learning' | 'overview' | 'tools' | 'dream') => {
     setViewMode(mode);
     // Update user preferences
     updatePreferences({

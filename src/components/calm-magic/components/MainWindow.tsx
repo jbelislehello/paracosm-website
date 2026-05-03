@@ -9,7 +9,7 @@ import SettingsPanel from './SettingsPanel';
 import ContextualGuide from './ContextualGuide';
 import { EmotionalState } from '@/types/journal';
 
-type ViewMode = 'journey' | 'spiral' | 'tests' | 'learning' | 'overview' | 'tools';
+type ViewMode = 'journey' | 'spiral' | 'tests' | 'learning' | 'overview' | 'tools' | 'dream';
 
 interface MainWindowProps {
   windowStyle: React.CSSProperties;

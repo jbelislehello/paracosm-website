@@ -74,3 +74,6 @@ verify_jwt = false
 
 [functions.compose-deck]
 verify_jwt = false
+
+[functions.dream-prd-analysis]
+verify_jwt = false

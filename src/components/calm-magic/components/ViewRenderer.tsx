@@ -7,9 +7,10 @@ import LearningOrganizationDashboard from '../LearningOrganizationDashboard';
 import OverviewTab from '@/components/product-development/OverviewTab';
 import LandscapeJourney from './LandscapeJourney';
 import InteractiveToolsPanel from '../tools/InteractiveToolsPanel';
+import DreamMode from '../dream/DreamMode';
 import { EmotionalState } from '@/types/journal';
 
-type ViewMode = 'journey' | 'spiral' | 'tests' | 'learning' | 'overview' | 'tools';
+type ViewMode = 'journey' | 'spiral' | 'tests' | 'learning' | 'overview' | 'tools' | 'dream';
 
 interface ViewRendererProps {
   viewMode: ViewMode;
@@ -78,6 +79,9 @@ const ViewRenderer: React.FC<ViewRendererProps> = ({
           onStateChange={onStateChange}
         />
       );
+
+    case 'dream':
+      return <DreamMode />;
 
     default:
       return null;
