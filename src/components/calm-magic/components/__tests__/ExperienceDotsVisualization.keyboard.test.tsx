@@ -9,6 +9,13 @@ const focusRegion = () => {
   return region;
 };
 
+const getLegendButton = (name: string) => {
+  const buttons = screen.getAllByRole("button", { name: new RegExp(`^${name}$`, "i") });
+  const btn = buttons.find((b) => b.hasAttribute("aria-pressed"));
+  if (!btn) throw new Error(`legend button not found for ${name}`);
+  return btn as HTMLButtonElement;
+};
+
 describe("ExperienceDotsVisualization keyboard navigation", () => {
   it.each([
     ["{ArrowRight}", "Sovereignty"],
