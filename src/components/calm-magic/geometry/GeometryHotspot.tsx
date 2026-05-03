@@ -81,17 +81,12 @@ export const GeometryHotspot: React.FC<GeometryHotspotProps> = ({
           <button
             type="button"
             aria-label={label}
-            onClick={(e) => {
-              // Skip keyboard-synthesized clicks; onKeyDown handles those explicitly.
-              if (e.detail === 0) return;
-              handleTap(e);
-            }}
+            onClick={(e) => handleTap(e, { keyboard: e.detail === 0 })}
             onTouchStart={(e) => handleTap(e)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
+                // Prevent the wrapper's keydown from also handling this.
                 e.stopPropagation();
-                handleTap(e as unknown as React.MouseEvent, { keyboard: true });
               }
             }}
             onMouseEnter={() => setActive(true)}
