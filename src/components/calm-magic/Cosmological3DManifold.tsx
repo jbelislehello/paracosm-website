@@ -31,24 +31,49 @@ const SEASON_COLORS: Record<Season, string> = {
 
 const PORTAL_DAYS = [1, 6, 11, 16, 21, 26, 31, 36, 41, 46, 51, 56, 61];
 
+const SEASON_ANATOMY: Record<Season, { kappa: string; sub: string }> = {
+  POLLENS: { kappa: 'κ onset',   sub: 'first contact' },
+  NOEMS:   { kappa: 'κ rising',  sub: 'meaning bends in' },
+  POEMS:   { kappa: 'κ peak',    sub: 'maximum curvature' },
+  TOTEMS:  { kappa: 'κ steady',  sub: 'form holds' },
+  ANTHEMS: { kappa: 'κ release', sub: 'tangent re-aligns' },
+};
+
+// Shared scene-wide breath, sampled inside <Canvas> via useFrame.
+function useSceneBreath() {
+  const ref = useRef(0.5);
+  useFrame((state) => {
+    ref.current = Math.sin(state.clock.elapsedTime * 0.65) * 0.5 + 0.5;
+  });
+  return ref;
+}
+
 // 2.5D Board Tiles Component
 function BoardTiles({ season, visitedTiles, selectedTile, onTileClick }: BoardTilesProps) {
   const groupRef = useRef<THREE.Group>(null);
   const tilesRef = useRef<THREE.Mesh[]>([]);
-  
+  const breath = useSceneBreath();
+
   useFrame((state) => {
     tilesRef.current.forEach((tile, i) => {
       if (tile) {
         const isVisited = visitedTiles.includes(i + 1);
         const isSelected = selectedTile === i + 1;
-        const targetY = isSelected ? 0.3 : isVisited ? 0.1 : 0;
+        const breathLift = breath.current * 0.04;
+        const targetY = isSelected ? 0.3 : isVisited ? 0.1 + breathLift : breathLift;
         tile.position.y = THREE.MathUtils.lerp(tile.position.y, targetY, 0.1);
-        
+
         // Pulse effect for selected tile
         if (isSelected) {
           tile.scale.setScalar(1 + Math.sin(state.clock.elapsedTime * 3) * 0.05);
         } else {
           tile.scale.setScalar(1);
+        }
+
+        // Breath the emissive on portal tiles via material
+        const mat = (tile.material as THREE.MeshStandardMaterial);
+        if (mat && PORTAL_DAYS.includes(i + 1)) {
+          mat.emissiveIntensity = 0.35 + breath.current * 0.45;
         }
       }
     });
@@ -110,6 +135,27 @@ function BoardTiles({ season, visitedTiles, selectedTile, onTileClick }: BoardTi
         );
       })}
       
+
+      {/* Osculating plane on selected tile — the plane the curve fits into */}
+      {selectedTile !== null && (() => {
+        const idx = selectedTile - 1;
+        const row = Math.floor(idx / 8);
+        const col = idx % 8;
+        const x = (col - 3.5) * 0.6;
+        const z = (row - 3.5) * 0.6;
+        return (
+          <mesh position={[x, 0.4, z]} rotation={[-Math.PI / 2.4, 0, Math.PI / 6]}>
+            <planeGeometry args={[1.6, 1.6]} />
+            <meshBasicMaterial
+              color={SEASON_COLORS[season]}
+              transparent
+              opacity={0.12}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+        );
+      })()}
+
       {/* Board base */}
       <mesh position={[0, -0.15, 0]}>
         <boxGeometry args={[5.5, 0.1, 5.5]} />
@@ -224,13 +270,24 @@ function ManifoldSpiral({ season }: { season: Season }) {
               />
             </mesh>
             <Text
-              position={[Math.cos(angle) * radius, y + 0.5, Math.sin(angle) * radius]}
-              fontSize={0.15}
+              position={[Math.cos(angle) * radius, y + 0.55, Math.sin(angle) * radius]}
+              fontSize={0.18}
               color={color}
               anchorX="center"
               anchorY="middle"
             >
               {s}
+            </Text>
+            <Text
+              position={[Math.cos(angle) * radius, y + 0.36, Math.sin(angle) * radius]}
+              fontSize={0.1}
+              color={color}
+              anchorX="center"
+              anchorY="middle"
+              fillOpacity={0.7}
+              fontStyle="italic"
+            >
+              {SEASON_ANATOMY[s as Season].kappa} · {SEASON_ANATOMY[s as Season].sub}
             </Text>
           </Float>
         );
@@ -243,15 +300,24 @@ function ManifoldSpiral({ season }: { season: Season }) {
 function TorusEnergyField({ season }: { season: Season }) {
   const torusRef = useRef<THREE.Mesh>(null);
   const innerTorusRef = useRef<THREE.Mesh>(null);
-  
+  const breath = useSceneBreath();
+
   useFrame((state) => {
     if (torusRef.current) {
       torusRef.current.rotation.x = state.clock.elapsedTime * 0.3;
       torusRef.current.rotation.y = state.clock.elapsedTime * 0.2;
+      const s = 0.96 + breath.current * 0.08;
+      torusRef.current.scale.set(s, s, s);
+      const mat = torusRef.current.material as THREE.MeshStandardMaterial;
+      if (mat) mat.opacity = 0.45 + breath.current * 0.35;
     }
     if (innerTorusRef.current) {
       innerTorusRef.current.rotation.x = -state.clock.elapsedTime * 0.5;
       innerTorusRef.current.rotation.z = state.clock.elapsedTime * 0.4;
+      const s = 0.92 + breath.current * 0.14;
+      innerTorusRef.current.scale.set(s, s, s);
+      const mat = innerTorusRef.current.material as THREE.MeshStandardMaterial;
+      if (mat) mat.opacity = 0.25 + breath.current * 0.45;
     }
   });
 
@@ -428,6 +494,7 @@ const Cosmological3DManifold: React.FC<Cosmological3DManifoldProps> = ({
 }) => {
   const { playTileSound, initAudio } = useCosmologicalAudio();
   const [audioEnabled, setAudioEnabled] = useState(false);
+  const [paperMode, setPaperMode] = useState(false);
   const lastSelectedTile = useRef<number | null>(null);
 
   // Initialize audio on user interaction
@@ -456,7 +523,10 @@ const Cosmological3DManifold: React.FC<Cosmological3DManifoldProps> = ({
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 z-10 p-4 flex items-center justify-between bg-gradient-to-b from-background via-background/80 to-transparent">
         <div className="flex items-center gap-3">
-          <h2 className="text-xl font-bold text-foreground">Cosmological Manifold</h2>
+          <div className="flex flex-col">
+            <h2 className="text-xl font-bold text-foreground leading-tight">Cosmological Manifold</h2>
+            <span className="text-[11px] italic font-serif text-muted-foreground">anatomy of a season</span>
+          </div>
           <span 
             className="px-3 py-1 rounded-full text-sm font-medium"
             style={{ 
@@ -478,6 +548,13 @@ const Cosmological3DManifold: React.FC<Cosmological3DManifoldProps> = ({
               🔊 Audio On
             </span>
           )}
+          <button
+            onClick={() => setPaperMode(p => !p)}
+            className="px-3 py-1 rounded-full text-sm font-medium bg-primary/10 hover:bg-primary/20 text-primary transition-colors flex items-center gap-1"
+            aria-pressed={paperMode}
+          >
+            {paperMode ? '🌑 Cosmos' : '📜 Paper'}
+          </button>
         </div>
         <button
           onClick={onClose}
@@ -491,7 +568,12 @@ const Cosmological3DManifold: React.FC<Cosmological3DManifoldProps> = ({
       <Canvas
         camera={{ position: [8, 5, 8], fov: 60 }}
         gl={{ antialias: true, alpha: true }}
-        style={{ background: 'linear-gradient(to bottom, #0a0a1a, #1a1a2e)' }}
+        style={{
+          background: paperMode
+            ? 'linear-gradient(to bottom, #f6f1e6, #efe6d2)'
+            : 'linear-gradient(to bottom, #0a0a1a, #1a1a2e)',
+          transition: 'background 600ms ease',
+        }}
       >
         <CosmologicalScene
           season={season}
@@ -504,12 +586,12 @@ const Cosmological3DManifold: React.FC<Cosmological3DManifoldProps> = ({
       {/* Info Panel */}
       <div className="absolute bottom-4 left-4 right-4 z-10 flex justify-between items-end pointer-events-none">
         <div className="p-4 rounded-lg bg-card/80 backdrop-blur-sm border border-border/50 max-w-xs pointer-events-auto">
-          <h3 className="text-sm font-semibold text-foreground mb-2">Controls</h3>
+          <h3 className="text-sm font-serif italic text-foreground mb-2">how to read it</h3>
           <ul className="text-xs text-muted-foreground space-y-1">
-            <li>• Drag to rotate view</li>
-            <li>• Scroll to zoom in/out</li>
-            <li>• Click tiles to select & hear tone</li>
-            <li>• Each seal has a unique harmonic</li>
+            <li>• Drag to re-frame the manifold</li>
+            <li>• Scroll to change focal length</li>
+            <li>• Click a tile to feel its harmonic</li>
+            <li>• Each season bends differently — watch κ</li>
           </ul>
         </div>
         

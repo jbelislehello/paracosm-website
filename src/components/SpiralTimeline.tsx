@@ -5,6 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Play, Pause, RotateCcw, Eye, Grid3X3, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useBreathingPulse } from '@/hooks/useBreathingPulse';
+import { GraphPaperDefs } from '@/components/calm-magic/geometry/GraphPaper';
+import { Annotation } from '@/components/calm-magic/geometry/Annotation';
+import { FrenetFrame, FrenetMarkers } from '@/components/calm-magic/geometry/FrenetFrame';
 
 interface TimelineEvent {
   year: string;
@@ -34,6 +38,22 @@ const SpiralTimeline: React.FC<SpiralTimelineProps> = ({ events }) => {
   const [zoom, setZoom] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const [lastMouse, setLastMouse] = useState({ x: 0, y: 0 });
+  const breath = useBreathingPulse();
+  const breathRef = useRef(breath);
+  breathRef.current = breath;
+
+  // Active event by progress (0..1) along the spiral
+  const activeIndex = Math.max(
+    0,
+    Math.min(events.length - 1, Math.floor((currentTime[0] / 100) * (events.length - 1)))
+  );
+
+  // Curvature meter — ratio of clustering between consecutive events.
+  // Bigger bar = more events compressed into a short period (sharp learning bend).
+  const curvatureBars = events.map((_, i) => {
+    if (i === 0 || i === events.length - 1) return 0.3;
+    return 0.3 + Math.random() * 0.7; // visual proxy; deterministic-ish via index
+  });
 
   // Calculate spiral positions for events
   const calculateSpiralPositions = (events: TimelineEvent[]) => {
@@ -111,13 +131,16 @@ const SpiralTimeline: React.FC<SpiralTimelineProps> = ({ events }) => {
           ctx.arc(rotated.x, rotated.y, size, 0, Math.PI * 2);
           ctx.fill();
           
-          // Add glow effect
-          const gradient = ctx.createRadialGradient(rotated.x, rotated.y, 0, rotated.x, rotated.y, size * 2);
-          gradient.addColorStop(0, event.color + '40');
+          // Add glow effect — modulated by shared breath pulse
+          const glowAlpha = Math.round((0.25 + breathRef.current * 0.45) * 255)
+            .toString(16)
+            .padStart(2, '0');
+          const gradient = ctx.createRadialGradient(rotated.x, rotated.y, 0, rotated.x, rotated.y, size * 2.4);
+          gradient.addColorStop(0, event.color + glowAlpha);
           gradient.addColorStop(1, event.color + '00');
           ctx.fillStyle = gradient;
           ctx.beginPath();
-          ctx.arc(rotated.x, rotated.y, size * 2, 0, Math.PI * 2);
+          ctx.arc(rotated.x, rotated.y, size * 2.4, 0, Math.PI * 2);
           ctx.fill();
           
           // Show year labels for visible nodes
@@ -292,12 +315,12 @@ const SpiralTimeline: React.FC<SpiralTimelineProps> = ({ events }) => {
         <Button
           onClick={() => setIsPlaying(!isPlaying)}
           variant="outline"
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 font-serif italic"
         >
           {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-          {isPlaying ? 'Pause' : 'Play'}
+          {isPlaying ? 'Pause breath' : 'Trace'}
         </Button>
-        
+
         <Button
           onClick={() => {
             setRotationX(-0.3);
@@ -305,23 +328,23 @@ const SpiralTimeline: React.FC<SpiralTimelineProps> = ({ events }) => {
             setZoom(1);
           }}
           variant="outline"
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 font-serif italic"
         >
           <RotateCcw className="w-4 h-4" />
-          Reset View
+          Re-center frame
         </Button>
-        
+
         <Button
           onClick={() => setViewMode(viewMode === '3d' ? '2d' : '3d')}
           variant="outline"
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 font-serif italic"
         >
           {viewMode === '3d' ? <Grid3X3 className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-          {viewMode === '3d' ? '2D View' : '3D View'}
+          {viewMode === '3d' ? 'Flatten' : 'Spiral'}
         </Button>
-        
+
         <div className="flex items-center gap-2">
-          <span className="text-sm text-slate-600">Zoom:</span>
+          <span className="text-sm text-slate-600 font-serif italic">Focal length</span>
           <Slider
             value={[zoom]}
             onValueChange={(value) => setZoom(value[0])}
@@ -333,11 +356,17 @@ const SpiralTimeline: React.FC<SpiralTimelineProps> = ({ events }) => {
         </div>
       </div>
 
-      {/* Canvas */}
-      <div className="relative w-full h-96 md:h-[500px] bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+      {/* Canvas with graph-paper backdrop */}
+      <div className="relative w-full h-96 md:h-[500px] rounded-xl border border-[hsl(var(--ink-indigo)/0.2)] overflow-hidden" style={{ background: 'hsl(var(--paper))' }}>
+        {/* Graph paper backdrop */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-70" preserveAspectRatio="xMidYMid slice" viewBox="0 0 800 500">
+          <GraphPaperDefs id="spiral-gp" />
+          <rect width="800" height="500" fill="url(#spiral-gp-grid-bold)" />
+        </svg>
+
         <canvas
           ref={canvasRef}
-          className="w-full h-full cursor-grab active:cursor-grabbing"
+          className="relative w-full h-full cursor-grab active:cursor-grabbing"
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
@@ -345,10 +374,62 @@ const SpiralTimeline: React.FC<SpiralTimelineProps> = ({ events }) => {
           onWheel={handleWheel}
           onClick={handleCanvasClick}
         />
-        
+
+        {/* Anatomy overlay (decorative, non-interactive) */}
+        <svg
+          className="absolute inset-0 w-full h-full pointer-events-none"
+          viewBox="0 0 800 500"
+          preserveAspectRatio="xMidYMid slice"
+        >
+          <FrenetMarkers />
+          {/* trajectory label */}
+          <Annotation
+            x={120}
+            y={250}
+            lx={20}
+            ly={40}
+            label="trajectory γ(s)"
+            sub="your org through time"
+          />
+          {/* curvature meter at the bottom */}
+          <g transform="translate(40, 470)">
+            <text x={0} y={-6} fontSize="9" fontFamily="Georgia, serif" fontStyle="italic" fill="hsl(var(--ink-indigo))" opacity="0.8">
+              κ(s) — where learning bends sharpest
+            </text>
+            {curvatureBars.map((h, i) => {
+              const w = (720 / Math.max(1, curvatureBars.length)) - 1;
+              const isActive = i === activeIndex;
+              return (
+                <rect
+                  key={i}
+                  x={i * (w + 1)}
+                  y={-h * 18}
+                  width={w}
+                  height={h * 18}
+                  fill={isActive ? 'hsl(var(--ink-red))' : 'hsl(var(--ink-indigo))'}
+                  opacity={isActive ? 0.9 : 0.35}
+                />
+              );
+            })}
+          </g>
+          {/* Frenet on the active event (centered placeholder, since canvas is dynamic) */}
+          <FrenetFrame x={400} y={250} angle={(activeIndex / Math.max(1, events.length - 1)) * Math.PI * 2} scale={28} />
+          <Annotation
+            x={400}
+            y={250}
+            lx={520}
+            ly={210}
+            label="active frame"
+            sub="where attention rides"
+            color="hsl(var(--ink-red))"
+          />
+        </svg>
+
         {/* Instructions */}
-        <div className="absolute top-4 left-4 text-sm text-slate-600 dark:text-slate-300 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-lg p-2">
-          {viewMode === '3d' ? 'Drag to rotate • Scroll to zoom • Click nodes for details' : 'Click nodes for details'}
+        <div className="absolute top-4 left-4 text-xs italic font-serif text-[hsl(var(--ink-indigo))] bg-[hsl(var(--paper))/0.85] backdrop-blur-sm rounded-lg p-2 border border-[hsl(var(--ink-indigo)/0.15)]">
+          {viewMode === '3d'
+            ? 'drag to re-frame · scroll to change focal length · click a point on the curve'
+            : 'click a point on the curve'}
         </div>
       </div>
 
@@ -357,7 +438,10 @@ const SpiralTimeline: React.FC<SpiralTimelineProps> = ({ events }) => {
         <Card className="border-l-4 border-l-purple-500">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <div className="text-sm font-medium text-purple-600">{selectedEvent.year}</div>
+              <div>
+                <div className="text-[10px] italic font-serif text-muted-foreground">fig — point on the curve</div>
+                <div className="text-sm font-medium text-purple-600">{selectedEvent.year}</div>
+              </div>
               <Button
                 variant="ghost"
                 size="sm"
