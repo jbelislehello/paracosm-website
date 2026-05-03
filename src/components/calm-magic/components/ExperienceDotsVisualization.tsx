@@ -77,7 +77,32 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
   const prefersReducedMotion = usePrefersReducedMotion();
   const arrowAngleRef = useRef(0);
   const arrowTweenRef = useRef<number>();
+  const compassRegionRef = useRef<HTMLDivElement>(null);
+  const focusCompass = () => compassRegionRef.current?.focus({ preventScroll: true });
   useEffect(() => { arrowAngleRef.current = arrowAngle; }, [arrowAngle]);
+
+  // Re-assert focus on the compass region when the active region changes via
+  // pointer interactions inside it (so arrow keys keep working from there).
+  useEffect(() => {
+    const root = compassRegionRef.current;
+    if (!root) return;
+    if (activeRegion && root.contains(document.activeElement)) {
+      focusCompass();
+    }
+  }, [activeRegion]);
+
+  // Outside click clears the active region so highlights don't go stale.
+  useEffect(() => {
+    const onDocMouseDown = (e: MouseEvent) => {
+      const root = compassRegionRef.current;
+      if (!root) return;
+      if (!root.contains(e.target as Node)) {
+        setActiveRegion(null);
+      }
+    };
+    document.addEventListener('mousedown', onDocMouseDown);
+    return () => document.removeEventListener('mousedown', onDocMouseDown);
+  }, []);
   const isLocked = activeRegion !== null && activeRegion !== 'freedom';
   const [forceStrength, setForceStrength] = useState({
     sovereignty: 80,
