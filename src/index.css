@@ -412,6 +412,22 @@
     --sidebar-border: 220 13% 91%;
 
     --sidebar-ring: 217.2 91.2% 59.8%;
+
+    /* Differential-geometry ink palette */
+    --ink-indigo: 230 51% 32%;
+    --ink-red: 350 56% 46%;
+    --ink-green: 150 40% 38%;
+    --paper: 42 38% 94%;
+    --paper-warm: 38 45% 88%;
+  }
+
+  @keyframes geo-breath {
+    0%, 100% { opacity: 0.55; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.04); }
+  }
+  .animate-geo-breath { animation: geo-breath 9s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) {
+    .animate-geo-breath { animation: none; }
   }
 
   .dark {
