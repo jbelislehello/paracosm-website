@@ -802,6 +802,38 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                 />
               );
             })}
+
+            {/* Contextual info panel for the active force axis */}
+            <div
+              aria-live="polite"
+              className="pointer-events-none absolute top-3 right-3 max-w-[60%] sm:max-w-[220px]"
+            >
+              {activeRegion && (() => {
+                const copy = REGION_COPY[activeRegion];
+                const accent = activeRegion === 'freedom' ? '#ff6b6b' : getForceColor(activeRegion);
+                return (
+                  <div
+                    role="status"
+                    className="rounded-md border bg-background/90 backdrop-blur-sm p-3 shadow-sm"
+                    style={{
+                      borderColor: `${accent}66`,
+                      transition: prefersReducedMotion ? 'opacity 150ms ease-out' : 'opacity 200ms ease-out, transform 200ms ease-out',
+                    }}
+                  >
+                    <div className="flex items-center gap-2 mb-1">
+                      <span
+                        className="inline-flex items-center justify-center w-6 h-6 rounded-full text-[11px] font-bold text-white"
+                        style={{ backgroundColor: accent }}
+                      >
+                        {copy.symbol}
+                      </span>
+                      <span className="text-sm font-semibold" style={{ color: accent }}>{copy.label}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-snug">{copy.body}</p>
+                  </div>
+                );
+              })()}
+            </div>
           </div>
 
           {/* Enhanced Legend & Connection Types */}
