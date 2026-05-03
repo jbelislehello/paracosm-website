@@ -15,6 +15,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import QuestionResonancePanel from "@/components/resonance/QuestionResonancePanel";
+import WhyItWorksRecap from "@/components/resonance/WhyItWorksRecap";
 
 const DesignSystemShowcase = () => {
   return (
