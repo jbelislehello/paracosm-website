@@ -49,6 +49,62 @@ function scoreOverlap(a: string[], b: string[]): number {
   return n / Math.max(a.length, b.length);
 }
 
+// ---------- Output safety helpers ----------
+const ALLOWED_AXES = new Set<string>(AXES);
+
+function sanitizeText(s: unknown, max: number): string {
+  if (typeof s !== "string") return "";
+  return s
+    .replace(/[\u0000-\u001F\u007F]/g, " ") // control chars
+    .replace(/<[^>]*>/g, "")                 // strip HTML/script
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, max);
+}
+
+function clampScore(n: unknown): number {
+  const v = typeof n === "number" ? n : Number(n);
+  if (!Number.isFinite(v)) return 0;
+  return Math.max(0, Math.min(100, Math.round(v)));
+}
+
+type SafeAxisInput = {
+  score: number;
+  rationale: string;
+  tile_hints: string[];
+};
+
+function parseModelArgs(raw: string): Map<Axis, SafeAxisInput> | null {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return null;
+  }
+  if (!parsed || typeof parsed !== "object") return null;
+  const axesRaw = (parsed as Record<string, unknown>).axes;
+  if (!Array.isArray(axesRaw)) return null;
+
+  const out = new Map<Axis, SafeAxisInput>();
+  for (const item of axesRaw) {
+    if (!item || typeof item !== "object") continue;
+    const o = item as Record<string, unknown>;
+    const axis = typeof o.axis === "string" ? o.axis.toUpperCase() : "";
+    if (!ALLOWED_AXES.has(axis)) continue;
+    const hintsRaw = Array.isArray(o.tile_hints) ? o.tile_hints : [];
+    const tile_hints = hintsRaw
+      .slice(0, 3)
+      .map((h) => sanitizeText(h, 80))
+      .filter((s): s is string => s.length > 0);
+    out.set(axis as Axis, {
+      score: clampScore(o.score),
+      rationale: sanitizeText(o.rationale, 240),
+      tile_hints,
+    });
+  }
+  return out;
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
