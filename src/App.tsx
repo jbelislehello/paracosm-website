@@ -20,6 +20,7 @@ const RelationalHealing = lazy(() => import("./pages/RelationalHealing"));
 const CaseStudies = lazy(() => import("./pages/CaseStudies"));
 const AboutUs = lazy(() => import("./pages/AboutUs"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const DreamShare = lazy(() => import("./pages/DreamShare"));
 const CalmMagicBoard = lazy(() => import("./pages/CalmMagicBoard"));
 const CalmMagicAuth = lazy(() => import("./pages/CalmMagicAuth"));
 const GlitchAuth = lazy(() => import("./pages/GlitchAuth"));
