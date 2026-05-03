@@ -317,6 +317,7 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
               label="Outer skin"
               body="The collective edge — how the whole group is holding together right now. Watch it breathe to feel coherence rise and fall."
               side="left"
+              onActiveChange={(a) => setActiveRegion(a ? 'skin' : null)}
             />
             <GeometryHotspot
               style={{ left: '33.4%', top: '50%', width: 36, height: 36, transform: 'translate(-50%, -50%)' }}
@@ -324,6 +325,7 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
               label="Inner flow"
               body="The personal current — what each individual is quietly learning underneath the group's surface."
               side="right"
+              onActiveChange={(a) => setActiveRegion(a ? 'flow' : null)}
             />
             <GeometryHotspot
               style={{ left: '50%', top: '50%', width: 28, height: 28, transform: 'translate(-50%, -50%)' }}
@@ -331,6 +333,7 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
               label="Throat — where invention happens"
               body="The narrow place where attention concentrates and new ideas get born. Curvature κ measures how sharply the field is bending here."
               side="top"
+              onActiveChange={(a) => setActiveRegion(a ? 'throat' : null)}
             />
             <GeometryHotspot
               style={{ left: '50%', top: '18%', width: 80, height: 26, transform: 'translate(-50%, -50%)', borderRadius: 4 }}
@@ -339,14 +342,16 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
               label="Attention frame"
               body="The little arrow set riding the outer skin shows where the group's focus is moving (T, tangent) and the direction it's quietly bending toward (N, normal)."
               side="bottom"
+              onActiveChange={(a) => setActiveRegion(a ? 'frame' : null)}
             />
           </div>
 
           {/* Anatomy legend — hover/tap each card for plain language */}
           <TooltipProvider delayDuration={150}>
             <div className="grid sm:grid-cols-3 gap-3 text-sm">
-              {[
+              {([
                 {
+                  region: 'frame' as const,
                   border: 'hsl(var(--ink-indigo)/0.2)',
                   color: 'hsl(var(--ink-indigo))',
                   title: 'Tangent — T',
@@ -354,6 +359,7 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
                   long: "T points along the direction the group is heading at this exact moment — the 'velocity' of attention. If T is steady, work feels aligned; if T wobbles, focus is searching.",
                 },
                 {
+                  region: 'flow' as const,
                   border: 'hsl(var(--ink-red)/0.25)',
                   color: 'hsl(var(--ink-red))',
                   title: 'Normal — N',
@@ -361,35 +367,46 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
                   long: 'N is perpendicular to T — it shows the direction the group is quietly bending toward. New insight arrives along N before anyone names it.',
                 },
                 {
+                  region: 'throat' as const,
                   border: 'hsl(var(--ink-green)/0.25)',
                   color: 'hsl(var(--ink-green))',
                   title: 'Curvature — κ',
                   short: 'How sharply the org is changing shape — the rate of invention.',
                   long: 'κ measures how tightly the path bends. Low κ = straight, predictable execution. High κ = sharp re-orientation, the moment invention happens.',
                 },
-              ].map((c) => (
-                <Tooltip key={c.title}>
-                  <TooltipTrigger asChild>
-                    <button
-                      type="button"
-                      className="text-left rounded-md border bg-[hsl(var(--paper))/50] p-3 cursor-help transition-colors hover:bg-[hsl(var(--paper))/70] focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ink-indigo)/0.4)]"
-                      style={{ borderColor: c.border }}
+              ]).map((c) => {
+                const isHot = activeRegion === c.region;
+                return (
+                  <Tooltip key={c.title}>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        onMouseEnter={() => setActiveRegion(c.region)}
+                        onMouseLeave={() => setActiveRegion((r) => r === c.region ? null : r)}
+                        onFocus={() => setActiveRegion(c.region)}
+                        onBlur={() => setActiveRegion((r) => r === c.region ? null : r)}
+                        className={`text-left rounded-md border bg-[hsl(var(--paper))/50] p-3 cursor-help transition-all hover:bg-[hsl(var(--paper))/70] focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ink-indigo)/0.4)] ${isHot ? 'ring-2 shadow-sm' : ''}`}
+                        style={{
+                          borderColor: c.border,
+                          ...(isHot ? { boxShadow: `0 0 0 2px ${c.color}33`, borderColor: c.color } : {}),
+                        }}
+                      >
+                        <div className="font-serif italic" style={{ color: c.color }}>
+                          {c.title}
+                        </div>
+                        <div className="text-xs text-muted-foreground">{c.short}</div>
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side="top"
+                      className="max-w-[260px] bg-[hsl(var(--paper))] border shadow-md"
+                      style={{ borderColor: c.border, color: c.color }}
                     >
-                      <div className="font-serif italic" style={{ color: c.color }}>
-                        {c.title}
-                      </div>
-                      <div className="text-xs text-muted-foreground">{c.short}</div>
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side="top"
-                    className="max-w-[260px] bg-[hsl(var(--paper))] border shadow-md"
-                    style={{ borderColor: c.border, color: c.color }}
-                  >
-                    <p className="text-xs leading-snug">{c.long}</p>
-                  </TooltipContent>
-                </Tooltip>
-              ))}
+                      <p className="text-xs leading-snug">{c.long}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                );
+              })}
             </div>
           </TooltipProvider>
         </CardContent>
