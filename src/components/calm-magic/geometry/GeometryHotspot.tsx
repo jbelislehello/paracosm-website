@@ -23,6 +23,8 @@ interface GeometryHotspotProps {
   side?: "top" | "bottom" | "left" | "right";
   /** Optional extra className for the trigger. */
   className?: string;
+  /** Notifies parent when hotspot becomes active (hover, focus, or tap). */
+  onActiveChange?: (active: boolean) => void;
   children?: React.ReactNode;
 }
 
@@ -40,6 +42,7 @@ export const GeometryHotspot: React.FC<GeometryHotspotProps> = ({
   onActivate,
   side = "top",
   className = "",
+  onActiveChange,
   children,
 }) => {
   const [open, setOpen] = useState(false);
@@ -51,23 +54,33 @@ export const GeometryHotspot: React.FC<GeometryHotspotProps> = ({
     };
   }, []);
 
+  const setActive = (a: boolean) => onActiveChange?.(a);
+
   const handleTap = (e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
     setOpen(true);
+    setActive(true);
     if (timerRef.current) window.clearTimeout(timerRef.current);
-    timerRef.current = window.setTimeout(() => setOpen(false), 4000);
+    timerRef.current = window.setTimeout(() => {
+      setOpen(false);
+      setActive(false);
+    }, 4000);
     onActivate?.();
   };
 
   return (
     <TooltipProvider delayDuration={150}>
-      <Tooltip open={open} onOpenChange={setOpen}>
+      <Tooltip open={open} onOpenChange={(o) => { setOpen(o); if (!o) setActive(false); }}>
         <TooltipTrigger asChild>
           <button
             type="button"
             aria-label={label}
             onClick={handleTap}
             onTouchStart={handleTap}
+            onMouseEnter={() => setActive(true)}
+            onMouseLeave={() => setActive(false)}
+            onFocus={() => setActive(true)}
+            onBlur={() => setActive(false)}
             className={`absolute group cursor-help focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ink-indigo)/0.4)] ${className}`}
             style={{
               ...style,
