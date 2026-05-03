@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
 import type { ResonanceMapData } from "@/lib/resonance";
+import { saveLastResonance } from "@/lib/resonanceStorage";
 import ResonanceMap from "./ResonanceMap";
 import PathSuggestion from "./PathSuggestion";
 

@@ -1,86 +1,66 @@
 
-# Homepage rebuild: Calm Magic as the Learning & Inventive Organization framework
+# Persist Resonance answers across sections & pages
 
-## Positioning correction
+When a visitor maps their question on the homepage, that result currently dies on navigation. Plan: persist it in `sessionStorage` and surface a personalized "Why it works for you" recap on the key destination pages.
 
-Calm Magic = the **framework** that turns an enterprise into a **Learning & Inventive Organization**.
-The Agentic Era UX Design Method is *how* it's practiced (Ask → Map → Invent → Ship on the board).
+## What gets built
 
-Headline shifts from "Learning Organizations" (vague) to:
-**"Calm Magic — the framework that turns your enterprise into a Learning & Inventive Organization."**
+### New utility — `src/lib/resonanceStorage.ts`
+- `saveLastResonance(data)` — writes `{ question, axes, savedAt }` to `sessionStorage` under key `paracosm:lastResonance` and dispatches a `resonance:updated` window event so subscribers re-read without a page reload.
+- `loadLastResonance()` — safe parse, returns `null` on missing/malformed.
+- `clearLastResonance()` — removes + emits event.
 
-Sub: *"Educate and invent with AI by mapping your real questions onto a living ontology — the Calm Magic board."*
+### New hook — `src/hooks/useLastResonance.ts`
+- Returns `{ data, clear }`, subscribes to `resonance:updated` and the native `storage` event so cross-tab updates work.
 
-## New homepage structure
+### Edit — `src/components/resonance/QuestionResonancePanel.tsx`
+- After a successful map, call `saveLastResonance(mapped)` (in addition to the existing `onMapped?.()` callback).
 
-```text
-1. FRAMEWORK HERO
-   H1: Calm Magic
-   H2: The framework that turns your enterprise into
-       a Learning & Inventive Organization.
-   Inline Resonance input → live board mapping
-   → PathSuggestion (Lead · Make · Heal)
+### New component — `src/components/resonance/WhyItWorksRecap.tsx`
+A compact card shown only when a recent resonance exists:
+- Echoes the question ("You asked: …")
+- Shows the top 2 axes as colored chips with their scores and rationales
+- Explains in one sentence how the current page addresses those axes (page-specific `lens` prop: `"method" | "board" | "leadership" | "coaching" | "design-system"`)
+- "Ask a different question" button → clears storage and scrolls back to the homepage hero (or opens the inline panel where present)
 
-2. WHY ENTERPRISES NEED THIS (3 cards)
-   - Learning gap: AI moves faster than your org learns
-   - Invention gap: roadmaps kill emergence
-   - Coherence gap: tools without ontology = automated chaos
+### Wire-in points
+- `src/pages/LandingPage.tsx` — render `<WhyItWorksRecap lens="method" />` between `MethodSteps` and `ThreePaths`, so as the visitor scrolls past the method, they see their own question reframed.
+- `src/pages/DesignSystemShowcase.tsx` — render `<WhyItWorksRecap lens="design-system" />` at the top of the page, above the existing Resonance section.
+- `src/pages/CalmMagicDemo.tsx` — render `<WhyItWorksRecap lens="board" />` at the top so the demo board is contextualized by the visitor's question.
+- `src/pages/Index.tsx` (the `/agentic-ux` AI Leadership page) — render `<WhyItWorksRecap lens="leadership" />` near the top.
+- `src/pages/RelationalHealing.tsx` (the `/calm-magic-assistant` page) — render `<WhyItWorksRecap lens="coaching" />` near the top.
 
-3. THE FIVE AXES (AxisLegend)
-   MAGIC · LOVE · CALM · OPEN · FREE
-   "Every question, team, and product lives somewhere on these five."
+### Lens copy (one sentence each)
+- `method`: "Here's how Ask → Map → Invent → Ship turns this exact question into shipped software."
+- `board`: "The board below is the same one your question landed on. Open the dominant axis to see why."
+- `leadership`: "AI Leadership maps to your question through the {top-axis} axis — governance and intentional architecture."
+- `coaching`: "Relational coaching meets your question on the {top-axis} axis — the human stakes underneath."
+- `design-system`: "The mental models and journey below are organized by the same five axes that scored your question."
 
-4. HOW IT WORKS — Agentic Era UX Design Method
-   Ask → Map → Invent → Ship
-   Question → Calm Magic Board → PRD → Foundational Prompt
-   Each step links to the surface that does it.
+## What does NOT change
 
-5. THREE PATHS INTO THE FRAMEWORK
-   Lead (executives / governance)  → /agentic-ux
-   Make (designers / inventors)    → /calm-magic-demo
-   Heal (teams / relational)       → /calm-magic-assistant
+- No DB writes, no edge function changes, no auth required — pure client-side persistence (session-scoped, cleared on tab close).
+- No new dependencies.
+- The Resonance edge function and its hardening stay as-is.
 
-6. PROOF — one quote, one outcome metric (above the fold of section)
+## Privacy & safety
 
-7. CLARITY SPRINT — Spring 2026 (kept, tightened)
+- `sessionStorage` only — never persisted across sessions, never sent to a server.
+- The recap renders only when fresh data exists; auto-disappears when the user clears it or closes the tab.
 
-8. Existing collapsibles kept below: Book · Universe · Events ·
-   Coaching · Transformation · Partners · FAQ · Contact
-```
+## Files
 
-## What gets built (Sprint A)
+**New (3):**
+- `src/lib/resonanceStorage.ts`
+- `src/hooks/useLastResonance.ts`
+- `src/components/resonance/WhyItWorksRecap.tsx`
 
-### Edits
-- **`src/pages/LandingPage.tsx`** — replace hero block (lines ~120–186) with `<FrameworkHero />`. Insert new sections 2–5 between hero and the existing Spring 2026 offer. Keep collapsibles intact.
-- **`src/i18n/en/landing.json`** — add new keys: `framework_h1`, `framework_h2`, `gap_learning`, `gap_invention`, `gap_coherence`, `axes_intro`, `method_steps_*`, `paths_lead/make/heal_*`. French keys can be filled in next pass.
+**Edited (6):**
+- `src/components/resonance/QuestionResonancePanel.tsx`
+- `src/pages/LandingPage.tsx`
+- `src/pages/DesignSystemShowcase.tsx`
+- `src/pages/CalmMagicDemo.tsx`
+- `src/pages/Index.tsx`
+- `src/pages/RelationalHealing.tsx`
 
-### New components
-- `src/components/AxisLegend.tsx` — reusable five-axis strip, reads `AXIS_LABEL` + `AXIS_BLURB` from `src/lib/resonance.ts`
-- `src/components/landing/FrameworkHero.tsx` — H1/H2 + inline `<QuestionResonancePanel />` + result + `<PathSuggestion />`
-- `src/components/landing/EnterpriseGaps.tsx` — three-card gap section
-- `src/components/landing/MethodSteps.tsx` — Ask → Map → Invent → Ship, each with link to the surface that performs it
-- `src/components/landing/ThreePaths.tsx` — Lead / Make / Heal cards replacing the two stacked gradient buttons
-
-### Not in this sprint
-- Route renames (`/method`, `/board`) — Sprint B
-- Public Calm Magic board (un-gating `/calm-magic-demo`) — Sprint B
-- Nav consolidation from 8 links to 4 — Sprint B
-- French translations of new keys — Sprint C
-- Contact form audit — Sprint C
-
-## Why this is the obvious call
-
-- **Truth in labeling**: Calm Magic stops being a mysterious product name and becomes a clear enterprise framework promise.
-- **Show, don't tell**: hero lets the visitor *use* the framework (drop a question, watch the board respond) instead of reading copy about it.
-- **Coherent spine**: every existing surface — Resonance, board, PRD, Foundational Prompt, paths, Drift, Tarot — slots into Ask/Map/Invent/Ship without renaming or relocating anything.
-- **Lead-gen safe**: all CTAs route to `jbelisle@helloarchitekt.com` or to existing pages that do.
-
-## Risk
-
-- Hero becomes taller on mobile (390px). Mitigation: input above the fold, result/paths stack below.
-- Resonance edge function is hit on every homepage submission — already rate-limited and sanitized.
-- Adds ~5 new files; no deletions, no schema changes, no dependency changes.
-
-## Approval
-
-Approve to implement Sprint A as scoped. Sprints B (route + nav cleanup, public board) and C (i18n, contact audit, copy pass) follow as separate plans once this lands.
+Approve to implement.
