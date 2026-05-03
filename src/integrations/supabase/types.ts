@@ -170,6 +170,45 @@ export type Database = {
         }
         Relationships: []
       }
+      dream_runs: {
+        Row: {
+          axes: Json
+          created_at: string
+          filename: string | null
+          id: string
+          is_public: boolean
+          overall_maturity: Json | null
+          question: string
+          share_slug: string
+          summary: string | null
+          user_id: string | null
+        }
+        Insert: {
+          axes?: Json
+          created_at?: string
+          filename?: string | null
+          id?: string
+          is_public?: boolean
+          overall_maturity?: Json | null
+          question: string
+          share_slug?: string
+          summary?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          axes?: Json
+          created_at?: string
+          filename?: string | null
+          id?: string
+          is_public?: boolean
+          overall_maturity?: Json | null
+          question?: string
+          share_slug?: string
+          summary?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       emotional_states: {
         Row: {
           calm_level: number
