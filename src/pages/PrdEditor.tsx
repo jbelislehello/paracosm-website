@@ -9,8 +9,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Loader2, Save, Sprout, BookOpen, Shapes, Flag, Rocket } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { ArrowLeft, Loader2, Save, Sprout, BookOpen, Shapes, Flag, Rocket, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
+import { QuickFillTab } from '@/components/calm-magic/quick-fill/QuickFillTab';
 
 const PrdEditor = () => {
   const { id } = useParams();
