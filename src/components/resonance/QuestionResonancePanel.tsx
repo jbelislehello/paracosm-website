@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { trackEvent } from "@/lib/analytics";
 import type { ResonanceMapData } from "@/lib/resonance";
 import ResonanceMap from "./ResonanceMap";
+import PathSuggestion from "./PathSuggestion";
 
 const EXAMPLES = [
   "How do we onboard an enterprise client without losing our soul?",
@@ -108,7 +109,12 @@ export default function QuestionResonancePanel({
         </div>
       </div>
 
-      {result && <ResonanceMap data={result} onTileClick={onTileClick} />}
+      {result && (
+        <>
+          <ResonanceMap data={result} onTileClick={onTileClick} />
+          <PathSuggestion data={result} />
+        </>
+      )}
     </div>
   );
 }

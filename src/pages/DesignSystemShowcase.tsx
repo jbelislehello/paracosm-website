@@ -14,6 +14,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import QuestionResonancePanel from "@/components/resonance/QuestionResonancePanel";
 
 const DesignSystemShowcase = () => {
   return (
@@ -34,6 +35,22 @@ const DesignSystemShowcase = () => {
             Explore the architecture behind Paracosm and Calm Magic — the design tokens, mental models, task flows, and system touchpoints that power our offerings.
           </p>
         </div>
+
+        {/* Learn — Resonance: situate your question on the Calm Magic board */}
+        <section className="rounded-2xl border bg-card/50 p-6 md:p-8 space-y-4">
+          <div className="flex items-center gap-2 flex-wrap">
+            <Badge variant="secondary" className="text-[10px] uppercase tracking-wider">Learn · Try it</Badge>
+            <h2 className="text-xl md:text-2xl font-bold">Situate your question on the board</h2>
+          </div>
+          <p className="text-sm text-muted-foreground max-w-2xl">
+            The five axes below — Magic, Love, Calm, Open, Free — are the
+            same axes that structure every model and journey on this page.
+            Ask the real question your team is sitting with: we'll map it
+            onto the Calm Magic board and point you to the path on the
+            homepage that fits.
+          </p>
+          <QuestionResonancePanel />
+        </section>
 
         <Tabs defaultValue="design-system" className="w-full">
           <TabsList className="grid w-full grid-cols-3 max-w-lg mx-auto">
