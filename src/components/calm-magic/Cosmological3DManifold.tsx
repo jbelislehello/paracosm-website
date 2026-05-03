@@ -270,13 +270,24 @@ function ManifoldSpiral({ season }: { season: Season }) {
               />
             </mesh>
             <Text
-              position={[Math.cos(angle) * radius, y + 0.5, Math.sin(angle) * radius]}
-              fontSize={0.15}
+              position={[Math.cos(angle) * radius, y + 0.55, Math.sin(angle) * radius]}
+              fontSize={0.18}
               color={color}
               anchorX="center"
               anchorY="middle"
             >
               {s}
+            </Text>
+            <Text
+              position={[Math.cos(angle) * radius, y + 0.36, Math.sin(angle) * radius]}
+              fontSize={0.1}
+              color={color}
+              anchorX="center"
+              anchorY="middle"
+              fillOpacity={0.7}
+              fontStyle="italic"
+            >
+              {SEASON_ANATOMY[s as Season].kappa} · {SEASON_ANATOMY[s as Season].sub}
             </Text>
           </Float>
         );
