@@ -56,7 +56,9 @@ const DreamBoardView: React.FC<DreamBoardViewProps> = ({
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <span className="text-xl" style={{ color: meta.color }}>{meta.symbol}</span>
-                    <span className="text-xs font-bold tracking-widest" style={{ color: meta.color }}>{meta.label}</span>
+                    <GlossaryTerm term={key} className="text-xs font-bold tracking-widest cursor-help" >
+                      <span style={{ color: meta.color }}>{meta.label}</span>
+                    </GlossaryTerm>
                   </div>
                   <span className="text-[10px] tabular-nums font-mono" style={{ color: meta.color }}>
                     {Math.round(maturity * 100)}%
