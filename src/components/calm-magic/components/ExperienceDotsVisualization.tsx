@@ -65,6 +65,9 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
   const [hoveredRing, setHoveredRing] = useState<number | null>(null);
   const [activeRegion, setActiveRegion] = useState<ActiveRegion>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
+  const arrowAngleRef = useRef(0);
+  useEffect(() => { arrowAngleRef.current = arrowAngle; }, [arrowAngle]);
+  const isLocked = activeRegion !== null && activeRegion !== 'freedom';
   const [forceStrength, setForceStrength] = useState({
     sovereignty: 80,
     memory: 70,
