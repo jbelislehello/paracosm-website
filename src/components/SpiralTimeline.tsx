@@ -438,7 +438,10 @@ const SpiralTimeline: React.FC<SpiralTimelineProps> = ({ events }) => {
         <Card className="border-l-4 border-l-purple-500">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <div className="text-sm font-medium text-purple-600">{selectedEvent.year}</div>
+              <div>
+                <div className="text-[10px] italic font-serif text-muted-foreground">fig — point on the curve</div>
+                <div className="text-sm font-medium text-purple-600">{selectedEvent.year}</div>
+              </div>
               <Button
                 variant="ghost"
                 size="sm"
