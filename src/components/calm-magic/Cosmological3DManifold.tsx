@@ -31,6 +31,23 @@ const SEASON_COLORS: Record<Season, string> = {
 
 const PORTAL_DAYS = [1, 6, 11, 16, 21, 26, 31, 36, 41, 46, 51, 56, 61];
 
+const SEASON_ANATOMY: Record<Season, { kappa: string; sub: string }> = {
+  POLLENS: { kappa: 'κ onset',   sub: 'first contact' },
+  NOEMS:   { kappa: 'κ rising',  sub: 'meaning bends in' },
+  POEMS:   { kappa: 'κ peak',    sub: 'maximum curvature' },
+  TOTEMS:  { kappa: 'κ steady',  sub: 'form holds' },
+  ANTHEMS: { kappa: 'κ release', sub: 'tangent re-aligns' },
+};
+
+// Shared scene-wide breath, sampled inside <Canvas> via useFrame.
+function useSceneBreath() {
+  const ref = useRef(0.5);
+  useFrame((state) => {
+    ref.current = Math.sin(state.clock.elapsedTime * 0.65) * 0.5 + 0.5;
+  });
+  return ref;
+}
+
 // 2.5D Board Tiles Component
 function BoardTiles({ season, visitedTiles, selectedTile, onTileClick }: BoardTilesProps) {
   const groupRef = useRef<THREE.Group>(null);
