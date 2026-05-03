@@ -1141,9 +1141,20 @@ const CalmMagicBoard = () => {
                 <FileText className="w-4 h-4 mr-1" />
                 PRD
               </Button>
-            )}
-            
-            {/* Journey Summary */}
+             )}
+
+             {/* Dream & Learn */}
+             <Button
+               variant="outline"
+               size="sm"
+               onClick={() => navigate('/dream-and-learn')}
+               title="Dream & Learn"
+             >
+               <Sparkles className="w-4 h-4 mr-1" />
+               Dream & Learn
+             </Button>
+
+             {/* Journey Summary */}
             <Button 
               variant={showJourneySummary ? "default" : "ghost"} 
               size="icon"
@@ -1442,6 +1453,15 @@ const CalmMagicBoard = () => {
                 >
                   <BookOpen className="w-4 h-4 mr-2" />
                   Encyclopedia
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="justify-start"
+                  onClick={() => { navigate('/dream-and-learn'); setShowMobileMenu(false); }}
+                >
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Dream & Learn
                 </Button>
                 <Button 
                   variant="outline" 
