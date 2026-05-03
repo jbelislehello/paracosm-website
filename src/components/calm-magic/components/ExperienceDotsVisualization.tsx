@@ -612,7 +612,9 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
               ref={svgRef}
               width="600"
               height="500"
-              className="mx-auto border rounded-lg bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 cursor-pointer"
+              tabIndex={-1}
+              focusable="false"
+              className="mx-auto border rounded-lg bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 cursor-pointer focus:outline-none"
               onClick={handleSVGClick}
             >
               {/* Background concentric circles */}
