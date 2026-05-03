@@ -568,7 +568,12 @@ const Cosmological3DManifold: React.FC<Cosmological3DManifoldProps> = ({
       <Canvas
         camera={{ position: [8, 5, 8], fov: 60 }}
         gl={{ antialias: true, alpha: true }}
-        style={{ background: 'linear-gradient(to bottom, #0a0a1a, #1a1a2e)' }}
+        style={{
+          background: paperMode
+            ? 'linear-gradient(to bottom, #f6f1e6, #efe6d2)'
+            : 'linear-gradient(to bottom, #0a0a1a, #1a1a2e)',
+          transition: 'background 600ms ease',
+        }}
       >
         <CosmologicalScene
           season={season}
