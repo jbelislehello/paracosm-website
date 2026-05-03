@@ -84,6 +84,7 @@ describe("ExperienceDotsVisualization keyboard navigation", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Sovereignty");
     fireEvent.mouseDown(document.body);
     expect(screen.queryByRole("status")).toBeNull();
+  });
 
   it("Enter on a legend button latches the region across blur", async () => {
     const user = userEvent.setup();
