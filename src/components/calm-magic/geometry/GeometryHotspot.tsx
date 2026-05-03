@@ -81,12 +81,16 @@ export const GeometryHotspot: React.FC<GeometryHotspotProps> = ({
           <button
             type="button"
             aria-label={label}
-            onClick={(e) => handleTap(e, { keyboard: e.detail === 0 })}
+            onClick={(e) => {
+              // Skip keyboard-synthesized clicks; onKeyDown handles those explicitly.
+              if (e.detail === 0) return;
+              handleTap(e);
+            }}
             onTouchStart={(e) => handleTap(e)}
             onKeyDown={(e) => {
-              // Space doesn't always fire click on buttons in jsdom; trigger explicitly.
-              if (e.key === ' ') {
+              if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
+                e.stopPropagation();
                 handleTap(e as unknown as React.MouseEvent, { keyboard: true });
               }
             }}
