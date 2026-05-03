@@ -9,10 +9,13 @@ import { Annotation } from '../geometry/Annotation';
 import { FrenetFrame, FrenetMarkers } from '../geometry/FrenetFrame';
 import { GeometryHotspot } from '../geometry/GeometryHotspot';
 import { useBreathingPulse } from '@/hooks/useBreathingPulse';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
 interface TorusEnergyFieldProps {
   mode: ModeType;
 }
+
+type AnatomyRegion = 'skin' | 'flow' | 'throat' | 'frame' | null;
 
 /**
  * Anatomy of a Learning Organization — rendered as a torus cross-section
@@ -22,6 +25,8 @@ interface TorusEnergyFieldProps {
 const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
   const [coherence, setCoherence] = useState(60);
   const [activeRings, setActiveRings] = useState(4);
+  const [activeRegion, setActiveRegion] = useState<AnatomyRegion>(null);
+  const reduced = usePrefersReducedMotion();
   const breath = useBreathingPulse(); // 0..1
 
   const cx = 200;
