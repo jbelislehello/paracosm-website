@@ -869,15 +869,14 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                   onActiveChange={(a) => {
                     if (latchedRegionRef.current) return;
                     setActiveRegion((prev) => (a ? key : prev === key ? null : prev));
-                    if (a) focusCompass();
                   }}
                   onActivate={(opts) => {
                     if (opts?.keyboard) {
                       toggleLatch(key);
                     } else {
                       latchRegion(key);
+                      focusCompass();
                     }
-                    focusCompass();
                   }}
                 />
               );
