@@ -127,6 +127,40 @@ export const TorusRelationnel: React.FC<TorusRelationnelProps> = ({
               </marker>
             </defs>
           </svg>
+
+          {/* Plain-language hotspots */}
+          <GeometryHotspot
+            style={{ left: '50%', top: '50%', width: 22, height: 22, transform: 'translate(-50%, -50%)' }}
+            symbol="•"
+            label="You — the still point"
+            body="The center the four phases move around. You stay here while contact rises, peaks, and releases."
+            side="right"
+          />
+          <GeometryHotspot
+            style={{ left: '50%', top: '50%', width: 90, height: 90, transform: 'translate(-50%, -50%)' }}
+            symbol="↻"
+            label="Attention flow"
+            body="The pulse of attention right now: the rotating line shows where contact is heading next around the cycle."
+            side="bottom"
+          />
+          {PHASE_ORDER.map((phase) => (
+            <GeometryHotspot
+              key={phase}
+              style={{
+                left: PHASE_HOTSPOT_POS[phase].left,
+                top: PHASE_HOTSPOT_POS[phase].top,
+                width: 30,
+                height: 30,
+                transform: 'translate(-50%, -50%)',
+              }}
+              shape="rect"
+              symbol={TORUS_PHASES[phase].label.charAt(0)}
+              label={TORUS_PHASES[phase].label}
+              body={PHASE_PLAIN[phase]}
+              side="top"
+              onActivate={() => onPhaseChange?.(phase)}
+            />
+          ))}
         </div>
         <p className="text-[10px] italic text-muted-foreground text-center -mt-2 mb-2 font-serif">
           Approche → Ouverture → Intensité → Retrait —<br/>the four fundamental forms of contact
