@@ -112,6 +112,9 @@ export const TorusRelationnel: React.FC<TorusRelationnelProps> = ({
             </defs>
           </svg>
         </div>
+        <p className="text-[10px] italic text-muted-foreground text-center -mt-2 mb-2 font-serif">
+          Approche → Ouverture → Intensité → Retrait —<br/>the four fundamental forms of contact
+        </p>
 
         {/* Phase Labels */}
         <div className="grid grid-cols-2 gap-2 text-center">
