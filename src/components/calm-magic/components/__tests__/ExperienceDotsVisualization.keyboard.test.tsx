@@ -9,6 +9,13 @@ const focusRegion = () => {
   return region;
 };
 
+const getLegendButton = (name: string) => {
+  const buttons = screen.getAllByRole("button", { name: new RegExp(`^${name}$`, "i") });
+  const btn = buttons.find((b) => b.hasAttribute("aria-pressed"));
+  if (!btn) throw new Error(`legend button not found for ${name}`);
+  return btn as HTMLButtonElement;
+};
+
 describe("ExperienceDotsVisualization keyboard navigation", () => {
   it.each([
     ["{ArrowRight}", "Sovereignty"],
@@ -85,5 +92,54 @@ describe("ExperienceDotsVisualization keyboard navigation", () => {
     fireEvent.mouseDown(document.body);
     expect(screen.queryByRole("status")).toBeNull();
   });
-});
 
+  it("Enter on a legend button latches the region across blur", async () => {
+    const user = userEvent.setup();
+    render(<ExperienceDotsVisualization mode="personal" />);
+    const sov = getLegendButton("sovereignty");
+    sov.focus();
+    await user.keyboard("{Enter}");
+    expect(screen.getByRole("status")).toHaveTextContent("Sovereignty");
+    // Move focus to another legend button; latch should persist.
+    const memory = getLegendButton("memory");
+    memory.focus();
+    expect(screen.getByRole("status")).toHaveTextContent("Sovereignty");
+  });
+
+  it("Space on a latched legend button toggles the region off", async () => {
+    const user = userEvent.setup();
+    render(<ExperienceDotsVisualization mode="personal" />);
+    const sov = getLegendButton("sovereignty");
+    sov.focus();
+    await user.keyboard("{Enter}");
+    expect(screen.getByRole("status")).toHaveTextContent("Sovereignty");
+    await user.keyboard(" ");
+    expect(screen.queryByRole("status")).toBeNull();
+  });
+
+  it("Enter/click on a hotspot updates the info panel", () => {
+    render(<ExperienceDotsVisualization mode="personal" />);
+    const region = screen.getByTestId("compass-keyboard-region");
+    const candidates = screen.getAllByRole("button", { name: /^Novelty$/ });
+    // Hotspot button has no aria-pressed (legend does).
+    const hotspot = candidates.find(
+      (b) => region.contains(b) && !b.hasAttribute("aria-pressed")
+    )!;
+    // Simulate keyboard activation: native Enter on a button dispatches click with detail=0.
+    fireEvent.click(hotspot, { detail: 0 });
+    expect(screen.getByRole("status")).toHaveTextContent("Novelty");
+  });
+
+  it("Escape clears a latched region from a legend button", async () => {
+    const user = userEvent.setup();
+    render(<ExperienceDotsVisualization mode="personal" />);
+    const sov = getLegendButton("sovereignty");
+    sov.focus();
+    await user.keyboard("{Enter}");
+    expect(screen.getByRole("status")).toHaveTextContent("Sovereignty");
+    // Escape is wired on the compass region.
+    focusRegion();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("status")).toBeNull();
+  });
+});

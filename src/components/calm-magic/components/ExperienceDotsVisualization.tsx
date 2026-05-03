@@ -78,7 +78,16 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
   const arrowAngleRef = useRef(0);
   const arrowTweenRef = useRef<number>();
   const compassRegionRef = useRef<HTMLDivElement>(null);
+  const latchedRegionRef = useRef<ActiveRegion>(null);
   const focusCompass = () => compassRegionRef.current?.focus({ preventScroll: true });
+  const latchRegion = (region: ActiveRegion) => {
+    latchedRegionRef.current = region;
+    setActiveRegion(region);
+  };
+  const toggleLatch = (region: Exclude<ActiveRegion, null>) => {
+    const next = latchedRegionRef.current === region ? null : region;
+    latchRegion(next);
+  };
   useEffect(() => { arrowAngleRef.current = arrowAngle; }, [arrowAngle]);
 
   // Re-assert focus on the compass region when the active region changes via
@@ -97,6 +106,7 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
       const root = compassRegionRef.current;
       if (!root) return;
       if (!root.contains(e.target as Node)) {
+        latchedRegionRef.current = null;
         setActiveRegion(null);
       }
     };
@@ -593,6 +603,16 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
             data-testid="compass-keyboard-region"
             onMouseDown={() => focusCompass()}
             onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                e.preventDefault();
+                latchedRegionRef.current = null;
+                setActiveRegion(null);
+                focusCompass();
+                return;
+              }
+              // Only handle arrow/Enter/Space when the wrapper itself owns focus,
+              // so child buttons (legend, hotspots) handle their own activation.
+              if (e.target !== e.currentTarget) return;
               const map: Record<string, ActiveRegion> = {
                 ArrowRight: 'sovereignty',
                 ArrowDown: 'memory',
@@ -600,12 +620,10 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                 ArrowUp: 'novelty',
                 Enter: 'freedom',
                 ' ': 'freedom',
-                Escape: null,
               };
               if (!(e.key in map)) return;
               e.preventDefault();
-              setActiveRegion(map[e.key]);
-              if (e.key === 'Escape') focusCompass();
+              latchRegion(map[e.key]);
             }}
           >
             <svg
@@ -849,8 +867,16 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                   body={copy.body}
                   side={p.side}
                   onActiveChange={(a) => {
+                    if (latchedRegionRef.current) return;
                     setActiveRegion((prev) => (a ? key : prev === key ? null : prev));
-                    if (a) focusCompass();
+                  }}
+                  onActivate={(opts) => {
+                    if (opts?.keyboard) {
+                      toggleLatch(key);
+                    } else {
+                      latchRegion(key);
+                      focusCompass();
+                    }
                   }}
                 />
               );
@@ -900,11 +926,19 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                     <button
                       key={force}
                       type="button"
-                      onMouseEnter={() => setActiveRegion(force)}
-                      onMouseLeave={() => setActiveRegion((prev) => (prev === force ? null : prev))}
-                      onFocus={() => setActiveRegion(force)}
-                      onBlur={() => setActiveRegion((prev) => (prev === force ? null : prev))}
-                      className={`flex items-center gap-2 rounded-md px-2 py-1 text-left transition-all duration-200 ${
+                      aria-pressed={isActive}
+                      onMouseEnter={() => { if (!latchedRegionRef.current) setActiveRegion(force); }}
+                      onMouseLeave={() => { if (!latchedRegionRef.current) setActiveRegion((prev) => (prev === force ? null : prev)); }}
+                      onFocus={() => { if (!latchedRegionRef.current) setActiveRegion(force); }}
+                      onBlur={() => { if (!latchedRegionRef.current) setActiveRegion((prev) => (prev === force ? null : prev)); }}
+                      onClick={() => toggleLatch(force)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          toggleLatch(force);
+                        }
+                      }}
+                      className={`flex items-center gap-2 rounded-md px-2 py-1 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 ${
                         isActive ? 'ring-2 ring-offset-1 ring-purple-400 bg-purple-50/60 dark:bg-purple-950/30' : ''
                       }`}
                       style={isActive ? { boxShadow: `0 0 0 1px ${getForceColor(force)}40` } : undefined}

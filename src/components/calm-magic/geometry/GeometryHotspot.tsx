@@ -17,8 +17,8 @@ interface GeometryHotspotProps {
   symbol?: string;
   /** Affordance shape: dashed circle (default) or rectangle. */
   shape?: "circle" | "rect";
-  /** Forward click to underlying element (e.g. SVG path). */
-  onActivate?: () => void;
+  /** Forward activation to parent. `keyboard: true` when triggered via Enter/Space. */
+  onActivate?: (opts?: { keyboard?: boolean }) => void;
   /** Tooltip side. */
   side?: "top" | "bottom" | "left" | "right";
   /** Optional extra className for the trigger. */
@@ -56,16 +56,22 @@ export const GeometryHotspot: React.FC<GeometryHotspotProps> = ({
 
   const setActive = (a: boolean) => onActiveChange?.(a);
 
-  const handleTap = (e: React.MouseEvent | React.TouchEvent) => {
+  const handleTap = (
+    e: React.MouseEvent | React.TouchEvent,
+    opts?: { keyboard?: boolean }
+  ) => {
     e.stopPropagation();
     setOpen(true);
     setActive(true);
     if (timerRef.current) window.clearTimeout(timerRef.current);
-    timerRef.current = window.setTimeout(() => {
-      setOpen(false);
-      setActive(false);
-    }, 4000);
-    onActivate?.();
+    // Keyboard activations latch via the parent; skip the auto-close timer.
+    if (!opts?.keyboard) {
+      timerRef.current = window.setTimeout(() => {
+        setOpen(false);
+        setActive(false);
+      }, 4000);
+    }
+    onActivate?.(opts);
   };
 
   return (
@@ -75,8 +81,14 @@ export const GeometryHotspot: React.FC<GeometryHotspotProps> = ({
           <button
             type="button"
             aria-label={label}
-            onClick={handleTap}
-            onTouchStart={handleTap}
+            onClick={(e) => handleTap(e, { keyboard: e.detail === 0 })}
+            onTouchStart={(e) => handleTap(e)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                // Prevent the wrapper's keydown from also handling this.
+                e.stopPropagation();
+              }
+            }}
             onMouseEnter={() => setActive(true)}
             onMouseLeave={() => setActive(false)}
             onFocus={() => setActive(true)}
