@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import ExperienceDotsVisualization from "../ExperienceDotsVisualization";
 
@@ -56,4 +56,34 @@ describe("ExperienceDotsVisualization keyboard navigation", () => {
     await user.keyboard("a");
     expect(screen.queryByRole("status")).toBeNull();
   });
+
+  it("mousedown on the SVG focuses the compass region", () => {
+    render(<ExperienceDotsVisualization mode="personal" />);
+    const region = screen.getByTestId("compass-keyboard-region");
+    const svg = region.querySelector("svg")!;
+    fireEvent.mouseDown(svg);
+    expect(document.activeElement).toBe(region);
+  });
+
+  it("Escape clears the region and keeps focus on the compass", async () => {
+    const user = userEvent.setup();
+    render(<ExperienceDotsVisualization mode="personal" />);
+    const region = focusRegion();
+    await user.keyboard("{ArrowRight}");
+    expect(screen.getByRole("status")).toHaveTextContent("Sovereignty");
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("status")).toBeNull();
+    expect(document.activeElement).toBe(region);
+  });
+
+  it("clicking outside the compass clears the active region", async () => {
+    const user = userEvent.setup();
+    render(<ExperienceDotsVisualization mode="personal" />);
+    focusRegion();
+    await user.keyboard("{ArrowRight}");
+    expect(screen.getByRole("status")).toHaveTextContent("Sovereignty");
+    fireEvent.mouseDown(document.body);
+    expect(screen.queryByRole("status")).toBeNull();
+  });
 });
+

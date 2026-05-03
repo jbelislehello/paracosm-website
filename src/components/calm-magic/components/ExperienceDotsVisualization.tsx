@@ -77,7 +77,32 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
   const prefersReducedMotion = usePrefersReducedMotion();
   const arrowAngleRef = useRef(0);
   const arrowTweenRef = useRef<number>();
+  const compassRegionRef = useRef<HTMLDivElement>(null);
+  const focusCompass = () => compassRegionRef.current?.focus({ preventScroll: true });
   useEffect(() => { arrowAngleRef.current = arrowAngle; }, [arrowAngle]);
+
+  // Re-assert focus on the compass region when the active region changes via
+  // pointer interactions inside it (so arrow keys keep working from there).
+  useEffect(() => {
+    const root = compassRegionRef.current;
+    if (!root) return;
+    if (activeRegion && root.contains(document.activeElement)) {
+      focusCompass();
+    }
+  }, [activeRegion]);
+
+  // Outside click clears the active region so highlights don't go stale.
+  useEffect(() => {
+    const onDocMouseDown = (e: MouseEvent) => {
+      const root = compassRegionRef.current;
+      if (!root) return;
+      if (!root.contains(e.target as Node)) {
+        setActiveRegion(null);
+      }
+    };
+    document.addEventListener('mousedown', onDocMouseDown);
+    return () => document.removeEventListener('mousedown', onDocMouseDown);
+  }, []);
   const isLocked = activeRegion !== null && activeRegion !== 'freedom';
   const [forceStrength, setForceStrength] = useState({
     sovereignty: 80,
@@ -560,11 +585,13 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
 
           {/* Visualization */}
           <div
-            className="relative outline-none focus-visible:ring-2 focus-visible:ring-purple-400 rounded-lg"
+            ref={compassRegionRef}
+            className="relative outline-none focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-background rounded-lg"
             tabIndex={0}
             role="group"
             aria-label="Freedom compass. Use arrow keys to focus axes, Enter or Space for Freedom, Escape to clear."
             data-testid="compass-keyboard-region"
+            onMouseDown={() => focusCompass()}
             onKeyDown={(e) => {
               const map: Record<string, ActiveRegion> = {
                 ArrowRight: 'sovereignty',
@@ -578,13 +605,16 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
               if (!(e.key in map)) return;
               e.preventDefault();
               setActiveRegion(map[e.key]);
+              if (e.key === 'Escape') focusCompass();
             }}
           >
             <svg
               ref={svgRef}
               width="600"
               height="500"
-              className="mx-auto border rounded-lg bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 cursor-pointer"
+              tabIndex={-1}
+              focusable="false"
+              className="mx-auto border rounded-lg bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 cursor-pointer focus:outline-none"
               onClick={handleSVGClick}
             >
               {/* Background concentric circles */}
@@ -818,7 +848,10 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                   label={copy.label}
                   body={copy.body}
                   side={p.side}
-                  onActiveChange={(a) => setActiveRegion((prev) => (a ? key : prev === key ? null : prev))}
+                  onActiveChange={(a) => {
+                    setActiveRegion((prev) => (a ? key : prev === key ? null : prev));
+                    if (a) focusCompass();
+                  }}
                 />
               );
             })}

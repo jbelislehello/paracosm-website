@@ -1,81 +1,45 @@
-## Automated Tests for Compass Keyboard Navigation
+## Focus management for the SVG compass
 
-The previous plan to add keyboard navigation was interrupted before implementation, and the project has no test setup yet. This plan covers both: implement the keyboard handler (small, deterministic) and add a Vitest suite that exercises it.
+Goal: ensure the compass keyboard region (`data-testid="compass-keyboard-region"`) holds focus appropriately so keyboard navigation, info panel, and visual highlights stay consistent across pointer and programmatic interactions.
 
-### 1. Test infrastructure (new)
+### Current behavior
 
-Add a minimal Vitest + Testing Library setup since none exists:
+- Wrapper at `ExperienceDotsVisualization.tsx:562` is `tabIndex={0}` with arrow-key handling, but:
+  - Clicking the SVG (`onClick={handleSVGClick}` at line 588) places focus on the inner `<svg>` (or nowhere), so subsequent arrow keys do nothing.
+  - Hovering a `GeometryHotspot` or legend button changes `activeRegion` but never moves focus, so arrow keys after a hover still operate from wherever focus last was.
+  - When `activeRegion` changes programmatically (autonomous rotation, hotspot hover), focus does not follow, and there is no visible focus state on the compass region.
+  - Clicking outside the compass leaves `activeRegion` set; focus ring stays even though the user has moved on.
 
-- `package.json` devDependencies: `vitest`, `@testing-library/react`, `@testing-library/jest-dom`, `@testing-library/user-event`, `jsdom`.
-- `vitest.config.ts` — jsdom env, globals on, alias `@` → `src`, setup file.
-- `src/test/setup.ts` — `@testing-library/jest-dom` import + `matchMedia` polyfill (needed by `usePrefersReducedMotion`).
-- `tsconfig.app.json` — add `"vitest/globals"` to `compilerOptions.types`.
+### Changes (single file: `src/components/calm-magic/components/ExperienceDotsVisualization.tsx`)
 
-### 2. Implement keyboard handler in `ExperienceDotsVisualization.tsx`
+1. **Wrapper ref + helper.** Add `const compassRegionRef = useRef<HTMLDivElement>(null)` and attach to the wrapper div at line 562. Add a small helper `focusCompass()` that calls `compassRegionRef.current?.focus({ preventScroll: true })`.
 
-Replace the wrapper at line 562 with a focusable container:
+2. **Click on SVG re-focuses the compass region.** In the wrapper's `onMouseDown` (use mousedown, not click, to avoid the focus-then-blur flicker on Safari), call `focusCompass()`. Keep `handleSVGClick` for placement logic. Also set `tabIndex={-1}` on the inner `<svg>` so it is not itself a focus target.
 
-```tsx
-<div
-  className="relative outline-none focus-visible:ring-2 focus-visible:ring-purple-400 rounded-lg"
-  tabIndex={0}
-  role="group"
-  aria-label="Freedom compass. Arrow keys focus axes; Enter/Space focus Freedom; Escape clears."
-  data-testid="compass-keyboard-region"
-  onKeyDown={(e) => {
-    const map: Record<string, ActiveRegion> = {
-      ArrowRight: 'sovereignty',
-      ArrowDown: 'memory',
-      ArrowLeft: 'intimacy',
-      ArrowUp: 'novelty',
-      Enter: 'freedom',
-      ' ': 'freedom',
-      Escape: null,
-    };
-    if (!(e.key in map)) return;
-    e.preventDefault();
-    setActiveRegion(map[e.key]);
-  }}
->
-```
+3. **Pointer interactions on hotspots/legend re-anchor focus.** When `GeometryHotspot.onActiveChange(true)` fires (line 821) or a legend button receives `onMouseEnter`/`onFocus` (lines 870–873), call `focusCompass()` so arrow keys continue from the just-activated axis. Legend buttons that already receive native focus remain functional; their existing `onFocus` handler stays.
 
-The existing info panel already renders `REGION_COPY[activeRegion].label` with `role="status"` and `aria-live="polite"`, so it updates automatically.
+4. **Keep focus on programmatic region changes.** When `activeRegion` changes and the wrapper currently contains `document.activeElement` (or contains nothing focused yet but the user previously interacted), re-assert focus via a `useEffect([activeRegion])` that only refocuses if `compassRegionRef.current?.contains(document.activeElement)` is true. This avoids stealing focus when the user is typing elsewhere.
 
-### 3. Test suite
+5. **Escape returns focus to wrapper and clears region.** Existing Escape handler already sets `activeRegion = null`; additionally call `focusCompass()` so the visible focus ring stays on the compass group rather than disappearing into the document body.
 
-`src/components/calm-magic/components/__tests__/ExperienceDotsVisualization.keyboard.test.tsx`
+6. **Outside click clears active region.** Add a `useEffect` listening on `mousedown` at the document level: if the click target is not inside `compassRegionRef.current`, call `setActiveRegion(null)`. This prevents stale highlights when the user moves on.
 
-Covers:
+7. **Visible focus state.** The wrapper already has `focus-visible:ring-2 focus-visible:ring-purple-400`; no change needed, but verify the ring renders above the SVG by adding `relative z-0` (already `relative`) and ensuring no child has a higher stacking context that would hide it. If needed, add `focus-visible:ring-offset-2 focus-visible:ring-offset-background`.
 
-1. **ArrowRight → Sovereignty panel** — render, focus the compass region, press `ArrowRight`, assert the status panel contains "Sovereignty".
-2. **ArrowDown / ArrowLeft / ArrowUp** — parameterized via `it.each`, asserts "Memory", "Intimacy", "Novelty" respectively.
-3. **Enter and Space → Freedom** — both keys produce the Freedom label.
-4. **Escape clears** — after pressing `ArrowRight` and seeing "Sovereignty", press `Escape` and assert the panel is no longer in the document (queryByRole `status` returns null, or the label text is gone).
-5. **Unhandled keys are ignored** — pressing `Tab` or `a` does not change panel state.
+### Tests (extend `__tests__/ExperienceDotsVisualization.keyboard.test.tsx`)
 
-Test pattern:
+Add three cases:
 
-```tsx
-const user = userEvent.setup();
-render(<ExperienceDotsVisualization mode="personal" />);
-const region = screen.getByTestId('compass-keyboard-region');
-region.focus();
-await user.keyboard('{ArrowRight}');
-expect(screen.getByRole('status')).toHaveTextContent('Sovereignty');
-await user.keyboard('{Escape}');
-expect(screen.queryByRole('status')).toBeNull();
-```
+1. **Click on SVG focuses the compass region.** Render, `fireEvent.mouseDown` on the inner `<svg>`, expect `document.activeElement === getByTestId('compass-keyboard-region')`.
+2. **Escape restores focus to the compass.** After ArrowRight then a manual `blur()`, press Escape via `user.keyboard('{Escape}')` while the wrapper still owns focus; expect status panel removed and `document.activeElement` is the compass region.
+3. **Outside click clears active region.** After ArrowRight shows "Sovereignty", `fireEvent.mouseDown(document.body)`; expect `queryByRole('status')` returns null.
 
-### 4. Out of scope
+### Out of scope
 
-- No tests for arrow-tween animation (timing/RAF), GeometryHotspot rendering, or audio.
-- No changes to the info panel, hotspots, or rotation logic.
+- No changes to rotation, audio, hotspot tooltip behavior, or info panel markup.
+- No new dependencies.
 
-### Files changed
+### Files
 
-- `package.json` (deps)
-- `vitest.config.ts` (new)
-- `src/test/setup.ts` (new)
-- `tsconfig.app.json` (types)
-- `src/components/calm-magic/components/ExperienceDotsVisualization.tsx` (keyboard handler on wrapper at line 562)
-- `src/components/calm-magic/components/__tests__/ExperienceDotsVisualization.keyboard.test.tsx` (new)
+- `src/components/calm-magic/components/ExperienceDotsVisualization.tsx` (focus ref, mousedown handlers, effects)
+- `src/components/calm-magic/components/__tests__/ExperienceDotsVisualization.keyboard.test.tsx` (3 new cases)
