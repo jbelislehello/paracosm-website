@@ -1,46 +1,112 @@
-## Keyboard activation for legend buttons and hotspots
+Do it for real. This site is live.
 
-Goal: Legend chips and `GeometryHotspot` triggers should be reachable via Tab and activatable via Enter/Space, updating the info panel the same way mouse hover/click does. Today both elements are `<button>`s so they receive focus, but their behavior on Enter/Space is incomplete:
+## Dream Mode — The board answers itself through your PRD
 
-- **Legend buttons** (`ExperienceDotsVisualization.tsx:900`) update `activeRegion` on `onFocus`, but pressing Enter/Space afterwards does nothing — there is no `onClick` and no toggle. Tabbing away (`onBlur`) clears the region, so the panel disappears as soon as the user moves on instead of latching.
-- **Hotspots** (`GeometryHotspot.tsx`) call `handleTap` on click, which works with Enter/Space natively, but the parent's `onActiveChange` callback only re-anchors focus on hover/focus, not on activation. Enter/Space currently sets a 4-second timer that auto-clears `activeRegion`, which fights with the keyboard model.
+A new tab in the Calm Magic Assistant where the user chooses one of several rotating prompts, uploads an existing PRD (PDF/DOCX/Markdown), and then watches the 5-axis board (LOVE / MAGIC / CALM / OPEN / FREE) light up tile-by-tile while AI narration streams a poetic interpretation drawn from their own document.
 
-### Changes
+### User flow
 
-**1. `src/components/calm-magic/components/ExperienceDotsVisualization.tsx`**
+```
+[ Dream tab ]
+   ↓
+1. Choose a prompt           (3 curated cards rotating from a pool)
+   ↓
+2. Upload your PRD           (drop zone — PDF / DOCX / MD)
+   ↓
+3. Parse + analyze           (edge function extracts text, sends to AI)
+   ↓
+4. Dream sequence begins
+     • Board fades in dim
+     • Each axis (LOVE→MAGIC→CALM→OPEN→FREE) wakes in sequence
+     • Tiles within an axis pulse on as AI streams that axis's narration
+     • Insight panel updates per axis
+   ↓
+5. Final state               (full board lit, summary + "Save as PRD seed")
+```
 
-Legend buttons (lines ~897–918):
-- Add `onClick` and `onKeyDown` (Enter/Space) that **toggle** `activeRegion` between the force and `null`. Toggle persists after blur so keyboard users can latch a region.
-- Remove the `onBlur` auto-clear when the region was set by an explicit activation. Track latched state via a small ref or by checking current `activeRegion === force` on click. Simplest: keep `onFocus` as a soft preview, and on click/Enter/Space set a "latched" flag in a `useRef<ActiveRegion | null>`. While latched, `onBlur` does not clear; Escape (already wired on the compass) clears both `activeRegion` and the latch.
-- Add `aria-pressed={isActive}` to communicate state to AT.
+### New files
 
-Hotspot wiring (lines ~843–856):
-- Pass an `onActivate` prop to `GeometryHotspot` that latches the region (same ref/state as legend) and calls `focusCompass()`. This makes Enter/Space on the hotspot behave like a click without the 4-second auto-dismiss for keyboard users.
+- `src/components/calm-magic/dream/DreamMode.tsx` — main container, state machine (`idle → prompt → upload → analyzing → dreaming → complete`)
+- `src/components/calm-magic/dream/PromptPicker.tsx` — 3 curated cards from a rotating pool
+- `src/components/calm-magic/dream/PrdUploader.tsx` — drop zone, file validation (PDF/DOCX/MD, ≤10MB)
+- `src/components/calm-magic/dream/DreamSequence.tsx` — orchestrates the self-answering animation
+- `src/components/calm-magic/dream/NarrationStream.tsx` — markdown-rendered streaming text with caret
+- `src/data/dreamPrompts.ts` — curated prompts pool (~12), each tagged to which axes it most activates
+- `supabase/functions/dream-prd-analysis/index.ts` — parses uploaded file, calls Lovable AI Gateway with streaming, returns SSE with per-axis insights + tile activations
 
-Compass keyboard handler (lines ~595–609):
-- Escape already clears `activeRegion`; also clear the latch ref.
+### Edge function: `dream-prd-analysis`
 
-**2. `src/components/calm-magic/geometry/GeometryHotspot.tsx`**
+- Accepts `multipart/form-data` (file + question + optional projectId)
+- Parses:
+  - **PDF** via `pdf-parse` equivalent (use `unpdf` — Deno-friendly)
+  - **DOCX** via `mammoth` (Deno via esm.sh)
+  - **MD/TXT** read directly
+- Truncates to ~30k chars
+- Calls `google/gemini-3-flash-preview` with `stream: true` and a tool-call schema requesting per-axis output:
+  ```json
+  {
+    "axes": [
+      { "key": "love",  "narration": "...", "tile_keys": ["aliveness","resonance"] },
+      { "key": "magic", "narration": "...", "tile_keys": [...] },
+      { "key": "calm",  "narration": "...", "tile_keys": [...] },
+      { "key": "open",  "narration": "...", "tile_keys": [...] },
+      { "key": "free",  "narration": "...", "tile_keys": [...] }
+    ],
+    "summary": "..."
+  }
+  ```
+- Streams SSE so the client can reveal axes/tiles progressively
+- Validates input with zod, enforces 10MB cap, surfaces 429/402
 
-- In `handleTap`, only schedule the 4-second auto-close timer for touch/mouse events, not for keyboard activations. Detect via `e.type === 'touchstart'` or by checking `e.detail === 0` on click (keyboard-triggered clicks have `detail === 0`). When keyboard-triggered, leave the tooltip open and skip the timer; rely on blur/Escape to close.
-- Add an explicit `onKeyDown` for Enter/Space on the trigger that calls the same path as `handleTap` and signals keyboard activation, so the parent can latch.
+### Self-answering animation
 
-**3. Tests — `src/components/calm-magic/components/__tests__/ExperienceDotsVisualization.keyboard.test.tsx`**
+Reuse existing `ExperienceDotsVisualization` with a new prop `dreamMode?: { activeAxis, litTiles[], dimmed }`:
 
-Add cases:
-1. **Tab to legend, Enter latches region.** `userEvent.tab()` until a legend button (e.g., Sovereignty) is focused, press `{Enter}`, expect `getByRole('status')` shows "Sovereignty" and remains after a subsequent `tab()` moves focus away.
-2. **Space toggles legend region off.** From the latched state, refocus same legend button and press `{Space}`; expect `queryByRole('status')` is null.
-3. **Enter on a hotspot updates the panel.** Focus a `GeometryHotspot` button (find by `aria-label`), press `{Enter}`, expect the info panel shows the matching label and persists (no auto-clear within the test window — use a short `await` rather than fake timers).
-4. **Escape clears latched region from legend.** After Enter latches Sovereignty, press `{Escape}`; expect panel removed.
+- When `dimmed`, all regions render at 20% opacity
+- `activeAxis` triggers that region's pulse animation
+- `litTiles` glow brighter than baseline; once lit, stay lit
+- Driven by parent `DreamSequence` consuming the SSE stream
 
-### Out of scope
+Narration streams beside the board (right column on desktop, below on mobile <768px), token-by-token, markdown-rendered via `react-markdown`.
 
-- No visual redesign of legend chips or hotspots.
-- No changes to arrow-key navigation, outside-click clearing, or rotation/audio.
-- Touch behavior of hotspots (4s auto-close) is preserved.
+### Hook into existing tab system
 
-### Files
+Update:
 
-- `src/components/calm-magic/components/ExperienceDotsVisualization.tsx`
-- `src/components/calm-magic/geometry/GeometryHotspot.tsx`
-- `src/components/calm-magic/components/__tests__/ExperienceDotsVisualization.keyboard.test.tsx`
+- `CalmMagicAssistant.tsx` — add `'dream'` to the `viewMode` union
+- `ViewRenderer.tsx` — new case `'dream'` returning `<DreamMode />`
+- `ViewModeNavigation.tsx` — append `{ key: 'dream', label: '✨ Dream', desc: 'Board answers itself' }`
+
+### Curated prompts (initial pool, in `dreamPrompts.ts`)
+
+Each rotation surfaces 3 random prompts. Examples:
+
+- "What is your product secretly afraid of?"
+- "Where does your roadmap stop listening?"
+- "Which user pain are you avoiding naming?"
+- "What would your PRD say if it could dream?"
+- "Where is aliveness leaking out of this product?"
+- "Which feature is actually a coping mechanism?"
+
+(Full list of ~12 in the data file.)
+
+### Persistence (optional, behind feature)
+
+If a `projectId` is passed, store the dream session in a new `dream_sessions` table:
+
+- `id, user_id, project_id, question, prd_filename, ai_summary, axis_insights jsonb, created_at`
+- RLS: owner-only via existing `is_project_owner` pattern
+
+This lets users revisit past dreams. **I'll only add the table if you confirm — otherwise keep it ephemeral for v1.**
+
+### Technical notes
+
+- File parsing happens server-side (edge function) — never trust client-extracted text
+- AI call uses Lovable AI Gateway, `LOVABLE_API_KEY` already configured
+- Streaming uses SSE, parsed line-by-line on the client (per ai-gateway best practices)
+- Animation uses `framer-motion` (already in project) for axis sequencing
+- Reduced-motion respected via existing `usePrefersReducedMotion` hook — falls back to instant reveal
+
+### Open question
+
+Persist dream sessions to DB now, or keep ephemeral for v1? (Default: **ephemeral**.)
