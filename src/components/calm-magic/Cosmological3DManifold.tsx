@@ -52,20 +52,28 @@ function useSceneBreath() {
 function BoardTiles({ season, visitedTiles, selectedTile, onTileClick }: BoardTilesProps) {
   const groupRef = useRef<THREE.Group>(null);
   const tilesRef = useRef<THREE.Mesh[]>([]);
-  
+  const breath = useSceneBreath();
+
   useFrame((state) => {
     tilesRef.current.forEach((tile, i) => {
       if (tile) {
         const isVisited = visitedTiles.includes(i + 1);
         const isSelected = selectedTile === i + 1;
-        const targetY = isSelected ? 0.3 : isVisited ? 0.1 : 0;
+        const breathLift = breath.current * 0.04;
+        const targetY = isSelected ? 0.3 : isVisited ? 0.1 + breathLift : breathLift;
         tile.position.y = THREE.MathUtils.lerp(tile.position.y, targetY, 0.1);
-        
+
         // Pulse effect for selected tile
         if (isSelected) {
           tile.scale.setScalar(1 + Math.sin(state.clock.elapsedTime * 3) * 0.05);
         } else {
           tile.scale.setScalar(1);
+        }
+
+        // Breath the emissive on portal tiles via material
+        const mat = (tile.material as THREE.MeshStandardMaterial);
+        if (mat && PORTAL_DAYS.includes(i + 1)) {
+          mat.emissiveIntensity = 0.35 + breath.current * 0.45;
         }
       }
     });
