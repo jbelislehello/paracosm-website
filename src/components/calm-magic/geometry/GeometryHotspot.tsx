@@ -17,8 +17,8 @@ interface GeometryHotspotProps {
   symbol?: string;
   /** Affordance shape: dashed circle (default) or rectangle. */
   shape?: "circle" | "rect";
-  /** Forward click to underlying element (e.g. SVG path). */
-  onActivate?: () => void;
+  /** Forward activation to parent. `keyboard: true` when triggered via Enter/Space. */
+  onActivate?: (opts?: { keyboard?: boolean }) => void;
   /** Tooltip side. */
   side?: "top" | "bottom" | "left" | "right";
   /** Optional extra className for the trigger. */
