@@ -548,6 +548,13 @@ const Cosmological3DManifold: React.FC<Cosmological3DManifoldProps> = ({
               🔊 Audio On
             </span>
           )}
+          <button
+            onClick={() => setPaperMode(p => !p)}
+            className="px-3 py-1 rounded-full text-sm font-medium bg-primary/10 hover:bg-primary/20 text-primary transition-colors flex items-center gap-1"
+            aria-pressed={paperMode}
+          >
+            {paperMode ? '🌑 Cosmos' : '📜 Paper'}
+          </button>
         </div>
         <button
           onClick={onClose}
