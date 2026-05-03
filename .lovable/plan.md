@@ -1,107 +1,88 @@
-## Goal
+## Vision
 
-Save every DreamSequence run with its question, axis narrations, summary, and the **maturity-assessed tiles** that lit up — then expose a public, shareable URL that restores the final view (and replays progress visually).
+Position Calm Magic as **the** framework where teams *dream* (inventivity — generating novel possibility) and *learn* (expressivity — articulating, embodying, and circulating it). The Dream Mode + 5-axis board already exist; this plan strengthens the loop so every PRD upload becomes a memorable, shareable, replayable act of invention and expression.
 
-## 1. Database — new `dream_runs` table
+Anchored in existing memory: Conversation-as-Ontology, Emergence-not-Force, Feminine Design Principles, Calm Magic 5-axis (LOVE / MAGIC / CALM / OPEN / FREE), 260-tile window-of-tolerance, Intention Design (no premature tooling).
 
-Migration:
+---
 
-```sql
-create table public.dream_runs (
-  id uuid primary key default gen_random_uuid(),
-  share_slug text unique not null default encode(gen_random_bytes(9), 'base64'),
-  user_id uuid,                      -- nullable: anonymous dreams allowed
-  question text not null,
-  filename text,
-  axes jsonb not null,               -- [{key, narration, tile_keys, tile_ids[], maturity}]
-  summary text,
-  overall_maturity jsonb,            -- {love:0-1, magic:0-1, calm:0-1, open:0-1, free:0-1}
-  is_public boolean not null default true,
-  created_at timestamptz not null default now()
-);
+## Pillars & Tasks
 
-alter table public.dream_runs enable row level security;
+### 1. Inventivity Engine — make dreaming generative, not descriptive
+Today Dream Mode narrates an existing PRD. To rank as an inventivity framework, it must *expand* the PRD.
 
-create policy "owners read own"   on public.dream_runs for select using (auth.uid() = user_id);
-create policy "public read shared" on public.dream_runs for select using (is_public = true);
-create policy "anyone insert"     on public.dream_runs for insert with check (true);
-create policy "owners update"     on public.dream_runs for update using (auth.uid() = user_id);
-create policy "owners delete"     on public.dream_runs for delete using (auth.uid() = user_id);
-```
+- **Divergent moves per axis**: after each axis narration, Gemini emits 2–3 "what if" provocations (counterfactuals, inversions, weird combinations) tied to lit tiles. Stream as `axis_provocation` SSE events.
+- **Inventivity score**: surface a per-axis novelty metric (semantic distance between PRD text and the chosen tile cluster). Persist on `dream_runs.axes[i].inventivity`.
+- **Re-dream from a provocation**: one-click "dream again from this provocation" that re-runs the sequence with the provocation injected as additional context.
+- **Pollen capture**: every provocation can be saved as a `polen_entries` row (already in schema) tagged with the dream_run id, feeding the existing Polen → Noem → Poem pipeline.
 
-`share_slug` is URL-safe-ish; we'll strip `/+=` client-side or use a trigger to normalize. (Acceptable simplification: keep as-is and URL-encode.)
+### 2. Expressivity Layer — make learning embodied and shareable
+Expressivity = the ability to render insight in many modalities.
 
-## 2. Edge function — maturity assessment + persistence
+- **Multi-modal rendering of a dream**: from a saved `dream_run`, generate (a) a 1-page poetic PDF, (b) a 5-card carousel image set (Gemini image), (c) a 60-sec voice narration (TTS) using existing `WuxiaVoiceAgent` patterns. Add a "Render as…" menu on `/dream/:slug`.
+- **Replay animation**: add the staggered axis-by-axis narration replay to `DreamShare.tsx` (toggle, default static).
+- **OG/social meta**: `usePageSeo` integration on share page with summary + generated card image so links preview cleanly.
+- **Inline expressivity prompts**: small "say it as a haiku / a system diagram / a child's bedtime story" buttons on each axis card that re-express that axis's narration. Reuses existing edge function with a re-express system prompt.
 
-Update `supabase/functions/dream-prd-analysis/index.ts`:
+### 3. Learning Loop — close dreaming back into compounding knowledge
+- **Maturity diff over time**: when the same project re-dreams, store the previous `overall_maturity` and chart deltas. New tab on PrdEditor: "Maturity trajectory".
+- **Tile mastery tracking**: every lit tile in a dream increments a counter on a new `user_tile_affinity` view (built from `polen_entries` + `dream_runs.axes`). Drives the existing 260-cycle window-of-tolerance progression.
+- **Suggested next dream**: server-side function picks the lowest-maturity axis and proposes a question to dream from next time.
 
-- **Extend the AI tool schema** so each axis returns `maturity: number` in `[0,1]` (how developed that axis is in the PRD) alongside `narration` and `tile_keys`.
-- Add prompt guidance: "Assess maturity 0–1 per axis. 0 = unaddressed/silent. 1 = fully realized. Use this to indicate how many tiles to light up."
-- **Map maturity → tile count**: per axis, lit tile count = `1 + round(maturity * 4)` → 1–5 tiles per axis (cap at axis size).
-- **Pick tile IDs deterministically** from the axis range using the PRD text hash so the same PRD lights the same tiles:
-  - LOVE: ids 1–64, MAGIC: 65–128, CALM: 129–192, OPEN: 193–256, FREE: 257–260.
-  - Use `crypto.subtle.digest('SHA-256', prdText)` → derive offsets, pick `n` ids spread across the band.
-- Stream a new event `axis_tiles` (or extend `axis_begin` payload) with `tile_ids: number[]` and `maturity: number`.
-- After streaming completes, **insert one row** into `dream_runs` using the service-role key (anonymous OK) and emit a final event:
-  ```
-  event: saved
-  data: {"id":"...", "share_slug":"..."}
-  ```
+### 4. Discoverability & Onboarding — make first dream magical
+- **Public gallery of dreams**: `/dreams` index of `is_public = true` runs with axis sparkline preview. Drives organic SEO and inspiration.
+- **Curated example dreams**: 6 seeded canonical dreams (one per archetype: artist, founder, policymaker, healer, educator, child) accessible without auth.
+- **3-step onboarding for Dream Mode**: prompt → upload-or-paste → dream. Skip the current PRD-required gate; allow free-text "intent" as fallback so first-time visitors can dream in <60 s.
+- **DreamAndLearn page CTA upgrade**: replace the "book a call" terminal CTA with "Dream now" that drops users into the live sequence, then offers booking after the first dream.
 
-Maturity is server-derived (LLM) — never trust the client.
+### 5. Pedagogy — teach the framework while using it
+- **In-axis micro-lessons**: each axis card on the share page shows a 2-line definition of what LOVE/MAGIC/CALM/OPEN/FREE *means as an inventivity & expressivity register*. Links to existing encyclopedia entries.
+- **"Why these tiles?" explainer**: collapsible per-axis section explaining the deterministic tile picks in plain language (semantic anchors, not hash details).
+- **Glossary tooltips**: hover any term (Pollen, Noem, Poem, Totem, Anthem) anywhere in dream UI → definition popover.
 
-## 3. Client — DreamSequence updates
+### 6. Trust & Lead Capture (per project core rule)
+- **Save-to-account prompt**: after a public dream, gentle CTA "claim this dream" → email capture routed to jbelisle@helloarchitekt.com, links the run's `user_id`.
+- **Newsletter hook on share page**: "Get one new dream prompt a week" → same routing.
 
-`src/components/calm-magic/dream/DreamSequence.tsx`:
+---
 
-- Track new state: `tileIdsByAxis`, `maturityByAxis`, `shareSlug`.
-- Handle `axis_tiles` and `saved` events.
-- When a run is saved, render a **Share** block:
-  - Read-only input with `https://<host>/dream/<slug>`
-  - "Copy link" button (uses `navigator.clipboard`)
-  - "Open in new tab" link
-- Show maturity per axis as a small ring/percentage next to the axis card; render the lit tile IDs as chips inside each axis card (replacing or augmenting `tile_keys`).
+## Implementation Order (suggested)
 
-## 4. New shareable view route
+1. **Quick wins** (1 PR each): replay toggle + OG meta on `/dream/:slug`; "Dream now" CTA on DreamAndLearn; glossary tooltips.
+2. **Inventivity engine**: edge function changes for `axis_provocation` + inventivity score; client renders provocations; "re-dream from provocation".
+3. **Expressivity rendering**: PDF / image carousel / voice exports; "say it as…" re-express buttons.
+4. **Learning loop**: `user_tile_affinity` view, maturity trajectory chart, suggested next dream.
+5. **Discoverability**: public gallery, seeded example dreams, simplified onboarding.
+6. **Pedagogy**: micro-lessons, "why these tiles?" explainers.
+7. **Lead capture**: claim-this-dream + newsletter hook.
 
-- Route: `/dream/:slug` → new page `src/pages/DreamShare.tsx`.
-- On mount, query `dream_runs` by `share_slug` (anon key works via RLS public policy).
-- Render a **read-only DreamSequence-like view** that:
-  1. Shows the question, filename, created date, summary.
-  2. Renders the same five-axis board with lit tiles + maturity bars.
-  3. Optionally **replays** the narration progressively (same staggered animation as live runs) — toggle "Replay" button; default = static final view with full narration shown.
-- Add the route in `src/App.tsx`.
-
-## 5. Wiring & small UX
-
-- After save, also pass the slug back to `DreamMode` so the user can restart while keeping a link to the previous dream.
-- Add a "My dreams" affordance later (out of scope here).
+---
 
 ## Technical Notes
 
-- **Tile selection function** (server, deterministic):
-  ```ts
-  function pickTiles(prdHash: Uint8Array, band: [number, number], count: number) {
-    const [lo, hi] = band; const size = hi - lo + 1;
-    const out = new Set<number>();
-    let i = 0;
-    while (out.size < Math.min(count, size)) {
-      const byte = prdHash[i % prdHash.length];
-      out.add(lo + ((byte + i * 17) % size));
-      i++;
-    }
-    return [...out].sort((a, b) => a - b);
-  }
-  ```
-- **Anonymous saves**: edge function inserts with `user_id` set from a verified JWT if present, otherwise `null`. This requires reading the `Authorization` header and decoding the supabase JWT (or using the anon supabase client's `auth.getUser()`).
-- **Slug safety**: base64 may contain `+/=`. Replace at insert with `replace(replace(replace(..., '+', '-'), '/', '_'), '=', '')` via a generated column or do it in the edge function before insert.
-- **No file storage**: only the extracted-and-truncated text outcome is persisted (axes/narration/tiles). The original PRD file is **not** stored.
+- **DB additions** (single migration):
+  - `dream_runs.axes[].inventivity numeric` (stored inside existing jsonb, no schema change)
+  - `dream_runs.parent_run_id uuid null` for re-dreams lineage
+  - View `user_tile_affinity` aggregating from `dream_runs` + `polen_entries`
+- **Edge functions**:
+  - Extend `dream-prd-analysis` tool schema with `provocations: string[]` and `inventivity: number` per axis
+  - New `dream-reexpress` function: takes axis narration + style → returns reformulated text
+  - New `dream-render` function: orchestrates PDF/image/voice generation via Lovable AI Gateway
+- **Client**:
+  - `DreamShare` upgraded with replay toggle, OG meta via `usePageSeo`, render menu, claim CTA
+  - New `/dreams` index page
+  - New `DreamProvocations` subcomponent in `dream/`
+- **Constraints respected**: no premature tooling selection inside dreaming UI (Intention Design); contact routing to jbelisle@helloarchitekt.com; no `ml5`; fabric v7 rules unaffected (no canvas changes here).
 
-## Files
+---
 
-- New migration (dream_runs table + RLS)
-- Edit: `supabase/functions/dream-prd-analysis/index.ts`
-- Edit: `src/components/calm-magic/dream/DreamSequence.tsx`
-- Edit: `src/components/calm-magic/dream/DreamMode.tsx` (surface share link after save)
-- New: `src/pages/DreamShare.tsx`
-- Edit: `src/App.tsx` (add `/dream/:slug` route)
+## Definition of "best framework for dreaming and learning about inventivity & expressivity"
+
+A user with no account can, in under 5 minutes:
+1. Dream a PRD or an intent and get a 5-axis inventivity reading with provocations.
+2. Re-express any axis as poem, diagram, or voice.
+3. Share a permanent URL that previews beautifully and replays.
+4. See their maturity trajectory across multiple dreams.
+5. Find inspiration from a public gallery and dream their own variant.
+
+When all 7 implementation groups are shipped, this is true.
