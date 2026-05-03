@@ -15,6 +15,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import QuestionResonancePanel from "@/components/resonance/QuestionResonancePanel";
+import WhyItWorksRecap from "@/components/resonance/WhyItWorksRecap";
 
 const DesignSystemShowcase = () => {
   return (
@@ -28,7 +29,10 @@ const DesignSystemShowcase = () => {
         </div>
       </header>
 
+      <WhyItWorksRecap lens="design-system" />
+
       <div className="container max-w-6xl mx-auto px-4 py-12 space-y-16">
+
         <div className="text-center space-y-3">
           <h1 className="text-3xl md:text-4xl font-bold">Design System & Journey Map</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">

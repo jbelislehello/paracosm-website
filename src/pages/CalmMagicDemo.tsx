@@ -15,6 +15,7 @@ import GetDemoDialog from "@/components/GetDemoDialog";
 import GradientDivider from "@/components/GradientDivider";
 import Footer from "@/components/Footer";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import WhyItWorksRecap from "@/components/resonance/WhyItWorksRecap";
 import { productSchema } from "@/lib/structuredData";
 
 const CalmMagicDemo = () => {
@@ -70,6 +71,7 @@ const CalmMagicDemo = () => {
 
       <main>
         <DemoHero onDemo={() => setDemoOpen(true)} />
+        <WhyItWorksRecap lens="board" />
         <GradientDivider />
         <ProblemSection />
         <BoardAnatomy />

@@ -19,6 +19,7 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import GenerativeBackground from "@/components/GenerativeBackground";
 import KnowledgeConstellation from "@/components/KnowledgeConstellation";
 import LivingOrganismViz from "@/components/LivingOrganismViz";
+import WhyItWorksRecap from "@/components/resonance/WhyItWorksRecap";
 
 const MOBILE_NAV_SECTIONS = [
   { id: "hero", label: "Home" },
@@ -174,6 +175,8 @@ const Index = () => {
       <section id="hero">
         <HeroSection onDiscoverFramework={handleDiscoverFramework} />
       </section>
+
+      <WhyItWorksRecap lens="leadership" />
 
       <GradientDivider />
       
