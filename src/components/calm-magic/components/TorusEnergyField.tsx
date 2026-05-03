@@ -109,7 +109,7 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
             </div>
           </div>
 
-          <div className="rounded-lg overflow-hidden border border-[hsl(var(--ink-indigo)/0.15)]">
+          <div className="relative rounded-lg overflow-hidden border border-[hsl(var(--ink-indigo)/0.15)]">
             <svg
               viewBox="0 0 400 320"
               className="w-full h-auto"
@@ -259,6 +259,37 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
                 breath · {Math.round(breath * 100)}%
               </text>
             </svg>
+
+            {/* Hover/tap hotspots — plain-language explanations */}
+            <GeometryHotspot
+              style={{ left: '77.6%', top: '50%', width: 36, height: 36, transform: 'translate(-50%, -50%)' }}
+              symbol="◯"
+              label="Outer skin"
+              body="The collective edge — how the whole group is holding together right now. Watch it breathe to feel coherence rise and fall."
+              side="left"
+            />
+            <GeometryHotspot
+              style={{ left: '33.4%', top: '50%', width: 36, height: 36, transform: 'translate(-50%, -50%)' }}
+              symbol="∿"
+              label="Inner flow"
+              body="The personal current — what each individual is quietly learning underneath the group's surface."
+              side="right"
+            />
+            <GeometryHotspot
+              style={{ left: '50%', top: '50%', width: 28, height: 28, transform: 'translate(-50%, -50%)' }}
+              symbol="κ"
+              label="Throat — where invention happens"
+              body="The narrow place where attention concentrates and new ideas get born. Curvature κ measures how sharply the field is bending here."
+              side="top"
+            />
+            <GeometryHotspot
+              style={{ left: '50%', top: '18%', width: 80, height: 26, transform: 'translate(-50%, -50%)', borderRadius: 4 }}
+              shape="rect"
+              symbol="T·N"
+              label="Attention frame"
+              body="The little arrow set riding the outer skin shows where the group's focus is moving (T, tangent) and the direction it's quietly bending toward (N, normal)."
+              side="bottom"
+            />
           </div>
 
           {/* Anatomy legend */}
