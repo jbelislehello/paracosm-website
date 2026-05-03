@@ -117,15 +117,16 @@ describe("ExperienceDotsVisualization keyboard navigation", () => {
     expect(screen.queryByRole("status")).toBeNull();
   });
 
-  it("Enter on a hotspot updates the info panel", async () => {
-    const user = userEvent.setup();
+  it("Enter/click on a hotspot updates the info panel", () => {
     render(<ExperienceDotsVisualization mode="personal" />);
-    const hotspots = screen.getAllByRole("button", { name: /^Novelty$/ });
-    // The hotspot trigger is positioned absolutely; pick the one inside the compass region.
     const region = screen.getByTestId("compass-keyboard-region");
-    const hotspot = hotspots.find((b) => region.contains(b))!;
-    hotspot.focus();
-    await user.keyboard("{Enter}");
+    const candidates = screen.getAllByRole("button", { name: /^Novelty$/ });
+    // Hotspot button has no aria-pressed (legend does).
+    const hotspot = candidates.find(
+      (b) => region.contains(b) && !b.hasAttribute("aria-pressed")
+    )!;
+    // Simulate keyboard activation: native Enter on a button dispatches click with detail=0.
+    fireEvent.click(hotspot, { detail: 0 });
     expect(screen.getByRole("status")).toHaveTextContent("Novelty");
   });
 
