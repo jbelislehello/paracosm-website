@@ -1,66 +1,70 @@
+# Plain-language tooltips on the two Torus visualizations
 
-# Apply geometry primitives to the remaining three visualizations
+Make the geometric labels (Tangent T, Normal N, Curvature κ, Throat, Outer skin, Inner flow, Phase arcs, Attention flow) understandable to a non-mathematician by adding hover-and-tap tooltips that translate each symbol into one or two sentences of human language.
 
-Bring `Cosmological3DManifold`, `SpiralTimeline`, and `SpiralQuadrantVisualizer` to the same "alive and human" feel established by the Torus Energy Field — using the same primitives (`useBreathingPulse`, `GraphPaper`, `Annotation`, `FrenetFrame`) and the same indigo/red/green ink palette.
+## Approach
 
-## 1. Cosmological3DManifold — `src/components/calm-magic/Cosmological3DManifold.tsx`
+Use shadcn's existing `Tooltip` (already installed) for desktop hover and a unified `Popover` fallback for touch tap. Since SVG `<g>` elements are awkward to wrap in Radix triggers, overlay small **invisible HTML hotspot divs** positioned absolutely over the SVG, sized to each anatomical region. Hotspots get:
+- `cursor-help` on desktop
+- `aria-label` for screen readers
+- A subtle dotted underline / dashed circle on hover to confirm interactivity
+- Open on hover *and* on click/tap (via a tiny `useTapHover` helper that toggles Tooltip `open` state)
 
-Three.js scene, so we adapt the language:
+Add a shared primitive so both components stay consistent.
 
-- **Shared breath in the scene**: add a `useBreath()` ref hook driven by `useFrame` (same period as `useBreathingPulse`, ~9.6s). Pass it down to `BoardTiles`, `TorusEnergyField`, `ManifoldSpiral`.
-  - Tiles: modulate `emissiveIntensity` and slight `scale.y` with breath.
-  - Inner/outer torus: modulate `opacity` and minor radius (`scale`) with breath.
-  - Spiral: modulate line `opacity` with breath.
-- **Osculating plane on selected tile**: add a translucent indigo plane (`<mesh>` with `planeGeometry`) attached to the currently-selected tile, oriented along the spiral tangent at that point. Mirrors the textbook "Osculating Plane" panel.
-- **Anatomy labels per season**: replace the bare season name in `Float`/`Text` with a two-line label using `SEASON_ANATOMY` (e.g., POLLENS → "κ onset · first contact"). Serif font via drei `<Text font="...">` falls back to default; copy is the key change.
-- **"Human mode" toggle in header**: a small button next to "Enable Audio" that swaps the Canvas background gradient from `#0a0a1a → #1a1a2e` to warm paper `#f6f1e6 → #efe6d2`, and reduces ambient star opacity. Stored in component state, default off (keeps existing dark cosmological vibe as default).
-- **Header retitle**: "Cosmological Manifold" → "Cosmological Manifold — anatomy of a season" (italic serif sub-label).
-- **Controls panel copy**: "Drag to rotate" → "Drag to re-frame · Scroll to zoom · Click to feel a tile's harmonic" (more human, less mechanical).
+## New file
 
-## 2. SpiralTimeline — `src/components/SpiralTimeline.tsx`
+**`src/components/calm-magic/geometry/GeometryHotspot.tsx`**
+- Props: `style` (positioning), `label`, `body`, `symbol?`, `accent?`
+- Renders an absolutely positioned div containing a `Tooltip` whose trigger is a small focusable span. On `onClick`/`onTouchStart` it sets `open` true for ~4s; `onMouseEnter`/`Leave` keep normal hover behavior.
+- Tooltip content: serif italic symbol + label heading, then a short plain-language paragraph.
 
-Pure 2D canvas. We layer SVG primitives on top via a sibling overlay (canvas keeps doing the spiral; SVG adds anatomy):
+## `TorusEnergyField.tsx` changes
 
-- Wrap the existing `<canvas>` in a `relative` container and add an absolutely-positioned SVG overlay sized to the canvas.
-- Overlay renders:
-  - `GraphPaperDefs` + faint paper grid (warm tone), behind the canvas via z-index ordering — so the canvas blends onto graph paper.
-  - **Frenet frame** on the currently-active event (driven by `currentTime[0]` and event positions) using `FrenetFrame`. The active event is selected by progress %.
-  - **Curvature meter κ(s)**: a thin horizontal bar at the bottom whose segments grow taller where consecutive events cluster in time (proxy for organizational learning intensity).
-  - **Two `Annotation` callouts**: one labelling the spiral path ("trajectory γ(s) — your org through time"), one on the active event ("active frame — where attention rides").
-- **Toolbar copy** shifts from mechanical to anatomical:
-  - "Play" / "Pause" → "Trace" / "Pause breath"
-  - "Reset View" → "Re-center frame"
-  - "2D View" / "3D View" → "Flatten" / "Spiral"
-  - "Zoom" → "Focal length"
-- **Breath-driven node glow**: in the canvas `drawSpiral`, multiply the node `gradient` opacity by `useBreathingPulse()` value (subscribed via state at component level).
-- **Selected event card**: prepend an italic serif sub-label "fig — point on the curve" above the year, matching the new visual grammar.
+Wrap the existing `<svg>` in `<div className="relative">` and add an absolutely-positioned overlay layer. Add hotspots over:
 
-## 3. SpiralQuadrantVisualizer — `src/components/journal/SpiralQuadrantVisualizer.tsx`
+| Region | Plain language |
+|---|---|
+| Outer skin | "The collective edge — how the whole group is holding together right now." |
+| Inner flow | "The personal current — what each individual is learning underneath." |
+| Throat κ(s) | "The narrow place where attention concentrates and new ideas get born." |
+| Attention frame (T/N marker) | "Where the group's focus is moving (T) and the direction it's quietly bending toward (N)." |
+| Tangent T (legend card) | Already has copy; wrap with tooltip giving longer plain version. |
+| Normal N (legend card) | Same. |
+| Curvature κ (legend card) | Same. |
 
-Small SVG, light surgical pass:
+Hotspot positions are computed from the same `cx, cy, R, r` constants already in the file, converted to percentages of the 400×320 viewBox so they track the responsive SVG.
 
-- Replace the rectangular tinted backgrounds with `GraphPaperDefs` + grid (subtle, warm).
-- Re-render the spiral path with `filter="url(#sq-gp-ink)"` for the hand-ink look.
-- **Breath**: pulse the central circle radius and entry-dot opacity using `useBreathingPulse()`.
-- **Frenet frame**: a small T/N pair anchored on the spiral path at the position corresponding to the active quadrant — visualizes where the practice is currently bending.
-- **Anatomy retitle + axis relabel**:
-  - Card title: "Spiral Quadrants" → "Spiral Quadrants — fundamental forms"
-  - Axes: keep the current names (Sovereignty/Memory/Intimacy/Novelty) but add a thin italic serif overline:
-    - Vertical axis: "first form · stretching"
-    - Horizontal axis: "second form · bending"
-  - Add a one-line italic caption under the diagram: "The two ways a life-shape can change — measured at every step."
-- Active quadrant info gets a `font-serif italic` heading and the existing description below.
+## `TorusRelationnel.tsx` changes
 
-## What we are NOT doing
+Same pattern, smaller scale (150px square). Hotspots over:
 
-- No Three.js version bumps; everything stays within `@react-three/fiber@^8` / `drei@^9`.
-- No new routes, no data-model changes.
-- No replacement of the existing tile/season color logic — we only add anatomy on top.
+| Region | Plain language |
+|---|---|
+| Center point | "You — the still point the four phases move around." |
+| Tangent line (rotating) | "The pulse of attention right now: where contact is heading next." |
+| Each phase arc (Approche, Ouverture, Intensité, Retrait) | One-sentence felt-sense description, e.g. *Approche*: "Sensing toward the other before any words." |
+| Dashed flow diamond | "The natural cycle — contact rises, peaks, releases, returns." |
 
-## Order of implementation
+Phase arc tooltips replace the need to read the small letters; clicking still calls `onPhaseChange` (hotspot wraps but does not block the underlying `<path>` click — handled by forwarding the click).
 
-1. `Cosmological3DManifold` (highest visibility — the showpiece).
-2. `SpiralTimeline` (canvas + SVG overlay layering).
-3. `SpiralQuadrantVisualizer` (smallest, fastest).
+## Mobile / tap behaviour
 
-Each can ship independently.
+`useTapHover` (inline in `GeometryHotspot.tsx`):
+```ts
+const [open, setOpen] = useState(false);
+const onTap = () => { setOpen(true); window.setTimeout(() => setOpen(false), 4000); };
+```
+Pass `open` + `onOpenChange` to `Tooltip` so Radix still handles hover; tap forces it open on touch devices where hover is unreliable.
+
+## Visual affordance
+
+A 1px dashed circle (or rectangle for the legend cards) appears at 30% opacity on hover/focus so users discover the hotspots without cluttering the figure at rest. No always-visible icons — keeps the "textbook plate" aesthetic intact.
+
+## Files
+
+- **Create**: `src/components/calm-magic/geometry/GeometryHotspot.tsx`
+- **Edit**: `src/components/calm-magic/components/TorusEnergyField.tsx` (add overlay layer + hotspots + wrap legend cards)
+- **Edit**: `src/components/journal/TorusRelationnel.tsx` (add overlay layer + phase/center/tangent hotspots)
+
+No new dependencies.
