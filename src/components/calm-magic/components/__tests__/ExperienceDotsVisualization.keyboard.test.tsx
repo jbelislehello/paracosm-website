@@ -96,12 +96,12 @@ describe("ExperienceDotsVisualization keyboard navigation", () => {
   it("Enter on a legend button latches the region across blur", async () => {
     const user = userEvent.setup();
     render(<ExperienceDotsVisualization mode="personal" />);
-    const sov = screen.getByRole("button", { name: /^sovereignty$/i });
+    const sov = getLegendButton("sovereignty");
     sov.focus();
     await user.keyboard("{Enter}");
     expect(screen.getByRole("status")).toHaveTextContent("Sovereignty");
     // Move focus to another legend button; latch should persist.
-    const memory = screen.getByRole("button", { name: /^memory$/i });
+    const memory = getLegendButton("memory");
     memory.focus();
     expect(screen.getByRole("status")).toHaveTextContent("Sovereignty");
   });
@@ -109,7 +109,7 @@ describe("ExperienceDotsVisualization keyboard navigation", () => {
   it("Space on a latched legend button toggles the region off", async () => {
     const user = userEvent.setup();
     render(<ExperienceDotsVisualization mode="personal" />);
-    const sov = screen.getByRole("button", { name: /^sovereignty$/i });
+    const sov = getLegendButton("sovereignty");
     sov.focus();
     await user.keyboard("{Enter}");
     expect(screen.getByRole("status")).toHaveTextContent("Sovereignty");
@@ -132,7 +132,7 @@ describe("ExperienceDotsVisualization keyboard navigation", () => {
   it("Escape clears a latched region from a legend button", async () => {
     const user = userEvent.setup();
     render(<ExperienceDotsVisualization mode="personal" />);
-    const sov = screen.getByRole("button", { name: /^sovereignty$/i });
+    const sov = getLegendButton("sovereignty");
     sov.focus();
     await user.keyboard("{Enter}");
     expect(screen.getByRole("status")).toHaveTextContent("Sovereignty");
