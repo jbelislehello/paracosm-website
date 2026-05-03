@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TorusPhase, TORUS_PHASES } from '@/types/journal-expansion';
+import { useBreathingPulse } from '@/hooks/useBreathingPulse';
 
 interface TorusRelationnelProps {
   currentPhase: TorusPhase;
@@ -14,11 +15,16 @@ export const TorusRelationnel: React.FC<TorusRelationnelProps> = ({
   onPhaseChange
 }) => {
   const currentIndex = PHASE_ORDER.indexOf(currentPhase);
+  const breath = useBreathingPulse();
+  // Continuously rotating tangent on the ring
+  const tangentAngle = (performance.now() / 5500) % (Math.PI * 2);
+  const tx = 50 + 45 * Math.cos(tangentAngle);
+  const ty = 50 + 45 * Math.sin(tangentAngle);
 
   return (
     <Card className="bg-background/50 backdrop-blur">
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm">Torus Relationnel</CardTitle>
+        <CardTitle className="text-sm font-serif italic">Torus Relationnel</CardTitle>
       </CardHeader>
       <CardContent>
         {/* Torus Visualization */}
@@ -32,8 +38,9 @@ export const TorusRelationnel: React.FC<TorusRelationnelProps> = ({
               fill="none"
               stroke="hsl(var(--border))"
               strokeWidth="2"
+              opacity={0.7 + breath * 0.3}
             />
-            
+
             {/* Phase segments */}
             {PHASE_ORDER.map((phase, idx) => {
               const angle = (idx * 90 - 90) * (Math.PI / 180);
