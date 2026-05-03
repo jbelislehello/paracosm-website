@@ -439,6 +439,15 @@ const PrdEditor = () => {
             </div>
           </Card>
         )}
+          </TabsContent>
+
+          <TabsContent value="quickfill">
+            <QuickFillTab
+              prdId={prd.id}
+              initial={(prd as any).quick_fill ?? null}
+            />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
