@@ -589,18 +589,57 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                 );
               })}
 
+              {/* Active-region radial spoke */}
+              {activeRegion && activeRegion !== 'freedom' && (() => {
+                const angles: Record<Exclude<ActiveRegion, null | 'freedom'>, number> = {
+                  sovereignty: 0,
+                  memory: Math.PI / 2,
+                  intimacy: Math.PI,
+                  novelty: 3 * Math.PI / 2,
+                };
+                const a = angles[activeRegion];
+                return (
+                  <line
+                    x1={centerX}
+                    y1={centerY}
+                    x2={centerX + Math.cos(a) * (rings[2] + 30)}
+                    y2={centerY + Math.sin(a) * (rings[2] + 30)}
+                    stroke={getForceColor(activeRegion)}
+                    strokeWidth="1.5"
+                    strokeDasharray="4,4"
+                    opacity="0.55"
+                    style={{ transition: 'opacity 220ms ease-out' }}
+                  />
+                );
+              })()}
+
               {/* Calm Magic Force dots */}
-              {calmMagicDots.map(dot => (
-                <g key={dot.id}>
+              {calmMagicDots.map(dot => {
+                const isActiveRegion = activeRegion === dot.force;
+                const baseR = dot.isActive ? 12 : dot.isUserAdded ? 10 : 8;
+                const r = isActiveRegion && !prefersReducedMotion ? baseR * 1.18 : baseR;
+                return (
+                <g key={dot.id} style={{ transition: 'opacity 220ms ease-out' }}>
+                  {isActiveRegion && !prefersReducedMotion && (
+                    <circle
+                      cx={dot.x}
+                      cy={dot.y}
+                      r={r * 1.8}
+                      fill={getForceColor(dot.force)}
+                      opacity={0.25}
+                      style={{ filter: 'blur(6px)' }}
+                    />
+                  )}
                   <circle
                     cx={dot.x}
                     cy={dot.y}
-                    r={dot.isActive ? 12 : dot.isUserAdded ? 10 : 8}
+                    r={r}
                     fill={getForceColor(dot.force)}
-                    opacity={dot.isActive ? 1 : 0.9}
+                    opacity={isActiveRegion ? 1 : dot.isActive ? 1 : 0.9}
                     stroke={dot.isUserAdded ? "#fff" : "none"}
                     strokeWidth={dot.isUserAdded ? "2" : "0"}
                     className={dot.isActive ? "animate-pulse" : ""}
+                    style={{ transition: 'r 220ms ease-out, opacity 220ms ease-out' }}
                   />
                   <circle
                     cx={dot.x}
@@ -608,8 +647,9 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                     r={dot.isActive ? 18 : 12}
                     fill="none"
                     stroke={getForceColor(dot.force)}
-                    strokeWidth="2"
-                    opacity={dot.isActive ? 0.7 : 0.4}
+                    strokeWidth={isActiveRegion ? "2.5" : "2"}
+                    opacity={isActiveRegion ? 0.85 : dot.isActive ? 0.7 : 0.4}
+                    style={{ transition: 'opacity 220ms ease-out, stroke-width 220ms ease-out' }}
                   />
                   {dot.isActive && (
                     <text
@@ -625,7 +665,8 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                     </text>
                   )}
                 </g>
-              ))}
+                );
+              })}
 
               {/* Freedom Arrow with variable length */}
               <g transform={`translate(${centerX}, ${centerY}) rotate(${arrowAngle * 180 / Math.PI})`}>
