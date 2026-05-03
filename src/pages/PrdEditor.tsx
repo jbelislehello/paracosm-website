@@ -178,6 +178,15 @@ const PrdEditor = () => {
           </Button>
         </div>
 
+        <Tabs defaultValue="edit" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="edit">Edit</TabsTrigger>
+            <TabsTrigger value="quickfill">
+              <Sparkles className="w-4 h-4 mr-1.5" /> Quick Fill
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="edit" className="space-y-8">
         {/* Title & Status */}
         <Card className="p-6">
           <div className="grid gap-4 md:grid-cols-2">
