@@ -22,7 +22,8 @@ const ViewModeNavigation: React.FC<ViewModeNavigationProps> = ({
     { key: 'tests' as const, label: '🧪 Tests', desc: 'Cultural' },
     { key: 'learning' as const, label: '📊 Learning', desc: 'Organization' },
     { key: 'overview' as const, label: '🎯 Overview', desc: 'Framework' },
-    { key: 'tools' as const, label: '🛠️ Tools', desc: 'Interactive' }
+    { key: 'tools' as const, label: '🛠️ Tools', desc: 'Interactive' },
+    { key: 'dream' as const, label: '✨ Dream', desc: 'Board self-answers' }
   ];
 
   return (
