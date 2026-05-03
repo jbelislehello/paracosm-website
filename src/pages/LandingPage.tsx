@@ -121,76 +121,25 @@ const LandingPage = () => {
       
       <CalmMagicAssistant onStartJourney={handleStartCoaching} isOpen={isCalmMagicAssistantOpen} onOpenChange={setIsCalmMagicAssistantOpen} />
       
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center pt-16 px-4 overflow-hidden">
-        <div className="container relative py-8 sm:py-12 md:py-24" style={{ zIndex: 10 }}>
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="backdrop-blur-sm bg-white/10 dark:bg-slate-900/10 rounded-2xl p-4 sm:p-6 md:p-8 border border-white/20 relative z-20">
-              <div className="flex items-center justify-center gap-2 mb-4 sm:mb-6">
-                <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
-                <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-rose-600" />
-                <Users className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
-              </div>
-              
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-rose-600 animate-gradient-x mb-4 sm:mb-6">
-                {t('landing.hero_headline')}
-              </h1>
-              
-              <p className="text-base sm:text-lg md:text-xl mb-4 sm:mb-6 text-gray-700 dark:text-gray-200 px-2 font-medium">
-                {t('landing.hero_description')}
-              </p>
-              
-              <p className="text-sm sm:text-base md:text-lg mb-6 sm:mb-8 text-gray-600 dark:text-gray-300 px-2">
-                {t('landing.hero_long_description')}
-              </p>
-              
-              <div className="flex flex-col gap-3 sm:gap-4 justify-center mb-4 sm:mb-6">
-                <Link to="/agentic-ux" className="w-full">
-                  <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 flex items-center justify-center gap-2 text-sm sm:text-base py-3 sm:py-4">
-                    <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span className="text-center leading-tight">{t('landing.ai_leadership')}</span>
-                  </Button>
-                </Link>
-                <Link to="/calm-magic-assistant" className="w-full">
-                  <Button className="w-full bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 flex items-center justify-center gap-2 text-sm sm:text-base py-3 sm:py-4">
-                    <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
-                    <span className="text-center leading-tight">{t('landing.relational_coaching')}</span>
-                  </Button>
-                </Link>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row items-center gap-2 mb-4">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setOnboardingOpen(true)}
-                  className="gap-2 text-primary border-primary/30 hover:bg-primary/10"
-                >
-                  <Compass className="w-4 h-4" />
-                  {t('landing.find_your_path')}
-                </Button>
-              </div>
+      <FrameworkHero onScrollToMethod={() => document.getElementById('method-steps')?.scrollIntoView({ behavior: 'smooth' })} />
 
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mb-4 sm:mb-6 px-2">
-                {t('landing.pathway_tagline')}
-              </p>
+      <OnboardingGuide triggerOpen={onboardingOpen} onClose={() => setOnboardingOpen(false)} />
 
-              <div className="flex flex-col items-center gap-2">
-                <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt" target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" size="sm" className="text-slate-600 hover:text-purple-600 bg-white/70 hover:bg-white/90">
-                    {t('landing.book_discovery')}
-                  </Button>
-                </a>
-                <Button variant="ghost" size="sm" onClick={scrollToMore} className="animate-bounce text-slate-600 hover:text-purple-600">
-                  <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5" />
-                </Button>
-              </div>
-            </div>
+      <EnterpriseGaps />
+
+      <section className="py-16 px-4">
+        <div className="container max-w-5xl mx-auto space-y-6">
+          <div className="text-center space-y-2">
+            <p className="text-xs font-bold uppercase tracking-wider text-primary">The five axes</p>
+            <h2 className="text-2xl md:text-3xl font-bold">Every question, team, and product lives on these five.</h2>
           </div>
+          <AxisLegend intro="The Calm Magic board uses five axes to give your organization shared meaning — so AI doesn't just automate, it helps you learn and invent." />
         </div>
       </section>
 
-      <OnboardingGuide triggerOpen={onboardingOpen} onClose={() => setOnboardingOpen(false)} />
+      <MethodSteps />
+
+      <ThreePaths />
 
       {/* Agentic Ecosystems — service hero with interactive D3 viz */}
       <AgenticEcosystemHero />
