@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TorusPhase, TORUS_PHASES } from '@/types/journal-expansion';
 import { useBreathingPulse } from '@/hooks/useBreathingPulse';
+import { GeometryHotspot } from '@/components/calm-magic/geometry/GeometryHotspot';
 
 interface TorusRelationnelProps {
   currentPhase: TorusPhase;
@@ -9,6 +10,21 @@ interface TorusRelationnelProps {
 }
 
 const PHASE_ORDER: TorusPhase[] = ['approche', 'ouverture', 'intensite', 'retrait'];
+
+const PHASE_PLAIN: Record<TorusPhase, string> = {
+  approche: 'Sensing toward the other before any words — the moment contact begins to form.',
+  ouverture: 'The doors open. Curiosity and welcome on both sides; the field becomes shared.',
+  intensite: 'Full presence — meaning, feeling and exchange at peak. The encounter does its work here.',
+  retrait: 'Honest withdrawal — letting the contact rest so what was exchanged can settle and integrate.',
+};
+
+// Quadrant centers in % of the 150px square (each arc occupies a 90° wedge starting at -90°)
+const PHASE_HOTSPOT_POS: Record<TorusPhase, { left: string; top: string }> = {
+  approche:  { left: '70%', top: '30%' }, // top-right
+  ouverture: { left: '70%', top: '70%' }, // bottom-right
+  intensite: { left: '30%', top: '70%' }, // bottom-left
+  retrait:   { left: '30%', top: '30%' }, // top-left
+};
 
 export const TorusRelationnel: React.FC<TorusRelationnelProps> = ({
   currentPhase,
