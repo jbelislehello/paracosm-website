@@ -494,6 +494,7 @@ const Cosmological3DManifold: React.FC<Cosmological3DManifoldProps> = ({
 }) => {
   const { playTileSound, initAudio } = useCosmologicalAudio();
   const [audioEnabled, setAudioEnabled] = useState(false);
+  const [paperMode, setPaperMode] = useState(false);
   const lastSelectedTile = useRef<number | null>(null);
 
   // Initialize audio on user interaction
