@@ -7,6 +7,18 @@ import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Play, Pause, RotateCcw, Volume2, VolumeX, Plus, Trash2, Target } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { GeometryHotspot } from '@/components/calm-magic/geometry/GeometryHotspot';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+
+type ActiveRegion = 'sovereignty' | 'memory' | 'intimacy' | 'novelty' | 'freedom' | null;
+
+const REGION_COPY: Record<Exclude<ActiveRegion, null>, { symbol: string; label: string; body: string }> = {
+  sovereignty: { symbol: 'S', label: 'Sovereignty', body: 'Your sense of agency and authorship — the pull toward standing in your own ground.' },
+  memory:      { symbol: 'M', label: 'Memory',      body: 'Continuity across time. What you carry forward pulls Freedom toward what you already know.' },
+  intimacy:    { symbol: 'I', label: 'Intimacy',    body: 'Closeness and relational depth. Pulls Freedom toward connection rather than novelty.' },
+  novelty:     { symbol: 'N', label: 'Novelty',     body: 'Openness to the new. Pulls Freedom toward exploration and surprise.' },
+  freedom:     { symbol: 'F', label: 'Freedom',     body: 'The rotating arrow is your attention. As it sweeps, it touches forces and lights up paths between them.' },
+};
 
 interface CalmMagicDot {
   id: string;
@@ -51,6 +63,8 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
   const [selectedForce, setSelectedForce] = useState<CalmMagicDot['force']>('sovereignty');
   const [placementMode, setPlacementMode] = useState(false);
   const [hoveredRing, setHoveredRing] = useState<number | null>(null);
+  const [activeRegion, setActiveRegion] = useState<ActiveRegion>(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
   const [forceStrength, setForceStrength] = useState({
     sovereignty: 80,
     memory: 70,
@@ -575,18 +589,57 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                 );
               })}
 
+              {/* Active-region radial spoke */}
+              {activeRegion && activeRegion !== 'freedom' && (() => {
+                const angles: Record<Exclude<ActiveRegion, null | 'freedom'>, number> = {
+                  sovereignty: 0,
+                  memory: Math.PI / 2,
+                  intimacy: Math.PI,
+                  novelty: 3 * Math.PI / 2,
+                };
+                const a = angles[activeRegion];
+                return (
+                  <line
+                    x1={centerX}
+                    y1={centerY}
+                    x2={centerX + Math.cos(a) * (rings[2] + 30)}
+                    y2={centerY + Math.sin(a) * (rings[2] + 30)}
+                    stroke={getForceColor(activeRegion)}
+                    strokeWidth="1.5"
+                    strokeDasharray="4,4"
+                    opacity="0.55"
+                    style={{ transition: 'opacity 220ms ease-out' }}
+                  />
+                );
+              })()}
+
               {/* Calm Magic Force dots */}
-              {calmMagicDots.map(dot => (
-                <g key={dot.id}>
+              {calmMagicDots.map(dot => {
+                const isActiveRegion = activeRegion === dot.force;
+                const baseR = dot.isActive ? 12 : dot.isUserAdded ? 10 : 8;
+                const r = isActiveRegion && !prefersReducedMotion ? baseR * 1.18 : baseR;
+                return (
+                <g key={dot.id} style={{ transition: 'opacity 220ms ease-out' }}>
+                  {isActiveRegion && !prefersReducedMotion && (
+                    <circle
+                      cx={dot.x}
+                      cy={dot.y}
+                      r={r * 1.8}
+                      fill={getForceColor(dot.force)}
+                      opacity={0.25}
+                      style={{ filter: 'blur(6px)' }}
+                    />
+                  )}
                   <circle
                     cx={dot.x}
                     cy={dot.y}
-                    r={dot.isActive ? 12 : dot.isUserAdded ? 10 : 8}
+                    r={r}
                     fill={getForceColor(dot.force)}
-                    opacity={dot.isActive ? 1 : 0.9}
+                    opacity={isActiveRegion ? 1 : dot.isActive ? 1 : 0.9}
                     stroke={dot.isUserAdded ? "#fff" : "none"}
                     strokeWidth={dot.isUserAdded ? "2" : "0"}
                     className={dot.isActive ? "animate-pulse" : ""}
+                    style={{ transition: 'r 220ms ease-out, opacity 220ms ease-out' }}
                   />
                   <circle
                     cx={dot.x}
@@ -594,8 +647,9 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                     r={dot.isActive ? 18 : 12}
                     fill="none"
                     stroke={getForceColor(dot.force)}
-                    strokeWidth="2"
-                    opacity={dot.isActive ? 0.7 : 0.4}
+                    strokeWidth={isActiveRegion ? "2.5" : "2"}
+                    opacity={isActiveRegion ? 0.85 : dot.isActive ? 0.7 : 0.4}
+                    style={{ transition: 'opacity 220ms ease-out, stroke-width 220ms ease-out' }}
                   />
                   {dot.isActive && (
                     <text
@@ -611,7 +665,8 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                     </text>
                   )}
                 </g>
-              ))}
+                );
+              })}
 
               {/* Freedom Arrow with variable length */}
               <g transform={`translate(${centerX}, ${centerY}) rotate(${arrowAngle * 180 / Math.PI})`}>
@@ -631,9 +686,13 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                 <circle
                   cx="0"
                   cy="0"
-                  r="8"
+                  r={activeRegion === 'freedom' && !prefersReducedMotion ? 11 : 8}
                   fill="#ff6b6b"
+                  style={{ transition: 'r 220ms ease-out' }}
                 />
+                {activeRegion === 'freedom' && !prefersReducedMotion && (
+                  <circle cx="0" cy="0" r="20" fill="#ff6b6b" opacity="0.3" style={{ filter: 'blur(6px)' }} />
+                )}
               </g>
 
               {/* Center label */}
@@ -642,17 +701,18 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                 y={centerY + 3}
                 textAnchor="middle"
                 fontSize="11"
-                fill="#666"
+                fill={activeRegion === 'freedom' ? '#ff6b6b' : '#666'}
                 className="font-bold"
+                style={{ transition: 'fill 220ms ease-out' }}
               >
                 Freedom
               </text>
 
               {/* Cardinal direction labels for forces */}
-              <text x={centerX + 180} y={centerY + 5} fontSize="12" fill="#666" textAnchor="start" className="font-medium">Sovereignty</text>
-              <text x={centerX} y={centerY + 180} fontSize="12" fill="#666" textAnchor="middle" className="font-medium">Memory</text>
-              <text x={centerX - 180} y={centerY + 5} fontSize="12" fill="#666" textAnchor="end" className="font-medium">Intimacy</text>
-              <text x={centerX} y={centerY - 160} fontSize="12" fill="#666" textAnchor="middle" className="font-medium">Novelty</text>
+              <text x={centerX + 180} y={centerY + 5} fontSize={activeRegion === 'sovereignty' ? 13 : 12} fill={activeRegion === 'sovereignty' ? getForceColor('sovereignty') : '#666'} textAnchor="start" className={activeRegion === 'sovereignty' ? 'font-semibold' : 'font-medium'} style={{ transition: 'fill 220ms ease-out' }}>Sovereignty</text>
+              <text x={centerX} y={centerY + 180} fontSize={activeRegion === 'memory' ? 13 : 12} fill={activeRegion === 'memory' ? getForceColor('memory') : '#666'} textAnchor="middle" className={activeRegion === 'memory' ? 'font-semibold' : 'font-medium'} style={{ transition: 'fill 220ms ease-out' }}>Memory</text>
+              <text x={centerX - 180} y={centerY + 5} fontSize={activeRegion === 'intimacy' ? 13 : 12} fill={activeRegion === 'intimacy' ? getForceColor('intimacy') : '#666'} textAnchor="end" className={activeRegion === 'intimacy' ? 'font-semibold' : 'font-medium'} style={{ transition: 'fill 220ms ease-out' }}>Intimacy</text>
+              <text x={centerX} y={centerY - 160} fontSize={activeRegion === 'novelty' ? 13 : 12} fill={activeRegion === 'novelty' ? getForceColor('novelty') : '#666'} textAnchor="middle" className={activeRegion === 'novelty' ? 'font-semibold' : 'font-medium'} style={{ transition: 'fill 220ms ease-out' }}>Novelty</text>
 
               {/* Ring level indicators */}
               <text x={centerX + 85} y={centerY - 5} fontSize="9" fill="#999" textAnchor="middle">L1</text>
@@ -666,11 +726,36 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                 r={arrowLength}
                 fill="none"
                 stroke="#ff6b6b"
-                strokeWidth="1"
-                opacity="0.2"
+                strokeWidth={activeRegion === 'freedom' ? '1.5' : '1'}
+                opacity={activeRegion === 'freedom' ? '0.55' : '0.2'}
                 strokeDasharray="3,3"
+                style={{ transition: 'opacity 220ms ease-out, stroke-width 220ms ease-out' }}
               />
             </svg>
+
+            {/* Synchronized hotspots — positions match SVG coords (600×500). */}
+            {(['sovereignty','memory','intimacy','novelty','freedom'] as const).map((key) => {
+              const positions: Record<typeof key, { left: string; top: string; w: number; h: number; side: 'top'|'bottom'|'left'|'right' }> = {
+                sovereignty: { left: `${((centerX + 180) / 600) * 100}%`, top: `${((centerY - 5) / 500) * 100}%`, w: 96, h: 28, side: 'left' },
+                memory:      { left: `${((centerX - 40) / 600) * 100}%`, top: `${((centerY + 168) / 500) * 100}%`, w: 80, h: 24, side: 'top' },
+                intimacy:    { left: `${((centerX - 250) / 600) * 100}%`, top: `${((centerY - 5) / 500) * 100}%`, w: 96, h: 28, side: 'right' },
+                novelty:     { left: `${((centerX - 40) / 600) * 100}%`, top: `${((centerY - 178) / 500) * 100}%`, w: 80, h: 24, side: 'bottom' },
+                freedom:     { left: `${((centerX - 22) / 600) * 100}%`, top: `${((centerY - 14) / 500) * 100}%`, w: 44, h: 28, side: 'top' },
+              };
+              const p = positions[key];
+              const copy = REGION_COPY[key];
+              return (
+                <GeometryHotspot
+                  key={key}
+                  style={{ left: p.left, top: p.top, width: p.w, height: p.h }}
+                  symbol={copy.symbol}
+                  label={copy.label}
+                  body={copy.body}
+                  side={p.side}
+                  onActiveChange={(a) => setActiveRegion((prev) => (a ? key : prev === key ? null : prev))}
+                />
+              );
+            })}
           </div>
 
           {/* Enhanced Legend & Connection Types */}
@@ -678,15 +763,29 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
             <div>
               <h4 className="font-medium mb-2">Calm Magic Forces</h4>
               <div className="grid grid-cols-2 gap-2 text-xs">
-                {(['sovereignty', 'memory', 'intimacy', 'novelty'] as const).map(force => (
-                  <div key={force} className="flex items-center gap-2">
-                    <div
-                      className="w-3 h-3 rounded-full"
-                      style={{ backgroundColor: getForceColor(force) }}
-                    />
-                    <span className="capitalize">{force}</span>
-                  </div>
-                ))}
+                {(['sovereignty', 'memory', 'intimacy', 'novelty'] as const).map(force => {
+                  const isActive = activeRegion === force;
+                  return (
+                    <button
+                      key={force}
+                      type="button"
+                      onMouseEnter={() => setActiveRegion(force)}
+                      onMouseLeave={() => setActiveRegion((prev) => (prev === force ? null : prev))}
+                      onFocus={() => setActiveRegion(force)}
+                      onBlur={() => setActiveRegion((prev) => (prev === force ? null : prev))}
+                      className={`flex items-center gap-2 rounded-md px-2 py-1 text-left transition-all duration-200 ${
+                        isActive ? 'ring-2 ring-offset-1 ring-purple-400 bg-purple-50/60 dark:bg-purple-950/30' : ''
+                      }`}
+                      style={isActive ? { boxShadow: `0 0 0 1px ${getForceColor(force)}40` } : undefined}
+                    >
+                      <div
+                        className="w-3 h-3 rounded-full"
+                        style={{ backgroundColor: getForceColor(force) }}
+                      />
+                      <span className={`capitalize ${isActive ? 'font-semibold' : ''}`}>{force}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
             
