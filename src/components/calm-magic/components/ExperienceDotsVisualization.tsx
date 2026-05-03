@@ -559,7 +559,27 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
           )}
 
           {/* Visualization */}
-          <div className="relative">
+          <div
+            className="relative outline-none focus-visible:ring-2 focus-visible:ring-purple-400 rounded-lg"
+            tabIndex={0}
+            role="group"
+            aria-label="Freedom compass. Use arrow keys to focus axes, Enter or Space for Freedom, Escape to clear."
+            data-testid="compass-keyboard-region"
+            onKeyDown={(e) => {
+              const map: Record<string, ActiveRegion> = {
+                ArrowRight: 'sovereignty',
+                ArrowDown: 'memory',
+                ArrowLeft: 'intimacy',
+                ArrowUp: 'novelty',
+                Enter: 'freedom',
+                ' ': 'freedom',
+                Escape: null,
+              };
+              if (!(e.key in map)) return;
+              e.preventDefault();
+              setActiveRegion(map[e.key]);
+            }}
+          >
             <svg
               ref={svgRef}
               width="600"
