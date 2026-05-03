@@ -586,12 +586,12 @@ const Cosmological3DManifold: React.FC<Cosmological3DManifoldProps> = ({
       {/* Info Panel */}
       <div className="absolute bottom-4 left-4 right-4 z-10 flex justify-between items-end pointer-events-none">
         <div className="p-4 rounded-lg bg-card/80 backdrop-blur-sm border border-border/50 max-w-xs pointer-events-auto">
-          <h3 className="text-sm font-semibold text-foreground mb-2">Controls</h3>
+          <h3 className="text-sm font-serif italic text-foreground mb-2">how to read it</h3>
           <ul className="text-xs text-muted-foreground space-y-1">
-            <li>• Drag to rotate view</li>
-            <li>• Scroll to zoom in/out</li>
-            <li>• Click tiles to select & hear tone</li>
-            <li>• Each seal has a unique harmonic</li>
+            <li>• Drag to re-frame the manifold</li>
+            <li>• Scroll to change focal length</li>
+            <li>• Click a tile to feel its harmonic</li>
+            <li>• Each season bends differently — watch κ</li>
           </ul>
         </div>
         
