@@ -7,6 +7,8 @@ interface FrenetFrameProps {
   /** unit tangent direction (radians) */
   angle: number;
   scale?: number;
+  /** when true, scale and opacity are boosted to highlight the frame */
+  emphasis?: boolean;
 }
 
 /**
@@ -18,14 +20,18 @@ export const FrenetFrame: React.FC<FrenetFrameProps> = ({
   y,
   angle,
   scale = 22,
+  emphasis = false,
 }) => {
-  const tx = Math.cos(angle) * scale;
-  const ty = Math.sin(angle) * scale;
-  const nx = -Math.sin(angle) * scale * 0.85;
-  const ny = Math.cos(angle) * scale * 0.85;
+  const s = emphasis ? scale * 1.4 : scale;
+  const tx = Math.cos(angle) * s;
+  const ty = Math.sin(angle) * s;
+  const nx = -Math.sin(angle) * s * 0.85;
+  const ny = Math.cos(angle) * s * 0.85;
+  const op = emphasis ? 1 : 0.85;
+  const sw = emphasis ? 2 : 1.4;
 
   return (
-    <g style={{ pointerEvents: "none" }}>
+    <g style={{ pointerEvents: "none", opacity: op, transition: "opacity 220ms ease-out" }}>
       {/* Tangent */}
       <line
         x1={x}
@@ -33,7 +39,7 @@ export const FrenetFrame: React.FC<FrenetFrameProps> = ({
         x2={x + tx}
         y2={y + ty}
         stroke="hsl(var(--ink-indigo))"
-        strokeWidth="1.4"
+        strokeWidth={sw}
         markerEnd="url(#frenet-arrow-indigo)"
       />
       <text
@@ -53,7 +59,7 @@ export const FrenetFrame: React.FC<FrenetFrameProps> = ({
         x2={x + nx}
         y2={y + ny}
         stroke="hsl(var(--ink-red))"
-        strokeWidth="1.4"
+        strokeWidth={sw}
         markerEnd="url(#frenet-arrow-red)"
       />
       <text

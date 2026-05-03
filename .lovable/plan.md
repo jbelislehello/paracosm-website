@@ -1,70 +1,55 @@
-# Plain-language tooltips on the two Torus visualizations
+## Goal
 
-Make the geometric labels (Tangent T, Normal N, Curvature κ, Throat, Outer skin, Inner flow, Phase arcs, Attention flow) understandable to a non-mathematician by adding hover-and-tap tooltips that translate each symbol into one or two sentences of human language.
+When a user hovers/taps a `GeometryHotspot`, the corresponding region of the torus visualization should visibly *light up* in sync — so the explanation in the tooltip matches a clear visual change on the figure. Today the tooltip opens but the underlying geometry doesn't react, so the link between word and shape is invisible.
 
 ## Approach
 
-Use shadcn's existing `Tooltip` (already installed) for desktop hover and a unified `Popover` fallback for touch tap. Since SVG `<g>` elements are awkward to wrap in Radix triggers, overlay small **invisible HTML hotspot divs** positioned absolutely over the SVG, sized to each anatomical region. Hotspots get:
-- `cursor-help` on desktop
-- `aria-label` for screen readers
-- A subtle dotted underline / dashed circle on hover to confirm interactivity
-- Open on hover *and* on click/tap (via a tiny `useTapHover` helper that toggles Tooltip `open` state)
+Lift "which hotspot is active" into the parent component as a single string state (`activeRegion`), pass an `onHoverChange(active: boolean)` callback down to each `GeometryHotspot`, and let the parent SVG read that state to animate the matching shape (stroke, opacity, scale, halo).
 
-Add a shared primitive so both components stay consistent.
+### 1. `GeometryHotspot.tsx` — emit hover/focus state
 
-## New file
+Add an optional callback so the parent learns when the hotspot is "active" (hovered, focused, or tapped):
 
-**`src/components/calm-magic/geometry/GeometryHotspot.tsx`**
-- Props: `style` (positioning), `label`, `body`, `symbol?`, `accent?`
-- Renders an absolutely positioned div containing a `Tooltip` whose trigger is a small focusable span. On `onClick`/`onTouchStart` it sets `open` true for ~4s; `onMouseEnter`/`Leave` keep normal hover behavior.
-- Tooltip content: serif italic symbol + label heading, then a short plain-language paragraph.
+- New prop: `onActiveChange?: (active: boolean) => void`
+- Wire `onMouseEnter` / `onMouseLeave` / `onFocus` / `onBlur` on the trigger button.
+- On tap (touch), call `onActiveChange(true)` immediately and `onActiveChange(false)` when the 4s timer fires (in addition to the existing `setOpen` behavior).
+- Keep all existing behavior (tooltip persistence, dashed affordance) unchanged.
 
-## `TorusEnergyField.tsx` changes
+### 2. `TorusRelationnel.tsx` — animated phase highlight
 
-Wrap the existing `<svg>` in `<div className="relative">` and add an absolutely-positioned overlay layer. Add hotspots over:
+- Add `const [activeRegion, setActiveRegion] = useState<string | null>(null);` (values: `'center' | 'flow' | TorusPhase`).
+- Pass `onActiveChange={(a) => setActiveRegion(a ? phase : null)}` to each phase hotspot, and `'center'` / `'flow'` for the center and rotating-tangent hotspots.
+- In the SVG render of each phase arc:
+  - When `activeRegion === phase`, animate fill from `transparent` → `hsl(var(--primary)/0.28)`, stroke from border → `hsl(var(--primary))`, `strokeWidth` 1 → 1.6, and add a subtle outward `transform: scale(1.04)` around the arc's quadrant center via a `<g>` wrapper with `transform-origin` and a CSS `transition: all 250ms ease-out`.
+  - Add a soft halo: a second `<path>` duplicate of the arc at `opacity: 0.35`, `strokeWidth: 4`, `filter: blur(2px)` only when active.
+- For `'center'`: pulse the central dot — bump radius (`6 + breath*2` → `9 + breath*2`) and add a faint expanding ring (`<circle>` with growing `r` and fading `opacity`, CSS-transitioned).
+- For `'flow'`: thicken the rotating tangent line (1.2 → 2) and brighten its opacity (0.6 → 1), plus enlarge the moving dot.
+- Also reflect `activeRegion === phase` in the bottom 2-column phase label grid (same `bg-primary/10 border-primary/30` treatment as the active phase) so the legend stays in sync with the figure.
 
-| Region | Plain language |
-|---|---|
-| Outer skin | "The collective edge — how the whole group is holding together right now." |
-| Inner flow | "The personal current — what each individual is learning underneath." |
-| Throat κ(s) | "The narrow place where attention concentrates and new ideas get born." |
-| Attention frame (T/N marker) | "Where the group's focus is moving (T) and the direction it's quietly bending toward (N)." |
-| Tangent T (legend card) | Already has copy; wrap with tooltip giving longer plain version. |
-| Normal N (legend card) | Same. |
-| Curvature κ (legend card) | Same. |
+### 3. `TorusEnergyField.tsx` — same pattern, anatomy-aware
 
-Hotspot positions are computed from the same `cx, cy, R, r` constants already in the file, converted to percentages of the 400×320 viewBox so they track the responsive SVG.
+Apply the identical lifted-state pattern so the four hotspots ("Outer skin", "Inner flow", "Throat κ", "Attention frame T·N") each highlight their target on hover/tap:
 
-## `TorusRelationnel.tsx` changes
+- Outer skin: when active, increase `strokeWidth` 1.2 → 2.2 and opacity to 0.95, add a blurred halo ellipse behind it, and scale the breathing group very slightly (`breathScale * 1.02`).
+- Inner flow: same treatment on the red inner ellipse.
+- Throat κ: enlarge the central dot (`4 + breath*2` → `8 + breath*2`), brighten to full opacity, and pulse a faint dashed circle outward.
+- Attention frame: scale the `FrenetFrame` arrows up (`scale={20}` → `scale={28}`) and increase their opacity. Implement by passing an `emphasis` prop to `FrenetFrame` (default false → multiplies `scale` and `opacity`).
+- Also link the bottom anatomy legend cards (Tangent / Normal / Curvature) to the same `activeRegion` state so hovering a legend card triggers the same SVG highlight, and hovering the SVG hotspot highlights the matching legend card (`ring-2 ring-[color]`).
 
-Same pattern, smaller scale (150px square). Hotspots over:
+### 4. Motion + accessibility
 
-| Region | Plain language |
-|---|---|
-| Center point | "You — the still point the four phases move around." |
-| Tangent line (rotating) | "The pulse of attention right now: where contact is heading next." |
-| Each phase arc (Approche, Ouverture, Intensité, Retrait) | One-sentence felt-sense description, e.g. *Approche*: "Sensing toward the other before any words." |
-| Dashed flow diamond | "The natural cycle — contact rises, peaks, releases, returns." |
-
-Phase arc tooltips replace the need to read the small letters; clicking still calls `onPhaseChange` (hotspot wraps but does not block the underlying `<path>` click — handled by forwarding the click).
-
-## Mobile / tap behaviour
-
-`useTapHover` (inline in `GeometryHotspot.tsx`):
-```ts
-const [open, setOpen] = useState(false);
-const onTap = () => { setOpen(true); window.setTimeout(() => setOpen(false), 4000); };
-```
-Pass `open` + `onOpenChange` to `Tooltip` so Radix still handles hover; tap forces it open on touch devices where hover is unreliable.
-
-## Visual affordance
-
-A 1px dashed circle (or rectangle for the legend cards) appears at 30% opacity on hover/focus so users discover the hotspots without cluttering the figure at rest. No always-visible icons — keeps the "textbook plate" aesthetic intact.
+- All transitions: `transition: all 220ms ease-out` (CSS, not Framer) to stay lightweight and match the existing breathing aesthetic.
+- Respect `prefers-reduced-motion`: wrap the scale/halo additions in a `useReducedMotion` check (simple `window.matchMedia('(prefers-reduced-motion: reduce)')` hook in `src/hooks/usePrefersReducedMotion.ts`, new file). When reduced, only color/opacity changes apply — no scale, no blur halos.
+- Keep the current "breathing" baseline animation untouched; the highlight composes on top of it.
 
 ## Files
 
-- **Create**: `src/components/calm-magic/geometry/GeometryHotspot.tsx`
-- **Edit**: `src/components/calm-magic/components/TorusEnergyField.tsx` (add overlay layer + hotspots + wrap legend cards)
-- **Edit**: `src/components/journal/TorusRelationnel.tsx` (add overlay layer + phase/center/tangent hotspots)
+- `src/components/calm-magic/geometry/GeometryHotspot.tsx` — add `onActiveChange` prop and wire hover/focus/tap.
+- `src/components/journal/TorusRelationnel.tsx` — lift `activeRegion` state, animate arc + center + tangent highlight, sync bottom phase grid.
+- `src/components/calm-magic/components/TorusEnergyField.tsx` — lift `activeRegion` state, animate skin/flow/throat/frame highlight, two-way link to anatomy legend cards.
+- `src/components/calm-magic/geometry/FrenetFrame.tsx` — add optional `emphasis` prop (scale + opacity multiplier).
+- `src/hooks/usePrefersReducedMotion.ts` — new tiny hook returning a boolean.
 
-No new dependencies.
+## Out of scope
+
+- No changes to `TorusPhase` data model, no new tooltip copy, no new hotspots — purely linking existing tooltip activation to a visible animated highlight on the matching geometry.

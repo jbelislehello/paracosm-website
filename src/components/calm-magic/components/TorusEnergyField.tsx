@@ -9,10 +9,13 @@ import { Annotation } from '../geometry/Annotation';
 import { FrenetFrame, FrenetMarkers } from '../geometry/FrenetFrame';
 import { GeometryHotspot } from '../geometry/GeometryHotspot';
 import { useBreathingPulse } from '@/hooks/useBreathingPulse';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
 interface TorusEnergyFieldProps {
   mode: ModeType;
 }
+
+type AnatomyRegion = 'skin' | 'flow' | 'throat' | 'frame' | null;
 
 /**
  * Anatomy of a Learning Organization — rendered as a torus cross-section
@@ -22,6 +25,8 @@ interface TorusEnergyFieldProps {
 const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
   const [coherence, setCoherence] = useState(60);
   const [activeRings, setActiveRings] = useState(4);
+  const [activeRegion, setActiveRegion] = useState<AnatomyRegion>(null);
+  const reduced = usePrefersReducedMotion();
   const breath = useBreathingPulse(); // 0..1
 
   const cx = 200;
@@ -124,9 +129,9 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
               {/* Throat — the place where invention happens */}
               <g
                 style={{
-                  transform: `scale(${breathScale})`,
+                  transform: `scale(${breathScale * (activeRegion === 'skin' && !reduced ? 1.02 : 1)})`,
                   transformOrigin: `${cx}px ${cy}px`,
-                  transition: 'transform 200ms ease-out',
+                  transition: 'transform 220ms ease-out',
                 }}
               >
                 <ellipse
@@ -159,6 +164,20 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
                   </g>
                 ))}
 
+                {/* Outer skin halo */}
+                {activeRegion === 'skin' && !reduced && (
+                  <ellipse
+                    cx={cx} cy={cy}
+                    rx={R + r * 0.6}
+                    ry={(R + r * 0.6) * 0.42}
+                    fill="none"
+                    stroke={ink}
+                    strokeWidth={5}
+                    opacity={0.3}
+                    style={{ filter: 'blur(2.5px)' }}
+                  />
+                )}
+
                 {/* Outer skin — collective coherence */}
                 <ellipse
                   cx={cx}
@@ -167,10 +186,25 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
                   ry={(R + r * 0.6) * 0.42}
                   fill="none"
                   stroke={ink}
-                  strokeWidth="1.2"
-                  opacity={breathOpacity}
+                  strokeWidth={activeRegion === 'skin' ? 2.2 : 1.2}
+                  opacity={activeRegion === 'skin' ? 0.95 : breathOpacity}
                   filter="url(#torus-gp-ink)"
+                  style={{ transition: 'all 220ms ease-out' }}
                 />
+
+                {/* Inner flow halo */}
+                {activeRegion === 'flow' && !reduced && (
+                  <ellipse
+                    cx={cx} cy={cy}
+                    rx={R - r * 0.7}
+                    ry={(R - r * 0.7) * 0.42}
+                    fill="none"
+                    stroke={red}
+                    strokeWidth={4}
+                    opacity={0.35}
+                    style={{ filter: 'blur(2.5px)' }}
+                  />
+                )}
 
                 {/* Inner flow — individual learning */}
                 <ellipse
@@ -180,23 +214,38 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
                   ry={(R - r * 0.7) * 0.42}
                   fill="none"
                   stroke={red}
-                  strokeWidth="1"
-                  opacity={0.55 + breath * 0.35}
+                  strokeWidth={activeRegion === 'flow' ? 2 : 1}
+                  opacity={activeRegion === 'flow' ? 1 : 0.55 + breath * 0.35}
                   filter="url(#torus-gp-ink)"
+                  style={{ transition: 'all 220ms ease-out' }}
                 />
+
+                {/* Throat pulse ring when active */}
+                {activeRegion === 'throat' && !reduced && (
+                  <circle
+                    cx={cx} cy={cy}
+                    r={14 + breath * 6}
+                    fill="none"
+                    stroke={red}
+                    strokeWidth="0.8"
+                    strokeDasharray="2 3"
+                    opacity={0.5 - breath * 0.3}
+                  />
+                )}
 
                 {/* Throat dot */}
                 <circle
                   cx={cx}
                   cy={cy}
-                  r={4 + breath * 2}
+                  r={(activeRegion === 'throat' ? 8 : 4) + breath * 2}
                   fill={red}
-                  opacity={0.7}
+                  opacity={activeRegion === 'throat' ? 1 : 0.7}
+                  style={{ transition: 'all 220ms ease-out' }}
                 />
               </g>
 
               {/* Frenet frame riding the outer skin */}
-              <FrenetFrame x={fx} y={fy} angle={tangent} scale={20} />
+              <FrenetFrame x={fx} y={fy} angle={tangent} scale={20} emphasis={activeRegion === 'frame'} />
 
               {/* Annotations — textbook anatomy */}
               <Annotation
@@ -268,6 +317,7 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
               label="Outer skin"
               body="The collective edge — how the whole group is holding together right now. Watch it breathe to feel coherence rise and fall."
               side="left"
+              onActiveChange={(a) => setActiveRegion(a ? 'skin' : null)}
             />
             <GeometryHotspot
               style={{ left: '33.4%', top: '50%', width: 36, height: 36, transform: 'translate(-50%, -50%)' }}
@@ -275,6 +325,7 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
               label="Inner flow"
               body="The personal current — what each individual is quietly learning underneath the group's surface."
               side="right"
+              onActiveChange={(a) => setActiveRegion(a ? 'flow' : null)}
             />
             <GeometryHotspot
               style={{ left: '50%', top: '50%', width: 28, height: 28, transform: 'translate(-50%, -50%)' }}
@@ -282,6 +333,7 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
               label="Throat — where invention happens"
               body="The narrow place where attention concentrates and new ideas get born. Curvature κ measures how sharply the field is bending here."
               side="top"
+              onActiveChange={(a) => setActiveRegion(a ? 'throat' : null)}
             />
             <GeometryHotspot
               style={{ left: '50%', top: '18%', width: 80, height: 26, transform: 'translate(-50%, -50%)', borderRadius: 4 }}
@@ -290,14 +342,16 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
               label="Attention frame"
               body="The little arrow set riding the outer skin shows where the group's focus is moving (T, tangent) and the direction it's quietly bending toward (N, normal)."
               side="bottom"
+              onActiveChange={(a) => setActiveRegion(a ? 'frame' : null)}
             />
           </div>
 
           {/* Anatomy legend — hover/tap each card for plain language */}
           <TooltipProvider delayDuration={150}>
             <div className="grid sm:grid-cols-3 gap-3 text-sm">
-              {[
+              {([
                 {
+                  region: 'frame' as const,
                   border: 'hsl(var(--ink-indigo)/0.2)',
                   color: 'hsl(var(--ink-indigo))',
                   title: 'Tangent — T',
@@ -305,6 +359,7 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
                   long: "T points along the direction the group is heading at this exact moment — the 'velocity' of attention. If T is steady, work feels aligned; if T wobbles, focus is searching.",
                 },
                 {
+                  region: 'flow' as const,
                   border: 'hsl(var(--ink-red)/0.25)',
                   color: 'hsl(var(--ink-red))',
                   title: 'Normal — N',
@@ -312,35 +367,46 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
                   long: 'N is perpendicular to T — it shows the direction the group is quietly bending toward. New insight arrives along N before anyone names it.',
                 },
                 {
+                  region: 'throat' as const,
                   border: 'hsl(var(--ink-green)/0.25)',
                   color: 'hsl(var(--ink-green))',
                   title: 'Curvature — κ',
                   short: 'How sharply the org is changing shape — the rate of invention.',
                   long: 'κ measures how tightly the path bends. Low κ = straight, predictable execution. High κ = sharp re-orientation, the moment invention happens.',
                 },
-              ].map((c) => (
-                <Tooltip key={c.title}>
-                  <TooltipTrigger asChild>
-                    <button
-                      type="button"
-                      className="text-left rounded-md border bg-[hsl(var(--paper))/50] p-3 cursor-help transition-colors hover:bg-[hsl(var(--paper))/70] focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ink-indigo)/0.4)]"
-                      style={{ borderColor: c.border }}
+              ]).map((c) => {
+                const isHot = activeRegion === c.region;
+                return (
+                  <Tooltip key={c.title}>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        onMouseEnter={() => setActiveRegion(c.region)}
+                        onMouseLeave={() => setActiveRegion((r) => r === c.region ? null : r)}
+                        onFocus={() => setActiveRegion(c.region)}
+                        onBlur={() => setActiveRegion((r) => r === c.region ? null : r)}
+                        className={`text-left rounded-md border bg-[hsl(var(--paper))/50] p-3 cursor-help transition-all hover:bg-[hsl(var(--paper))/70] focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ink-indigo)/0.4)] ${isHot ? 'ring-2 shadow-sm' : ''}`}
+                        style={{
+                          borderColor: c.border,
+                          ...(isHot ? { boxShadow: `0 0 0 2px ${c.color}33`, borderColor: c.color } : {}),
+                        }}
+                      >
+                        <div className="font-serif italic" style={{ color: c.color }}>
+                          {c.title}
+                        </div>
+                        <div className="text-xs text-muted-foreground">{c.short}</div>
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent
+                      side="top"
+                      className="max-w-[260px] bg-[hsl(var(--paper))] border shadow-md"
+                      style={{ borderColor: c.border, color: c.color }}
                     >
-                      <div className="font-serif italic" style={{ color: c.color }}>
-                        {c.title}
-                      </div>
-                      <div className="text-xs text-muted-foreground">{c.short}</div>
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side="top"
-                    className="max-w-[260px] bg-[hsl(var(--paper))] border shadow-md"
-                    style={{ borderColor: c.border, color: c.color }}
-                  >
-                    <p className="text-xs leading-snug">{c.long}</p>
-                  </TooltipContent>
-                </Tooltip>
-              ))}
+                      <p className="text-xs leading-snug">{c.long}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                );
+              })}
             </div>
           </TooltipProvider>
         </CardContent>
