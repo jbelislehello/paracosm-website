@@ -1454,6 +1454,15 @@ const CalmMagicBoard = () => {
                   <BookOpen className="w-4 h-4 mr-2" />
                   Encyclopedia
                 </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="justify-start"
+                  onClick={() => { navigate('/dream-and-learn'); setShowMobileMenu(false); }}
+                >
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Dream & Learn
+                </Button>
                 <Button 
                   variant="outline" 
                   size="sm"
