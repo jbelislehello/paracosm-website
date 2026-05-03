@@ -49,6 +49,62 @@ function scoreOverlap(a: string[], b: string[]): number {
   return n / Math.max(a.length, b.length);
 }
 
+// ---------- Output safety helpers ----------
+const ALLOWED_AXES = new Set<string>(AXES);
+
+function sanitizeText(s: unknown, max: number): string {
+  if (typeof s !== "string") return "";
+  return s
+    .replace(/[\u0000-\u001F\u007F]/g, " ") // control chars
+    .replace(/<[^>]*>/g, "")                 // strip HTML/script
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, max);
+}
+
+function clampScore(n: unknown): number {
+  const v = typeof n === "number" ? n : Number(n);
+  if (!Number.isFinite(v)) return 0;
+  return Math.max(0, Math.min(100, Math.round(v)));
+}
+
+type SafeAxisInput = {
+  score: number;
+  rationale: string;
+  tile_hints: string[];
+};
+
+function parseModelArgs(raw: string): Map<Axis, SafeAxisInput> | null {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return null;
+  }
+  if (!parsed || typeof parsed !== "object") return null;
+  const axesRaw = (parsed as Record<string, unknown>).axes;
+  if (!Array.isArray(axesRaw)) return null;
+
+  const out = new Map<Axis, SafeAxisInput>();
+  for (const item of axesRaw) {
+    if (!item || typeof item !== "object") continue;
+    const o = item as Record<string, unknown>;
+    const axis = typeof o.axis === "string" ? o.axis.toUpperCase() : "";
+    if (!ALLOWED_AXES.has(axis)) continue;
+    const hintsRaw = Array.isArray(o.tile_hints) ? o.tile_hints : [];
+    const tile_hints = hintsRaw
+      .slice(0, 3)
+      .map((h) => sanitizeText(h, 80))
+      .filter((s): s is string => s.length > 0);
+    out.set(axis as Axis, {
+      score: clampScore(o.score),
+      rationale: sanitizeText(o.rationale, 240),
+      tile_hints,
+    });
+  }
+  return out;
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -163,55 +219,56 @@ Deno.serve(async (req) => {
 
     const aiJson = await aiRes.json();
     const toolCall = aiJson.choices?.[0]?.message?.tool_calls?.[0];
-    if (!toolCall?.function?.arguments) {
-      throw new Error("AI returned no structured mapping.");
+    const rawArgs = toolCall?.function?.arguments;
+    if (typeof rawArgs !== "string") {
+      console.error("AI returned no tool-call arguments");
+      return new Response(JSON.stringify({ error: "Mapping failed." }), {
+        status: 502,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
-    const parsed = JSON.parse(toolCall.function.arguments) as {
-      axes: Array<{
-        axis: Axis;
-        score: number;
-        rationale: string;
-        tile_hints: string[];
-      }>;
-    };
+    const parsedAxes = parseModelArgs(rawArgs);
+    if (!parsedAxes) {
+      console.error("AI returned malformed mapping:", rawArgs.slice(0, 500));
+      return new Response(JSON.stringify({ error: "Mapping failed." }), {
+        status: 502,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
-    const byAxis = new Map(parsed.axes.map((a) => [a.axis, a]));
-    const normalized = AXES.map(
-      (axis) =>
-        byAxis.get(axis) ?? {
-          axis,
-          score: 0,
-          rationale: "",
-          tile_hints: [],
-        },
-    );
-
+    // ---- Tile lookup: explicit column allowlist ----
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     );
     const { data: tilesRows } = await supabase
       .from("tiles")
-      .select("id, board, short_prompt");
+      .select("id, board, short_prompt"); // explicit allowlist — never SELECT *
+
     const tilesByBoard = new Map<
       string,
       Array<{ id: number; prompt: string; tokens: string[] }>
     >();
     for (const t of tilesRows ?? []) {
-      const arr = tilesByBoard.get(t.board) ?? [];
-      arr.push({
-        id: t.id,
-        prompt: t.short_prompt,
-        tokens: tokenize(t.short_prompt),
-      });
-      tilesByBoard.set(t.board, arr);
+      if (!t || typeof t !== "object") continue;
+      const board = typeof t.board === "string" ? t.board : "";
+      if (!ALLOWED_AXES.has(board)) continue;
+      const id = Number(t.id);
+      const prompt = sanitizeText(t.short_prompt, 200);
+      if (!Number.isFinite(id) || !prompt) continue;
+      const arr = tilesByBoard.get(board) ?? [];
+      arr.push({ id, prompt, tokens: tokenize(prompt) });
+      tilesByBoard.set(board, arr);
     }
 
-    const enriched = normalized.map((a) => {
-      const pool = tilesByBoard.get(a.axis) ?? [];
+    function matchTiles(
+      axis: Axis,
+      hints: string[],
+    ): Array<{ id: number; prompt: string }> {
+      const pool = tilesByBoard.get(axis) ?? [];
       const matched: Array<{ id: number; prompt: string }> = [];
       const seen = new Set<number>();
-      for (const hint of a.tile_hints) {
+      for (const hint of hints) {
         const hintTokens = tokenize(hint);
         let best = { id: -1, prompt: "", score: 0 };
         for (const tile of pool) {
@@ -221,21 +278,29 @@ Deno.serve(async (req) => {
           }
         }
         if (best.id !== -1 && !seen.has(best.id)) {
+          // Reconstruct field-by-field: never spread the tile row.
           matched.push({ id: best.id, prompt: best.prompt });
           seen.add(best.id);
         }
       }
+      return matched;
+    }
+
+    // ---- Final response: built from scratch, allowlist-only ----
+    const safeAxes = AXES.map((axis) => {
+      const m = parsedAxes.get(axis) ??
+        { score: 0, rationale: "", tile_hints: [] };
       return {
-        axis: a.axis,
-        score: a.score,
-        rationale: a.rationale,
-        tile_hints: a.tile_hints,
-        tiles: matched,
+        axis,
+        score: m.score,
+        rationale: m.rationale,
+        tile_hints: m.tile_hints,
+        tiles: matchTiles(axis, m.tile_hints),
       };
     });
 
     return new Response(
-      JSON.stringify({ question: question.trim(), axes: enriched }),
+      JSON.stringify({ question: question.trim(), axes: safeAxes }),
       {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -243,14 +308,9 @@ Deno.serve(async (req) => {
     );
   } catch (e) {
     console.error("map-question-to-board error:", e);
-    return new Response(
-      JSON.stringify({
-        error: e instanceof Error ? e.message : "Unknown error",
-      }),
-      {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      },
-    );
+    return new Response(JSON.stringify({ error: "Mapping failed." }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 });
