@@ -6,6 +6,7 @@ import { ModeType } from '../context/ModeContext';
 import { GraphPaperDefs } from '../geometry/GraphPaper';
 import { Annotation } from '../geometry/Annotation';
 import { FrenetFrame, FrenetMarkers } from '../geometry/FrenetFrame';
+import { GeometryHotspot } from '../geometry/GeometryHotspot';
 import { useBreathingPulse } from '@/hooks/useBreathingPulse';
 
 interface TorusEnergyFieldProps {
