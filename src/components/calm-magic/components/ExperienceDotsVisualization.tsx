@@ -686,9 +686,13 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                 <circle
                   cx="0"
                   cy="0"
-                  r="8"
+                  r={activeRegion === 'freedom' && !prefersReducedMotion ? 11 : 8}
                   fill="#ff6b6b"
+                  style={{ transition: 'r 220ms ease-out' }}
                 />
+                {activeRegion === 'freedom' && !prefersReducedMotion && (
+                  <circle cx="0" cy="0" r="20" fill="#ff6b6b" opacity="0.3" style={{ filter: 'blur(6px)' }} />
+                )}
               </g>
 
               {/* Center label */}
@@ -697,17 +701,18 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                 y={centerY + 3}
                 textAnchor="middle"
                 fontSize="11"
-                fill="#666"
+                fill={activeRegion === 'freedom' ? '#ff6b6b' : '#666'}
                 className="font-bold"
+                style={{ transition: 'fill 220ms ease-out' }}
               >
                 Freedom
               </text>
 
               {/* Cardinal direction labels for forces */}
-              <text x={centerX + 180} y={centerY + 5} fontSize="12" fill="#666" textAnchor="start" className="font-medium">Sovereignty</text>
-              <text x={centerX} y={centerY + 180} fontSize="12" fill="#666" textAnchor="middle" className="font-medium">Memory</text>
-              <text x={centerX - 180} y={centerY + 5} fontSize="12" fill="#666" textAnchor="end" className="font-medium">Intimacy</text>
-              <text x={centerX} y={centerY - 160} fontSize="12" fill="#666" textAnchor="middle" className="font-medium">Novelty</text>
+              <text x={centerX + 180} y={centerY + 5} fontSize={activeRegion === 'sovereignty' ? 13 : 12} fill={activeRegion === 'sovereignty' ? getForceColor('sovereignty') : '#666'} textAnchor="start" className={activeRegion === 'sovereignty' ? 'font-semibold' : 'font-medium'} style={{ transition: 'fill 220ms ease-out' }}>Sovereignty</text>
+              <text x={centerX} y={centerY + 180} fontSize={activeRegion === 'memory' ? 13 : 12} fill={activeRegion === 'memory' ? getForceColor('memory') : '#666'} textAnchor="middle" className={activeRegion === 'memory' ? 'font-semibold' : 'font-medium'} style={{ transition: 'fill 220ms ease-out' }}>Memory</text>
+              <text x={centerX - 180} y={centerY + 5} fontSize={activeRegion === 'intimacy' ? 13 : 12} fill={activeRegion === 'intimacy' ? getForceColor('intimacy') : '#666'} textAnchor="end" className={activeRegion === 'intimacy' ? 'font-semibold' : 'font-medium'} style={{ transition: 'fill 220ms ease-out' }}>Intimacy</text>
+              <text x={centerX} y={centerY - 160} fontSize={activeRegion === 'novelty' ? 13 : 12} fill={activeRegion === 'novelty' ? getForceColor('novelty') : '#666'} textAnchor="middle" className={activeRegion === 'novelty' ? 'font-semibold' : 'font-medium'} style={{ transition: 'fill 220ms ease-out' }}>Novelty</text>
 
               {/* Ring level indicators */}
               <text x={centerX + 85} y={centerY - 5} fontSize="9" fill="#999" textAnchor="middle">L1</text>
@@ -721,11 +726,36 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                 r={arrowLength}
                 fill="none"
                 stroke="#ff6b6b"
-                strokeWidth="1"
-                opacity="0.2"
+                strokeWidth={activeRegion === 'freedom' ? '1.5' : '1'}
+                opacity={activeRegion === 'freedom' ? '0.55' : '0.2'}
                 strokeDasharray="3,3"
+                style={{ transition: 'opacity 220ms ease-out, stroke-width 220ms ease-out' }}
               />
             </svg>
+
+            {/* Synchronized hotspots — positions match SVG coords (600×500). */}
+            {(['sovereignty','memory','intimacy','novelty','freedom'] as const).map((key) => {
+              const positions: Record<typeof key, { left: string; top: string; w: number; h: number; side: 'top'|'bottom'|'left'|'right' }> = {
+                sovereignty: { left: `${((centerX + 180) / 600) * 100}%`, top: `${((centerY - 5) / 500) * 100}%`, w: 96, h: 28, side: 'left' },
+                memory:      { left: `${((centerX - 40) / 600) * 100}%`, top: `${((centerY + 168) / 500) * 100}%`, w: 80, h: 24, side: 'top' },
+                intimacy:    { left: `${((centerX - 250) / 600) * 100}%`, top: `${((centerY - 5) / 500) * 100}%`, w: 96, h: 28, side: 'right' },
+                novelty:     { left: `${((centerX - 40) / 600) * 100}%`, top: `${((centerY - 178) / 500) * 100}%`, w: 80, h: 24, side: 'bottom' },
+                freedom:     { left: `${((centerX - 22) / 600) * 100}%`, top: `${((centerY - 14) / 500) * 100}%`, w: 44, h: 28, side: 'top' },
+              };
+              const p = positions[key];
+              const copy = REGION_COPY[key];
+              return (
+                <GeometryHotspot
+                  key={key}
+                  style={{ left: p.left, top: p.top, width: p.w, height: p.h }}
+                  symbol={copy.symbol}
+                  label={copy.label}
+                  body={copy.body}
+                  side={p.side}
+                  onActiveChange={(a) => setActiveRegion(a ? key : (prev => prev === key ? null : prev) as any)}
+                />
+              );
+            })}
           </div>
 
           {/* Enhanced Legend & Connection Types */}
