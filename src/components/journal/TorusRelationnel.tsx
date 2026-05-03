@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TorusPhase, TORUS_PHASES } from '@/types/journal-expansion';
 import { useBreathingPulse } from '@/hooks/useBreathingPulse';
+import { GeometryHotspot } from '@/components/calm-magic/geometry/GeometryHotspot';
 
 interface TorusRelationnelProps {
   currentPhase: TorusPhase;
@@ -9,6 +10,21 @@ interface TorusRelationnelProps {
 }
 
 const PHASE_ORDER: TorusPhase[] = ['approche', 'ouverture', 'intensite', 'retrait'];
+
+const PHASE_PLAIN: Record<TorusPhase, string> = {
+  approche: 'Sensing toward the other before any words — the moment contact begins to form.',
+  ouverture: 'The doors open. Curiosity and welcome on both sides; the field becomes shared.',
+  intensite: 'Full presence — meaning, feeling and exchange at peak. The encounter does its work here.',
+  retrait: 'Honest withdrawal — letting the contact rest so what was exchanged can settle and integrate.',
+};
+
+// Quadrant centers in % of the 150px square (each arc occupies a 90° wedge starting at -90°)
+const PHASE_HOTSPOT_POS: Record<TorusPhase, { left: string; top: string }> = {
+  approche:  { left: '70%', top: '30%' }, // top-right
+  ouverture: { left: '70%', top: '70%' }, // bottom-right
+  intensite: { left: '30%', top: '70%' }, // bottom-left
+  retrait:   { left: '30%', top: '30%' }, // top-left
+};
 
 export const TorusRelationnel: React.FC<TorusRelationnelProps> = ({
   currentPhase,
@@ -111,6 +127,40 @@ export const TorusRelationnel: React.FC<TorusRelationnelProps> = ({
               </marker>
             </defs>
           </svg>
+
+          {/* Plain-language hotspots */}
+          <GeometryHotspot
+            style={{ left: '50%', top: '50%', width: 22, height: 22, transform: 'translate(-50%, -50%)' }}
+            symbol="•"
+            label="You — the still point"
+            body="The center the four phases move around. You stay here while contact rises, peaks, and releases."
+            side="right"
+          />
+          <GeometryHotspot
+            style={{ left: '50%', top: '50%', width: 90, height: 90, transform: 'translate(-50%, -50%)' }}
+            symbol="↻"
+            label="Attention flow"
+            body="The pulse of attention right now: the rotating line shows where contact is heading next around the cycle."
+            side="bottom"
+          />
+          {PHASE_ORDER.map((phase) => (
+            <GeometryHotspot
+              key={phase}
+              style={{
+                left: PHASE_HOTSPOT_POS[phase].left,
+                top: PHASE_HOTSPOT_POS[phase].top,
+                width: 30,
+                height: 30,
+                transform: 'translate(-50%, -50%)',
+              }}
+              shape="rect"
+              symbol={TORUS_PHASES[phase].label.charAt(0)}
+              label={TORUS_PHASES[phase].label}
+              body={PHASE_PLAIN[phase]}
+              side="top"
+              onActivate={() => onPhaseChange?.(phase)}
+            />
+          ))}
         </div>
         <p className="text-[10px] italic text-muted-foreground text-center -mt-2 mb-2 font-serif">
           Approche → Ouverture → Intensité → Retrait —<br/>the four fundamental forms of contact

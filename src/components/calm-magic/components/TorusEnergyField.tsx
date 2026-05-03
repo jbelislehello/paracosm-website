@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Slider } from '@/components/ui/slider';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ModeType } from '../context/ModeContext';
 import { GraphPaperDefs } from '../geometry/GraphPaper';
 import { Annotation } from '../geometry/Annotation';
 import { FrenetFrame, FrenetMarkers } from '../geometry/FrenetFrame';
+import { GeometryHotspot } from '../geometry/GeometryHotspot';
 import { useBreathingPulse } from '@/hooks/useBreathingPulse';
 
 interface TorusEnergyFieldProps {
@@ -108,7 +110,7 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
             </div>
           </div>
 
-          <div className="rounded-lg overflow-hidden border border-[hsl(var(--ink-indigo)/0.15)]">
+          <div className="relative rounded-lg overflow-hidden border border-[hsl(var(--ink-indigo)/0.15)]">
             <svg
               viewBox="0 0 400 320"
               className="w-full h-auto"
@@ -258,35 +260,89 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
                 breath · {Math.round(breath * 100)}%
               </text>
             </svg>
+
+            {/* Hover/tap hotspots — plain-language explanations */}
+            <GeometryHotspot
+              style={{ left: '77.6%', top: '50%', width: 36, height: 36, transform: 'translate(-50%, -50%)' }}
+              symbol="◯"
+              label="Outer skin"
+              body="The collective edge — how the whole group is holding together right now. Watch it breathe to feel coherence rise and fall."
+              side="left"
+            />
+            <GeometryHotspot
+              style={{ left: '33.4%', top: '50%', width: 36, height: 36, transform: 'translate(-50%, -50%)' }}
+              symbol="∿"
+              label="Inner flow"
+              body="The personal current — what each individual is quietly learning underneath the group's surface."
+              side="right"
+            />
+            <GeometryHotspot
+              style={{ left: '50%', top: '50%', width: 28, height: 28, transform: 'translate(-50%, -50%)' }}
+              symbol="κ"
+              label="Throat — where invention happens"
+              body="The narrow place where attention concentrates and new ideas get born. Curvature κ measures how sharply the field is bending here."
+              side="top"
+            />
+            <GeometryHotspot
+              style={{ left: '50%', top: '18%', width: 80, height: 26, transform: 'translate(-50%, -50%)', borderRadius: 4 }}
+              shape="rect"
+              symbol="T·N"
+              label="Attention frame"
+              body="The little arrow set riding the outer skin shows where the group's focus is moving (T, tangent) and the direction it's quietly bending toward (N, normal)."
+              side="bottom"
+            />
           </div>
 
-          {/* Anatomy legend */}
-          <div className="grid sm:grid-cols-3 gap-3 text-sm">
-            <div className="rounded-md border border-[hsl(var(--ink-indigo)/0.2)] bg-[hsl(var(--paper))/50] p-3">
-              <div className="font-serif italic text-[hsl(var(--ink-indigo))]">
-                Tangent — T
-              </div>
-              <div className="text-xs text-muted-foreground">
-                Where the organization is moving right now.
-              </div>
+          {/* Anatomy legend — hover/tap each card for plain language */}
+          <TooltipProvider delayDuration={150}>
+            <div className="grid sm:grid-cols-3 gap-3 text-sm">
+              {[
+                {
+                  border: 'hsl(var(--ink-indigo)/0.2)',
+                  color: 'hsl(var(--ink-indigo))',
+                  title: 'Tangent — T',
+                  short: 'Where the organization is moving right now.',
+                  long: "T points along the direction the group is heading at this exact moment — the 'velocity' of attention. If T is steady, work feels aligned; if T wobbles, focus is searching.",
+                },
+                {
+                  border: 'hsl(var(--ink-red)/0.25)',
+                  color: 'hsl(var(--ink-red))',
+                  title: 'Normal — N',
+                  short: 'Where attention is bending. The direction of learning.',
+                  long: 'N is perpendicular to T — it shows the direction the group is quietly bending toward. New insight arrives along N before anyone names it.',
+                },
+                {
+                  border: 'hsl(var(--ink-green)/0.25)',
+                  color: 'hsl(var(--ink-green))',
+                  title: 'Curvature — κ',
+                  short: 'How sharply the org is changing shape — the rate of invention.',
+                  long: 'κ measures how tightly the path bends. Low κ = straight, predictable execution. High κ = sharp re-orientation, the moment invention happens.',
+                },
+              ].map((c) => (
+                <Tooltip key={c.title}>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      className="text-left rounded-md border bg-[hsl(var(--paper))/50] p-3 cursor-help transition-colors hover:bg-[hsl(var(--paper))/70] focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ink-indigo)/0.4)]"
+                      style={{ borderColor: c.border }}
+                    >
+                      <div className="font-serif italic" style={{ color: c.color }}>
+                        {c.title}
+                      </div>
+                      <div className="text-xs text-muted-foreground">{c.short}</div>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="top"
+                    className="max-w-[260px] bg-[hsl(var(--paper))] border shadow-md"
+                    style={{ borderColor: c.border, color: c.color }}
+                  >
+                    <p className="text-xs leading-snug">{c.long}</p>
+                  </TooltipContent>
+                </Tooltip>
+              ))}
             </div>
-            <div className="rounded-md border border-[hsl(var(--ink-red)/0.25)] bg-[hsl(var(--paper))/50] p-3">
-              <div className="font-serif italic text-[hsl(var(--ink-red))]">
-                Normal — N
-              </div>
-              <div className="text-xs text-muted-foreground">
-                Where attention is bending. The direction of learning.
-              </div>
-            </div>
-            <div className="rounded-md border border-[hsl(var(--ink-green)/0.25)] bg-[hsl(var(--paper))/50] p-3">
-              <div className="font-serif italic text-[hsl(var(--ink-green))]">
-                Curvature — κ
-              </div>
-              <div className="text-xs text-muted-foreground">
-                How sharply the org is changing shape — the rate of invention.
-              </div>
-            </div>
-          </div>
+          </TooltipProvider>
         </CardContent>
       </Card>
     </div>
