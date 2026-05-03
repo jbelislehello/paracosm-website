@@ -51,6 +51,7 @@ export default function QuestionResonancePanel({
       }
       const mapped = data as ResonanceMapData;
       setResult(mapped);
+      saveLastResonance(mapped);
       onMapped?.(mapped);
       const top = [...mapped.axes].sort((a, b) => b.score - a.score)[0];
       void trackEvent("resonance_returned", {
