@@ -1,41 +1,81 @@
-## Add Contextual Info Panel for Active Force Axis
+## Automated Tests for Compass Keyboard Navigation
 
-Display `REGION_COPY` content for the currently `activeRegion` in a small panel anchored beside the rotating Freedom arrow inside `ExperienceDotsVisualization.tsx`.
+The previous plan to add keyboard navigation was interrupted before implementation, and the project has no test setup yet. This plan covers both: implement the keyboard handler (small, deterministic) and add a Vitest suite that exercises it.
 
-### Behavior
+### 1. Test infrastructure (new)
 
-- Visible only when `activeRegion` is non-null (covers Sovereignty, Memory, Intimacy, Novelty, and Freedom).
-- Renders the region's `symbol`, `label`, and `body` from the existing `REGION_COPY` map.
-- Color-keyed: border / symbol use `getForceColor(activeRegion)` for the four forces; Freedom uses the existing `#ff6b6b` accent.
-- Anchored on the SVG-overlay layer (same parent as the `GeometryHotspot` overlays) so it stays in sync with the compass. Position: just outside the arrow's reach, top-right of the compass area, so it never covers the rotating arrow or cardinal labels.
-- Smooth fade/slide-in (`opacity` + small translate, ~200ms) and respects `prefersReducedMotion` (no transform, instant opacity).
-- Non-interactive (`pointer-events-none`) so it doesn't steal hover from hotspots / dots.
-- `aria-live="polite"` region for screen readers; panel itself uses `role="status"`.
+Add a minimal Vitest + Testing Library setup since none exists:
 
-### Layout
+- `package.json` devDependencies: `vitest`, `@testing-library/react`, `@testing-library/jest-dom`, `@testing-library/user-event`, `jsdom`.
+- `vitest.config.ts` — jsdom env, globals on, alias `@` → `src`, setup file.
+- `src/test/setup.ts` — `@testing-library/jest-dom` import + `matchMedia` polyfill (needed by `usePrefersReducedMotion`).
+- `tsconfig.app.json` — add `"vitest/globals"` to `compilerOptions.types`.
 
-```text
-+-----------------------------------------------+
-|                       [ S  Sovereignty     ]  |
-|        ◌  ← compass    [ Your sense of ... ]  |
-|       arrow                                   |
-+-----------------------------------------------+
+### 2. Implement keyboard handler in `ExperienceDotsVisualization.tsx`
+
+Replace the wrapper at line 562 with a focusable container:
+
+```tsx
+<div
+  className="relative outline-none focus-visible:ring-2 focus-visible:ring-purple-400 rounded-lg"
+  tabIndex={0}
+  role="group"
+  aria-label="Freedom compass. Arrow keys focus axes; Enter/Space focus Freedom; Escape clears."
+  data-testid="compass-keyboard-region"
+  onKeyDown={(e) => {
+    const map: Record<string, ActiveRegion> = {
+      ArrowRight: 'sovereignty',
+      ArrowDown: 'memory',
+      ArrowLeft: 'intimacy',
+      ArrowUp: 'novelty',
+      Enter: 'freedom',
+      ' ': 'freedom',
+      Escape: null,
+    };
+    if (!(e.key in map)) return;
+    e.preventDefault();
+    setActiveRegion(map[e.key]);
+  }}
+>
 ```
 
-- Absolute-positioned div inside the same `relative` container that wraps the SVG and `GeometryHotspot`s (around line 805 closing `</div>`).
-- Tailwind: `absolute top-3 right-3 max-w-[220px] rounded-md border bg-background/90 backdrop-blur p-3 shadow-sm pointer-events-none`.
-- Mobile (current viewport 390px): cap `max-w-[60%]` and shrink padding so it doesn't crowd the compass.
+The existing info panel already renders `REGION_COPY[activeRegion].label` with `role="status"` and `aria-live="polite"`, so it updates automatically.
 
-### Technical Changes (single file)
+### 3. Test suite
 
-`src/components/calm-magic/components/ExperienceDotsVisualization.tsx`
+`src/components/calm-magic/components/__tests__/ExperienceDotsVisualization.keyboard.test.tsx`
 
-1. After the closing `</svg>` block and the hotspots map (around line 804), add a new `{activeRegion && (...)}` JSX block rendering the panel.
-2. Read `REGION_COPY[activeRegion]` and `getForceColor` (forces only; Freedom uses red literal).
-3. Use `usePrefersReducedMotion` (already imported per prior work) to switch between transform-based entrance and pure opacity.
-4. No new state, no new effects, no new deps — purely derived from existing `activeRegion`.
+Covers:
 
-### Out of Scope
+1. **ArrowRight → Sovereignty panel** — render, focus the compass region, press `ArrowRight`, assert the status panel contains "Sovereignty".
+2. **ArrowDown / ArrowLeft / ArrowUp** — parameterized via `it.each`, asserts "Memory", "Intimacy", "Novelty" respectively.
+3. **Enter and Space → Freedom** — both keys produce the Freedom label.
+4. **Escape clears** — after pressing `ArrowRight` and seeing "Sovereignty", press `Escape` and assert the panel is no longer in the document (queryByRole `status` returns null, or the label text is gone).
+5. **Unhandled keys are ignored** — pressing `Tab` or `a` does not change panel state.
 
-- No changes to hotspot positions, arrow easing, or legend.
-- No new copy strings; reuses existing `REGION_COPY`.
+Test pattern:
+
+```tsx
+const user = userEvent.setup();
+render(<ExperienceDotsVisualization mode="personal" />);
+const region = screen.getByTestId('compass-keyboard-region');
+region.focus();
+await user.keyboard('{ArrowRight}');
+expect(screen.getByRole('status')).toHaveTextContent('Sovereignty');
+await user.keyboard('{Escape}');
+expect(screen.queryByRole('status')).toBeNull();
+```
+
+### 4. Out of scope
+
+- No tests for arrow-tween animation (timing/RAF), GeometryHotspot rendering, or audio.
+- No changes to the info panel, hotspots, or rotation logic.
+
+### Files changed
+
+- `package.json` (deps)
+- `vitest.config.ts` (new)
+- `src/test/setup.ts` (new)
+- `tsconfig.app.json` (types)
+- `src/components/calm-magic/components/ExperienceDotsVisualization.tsx` (keyboard handler on wrapper at line 562)
+- `src/components/calm-magic/components/__tests__/ExperienceDotsVisualization.keyboard.test.tsx` (new)
