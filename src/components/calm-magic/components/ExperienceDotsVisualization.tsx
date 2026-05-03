@@ -848,7 +848,10 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                   label={copy.label}
                   body={copy.body}
                   side={p.side}
-                  onActiveChange={(a) => setActiveRegion((prev) => (a ? key : prev === key ? null : prev))}
+                  onActiveChange={(a) => {
+                    setActiveRegion((prev) => (a ? key : prev === key ? null : prev));
+                    if (a) focusCompass();
+                  }}
                 />
               );
             })}
