@@ -80,6 +80,9 @@ const ViewRenderer: React.FC<ViewRendererProps> = ({
         />
       );
 
+    case 'dream':
+      return <DreamMode />;
+
     default:
       return null;
   }
