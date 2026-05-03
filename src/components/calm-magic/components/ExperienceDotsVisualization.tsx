@@ -63,6 +63,8 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
   const [selectedForce, setSelectedForce] = useState<CalmMagicDot['force']>('sovereignty');
   const [placementMode, setPlacementMode] = useState(false);
   const [hoveredRing, setHoveredRing] = useState<number | null>(null);
+  const [activeRegion, setActiveRegion] = useState<ActiveRegion>(null);
+  const prefersReducedMotion = usePrefersReducedMotion();
   const [forceStrength, setForceStrength] = useState({
     sovereignty: 80,
     memory: 70,
