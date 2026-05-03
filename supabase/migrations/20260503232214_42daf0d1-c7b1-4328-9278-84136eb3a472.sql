@@ -1,0 +1,1 @@
+ALTER TABLE public.prds ADD COLUMN IF NOT EXISTS quick_fill jsonb;

@@ -954,6 +954,7 @@ export type Database = {
           prompt_hooks_pollens: string | null
           prompt_hooks_totems: string | null
           prototype_stage: string
+          quick_fill: Json | null
           stack_implications_anthems: string | null
           stack_implications_noems: string | null
           stack_implications_poems: string | null
@@ -1037,6 +1038,7 @@ export type Database = {
           prompt_hooks_pollens?: string | null
           prompt_hooks_totems?: string | null
           prototype_stage?: string
+          quick_fill?: Json | null
           stack_implications_anthems?: string | null
           stack_implications_noems?: string | null
           stack_implications_poems?: string | null
@@ -1120,6 +1122,7 @@ export type Database = {
           prompt_hooks_pollens?: string | null
           prompt_hooks_totems?: string | null
           prototype_stage?: string
+          quick_fill?: Json | null
           stack_implications_anthems?: string | null
           stack_implications_noems?: string | null
           stack_implications_poems?: string | null
