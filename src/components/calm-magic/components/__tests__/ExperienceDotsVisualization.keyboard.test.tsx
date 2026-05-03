@@ -135,5 +135,3 @@ describe("ExperienceDotsVisualization keyboard navigation", () => {
     expect(screen.queryByRole("status")).toBeNull();
   });
 });
-});
-
