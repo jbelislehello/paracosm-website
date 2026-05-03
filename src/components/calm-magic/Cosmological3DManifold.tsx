@@ -523,7 +523,10 @@ const Cosmological3DManifold: React.FC<Cosmological3DManifoldProps> = ({
       {/* Header */}
       <div className="absolute top-0 left-0 right-0 z-10 p-4 flex items-center justify-between bg-gradient-to-b from-background via-background/80 to-transparent">
         <div className="flex items-center gap-3">
-          <h2 className="text-xl font-bold text-foreground">Cosmological Manifold</h2>
+          <div className="flex flex-col">
+            <h2 className="text-xl font-bold text-foreground leading-tight">Cosmological Manifold</h2>
+            <span className="text-[11px] italic font-serif text-muted-foreground">anatomy of a season</span>
+          </div>
           <span 
             className="px-3 py-1 rounded-full text-sm font-medium"
             style={{ 
