@@ -135,6 +135,27 @@ function BoardTiles({ season, visitedTiles, selectedTile, onTileClick }: BoardTi
         );
       })}
       
+
+      {/* Osculating plane on selected tile — the plane the curve fits into */}
+      {selectedTile !== null && (() => {
+        const idx = selectedTile - 1;
+        const row = Math.floor(idx / 8);
+        const col = idx % 8;
+        const x = (col - 3.5) * 0.6;
+        const z = (row - 3.5) * 0.6;
+        return (
+          <mesh position={[x, 0.4, z]} rotation={[-Math.PI / 2.4, 0, Math.PI / 6]}>
+            <planeGeometry args={[1.6, 1.6]} />
+            <meshBasicMaterial
+              color={SEASON_COLORS[season]}
+              transparent
+              opacity={0.12}
+              side={THREE.DoubleSide}
+            />
+          </mesh>
+        );
+      })()}
+
       {/* Board base */}
       <mesh position={[0, -0.15, 0]}>
         <boxGeometry args={[5.5, 0.1, 5.5]} />
