@@ -123,7 +123,7 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
 
   // Arrow rotation animation
   useEffect(() => {
-    if (isRotating) {
+    if (isRotating && !isLocked) {
       const animate = () => {
         setArrowAngle(prev => (prev + rotationSpeed * 0.02) % (2 * Math.PI));
         animationRef.current = requestAnimationFrame(animate);
@@ -138,7 +138,39 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [isRotating, rotationSpeed]);
+  }, [isRotating, rotationSpeed, isLocked]);
+
+  // Ease Freedom arrow toward the active force axis
+  useEffect(() => {
+    if (!isLocked) return;
+    const REGION_TARGET_ANGLE: Record<string, number> = {
+      sovereignty: 0,
+      memory: Math.PI / 2,
+      intimacy: Math.PI,
+      novelty: (3 * Math.PI) / 2,
+    };
+    const target = REGION_TARGET_ANGLE[activeRegion as string];
+    if (target === undefined) return;
+    if (prefersReducedMotion) {
+      setArrowAngle(target);
+      return;
+    }
+    const TWO_PI = Math.PI * 2;
+    const from = arrowAngleRef.current;
+    const delta = ((target - from + Math.PI * 3) % TWO_PI) - Math.PI;
+    const start = performance.now();
+    const dur = 280;
+    let raf = 0;
+    const tick = (t: number) => {
+      const p = Math.min(1, (t - start) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const next = ((from + delta * eased) % TWO_PI + TWO_PI) % TWO_PI;
+      setArrowAngle(next);
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [activeRegion, isLocked, prefersReducedMotion]);
 
   // Handle SVG clicks for dot placement
   const handleSVGClick = (event: React.MouseEvent<SVGSVGElement>) => {
