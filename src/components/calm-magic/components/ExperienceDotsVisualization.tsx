@@ -603,6 +603,16 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
             data-testid="compass-keyboard-region"
             onMouseDown={() => focusCompass()}
             onKeyDown={(e) => {
+              if (e.key === 'Escape') {
+                e.preventDefault();
+                latchedRegionRef.current = null;
+                setActiveRegion(null);
+                focusCompass();
+                return;
+              }
+              // Only handle arrow/Enter/Space when the wrapper itself owns focus,
+              // so child buttons (legend, hotspots) handle their own activation.
+              if (e.target !== e.currentTarget) return;
               const map: Record<string, ActiveRegion> = {
                 ArrowRight: 'sovereignty',
                 ArrowDown: 'memory',
@@ -610,12 +620,10 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                 ArrowUp: 'novelty',
                 Enter: 'freedom',
                 ' ': 'freedom',
-                Escape: null,
               };
               if (!(e.key in map)) return;
               e.preventDefault();
-              setActiveRegion(map[e.key]);
-              if (e.key === 'Escape') focusCompass();
+              latchRegion(map[e.key]);
             }}
           >
             <svg
