@@ -84,6 +84,55 @@ describe("ExperienceDotsVisualization keyboard navigation", () => {
     expect(screen.getByRole("status")).toHaveTextContent("Sovereignty");
     fireEvent.mouseDown(document.body);
     expect(screen.queryByRole("status")).toBeNull();
+
+  it("Enter on a legend button latches the region across blur", async () => {
+    const user = userEvent.setup();
+    render(<ExperienceDotsVisualization mode="personal" />);
+    const sov = screen.getByRole("button", { name: /^sovereignty$/i });
+    sov.focus();
+    await user.keyboard("{Enter}");
+    expect(screen.getByRole("status")).toHaveTextContent("Sovereignty");
+    // Move focus to another legend button; latch should persist.
+    const memory = screen.getByRole("button", { name: /^memory$/i });
+    memory.focus();
+    expect(screen.getByRole("status")).toHaveTextContent("Sovereignty");
   });
+
+  it("Space on a latched legend button toggles the region off", async () => {
+    const user = userEvent.setup();
+    render(<ExperienceDotsVisualization mode="personal" />);
+    const sov = screen.getByRole("button", { name: /^sovereignty$/i });
+    sov.focus();
+    await user.keyboard("{Enter}");
+    expect(screen.getByRole("status")).toHaveTextContent("Sovereignty");
+    await user.keyboard(" ");
+    expect(screen.queryByRole("status")).toBeNull();
+  });
+
+  it("Enter on a hotspot updates the info panel", async () => {
+    const user = userEvent.setup();
+    render(<ExperienceDotsVisualization mode="personal" />);
+    const hotspots = screen.getAllByRole("button", { name: /^Novelty$/ });
+    // The hotspot trigger is positioned absolutely; pick the one inside the compass region.
+    const region = screen.getByTestId("compass-keyboard-region");
+    const hotspot = hotspots.find((b) => region.contains(b))!;
+    hotspot.focus();
+    await user.keyboard("{Enter}");
+    expect(screen.getByRole("status")).toHaveTextContent("Novelty");
+  });
+
+  it("Escape clears a latched region from a legend button", async () => {
+    const user = userEvent.setup();
+    render(<ExperienceDotsVisualization mode="personal" />);
+    const sov = screen.getByRole("button", { name: /^sovereignty$/i });
+    sov.focus();
+    await user.keyboard("{Enter}");
+    expect(screen.getByRole("status")).toHaveTextContent("Sovereignty");
+    // Escape is wired on the compass region.
+    focusRegion();
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("status")).toBeNull();
+  });
+});
 });
 
