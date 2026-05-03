@@ -9,7 +9,7 @@ import LandscapeJourney from './LandscapeJourney';
 import InteractiveToolsPanel from '../tools/InteractiveToolsPanel';
 import { EmotionalState } from '@/types/journal';
 
-type ViewMode = 'journey' | 'spiral' | 'tests' | 'learning' | 'overview' | 'tools';
+type ViewMode = 'journey' | 'spiral' | 'tests' | 'learning' | 'overview' | 'tools' | 'dream';
 
 interface ViewRendererProps {
   viewMode: ViewMode;

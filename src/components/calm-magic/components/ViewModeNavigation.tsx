@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import BoardEntryGate from '../BoardEntryGate';
 
-type ViewMode = 'journey' | 'spiral' | 'tests' | 'learning' | 'overview' | 'tools';
+type ViewMode = 'journey' | 'spiral' | 'tests' | 'learning' | 'overview' | 'tools' | 'dream';
 
 interface ViewModeNavigationProps {
   viewMode: ViewMode;
