@@ -19,7 +19,7 @@ class FakeResizeObserver {
   unobserve() {}
   disconnect() {}
 }
-// @ts-expect-error test stub
+// @ts-ignore test stub
 window.ResizeObserver = FakeResizeObserver;
 
 class FakeAudioContext {
@@ -36,7 +36,7 @@ class FakeAudioContext {
   get currentTime() { return 0; }
   close() { return Promise.resolve(); }
 }
-// @ts-expect-error test stub
+// @ts-ignore test stub
 window.AudioContext = FakeAudioContext;
-// @ts-expect-error test stub
+// @ts-ignore test stub
 window.webkitAudioContext = FakeAudioContext;
