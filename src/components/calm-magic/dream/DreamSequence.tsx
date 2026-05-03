@@ -101,12 +101,65 @@ const DreamSequence: React.FC<DreamSequenceProps> = ({ question, file, onRestart
     run();
   }, [file, question]);
 
+  const AXIS_ORDER: DreamAxis[] = ['love', 'magic', 'calm', 'open', 'free'];
+  const axisProgress = (key: DreamAxis): number => {
+    const a = axes.find(x => x.key === key);
+    if (!a) return 0;
+    if (a.done) return 1;
+    return Math.min(0.9, 0.4 + Math.min(a.narration.length, 200) / 200 * 0.5);
+  };
+  const overallPct = Math.min(100, Math.round(
+    (AXIS_ORDER.reduce((s, k) => s + axisProgress(k), 0) / 5) * 95 + (summary ? 5 : 0)
+  ));
+
   return (
     <div className="space-y-4">
       <div className="text-center space-y-1">
         <p className="text-xs text-muted-foreground uppercase tracking-wider">The board is dreaming</p>
         <p className="text-sm italic">"{question}"</p>
       </div>
+
+      {!error && (
+        <div className="space-y-2" role="status" aria-live="polite" aria-label={`Dream progress: ${overallPct}%`}>
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-muted-foreground">
+              {done ? 'Dream complete' : activeAxis ? `Channeling ${AXIS_META[activeAxis].label.toLowerCase()}…` : 'Reading your PRD…'}
+            </span>
+            <span className="font-mono tabular-nums text-muted-foreground">{overallPct}%</span>
+          </div>
+          <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-rose-400 via-purple-400 to-amber-400 transition-all duration-500 ease-out"
+              style={{ width: `${overallPct}%` }}
+            />
+          </div>
+          <div className="flex gap-2">
+            {AXIS_ORDER.map((key) => {
+              const meta = AXIS_META[key];
+              const p = axisProgress(key);
+              const isActive = activeAxis === key;
+              const isDone = !!axes.find(a => a.key === key)?.done;
+              return (
+                <div key={key} className="flex-1 flex items-center gap-1.5 min-w-0">
+                  <div className="flex-1 h-1 rounded-full bg-muted overflow-hidden">
+                    <div
+                      className={`h-full transition-all duration-500 ${isActive ? 'animate-pulse' : ''}`}
+                      style={{ width: `${p * 100}%`, backgroundColor: meta.color }}
+                    />
+                  </div>
+                  <span
+                    className="text-[9px] font-bold tracking-wider w-7 text-right tabular-nums shrink-0"
+                    style={{ color: isDone || isActive ? meta.color : 'hsl(var(--muted-foreground))' }}
+                    title={`${meta.label}: ${Math.round(p * 100)}%`}
+                  >
+                    {isDone ? '✓' : `${Math.round(p * 100)}%`}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {error && (
         <Card className="p-4 border-destructive/50 bg-destructive/5">
