@@ -106,6 +106,7 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
       const root = compassRegionRef.current;
       if (!root) return;
       if (!root.contains(e.target as Node)) {
+        latchedRegionRef.current = null;
         setActiveRegion(null);
       }
     };
