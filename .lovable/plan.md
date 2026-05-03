@@ -1,45 +1,46 @@
-## Focus management for the SVG compass
+## Keyboard activation for legend buttons and hotspots
 
-Goal: ensure the compass keyboard region (`data-testid="compass-keyboard-region"`) holds focus appropriately so keyboard navigation, info panel, and visual highlights stay consistent across pointer and programmatic interactions.
+Goal: Legend chips and `GeometryHotspot` triggers should be reachable via Tab and activatable via Enter/Space, updating the info panel the same way mouse hover/click does. Today both elements are `<button>`s so they receive focus, but their behavior on Enter/Space is incomplete:
 
-### Current behavior
+- **Legend buttons** (`ExperienceDotsVisualization.tsx:900`) update `activeRegion` on `onFocus`, but pressing Enter/Space afterwards does nothing — there is no `onClick` and no toggle. Tabbing away (`onBlur`) clears the region, so the panel disappears as soon as the user moves on instead of latching.
+- **Hotspots** (`GeometryHotspot.tsx`) call `handleTap` on click, which works with Enter/Space natively, but the parent's `onActiveChange` callback only re-anchors focus on hover/focus, not on activation. Enter/Space currently sets a 4-second timer that auto-clears `activeRegion`, which fights with the keyboard model.
 
-- Wrapper at `ExperienceDotsVisualization.tsx:562` is `tabIndex={0}` with arrow-key handling, but:
-  - Clicking the SVG (`onClick={handleSVGClick}` at line 588) places focus on the inner `<svg>` (or nowhere), so subsequent arrow keys do nothing.
-  - Hovering a `GeometryHotspot` or legend button changes `activeRegion` but never moves focus, so arrow keys after a hover still operate from wherever focus last was.
-  - When `activeRegion` changes programmatically (autonomous rotation, hotspot hover), focus does not follow, and there is no visible focus state on the compass region.
-  - Clicking outside the compass leaves `activeRegion` set; focus ring stays even though the user has moved on.
+### Changes
 
-### Changes (single file: `src/components/calm-magic/components/ExperienceDotsVisualization.tsx`)
+**1. `src/components/calm-magic/components/ExperienceDotsVisualization.tsx`**
 
-1. **Wrapper ref + helper.** Add `const compassRegionRef = useRef<HTMLDivElement>(null)` and attach to the wrapper div at line 562. Add a small helper `focusCompass()` that calls `compassRegionRef.current?.focus({ preventScroll: true })`.
+Legend buttons (lines ~897–918):
+- Add `onClick` and `onKeyDown` (Enter/Space) that **toggle** `activeRegion` between the force and `null`. Toggle persists after blur so keyboard users can latch a region.
+- Remove the `onBlur` auto-clear when the region was set by an explicit activation. Track latched state via a small ref or by checking current `activeRegion === force` on click. Simplest: keep `onFocus` as a soft preview, and on click/Enter/Space set a "latched" flag in a `useRef<ActiveRegion | null>`. While latched, `onBlur` does not clear; Escape (already wired on the compass) clears both `activeRegion` and the latch.
+- Add `aria-pressed={isActive}` to communicate state to AT.
 
-2. **Click on SVG re-focuses the compass region.** In the wrapper's `onMouseDown` (use mousedown, not click, to avoid the focus-then-blur flicker on Safari), call `focusCompass()`. Keep `handleSVGClick` for placement logic. Also set `tabIndex={-1}` on the inner `<svg>` so it is not itself a focus target.
+Hotspot wiring (lines ~843–856):
+- Pass an `onActivate` prop to `GeometryHotspot` that latches the region (same ref/state as legend) and calls `focusCompass()`. This makes Enter/Space on the hotspot behave like a click without the 4-second auto-dismiss for keyboard users.
 
-3. **Pointer interactions on hotspots/legend re-anchor focus.** When `GeometryHotspot.onActiveChange(true)` fires (line 821) or a legend button receives `onMouseEnter`/`onFocus` (lines 870–873), call `focusCompass()` so arrow keys continue from the just-activated axis. Legend buttons that already receive native focus remain functional; their existing `onFocus` handler stays.
+Compass keyboard handler (lines ~595–609):
+- Escape already clears `activeRegion`; also clear the latch ref.
 
-4. **Keep focus on programmatic region changes.** When `activeRegion` changes and the wrapper currently contains `document.activeElement` (or contains nothing focused yet but the user previously interacted), re-assert focus via a `useEffect([activeRegion])` that only refocuses if `compassRegionRef.current?.contains(document.activeElement)` is true. This avoids stealing focus when the user is typing elsewhere.
+**2. `src/components/calm-magic/geometry/GeometryHotspot.tsx`**
 
-5. **Escape returns focus to wrapper and clears region.** Existing Escape handler already sets `activeRegion = null`; additionally call `focusCompass()` so the visible focus ring stays on the compass group rather than disappearing into the document body.
+- In `handleTap`, only schedule the 4-second auto-close timer for touch/mouse events, not for keyboard activations. Detect via `e.type === 'touchstart'` or by checking `e.detail === 0` on click (keyboard-triggered clicks have `detail === 0`). When keyboard-triggered, leave the tooltip open and skip the timer; rely on blur/Escape to close.
+- Add an explicit `onKeyDown` for Enter/Space on the trigger that calls the same path as `handleTap` and signals keyboard activation, so the parent can latch.
 
-6. **Outside click clears active region.** Add a `useEffect` listening on `mousedown` at the document level: if the click target is not inside `compassRegionRef.current`, call `setActiveRegion(null)`. This prevents stale highlights when the user moves on.
+**3. Tests — `src/components/calm-magic/components/__tests__/ExperienceDotsVisualization.keyboard.test.tsx`**
 
-7. **Visible focus state.** The wrapper already has `focus-visible:ring-2 focus-visible:ring-purple-400`; no change needed, but verify the ring renders above the SVG by adding `relative z-0` (already `relative`) and ensuring no child has a higher stacking context that would hide it. If needed, add `focus-visible:ring-offset-2 focus-visible:ring-offset-background`.
-
-### Tests (extend `__tests__/ExperienceDotsVisualization.keyboard.test.tsx`)
-
-Add three cases:
-
-1. **Click on SVG focuses the compass region.** Render, `fireEvent.mouseDown` on the inner `<svg>`, expect `document.activeElement === getByTestId('compass-keyboard-region')`.
-2. **Escape restores focus to the compass.** After ArrowRight then a manual `blur()`, press Escape via `user.keyboard('{Escape}')` while the wrapper still owns focus; expect status panel removed and `document.activeElement` is the compass region.
-3. **Outside click clears active region.** After ArrowRight shows "Sovereignty", `fireEvent.mouseDown(document.body)`; expect `queryByRole('status')` returns null.
+Add cases:
+1. **Tab to legend, Enter latches region.** `userEvent.tab()` until a legend button (e.g., Sovereignty) is focused, press `{Enter}`, expect `getByRole('status')` shows "Sovereignty" and remains after a subsequent `tab()` moves focus away.
+2. **Space toggles legend region off.** From the latched state, refocus same legend button and press `{Space}`; expect `queryByRole('status')` is null.
+3. **Enter on a hotspot updates the panel.** Focus a `GeometryHotspot` button (find by `aria-label`), press `{Enter}`, expect the info panel shows the matching label and persists (no auto-clear within the test window — use a short `await` rather than fake timers).
+4. **Escape clears latched region from legend.** After Enter latches Sovereignty, press `{Escape}`; expect panel removed.
 
 ### Out of scope
 
-- No changes to rotation, audio, hotspot tooltip behavior, or info panel markup.
-- No new dependencies.
+- No visual redesign of legend chips or hotspots.
+- No changes to arrow-key navigation, outside-click clearing, or rotation/audio.
+- Touch behavior of hotspots (4s auto-close) is preserved.
 
 ### Files
 
-- `src/components/calm-magic/components/ExperienceDotsVisualization.tsx` (focus ref, mousedown handlers, effects)
-- `src/components/calm-magic/components/__tests__/ExperienceDotsVisualization.keyboard.test.tsx` (3 new cases)
+- `src/components/calm-magic/components/ExperienceDotsVisualization.tsx`
+- `src/components/calm-magic/geometry/GeometryHotspot.tsx`
+- `src/components/calm-magic/components/__tests__/ExperienceDotsVisualization.keyboard.test.tsx`
