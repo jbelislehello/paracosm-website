@@ -500,35 +500,40 @@ const DreamAndLearn = () => {
       {/* FINAL CTA */}
       <section className="px-4 py-20">
         <div className="container max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl md:text-5xl font-bold">Ready to compose your first loop?</h2>
+          <h2 className="text-3xl md:text-5xl font-bold">Dream a PRD. See the board light up.</h2>
           <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Book a discovery call. We map your first scenario, compose the Dream
-            &amp; Learn roster, and run a live loop together — in the first session.
+            Drop in a brief, a one-liner, or a draft. Calm Magic reads it across
+            the five axes — LOVE, MAGIC, CALM, OPEN, FREE — narrates what it sees,
+            lights the matching tiles, and gives you a shareable link.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+            <Link to="/calm-magic-board?view=dream">
+              <Button size="lg" className="gap-2 bg-gradient-to-r from-primary to-accent text-primary-foreground">
+                <Sparkles className="h-4 w-4" />
+                Dream now
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
             <a
               href="https://app.reclaim.ai/m/jonathan-helloarchitekt"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Button size="lg" className="gap-2 bg-gradient-to-r from-primary to-accent text-primary-foreground">
+              <Button size="lg" variant="outline" className="gap-2">
                 Book a discovery call
                 <ArrowRight className="h-4 w-4" />
               </Button>
             </a>
             <Link to="/drift/2026/04">
-              <Button size="lg" variant="outline" className="gap-2">
+              <Button size="lg" variant="ghost" className="gap-2">
                 <Compass className="h-4 w-4" />
-                Read April Drift — Relationship Model
+                Read April Drift
               </Button>
             </Link>
-            <a href="https://crewdle.com" target="_blank" rel="noopener noreferrer">
-              <Button size="lg" variant="ghost" className="gap-2">
-                Visit Crewdle
-                <ExternalLink className="h-4 w-4" />
-              </Button>
-            </a>
           </div>
+          <p className="mt-4 text-xs text-muted-foreground">
+            Free to try — no credit card. Sign in to save & share your dream.
+          </p>
         </div>
       </section>
 
