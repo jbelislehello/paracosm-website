@@ -131,13 +131,16 @@ const SpiralTimeline: React.FC<SpiralTimelineProps> = ({ events }) => {
           ctx.arc(rotated.x, rotated.y, size, 0, Math.PI * 2);
           ctx.fill();
           
-          // Add glow effect
-          const gradient = ctx.createRadialGradient(rotated.x, rotated.y, 0, rotated.x, rotated.y, size * 2);
-          gradient.addColorStop(0, event.color + '40');
+          // Add glow effect — modulated by shared breath pulse
+          const glowAlpha = Math.round((0.25 + breathRef.current * 0.45) * 255)
+            .toString(16)
+            .padStart(2, '0');
+          const gradient = ctx.createRadialGradient(rotated.x, rotated.y, 0, rotated.x, rotated.y, size * 2.4);
+          gradient.addColorStop(0, event.color + glowAlpha);
           gradient.addColorStop(1, event.color + '00');
           ctx.fillStyle = gradient;
           ctx.beginPath();
-          ctx.arc(rotated.x, rotated.y, size * 2, 0, Math.PI * 2);
+          ctx.arc(rotated.x, rotated.y, size * 2.4, 0, Math.PI * 2);
           ctx.fill();
           
           // Show year labels for visible nodes
