@@ -315,12 +315,12 @@ const SpiralTimeline: React.FC<SpiralTimelineProps> = ({ events }) => {
         <Button
           onClick={() => setIsPlaying(!isPlaying)}
           variant="outline"
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 font-serif italic"
         >
           {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-          {isPlaying ? 'Pause' : 'Play'}
+          {isPlaying ? 'Pause breath' : 'Trace'}
         </Button>
-        
+
         <Button
           onClick={() => {
             setRotationX(-0.3);
@@ -328,23 +328,23 @@ const SpiralTimeline: React.FC<SpiralTimelineProps> = ({ events }) => {
             setZoom(1);
           }}
           variant="outline"
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 font-serif italic"
         >
           <RotateCcw className="w-4 h-4" />
-          Reset View
+          Re-center frame
         </Button>
-        
+
         <Button
           onClick={() => setViewMode(viewMode === '3d' ? '2d' : '3d')}
           variant="outline"
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 font-serif italic"
         >
           {viewMode === '3d' ? <Grid3X3 className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-          {viewMode === '3d' ? '2D View' : '3D View'}
+          {viewMode === '3d' ? 'Flatten' : 'Spiral'}
         </Button>
-        
+
         <div className="flex items-center gap-2">
-          <span className="text-sm text-slate-600">Zoom:</span>
+          <span className="text-sm text-slate-600 font-serif italic">Focal length</span>
           <Slider
             value={[zoom]}
             onValueChange={(value) => setZoom(value[0])}
