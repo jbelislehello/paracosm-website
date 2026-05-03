@@ -1,35 +1,148 @@
-# Fix: Presentation generator 502 error
+## Goal
 
-## Root cause
+Make the `map-question-to-board` edge function response provably safe: the model can never inject arbitrary content into the response, and no DB column beyond a tight allowlist can ever leak — even if upstream code changes later.
 
-`supabase/functions/compose-deck/index.ts` returned **HTTP 502** after ~13.5s. That status is only emitted on the `OutlineSchema.safeParse` validation branch, meaning Gemini returned JSON that didn't conform to the strict shape (most likely missing `id`, `subtitle`, `bullets`, `body`, `speakerNotes`, or `sourceUrls` on some slides — the prompt only *requests* them but the schema treats them as required-with-defaults, and `.default()` on Zod doesn't rescue missing keys when the AI omits them at the wrong level).
+## Scope
 
-The frontend (`AgenticEcosystemDeck.tsx` line 247) just rethrows and shows a generic toast, so the user sees "There was an error during presentation generator" with no actionable info.
+Single file: `supabase/functions/map-question-to-board/index.ts`.
+No client changes; the response shape stays compatible with `ResonanceMapData` in `src/lib/resonance.ts`.
 
-## Changes
+## Allowlist contract
 
-### 1. `supabase/functions/compose-deck/index.ts` — make schema resilient
-- Change `SlideSchema` so every optional field uses `.optional()` without forcing presence: keep `id`, `type`, `title` as the only required fields. Coerce missing arrays/strings via a normalization step after parse.
-- Auto-generate `id` if AI omits it (`slide-${i+1}`).
-- Coerce unknown `type` values to `"bullets"` instead of failing.
-- After AI response, run a light "repair" pass: ensure first slide is `title`, last slide is `closing-cta` (rewrite type if AI got it wrong instead of rejecting).
-- On validation failure, log the raw AI output to console (visible in edge logs) and return a 200 response with a `warnings` field plus the partially-repaired outline, so the UI can still render.
-- Add a 60s `AbortController` timeout on the AI fetch to fail fast instead of hanging.
-- Reduce slide count requested for `standard` from 12 → 10 (Gemini is more reliable under ~12 slides in one shot).
+The function will only ever respond with this exact shape (anything else is dropped):
 
-### 2. `src/pages/AgenticEcosystemDeck.tsx` — surface real error
-- When `compose-deck` returns a non-2xx, read `data.error` / `data.issues` and show it in the toast (truncated to 200 chars) instead of the generic message.
-- If `data.warnings` is present alongside an outline, render the deck and show a non-blocking warning toast.
-- Add a "Retry" action button on the error toast that re-invokes the same stage without restarting from scrape.
+```ts
+{
+  question: string,                       // sanitized echo of user input
+  axes: Array<{
+    axis: "MAGIC" | "LOVE" | "CALM" | "OPEN" | "FREE",
+    score: number,                        // integer 0..100
+    rationale: string,                    // ≤ 240 chars, plain text
+    tile_hints: string[],                 // ≤ 3 items, each ≤ 80 chars, plain text
+    tiles: Array<{ id: number, prompt: string }>  // from our `tiles` table only
+  }>
+}
+```
 
-### 3. `supabase/functions/compose-deck/index.ts` — model fallback
-- If the first call to `google/gemini-2.5-flash` returns a malformed/empty response, retry once with `google/gemini-2.5-pro` (slower but stricter at structured JSON). One retry max, only on parse/validation failure — not on 402/429.
+Always exactly 5 axes, in fixed order. Missing axes from the model are filled with score 0 and empty arrays.
 
-## Files touched
+## Implementation
 
-- `supabase/functions/compose-deck/index.ts` (schema + repair + retry + timeout)
-- `src/pages/AgenticEcosystemDeck.tsx` (error surfacing + retry UX)
+### 1. Tool-call argument validation (model output)
+
+Replace the loose `JSON.parse(...) as { axes: ... }` cast with a strict validator.
+
+```ts
+const ALLOWED_AXES = new Set(AXES);
+
+function parseModelArgs(raw: string) {
+  let parsed: unknown;
+  try { parsed = JSON.parse(raw); } catch { return null; }
+  if (!parsed || typeof parsed !== "object") return null;
+  const axesRaw = (parsed as Record<string, unknown>).axes;
+  if (!Array.isArray(axesRaw)) return null;
+
+  const out = new Map<Axis, {
+    score: number; rationale: string; tile_hints: string[];
+  }>();
+
+  for (const item of axesRaw) {
+    if (!item || typeof item !== "object") continue;
+    const o = item as Record<string, unknown>;
+    const axis = typeof o.axis === "string" ? o.axis.toUpperCase() : "";
+    if (!ALLOWED_AXES.has(axis as Axis)) continue;            // drop unknown
+    const score = clampScore(o.score);
+    const rationale = sanitizeText(o.rationale, 240);
+    const hintsRaw = Array.isArray(o.tile_hints) ? o.tile_hints : [];
+    const tile_hints = hintsRaw
+      .slice(0, 3)
+      .map((h) => sanitizeText(h, 80))
+      .filter(Boolean);
+    out.set(axis as Axis, { score, rationale, tile_hints });
+  }
+  return out;
+}
+```
+
+Helpers (already planned in the previous step, repeated here for clarity):
+
+```ts
+function sanitizeText(s: unknown, max: number): string {
+  if (typeof s !== "string") return "";
+  return s
+    .replace(/[\u0000-\u001F\u007F]/g, " ")  // control chars
+    .replace(/<[^>]*>/g, "")                 // strip HTML/script
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, max);
+}
+
+function clampScore(n: unknown): number {
+  const v = typeof n === "number" ? n : Number(n);
+  if (!Number.isFinite(v)) return 0;
+  return Math.max(0, Math.min(100, Math.round(v)));
+}
+```
+
+If `parseModelArgs` returns `null` → respond `502 { error: "Mapping failed." }`. Detail goes to `console.error` only.
+
+### 2. Tile lookup — allowlist columns explicitly
+
+Tighten the existing query and shape:
+
+```ts
+const { data: tilesRows } = await supabase
+  .from("tiles")
+  .select("id, board, short_prompt");   // already only these 3 — keep as the explicit allowlist
+```
+
+When building `tiles` for the response, only emit `{ id: number, prompt: string }`. Never spread the row.
+
+```ts
+matched.push({ id: Number(tile.id), prompt: sanitizeText(tile.prompt, 200) });
+```
+
+This guarantees that even if the `tiles` table later gains sensitive columns (e.g., internal notes, draft content), they cannot leak through this endpoint.
+
+### 3. Final response — built from scratch
+
+Replace the current spread-style return with a fully reconstructed object:
+
+```ts
+const safeAxes = AXES.map((axis) => {
+  const m = parsedAxes.get(axis) ?? { score: 0, rationale: "", tile_hints: [] };
+  const matched = matchTiles(axis, m.tile_hints);  // existing token-overlap logic
+  return {
+    axis,
+    score: m.score,
+    rationale: m.rationale,
+    tile_hints: m.tile_hints,
+    tiles: matched,
+  };
+});
+
+return new Response(
+  JSON.stringify({ question: sanitizedQuestion, axes: safeAxes }),
+  { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+);
+```
+
+No `...spread` of model data anywhere. No DB row spread. Everything is field-by-field copying.
+
+### 4. Generic error surface
+
+Catch-all returns `{ error: "Mapping failed." }` with status `500`. Existing 400 / 402 / 429 passthroughs preserved. Internal details only via `console.error`.
+
+## What this guarantees
+
+- Model cannot inject extra keys (e.g., `__proto__`, `system`, `internal_notes`) into the response — they are not in the allowlist and are dropped.
+- Model cannot inject HTML / scripts into rationale or hints — sanitized.
+- Model cannot inflate scores above 100 or set non-numeric scores — clamped.
+- Model cannot fabricate tile IDs or prompts — those come from our `tiles` table by token-overlap matching, never from the model.
+- Future additions to the `tiles` table cannot accidentally leak — the response builder explicitly emits only `{ id, prompt }`.
 
 ## Out of scope
 
-- The earlier-proposed Resonance UX polish (debounce, skeletons, stale-state) — still pending separate approval and unrelated to this 502.
+- Rate limiting (covered by separate previous plan).
+- Auth requirement (Learn module is intentionally anonymous).
+- Frontend changes — `ResonanceMapData` already matches this allowlist shape.
