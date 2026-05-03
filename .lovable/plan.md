@@ -1,148 +1,86 @@
-## Goal
 
-Make the `map-question-to-board` edge function response provably safe: the model can never inject arbitrary content into the response, and no DB column beyond a tight allowlist can ever leak — even if upstream code changes later.
+# Homepage rebuild: Calm Magic as the Learning & Inventive Organization framework
 
-## Scope
+## Positioning correction
 
-Single file: `supabase/functions/map-question-to-board/index.ts`.
-No client changes; the response shape stays compatible with `ResonanceMapData` in `src/lib/resonance.ts`.
+Calm Magic = the **framework** that turns an enterprise into a **Learning & Inventive Organization**.
+The Agentic Era UX Design Method is *how* it's practiced (Ask → Map → Invent → Ship on the board).
 
-## Allowlist contract
+Headline shifts from "Learning Organizations" (vague) to:
+**"Calm Magic — the framework that turns your enterprise into a Learning & Inventive Organization."**
 
-The function will only ever respond with this exact shape (anything else is dropped):
+Sub: *"Educate and invent with AI by mapping your real questions onto a living ontology — the Calm Magic board."*
 
-```ts
-{
-  question: string,                       // sanitized echo of user input
-  axes: Array<{
-    axis: "MAGIC" | "LOVE" | "CALM" | "OPEN" | "FREE",
-    score: number,                        // integer 0..100
-    rationale: string,                    // ≤ 240 chars, plain text
-    tile_hints: string[],                 // ≤ 3 items, each ≤ 80 chars, plain text
-    tiles: Array<{ id: number, prompt: string }>  // from our `tiles` table only
-  }>
-}
+## New homepage structure
+
+```text
+1. FRAMEWORK HERO
+   H1: Calm Magic
+   H2: The framework that turns your enterprise into
+       a Learning & Inventive Organization.
+   Inline Resonance input → live board mapping
+   → PathSuggestion (Lead · Make · Heal)
+
+2. WHY ENTERPRISES NEED THIS (3 cards)
+   - Learning gap: AI moves faster than your org learns
+   - Invention gap: roadmaps kill emergence
+   - Coherence gap: tools without ontology = automated chaos
+
+3. THE FIVE AXES (AxisLegend)
+   MAGIC · LOVE · CALM · OPEN · FREE
+   "Every question, team, and product lives somewhere on these five."
+
+4. HOW IT WORKS — Agentic Era UX Design Method
+   Ask → Map → Invent → Ship
+   Question → Calm Magic Board → PRD → Foundational Prompt
+   Each step links to the surface that does it.
+
+5. THREE PATHS INTO THE FRAMEWORK
+   Lead (executives / governance)  → /agentic-ux
+   Make (designers / inventors)    → /calm-magic-demo
+   Heal (teams / relational)       → /calm-magic-assistant
+
+6. PROOF — one quote, one outcome metric (above the fold of section)
+
+7. CLARITY SPRINT — Spring 2026 (kept, tightened)
+
+8. Existing collapsibles kept below: Book · Universe · Events ·
+   Coaching · Transformation · Partners · FAQ · Contact
 ```
 
-Always exactly 5 axes, in fixed order. Missing axes from the model are filled with score 0 and empty arrays.
+## What gets built (Sprint A)
 
-## Implementation
+### Edits
+- **`src/pages/LandingPage.tsx`** — replace hero block (lines ~120–186) with `<FrameworkHero />`. Insert new sections 2–5 between hero and the existing Spring 2026 offer. Keep collapsibles intact.
+- **`src/i18n/en/landing.json`** — add new keys: `framework_h1`, `framework_h2`, `gap_learning`, `gap_invention`, `gap_coherence`, `axes_intro`, `method_steps_*`, `paths_lead/make/heal_*`. French keys can be filled in next pass.
 
-### 1. Tool-call argument validation (model output)
+### New components
+- `src/components/AxisLegend.tsx` — reusable five-axis strip, reads `AXIS_LABEL` + `AXIS_BLURB` from `src/lib/resonance.ts`
+- `src/components/landing/FrameworkHero.tsx` — H1/H2 + inline `<QuestionResonancePanel />` + result + `<PathSuggestion />`
+- `src/components/landing/EnterpriseGaps.tsx` — three-card gap section
+- `src/components/landing/MethodSteps.tsx` — Ask → Map → Invent → Ship, each with link to the surface that performs it
+- `src/components/landing/ThreePaths.tsx` — Lead / Make / Heal cards replacing the two stacked gradient buttons
 
-Replace the loose `JSON.parse(...) as { axes: ... }` cast with a strict validator.
+### Not in this sprint
+- Route renames (`/method`, `/board`) — Sprint B
+- Public Calm Magic board (un-gating `/calm-magic-demo`) — Sprint B
+- Nav consolidation from 8 links to 4 — Sprint B
+- French translations of new keys — Sprint C
+- Contact form audit — Sprint C
 
-```ts
-const ALLOWED_AXES = new Set(AXES);
+## Why this is the obvious call
 
-function parseModelArgs(raw: string) {
-  let parsed: unknown;
-  try { parsed = JSON.parse(raw); } catch { return null; }
-  if (!parsed || typeof parsed !== "object") return null;
-  const axesRaw = (parsed as Record<string, unknown>).axes;
-  if (!Array.isArray(axesRaw)) return null;
+- **Truth in labeling**: Calm Magic stops being a mysterious product name and becomes a clear enterprise framework promise.
+- **Show, don't tell**: hero lets the visitor *use* the framework (drop a question, watch the board respond) instead of reading copy about it.
+- **Coherent spine**: every existing surface — Resonance, board, PRD, Foundational Prompt, paths, Drift, Tarot — slots into Ask/Map/Invent/Ship without renaming or relocating anything.
+- **Lead-gen safe**: all CTAs route to `jbelisle@helloarchitekt.com` or to existing pages that do.
 
-  const out = new Map<Axis, {
-    score: number; rationale: string; tile_hints: string[];
-  }>();
+## Risk
 
-  for (const item of axesRaw) {
-    if (!item || typeof item !== "object") continue;
-    const o = item as Record<string, unknown>;
-    const axis = typeof o.axis === "string" ? o.axis.toUpperCase() : "";
-    if (!ALLOWED_AXES.has(axis as Axis)) continue;            // drop unknown
-    const score = clampScore(o.score);
-    const rationale = sanitizeText(o.rationale, 240);
-    const hintsRaw = Array.isArray(o.tile_hints) ? o.tile_hints : [];
-    const tile_hints = hintsRaw
-      .slice(0, 3)
-      .map((h) => sanitizeText(h, 80))
-      .filter(Boolean);
-    out.set(axis as Axis, { score, rationale, tile_hints });
-  }
-  return out;
-}
-```
+- Hero becomes taller on mobile (390px). Mitigation: input above the fold, result/paths stack below.
+- Resonance edge function is hit on every homepage submission — already rate-limited and sanitized.
+- Adds ~5 new files; no deletions, no schema changes, no dependency changes.
 
-Helpers (already planned in the previous step, repeated here for clarity):
+## Approval
 
-```ts
-function sanitizeText(s: unknown, max: number): string {
-  if (typeof s !== "string") return "";
-  return s
-    .replace(/[\u0000-\u001F\u007F]/g, " ")  // control chars
-    .replace(/<[^>]*>/g, "")                 // strip HTML/script
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, max);
-}
-
-function clampScore(n: unknown): number {
-  const v = typeof n === "number" ? n : Number(n);
-  if (!Number.isFinite(v)) return 0;
-  return Math.max(0, Math.min(100, Math.round(v)));
-}
-```
-
-If `parseModelArgs` returns `null` → respond `502 { error: "Mapping failed." }`. Detail goes to `console.error` only.
-
-### 2. Tile lookup — allowlist columns explicitly
-
-Tighten the existing query and shape:
-
-```ts
-const { data: tilesRows } = await supabase
-  .from("tiles")
-  .select("id, board, short_prompt");   // already only these 3 — keep as the explicit allowlist
-```
-
-When building `tiles` for the response, only emit `{ id: number, prompt: string }`. Never spread the row.
-
-```ts
-matched.push({ id: Number(tile.id), prompt: sanitizeText(tile.prompt, 200) });
-```
-
-This guarantees that even if the `tiles` table later gains sensitive columns (e.g., internal notes, draft content), they cannot leak through this endpoint.
-
-### 3. Final response — built from scratch
-
-Replace the current spread-style return with a fully reconstructed object:
-
-```ts
-const safeAxes = AXES.map((axis) => {
-  const m = parsedAxes.get(axis) ?? { score: 0, rationale: "", tile_hints: [] };
-  const matched = matchTiles(axis, m.tile_hints);  // existing token-overlap logic
-  return {
-    axis,
-    score: m.score,
-    rationale: m.rationale,
-    tile_hints: m.tile_hints,
-    tiles: matched,
-  };
-});
-
-return new Response(
-  JSON.stringify({ question: sanitizedQuestion, axes: safeAxes }),
-  { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-);
-```
-
-No `...spread` of model data anywhere. No DB row spread. Everything is field-by-field copying.
-
-### 4. Generic error surface
-
-Catch-all returns `{ error: "Mapping failed." }` with status `500`. Existing 400 / 402 / 429 passthroughs preserved. Internal details only via `console.error`.
-
-## What this guarantees
-
-- Model cannot inject extra keys (e.g., `__proto__`, `system`, `internal_notes`) into the response — they are not in the allowlist and are dropped.
-- Model cannot inject HTML / scripts into rationale or hints — sanitized.
-- Model cannot inflate scores above 100 or set non-numeric scores — clamped.
-- Model cannot fabricate tile IDs or prompts — those come from our `tiles` table by token-overlap matching, never from the model.
-- Future additions to the `tiles` table cannot accidentally leak — the response builder explicitly emits only `{ id, prompt }`.
-
-## Out of scope
-
-- Rate limiting (covered by separate previous plan).
-- Auth requirement (Learn module is intentionally anonymous).
-- Frontend changes — `ResonanceMapData` already matches this allowlist shape.
+Approve to implement Sprint A as scoped. Sprints B (route + nav cleanup, public board) and C (i18n, contact audit, copy pass) follow as separate plans once this lands.
