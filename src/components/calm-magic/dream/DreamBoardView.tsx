@@ -2,6 +2,7 @@ import React from 'react';
 import { Card } from '@/components/ui/card';
 import ReactMarkdown from 'react-markdown';
 import { AXIS_META, type DreamAxis } from '@/data/dreamPrompts';
+import GlossaryTerm from './GlossaryTerm';
 
 export interface SavedAxis {
   key: DreamAxis;
