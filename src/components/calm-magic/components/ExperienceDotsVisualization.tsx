@@ -11,6 +11,16 @@ import { GeometryHotspot } from '@/components/calm-magic/geometry/GeometryHotspo
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
 type ActiveRegion = 'sovereignty' | 'memory' | 'intimacy' | 'novelty' | 'freedom' | null;
+type ActiveForceRegion = Exclude<ActiveRegion, 'freedom' | null>;
+
+const TWO_PI = Math.PI * 2;
+const ARROW_LOCK_TWEEN_MS = 280;
+const REGION_TARGET_ANGLE: Record<ActiveForceRegion, number> = {
+  sovereignty: 0,
+  memory: Math.PI / 2,
+  intimacy: Math.PI,
+  novelty: (3 * Math.PI) / 2,
+};
 
 const REGION_COPY: Record<Exclude<ActiveRegion, null>, { symbol: string; label: string; body: string }> = {
   sovereignty: { symbol: 'S', label: 'Sovereignty', body: 'Your sense of agency and authorship — the pull toward standing in your own ground.' },
@@ -66,6 +76,7 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
   const [activeRegion, setActiveRegion] = useState<ActiveRegion>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
   const arrowAngleRef = useRef(0);
+  const arrowTweenRef = useRef<number>();
   useEffect(() => { arrowAngleRef.current = arrowAngle; }, [arrowAngle]);
   const isLocked = activeRegion !== null && activeRegion !== 'freedom';
   const [forceStrength, setForceStrength] = useState({
@@ -142,34 +153,34 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
 
   // Ease Freedom arrow toward the active force axis
   useEffect(() => {
-    if (!isLocked) return;
-    const REGION_TARGET_ANGLE: Record<string, number> = {
-      sovereignty: 0,
-      memory: Math.PI / 2,
-      intimacy: Math.PI,
-      novelty: (3 * Math.PI) / 2,
-    };
-    const target = REGION_TARGET_ANGLE[activeRegion as string];
-    if (target === undefined) return;
+    if (arrowTweenRef.current) {
+      cancelAnimationFrame(arrowTweenRef.current);
+    }
+
+    if (!isLocked || activeRegion === null || activeRegion === 'freedom') return;
+
+    const target = REGION_TARGET_ANGLE[activeRegion];
     if (prefersReducedMotion) {
       setArrowAngle(target);
       return;
     }
-    const TWO_PI = Math.PI * 2;
+
     const from = arrowAngleRef.current;
     const delta = ((target - from + Math.PI * 3) % TWO_PI) - Math.PI;
     const start = performance.now();
-    const dur = 280;
-    let raf = 0;
     const tick = (t: number) => {
-      const p = Math.min(1, (t - start) / dur);
+      const p = Math.min(1, (t - start) / ARROW_LOCK_TWEEN_MS);
       const eased = 1 - Math.pow(1 - p, 3);
       const next = ((from + delta * eased) % TWO_PI + TWO_PI) % TWO_PI;
       setArrowAngle(next);
-      if (p < 1) raf = requestAnimationFrame(tick);
+      if (p < 1) arrowTweenRef.current = requestAnimationFrame(tick);
     };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
+    arrowTweenRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (arrowTweenRef.current) {
+        cancelAnimationFrame(arrowTweenRef.current);
+      }
+    };
   }, [activeRegion, isLocked, prefersReducedMotion]);
 
   // Handle SVG clicks for dot placement
