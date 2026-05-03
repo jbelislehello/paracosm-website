@@ -115,6 +115,7 @@ function App() {
                     <Route path="/lineage" element={<Lineage />} />
                     <Route path="/agentic-ecosystem-deck" element={<AgenticEcosystemDeck />} />
                     <Route path="/resonance" element={<ResonanceDemo />} />
+                    <Route path="/dream/:slug" element={<DreamShare />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Suspense>
