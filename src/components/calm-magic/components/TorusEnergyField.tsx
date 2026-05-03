@@ -129,9 +129,9 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
               {/* Throat — the place where invention happens */}
               <g
                 style={{
-                  transform: `scale(${breathScale})`,
+                  transform: `scale(${breathScale * (activeRegion === 'skin' && !reduced ? 1.02 : 1)})`,
                   transformOrigin: `${cx}px ${cy}px`,
-                  transition: 'transform 200ms ease-out',
+                  transition: 'transform 220ms ease-out',
                 }}
               >
                 <ellipse
@@ -164,6 +164,20 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
                   </g>
                 ))}
 
+                {/* Outer skin halo */}
+                {activeRegion === 'skin' && !reduced && (
+                  <ellipse
+                    cx={cx} cy={cy}
+                    rx={R + r * 0.6}
+                    ry={(R + r * 0.6) * 0.42}
+                    fill="none"
+                    stroke={ink}
+                    strokeWidth={5}
+                    opacity={0.3}
+                    style={{ filter: 'blur(2.5px)' }}
+                  />
+                )}
+
                 {/* Outer skin — collective coherence */}
                 <ellipse
                   cx={cx}
@@ -172,10 +186,25 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
                   ry={(R + r * 0.6) * 0.42}
                   fill="none"
                   stroke={ink}
-                  strokeWidth="1.2"
-                  opacity={breathOpacity}
+                  strokeWidth={activeRegion === 'skin' ? 2.2 : 1.2}
+                  opacity={activeRegion === 'skin' ? 0.95 : breathOpacity}
                   filter="url(#torus-gp-ink)"
+                  style={{ transition: 'all 220ms ease-out' }}
                 />
+
+                {/* Inner flow halo */}
+                {activeRegion === 'flow' && !reduced && (
+                  <ellipse
+                    cx={cx} cy={cy}
+                    rx={R - r * 0.7}
+                    ry={(R - r * 0.7) * 0.42}
+                    fill="none"
+                    stroke={red}
+                    strokeWidth={4}
+                    opacity={0.35}
+                    style={{ filter: 'blur(2.5px)' }}
+                  />
+                )}
 
                 {/* Inner flow — individual learning */}
                 <ellipse
@@ -185,23 +214,38 @@ const TorusEnergyField: React.FC<TorusEnergyFieldProps> = ({ mode }) => {
                   ry={(R - r * 0.7) * 0.42}
                   fill="none"
                   stroke={red}
-                  strokeWidth="1"
-                  opacity={0.55 + breath * 0.35}
+                  strokeWidth={activeRegion === 'flow' ? 2 : 1}
+                  opacity={activeRegion === 'flow' ? 1 : 0.55 + breath * 0.35}
                   filter="url(#torus-gp-ink)"
+                  style={{ transition: 'all 220ms ease-out' }}
                 />
+
+                {/* Throat pulse ring when active */}
+                {activeRegion === 'throat' && !reduced && (
+                  <circle
+                    cx={cx} cy={cy}
+                    r={14 + breath * 6}
+                    fill="none"
+                    stroke={red}
+                    strokeWidth="0.8"
+                    strokeDasharray="2 3"
+                    opacity={0.5 - breath * 0.3}
+                  />
+                )}
 
                 {/* Throat dot */}
                 <circle
                   cx={cx}
                   cy={cy}
-                  r={4 + breath * 2}
+                  r={(activeRegion === 'throat' ? 8 : 4) + breath * 2}
                   fill={red}
-                  opacity={0.7}
+                  opacity={activeRegion === 'throat' ? 1 : 0.7}
+                  style={{ transition: 'all 220ms ease-out' }}
                 />
               </g>
 
               {/* Frenet frame riding the outer skin */}
-              <FrenetFrame x={fx} y={fy} angle={tangent} scale={20} />
+              <FrenetFrame x={fx} y={fy} angle={tangent} scale={20} emphasis={activeRegion === 'frame'} />
 
               {/* Annotations — textbook anatomy */}
               <Annotation
