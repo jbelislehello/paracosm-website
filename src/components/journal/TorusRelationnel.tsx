@@ -186,7 +186,7 @@ export const TorusRelationnel: React.FC<TorusRelationnelProps> = ({
             label="You — the still point"
             body="The center the four phases move around. You stay here while contact rises, peaks, and releases."
             side="right"
-            onActiveChange={(a) => setActiveRegion(a ? 'center' : (r) => r === 'center' ? null : r as ActiveRegion)}
+            onActiveChange={(a) => setActiveRegion(a ? 'center' : null)}
           />
           <GeometryHotspot
             style={{ left: '50%', top: '50%', width: 90, height: 90, transform: 'translate(-50%, -50%)' }}
@@ -194,7 +194,7 @@ export const TorusRelationnel: React.FC<TorusRelationnelProps> = ({
             label="Attention flow"
             body="The pulse of attention right now: the rotating line shows where contact is heading next around the cycle."
             side="bottom"
-            onActiveChange={(a) => setActiveRegion(a ? 'flow' : (r) => r === 'flow' ? null : r as ActiveRegion)}
+            onActiveChange={(a) => setActiveRegion(a ? 'flow' : null)}
           />
           {PHASE_ORDER.map((phase) => (
             <GeometryHotspot
@@ -211,7 +211,7 @@ export const TorusRelationnel: React.FC<TorusRelationnelProps> = ({
               body={PHASE_PLAIN[phase]}
               side="top"
               onActivate={() => onPhaseChange?.(phase)}
-              onActiveChange={(a) => setActiveRegion(a ? phase : (r) => r === phase ? null : r as ActiveRegion)}
+              onActiveChange={(a) => setActiveRegion(a ? phase : null)}
             />
           ))}
         </div>
