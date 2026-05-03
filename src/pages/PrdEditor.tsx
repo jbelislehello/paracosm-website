@@ -9,8 +9,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Loader2, Save, Sprout, BookOpen, Shapes, Flag, Rocket } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { ArrowLeft, Loader2, Save, Sprout, BookOpen, Shapes, Flag, Rocket, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
+import { QuickFillTab } from '@/components/calm-magic/quick-fill/QuickFillTab';
 
 const PrdEditor = () => {
   const { id } = useParams();
@@ -176,6 +178,15 @@ const PrdEditor = () => {
           </Button>
         </div>
 
+        <Tabs defaultValue="edit" className="space-y-6">
+          <TabsList>
+            <TabsTrigger value="edit">Edit</TabsTrigger>
+            <TabsTrigger value="quickfill">
+              <Sparkles className="w-4 h-4 mr-1.5" /> Quick Fill
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="edit" className="space-y-8">
         {/* Title & Status */}
         <Card className="p-6">
           <div className="grid gap-4 md:grid-cols-2">
@@ -428,6 +439,15 @@ const PrdEditor = () => {
             </div>
           </Card>
         )}
+          </TabsContent>
+
+          <TabsContent value="quickfill">
+            <QuickFillTab
+              prdId={prd.id}
+              initial={(prd as any).quick_fill ?? null}
+            />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
