@@ -7,6 +7,18 @@ import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Play, Pause, RotateCcw, Volume2, VolumeX, Plus, Trash2, Target } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { GeometryHotspot } from '@/components/calm-magic/geometry/GeometryHotspot';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+
+type ActiveRegion = 'sovereignty' | 'memory' | 'intimacy' | 'novelty' | 'freedom' | null;
+
+const REGION_COPY: Record<Exclude<ActiveRegion, null>, { symbol: string; label: string; body: string }> = {
+  sovereignty: { symbol: 'S', label: 'Sovereignty', body: 'Your sense of agency and authorship — the pull toward standing in your own ground.' },
+  memory:      { symbol: 'M', label: 'Memory',      body: 'Continuity across time. What you carry forward pulls Freedom toward what you already know.' },
+  intimacy:    { symbol: 'I', label: 'Intimacy',    body: 'Closeness and relational depth. Pulls Freedom toward connection rather than novelty.' },
+  novelty:     { symbol: 'N', label: 'Novelty',     body: 'Openness to the new. Pulls Freedom toward exploration and surprise.' },
+  freedom:     { symbol: 'F', label: 'Freedom',     body: 'The rotating arrow is your attention. As it sweeps, it touches forces and lights up paths between them.' },
+};
 
 interface CalmMagicDot {
   id: string;
