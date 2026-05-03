@@ -44,11 +44,6 @@ const DreamShare: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Helmet>
-        <title>{run ? `Dream: ${run.question.slice(0, 60)}` : 'Dream'}</title>
-        <meta name="description" content={run?.summary?.slice(0, 155) || 'A Calm Magic board dreaming through a PRD.'} />
-        <link rel="canonical" href={typeof window !== 'undefined' ? window.location.href : ''} />
-      </Helmet>
 
       <header className="border-b border-border/40 px-4 py-3 flex items-center justify-between">
         <Link to="/" className="text-sm text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
