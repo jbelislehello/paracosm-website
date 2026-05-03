@@ -927,11 +927,19 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
                     <button
                       key={force}
                       type="button"
-                      onMouseEnter={() => setActiveRegion(force)}
-                      onMouseLeave={() => setActiveRegion((prev) => (prev === force ? null : prev))}
-                      onFocus={() => setActiveRegion(force)}
-                      onBlur={() => setActiveRegion((prev) => (prev === force ? null : prev))}
-                      className={`flex items-center gap-2 rounded-md px-2 py-1 text-left transition-all duration-200 ${
+                      aria-pressed={isActive}
+                      onMouseEnter={() => { if (!latchedRegionRef.current) setActiveRegion(force); }}
+                      onMouseLeave={() => { if (!latchedRegionRef.current) setActiveRegion((prev) => (prev === force ? null : prev)); }}
+                      onFocus={() => { if (!latchedRegionRef.current) setActiveRegion(force); }}
+                      onBlur={() => { if (!latchedRegionRef.current) setActiveRegion((prev) => (prev === force ? null : prev)); }}
+                      onClick={() => toggleLatch(force)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          toggleLatch(force);
+                        }
+                      }}
+                      className={`flex items-center gap-2 rounded-md px-2 py-1 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 ${
                         isActive ? 'ring-2 ring-offset-1 ring-purple-400 bg-purple-50/60 dark:bg-purple-950/30' : ''
                       }`}
                       style={isActive ? { boxShadow: `0 0 0 1px ${getForceColor(force)}40` } : undefined}
