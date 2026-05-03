@@ -38,6 +38,10 @@ const DreamShare: React.FC = () => {
     })();
   }, [slug]);
 
+  useEffect(() => {
+    if (run) document.title = `Dream: ${run.question.slice(0, 60)}`;
+  }, [run]);
+
   return (
     <div className="min-h-screen bg-background">
       <Helmet>
