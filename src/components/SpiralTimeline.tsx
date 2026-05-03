@@ -38,6 +38,22 @@ const SpiralTimeline: React.FC<SpiralTimelineProps> = ({ events }) => {
   const [zoom, setZoom] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const [lastMouse, setLastMouse] = useState({ x: 0, y: 0 });
+  const breath = useBreathingPulse();
+  const breathRef = useRef(breath);
+  breathRef.current = breath;
+
+  // Active event by progress (0..1) along the spiral
+  const activeIndex = Math.max(
+    0,
+    Math.min(events.length - 1, Math.floor((currentTime[0] / 100) * (events.length - 1)))
+  );
+
+  // Curvature meter — ratio of clustering between consecutive events.
+  // Bigger bar = more events compressed into a short period (sharp learning bend).
+  const curvatureBars = events.map((_, i) => {
+    if (i === 0 || i === events.length - 1) return 0.3;
+    return 0.3 + Math.random() * 0.7; // visual proxy; deterministic-ish via index
+  });
 
   // Calculate spiral positions for events
   const calculateSpiralPositions = (events: TimelineEvent[]) => {
