@@ -300,15 +300,24 @@ function ManifoldSpiral({ season }: { season: Season }) {
 function TorusEnergyField({ season }: { season: Season }) {
   const torusRef = useRef<THREE.Mesh>(null);
   const innerTorusRef = useRef<THREE.Mesh>(null);
-  
+  const breath = useSceneBreath();
+
   useFrame((state) => {
     if (torusRef.current) {
       torusRef.current.rotation.x = state.clock.elapsedTime * 0.3;
       torusRef.current.rotation.y = state.clock.elapsedTime * 0.2;
+      const s = 0.96 + breath.current * 0.08;
+      torusRef.current.scale.set(s, s, s);
+      const mat = torusRef.current.material as THREE.MeshStandardMaterial;
+      if (mat) mat.opacity = 0.45 + breath.current * 0.35;
     }
     if (innerTorusRef.current) {
       innerTorusRef.current.rotation.x = -state.clock.elapsedTime * 0.5;
       innerTorusRef.current.rotation.z = state.clock.elapsedTime * 0.4;
+      const s = 0.92 + breath.current * 0.14;
+      innerTorusRef.current.scale.set(s, s, s);
+      const mat = innerTorusRef.current.material as THREE.MeshStandardMaterial;
+      if (mat) mat.opacity = 0.25 + breath.current * 0.45;
     }
   });
 
