@@ -157,7 +157,7 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
       cancelAnimationFrame(arrowTweenRef.current);
     }
 
-    if (!isLocked || activeRegion === null || activeRegion === 'freedom') return;
+    if (!isLocked || activeRegion === null) return;
 
     const target = REGION_TARGET_ANGLE[activeRegion];
     if (prefersReducedMotion) {
