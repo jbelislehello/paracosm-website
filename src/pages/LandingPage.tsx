@@ -15,6 +15,11 @@ import CollapsibleSection from "@/components/CollapsibleSection";
 import BookAnnouncementBanner from "@/components/BookAnnouncementBanner";
 import AgenticEcosystemHero from "@/components/AgenticEcosystemHero";
 import AgenticEcosystemDemo from "@/components/AgenticEcosystemDemo";
+import FrameworkHero from "@/components/landing/FrameworkHero";
+import EnterpriseGaps from "@/components/landing/EnterpriseGaps";
+import MethodSteps from "@/components/landing/MethodSteps";
+import ThreePaths from "@/components/landing/ThreePaths";
+import AxisLegend from "@/components/AxisLegend";
 
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
