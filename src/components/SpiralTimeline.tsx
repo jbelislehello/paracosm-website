@@ -5,6 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Slider } from '@/components/ui/slider';
 import { Play, Pause, RotateCcw, Eye, Grid3X3, ExternalLink } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useBreathingPulse } from '@/hooks/useBreathingPulse';
+import { GraphPaperDefs } from '@/components/calm-magic/geometry/GraphPaper';
+import { Annotation } from '@/components/calm-magic/geometry/Annotation';
+import { FrenetFrame, FrenetMarkers } from '@/components/calm-magic/geometry/FrenetFrame';
 
 interface TimelineEvent {
   year: string;
