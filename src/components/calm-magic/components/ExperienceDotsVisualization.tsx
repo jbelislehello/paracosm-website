@@ -78,7 +78,16 @@ const ExperienceDotsVisualization: React.FC<ExperienceDotsVisualizationProps> = 
   const arrowAngleRef = useRef(0);
   const arrowTweenRef = useRef<number>();
   const compassRegionRef = useRef<HTMLDivElement>(null);
+  const latchedRegionRef = useRef<ActiveRegion>(null);
   const focusCompass = () => compassRegionRef.current?.focus({ preventScroll: true });
+  const latchRegion = (region: ActiveRegion) => {
+    latchedRegionRef.current = region;
+    setActiveRegion(region);
+  };
+  const toggleLatch = (region: Exclude<ActiveRegion, null>) => {
+    const next = latchedRegionRef.current === region ? null : region;
+    latchRegion(next);
+  };
   useEffect(() => { arrowAngleRef.current = arrowAngle; }, [arrowAngle]);
 
   // Re-assert focus on the compass region when the active region changes via
