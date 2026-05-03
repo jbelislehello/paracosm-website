@@ -81,7 +81,11 @@ export const TorusRelationnel: React.FC<TorusRelationnelProps> = ({
             })}
             
             {/* Center point */}
-            <circle cx="50" cy="50" r="8" fill="hsl(var(--background))" stroke="hsl(var(--primary))" strokeWidth="2" />
+            <circle cx="50" cy="50" r={6 + breath * 2} fill="hsl(var(--background))" stroke="hsl(var(--primary))" strokeWidth="2" />
+
+            {/* Tangent — continuous progression */}
+            <line x1="50" y1="50" x2={tx} y2={ty} stroke="hsl(var(--primary) / 0.6)" strokeWidth="1.2" />
+            <circle cx={tx} cy={ty} r="2" fill="hsl(var(--primary))" />
             
             {/* Flow arrows */}
             <path
