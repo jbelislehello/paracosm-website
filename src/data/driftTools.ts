@@ -49,4 +49,26 @@ export const driftTools: DriftTool[] = [
   { name: "Axure", description: "Advanced prototyping and wireframing for UX professionals", startingPrice: "$29/mo", axis: "free", month: 4, year: 2026, url: "https://axure.com" },
   { name: "Antigravity", description: "Creative tool for exploring ideas beyond conventional constraints", startingPrice: "Free", axis: "free", month: 4, year: 2026, url: "https://antigravity.dev" },
   { name: "Paracosm Platform", description: "Creative ecosystem platform for applied poetry, transmedia storytelling, and experience architecture", startingPrice: "Free", axis: "free", month: 4, year: 2026, url: "https://paracosm.helloarchitekt.com" },
+
+  // === May 2026 — Tensor Topologies & The Practice of Not Thinking ===
+  // CALM — Non-thinking practice grounds
+  { name: "Calm Magic Board", description: "The 64-tile board as a rank-3 tensor (8 × 8 × time) — index the field without collapsing it into a single thought", startingPrice: "Free", axis: "calm", month: 5, year: 2026, url: "https://calm-magic.com/calm-magic-board" },
+  { name: "Insight Timer", description: "Free meditation library — noting, body scan, and open awareness practices that train invariance", startingPrice: "Free", axis: "calm", month: 5, year: 2026, url: "https://insighttimer.com" },
+
+  // MAGIC — Tensor sense-making
+  { name: "PyTorch", description: "The reference tensor library — operate on rank-N fields with autograd; the math behind 'a thought is a basis collapse'", startingPrice: "Free (open source)", axis: "magic", month: 5, year: 2026, url: "https://pytorch.org" },
+  { name: "JAX", description: "Composable transformations of tensor functions — vmap, grad, jit. Coordinate-change as a first-class operation", startingPrice: "Free (open source)", axis: "magic", month: 5, year: 2026, url: "https://jax.readthedocs.io" },
+  { name: "TensorBoard", description: "Visualize tensor flows, embeddings, and high-dimensional manifolds as you train them", startingPrice: "Free", axis: "magic", month: 5, year: 2026, url: "https://www.tensorflow.org/tensorboard" },
+
+  // LOVE — Embodied invariance
+  { name: "Tonalli", description: "Voice as scalar→vector projection — Wuxia the Fox holds the field while components reorganize", startingPrice: "Custom", axis: "love", month: 5, year: 2026, url: "https://paracosm.it/tonalli" },
+  { name: "Feldenkrais Project", description: "Open library of Awareness Through Movement lessons — somatic training in coordinate-invariant ease", startingPrice: "Free", axis: "love", month: 5, year: 2026, url: "https://feldenkraisproject.com" },
+
+  // OPEN — Manifold & diagram tools
+  { name: "Obsidian Canvas", description: "Lay the manifold out by hand — nodes, edges, and the tensor diagrams of your own thinking", startingPrice: "Free", axis: "open", month: 5, year: 2026, url: "https://obsidian.md/canvas" },
+  { name: "Quiver", description: "Modern editor for commutative and tensor diagrams — make the invariance visible", startingPrice: "Free", axis: "open", month: 5, year: 2026, url: "https://q.uiver.app" },
+
+  // FREE — Generative tensor fields
+  { name: "TouchDesigner", description: "Node-based environment for live tensor fields, generative geometry, and reactive visuals", startingPrice: "Free (non-commercial)", axis: "free", month: 5, year: 2026, url: "https://derivative.ca" },
+  { name: "Hydra", description: "Live-coded video synth — tensor compositions you can rewrite in real time", startingPrice: "Free (open source)", axis: "free", month: 5, year: 2026, url: "https://hydra.ojack.xyz" },
 ];
