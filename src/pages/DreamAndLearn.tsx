@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
 import Footer from "@/components/Footer";
+import RecentDreams from "@/components/calm-magic/dream/RecentDreams";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { productSchema } from "@/lib/structuredData";
 
