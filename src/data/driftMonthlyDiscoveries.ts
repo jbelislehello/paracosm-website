@@ -800,7 +800,54 @@ export const driftMonthlyDiscoveries: DriftMonthEntry[] = [
       { title: "★ Featured — The Relationship Model", author: "Jonathan Bélisle", description: "Latest article: a framework for thinking about relationships as the primary substrate of organizations, products, and learning systems. Read this first — it threads through every tool curated this month.", category: "Human Dynamics & System Thinking", axis: "love", url: "https://www.linkedin.com/pulse/relationship-model-jonathan-belisle-mdgne", source: "LinkedIn" },
     ],
   },
+  {
+    year: 2026, month: 5, theme: "Tensor Topologies & The Practice of Not Thinking",
+    books: [
+      { title: "The Practice of Not Thinking — A Guide to Mindful Living", author: "Ryunosuke Koike", description: "A Japanese Zen monk's field guide to non-thinking: noting, sensing, returning. The phenomenological scalar Calm Magic uses to ground every higher-rank tensor of experience.", category: "Inquiry and Practices", axis: "calm", amazonUrl: "https://www.amazon.com/s?k=Ryunosuke+Koike+The+Practice+of+Not+Thinking" },
+      { title: "The Road to Reality", author: "Roger Penrose", description: "Penrose's complete map of physics — the chapters on tensors, spinors, and coordinate invariance are the mathematical scaffolding behind 'why a thought is a basis collapse'.", category: "Narratives", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Roger+Penrose+The+Road+to+Reality" },
+      { title: "Meeting the Universe Halfway", author: "Karen Barad", description: "Agential realism: phenomena come into being through entangled relations, not pre-existing objects. The philosophical companion to a tensor view of self.", category: "Human Dynamics & System Thinking", axis: "open", amazonUrl: "https://www.amazon.com/s?k=Karen+Barad+Meeting+the+Universe+Halfway" },
+      { title: "Awareness Through Movement", author: "Moshe Feldenkrais", description: "Embodied invariance — the body learns to keep the field stable while the components reorganize. The somatic counterpart to tensor invariance.", category: "Embodied Cognition", axis: "love", amazonUrl: "https://www.amazon.com/s?k=Feldenkrais+Awareness+Through+Movement" },
+      { title: "A New Kind of Science", author: "Stephen Wolfram", description: "Computational irreducibility and multicomputation — the FREE-axis read on why generative tensor fields out-think any single thought-trajectory.", category: "Workflows", axis: "free", amazonUrl: "https://www.amazon.com/s?k=Stephen+Wolfram+A+New+Kind+of+Science" },
+    ],
+    videos: [
+      { title: "Tensors Explained Intuitively (Covariant, Contravariant, Rank)", speaker: "Physics Explained", description: "A clear visual primer on tensors as objects whose components transform predictably while the geometric reality stays invariant — exactly what a meditation practice trains.", category: "Inquiry and Practices", axis: "magic", youtubeId: "f5liqUk0ZTw", platform: "YouTube" },
+      { title: "The Essence of Linear Algebra — Vectors, Bases, Change of Basis", speaker: "3Blue1Brown", description: "Grant Sanderson's series on how 'a thought' is just one chosen basis. Watch episodes 1, 9, and 13 to feel the coordinate-change move that non-thinking enacts.", category: "Inquiry and Practices", axis: "magic", youtubeId: "fNk_zzaMoSs", platform: "YouTube" },
+      { title: "Roger Penrose — Consciousness and the Laws of Physics", speaker: "Roger Penrose", description: "On non-computable awareness — why the field cannot be reduced to a single basis vector of thought.", category: "Inquiry and Practices", axis: "magic", youtubeId: "orMtwOz6Db0", platform: "YouTube" },
+      { title: "Shinzen Young — Noting Practice", speaker: "Shinzen Young", description: "Operational non-thinking: the act of noting is the act of indexing the tensor without collapsing it. The closest existing protocol to Calm Magic's tile-touch.", category: "Inquiry and Practices", axis: "calm", youtubeId: "v4VXG6Ig9eg", platform: "YouTube" },
+    ],
+    articles: [
+      { title: "★ Featured — Calm Magic as Tensor Practice: a Non-Thinking Lecture", author: "Jonathan Bélisle", description: "The recursive read: scalar = sensation (POLLEN), vector = oriented insight (NOEM), matrix = tile-pair coupling (POEM), 3-tensor = the 64-tile board (TOTEM), invariance = the practice that survives every coordinate change (ANTHEM). The board is the koan; awareness is the manifold.", category: "Human Dynamics & System Thinking", axis: "calm", url: "https://calm-magic.com/drift/2026/5", source: "Calm Magic" },
+      { title: "Tensor Networks: A Visual Tour", author: "Jacob Biamonte & Ville Bergholm", description: "Quanta-level introduction to tensor networks — how high-dimensional relations compress into navigable diagrams. The mathematical sibling of the Calm Magic Board.", category: "Human Dynamics & System Thinking", axis: "open", url: "https://arxiv.org/abs/1708.00006", source: "arXiv" },
+      { title: "Reconsolidation, Memory, and Coordinate Change", author: "Karim Nader (context)", description: "Each recall re-writes the tensor's components. Non-thinking is not erasure — it's choosing not to collapse the field into the same old basis.", category: "Embodied Cognition", axis: "love", url: "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4405835/", source: "PMC" },
+      { title: "Multicomputation and the Ruliad", author: "Stephen Wolfram", description: "Why every observer carves a slice from a generative tensor field. The FREE-axis case for treating Calm Magic as a *practice* of inhabiting more of the ruliad.", category: "Workflows", axis: "free", url: "https://writings.stephenwolfram.com/2021/09/multicomputation-a-fourth-paradigm-for-theoretical-science/", source: "Wolfram Writings" },
+    ],
+    podcasts: [
+      { title: "Sean Carroll — Tensors, Fields, and the Geometry of Spacetime", host: "Sean Carroll / Mindscape", description: "Carroll's clearest explainer of why physics is written in tensors — and what 'invariance under coordinate change' actually means experientially.", category: "Inquiry and Practices", axis: "magic", url: "https://www.preposterousuniverse.com/podcast/", platform: "Mindscape" },
+      { title: "Sam Harris — The Practice of Non-Identification", host: "Sam Harris / Making Sense", description: "Why non-thinking is not the absence of thought but the refusal to identify with any single component of the field.", category: "Inquiry and Practices", axis: "calm", url: "https://www.samharris.org/podcasts", platform: "Making Sense" },
+    ],
+    artefacts: [
+      {
+        title: "The Practice of Not Thinking — Ryunosuke Koike",
+        author: "Photographed reference",
+        description: "The CALM scalar: a quiet field-guide to noting and returning. Held in the hand the way a practice is held in a body — small, unspectacular, unforgettable.",
+        category: "Inquiry and Practices",
+        axis: "calm",
+        imagePath: koikeNotThinking,
+      },
+      {
+        title: "What is a Tensor? — Visual Reference",
+        author: "Mathematics Learning",
+        description: "Vector → matrix → 3-tensor → product derivative. The lecture in one image: a tensor is a list-of-grids-of-cubes that survives any coordinate change. The Calm Magic Board is its phenomenological twin.",
+        category: "Inquiry and Practices",
+        axis: "magic",
+        imagePath: tensorDiagram,
+      },
+    ],
+  },
 ];
+
+import koikeNotThinking from '@/assets/drift/koike-not-thinking.png';
+import tensorDiagram from '@/assets/drift/tensor-diagram.png';
 
 export const driftLibraryExtras: DriftBook[] = [
   { title: "Thierry Kuntzel", author: "Thierry Kuntzel", description: "Ouvrage d'art/théorie — catalogue ou essai sur l'œuvre de Kuntzel.", category: "Sensory Rooms", axis: "magic", amazonUrl: "https://www.amazon.com/s?k=Thierry+Kuntzel+livre" },
