@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -22,50 +23,80 @@ const AXIS_LABELS: Record<string, string> = {
   love: 'LOVE', magic: 'MAGIC', calm: 'CALM', open: 'OPEN', free: 'FREE',
 };
 
+const STALE_TIME = 5 * 60 * 1000; // 5 min
+const GC_TIME = 30 * 60 * 1000; // 30 min
+const cacheKey = (limit: number) => `recent-dreams:v1:${limit}`;
+
+interface CachedPayload {
+  data: RecentDream[];
+  updatedAt: number;
+}
+
+function readCache(limit: number): CachedPayload | null {
+  try {
+    const raw = sessionStorage.getItem(cacheKey(limit));
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as CachedPayload;
+    if (!Array.isArray(parsed?.data) || typeof parsed?.updatedAt !== 'number') return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function writeCache(limit: number, data: RecentDream[]) {
+  try {
+    sessionStorage.setItem(
+      cacheKey(limit),
+      JSON.stringify({ data, updatedAt: Date.now() } satisfies CachedPayload),
+    );
+  } catch {
+    // quota or unavailable — ignore
+  }
+}
+
 interface RecentDreamsProps {
   limit?: number;
 }
 
 const RecentDreams: React.FC<RecentDreamsProps> = ({ limit = 6 }) => {
-  const [dreams, setDreams] = useState<RecentDream[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const cancelledRef = useRef(false);
+  const cached = React.useMemo(() => readCache(limit), [limit]);
 
-  const fetchDreams = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const { data, error: sbError } = await supabase
+  const { data: dreams, isPending, isError, refetch, isFetching } = useQuery<RecentDream[]>({
+    queryKey: ['recent-dreams', limit],
+    queryFn: async () => {
+      const { data, error } = await supabase
         .from('dream_runs')
         .select('id, share_slug, question, summary, created_at, overall_maturity')
         .eq('is_public', true)
         .order('created_at', { ascending: false })
         .limit(limit);
-      if (cancelledRef.current) return;
-      if (sbError) throw sbError;
-      setDreams((data ?? []) as unknown as RecentDream[]);
-    } catch (err) {
-      console.error('[RecentDreams] Failed to load dreams:', err);
-      if (!cancelledRef.current) {
-        setError("We couldn't load recent dreams right now.");
-        toast.error("Couldn't load recent dreams", {
-          description: "Check your connection and try again.",
-          action: { label: 'Retry', onClick: () => fetchDreams() },
-        });
-      }
-    } finally {
-      if (!cancelledRef.current) setLoading(false);
+      if (error) throw error;
+      const rows = (data ?? []) as unknown as RecentDream[];
+      writeCache(limit, rows);
+      return rows;
+    },
+    staleTime: STALE_TIME,
+    gcTime: GC_TIME,
+    initialData: cached?.data,
+    initialDataUpdatedAt: cached?.updatedAt,
+  });
+
+  // Toast on error, but only when we have nothing to show (otherwise stay silent and keep cached data visible).
+  const errorToastedRef = React.useRef(false);
+  React.useEffect(() => {
+    if (isError && !errorToastedRef.current) {
+      errorToastedRef.current = true;
+      toast.error("Couldn't load recent dreams", {
+        description: "Check your connection and try again.",
+        action: { label: 'Retry', onClick: () => { errorToastedRef.current = false; refetch(); } },
+      });
     }
-  }, [limit]);
+    if (!isError) errorToastedRef.current = false;
+  }, [isError, refetch]);
 
-  useEffect(() => {
-    cancelledRef.current = false;
-    fetchDreams();
-    return () => { cancelledRef.current = true; };
-  }, [fetchDreams]);
-
-  if (loading) {
+  // Skeleton only on first-ever load (no cache, no data yet).
+  if (isPending && !dreams) {
     return (
       <div
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
@@ -96,20 +127,23 @@ const RecentDreams: React.FC<RecentDreamsProps> = ({ limit = 6 }) => {
     );
   }
 
-  if (error) {
+  // Only block the UI with error card when there's no cached/previous data to show.
+  if (isError && !dreams) {
     return (
       <Card className="p-8 text-center bg-muted/20 border-dashed">
         <AlertCircle className="w-6 h-6 mx-auto mb-2 text-muted-foreground" />
-        <p className="text-sm text-muted-foreground mb-4">{error}</p>
-        <Button variant="outline" size="sm" onClick={fetchDreams}>
-          <RefreshCw className="w-3.5 h-3.5 mr-2" />
+        <p className="text-sm text-muted-foreground mb-4">
+          We couldn't load recent dreams right now.
+        </p>
+        <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching}>
+          <RefreshCw className={`w-3.5 h-3.5 mr-2 ${isFetching ? 'animate-spin' : ''}`} />
           Try again
         </Button>
       </Card>
     );
   }
 
-  if (dreams.length === 0) {
+  if (!dreams || dreams.length === 0) {
     return (
       <Card className="p-8 text-center bg-muted/20 border-dashed">
         <Sparkles className="w-6 h-6 mx-auto mb-2 text-muted-foreground" />
