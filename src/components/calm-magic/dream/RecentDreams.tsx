@@ -67,9 +67,31 @@ const RecentDreams: React.FC<RecentDreamsProps> = ({ limit = 6 }) => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center gap-2 py-12 text-muted-foreground">
-        <Loader2 className="w-4 h-4 animate-spin" />
-        <span className="text-sm">Loading recent dreams…</span>
+      <div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+        aria-busy="true"
+        aria-label="Loading recent dreams"
+      >
+        {Array.from({ length: limit }).map((_, i) => (
+          <Card key={i} className="h-full border-border/60 bg-card/80 backdrop-blur-sm overflow-hidden">
+            <CardHeader className="pb-3">
+              <Skeleton className="h-3 w-24 mb-3" />
+              <Skeleton className="h-4 w-full mb-2" />
+              <Skeleton className="h-4 w-4/5" />
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <Skeleton className="h-3 w-full" />
+              <Skeleton className="h-3 w-11/12" />
+              <Skeleton className="h-3 w-3/4" />
+              <div className="flex flex-wrap gap-1 pt-1">
+                <Skeleton className="h-4 w-12 rounded-full" />
+                <Skeleton className="h-4 w-14 rounded-full" />
+                <Skeleton className="h-4 w-10 rounded-full" />
+              </div>
+              <Skeleton className="h-3 w-20 mt-2" />
+            </CardContent>
+          </Card>
+        ))}
       </div>
     );
   }
