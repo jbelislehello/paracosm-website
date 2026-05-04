@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/accordion";
 import { Separator } from "@/components/ui/separator";
 import Footer from "@/components/Footer";
+import RecentDreams from "@/components/calm-magic/dream/RecentDreams";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { productSchema } from "@/lib/structuredData";
 
@@ -478,7 +479,28 @@ const DreamAndLearn = () => {
         </div>
       </section>
 
-      {/* FAQ */}
+      {/* RECENT DREAMS */}
+      <section className="px-4 py-16 md:py-20">
+        <div className="container max-w-6xl mx-auto">
+          <div className="text-center mb-10">
+            <Badge variant="outline" className="mb-3 border-accent/40 text-accent">
+              <Sparkles className="h-3 w-3 mr-1" />
+              Recently dreamt
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold">
+              What others have dreamed
+            </h2>
+            <p className="mt-3 text-muted-foreground max-w-2xl mx-auto">
+              Dreams are the <strong className="text-foreground">inventive</strong> part of a project.
+              Learn is how it becomes <strong className="text-foreground">expressive</strong>.
+              Browse public dreams to see how briefs land across the five axes.
+            </p>
+          </div>
+          <RecentDreams limit={6} />
+        </div>
+      </section>
+
+
       <section className="px-4 py-16 md:py-20 bg-muted/30">
         <div className="container max-w-3xl mx-auto">
           <div className="text-center mb-8">
