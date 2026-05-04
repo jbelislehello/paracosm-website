@@ -27,23 +27,37 @@ interface RecentDreamsProps {
 const RecentDreams: React.FC<RecentDreamsProps> = ({ limit = 6 }) => {
   const [dreams, setDreams] = useState<RecentDream[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const cancelledRef = useRef(false);
 
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      const { data } = await supabase
+  const fetchDreams = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data, error: sbError } = await supabase
         .from('dream_runs')
         .select('id, share_slug, question, summary, created_at, overall_maturity')
         .eq('is_public', true)
         .order('created_at', { ascending: false })
         .limit(limit);
-      if (!cancelled) {
-        setDreams((data ?? []) as unknown as RecentDream[]);
-        setLoading(false);
+      if (cancelledRef.current) return;
+      if (sbError) throw sbError;
+      setDreams((data ?? []) as unknown as RecentDream[]);
+    } catch (err) {
+      console.error('[RecentDreams] Failed to load dreams:', err);
+      if (!cancelledRef.current) {
+        setError("We couldn't load recent dreams right now.");
       }
-    })();
-    return () => { cancelled = true; };
+    } finally {
+      if (!cancelledRef.current) setLoading(false);
+    }
   }, [limit]);
+
+  useEffect(() => {
+    cancelledRef.current = false;
+    fetchDreams();
+    return () => { cancelledRef.current = true; };
+  }, [fetchDreams]);
 
   if (loading) {
     return (
@@ -51,6 +65,19 @@ const RecentDreams: React.FC<RecentDreamsProps> = ({ limit = 6 }) => {
         <Loader2 className="w-4 h-4 animate-spin" />
         <span className="text-sm">Loading recent dreams…</span>
       </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <Card className="p-8 text-center bg-muted/20 border-dashed">
+        <AlertCircle className="w-6 h-6 mx-auto mb-2 text-muted-foreground" />
+        <p className="text-sm text-muted-foreground mb-4">{error}</p>
+        <Button variant="outline" size="sm" onClick={fetchDreams}>
+          <RefreshCw className="w-3.5 h-3.5 mr-2" />
+          Try again
+        </Button>
+      </Card>
     );
   }
 
