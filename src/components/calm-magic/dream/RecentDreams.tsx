@@ -48,6 +48,10 @@ const RecentDreams: React.FC<RecentDreamsProps> = ({ limit = 6 }) => {
       console.error('[RecentDreams] Failed to load dreams:', err);
       if (!cancelledRef.current) {
         setError("We couldn't load recent dreams right now.");
+        toast.error("Couldn't load recent dreams", {
+          description: "Check your connection and try again.",
+          action: { label: 'Retry', onClick: () => fetchDreams() },
+        });
       }
     } finally {
       if (!cancelledRef.current) setLoading(false);
