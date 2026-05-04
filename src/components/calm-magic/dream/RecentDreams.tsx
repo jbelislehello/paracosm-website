@@ -5,8 +5,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Sparkles, ArrowRight, AlertCircle, RefreshCw } from 'lucide-react';
+import { Sparkles, ArrowRight, AlertCircle, RefreshCw, Search, X } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 
 interface RecentDream {
@@ -72,6 +73,7 @@ interface RecentDreamsProps {
 
 const RecentDreams: React.FC<RecentDreamsProps> = ({ limit = 6 }) => {
   const cached = React.useMemo(() => readCache(limit), [limit]);
+  const [query, setQuery] = React.useState('');
 
   const { data: dreams, isPending, isError, refetch, isFetching, dataUpdatedAt } = useQuery<RecentDream[]>({
     queryKey: ['recent-dreams', limit],
@@ -154,21 +156,55 @@ const RecentDreams: React.FC<RecentDreamsProps> = ({ limit = 6 }) => {
     );
   }
 
+  const filteredDreams = React.useMemo(() => {
+    if (!dreams) return [];
+    const q = query.trim().toLowerCase();
+    if (!q) return dreams;
+    return dreams.filter(
+      (d) =>
+        d.question.toLowerCase().includes(q) ||
+        (d.summary ?? '').toLowerCase().includes(q),
+    );
+  }, [dreams, query]);
+
   const toolbar = (
-    <div className="flex items-center justify-between gap-3 mb-3">
-      <span className="text-xs text-muted-foreground">
-        {dreams && dreams.length > 0 ? `Updated ${formatRelative(dataUpdatedAt)}` : ''}
-      </span>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => refetch()}
-        disabled={isFetching}
-        aria-label="Refresh recent dreams"
-      >
-        <RefreshCw className={`w-3.5 h-3.5 mr-2 ${isFetching ? 'animate-spin' : ''}`} />
-        Refresh
-      </Button>
+    <div className="flex flex-col sm:flex-row gap-2 sm:items-center sm:justify-between mb-3">
+      <div className="relative w-full sm:max-w-xs">
+        <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+        <Input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search gardens of dreams…"
+          aria-label="Search recent dreams"
+          className="h-9 pl-8 pr-8 text-sm"
+        />
+        {query && (
+          <button
+            type="button"
+            onClick={() => setQuery('')}
+            aria-label="Clear search"
+            className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </div>
+      <div className="flex items-center gap-3">
+        <span className="text-xs text-muted-foreground">
+          {dreams && dreams.length > 0 ? `Updated ${formatRelative(dataUpdatedAt)}` : ''}
+        </span>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => refetch()}
+          disabled={isFetching}
+          aria-label="Refresh recent dreams"
+        >
+          <RefreshCw className={`w-3.5 h-3.5 mr-2 ${isFetching ? 'animate-spin' : ''}`} />
+          Refresh
+        </Button>
+      </div>
     </div>
   );
 
@@ -179,8 +215,25 @@ const RecentDreams: React.FC<RecentDreamsProps> = ({ limit = 6 }) => {
         <Card className="p-8 text-center bg-muted/20 border-dashed">
           <Sparkles className="w-6 h-6 mx-auto mb-2 text-muted-foreground" />
           <p className="text-sm text-muted-foreground">
-            No public dreams yet. Be the first to dream a PRD.
+            No public gardens of dreams yet. Be the first to plant one.
           </p>
+        </Card>
+      </div>
+    );
+  }
+
+  if (filteredDreams.length === 0) {
+    return (
+      <div>
+        {toolbar}
+        <Card className="p-8 text-center bg-muted/20 border-dashed">
+          <Search className="w-6 h-6 mx-auto mb-2 text-muted-foreground" />
+          <p className="text-sm text-muted-foreground mb-4">
+            No dreams match "{query}".
+          </p>
+          <Button variant="ghost" size="sm" onClick={() => setQuery('')}>
+            Clear search
+          </Button>
         </Card>
       </div>
     );
@@ -190,7 +243,7 @@ const RecentDreams: React.FC<RecentDreamsProps> = ({ limit = 6 }) => {
     <div>
       {toolbar}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {dreams.map((d) => {
+        {filteredDreams.map((d) => {
           const m = d.overall_maturity ?? {};
           return (
             <Link
