@@ -1,10 +1,12 @@
-## Add toast on RecentDreams fetch failure
+## Replace spinner with skeleton grid in RecentDreams
 
 Update `src/components/calm-magic/dream/RecentDreams.tsx`:
 
-1. Import `toast` from `sonner`.
-2. In the `catch` block of `fetchDreams`, call `toast.error("Couldn't load recent dreams", { description: "Check your connection and try again.", action: { label: "Retry", onClick: () => fetchDreams() } })`.
-3. Keep the existing inline error card with the "Try again" button as a persistent fallback (toasts auto-dismiss).
-4. Track an `isRetry` flag (or just rely on calling `fetchDreams` again) so the toast appears on every failed attempt, including manual retries.
+1. Import `Skeleton` from `@/components/ui/skeleton`. Drop the now-unused `Loader2` import.
+2. Replace the spinner-based `loading` branch with a grid of `limit` placeholder cards that mirror the real card layout:
+   - Header: small date pill skeleton + 2 lines of title skeleton
+   - Body: 3 lines of summary skeleton, a row of 3 small badge-shaped skeletons, and a short "Open dream" skeleton
+3. Use the same grid classes as the loaded state (`grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4`) so the layout doesn't shift when data arrives.
+4. Add `aria-busy="true"` and an `aria-label` for accessibility.
 
-No other changes.
+No other behavior changes.
