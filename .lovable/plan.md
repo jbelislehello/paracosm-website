@@ -1,26 +1,17 @@
-## Add shimmer to RecentDreams skeletons
+## Add visible Refresh action to RecentDreams
 
-1. **`src/index.css`**: add a reusable shimmer utility that overlays a moving highlight on top of any skeleton via `::after`:
-   ```css
-   @keyframes skeleton-shimmer {
-     0% { transform: translateX(-100%); }
-     100% { transform: translateX(100%); }
-   }
-   .skeleton-shimmer {
-     position: relative;
-     overflow: hidden;
-     isolation: isolate;
-   }
-   .skeleton-shimmer::after {
-     content: '';
-     position: absolute;
-     inset: 0;
-     background: linear-gradient(90deg, transparent, hsl(var(--foreground) / 0.06), transparent);
-     animation: skeleton-shimmer 1.8s ease-in-out infinite;
-   }
-   ```
-   Uses semantic token `--foreground` for theme-correct contrast in light/dark.
+Update `src/components/calm-magic/dream/RecentDreams.tsx`:
 
-2. **`src/components/calm-magic/dream/RecentDreams.tsx`**: append `skeleton-shimmer` to each `Skeleton` in the loading branch (keeps the existing subtle `animate-pulse` underneath for layered effect).
+1. Read `dataUpdatedAt` from the existing `useQuery` result.
+2. Wrap the rendered output in a fragment with a small header row above the grid (in both the "data" and "empty" branches):
+   - Left: a subtle muted label like "Updated <relative time>" derived from `dataUpdatedAt` (fallback "just now"). Hidden when there's no data yet.
+   - Right: a `Button variant="ghost" size="sm"` labeled "Refresh" with a `RefreshCw` icon.
+     - `onClick={() => refetch()}`
+     - `disabled={isFetching}`
+     - Icon gets `animate-spin` while `isFetching`
+3. Refetch flows through the existing `queryFn`, which already calls `writeCache(limit, rows)`, so the sessionStorage cache updates automatically.
+4. Toast on success of a manual refresh is unnecessary — the swapped data is feedback enough; only the existing error toast remains.
 
-No other changes.
+Small helper `formatRelative(ts)` inside the file: returns "just now" / "Xm ago" / "Xh ago" / locale date.
+
+No DB or other component changes.

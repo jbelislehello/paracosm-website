@@ -55,6 +55,17 @@ function writeCache(limit: number, data: RecentDream[]) {
   }
 }
 
+function formatRelative(ts: number): string {
+  if (!ts) return 'just now';
+  const diff = Date.now() - ts;
+  if (diff < 60_000) return 'just now';
+  const m = Math.floor(diff / 60_000);
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  return new Date(ts).toLocaleDateString();
+}
+
 interface RecentDreamsProps {
   limit?: number;
 }
@@ -62,7 +73,7 @@ interface RecentDreamsProps {
 const RecentDreams: React.FC<RecentDreamsProps> = ({ limit = 6 }) => {
   const cached = React.useMemo(() => readCache(limit), [limit]);
 
-  const { data: dreams, isPending, isError, refetch, isFetching } = useQuery<RecentDream[]>({
+  const { data: dreams, isPending, isError, refetch, isFetching, dataUpdatedAt } = useQuery<RecentDream[]>({
     queryKey: ['recent-dreams', limit],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -143,66 +154,90 @@ const RecentDreams: React.FC<RecentDreamsProps> = ({ limit = 6 }) => {
     );
   }
 
+  const toolbar = (
+    <div className="flex items-center justify-between gap-3 mb-3">
+      <span className="text-xs text-muted-foreground">
+        {dreams && dreams.length > 0 ? `Updated ${formatRelative(dataUpdatedAt)}` : ''}
+      </span>
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => refetch()}
+        disabled={isFetching}
+        aria-label="Refresh recent dreams"
+      >
+        <RefreshCw className={`w-3.5 h-3.5 mr-2 ${isFetching ? 'animate-spin' : ''}`} />
+        Refresh
+      </Button>
+    </div>
+  );
+
   if (!dreams || dreams.length === 0) {
     return (
-      <Card className="p-8 text-center bg-muted/20 border-dashed">
-        <Sparkles className="w-6 h-6 mx-auto mb-2 text-muted-foreground" />
-        <p className="text-sm text-muted-foreground">
-          No public dreams yet. Be the first to dream a PRD.
-        </p>
-      </Card>
+      <div>
+        {toolbar}
+        <Card className="p-8 text-center bg-muted/20 border-dashed">
+          <Sparkles className="w-6 h-6 mx-auto mb-2 text-muted-foreground" />
+          <p className="text-sm text-muted-foreground">
+            No public dreams yet. Be the first to dream a PRD.
+          </p>
+        </Card>
+      </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {dreams.map((d) => {
-        const m = d.overall_maturity ?? {};
-        return (
-          <Link
-            key={d.id}
-            to={`/dream/${d.share_slug}`}
-            className="group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl"
-          >
-            <Card className="h-full border-border/60 hover:border-primary/40 transition-colors bg-card/80 backdrop-blur-sm">
-              <CardHeader className="pb-3">
-                <div className="flex items-center gap-2 mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">
-                  <Sparkles className="w-3 h-3 text-accent" />
-                  <span>{new Date(d.created_at).toLocaleDateString()}</span>
-                </div>
-                <CardTitle className="text-base leading-snug line-clamp-3 italic font-medium">
-                  "{d.question}"
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {d.summary && (
-                  <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
-                    {d.summary}
-                  </p>
-                )}
-                <div className="flex flex-wrap gap-1">
-                  {AXIS_KEYS.map((k) => {
-                    const v = typeof m[k] === 'number' ? Math.round(m[k] * 100) : null;
-                    if (v === null || v <= 0) return null;
-                    return (
-                      <Badge
-                        key={k}
-                        variant="outline"
-                        className="text-[9px] font-mono tabular-nums px-1.5 py-0"
-                      >
-                        {AXIS_LABELS[k]} {v}%
-                      </Badge>
-                    );
-                  })}
-                </div>
-                <div className="inline-flex items-center gap-1 text-xs text-primary group-hover:underline underline-offset-4">
-                  Open dream <ArrowRight className="w-3 h-3" />
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        );
-      })}
+    <div>
+      {toolbar}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {dreams.map((d) => {
+          const m = d.overall_maturity ?? {};
+          return (
+            <Link
+              key={d.id}
+              to={`/dream/${d.share_slug}`}
+              className="group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-xl"
+            >
+              <Card className="h-full border-border/60 hover:border-primary/40 transition-colors bg-card/80 backdrop-blur-sm">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-2 mb-1 text-[10px] uppercase tracking-wider text-muted-foreground">
+                    <Sparkles className="w-3 h-3 text-accent" />
+                    <span>{new Date(d.created_at).toLocaleDateString()}</span>
+                  </div>
+                  <CardTitle className="text-base leading-snug line-clamp-3 italic font-medium">
+                    "{d.question}"
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {d.summary && (
+                    <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
+                      {d.summary}
+                    </p>
+                  )}
+                  <div className="flex flex-wrap gap-1">
+                    {AXIS_KEYS.map((k) => {
+                      const v = typeof m[k] === 'number' ? Math.round(m[k] * 100) : null;
+                      if (v === null || v <= 0) return null;
+                      return (
+                        <Badge
+                          key={k}
+                          variant="outline"
+                          className="text-[9px] font-mono tabular-nums px-1.5 py-0"
+                        >
+                          {AXIS_LABELS[k]} {v}%
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                  <div className="inline-flex items-center gap-1 text-xs text-primary group-hover:underline underline-offset-4">
+                    Open dream <ArrowRight className="w-3 h-3" />
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          );
+        })}
+      </div>
     </div>
   );
 };
