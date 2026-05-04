@@ -55,6 +55,17 @@ function writeCache(limit: number, data: RecentDream[]) {
   }
 }
 
+function formatRelative(ts: number): string {
+  if (!ts) return 'just now';
+  const diff = Date.now() - ts;
+  if (diff < 60_000) return 'just now';
+  const m = Math.floor(diff / 60_000);
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  return new Date(ts).toLocaleDateString();
+}
+
 interface RecentDreamsProps {
   limit?: number;
 }
