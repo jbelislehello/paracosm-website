@@ -62,7 +62,7 @@ interface RecentDreamsProps {
 const RecentDreams: React.FC<RecentDreamsProps> = ({ limit = 6 }) => {
   const cached = React.useMemo(() => readCache(limit), [limit]);
 
-  const { data: dreams, isPending, isError, refetch, isFetching } = useQuery<RecentDream[]>({
+  const { data: dreams, isPending, isError, refetch, isFetching, dataUpdatedAt } = useQuery<RecentDream[]>({
     queryKey: ['recent-dreams', limit],
     queryFn: async () => {
       const { data, error } = await supabase
