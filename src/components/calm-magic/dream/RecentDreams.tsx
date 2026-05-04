@@ -127,20 +127,23 @@ const RecentDreams: React.FC<RecentDreamsProps> = ({ limit = 6 }) => {
     );
   }
 
-  if (error) {
+  // Only block the UI with error card when there's no cached/previous data to show.
+  if (isError && !dreams) {
     return (
       <Card className="p-8 text-center bg-muted/20 border-dashed">
         <AlertCircle className="w-6 h-6 mx-auto mb-2 text-muted-foreground" />
-        <p className="text-sm text-muted-foreground mb-4">{error}</p>
-        <Button variant="outline" size="sm" onClick={fetchDreams}>
-          <RefreshCw className="w-3.5 h-3.5 mr-2" />
+        <p className="text-sm text-muted-foreground mb-4">
+          We couldn't load recent dreams right now.
+        </p>
+        <Button variant="outline" size="sm" onClick={() => refetch()} disabled={isFetching}>
+          <RefreshCw className={`w-3.5 h-3.5 mr-2 ${isFetching ? 'animate-spin' : ''}`} />
           Try again
         </Button>
       </Card>
     );
   }
 
-  if (dreams.length === 0) {
+  if (!dreams || dreams.length === 0) {
     return (
       <Card className="p-8 text-center bg-muted/20 border-dashed">
         <Sparkles className="w-6 h-6 mx-auto mb-2 text-muted-foreground" />
