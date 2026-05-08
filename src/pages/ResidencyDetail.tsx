@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Share2, Check } from "lucide-react";
 import { getResidency, residencies } from "@/data/residencies";
-import { residencyImage, residencyImageCaption } from "@/assets/retreats";
+import { residencyImage, residencyImageCaption, residencyImageCredit, formatCredit } from "@/assets/retreats";
 import { Button } from "@/components/ui/button";
 import {
   Breadcrumb,
@@ -188,6 +188,7 @@ const ResidencyDetail: React.FC = () => {
                 </div>
                 <figcaption className="mt-3 text-[11px] uppercase tracking-[0.2em] text-foreground/55">
                   {residencyImageCaption[r.id]}
+                  <span className="ml-2 normal-case tracking-normal opacity-70">— {formatCredit(residencyImageCredit[r.id])}</span>
                 </figcaption>
               </figure>
             )}

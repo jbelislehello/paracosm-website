@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { retreatImages } from "@/assets/retreats";
+import { retreatImages, retreatImageCredits, formatCredit } from "@/assets/retreats";
 
 const movements = [
   {
@@ -8,18 +8,21 @@ const movements = [
     body: "Three days of silence with the body — somatic listening practices, breath-mapping, and field attunement. Strategy is suspended; sensation is recovered.",
     image: retreatImages.lakePortrait,
     caption: "Field attunement — listening before language.",
+    credit: formatCredit(retreatImageCredits.lakePortrait),
   },
   {
     label: "Move",
     body: "Movement scores, contact improvisation, and ritual choreography. The questions you carry get danced before they get spoken.",
     image: retreatImages.forestCircle,
     caption: "Cohort circle in motion, outdoor council.",
+    credit: formatCredit(retreatImageCredits.forestCircle),
   },
   {
     label: "Make",
     body: "A small, irreducible artifact: a poem, a gesture, a diagram, a sound piece. Something the organization couldn't have designed in a meeting.",
     image: retreatImages.atelierCircle,
     caption: "An atelier table — making one true thing together.",
+    credit: formatCredit(retreatImageCredits.atelierCircle),
   },
 ];
 
@@ -84,6 +87,7 @@ const SomaticCreativityRetreat: React.FC = () => {
             </div>
             <figcaption className="mt-3 text-[11px] uppercase tracking-[0.2em] text-foreground/55">
               Atelier — where strategy is composed by the room.
+              <span className="ml-2 normal-case tracking-normal opacity-70">— {formatCredit(retreatImageCredits.atelierCircle)}</span>
             </figcaption>
           </figure>
         </div>
@@ -110,6 +114,9 @@ const SomaticCreativityRetreat: React.FC = () => {
                   </div>
                   <figcaption className="mt-3 text-[11px] uppercase tracking-[0.2em] text-foreground/50">
                     {m.caption}
+                    {m.credit && (
+                      <span className="ml-2 normal-case tracking-normal opacity-70">— {m.credit}</span>
+                    )}
                   </figcaption>
                 </figure>
 
