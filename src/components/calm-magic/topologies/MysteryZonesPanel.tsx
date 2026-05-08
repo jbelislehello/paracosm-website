@@ -32,7 +32,8 @@ const viewModeLabels: Record<TopologyViewMode, string> = {
   cycles: 'Fundamental Cycles',
   flow: 'Flow Field',
   projection: 'Unfolded Projection',
-  observatory: 'Consciousness Observatory'
+  observatory: 'Consciousness Observatory',
+  ancestry: 'Origins Ancestry'
 };
 
 export function MysteryZonesPanel({

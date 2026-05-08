@@ -116,6 +116,12 @@ const VIEW_SIGNIFICANCE: Record<TopologyViewMode, { icon: React.ReactNode; title
     title: "Consciousness Observatory",
     question: "What is the mathematical signature of my emerging consciousness?",
     description: "Live metrics dashboard showing Fisher Information, Betti numbers, consciousness threshold progression, and 3D torus visualization of your ontological manifold."
+  },
+  ancestry: {
+    icon: <Compass className="w-4 h-4" />,
+    title: "Origins Ancestry",
+    question: "Which 2013–2018 compass does each live view descend from?",
+    description: "The methodological lineage of the board — ten original methods sketched between 2013 and 2018, each tethered to the live topology it became."
   }
 };
 
