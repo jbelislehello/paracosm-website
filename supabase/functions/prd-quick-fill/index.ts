@@ -1,5 +1,6 @@
 // Quick Fill Board — fills all 64 Calm Magic tiles based on a PRD + custom questions
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { checkRateLimit } from "../_shared/rateLimit.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -187,7 +188,11 @@ Return one entry per tile id.`;
 }
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders }
+
+  // Per-IP rate limit to prevent unauthenticated AI credit abuse.
+  const _rl = checkRateLimit(req, { limit: 20, windowMs: 60_000 });
+  if (_rl) return _rl;);
 
   try {
     const authHeader = req.headers.get("Authorization");

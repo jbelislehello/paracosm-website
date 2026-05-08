@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { requireAdmin } from "../_shared/requireAdmin.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -175,12 +176,16 @@ serve(async (req) => {
   }
 
   try {
+    // Require an authenticated admin caller. Ignore any caller-supplied
+    // user_id and only seed demo data into the verified admin's account.
+    const auth = await requireAdmin(req);
+    if (auth instanceof Response) return auth;
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get request body for optional user_id
-    const { user_id } = await req.json().catch(() => ({}));
+    const user_id = auth.userId;
 
     console.log('Starting demo data seeding...');
 
