@@ -115,14 +115,14 @@ const Index = () => {
                     Think like a…
                   </p>
                   {residencies.map((r) => (
-                    <a
+                    <Link
                       key={r.id}
-                      href={`#residency-${r.id}`}
+                      to={`/residencies/${r.id}`}
                       className="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-muted/60 text-sm text-foreground/85 hover:text-foreground transition-colors"
                     >
                       <span className="text-base" aria-hidden>{r.glyph}</span>
                       <span>{r.name.replace("Think like ", "")}</span>
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -173,15 +173,15 @@ const Index = () => {
                 <nav className="flex flex-col gap-1 mt-8">
                   <p className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground px-1 mb-2">Residencies</p>
                   {residencies.map((r) => (
-                    <a
+                    <Link
                       key={r.id}
-                      href={`#residency-${r.id}`}
+                      to={`/residencies/${r.id}`}
                       onClick={() => setMobileMenuOpen(false)}
                       className="flex items-center gap-3 px-2 py-2 rounded-md hover:bg-muted text-base text-foreground/85"
                     >
                       <span className="text-lg" aria-hidden>{r.glyph}</span>
                       <span>{r.name.replace("Think like ", "")}</span>
-                    </a>
+                    </Link>
                   ))}
                   <div className="h-px bg-border my-3" />
                   <a href="#somatic-retreat" onClick={() => setMobileMenuOpen(false)} className="px-2 py-2 text-base font-medium hover:text-foreground/80">Somatic Retreat</a>

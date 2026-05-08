@@ -1,70 +1,52 @@
-# Restructure Navigation + Introduce Residencies & Somatic Retreat
+# Dedicated pages for each Residency archetype
 
-Bring your work as **innovator and relational artist** to the front. Replace the generic "AI Leadership / Relational Innovation / GL!TCH" links with a richer menu organized around how you actually work, and add two new on-page sections: the **Seven Expansive Leadership Residencies** (Forest, River, Lake, Mountain, Ocean, Storm, Sun) and the **Somatic Creativity Retreat**.
-
-## 1. New navigation IA
-
-Replace the flat 3-link nav on `src/pages/Index.tsx` with 4 grouped entries using `NavigationMenu` (already in `components/ui/navigation-menu.tsx`). Same structure for desktop and mobile (Sheet).
-
-```
-Practice         Residencies              Retreat              Methods
-─ Relational     ─ Think like a Forest    ─ Somatic            ─ GL!TCH Method
-  Intelligence   ─ Think like a River       Creativity         ─ Calm Magic Board
-─ Innovation as  ─ Think like a Lake        Retreat            ─ Drift Library
-  Art            ─ Think like a Mountain    (Azores 2026)      ─ Paracosm Universe
-─ AI Leadership  ─ Think like an Ocean
-                 ─ Think like a Storm
-                 ─ Think like a Sun
-```
-
-The "Residencies" dropdown shows all seven archetypes as anchor links into the new section. The CTA button changes from "Explore Coaching" to **"Begin a Residency"**.
-
-## 2. Seven Expansive Leadership Residencies section
-
-New component `src/components/ResidenciesSection.tsx`, mounted on `Index.tsx` between the AI Leadership and Relational sections, with `id="residencies"`.
-
-Each archetype = one card with: element glyph, name, one-line invitation, the cognitive/somatic gesture it trains, the kind of leader it serves, and a "Begin" anchor.
-
-| Archetype | Gesture trained | For leaders facing |
-|---|---|---|
-| Forest | Patient interdependence, canopy thinking | Complex ecosystems, slow strategy |
-| River | Continuous flow, finding the path of least resistance | Change fatigue, blocked teams |
-| Lake | Stillness as intelligence, deep reflection | Reactivity, decision overload |
-| Mountain | Long-horizon presence, structural integrity | Identity shifts, public exposure |
-| Ocean | Holding multitudes, tidal pacing | Scaling, multi-stakeholder leadership |
-| Storm | Generative disruption, working with intensity | Crisis, conflict, GL!TCH moments |
-| Sun  | Radiant clarity, sustained generativity | Burnout recovery, vision-setting |
-
-Visual: 7-card asymmetric layout (4 + 3 staggered) with a gradient palette per element (greens for Forest, blues for River/Lake/Ocean, slate for Mountain, violet for Storm, amber for Sun). On hover, the card breathes (uses `useBreathingPulse`). Honors `prefers-reduced-motion`.
-
-Data lives in a typed array in `src/data/residencies.ts` so it can later be persisted/served. Bilingual strings added to `src/i18n/{en,fr}/navigation.json` and a new `residencies.json`.
-
-## 3. Somatic Creativity Retreat section
-
-New component `src/components/SomaticCreativityRetreat.tsx`, mounted with `id="somatic-retreat"`, distinct from the existing Paracosm Azores retreat (links to it as the flagship instance).
-
-Contents: positioning ("a retreat where the body composes the strategy"), the three movements (Listen / Move / Make), who it's for, format, and a CTA "Request an invitation" — wired to the existing contact flow which routes to `jbelisle@helloarchitekt.com` per the lead-gen rule.
-
-## 4. Aesthetic upgrade
-
-- Replace the current "P in blue→purple gradient" wordmark logo with a quieter typographic mark: lowercase `paracosm` in the existing display font + a thin elemental dot that cycles color through the 7 archetypes on a slow timer.
-- Tighten nav typography: smaller weight, more letter-spacing, the active section underlined with a hairline.
-- Update `MOBILE_NAV_SECTIONS` to include `residencies` and `somatic-retreat`.
+One dynamic page driven by extended data — richer, easier to maintain than seven separate files. Route: `/residencies/:archetype`.
 
 ## Files
 
-- edit `src/pages/Index.tsx` — new nav, mount new sections, update mobile section list, swap CTA + logo
-- new `src/components/ResidenciesSection.tsx`
-- new `src/components/SomaticCreativityRetreat.tsx`
-- new `src/data/residencies.ts`
-- new `src/i18n/en/residencies.json`, `src/i18n/fr/residencies.json`
-- edit `src/i18n/en/navigation.json`, `src/i18n/fr/navigation.json` — add Practice / Residencies / Retreat / Methods + 7 archetype labels
-- edit `src/components/Footer.tsx` — mirror new IA
+- **edit `src/data/residencies.ts`** — extend the `Residency` interface with: `tagline`, `manifesto[]`, `teacher`, `duration`, `format`, `practices[]` (name + description), `examples[]` (context + shift), `threshold`, `artifact`, `pairsWith[]`. Author full content for all 7 archetypes.
+- **new `src/pages/ResidencyDetail.tsx`** — the page.
+- **edit `src/App.tsx`** — lazy-import `ResidencyDetail`, add `<Route path="/residencies/:archetype" element={<ResidencyDetail />} />`.
+- **edit `src/components/ResidenciesSection.tsx`** — change card anchors from `#residency-{id}` to `<Link to="/residencies/{id}">` so cards open the page; keep id anchor for direct deep-linking from the nav.
+- **edit `src/pages/Index.tsx`** — change nav dropdown items from `href="#residency-..."` to `Link to="/residencies/..."`.
 
-## Out of scope (ask if you want them)
+## Page structure (ResidencyDetail.tsx)
 
-- Dedicated `/residencies/:archetype` pages
-- Booking/calendar integration
-- Changing the existing Paracosm Azores retreat page
+1. **Hero** — gradient backdrop tinted with the archetype's `hueFrom`/`hueTo`, glyph, name, tagline, and a 3-up of Teacher / Duration / Format.
+2. **Manifesto** — 3 numbered, large-typography statements that name the philosophy of that element.
+3. **For leaders facing / Gesture trained** — two-column band, bordered.
+4. **Core practices** — 3 cards: each with a name and a concrete weekly/daily practice.
+5. **From the field** — 2 anonymized "Context → Shift" case examples.
+6. **Threshold + Artifact** — 2 panels: the inner shift, and the tangible thing the leader carries back.
+7. **Pairs with** — chips linking to the 2 sister archetypes.
+8. **CTA** — "Request an invitation" → `mailto:jbelisle@helloarchitekt.com` (per the central lead-gen rule).
+9. **Prev / Next** — circular nav across the seven.
 
-Confirm and I'll build it. If you want different archetype copy, different IA grouping, or a separate page per residency instead of an on-page section, say so before I start.
+## Content authored (highlights)
+
+Every archetype gets distinct, non-generic copy. Examples:
+
+- **Forest** — "Strategy at the speed of mycelium." Practices: canopy mapping, mycelial inventory, composting failures. Threshold: *you stop asking 'how do we move faster?' and start asking 'what is this season for?'*
+- **River** — "Direction without forcing." Practices: path-of-least-resistance audit, flow journaling, bottleneck dissolution.
+- **Lake** — "The surface that thinks." Practices: 24-hour pond, mirror practice, depth questions.
+- **Mountain** — "Geological time, executive body." Practices: hundred-year letter, posture as policy, visible without explaining.
+- **Ocean** — "Capacity at the scale of cycles." Practices: tide-mapping, multitude rehearsal, volume over velocity.
+- **Storm** — "Productive turbulence." Practices: charge mapping, generative conflict, lightning protocol. Integrates with GL!TCH sessions.
+- **Sun** — "Generosity at the scale of climate." Practices: sustainable burn, climate audit, photosynthesis protocol.
+
+Pairings: forest↔lake/mountain, river↔lake/ocean, lake↔forest/mountain, mountain↔forest/sun, ocean↔river/storm, storm↔river/ocean, sun↔mountain/lake.
+
+## Aesthetic
+
+- Each page reads like an editorial — generous whitespace, large light-weight headings, italic taglines, hairline dividers.
+- Backdrop tints are derived from each archetype's HSL pair (no per-archetype CSS file needed).
+- Honors existing semantic tokens (`background`, `foreground`, `muted`, `border`, `card`).
+- Mobile-first; sections scale gracefully at 390px.
+
+## Out of scope
+
+- CMS-backed content
+- Booking/availability calendar
+- Per-archetype illustrations (placeholders use the existing emoji glyph; can be replaced with custom artwork later)
+
+Approve and I'll implement.
