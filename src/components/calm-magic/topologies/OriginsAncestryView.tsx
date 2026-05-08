@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { ArrowRight, Compass as CompassIcon } from "lucide-react";
+import { ArrowRight, Compass as CompassIcon, Check } from "lucide-react";
+import { toast } from "sonner";
 import * as Icons from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
