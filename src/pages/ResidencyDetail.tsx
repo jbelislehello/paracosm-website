@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Share2, Check } from "lucide-react";
 import { getResidency, residencies } from "@/data/residencies";
-import { residencyImage, residencyImageCaption, residencyImageCredit, formatCredit } from "@/assets/retreats";
+import { residencyImage, residencyImageCaption, formatCredit } from "@/assets/retreats";
+import { useImageCredits } from "@/hooks/useImageCredits";
 import { Button } from "@/components/ui/button";
 import {
   Breadcrumb,
