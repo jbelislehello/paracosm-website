@@ -53,7 +53,7 @@ const ResidenciesSection: React.FC = () => {
               Cohorts already thinking like mountains, rivers, and forests.
             </p>
             <p className="mt-2 text-[10px] tracking-wide text-foreground/55">
-              {formatCredit(retreatImageCredits.mountainSummit)}
+              {formatCredit(getCredit("mountainSummit"))}
             </p>
           </figcaption>
         </figure>
