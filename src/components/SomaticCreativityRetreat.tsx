@@ -88,7 +88,7 @@ const SomaticCreativityRetreat: React.FC = () => {
             </div>
             <figcaption className="mt-3 text-[11px] uppercase tracking-[0.2em] text-foreground/55">
               Atelier — where strategy is composed by the room.
-              <span className="ml-2 normal-case tracking-normal opacity-70">— {formatCredit(retreatImageCredits.atelierCircle)}</span>
+              <span className="ml-2 normal-case tracking-normal opacity-70">— {formatCredit(getCredit("atelierCircle"))}</span>
             </figcaption>
           </figure>
         </div>
