@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Share2, Check } from "lucide-react";
 import { getResidency, residencies } from "@/data/residencies";
-import { residencyImage, residencyImageCaption, residencyImageCredit, formatCredit } from "@/assets/retreats";
+import { residencyImage, residencyImageCaption, formatCredit } from "@/assets/retreats";
+import { useImageCredits } from "@/hooks/useImageCredits";
 import { Button } from "@/components/ui/button";
 import {
   Breadcrumb,
@@ -14,9 +15,20 @@ import {
 } from "@/components/ui/breadcrumb";
 import { toast } from "sonner";
 
+const archetypeSlug = {
+  forest: "forestCircle",
+  river: "riverPanel",
+  lake: "lakePortrait",
+  mountain: "mountainSummit",
+  ocean: "oceanGathering",
+  storm: "stormKeynote",
+  sun: "sunAmphitheater",
+} as const;
+
 const ResidencyDetail: React.FC = () => {
   const { archetype } = useParams<{ archetype: string }>();
   const residency = archetype ? getResidency(archetype) : undefined;
+  const { getCredit } = useImageCredits();
 
   useEffect(() => {
     if (residency) {
@@ -188,7 +200,7 @@ const ResidencyDetail: React.FC = () => {
                 </div>
                 <figcaption className="mt-3 text-[11px] uppercase tracking-[0.2em] text-foreground/55">
                   {residencyImageCaption[r.id]}
-                  <span className="ml-2 normal-case tracking-normal opacity-70">— {formatCredit(residencyImageCredit[r.id])}</span>
+                  <span className="ml-2 normal-case tracking-normal opacity-70">— {formatCredit(getCredit(archetypeSlug[r.id]))}</span>
                 </figcaption>
               </figure>
             )}

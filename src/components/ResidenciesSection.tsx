@@ -1,9 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { residencies } from "@/data/residencies";
-import { retreatImages, retreatImageCredits, formatCredit } from "@/assets/retreats";
+import { retreatImages, formatCredit } from "@/assets/retreats";
+import { useImageCredits } from "@/hooks/useImageCredits";
 
 const ResidenciesSection: React.FC = () => {
+  const { getCredit } = useImageCredits();
   return (
     <section
       id="residencies"
@@ -51,7 +53,7 @@ const ResidenciesSection: React.FC = () => {
               Cohorts already thinking like mountains, rivers, and forests.
             </p>
             <p className="mt-2 text-[10px] tracking-wide text-foreground/55">
-              {formatCredit(retreatImageCredits.mountainSummit)}
+              {formatCredit(getCredit("mountainSummit"))}
             </p>
           </figcaption>
         </figure>
