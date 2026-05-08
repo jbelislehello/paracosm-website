@@ -112,6 +112,24 @@ const Lineage = () => {
 
         <GradientDivider />
 
+        {/* Internal lineage callout */}
+        <section className="py-8">
+          <Link
+            to="/origins"
+            className="mx-auto flex max-w-3xl items-center justify-between gap-4 rounded-2xl border border-border/60 bg-card/60 px-5 py-4 text-left transition-colors hover:bg-card"
+          >
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                Internal lineage
+              </p>
+              <p className="mt-1 text-sm text-foreground">
+                Ten methods sketched 2013–2018 — the bones underneath Calm Magic.
+              </p>
+            </div>
+            <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+          </Link>
+        </section>
+
         {/* Comparison Matrix */}
         <section className="py-16 md:py-24">
           <div className="mx-auto mb-10 max-w-3xl text-center">
