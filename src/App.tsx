@@ -1,5 +1,5 @@
 import { Suspense, lazy } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
 import { PartnerToolsProvider } from "./context/PartnerToolsContext";
@@ -116,6 +116,7 @@ function App() {
                     <Route path="/lineage" element={<Lineage />} />
                     <Route path="/agentic-ecosystem-deck" element={<AgenticEcosystemDeck />} />
                     <Route path="/resonance" element={<ResonanceDemo />} />
+                    <Route path="/residencies" element={<Navigate to="/#residencies" replace />} />
                     <Route path="/residencies/:archetype" element={<ResidencyDetail />} />
                     <Route path="/dream/:slug" element={<DreamShare />} />
                     <Route path="*" element={<NotFound />} />

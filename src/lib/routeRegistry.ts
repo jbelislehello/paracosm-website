@@ -42,6 +42,17 @@ export const ROUTE_REGISTRY: RouteMeta[] = [
   { path: "/lineage", label: "Lineage & Comparables", parent: "/book" },
   { path: "/agentic-ecosystem-deck", label: "Agentic Ecosystem Deck", noindex: true },
 
+  // Residencies
+  { path: "/residencies", label: "Residencies" },
+  {
+    path: "/residencies/:archetype",
+    label: (p) => {
+      const id = p.archetype ?? "";
+      return id ? id.charAt(0).toUpperCase() + id.slice(1) : "Residency";
+    },
+    parent: "/residencies",
+  },
+
   // Drift hierarchy
   { path: "/drift", label: "Drift" },
   {
