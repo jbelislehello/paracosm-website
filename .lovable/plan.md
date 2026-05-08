@@ -1,63 +1,70 @@
-## Drift Edition — May 2026: "Tensor Topologies & The Practice of Not Thinking"
+# Restructure Navigation + Introduce Residencies & Somatic Retreat
 
-A new monthly Drift edition that exposes how Calm Magic helps humans practice **non-thinking** (Ryunosuke Koike) by using **tensor topologies** as the math of coordinate-invariant awareness: the components of experience (events, glitches, tiles) transform predictably while the underlying field stays invariant.
+Bring your work as **innovator and relational artist** to the front. Replace the generic "AI Leadership / Relational Innovation / GL!TCH" links with a richer menu organized around how you actually work, and add two new on-page sections: the **Seven Expansive Leadership Residencies** (Forest, River, Lake, Mountain, Ocean, Storm, Sun) and the **Somatic Creativity Retreat**.
 
-### Lecture framing (the recursive read)
+## 1. New navigation IA
 
-- **Scalar = sensation** (a raw POLLEN)
-- **Vector = direction** (a NOEM, an oriented insight)
-- **Matrix = relation** (a POEM, a tile-pair coupling)
-- **3-tensor = field** (a TOTEM, the 64-tile board as a cube of relations)
-- **Tensor invariance = ANTHEM** (the practice persists across coordinate changes — moods, contexts, languages)
+Replace the flat 3-link nav on `src/pages/Index.tsx` with 4 grouped entries using `NavigationMenu` (already in `components/ui/navigation-menu.tsx`). Same structure for desktop and mobile (Sheet).
 
-Non-thinking = letting the tensor *be*, instead of collapsing it into a single basis (a single "thought"). The board is the koan; the tiles are the indices; awareness is the manifold.
+```
+Practice         Residencies              Retreat              Methods
+─ Relational     ─ Think like a Forest    ─ Somatic            ─ GL!TCH Method
+  Intelligence   ─ Think like a River       Creativity         ─ Calm Magic Board
+─ Innovation as  ─ Think like a Lake        Retreat            ─ Drift Library
+  Art            ─ Think like a Mountain    (Azores 2026)      ─ Paracosm Universe
+─ AI Leadership  ─ Think like an Ocean
+                 ─ Think like a Storm
+                 ─ Think like a Sun
+```
 
-### What gets built
+The "Residencies" dropdown shows all seven archetypes as anchor links into the new section. The CTA button changes from "Explore Coaching" to **"Begin a Residency"**.
 
-1. **New entry in `src/data/driftMonthlyDiscoveries.ts`**
-   - `year: 2026, month: 5, theme: "Tensor Topologies"`
-   - Curated resources across the 5 axes:
-     - **CALM** — Ryunosuke Koike *The Practice of Not Thinking* (book), Headspace "noting" guides
-     - **MAGIC** — Tensor primer (3Blue1Brown video), Roger Penrose on coordinate invariance, NotebookLM tensor explainer
-     - **LOVE** — Feldenkrais "Awareness Through Movement" (embodied invariance), HeartMath coherence
-     - **OPEN** — Karen Barad *agential realism* article, tensor networks in physics (Quanta Magazine)
-     - **FREE** — Generative art with tensor fields (article), Wolfram on multicomputation
-   - Each item gets `axis`, `category`, `description`, `url` matching the existing schema (books / videos / articles / podcasts).
+## 2. Seven Expansive Leadership Residencies section
 
-2. **New Drift tools in `src/data/driftTools.ts`** for `month: 5, year: 2026`
-   - **MAGIC**: PyTorch (tensor library), JAX, TensorBoard
-   - **CALM**: Calm Magic Board (self-reference — the tensor practice ground)
-   - **LOVE**: Insight Timer, Tonalli (voice as scalar→vector projection)
-   - **OPEN**: Obsidian Canvas (manifest the manifold), Quiver (tensor diagrams)
-   - **FREE**: TouchDesigner, Hydra (live-coded tensor visuals)
+New component `src/components/ResidenciesSection.tsx`, mounted on `Index.tsx` between the AI Leadership and Relational sections, with `id="residencies"`.
 
-3. **Lecture artefact** — add a long-form `artefact` to the edition titled *"Calm Magic as Tensor Practice: a non-thinking lecture"* with sections:
-   - The cube and the coordinate change
-   - Why a thought is a basis collapse
-   - The 64-tile board as rank-3 tensor (8 × 8 × time)
-   - Practice protocols: noting, drift, return-to-invariance
-   - Bilingual epigraphs (EN + a short FR coda — keeps consistent with project bilingual norm but stays English-primary per the existing edition style)
+Each archetype = one card with: element glyph, name, one-line invitation, the cognitive/somatic gesture it trains, the kind of leader it serves, and a "Begin" anchor.
 
-4. **(Optional, lightweight) Reference image** — embed the Koike book cover and a tensor diagram as `artefact` images by copying the two uploaded screenshots into `src/assets/drift/` and linking them from the edition entry. (No UI changes required — existing `DriftMonthlyDiscovery` already renders artefact images.)
+| Archetype | Gesture trained | For leaders facing |
+|---|---|---|
+| Forest | Patient interdependence, canopy thinking | Complex ecosystems, slow strategy |
+| River | Continuous flow, finding the path of least resistance | Change fatigue, blocked teams |
+| Lake | Stillness as intelligence, deep reflection | Reactivity, decision overload |
+| Mountain | Long-horizon presence, structural integrity | Identity shifts, public exposure |
+| Ocean | Holding multitudes, tidal pacing | Scaling, multi-stakeholder leadership |
+| Storm | Generative disruption, working with intensity | Crisis, conflict, GL!TCH moments |
+| Sun  | Radiant clarity, sustained generativity | Burnout recovery, vision-setting |
 
-### Files touched
+Visual: 7-card asymmetric layout (4 + 3 staggered) with a gradient palette per element (greens for Forest, blues for River/Lake/Ocean, slate for Mountain, violet for Storm, amber for Sun). On hover, the card breathes (uses `useBreathingPulse`). Honors `prefers-reduced-motion`.
 
-- `src/data/driftMonthlyDiscoveries.ts` — append the May 2026 edition object
-- `src/data/driftTools.ts` — append ~8 tools tagged `month: 5, year: 2026`
-- `src/assets/drift/koike-not-thinking.png` (copied from upload)
-- `src/assets/drift/tensor-diagram.png` (copied from upload)
+Data lives in a typed array in `src/data/residencies.ts` so it can later be persisted/served. Bilingual strings added to `src/i18n/{en,fr}/navigation.json` and a new `residencies.json`.
 
-### Why no new pages or routes
+## 3. Somatic Creativity Retreat section
 
-The existing `DriftMonthlyDiscovery` page (`/drift/:year/:month`) and `DriftLibrary` already render any new edition automatically from the data sources. This keeps the change purely **content-as-ontology** — exactly the project's "conversation IS the ontology" core rule. The lecture lives inside the data, not in a bespoke component.
+New component `src/components/SomaticCreativityRetreat.tsx`, mounted with `id="somatic-retreat"`, distinct from the existing Paracosm Azores retreat (links to it as the flagship instance).
 
-### Out of scope
+Contents: positioning ("a retreat where the body composes the strategy"), the three movements (Listen / Move / Make), who it's for, format, and a CTA "Request an invitation" — wired to the existing contact flow which routes to `jbelisle@helloarchitekt.com` per the lead-gen rule.
 
-- No changes to PRD export, edge functions, or the Calm Magic Board itself.
-- No new visualization component for tensors (could be a follow-up if you want an interactive 3-axis cube on the edition page).
+## 4. Aesthetic upgrade
 
-### Follow-ups you might want after approval
+- Replace the current "P in blue→purple gradient" wordmark logo with a quieter typographic mark: lowercase `paracosm` in the existing display font + a thin elemental dot that cycles color through the 7 archetypes on a slow timer.
+- Tighten nav typography: smaller weight, more letter-spacing, the active section underlined with a hairline.
+- Update `MOBILE_NAV_SECTIONS` to include `residencies` and `somatic-retreat`.
 
-1. An interactive **rank-3 tensor cube** component on this edition's page that rotates the 8×8×time board.
-2. A **"Not Thinking" mode** toggle on the Calm Magic Board that hides labels and shows only the field.
-3. A French companion edition (`mai 2026`) — only if you want full bilingual parity for this one.
+## Files
+
+- edit `src/pages/Index.tsx` — new nav, mount new sections, update mobile section list, swap CTA + logo
+- new `src/components/ResidenciesSection.tsx`
+- new `src/components/SomaticCreativityRetreat.tsx`
+- new `src/data/residencies.ts`
+- new `src/i18n/en/residencies.json`, `src/i18n/fr/residencies.json`
+- edit `src/i18n/en/navigation.json`, `src/i18n/fr/navigation.json` — add Practice / Residencies / Retreat / Methods + 7 archetype labels
+- edit `src/components/Footer.tsx` — mirror new IA
+
+## Out of scope (ask if you want them)
+
+- Dedicated `/residencies/:archetype` pages
+- Booking/calendar integration
+- Changing the existing Paracosm Azores retreat page
+
+Confirm and I'll build it. If you want different archetype copy, different IA grouping, or a separate page per residency instead of an on-page section, say so before I start.
