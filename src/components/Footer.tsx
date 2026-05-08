@@ -120,7 +120,8 @@ const Footer: React.FC = () => {
         {/* Bottom Bar */}
         <div className="border-t border-slate-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-slate-400">© 2026 HA Labs + Paracosm. {t("footer.rights_reserved")}</p>
-          <div className="flex space-x-4 mt-4 md:mt-0">
+          <div className="flex space-x-4 mt-4 md:mt-0 items-center">
+            <Link to="/credits" className="text-slate-400 hover:text-white transition-colors text-sm">Credits</Link>
             <a href="https://www.linkedin.com/newsletters/calm-magic-6884529759464816640/" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">LinkedIn</a>
             <a href="https://calmmagic.medium.com/" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">Medium</a>
             <a href="https://www.youtube.com/watch?v=vK5PlnVQUqo&list=PLPBdUXhaUvYS_Lm7cIIBhikixfSkVB1Dd" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-white transition-colors">YouTube</a>

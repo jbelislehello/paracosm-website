@@ -39,3 +39,92 @@ export const residencyImageCaption: Record<ResidencyArchetype, string> = {
   storm: "Live transmission — channeling charge in front of the room.",
   sun: "Cohort closing on the steps. Climate, not weather.",
 };
+
+/* ---------- Image credits & sources ---------- */
+
+export type ImageCredit = {
+  /** Matches the import key in `retreatImages` */
+  slug: keyof typeof retreatImages;
+  /** Human-facing filename, used on the /credits page */
+  fileName: string;
+  photographer: string;
+  year?: string;
+  location?: string;
+  event?: string;
+  note?: string;
+};
+
+/**
+ * Per-photo attribution. Photographer/year/location are placeholders —
+ * fill in as data becomes available. Falls back gracefully via formatCredit.
+ */
+export const retreatImageCredits: Record<keyof typeof retreatImages, ImageCredit> = {
+  atelierCircle: {
+    slug: "atelierCircle",
+    fileName: "atelier-circle.jpg",
+    photographer: "Paracosm archive",
+    event: "Atelier — strategy composed by the room",
+  },
+  forestCircle: {
+    slug: "forestCircle",
+    fileName: "forest-circle.jpg",
+    photographer: "Paracosm archive",
+    location: "Banff, AB",
+    event: "Outdoor council under the canopy",
+  },
+  mountainSummit: {
+    slug: "mountainSummit",
+    fileName: "mountain-summit.jpg",
+    photographer: "Paracosm archive",
+    location: "Tunnel Mountain, Banff",
+    event: "Summit pause — long-horizon time",
+  },
+  oceanGathering: {
+    slug: "oceanGathering",
+    fileName: "ocean-gathering.jpg",
+    photographer: "Paracosm archive",
+    event: "Leaders gathering at scale",
+  },
+  stormKeynote: {
+    slug: "stormKeynote",
+    fileName: "storm-keynote.jpg",
+    photographer: "Paracosm archive",
+    event: "Live transmission — keynote",
+  },
+  sunAmphitheater: {
+    slug: "sunAmphitheater",
+    fileName: "sun-amphitheater.jpg",
+    photographer: "Paracosm archive",
+    event: "Cohort closing on the steps",
+  },
+  riverPanel: {
+    slug: "riverPanel",
+    fileName: "river-panel.jpg",
+    photographer: "Paracosm archive",
+    event: "In dialogue — panel format",
+  },
+  lakePortrait: {
+    slug: "lakePortrait",
+    fileName: "lake-portrait.jpg",
+    photographer: "Paracosm archive",
+    event: "A still moment between sessions",
+  },
+};
+
+/** Render a subtle inline credit line. */
+export const formatCredit = (c?: ImageCredit): string => {
+  if (!c) return "";
+  const parts = [c.photographer, c.location, c.year].filter(Boolean);
+  return parts.length ? `Photo: ${parts.join(", ")}` : "";
+};
+
+/** Convenience: credit lookup by archetype (for residency hero). */
+export const residencyImageCredit: Record<ResidencyArchetype, ImageCredit> = {
+  forest: retreatImageCredits.forestCircle,
+  river: retreatImageCredits.riverPanel,
+  lake: retreatImageCredits.lakePortrait,
+  mountain: retreatImageCredits.mountainSummit,
+  ocean: retreatImageCredits.oceanGathering,
+  storm: retreatImageCredits.stormKeynote,
+  sun: retreatImageCredits.sunAmphitheater,
+};
