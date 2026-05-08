@@ -200,7 +200,7 @@ const ResidencyDetail: React.FC = () => {
                 </div>
                 <figcaption className="mt-3 text-[11px] uppercase tracking-[0.2em] text-foreground/55">
                   {residencyImageCaption[r.id]}
-                  <span className="ml-2 normal-case tracking-normal opacity-70">— {formatCredit(residencyImageCredit[r.id])}</span>
+                  <span className="ml-2 normal-case tracking-normal opacity-70">— {formatCredit(getCredit(archetypeSlug[r.id]))}</span>
                 </figcaption>
               </figure>
             )}
