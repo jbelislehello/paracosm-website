@@ -1,36 +1,66 @@
-## Goal
+# Add 5 Service & Product Design Disciplines to PRD Checklist
 
-Make the security-memory entries for the two already-fixed findings (`custom_agent_unauth`, `SUPA_rls_policy_always_true`) describe the shipped code and policy verbatim, so future scans/agents don't drift from reality.
+The uploaded infographic defines 5 disciplines every PRD should cover: **Psychology, Economics, Politics (Policy), Operations, Technology**. The current PRD checklists in the wizard and assembly panel don't explicitly track these. This plan maps each discipline to the most semantically appropriate Calm Magic layer and adds a checklist item there.
 
-## What I verified
+## Discipline → Layer mapping
 
-- `supabase/functions/custom-agent/index.ts` — JWT required via `supabase.auth.getClaims(token)` (anon-key client, Authorization header forwarded); rate limit is **in-memory, per Supabase user UID (`claims.sub`), 10 requests / 60s sliding window** (not per-IP, not persisted across cold starts); message validation = non-empty array, ≤30 messages, each `{role ∈ {user,assistant,system}, content: string ≤ 4000 chars}`; reuses `OPENAI_ASSISTANT_ID` env when neither `agent_id` body field nor an existing assistant is provided, otherwise still falls back to creating one.
-- `public.analytics_events` policies (live DB):
-  - INSERT `"Insert analytics events with own or anon user_id"` — `WITH CHECK ((user_id IS NULL) OR (user_id = auth.uid()))`, no USING.
-  - SELECT `"admins can read analytics events"` — `USING (has_role(auth.uid(), 'admin'::app_role))`.
-  - No UPDATE/DELETE policies (writes are append-only by design).
+| Discipline | Layer | Rationale | Check basis |
+|---|---|---|---|
+| Psychology — understand people & behaviour | POLLENS | Human aspirations, emotional texture, team dynamics | `pollens_team_dynamics` or `pollens_cultural_elements` keyword presence |
+| Economics — incentives & trade-offs | NOEMS | Mental models of value, trade-offs | keyword scan in `noems_concepts`/`noems_mental_models` for value/incentive/trade-off |
+| Operations — how things get delivered | POEMS | Systems, environments, delivery flows | `poems_systems` or `poems_environments` already covered, add explicit "delivery flow" check |
+| Politics (Policy) — power, rules, systems | TOTEMS | Access controls, governance, security policies | `totems_security_policies` or `totems_access_controls` keyword for policy/governance/rules |
+| Technology — systems & constraints | TOTEMS | Data architecture, technical constraints | `totems_data_architecture` keyword for tech stack/constraints |
 
-## Proposed updated `mem://security-memory` content
+Each item uses a lightweight keyword/length check on existing fields — no schema changes, no new DB columns (respects ontological 1:1 rule).
 
-```
-# Security Memory
+## Files to edit
 
-## Edge functions
-- `custom-agent` (deployed with `verify_jwt = false`, auth enforced in code):
-  - Requires a valid Supabase JWT — verified via `supabase.auth.getClaims(token)` using the anon-key client with the caller's `Authorization` header forwarded. Returns 401 on missing/invalid token.
-  - In-memory, per-user (keyed on `claims.sub`) sliding-window rate limit: 10 requests / 60s. Returns 429 when exceeded. Note: in-memory only — does not survive cold starts and is per-instance.
-  - Input validation: `messages` must be a non-empty array, ≤30 entries; each entry `{ role ∈ {"user","assistant","system"}, content: string ≤ 4000 chars }`. Anything else → 400-style thrown error.
-  - Assistant reuse: if the request omits `agent_id`, falls back to `OPENAI_ASSISTANT_ID` env var; only creates a new OpenAI Assistant when neither is set. Do not regress to per-request Assistant creation.
+Both files duplicate the same `LAYER_CHECKLIST` structure and must stay in sync:
 
-## RLS — public.analytics_events
-- INSERT policy MUST be `WITH CHECK ((user_id IS NULL) OR (user_id = auth.uid()))` (policy name: `"Insert analytics events with own or anon user_id"`). Never restore `WITH CHECK (true)` — it allows authenticated users to spoof another user's `user_id`.
-- SELECT is admin-only via `has_role(auth.uid(), 'admin'::app_role)`. Do not add a public SELECT policy.
-- No UPDATE or DELETE policies exist; analytics are append-only. Do not add write policies without an explicit request.
+1. `src/components/prd-generator/PrdGeneratorWizard.tsx` (lines 145–167)
+2. `src/components/calm-magic/PrdAssemblyPanel.tsx` (lines 180–202)
 
-## General RLS rule
-- Never use `USING (true)` or `WITH CHECK (true)` on INSERT/UPDATE/DELETE policies. The only acceptable use of `USING (true)` is on SELECT policies that are intentionally public.
+## New checklist additions
+
+```ts
+POLLENS: [
+  // existing 2 items…
+  { label: 'Psychology — people & behaviour understood',
+    check: (c) => /(behaviour|behavior|psycholog|emotion|motivation)/i.test(
+      `${c.pollens_aspirations ?? ''} ${c.pollens_team_dynamics ?? ''} ${c.pollens_cultural_elements ?? ''}`
+    )},
+],
+NOEMS: [
+  // existing 2 items…
+  { label: 'Economics — incentives & trade-offs surfaced',
+    check: (c) => /(incentive|trade.?off|economic|value|cost|benefit)/i.test(
+      `${c.noems_concepts ?? ''} ${c.noems_mental_models ?? ''} ${c.noems_intuitions ?? ''}`
+    )},
+],
+POEMS: [
+  // existing 2 items…
+  { label: 'Operations — delivery flows mapped',
+    check: (c) => /(deliver|operation|workflow|process|fulfil)/i.test(
+      `${c.poems_systems ?? ''} ${c.poems_environments ?? ''} ${c.poems_people ?? ''} ${c.poems_objects ?? ''}`
+    )},
+],
+TOTEMS: [
+  // existing 2 items…
+  { label: 'Politics (Policy) — power, rules & governance defined',
+    check: (c) => /(policy|policies|governance|rule|permission|role)/i.test(
+      `${c.totems_security_policies ?? ''} ${c.totems_access_controls ?? ''}`
+    )},
+  { label: 'Technology — systems & constraints specified',
+    check: (c) => /(stack|api|infrastructure|constraint|technolog|framework|database)/i.test(
+      `${c.totems_data_architecture ?? ''} ${c.totems_security_policies ?? ''}`
+    )},
+],
+ANTHEMS: [ /* unchanged */ ]
 ```
 
 ## Out of scope
 
-- The new error-level finding `seed_demo_data_unauth` is **not** addressed here — the user asked only to align memory for the two previously fixed findings. Happy to plan that fix in a follow-up.
+- No DB migration, no new PRD fields (keeps strict 1:1 ontological mapping).
+- No UI restructure — items appear inline in the existing checklist UI in both surfaces.
+- Bilingual copy not added; current checklist labels are English-only across the file.

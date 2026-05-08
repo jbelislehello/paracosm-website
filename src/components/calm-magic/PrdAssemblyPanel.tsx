@@ -180,19 +180,24 @@ const WIZARD_FIELD_LABELS: Record<string, { label: string; description: string }
 const LAYER_CHECKLIST: Record<PrdLayer, { label: string; check: (content: GeneratedContent) => boolean }[]> = {
   POLLENS: [
     { label: 'Aspirations captured with emotional texture', check: (c) => (c.pollens_aspirations?.length || 0) > 100 },
-    { label: 'Team dynamics and culture explored', check: (c) => !!(c.pollens_team_dynamics || c.pollens_cultural_elements) }
+    { label: 'Team dynamics and culture explored', check: (c) => !!(c.pollens_team_dynamics || c.pollens_cultural_elements) },
+    { label: 'Psychology — people & behaviour understood', check: (c) => /(behaviour|behavior|psycholog|emotion|motivation)/i.test(`${c.pollens_aspirations ?? ''} ${c.pollens_team_dynamics ?? ''} ${c.pollens_cultural_elements ?? ''}`) }
   ],
   NOEMS: [
     { label: 'Concepts crystallized with maturity', check: (c) => (c.noems_concepts?.length || 0) > 50 },
-    { label: 'Mental models surfaced', check: (c) => !!(c.noems_mental_models || c.noems_intuitions) }
+    { label: 'Mental models surfaced', check: (c) => !!(c.noems_mental_models || c.noems_intuitions) },
+    { label: 'Economics — incentives & trade-offs surfaced', check: (c) => /(incentive|trade.?off|economic|value|cost|benefit)/i.test(`${c.noems_concepts ?? ''} ${c.noems_mental_models ?? ''} ${c.noems_intuitions ?? ''}`) }
   ],
   POEMS: [
     { label: 'P.O.E.M.S. framework addressed', check: (c) => !!(c.poems_people && c.poems_objects) },
-    { label: 'Systems and environments mapped', check: (c) => !!(c.poems_systems || c.poems_environments) }
+    { label: 'Systems and environments mapped', check: (c) => !!(c.poems_systems || c.poems_environments) },
+    { label: 'Operations — delivery flows mapped', check: (c) => /(deliver|operation|workflow|process|fulfil)/i.test(`${c.poems_systems ?? ''} ${c.poems_environments ?? ''} ${c.poems_people ?? ''} ${c.poems_objects ?? ''}`) }
   ],
   TOTEMS: [
     { label: 'Data architecture defined', check: (c) => (c.totems_data_architecture?.length || 0) > 50 },
-    { label: 'Security and access controls specified', check: (c) => !!(c.totems_security_policies || c.totems_access_controls) }
+    { label: 'Security and access controls specified', check: (c) => !!(c.totems_security_policies || c.totems_access_controls) },
+    { label: 'Politics (Policy) — power, rules & governance defined', check: (c) => /(policy|policies|governance|rule|permission|role)/i.test(`${c.totems_security_policies ?? ''} ${c.totems_access_controls ?? ''}`) },
+    { label: 'Technology — systems & constraints specified', check: (c) => /(stack|api|infrastructure|constraint|technolog|framework|database)/i.test(`${c.totems_data_architecture ?? ''} ${c.totems_security_policies ?? ''}`) }
   ],
   ANTHEMS: [
     { label: 'Market positioning defined', check: (c) => (c.anthems_market_positioning?.length || 0) > 50 },
