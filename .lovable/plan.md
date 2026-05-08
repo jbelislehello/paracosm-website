@@ -1,109 +1,46 @@
 
 ## What we're building
 
-The current `Topologies → Ancestry` view is a flat 2-column grid. We'll replace it with a real **temporal arc 2013→2018**, give every origin compass a click-to-jump path into its live manifestation, and overlay a second class of compasses — the 20 **Wild Cookie thematic compasses** from the uploaded PDF — as a "framing layer" that helps the user route a raw idea into the closest executable board surface (a topology view mode, a board tab, or an adjacent tool).
-
-Two compass families, one ontology:
+A small, auto-dismissing **"Now viewing"** confirmation overlay that appears on the Compasses page (and anywhere else inside the board) whenever a compass routes the canvas to a new topology view mode or a new board tab. Confirms the switch with the human-readable name of the destination, then fades out after ~2.5s.
 
 ```text
-Origin compasses (2013–2018)         Wild Cookie compasses (thematic)
-─ #Small Thinking ────────────────┐  ─ The UX Consciousness
-─ Applied Poetry                  │  ─ Body Maps · IoT · Cognitive Maps
-─ SMPL · Interaction Patterns     │  ─ Ubiquitous · Prediction Engines
-─ UX Process · Flux Noétical      │  ─ Worldbuilding · Dialogic Imagination
-─ Relational Intelligence         │  ─ Futurogram · Purpose & Meaning
-─ DT→SD→SA · Concentric Methods   │  ─ Noetic Functions · Human Animal
-─ Zen·Flow·Encounters·Retreats ───┘  ─ Ecological Truth · Reinventing Edu
-                                     ─ Calmness · Meaningfulness
-                                     ─ Playfulness · Calm Computing
-                                     ─ Usefulness · Serendipity
+                  ┌────────────────────────────────────┐
+                  │  ✓  Now viewing                    │
+                  │     Topology · Energy Field        │
+                  │     ↳ from "Prediction Engines"    │
+                  └────────────────────────────────────┘
+                        bottom-right · auto-dismiss
 ```
 
-Both families resolve into the **same set of executable targets** (topology view modes, board tabs, adjacent pages), so picking either kind of compass moves the canvas in place.
+## How it works
 
----
+A tiny event bus (`src/lib/boardNavigationEvents.ts`) exposes `emitNowViewing({ surface, label, fromCompass? })`. The `OriginsAncestryView` calls it every time the user clicks a topology / board-tab / external CTA. A new `<NowViewingToast />` component, mounted once at the `CalmMagicBoard` page level, subscribes to the event and renders the overlay using the existing `sonner` toast (already in the project) — so styling, stacking, and reduced-motion handling come for free.
 
-## Visual structure of the new Ancestry view
-
-```text
-┌─────────────────────────────────────────────────────────────────┐
-│  [Filter]  Origin compasses · Wild Cookie compasses · All       │
-│  [Stage]   Explore · Frame · Ideate · Vision · Design · Ship    │
-├─────────────────────────────────────────────────────────────────┤
-│  2013 ─────── 2016 ─────── 2017 ─────── 2018 ─────── Today     │
-│   ●            ●            ● ●          ● ● ● ● ●    ● ● ●    │
-│   │            │            │ │          │ │ │ │ │    │ │ │    │
-│  Small      Applied        SMPL Patt    UX Flux Rel DT Conc Zen│
-│  Thinking   Poetry                                              │
-├─────────────────────────────────────────────────────────────────┤
-│  Hovered/selected node expands inline:                          │
-│    • Sketch thumbnail · year · language                         │
-│    • Vocabulary chips                                           │
-│    • "Frames" — Wild Cookie compasses that share its grammar    │
-│    • "Became →" buttons that switch the canvas in place         │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-Below the arc, a **second band** ("Frame your idea") presents the 20 Wild Cookie compasses grouped by the PDF's stage taxonomy (Initial Exploration · Problem Identification · Ideation · Vision · Understanding Users · Tech · Ethics · Learning · UX · Practicality · Wellness · Critical Thinking). Each Wild Cookie compass card shows: name, one-line description, quote, timing, and a single primary "Route to →" button that jumps to its closest executable surface.
-
----
+Behavior:
+- Topology switch → "Now viewing · Topology · {label}".
+- Board-tab switch → "Now viewing · {Tab name}".
+- External link → no toast (user navigates to a different route; toast wouldn't survive the route change anyway).
+- Auto-dismiss 2.5s; one toast at a time (new switch replaces the old).
 
 ## Files
 
-**Edit**
-- `src/components/calm-magic/topologies/OriginsAncestryView.tsx` — replace the grid with the arc + framing band layout described above; keep the same `onSwitchTopologyMode` / `onSwitchBoardTab` props so no plumbing change is needed in `TopologiesTab` or `CalmMagicBoard`.
-
 **Create**
-- `src/data/wildCookieCompasses.ts` — typed array of all 20 thematic compasses from the PDF (name, description, quote, timing, tools, practices, stage tag). Each entry also declares `routesTo: { kind: 'topology'|'board'|'external', target: ... }` and `relatesToOriginSlugs: string[]` so the UI can draw the cross-family connection.
-- `src/components/calm-magic/topologies/AncestryArc.tsx` — the SVG/CSS temporal arc (responsive: horizontal on desktop, vertical timeline on mobile per current 390px viewport).
-- `src/components/calm-magic/topologies/WildCookieFramingBand.tsx` — the stage-grouped grid of Wild Cookie compass cards with the single "Route to →" CTA.
+- `src/lib/boardNavigationEvents.ts` — typed `emitNowViewing` + `subscribe` helpers (plain `EventTarget`).
 
-No DB, no edge functions, no business-logic changes — pure frontend/presentation.
+**Edit**
+- `src/components/calm-magic/topologies/OriginsAncestryView.tsx` — fire the event from the topology/board chip handlers, passing the human label and the originating compass name.
+- `src/pages/CalmMagicBoard.tsx` — also fire the event from its own tab-change handler so direct tab clicks get the same confirmation; ensure `<Toaster />` from sonner is mounted (it already is at the app shell, so likely no change needed — verify and skip if present).
 
----
-
-## Mapping (Wild Cookie → executable surface)
-
-A condensed sample of the routing table that will live in `wildCookieCompasses.ts` (all 20 will be filled in):
-
-| Wild Cookie compass | Stage | Routes to | Relates to origin |
-|---|---|---|---|
-| The UX Consciousness | Problem ID · UX | Board tab `prd-assembly` | dt-sd-sa-2018, ux-process-2018 |
-| Body Maps | Understanding Users | Board tab `window-of-tolerance` | relational-intelligence-2018 |
-| IoT / Internet of Bodies | Tech | Topology `coordinates` | interaction-patterns-2017 |
-| Cognitive Maps | Learning | Topology `projection` | small-thinking-2013 |
-| Ubiquitous Computing | Tech | `/tonalli` | applied-poetry-2016, interaction-patterns-2017 |
-| Prediction Engines | Tech · Practicality | Topology `flow` | flux-noetical-2018 |
-| Worldbuilding Narratives | Vision | Board tab `expressivity` | applied-poetry-2016 |
-| Dialogic Imagination | Ideation · Critical Thinking | Topology `ancestry` (self) + `/glitch-methodology` | smpl-fr-2017 |
-| Futurogram | Tech · Practicality | Topology `cycles` | flux-noetical-2018 |
-| Purpose & Meaning at Work | Vision | Board tab `constellation` | concentric-methods-2018 |
-| The Noetic Functions | Learning | Topology `flow` | flux-noetical-2018, relational-intelligence-2018 |
-| The Human Animal | Understanding Users | Topology `coordinates` | relational-intelligence-2018 |
-| Ecological Truth & Eco Anxiety | Ethics · Wellness | `/drift` | flux-noetical-2018 |
-| Reinventing Education | Learning | `/pattern-encyclopedia` | concentric-methods-2018 |
-| The Calmness | Wellness | Board tab `window-of-tolerance` | applied-poetry-2016 |
-| Meaningfulness | Vision | Board tab `prd-assembly` | dt-sd-sa-2018 |
-| Playfulness | Ideation | Board tab `expressivity` | applied-poetry-2016 |
-| Calm Computing | UX | `/tonalli` | applied-poetry-2016 |
-| Usefulness | Practicality | Board tab `prd-assembly` | dt-sd-sa-2018 |
-| Serendipity | Initial Exploration | Topology `ancestry` (browse mode) | concentric-methods-2018 |
-
----
-
-## Interaction details
-
-- **Arc nodes**: hover reveals sketch + vocabulary; click selects the node and scrolls a detail panel into view with its `Became →` buttons (existing routing from `originsToTopology.ts`).
-- **Cross-family link**: when a Wild Cookie card is hovered, the arc highlights its `relatesToOriginSlugs` nodes (subtle glow). When an origin node is selected, matching Wild Cookie cards in the band below get a primary border.
-- **Stage filter** (`Explore · Frame · Ideate · Vision · Design · Ship`): filters both bands so the user can ask "what do I have available for the Vision stage?" and see both ancestral and thematic compasses at once.
-- **Routing**: every CTA uses the existing `onSwitchTopologyMode` / `onSwitchBoardTab` props or `react-router` `Link` for external pages. No new state is added to the board.
-- **Mobile (390px)**: arc collapses into a vertical timeline; framing band becomes a single-column stack with sticky stage headers.
-
----
+No new dependencies, no DB, no business-logic changes — pure presentation.
 
 ## Out of scope
 
-- No changes to other topology view modes, no edits to existing pill / banner components.
-- No DB persistence for compass selection — purely a navigational aid.
-- No new images: Wild Cookie compasses render as text+icon cards (Lucide icons by stage). The PDF itself stays as source-of-truth, not as imported assets.
-- No i18n duplication this pass — Wild Cookie text ships in English (matching the PDF); origins keep their existing FR/EN mix.
+- Persistent breadcrumb / history of switches.
+- Toast for external `<Link>` navigations (route change kills it).
+- Localization (English-only this pass; matches surrounding strings).
+
+---
+
+## Note on the surfaced security finding
+
+The `SUPA_rls_policy_always_true` finding is unrelated to this UI request — it flags a write-side RLS policy (UPDATE/DELETE/INSERT) declared with `USING (true)` or `WITH CHECK (true)` somewhere in the schema. I don't have the table/policy name from the finding payload here, so I haven't included it in this plan. If you'd like, approve this overlay first and I'll open a follow-up plan that runs the Supabase linter, identifies the exact policy, and tightens it to an owner-scoped check (e.g. `auth.uid() = user_id`).
