@@ -284,6 +284,7 @@ function ThematicCard({
       <div className="pt-1">
         <TargetChip
           target={compass.routesTo}
+          fromCompass={compass.name}
           onSwitchTopologyMode={onSwitchTopologyMode}
           onSwitchBoardTab={onSwitchBoardTab}
         />
@@ -292,12 +293,23 @@ function ThematicCard({
   );
 }
 
+function notifyNowViewing(label: string, fromCompass?: string) {
+  toast.success("Now viewing", {
+    description: fromCompass ? `${label}  ·  from "${fromCompass}"` : label,
+    duration: 2500,
+    icon: <Check className="h-4 w-4" />,
+    id: "now-viewing", // dedupe — newest replaces previous
+  });
+}
+
 function TargetChip({
   target,
+  fromCompass,
   onSwitchTopologyMode,
   onSwitchBoardTab,
 }: {
   target: Target;
+  fromCompass?: string;
   onSwitchTopologyMode: (mode: TopologyViewMode) => void;
   onSwitchBoardTab?: (tab: BoardTabSlug | "matrix") => void;
 }) {
@@ -305,7 +317,10 @@ function TargetChip({
     return (
       <button
         type="button"
-        onClick={() => onSwitchTopologyMode(target.mode)}
+        onClick={() => {
+          onSwitchTopologyMode(target.mode);
+          notifyNowViewing(target.label, fromCompass);
+        }}
         className={cn(
           "inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary transition-colors hover:bg-primary/20",
         )}
@@ -319,7 +334,10 @@ function TargetChip({
     return (
       <button
         type="button"
-        onClick={() => onSwitchBoardTab?.(target.tab)}
+        onClick={() => {
+          onSwitchBoardTab?.(target.tab);
+          notifyNowViewing(target.label, fromCompass);
+        }}
         className="inline-flex items-center gap-1 rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium transition-colors hover:bg-secondary/80"
       >
         {target.label}
