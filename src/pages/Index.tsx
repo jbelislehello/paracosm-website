@@ -221,6 +221,10 @@ const Index = () => {
 
       <WhyItWorksRecap lens="leadership" />
 
+      <ResidenciesSection />
+
+      <SomaticCreativityRetreat />
+
       <GradientDivider />
       
       {/* AI Leadership Section */}
