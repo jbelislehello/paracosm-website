@@ -1,88 +1,109 @@
-# Wire the Origins compasses into the Calm Magic Board
 
-You're right — building `/origins` as a standalone gallery told the story but didn't *operationalize* it. Each of the 10 compasses is a **topology of meaning** that the board already runs structurally. The board's `Topologies` tab is literally a gallery of nine view modes (isometric, diamond, spiral, charts, coordinates, cycles, flow, projection, observatory). The origins belong inside that gallery as **the ancestral layer** — the sketches the live geometries descended from.
+## What we're building
 
-## Where the connections actually live
+The current `Topologies → Ancestry` view is a flat 2-column grid. We'll replace it with a real **temporal arc 2013→2018**, give every origin compass a click-to-jump path into its live manifestation, and overlay a second class of compasses — the 20 **Wild Cookie thematic compasses** from the uploaded PDF — as a "framing layer" that helps the user route a raw idea into the closest executable board surface (a topology view mode, a board tab, or an adjacent tool).
 
-Mapping each origin compass to a current board surface (not a marketing link, the actual rendered geometry):
-
-| Origin compass | Current board surface |
-|---|---|
-| **#Small Thinking** — concentric ontology | `Topologies → spiral` (SpiralLayout) and the 5-season PRD ring stack |
-| **Concentric Methods (2018)** | `Topologies → constellation` (ConstellationLayout) |
-| **Noetical / Perma / Bio-Psy-Geo Flux** | `Topologies → flow` (InformationFluxDiagram) and `Cosmological3DManifold` (4 Time Lenses) |
-| **Proxémie · Praxis · Poiesis** | `Window of Tolerance` + `Relational Intelligence` overlays — the felt-sense engine |
-| **SMPL — Divergence/Exploration/Convergence** | `Topologies → diamond` (DoubleDiamondLayout) + GL!TCH→DRIFT→TUNE descent |
-| **Applied Poetry** | `Expressivity` tab (multisensory tools surface) |
-| **DT → SD → SA workflow** | `PRD Assembly` tab (Foundational Prompt Compiler) |
-| **12 interaction patterns** | Pattern Encyclopedia + Tonalli Spatial sensors |
-| **UX activities & deliverables** | Service Blueprint (AI Observatory tiers) |
-| **Zen · Flow · Encounters · Retreats** | Paracosm container around the board (retreat cadence) |
-
-The first five are *internal* to the board; the rest are *adjacent* surfaces.
-
-## What to build
-
-### 1. New Topologies view mode: `ancestry`
-
-Add `'ancestry'` to `TopologyViewMode` in `ViewModeSelector.tsx` with icon (Sparkles or Compass) and label "Ancestry". Renders a new component `OriginsAncestryView` inside `TopologiesTab`'s render switch.
-
-`OriginsAncestryView` shows the 10 origin compasses arranged as a **temporal arc** (2013 → 2018) with each card visually tethered to the live view mode it became:
+Two compass families, one ontology:
 
 ```text
-   2013        2016         2017              2018
-    ●———————————●—————————————●———————————————●●●●●●
-    │           │             │ │             │
-   Small       Applied       SMPL Interaction  Flux · Relational ·
-  Thinking     Poetry         FR  Patterns     Concentric · DT-SD-SA ·
-    │           │             │ │             │ UX · Zen-Retreats
-    ▼           ▼             ▼ ▼             ▼
-  spiral    expressivity   diamond ┐       flow / constellation /
-                                   │       window-of-tolerance /
-                              pattern-      prd-assembly
-                              encyclopedia
+Origin compasses (2013–2018)         Wild Cookie compasses (thematic)
+─ #Small Thinking ────────────────┐  ─ The UX Consciousness
+─ Applied Poetry                  │  ─ Body Maps · IoT · Cognitive Maps
+─ SMPL · Interaction Patterns     │  ─ Ubiquitous · Prediction Engines
+─ UX Process · Flux Noétical      │  ─ Worldbuilding · Dialogic Imagination
+─ Relational Intelligence         │  ─ Futurogram · Purpose & Meaning
+─ DT→SD→SA · Concentric Methods   │  ─ Noetic Functions · Human Animal
+─ Zen·Flow·Encounters·Retreats ───┘  ─ Ecological Truth · Reinventing Edu
+                                     ─ Calmness · Meaningfulness
+                                     ─ Playfulness · Calm Computing
+                                     ─ Usefulness · Serendipity
 ```
 
-Clicking a "Became →" target switches `viewMode` (or `activeView` for cross-tab targets) **in place** — no navigation away. Each card also exposes its vocabulary chips (Praxis, Poiesis, Noétique, etc.) which are the same primitives used in tile metadata, so we get a real semantic match rather than just a link.
+Both families resolve into the **same set of executable targets** (topology view modes, board tabs, adjacent pages), so picking either kind of compass moves the canvas in place.
 
-### 2. Topology cards → ancestor pill
+---
 
-Inside the existing topology views (spiral, diamond, flow, constellation), add a small pill in the top-right corner of the canvas reading e.g. **"Lineage: #Small Thinking, 2013"** with hover/click opening a popover that shows the original sketch + the 2-line origin blurb. This is the *ontological annotation* — the user can always see which historical compass the live geometry descends from.
+## Visual structure of the new Ancestry view
 
-Component: `<TopologyAncestryPill mode={viewMode} />` driven by a new `src/data/originsToTopology.ts` map (single source of truth used by both the ancestry view and the pill).
+```text
+┌─────────────────────────────────────────────────────────────────┐
+│  [Filter]  Origin compasses · Wild Cookie compasses · All       │
+│  [Stage]   Explore · Frame · Ideate · Vision · Design · Ship    │
+├─────────────────────────────────────────────────────────────────┤
+│  2013 ─────── 2016 ─────── 2017 ─────── 2018 ─────── Today     │
+│   ●            ●            ● ●          ● ● ● ● ●    ● ● ●    │
+│   │            │            │ │          │ │ │ │ │    │ │ │    │
+│  Small      Applied        SMPL Patt    UX Flux Rel DT Conc Zen│
+│  Thinking   Poetry                                              │
+├─────────────────────────────────────────────────────────────────┤
+│  Hovered/selected node expands inline:                          │
+│    • Sketch thumbnail · year · language                         │
+│    • Vocabulary chips                                           │
+│    • "Frames" — Wild Cookie compasses that share its grammar    │
+│    • "Became →" buttons that switch the canvas in place         │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-### 3. PRD-assembly cross-link
+Below the arc, a **second band** ("Frame your idea") presents the 20 Wild Cookie compasses grouped by the PDF's stage taxonomy (Initial Exploration · Problem Identification · Ideation · Vision · Understanding Users · Tech · Ethics · Learning · UX · Practicality · Wellness · Critical Thinking). Each Wild Cookie compass card shows: name, one-line description, quote, timing, and a single primary "Route to →" button that jumps to its closest executable surface.
 
-On the `PRD Assembly` tab header, surface a single line: *"Workflow ancestry: Design Thinking → Service Design → System Architecture (2018)"* with a hover-popover showing the dt-sd-sa sketch. Same pattern, no new tab.
-
-### 4. Window-of-tolerance cross-link
-
-Same treatment on `Window of Tolerance`: *"Relational ancestry: Proxémie · Noétique · Praxis · Poiesis (2018)"*.
-
-### 5. Keep `/origins` as the public-facing gallery
-
-The standalone `/origins` page stays as the marketing/SEO surface. The board integration is for *practitioners inside the system* — different audience, different need.
+---
 
 ## Files
 
-- New: `src/components/calm-magic/topologies/OriginsAncestryView.tsx`, `src/components/calm-magic/topologies/TopologyAncestryPill.tsx`, `src/data/originsToTopology.ts`.
-- Edit: `src/components/calm-magic/topologies/ViewModeSelector.tsx` (add `'ancestry'`), `src/components/calm-magic/topologies/TopologiesTab.tsx` (render switch + pill in canvas overlay), `src/pages/CalmMagicBoard.tsx` (small ancestry callouts on `prd-assembly` and `window-of-tolerance` headers — additive only).
+**Edit**
+- `src/components/calm-magic/topologies/OriginsAncestryView.tsx` — replace the grid with the arc + framing band layout described above; keep the same `onSwitchTopologyMode` / `onSwitchBoardTab` props so no plumbing change is needed in `TopologiesTab` or `CalmMagicBoard`.
 
-## Out of scope this round
+**Create**
+- `src/data/wildCookieCompasses.ts` — typed array of all 20 thematic compasses from the PDF (name, description, quote, timing, tools, practices, stage tag). Each entry also declares `routesTo: { kind: 'topology'|'board'|'external', target: ... }` and `relatesToOriginSlugs: string[]` so the UI can draw the cross-family connection.
+- `src/components/calm-magic/topologies/AncestryArc.tsx` — the SVG/CSS temporal arc (responsive: horizontal on desktop, vertical timeline on mobile per current 390px viewport).
+- `src/components/calm-magic/topologies/WildCookieFramingBand.tsx` — the stage-grouped grid of Wild Cookie compass cards with the single "Route to →" CTA.
 
-- Re-styling existing topology views.
-- Editing the 10 sketches.
-- Moving the public `/origins` gallery into the board (kept as separate surface).
-- Adding ancestry pills to the *adjacent* surfaces beyond `prd-assembly` and `window-of-tolerance` (Tonalli, Pattern Encyclopedia, Retreats can come in a follow-up).
+No DB, no edge functions, no business-logic changes — pure frontend/presentation.
 
-## One choice for you before I build
+---
 
-The ancestry pill on each live topology view — should it be:
+## Mapping (Wild Cookie → executable surface)
 
-**A. Always-on, subtle** — small caption badge bottom-left of every topology canvas, never dismissible. Constant felt-sense of lineage.
+A condensed sample of the routing table that will live in `wildCookieCompasses.ts` (all 20 will be filled in):
 
-**B. Optional toggle** — a "Show lineage" switch in the Topologies header. Off by default, on for the curious.
+| Wild Cookie compass | Stage | Routes to | Relates to origin |
+|---|---|---|---|
+| The UX Consciousness | Problem ID · UX | Board tab `prd-assembly` | dt-sd-sa-2018, ux-process-2018 |
+| Body Maps | Understanding Users | Board tab `window-of-tolerance` | relational-intelligence-2018 |
+| IoT / Internet of Bodies | Tech | Topology `coordinates` | interaction-patterns-2017 |
+| Cognitive Maps | Learning | Topology `projection` | small-thinking-2013 |
+| Ubiquitous Computing | Tech | `/tonalli` | applied-poetry-2016, interaction-patterns-2017 |
+| Prediction Engines | Tech · Practicality | Topology `flow` | flux-noetical-2018 |
+| Worldbuilding Narratives | Vision | Board tab `expressivity` | applied-poetry-2016 |
+| Dialogic Imagination | Ideation · Critical Thinking | Topology `ancestry` (self) + `/glitch-methodology` | smpl-fr-2017 |
+| Futurogram | Tech · Practicality | Topology `cycles` | flux-noetical-2018 |
+| Purpose & Meaning at Work | Vision | Board tab `constellation` | concentric-methods-2018 |
+| The Noetic Functions | Learning | Topology `flow` | flux-noetical-2018, relational-intelligence-2018 |
+| The Human Animal | Understanding Users | Topology `coordinates` | relational-intelligence-2018 |
+| Ecological Truth & Eco Anxiety | Ethics · Wellness | `/drift` | flux-noetical-2018 |
+| Reinventing Education | Learning | `/pattern-encyclopedia` | concentric-methods-2018 |
+| The Calmness | Wellness | Board tab `window-of-tolerance` | applied-poetry-2016 |
+| Meaningfulness | Vision | Board tab `prd-assembly` | dt-sd-sa-2018 |
+| Playfulness | Ideation | Board tab `expressivity` | applied-poetry-2016 |
+| Calm Computing | UX | `/tonalli` | applied-poetry-2016 |
+| Usefulness | Practicality | Board tab `prd-assembly` | dt-sd-sa-2018 |
+| Serendipity | Initial Exploration | Topology `ancestry` (browse mode) | concentric-methods-2018 |
 
-**C. Hover-only** — pill appears only when hovering the canvas. Cleanest, almost invisible until invoked.
+---
 
-My recommendation: **A**. It matches the Ontological Data Integrity principle — the ancestry isn't decoration, it's the schema itself. But say the word if you'd rather B or C.
+## Interaction details
+
+- **Arc nodes**: hover reveals sketch + vocabulary; click selects the node and scrolls a detail panel into view with its `Became →` buttons (existing routing from `originsToTopology.ts`).
+- **Cross-family link**: when a Wild Cookie card is hovered, the arc highlights its `relatesToOriginSlugs` nodes (subtle glow). When an origin node is selected, matching Wild Cookie cards in the band below get a primary border.
+- **Stage filter** (`Explore · Frame · Ideate · Vision · Design · Ship`): filters both bands so the user can ask "what do I have available for the Vision stage?" and see both ancestral and thematic compasses at once.
+- **Routing**: every CTA uses the existing `onSwitchTopologyMode` / `onSwitchBoardTab` props or `react-router` `Link` for external pages. No new state is added to the board.
+- **Mobile (390px)**: arc collapses into a vertical timeline; framing band becomes a single-column stack with sticky stage headers.
+
+---
+
+## Out of scope
+
+- No changes to other topology view modes, no edits to existing pill / banner components.
+- No DB persistence for compass selection — purely a navigational aid.
+- No new images: Wild Cookie compasses render as text+icon cards (Lucide icons by stage). The PDF itself stays as source-of-truth, not as imported assets.
+- No i18n duplication this pass — Wild Cookie text ships in English (matching the PDF); origins keep their existing FR/EN mix.
