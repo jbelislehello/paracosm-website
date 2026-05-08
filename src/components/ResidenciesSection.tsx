@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { residencies } from "@/data/residencies";
 
 const ResidenciesSection: React.FC = () => {
@@ -25,9 +26,9 @@ const ResidenciesSection: React.FC = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
           {residencies.map((r, i) => (
-            <a
+            <Link
               key={r.id}
-              href={`#residency-${r.id}`}
+              to={`/residencies/${r.id}`}
               id={`residency-${r.id}`}
               className={`group relative overflow-hidden rounded-2xl p-6 md:p-7 border border-border/40 bg-card transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl ${
                 i === 0 ? "lg:col-span-2 lg:row-span-1" : ""
@@ -77,7 +78,7 @@ const ResidenciesSection: React.FC = () => {
                   </div>
                 </dl>
               </div>
-            </a>
+            </Link>
           ))}
         </div>
 
