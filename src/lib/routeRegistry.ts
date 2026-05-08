@@ -41,6 +41,7 @@ export const ROUTE_REGISTRY: RouteMeta[] = [
   { path: "/design-system", label: "Design System" },
   { path: "/lineage", label: "Lineage & Comparables", parent: "/book" },
   { path: "/agentic-ecosystem-deck", label: "Agentic Ecosystem Deck", noindex: true },
+  { path: "/credits", label: "Image credits" },
 
   // Residencies
   { path: "/residencies", label: "Residencies" },
