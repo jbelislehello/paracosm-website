@@ -63,9 +63,12 @@ const STAGE_LABELS: Record<string, string> = {
   'D_MVP': 'D — MVP',
 };
 
+const escapeMdHtml = (s: string): string =>
+  s.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
 const formatContent = (content: string | null | undefined): string => {
   if (!content || !content.trim()) return '_No content yet_';
-  return content.trim();
+  return escapeMdHtml(content.trim());
 };
 
 // Generate dimensional insights summary based on layer content
@@ -403,12 +406,20 @@ export const downloadMarkdown = (prd: PrdData, options?: PrdExportOptions): void
   URL.revokeObjectURL(url);
 };
 
+const escapeHtml = (s: string): string =>
+  s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
 export const exportPrdAsPdf = (prd: PrdData, options?: PrdExportOptions): void => {
   const markdown = generatePrdMarkdown(prd, options);
-  
+
   // Convert markdown to simple HTML for print
   const html = markdownToHtml(markdown);
-  
+
   const printWindow = window.open('', '_blank');
   if (!printWindow) {
     alert('Please allow popups to export as PDF');
@@ -419,7 +430,7 @@ export const exportPrdAsPdf = (prd: PrdData, options?: PrdExportOptions): void =
 <!DOCTYPE html>
 <html>
 <head>
-  <title>${prd.title} - Living PRD</title>
+  <title>${escapeHtml(prd.title)} - Living PRD</title>
   <style>
     @media print {
       body { margin: 0.5in; }

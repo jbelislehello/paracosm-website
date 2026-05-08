@@ -217,11 +217,19 @@ const JourneySummaryExport = ({
       .replace(/\n\n/g, '</p><p>')
       .replace(/^\d+\. /gm, '• ');
 
+    const escapeHtml = (s: string) =>
+      s
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
         <head>
-          <title>${projectName} - Journey Summary</title>
+          <title>${escapeHtml(projectName)} - Journey Summary</title>
           <style>
             body { font-family: system-ui, sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; }
             h1 { border-bottom: 2px solid #333; padding-bottom: 0.5rem; }
