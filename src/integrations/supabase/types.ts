@@ -390,6 +390,39 @@ export type Database = {
         }
         Relationships: []
       }
+      image_credits: {
+        Row: {
+          created_at: string
+          event: string | null
+          location: string | null
+          photographer: string | null
+          slug: string
+          updated_at: string
+          updated_by: string | null
+          year: string | null
+        }
+        Insert: {
+          created_at?: string
+          event?: string | null
+          location?: string | null
+          photographer?: string | null
+          slug: string
+          updated_at?: string
+          updated_by?: string | null
+          year?: string | null
+        }
+        Update: {
+          created_at?: string
+          event?: string | null
+          location?: string | null
+          photographer?: string | null
+          slug?: string
+          updated_at?: string
+          updated_by?: string | null
+          year?: string | null
+        }
+        Relationships: []
+      }
       journal_cycles: {
         Row: {
           board: Database["public"]["Enums"]["board"]
