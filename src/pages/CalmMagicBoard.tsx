@@ -1871,6 +1871,7 @@ const CalmMagicBoard = () => {
               onAnalyzeTopology={() => analyzeTopology(polenEntries)}
               onApplyInsightToShadow={handleApplyInsightToShadow}
               consciousnessGeometry={consciousnessGeometry}
+              onSwitchBoardTab={(tab) => setActiveView(tab as ViewTab)}
             />
           </div>
         )}
