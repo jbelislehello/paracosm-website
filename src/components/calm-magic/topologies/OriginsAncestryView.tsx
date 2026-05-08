@@ -238,6 +238,7 @@ function OriginCard({
               <TargetChip
                 key={i}
                 target={t}
+                fromCompass={origin.title}
                 onSwitchTopologyMode={onSwitchTopologyMode}
                 onSwitchBoardTab={onSwitchBoardTab}
               />
