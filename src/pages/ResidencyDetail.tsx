@@ -81,7 +81,7 @@ const ResidencyDetail: React.FC = () => {
             background: `radial-gradient(ellipse at 70% 20%, hsl(${r.hueTo} / 0.35), transparent 60%)`,
           }}
         />
-        <div className="container max-w-5xl mx-auto relative">
+        <div className="container max-w-6xl mx-auto relative">
           <div className="flex items-center justify-between gap-4 mb-8 flex-wrap">
             <Breadcrumb>
               <BreadcrumbList>
