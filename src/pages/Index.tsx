@@ -20,12 +20,16 @@ import GenerativeBackground from "@/components/GenerativeBackground";
 import KnowledgeConstellation from "@/components/KnowledgeConstellation";
 import LivingOrganismViz from "@/components/LivingOrganismViz";
 import WhyItWorksRecap from "@/components/resonance/WhyItWorksRecap";
+import ResidenciesSection from "@/components/ResidenciesSection";
+import SomaticCreativityRetreat from "@/components/SomaticCreativityRetreat";
+import { residencies } from "@/data/residencies";
 
 const MOBILE_NAV_SECTIONS = [
   { id: "hero", label: "Home" },
-  { id: "ai-leadership", label: "AI Leadership" },
-  { id: "living-prd", label: "Living PRD" },
-  { id: "relational", label: "Relational Innovation" },
+  { id: "residencies", label: "Residencies" },
+  { id: "somatic-retreat", label: "Retreat" },
+  { id: "ai-leadership", label: "Methods" },
+  { id: "relational", label: "Relational" },
   { id: "contact", label: "Contact" },
 ];
 
