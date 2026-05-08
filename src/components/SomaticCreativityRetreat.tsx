@@ -1,32 +1,33 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { retreatImages, retreatImageCredits, formatCredit } from "@/assets/retreats";
-
-const movements = [
-  {
-    label: "Listen",
-    body: "Three days of silence with the body — somatic listening practices, breath-mapping, and field attunement. Strategy is suspended; sensation is recovered.",
-    image: retreatImages.lakePortrait,
-    caption: "Field attunement — listening before language.",
-    credit: formatCredit(retreatImageCredits.lakePortrait),
-  },
-  {
-    label: "Move",
-    body: "Movement scores, contact improvisation, and ritual choreography. The questions you carry get danced before they get spoken.",
-    image: retreatImages.forestCircle,
-    caption: "Cohort circle in motion, outdoor council.",
-    credit: formatCredit(retreatImageCredits.forestCircle),
-  },
-  {
-    label: "Make",
-    body: "A small, irreducible artifact: a poem, a gesture, a diagram, a sound piece. Something the organization couldn't have designed in a meeting.",
-    image: retreatImages.atelierCircle,
-    caption: "An atelier table — making one true thing together.",
-    credit: formatCredit(retreatImageCredits.atelierCircle),
-  },
-];
+import { retreatImages, formatCredit } from "@/assets/retreats";
+import { useImageCredits } from "@/hooks/useImageCredits";
 
 const SomaticCreativityRetreat: React.FC = () => {
+  const { getCredit } = useImageCredits();
+  const movements = [
+    {
+      label: "Listen",
+      body: "Three days of silence with the body — somatic listening practices, breath-mapping, and field attunement. Strategy is suspended; sensation is recovered.",
+      image: retreatImages.lakePortrait,
+      caption: "Field attunement — listening before language.",
+      credit: formatCredit(getCredit("lakePortrait")),
+    },
+    {
+      label: "Move",
+      body: "Movement scores, contact improvisation, and ritual choreography. The questions you carry get danced before they get spoken.",
+      image: retreatImages.forestCircle,
+      caption: "Cohort circle in motion, outdoor council.",
+      credit: formatCredit(getCredit("forestCircle")),
+    },
+    {
+      label: "Make",
+      body: "A small, irreducible artifact: a poem, a gesture, a diagram, a sound piece. Something the organization couldn't have designed in a meeting.",
+      image: retreatImages.atelierCircle,
+      caption: "An atelier table — making one true thing together.",
+      credit: formatCredit(getCredit("atelierCircle")),
+    },
+  ];
   return (
     <section
       id="somatic-retreat"
