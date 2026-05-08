@@ -41,6 +41,32 @@ const ResidencyDetail: React.FC = () => {
 
   const mailtoSubject = encodeURIComponent(`Residency inquiry: ${r.shortName}`);
 
+  const [copied, setCopied] = useState(false);
+  const handleShare = async () => {
+    const url = `${window.location.origin}/residencies/${r.id}`;
+    const shareData = {
+      title: `${r.name} — Paracosm Residencies`,
+      text: r.tagline,
+      url,
+    };
+    try {
+      if (typeof navigator !== "undefined" && navigator.share) {
+        await navigator.share(shareData);
+        return;
+      }
+    } catch {
+      // fall through to clipboard
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      toast.success("Link copied");
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error("Couldn't copy link");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero */}
@@ -55,8 +81,48 @@ const ResidencyDetail: React.FC = () => {
           }}
         />
         <div className="container max-w-5xl mx-auto relative">
+          <div className="flex items-center justify-between gap-4 mb-8 flex-wrap">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/">Home</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link to="/#residencies">Residencies</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{r.shortName}</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleShare}
+              className="rounded-full border-border/60 bg-background/40 backdrop-blur-sm hover:bg-background/70"
+            >
+              {copied ? (
+                <>
+                  <Check className="w-4 h-4" /> Copied
+                </>
+              ) : (
+                <>
+                  <Share2 className="w-4 h-4" /> Share
+                </>
+              )}
+            </Button>
+          </div>
+
           <Link
-            to="/index#residencies"
+            to="/#residencies"
             className="inline-flex items-center gap-2 text-sm text-foreground/70 hover:text-foreground mb-8 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" /> All residencies
