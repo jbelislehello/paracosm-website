@@ -40,6 +40,7 @@ export const ROUTE_REGISTRY: RouteMeta[] = [
   { path: "/agentic-ux", label: "Agentic UX" },
   { path: "/design-system", label: "Design System" },
   { path: "/lineage", label: "Lineage & Comparables", parent: "/book" },
+  { path: "/origins", label: "Origins — methods 2013–2018", parent: "/lineage" },
   { path: "/agentic-ecosystem-deck", label: "Agentic Ecosystem Deck", noindex: true },
   { path: "/credits", label: "Image credits" },
 

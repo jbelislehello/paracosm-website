@@ -53,6 +53,7 @@ const AgenticEcosystemDeck = lazy(() => import("./pages/AgenticEcosystemDeck"));
 const ResonanceDemo = lazy(() => import("./pages/ResonanceDemo"));
 const ResidencyDetail = lazy(() => import("./pages/ResidencyDetail"));
 const Credits = lazy(() => import("./pages/Credits"));
+const Origins = lazy(() => import("./pages/Origins"));
 
 const queryClient = new QueryClient();
 
@@ -120,6 +121,7 @@ function App() {
                     <Route path="/residencies" element={<Navigate to="/#residencies" replace />} />
                     <Route path="/residencies/:archetype" element={<ResidencyDetail />} />
                     <Route path="/credits" element={<Credits />} />
+                    <Route path="/origins" element={<Origins />} />
                     <Route path="/dream/:slug" element={<DreamShare />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
