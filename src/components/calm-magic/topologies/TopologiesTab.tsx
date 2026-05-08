@@ -28,6 +28,9 @@ import {
   Loader2
 } from 'lucide-react';
 import { TopologyHeaderInsight } from './TopologyHeaderInsight';
+import { OriginsAncestryView } from './OriginsAncestryView';
+import { TopologyAncestryPill } from './TopologyAncestryPill';
+import { TOPOLOGY_ANCESTRY, type BoardTabSlug } from '@/data/originsToTopology';
 
 interface TopologiesTabProps {
   row: number;
@@ -55,6 +58,8 @@ interface TopologiesTabProps {
   onApplyInsightToShadow?: (position: QuadrantPosition, insightNote: string) => void;
   // Consciousness geometry data
   consciousnessGeometry?: ConsciousnessGeometryExport | null;
+  /** Allows the Ancestry view to switch sibling board tabs (PRD Assembly, etc.). */
+  onSwitchBoardTab?: (tab: BoardTabSlug | 'matrix') => void;
 }
 
 export function TopologiesTab({
@@ -78,7 +83,8 @@ export function TopologiesTab({
   isAnalyzingTopology,
   onAnalyzeTopology,
   onApplyInsightToShadow,
-  consciousnessGeometry
+  consciousnessGeometry,
+  onSwitchBoardTab
 }: TopologiesTabProps) {
   const [viewMode, setViewMode] = useState<TopologyViewMode>('isometric');
   const [cubeSize, setCubeSize] = useState(32);
@@ -214,6 +220,13 @@ export function TopologiesTab({
             />
           </div>
         );
+      case 'ancestry':
+        return (
+          <OriginsAncestryView
+            onSwitchTopologyMode={setViewMode}
+            onSwitchBoardTab={onSwitchBoardTab}
+          />
+        );
       case 'isometric':
       default:
         return (
@@ -328,6 +341,9 @@ export function TopologiesTab({
         className={`relative rounded-lg overflow-hidden border border-border bg-background ${isFullscreen ? 'flex-1' : 'h-[calc(100vh-280px)] min-h-[450px]'}`}
       >
         {renderLayout()}
+        {viewMode !== 'ancestry' && (
+          <TopologyAncestryPill origin={TOPOLOGY_ANCESTRY[viewMode]} />
+        )}
       </div>
 
       {/* Journey Insights & Story Explorer */}

@@ -66,6 +66,7 @@ import ProjectTitleBar from '@/components/calm-magic/ProjectTitleBar';
 import PatternJournal from '@/components/calm-magic/PatternJournal';
 import { DetectedPattern, PatternHistoryEntry } from '@/utils/patternDetection';
 import { TopologiesTab } from '@/components/calm-magic/topologies/TopologiesTab';
+import { BoardTabAncestryBanner } from '@/components/calm-magic/BoardTabAncestryBanner';
 import { ConstellationTab } from '@/components/calm-magic/constellation/ConstellationTab';
 import InteractiveToolsPanel from '@/components/calm-magic/tools/InteractiveToolsPanel';
 import { FragmentMigrationDialog } from '@/components/calm-magic/FragmentMigrationDialog';
@@ -1741,6 +1742,7 @@ const CalmMagicBoard = () => {
         {/* Window of Tolerance View */}
         {activeView === 'window-of-tolerance' && (
           <div className="flex-1 overflow-auto p-4 md:p-0">
+            <BoardTabAncestryBanner tab="window-of-tolerance" label="Relational ancestry" />
             <QuadrantDynamicsPanel
               seasonQualities={seasonQualities}
               shadowPosition={shadowPosition}
@@ -1768,6 +1770,7 @@ const CalmMagicBoard = () => {
         {/* PRD Assembly View */}
         {activeView === 'prd-assembly' && (
           <div className="flex-1 overflow-auto p-4 md:p-6">
+            <BoardTabAncestryBanner tab="prd-assembly" label="Workflow ancestry" />
             <PrdAssemblyPanel
               isOpen={true}
               onClose={() => setActiveView('matrix')}
@@ -1871,6 +1874,7 @@ const CalmMagicBoard = () => {
               onAnalyzeTopology={() => analyzeTopology(polenEntries)}
               onApplyInsightToShadow={handleApplyInsightToShadow}
               consciousnessGeometry={consciousnessGeometry}
+              onSwitchBoardTab={(tab) => setActiveView(tab as ViewTab)}
             />
           </div>
         )}

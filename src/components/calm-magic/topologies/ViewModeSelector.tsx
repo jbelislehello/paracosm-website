@@ -1,8 +1,8 @@
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Box, Diamond, Orbit, Grid3X3, Wind, Layers, RotateCw, Atom, Eye } from 'lucide-react';
+import { Box, Diamond, Orbit, Grid3X3, Wind, Layers, RotateCw, Atom, Eye, Compass } from 'lucide-react';
 
-export type TopologyViewMode = 'isometric' | 'diamond' | 'spiral' | 'charts' | 'coordinates' | 'cycles' | 'flow' | 'projection' | 'observatory';
+export type TopologyViewMode = 'isometric' | 'diamond' | 'spiral' | 'charts' | 'coordinates' | 'cycles' | 'flow' | 'projection' | 'observatory' | 'ancestry';
 
 interface ViewConfig {
   icon: typeof Box;
@@ -55,6 +55,11 @@ const VIEW_CONFIGS: Record<TopologyViewMode, ViewConfig> = {
     icon: Eye,
     label: 'Observatory',
     tooltip: 'Live consciousness metrics, Fisher Information, Betti numbers, and 3D torus preview.'
+  },
+  ancestry: {
+    icon: Compass,
+    label: 'Ancestry',
+    tooltip: 'The 2013–2018 compasses this board descends from. Click to switch view in place.'
   }
 };
 
