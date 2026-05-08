@@ -58,8 +58,8 @@ const VIEW_CONFIGS: Record<TopologyViewMode, ViewConfig> = {
   },
   ancestry: {
     icon: Compass,
-    label: 'Ancestry',
-    tooltip: 'The 2013–2018 compasses this board descends from. Click to switch view in place.'
+    label: 'Compasses',
+    tooltip: 'The compasses this board runs on. Click any compass to switch the live topology in place.'
   }
 };
 
