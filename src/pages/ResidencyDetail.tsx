@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Share2, Check } from "lucide-react";
 import { getResidency, residencies } from "@/data/residencies";
+import { residencyImage, residencyImageCaption } from "@/assets/retreats";
 import { Button } from "@/components/ui/button";
 import {
   Breadcrumb,
@@ -80,7 +81,7 @@ const ResidencyDetail: React.FC = () => {
             background: `radial-gradient(ellipse at 70% 20%, hsl(${r.hueTo} / 0.35), transparent 60%)`,
           }}
         />
-        <div className="container max-w-5xl mx-auto relative">
+        <div className="container max-w-6xl mx-auto relative">
           <div className="flex items-center justify-between gap-4 mb-8 flex-wrap">
             <Breadcrumb>
               <BreadcrumbList>
@@ -128,33 +129,68 @@ const ResidencyDetail: React.FC = () => {
             <ArrowLeft className="w-4 h-4" /> All residencies
           </Link>
 
-          <div className="flex items-center gap-3 mb-6">
-            <span className="text-5xl md:text-6xl" aria-hidden>{r.glyph}</span>
-            <span className="text-[10px] uppercase tracking-[0.3em] text-foreground/60">
-              Expansive Leadership Residency
-            </span>
-          </div>
+          <div className="grid md:grid-cols-12 gap-10 md:gap-14 items-end">
+            <div className="md:col-span-7">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="text-5xl md:text-6xl" aria-hidden>{r.glyph}</span>
+                <span className="text-[10px] uppercase tracking-[0.3em] text-foreground/60">
+                  Expansive Leadership Residency
+                </span>
+              </div>
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-light leading-[1.05] mb-6 text-foreground">
-            {r.name}.
-          </h1>
-          <p className="text-xl md:text-2xl italic text-foreground/75 mb-10 max-w-3xl">
-            {r.tagline}
-          </p>
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-light leading-[1.05] mb-6 text-foreground">
+                {r.name}.
+              </h1>
+              <p className="text-xl md:text-2xl italic text-foreground/75 mb-10 max-w-2xl">
+                {r.tagline}
+              </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl text-sm">
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-foreground/55 mb-1">Teacher</p>
-              <p className="text-foreground/85">{r.teacher}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-2xl text-sm">
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-foreground/55 mb-1">Teacher</p>
+                  <p className="text-foreground/85">{r.teacher}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-foreground/55 mb-1">Duration</p>
+                  <p className="text-foreground/85">{r.duration}</p>
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-foreground/55 mb-1">Format</p>
+                  <p className="text-foreground/85">{r.format}</p>
+                </div>
+              </div>
             </div>
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-foreground/55 mb-1">Duration</p>
-              <p className="text-foreground/85">{r.duration}</p>
-            </div>
-            <div>
-              <p className="text-[10px] uppercase tracking-[0.2em] text-foreground/55 mb-1">Format</p>
-              <p className="text-foreground/85">{r.format}</p>
-            </div>
+
+            {residencyImage[r.id] && (
+              <figure className="md:col-span-5 relative">
+                <div
+                  className="relative overflow-hidden rounded-2xl aspect-[4/5] shadow-[0_40px_70px_-40px_hsl(220_30%_15%/0.5)]"
+                  style={{ boxShadow: `0 40px 70px -40px hsl(${r.hueFrom} / 0.55)` }}
+                >
+                  <img
+                    src={residencyImage[r.id]}
+                    alt={residencyImageCaption[r.id]}
+                    loading="eager"
+                    className="w-full h-full object-cover"
+                  />
+                  <div
+                    aria-hidden
+                    className="absolute inset-0 mix-blend-multiply opacity-30"
+                    style={{
+                      background: `linear-gradient(135deg, hsl(${r.hueFrom} / 0.9), transparent 65%)`,
+                    }}
+                  />
+                  <div
+                    aria-hidden
+                    className="absolute inset-0 ring-1 ring-inset rounded-2xl"
+                    style={{ boxShadow: `inset 0 0 0 1px hsl(${r.hueTo} / 0.35)` }}
+                  />
+                </div>
+                <figcaption className="mt-3 text-[11px] uppercase tracking-[0.2em] text-foreground/55">
+                  {residencyImageCaption[r.id]}
+                </figcaption>
+              </figure>
+            )}
           </div>
         </div>
       </section>

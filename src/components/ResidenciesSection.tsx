@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { residencies } from "@/data/residencies";
+import { retreatImages } from "@/assets/retreats";
 
 const ResidenciesSection: React.FC = () => {
   return (
@@ -9,7 +10,7 @@ const ResidenciesSection: React.FC = () => {
       className="relative py-20 md:py-28 px-4 bg-gradient-to-b from-background via-background to-muted/30"
     >
       <div className="container max-w-6xl mx-auto">
-        <div className="max-w-3xl mb-12 md:mb-16">
+        <div className="max-w-3xl mb-10 md:mb-12">
           <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground mb-4">
             Expansive Leadership Residencies
           </p>
@@ -17,12 +18,40 @@ const ResidenciesSection: React.FC = () => {
             Seven elemental ways<br />
             <span className="italic text-muted-foreground">to think, feel, and lead.</span>
           </h2>
-          <p className="text-base md:text-lg text-muted-foreground max-w-2xl leading-relaxed">
+          <p className="text-base md:text-lg text-muted-foreground max-w-2xl leading-relaxed mb-4">
             Each residency is an embodied apprenticeship with a non-human teacher. You don't
             study the forest — you let it reorganize how you make decisions. Choose the element
             that matches the season you're in.
           </p>
+          <p className="text-sm md:text-base text-muted-foreground/85 italic max-w-2xl leading-relaxed">
+            Each archetype is a doorway into Calm Magic's relational intelligence —
+            a way of leading the nervous system can actually sustain.
+          </p>
         </div>
+
+        {/* Ambient photo strip */}
+        <figure className="relative mb-14 md:mb-16 overflow-hidden rounded-2xl shadow-[0_30px_70px_-40px_hsl(220_30%_15%/0.4)]">
+          <div className="aspect-[21/9] w-full">
+            <img
+              src={retreatImages.mountainSummit}
+              alt="A cohort sitting in summit light — long-horizon time, executive body."
+              loading="lazy"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-tr from-background/85 via-background/10 to-transparent"
+          />
+          <figcaption className="absolute bottom-5 md:bottom-8 left-5 md:left-10 max-w-md">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-foreground/70 mb-2">
+              From the field
+            </p>
+            <p className="text-lg md:text-2xl font-light leading-snug text-foreground">
+              Cohorts already thinking like mountains, rivers, and forests.
+            </p>
+          </figcaption>
+        </figure>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
           {residencies.map((r, i) => (
