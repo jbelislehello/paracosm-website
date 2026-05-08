@@ -1,9 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { residencies } from "@/data/residencies";
-import { retreatImages, retreatImageCredits, formatCredit } from "@/assets/retreats";
+import { retreatImages, formatCredit } from "@/assets/retreats";
+import { useImageCredits } from "@/hooks/useImageCredits";
 
 const ResidenciesSection: React.FC = () => {
+  const { getCredit } = useImageCredits();
   return (
     <section
       id="residencies"
