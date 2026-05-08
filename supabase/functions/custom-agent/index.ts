@@ -91,8 +91,8 @@ serve(async (req) => {
       // fall through with envAssistantId
     }
 
-    // If no agent_id is provided or it's empty, create a new assistant
-    let assistantId = agent_id;
+    // If no agent_id is provided or it's empty, fall back to env, else create a new assistant
+    let assistantId = agent_id || envAssistantId;
     
     if (!assistantId) {
       console.log("No assistant ID provided, creating a new assistant...");
