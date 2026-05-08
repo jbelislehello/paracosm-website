@@ -1,19 +1,27 @@
+import { useMemo, useState } from "react";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ORIGIN_METHODS } from "@/data/origins";
+import { Button } from "@/components/ui/button";
+import { ORIGIN_METHODS, type OriginMethod } from "@/data/origins";
 import {
   TOPOLOGY_ANCESTRY,
   BOARD_TAB_ANCESTRY,
   type BoardTabSlug,
 } from "@/data/originsToTopology";
+import {
+  WILD_COOKIE_COMPASSES,
+  STAGE_LABELS,
+  type CompassStage,
+} from "@/data/wildCookieCompasses";
 import type { TopologyViewMode } from "./ViewModeSelector";
+import { AncestryArc } from "./AncestryArc";
+import { WildCookieFramingBand } from "./WildCookieFramingBand";
+import { cn } from "@/lib/utils";
 
 interface OriginsAncestryViewProps {
-  /** Switch the topologies tab to a different view mode in place. */
   onSwitchTopologyMode: (mode: TopologyViewMode) => void;
-  /** Switch the board to a different top-level tab in place. */
   onSwitchBoardTab?: (tab: BoardTabSlug | "matrix") => void;
 }
 
@@ -22,7 +30,6 @@ type Target =
   | { kind: "board"; tab: BoardTabSlug; label: string }
   | { kind: "external"; to: string; label: string };
 
-/** Compute which live surfaces each origin sketch became. */
 function targetsFor(slug: string): Target[] {
   const out: Target[] = [];
   (Object.entries(TOPOLOGY_ANCESTRY) as [TopologyViewMode, { slug: string }][]).forEach(
@@ -36,7 +43,6 @@ function targetsFor(slug: string): Target[] {
       if (origin.slug === slug) out.push({ kind: "board", tab, label: tab });
     },
   );
-  // Adjacent surfaces (kept as external links — not inside the board)
   if (slug === "interaction-patterns-2017") {
     out.push({ kind: "external", to: "/pattern-encyclopedia", label: "Pattern Encyclopedia" });
     out.push({ kind: "external", to: "/tonalli", label: "Tonalli Spatial" });
@@ -53,14 +59,48 @@ function targetsFor(slug: string): Target[] {
   return out;
 }
 
+const STAGES: (CompassStage | "all")[] = [
+  "all",
+  "explore",
+  "frame",
+  "ideate",
+  "vision",
+  "design",
+  "ship",
+];
+
 export function OriginsAncestryView({
   onSwitchTopologyMode,
   onSwitchBoardTab,
 }: OriginsAncestryViewProps) {
+  const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
+  const [hoverHighlight, setHoverHighlight] = useState<string[] | null>(null);
+  const [stageFilter, setStageFilter] = useState<CompassStage | "all">("all");
+
+  const selected: OriginMethod | null = useMemo(
+    () => ORIGIN_METHODS.find((o) => o.slug === selectedSlug) ?? null,
+    [selectedSlug],
+  );
+
+  const relatedCompasses = useMemo(
+    () =>
+      selected
+        ? WILD_COOKIE_COMPASSES.filter((c) =>
+            c.relatesToOriginSlugs.includes(selected.slug),
+          )
+        : [],
+    [selected],
+  );
+
+  const highlightedSlugs = useMemo(
+    () => new Set(hoverHighlight ?? []),
+    [hoverHighlight],
+  );
+
   return (
     <div className="h-full overflow-auto p-4 md:p-6">
-      <div className="mx-auto max-w-5xl">
-        <header className="mb-8 text-center">
+      <div className="mx-auto max-w-6xl space-y-6">
+        <header className="text-center">
           <Badge variant="outline" className="mb-3 gap-1.5">
             <Sparkles className="h-3 w-3" />
             Ancestry
@@ -69,110 +109,158 @@ export function OriginsAncestryView({
             The compasses this board descends from
           </h2>
           <p className="mx-auto mt-2 max-w-2xl text-sm text-muted-foreground">
-            Ten methods sketched 2013–2018. Each one names a piece of the
-            grammar the live system runs on. Click a "Became →" target to
-            switch this canvas in place.
+            Two families: ten origin sketches (2013–2018) that became the
+            board's grammar, and twenty thematic compasses that frame an idea
+            into its closest executable surface. Pick either — the canvas
+            switches in place.
           </p>
         </header>
 
-        {/* Temporal arc */}
-        <div className="mb-8 hidden md:flex items-center gap-3 px-2">
-          {["2013", "2016", "2017", "2018"].map((y) => (
-            <div key={y} className="flex flex-1 items-center gap-2">
-              <span className="rounded-full bg-secondary px-2 py-0.5 text-[10px] font-semibold">
-                {y}
-              </span>
-              <div className="h-px flex-1 bg-border" />
-            </div>
+        {/* Stage filter — applies to both bands */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5">
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            Stage:
+          </span>
+          {STAGES.map((s) => (
+            <Button
+              key={s}
+              variant={stageFilter === s ? "default" : "outline"}
+              size="sm"
+              className="h-7 px-2.5 text-[11px]"
+              onClick={() => setStageFilter(s)}
+            >
+              {s === "all" ? "All" : STAGE_LABELS[s as CompassStage]}
+            </Button>
           ))}
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          {ORIGIN_METHODS.map((m) => {
-            const targets = targetsFor(m.slug);
-            return (
-              <Card
-                key={m.slug}
-                className="overflow-hidden border-border/60 bg-card/60"
-              >
-                <div className="flex h-32 w-full items-stretch overflow-hidden bg-muted">
-                  <img
-                    src={m.image}
-                    alt={`${m.title} — sketch by Jonathan Bélisle, ${m.year}`}
-                    loading="lazy"
-                    className="h-full w-full object-cover"
-                  />
+        {/* Temporal arc */}
+        <AncestryArc
+          selectedSlug={selectedSlug}
+          highlightedSlugs={highlightedSlugs}
+          onSelect={(slug) =>
+            setSelectedSlug((curr) => (curr === slug ? null : slug))
+          }
+        />
+
+        {/* Selected origin detail */}
+        {selected && (
+          <Card className="overflow-hidden border-primary/40 bg-card/80">
+            <div className="grid gap-0 md:grid-cols-[200px_1fr]">
+              <div className="aspect-[4/3] w-full overflow-hidden bg-muted md:aspect-auto md:h-full">
+                <img
+                  src={selected.image}
+                  alt={`${selected.title} — sketch by Jonathan Bélisle, ${selected.year}`}
+                  className="h-full w-full object-cover"
+                />
+              </div>
+              <div className="space-y-3 p-4">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <Badge variant="secondary" className="text-[10px]">
+                    {selected.year}
+                  </Badge>
+                  <Badge variant="outline" className="text-[10px]">
+                    {selected.language}
+                  </Badge>
+                  <h3 className="ml-1 text-sm font-semibold leading-tight">
+                    {selected.title}
+                  </h3>
                 </div>
-                <div className="space-y-3 p-4">
-                  <div className="flex items-center gap-2">
-                    <Badge variant="secondary" className="text-[10px]">
-                      {m.year}
-                    </Badge>
-                    <Badge variant="outline" className="text-[10px]">
-                      {m.language}
-                    </Badge>
-                  </div>
-                  <div>
-                    <h3 className="text-sm font-semibold leading-tight">
-                      {m.title}
-                    </h3>
-                    {m.subtitle && (
-                      <p className="mt-0.5 text-xs italic text-muted-foreground">
-                        {m.subtitle}
-                      </p>
+                {selected.subtitle && (
+                  <p className="text-xs italic text-muted-foreground">
+                    {selected.subtitle}
+                  </p>
+                )}
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  {selected.blurb}
+                </p>
+                <div className="flex flex-wrap gap-1">
+                  {selected.vocabulary.slice(0, 8).map((v) => (
+                    <span
+                      key={v}
+                      className="rounded bg-secondary/70 px-1.5 py-0.5 text-[10px]"
+                    >
+                      {v}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Became → */}
+                <div className="border-t border-border/60 pt-3">
+                  <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    Became → switch the canvas
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {targetsFor(selected.slug).map((t, i) =>
+                      t.kind === "topology" ? (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => onSwitchTopologyMode(t.mode)}
+                          className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary transition-colors hover:bg-primary/20"
+                        >
+                          {t.label}
+                          <ArrowRight className="h-3 w-3" />
+                        </button>
+                      ) : t.kind === "board" ? (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => onSwitchBoardTab?.(t.tab)}
+                          className="inline-flex items-center gap-1 rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium transition-colors hover:bg-secondary/80"
+                        >
+                          {t.label}
+                          <ArrowRight className="h-3 w-3" />
+                        </button>
+                      ) : (
+                        <Link
+                          key={i}
+                          to={t.to}
+                          className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-background/60 px-2.5 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
+                        >
+                          {t.label}
+                          <ArrowRight className="h-3 w-3" />
+                        </Link>
+                      ),
                     )}
                   </div>
-                  <p className="text-xs leading-relaxed text-muted-foreground line-clamp-3">
-                    {m.blurb}
-                  </p>
-                  {targets.length > 0 && (
-                    <div className="border-t border-border/60 pt-3">
-                      <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                        Became →
-                      </p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {targets.map((t, i) =>
-                          t.kind === "topology" ? (
-                            <button
-                              key={i}
-                              type="button"
-                              onClick={() => onSwitchTopologyMode(t.mode)}
-                              className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-medium text-primary transition-colors hover:bg-primary/20"
-                            >
-                              {t.label}
-                              <ArrowRight className="h-3 w-3" />
-                            </button>
-                          ) : t.kind === "board" ? (
-                            <button
-                              key={i}
-                              type="button"
-                              onClick={() => onSwitchBoardTab?.(t.tab)}
-                              className="inline-flex items-center gap-1 rounded-full bg-secondary px-2.5 py-1 text-[11px] font-medium transition-colors hover:bg-secondary/80"
-                            >
-                              {t.label}
-                              <ArrowRight className="h-3 w-3" />
-                            </button>
-                          ) : (
-                            <Link
-                              key={i}
-                              to={t.to}
-                              className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-background/60 px-2.5 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:text-foreground"
-                            >
-                              {t.label}
-                              <ArrowRight className="h-3 w-3" />
-                            </Link>
-                          ),
-                        )}
-                      </div>
-                    </div>
-                  )}
                 </div>
-              </Card>
-            );
-          })}
-        </div>
 
-        <div className="mt-8 text-center">
+                {relatedCompasses.length > 0 && (
+                  <div className="border-t border-border/60 pt-3">
+                    <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Frames it shares grammar with
+                    </p>
+                    <div className="flex flex-wrap gap-1">
+                      {relatedCompasses.map((c) => (
+                        <span
+                          key={c.slug}
+                          className={cn(
+                            "rounded-full border px-2 py-0.5 text-[10px]",
+                            "border-primary/40 bg-primary/5 text-foreground",
+                          )}
+                        >
+                          {c.name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* Wild Cookie framing band */}
+        <WildCookieFramingBand
+          stageFilter={stageFilter}
+          selectedOriginSlug={selectedSlug}
+          onHoverCompass={setHoverHighlight}
+          onSwitchTopologyMode={onSwitchTopologyMode}
+          onSwitchBoardTab={(tab) => onSwitchBoardTab?.(tab)}
+        />
+
+        <div className="text-center">
           <Link
             to="/origins"
             className="text-xs font-medium text-primary hover:underline"
