@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Share2, Check, Link2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Share2, Check } from "lucide-react";
 import { getResidency, residencies } from "@/data/residencies";
 import { Button } from "@/components/ui/button";
 import {
