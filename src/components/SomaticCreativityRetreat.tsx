@@ -33,16 +33,21 @@ const SomaticCreativityRetreat: React.FC = () => {
           "linear-gradient(135deg, hsl(35 30% 96%), hsl(15 35% 92%) 60%, hsl(355 25% 90%))",
       }}
     >
-      <div className="container max-w-5xl mx-auto relative">
-        <div className="grid md:grid-cols-12 gap-10 md:gap-16 items-start">
-          <div className="md:col-span-5">
+      <div className="container max-w-6xl mx-auto relative">
+        {/* Hero — text + portrait photo */}
+        <div className="grid md:grid-cols-12 gap-10 md:gap-14 items-center mb-20 md:mb-28">
+          <div className="md:col-span-7">
             <p className="text-xs uppercase tracking-[0.25em] text-foreground/60 mb-4">
               Somatic Creativity Retreat
             </p>
             <h2 className="text-3xl md:text-5xl font-light leading-tight text-foreground mb-6">
               A retreat where the body composes the strategy.
             </h2>
-            <p className="text-base md:text-lg text-foreground/75 leading-relaxed mb-8">
+            <p className="text-sm md:text-base text-foreground/65 italic leading-relaxed mb-5 max-w-xl">
+              The somatic root of <span className="not-italic font-medium text-foreground/80">Calm Magic</span> —
+              a relational intelligence practice for leaders whose nervous system is the instrument.
+            </p>
+            <p className="text-base md:text-lg text-foreground/75 leading-relaxed mb-8 max-w-xl">
               For founders, executives, and artists who lead through their nervous system
               and want to remember how. Five days off-grid, in a small circle, guided through
               listening, movement, and the making of one true thing.
@@ -63,25 +68,65 @@ const SomaticCreativityRetreat: React.FC = () => {
             </div>
           </div>
 
-          <div className="md:col-span-7 space-y-5">
-            {movements.map((m, i) => (
+          <figure className="md:col-span-5 relative">
+            <div className="relative overflow-hidden rounded-2xl shadow-[0_30px_60px_-30px_hsl(15_40%_25%/0.45)] aspect-[4/5]">
+              <img
+                src={retreatImages.atelierCircle}
+                alt="A facilitated atelier circle around a working table — the relational intelligence practice at the heart of Calm Magic."
+                loading="lazy"
+                className="w-full h-full object-cover"
+              />
+              <div
+                aria-hidden
+                className="absolute inset-0 mix-blend-multiply opacity-25"
+                style={{ background: "linear-gradient(135deg, hsl(15 40% 50%), transparent 60%)" }}
+              />
+            </div>
+            <figcaption className="mt-3 text-[11px] uppercase tracking-[0.2em] text-foreground/55">
+              Atelier — where strategy is composed by the room.
+            </figcaption>
+          </figure>
+        </div>
+
+        {/* Three movements — alternating editorial layout */}
+        <div className="space-y-16 md:space-y-24">
+          {movements.map((m, i) => {
+            const reversed = i % 2 === 1;
+            return (
               <div
                 key={m.label}
-                className="group relative pl-8 md:pl-12 py-4 border-l border-foreground/15"
+                className="grid md:grid-cols-12 gap-8 md:gap-14 items-center"
               >
-                <span className="absolute -left-[7px] top-5 w-3 h-3 rounded-full bg-foreground/70" />
-                <p className="text-[10px] uppercase tracking-[0.25em] text-foreground/50 mb-1">
-                  Movement {String(i + 1).padStart(2, "0")}
-                </p>
-                <h3 className="text-2xl md:text-3xl font-light text-foreground mb-2">
-                  {m.label}
-                </h3>
-                <p className="text-sm md:text-base text-foreground/75 leading-relaxed max-w-xl">
-                  {m.body}
-                </p>
+                <figure
+                  className={`md:col-span-7 relative ${reversed ? "md:order-2" : ""}`}
+                >
+                  <div className="relative overflow-hidden rounded-2xl shadow-[0_25px_50px_-25px_hsl(15_40%_25%/0.4)] aspect-[3/2]">
+                    <img
+                      src={m.image}
+                      alt={m.caption}
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <figcaption className="mt-3 text-[11px] uppercase tracking-[0.2em] text-foreground/50">
+                    {m.caption}
+                  </figcaption>
+                </figure>
+
+                <div className={`md:col-span-5 ${reversed ? "md:order-1 md:text-right" : ""}`}>
+                  <p className="text-[10px] uppercase tracking-[0.3em] text-foreground/50 mb-3">
+                    Movement {String(i + 1).padStart(2, "0")}
+                  </p>
+                  <h3 className="text-3xl md:text-4xl font-light text-foreground mb-4">
+                    {m.label}
+                  </h3>
+                  <p className="text-base text-foreground/75 leading-relaxed">
+                    {m.body}
+                  </p>
+                </div>
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
       </div>
     </section>
