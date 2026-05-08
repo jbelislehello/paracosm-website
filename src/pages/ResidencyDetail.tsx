@@ -15,9 +15,20 @@ import {
 } from "@/components/ui/breadcrumb";
 import { toast } from "sonner";
 
+const archetypeSlug = {
+  forest: "forestCircle",
+  river: "riverPanel",
+  lake: "lakePortrait",
+  mountain: "mountainSummit",
+  ocean: "oceanGathering",
+  storm: "stormKeynote",
+  sun: "sunAmphitheater",
+} as const;
+
 const ResidencyDetail: React.FC = () => {
   const { archetype } = useParams<{ archetype: string }>();
   const residency = archetype ? getResidency(archetype) : undefined;
+  const { getCredit } = useImageCredits();
 
   useEffect(() => {
     if (residency) {
