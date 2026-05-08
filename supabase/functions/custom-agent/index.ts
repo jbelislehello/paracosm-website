@@ -1,6 +1,7 @@
 
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
 const openAIApiKey = Deno.env.get("OPENAI_API_KEY");
 
@@ -9,6 +10,26 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// In-memory per-user rate limit (10 requests / 60s)
+const RATE_LIMIT = 10;
+const RATE_WINDOW_MS = 60_000;
+const rateBuckets = new Map<string, number[]>();
+
+function isRateLimited(key: string): boolean {
+  const now = Date.now();
+  const arr = (rateBuckets.get(key) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
+  if (arr.length >= RATE_LIMIT) {
+    rateBuckets.set(key, arr);
+    return true;
+  }
+  arr.push(now);
+  rateBuckets.set(key, arr);
+  return false;
+}
+
+const MAX_MESSAGES = 30;
+const MAX_CONTENT_LEN = 4000;
+
 serve(async (req) => {
   // CORS preflight
   if (req.method === "OPTIONS") {
@@ -16,10 +37,58 @@ serve(async (req) => {
   }
 
   try {
+    // Auth: require a valid Supabase JWT
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: authHeader } } },
+    );
+    const token = authHeader.replace("Bearer ", "");
+    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
+    if (claimsError || !claimsData?.claims) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const userId = claimsData.claims.sub as string;
+
+    if (isRateLimited(userId)) {
+      return new Response(JSON.stringify({ error: "Rate limit exceeded. Try again shortly." }), {
+        status: 429,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const { messages, agent_id } = await req.json();
 
-    if (!Array.isArray(messages)) {
-      throw new Error("Messages must be sent as an array.");
+    if (!Array.isArray(messages) || messages.length === 0) {
+      throw new Error("Messages must be a non-empty array.");
+    }
+    if (messages.length > MAX_MESSAGES) {
+      throw new Error(`Too many messages (max ${MAX_MESSAGES}).`);
+    }
+    const allowedRoles = new Set(["user", "assistant", "system"]);
+    for (const m of messages) {
+      if (!m || typeof m.content !== "string" || !allowedRoles.has(m.role)) {
+        throw new Error("Each message needs a valid role and string content.");
+      }
+      if (m.content.length > MAX_CONTENT_LEN) {
+        throw new Error(`Message content exceeds ${MAX_CONTENT_LEN} chars.`);
+      }
+    }
+
+    // Prefer a pre-created Assistant ID from env to avoid accumulation.
+    const envAssistantId = Deno.env.get("OPENAI_ASSISTANT_ID");
+    if (!agent_id && envAssistantId) {
+      // fall through with envAssistantId
     }
 
     // If no agent_id is provided or it's empty, create a new assistant
