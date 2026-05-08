@@ -1,63 +1,88 @@
-# Origins — methodological lineage of Calm Magic
+# Wire the Origins compasses into the Calm Magic Board
 
-The 10 uploads are not generic stock images — they're 10 **original methods** Jonathan crafted between 2013 and 2018 that explicitly seeded Calm Magic. The job is to anchor each one to the live Calm Magic construct it became, so visitors can see the work as a 13-year continuum rather than a recent invention.
+You're right — building `/origins` as a standalone gallery told the story but didn't *operationalize* it. Each of the 10 compasses is a **topology of meaning** that the board already runs structurally. The board's `Topologies` tab is literally a gallery of nine view modes (isometric, diamond, spiral, charts, coordinates, cycles, flow, projection, observatory). The origins belong inside that gallery as **the ancestral layer** — the sketches the live geometries descended from.
 
-The existing `/lineage` page compares Calm Magic to **external** frameworks (Theory U, Cynefin, Wardley…). These uploads are the **internal** lineage — separate surface, cross-linked.
+## Where the connections actually live
 
-## What each upload is, and where it connects
+Mapping each origin compass to a current board surface (not a marketing link, the actual rendered geometry):
 
-| # | Upload | Year | Calm Magic construct it seeded |
-|---|---|---|---|
-| 1 | **#Small Thinking Framework** — concentric layers (Practices · Ecologies · Technologies · Behaviors · Economies · Markets · Culture · Tekhne · Intelligences · Tools · Dialogues · Imagination · Reason · Knowledge Bases) | 2013 | The 5 PRD seasons (POLLENS → ANTHEMS) and the *Ontological Data Integrity* principle — nested layers as 1:1 columns. |
-| 2 | **Applied Poetry** — "promoting a calmer future without helmets and less screens" + Calm Computing, Tangible Computing, Multisensory, Not Ocularcentric | 2016 | The **name** "Calm Magic" itself; relational intelligence as a felt-sense practice; the Tonalli Voice/Spatial branches. |
-| 3 | **SMPL (FR)** — JOUER · RACONTER · CRÉER DU SENS · MODÉLISER · INSPIRER · IDÉATION · INVESTIGATION · EXÉCUTER · ARCHITECTURE & DESIGN · VISION & LOGISTIQUE on a Divergence ↔ Exploration ↔ Convergence axis | ~2017 | The Calm Magic Board verbs and the GL!TCH → DRIFT → TUNE descent. |
-| 4 | **Architecture d'expériences — 12 interaction patterns** (proximity, camera vision, gyroscope, weather, gesture recognition, sonography…) | ~2017 | The "programmable environments" thesis behind Tonalli Spatial and the AI Observatory's sensing tier. |
-| 5 | **Activités et livrables du processus UX** | 2018 | The Service Blueprint integration that translates the 5-season PRD into AI Observatory tiers. |
-| 6 | **Noetical Flux · Perma Flux · Bio/Psy/Geo Flux** — courants de fond, design narratif, design de démarche, intelligences artificielles, immersion, capteurs, espaces réels | 2018 | The **Consciousness Manifold** (Event Field + 4 Time Lenses) and Drift's 5 axes (MAGIC · LOVE · CALM · OPEN · FREE). |
-| 7 | **Proxémie · Noétique · Voix Intérieure · Praxis · Poiesis · Neuroleadership · Sérendipité** with vectors *Guiding, Dialogue, Listening, Playing, Touching, Empathy, Intuition, Non-verbal, Relational intelligence* | 2018 | The most direct ancestor — the **Relational Intelligence** core of Calm Magic. Almost a 1:1 with today's facilitation methodology. |
-| 8 | **Design Thinking → Service Design → System Architecture** workflow | 2018 | Operational ancestor of the **Foundational Prompt Compiler** (PRD → tech stack JSON → agentic prompts). |
-| 9 | **Concentric methods diagram** — Pensée systémique, Sensemaking, Story Making, Poésie appliquée, Praxis, Poiesis, Computational Design… | 2018 | Companion to #1; ancestor of the 6 Constellation visualization modes. |
-| 10 | **IMAG1221** — Zen · Flow · Results · Encounters · Retreats | 2018 | Ancestor of the Paracosm Retreat structure (Azores 2026 lineage). |
+| Origin compass | Current board surface |
+|---|---|
+| **#Small Thinking** — concentric ontology | `Topologies → spiral` (SpiralLayout) and the 5-season PRD ring stack |
+| **Concentric Methods (2018)** | `Topologies → constellation` (ConstellationLayout) |
+| **Noetical / Perma / Bio-Psy-Geo Flux** | `Topologies → flow` (InformationFluxDiagram) and `Cosmological3DManifold` (4 Time Lenses) |
+| **Proxémie · Praxis · Poiesis** | `Window of Tolerance` + `Relational Intelligence` overlays — the felt-sense engine |
+| **SMPL — Divergence/Exploration/Convergence** | `Topologies → diamond` (DoubleDiamondLayout) + GL!TCH→DRIFT→TUNE descent |
+| **Applied Poetry** | `Expressivity` tab (multisensory tools surface) |
+| **DT → SD → SA workflow** | `PRD Assembly` tab (Foundational Prompt Compiler) |
+| **12 interaction patterns** | Pattern Encyclopedia + Tonalli Spatial sensors |
+| **UX activities & deliverables** | Service Blueprint (AI Observatory tiers) |
+| **Zen · Flow · Encounters · Retreats** | Paracosm container around the board (retreat cadence) |
 
-## Where this lives on the site
+The first five are *internal* to the board; the rest are *adjacent* surfaces.
 
-**New page: `/origins`** — "Origins — The methods that became Calm Magic."
+## What to build
 
-Structure:
-1. **Hero** — one paragraph: "Calm Magic didn't appear in 2024. These ten methods, sketched between 2013 and 2018, are its bones."
-2. **Vertical timeline** (2013 → 2018), one card per method:
-   - Image (the original sketch, full-bleed inside the card).
-   - Title, year, original language tag (EN / FR).
-   - 2-line description of what the method *did* at the time.
-   - **"Became →"** chip(s) linking to the live Calm Magic construct (board, season, retreat, lineage page, drift axis).
-3. **Closing block**: "See where this goes →" with two CTAs — `/lineage` (external comparables) and `/calm-magic-board` (the live system).
+### 1. New Topologies view mode: `ancestry`
 
-**Footer link**: add `Origins` next to `Credits` in the secondary footer row.
+Add `'ancestry'` to `TopologyViewMode` in `ViewModeSelector.tsx` with icon (Sparkles or Compass) and label "Ancestry". Renders a new component `OriginsAncestryView` inside `TopologiesTab`'s render switch.
 
-**Cross-link from `/lineage`**: small "Internal lineage — see Origins" callout above the external comparables grid.
+`OriginsAncestryView` shows the 10 origin compasses arranged as a **temporal arc** (2013 → 2018) with each card visually tethered to the live view mode it became:
 
-## Asset handling
+```text
+   2013        2016         2017              2018
+    ●———————————●—————————————●———————————————●●●●●●
+    │           │             │ │             │
+   Small       Applied       SMPL Interaction  Flux · Relational ·
+  Thinking     Poetry         FR  Patterns     Concentric · DT-SD-SA ·
+    │           │             │ │             │ UX · Zen-Retreats
+    ▼           ▼             ▼ ▼             ▼
+  spiral    expressivity   diamond ┐       flow / constellation /
+                                   │       window-of-tolerance /
+                              pattern-      prd-assembly
+                              encyclopedia
+```
 
-- Copy all 10 sketches from `parsed-documents://…` into `src/assets/origins/` with stable, descriptive filenames (`small-thinking-2013.jpg`, `applied-poetry-2016.jpg`, `smpl-fr-2017.jpg`, `interaction-patterns-2017.jpg`, `ux-process-2018.jpg`, `flux-noetical-2018.jpg`, `relational-intelligence-2018.jpg`, `dt-sd-sa-2018.jpg`, `concentric-methods-2018.jpg`, `zen-flow-retreats-2018.jpg`).
-- Author the metadata (year, language, "became" links) in `src/data/origins.ts` so it's the single source of truth.
-- Add each image to the existing `/credits` registry (photographer = "Jonathan Bélisle", year = the sketch year) so attribution stays consistent with the system already in place. Editing them inline already works thanks to the previous turn.
+Clicking a "Became →" target switches `viewMode` (or `activeView` for cross-tab targets) **in place** — no navigation away. Each card also exposes its vocabulary chips (Praxis, Poiesis, Noétique, etc.) which are the same primitives used in tile metadata, so we get a real semantic match rather than just a link.
 
-## Bilingual
+### 2. Topology cards → ancestor pill
 
-Three of the methods are originally in French (SMPL_FR2, the two 2018 captures, and the flux diagram). The page keeps the original-language title verbatim and adds an English gloss in parentheses — no translation of the sketches themselves. This honors the lineage and avoids re-rendering hand-drawn artifacts.
+Inside the existing topology views (spiral, diamond, flow, constellation), add a small pill in the top-right corner of the canvas reading e.g. **"Lineage: #Small Thinking, 2013"** with hover/click opening a popover that shows the original sketch + the 2-line origin blurb. This is the *ontological annotation* — the user can always see which historical compass the live geometry descends from.
 
-## Out of scope
+Component: `<TopologyAncestryPill mode={viewMode} />` driven by a new `src/data/originsToTopology.ts` map (single source of truth used by both the ancestry view and the pill).
 
-- Editing the sketches or recreating them as vector diagrams.
-- Adding these methods as filterable taxonomies inside `/calm-magic-board` (could be a follow-up if the page lands well).
-- Generating new translations of the FR cards.
-- Adding analytics on which lineage card drives most clicks (can layer on later).
+### 3. PRD-assembly cross-link
 
-## Files touched
+On the `PRD Assembly` tab header, surface a single line: *"Workflow ancestry: Design Thinking → Service Design → System Architecture (2018)"* with a hover-popover showing the dt-sd-sa sketch. Same pattern, no new tab.
 
-- New: `src/pages/Origins.tsx`, `src/data/origins.ts`, `src/assets/origins/*` (10 jpgs + `index.ts`).
-- Edited: `src/App.tsx` + `src/lib/routeRegistry.ts` (register `/origins`), `src/components/Footer.tsx` (footer link), `src/pages/Lineage.tsx` (callout to Origins), `src/assets/retreats/index.ts` *(extend the credits registry to include the 10 new sketches — same shape as today, so the existing `/credits` editor immediately edits these too)*.
+### 4. Window-of-tolerance cross-link
 
-## One question before I build
+Same treatment on `Window of Tolerance`: *"Relational ancestry: Proxémie · Noétique · Praxis · Poiesis (2018)"*.
 
-The "Became →" mapping above is my read of how each sketch became a current Calm Magic construct. **Is that mapping correct?** If any of the 10 should point somewhere else (e.g. you'd rather connect *Applied Poetry* to the Drift `MAGIC` axis instead of to Tonalli), tell me which to swap and I'll adjust the data file before generating the page.
+### 5. Keep `/origins` as the public-facing gallery
+
+The standalone `/origins` page stays as the marketing/SEO surface. The board integration is for *practitioners inside the system* — different audience, different need.
+
+## Files
+
+- New: `src/components/calm-magic/topologies/OriginsAncestryView.tsx`, `src/components/calm-magic/topologies/TopologyAncestryPill.tsx`, `src/data/originsToTopology.ts`.
+- Edit: `src/components/calm-magic/topologies/ViewModeSelector.tsx` (add `'ancestry'`), `src/components/calm-magic/topologies/TopologiesTab.tsx` (render switch + pill in canvas overlay), `src/pages/CalmMagicBoard.tsx` (small ancestry callouts on `prd-assembly` and `window-of-tolerance` headers — additive only).
+
+## Out of scope this round
+
+- Re-styling existing topology views.
+- Editing the 10 sketches.
+- Moving the public `/origins` gallery into the board (kept as separate surface).
+- Adding ancestry pills to the *adjacent* surfaces beyond `prd-assembly` and `window-of-tolerance` (Tonalli, Pattern Encyclopedia, Retreats can come in a follow-up).
+
+## One choice for you before I build
+
+The ancestry pill on each live topology view — should it be:
+
+**A. Always-on, subtle** — small caption badge bottom-left of every topology canvas, never dismissible. Constant felt-sense of lineage.
+
+**B. Optional toggle** — a "Show lineage" switch in the Topologies header. Off by default, on for the curious.
+
+**C. Hover-only** — pill appears only when hovering the canvas. Cleanest, almost invisible until invoked.
+
+My recommendation: **A**. It matches the Ontological Data Integrity principle — the ancestry isn't decoration, it's the schema itself. But say the word if you'd rather B or C.
