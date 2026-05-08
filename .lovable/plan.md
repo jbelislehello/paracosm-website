@@ -1,44 +1,74 @@
 ## Goal
 
-Make each `/residencies/:archetype` page easier to navigate and share by adding a breadcrumb trail and a share/copy-link control.
+Bring the site to life with the 8 uploaded retreat photographs, placed elegantly (editorial, not gallery-dump), and reframe the surrounding copy so the imagery clearly advances the **Calm Magic relational intelligence** thesis.
 
-## Changes
+## 1. Asset pipeline
 
-### 1. Register residency routes in the route registry
-File: `src/lib/routeRegistry.ts`
+The uploads are JPG/PNG images wrapped inside PDFs. Extract once at build-time prep:
 
-Add two entries so the existing breadcrumb system (and JSON-LD) recognizes residency pages:
+- For each `user-uploads://*.pdf`, run `pdfimages -j` (poppler) into `src/assets/retreats/`, then rename to semantic slugs:
+  - `atelier-circle.jpg`
+  - `forest-listening.jpg`
+  - `river-movement.jpg`
+  - `ocean-threshold.jpg`
+  - `mountain-stillness.jpg`
+  - `storm-rupture.jpg`
+  - `sun-emergence.jpg`
+  - `lake-reflection.jpg`
+- Optimize (target <300KB each, max 1600px long edge) via `cwebp`/`sharp` — keep `.jpg` for photographic warmth.
+- Import as ES6 modules in components (no `/public` references).
 
-- `{ path: "/residencies", label: "Residencies" }` (links back to `/#residencies` via a small fallback, or simply labels the segment)
-- `{ path: "/residencies/:archetype", label: (p) => <archetype name>, parent: "/residencies" }`
+If a slug → photo mapping feels off after extraction, I'll re-pair based on actual content; the file names above are the seven archetypes + the atelier hero.
 
-The label function will look up the archetype's `shortName` from `src/data/residencies.ts` so the trail reads `Home / Residencies / Forest`.
+## 2. SomaticCreativityRetreat — editorial reshape
 
-### 2. Add a Breadcrumbs UI component
-File: `src/components/ResidencyBreadcrumbs.tsx` (new, small wrapper)
+Current layout: 5/7 split, text + 3 movement cards. Upgrade to a quiet editorial composition:
 
-Uses the existing shadcn `Breadcrumb` primitives plus `useAutoBreadcrumbs()` to render the trail. Styled to sit cleanly on top of the tinted hero (muted foreground, hover to foreground, last item non-link).
+```text
+┌─────────────────────────┬───────────────────────┐
+│  EYEBROW                │   [tall portrait img] │
+│  Headline (lg, light)   │   atelier-circle      │
+│  Lede                   │                       │
+│  CTAs                   │                       │
+├─────────────────────────┴───────────────────────┤
+│  MOVEMENT 01 Listen      [landscape img right]  │
+│  MOVEMENT 02 Move        [landscape img left]   │
+│  MOVEMENT 03 Make        [landscape img right]  │
+└─────────────────────────────────────────────────┘
+```
 
-### 3. Add a Share button
-Inline in `src/pages/ResidencyDetail.tsx`, placed in the hero next to the existing "All residencies" link.
+- Each movement row alternates image side (zigzag), uses `aspect-[4/5]` or `aspect-[3/2]`, soft `rounded-2xl`, subtle `shadow-[0_30px_60px_-30px_hsl(var(--foreground)/0.25)]`, and a thin caption underneath in tracked uppercase.
+- Add a one-line **Calm Magic bridge** under the headline: *"A relational intelligence practice — the somatic root of the Calm Magic framework."* with a small inline link to `/calm-magic-demo` (or current Calm Magic anchor).
+- Respect `prefers-reduced-motion`; otherwise fade-in on scroll via existing `useScrollReveal` hook.
 
-Behavior:
-- If `navigator.share` is available (mobile), call it with `{ title, text: tagline, url }`.
-- Otherwise, copy the canonical URL to clipboard via `navigator.clipboard.writeText` and show a toast ("Link copied").
-- Uses `Share2` / `Check` icons from lucide-react and the existing `useToast` hook.
-- Canonical URL built from `window.location.origin + /residencies/{id}`.
+## 3. ResidencyDetail — hero photograph
 
-### 4. Wire into ResidencyDetail
-File: `src/pages/ResidencyDetail.tsx`
+On `/residencies/:archetype`, add the matching archetype photo to the hero band:
 
-In the hero block, replace the single "All residencies" back link with a row containing:
-- `<ResidencyBreadcrumbs />` on the left
-- Share button on the right
+- Right column of the existing tinted hero: `aspect-[4/5]` image with the archetype's HSL gradient as a 1px ring + soft duotone overlay using `mix-blend-multiply` tinted with `hueFrom`.
+- Falls back gracefully if no photo is mapped (current layout unchanged).
+- Mapping lives in `src/data/residencies.ts` as an optional `image?: string` field; only populate the 7 archetype slugs.
 
-Keep the existing back-to-top scroll and hero gradient untouched. No changes to data, routing, or other sections.
+## 4. ResidenciesSection (homepage) — single ambient photo
 
-## Out of scope
+Add one wide ambient photo (`atelier-circle.jpg`) above the archetype grid, full-bleed within container, `aspect-[21/9]`, with the relational-intelligence tagline overlaid bottom-left in the existing display font. No other layout changes — keeps the section scannable.
 
-- No changes to `ResidenciesSection` or homepage navigation.
+## 5. Copy: Calm Magic relational intelligence thread
+
+Tighten three short copy spots (no new sections):
+
+- **Somatic retreat lede** — add the bridge sentence above.
+- **Residencies section intro** — append: *"Each archetype is a doorway into Calm Magic's relational intelligence — a way of leading that the nervous system can actually sustain."*
+- **ResidencyDetail intro paragraph** — one sentence linking the archetype's posture to a Calm Magic axis (MAGIC / LOVE / CALM / OPEN / FREE) using the existing `driftAxisThematicMapping` memory.
+
+## 6. Out of scope
+
+- No changes to navigation, routing, data schema beyond optional `image` field, or i18n keys.
 - No new dependencies.
-- No changes to data schema.
+- No changes to `ParacosmRetreatSection` (Azores flagship) — separate visual identity.
+
+## Technical notes
+
+- Files touched: `src/assets/retreats/*` (new), `src/components/SomaticCreativityRetreat.tsx`, `src/components/ResidenciesSection.tsx`, `src/pages/ResidencyDetail.tsx`, `src/data/residencies.ts`.
+- Image extraction is a one-time local step; the committed assets are what ship.
+- All colors stay on semantic tokens; tints derived from each residency's existing `hueFrom`/`hueTo`.
