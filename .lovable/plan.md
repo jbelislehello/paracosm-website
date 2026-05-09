@@ -1,66 +1,53 @@
-# Add 5 Service & Product Design Disciplines to PRD Checklist
+## Goal
 
-The uploaded infographic defines 5 disciplines every PRD should cover: **Psychology, Economics, Politics (Policy), Operations, Technology**. The current PRD checklists in the wizard and assembly panel don't explicitly track these. This plan maps each discipline to the most semantically appropriate Calm Magic layer and adds a checklist item there.
+Extend the Calm Magic PRD checklist so it explicitly covers the 6 stages of the Ontology Pipeline (Controlled Vocabulary → Metadata Standards → Taxonomy → Thesaurus → Ontology → Knowledge Graph) from the uploaded reference, mapped onto the existing 5 PRD layers.
 
-## Discipline → Layer mapping
+Note on "8 layer": the PRD currently has 5 ontological layers (POLLENS, NOEMS, POEMS, TOTEMS, ANTHEMS). I'll treat this as adding 6 ontology-pipeline checklist items distributed across those layers — no schema change, no new DB columns (preserves the strict 1:1 ontological-mapping rule).
 
-| Discipline | Layer | Rationale | Check basis |
-|---|---|---|---|
-| Psychology — understand people & behaviour | POLLENS | Human aspirations, emotional texture, team dynamics | `pollens_team_dynamics` or `pollens_cultural_elements` keyword presence |
-| Economics — incentives & trade-offs | NOEMS | Mental models of value, trade-offs | keyword scan in `noems_concepts`/`noems_mental_models` for value/incentive/trade-off |
-| Operations — how things get delivered | POEMS | Systems, environments, delivery flows | `poems_systems` or `poems_environments` already covered, add explicit "delivery flow" check |
-| Politics (Policy) — power, rules, systems | TOTEMS | Access controls, governance, security policies | `totems_security_policies` or `totems_access_controls` keyword for policy/governance/rules |
-| Technology — systems & constraints | TOTEMS | Data architecture, technical constraints | `totems_data_architecture` keyword for tech stack/constraints |
+## Mapping
 
-Each item uses a lightweight keyword/length check on existing fields — no schema changes, no new DB columns (respects ontological 1:1 rule).
+| Pipeline Stage | PRD Layer | Field(s) checked |
+|---|---|---|
+| Controlled Vocabulary | POLLENS | `pollens_aspirations`, `pollens_cultural_elements` (terms, naming, glossary) |
+| Metadata Standards | NOEMS | `noems_concepts`, `noems_mental_models` (descriptive/structural metadata) |
+| Taxonomy | NOEMS | `noems_concepts`, `noems_intuitions` (parent-child hierarchy) |
+| Thesaurus | POEMS | `poems_objects`, `poems_systems` (synonyms, related terms across surfaces) |
+| Ontology | TOTEMS | `totems_data_architecture` (classes, relations, properties) |
+| Knowledge Graph | TOTEMS | `totems_data_architecture`, `totems_access_controls` (graph + governance) |
 
-## Files to edit
+Each new checklist item uses a case-insensitive regex on the concatenated field values, matching the pattern of the recently-added discipline items.
 
-Both files duplicate the same `LAYER_CHECKLIST` structure and must stay in sync:
+## Files to edit (keep both in sync)
 
-1. `src/components/prd-generator/PrdGeneratorWizard.tsx` (lines 145–167)
-2. `src/components/calm-magic/PrdAssemblyPanel.tsx` (lines 180–202)
+1. `src/components/prd-generator/PrdGeneratorWizard.tsx` — `LAYER_CHECKLIST` (lines 145–172)
+2. `src/components/calm-magic/PrdAssemblyPanel.tsx` — `LAYER_CHECKLIST` (lines 180–207)
 
-## New checklist additions
+## New checklist items
 
-```ts
-POLLENS: [
-  // existing 2 items…
-  { label: 'Psychology — people & behaviour understood',
-    check: (c) => /(behaviour|behavior|psycholog|emotion|motivation)/i.test(
-      `${c.pollens_aspirations ?? ''} ${c.pollens_team_dynamics ?? ''} ${c.pollens_cultural_elements ?? ''}`
-    )},
-],
-NOEMS: [
-  // existing 2 items…
-  { label: 'Economics — incentives & trade-offs surfaced',
-    check: (c) => /(incentive|trade.?off|economic|value|cost|benefit)/i.test(
-      `${c.noems_concepts ?? ''} ${c.noems_mental_models ?? ''} ${c.noems_intuitions ?? ''}`
-    )},
-],
-POEMS: [
-  // existing 2 items…
-  { label: 'Operations — delivery flows mapped',
-    check: (c) => /(deliver|operation|workflow|process|fulfil)/i.test(
-      `${c.poems_systems ?? ''} ${c.poems_environments ?? ''} ${c.poems_people ?? ''} ${c.poems_objects ?? ''}`
-    )},
-],
-TOTEMS: [
-  // existing 2 items…
-  { label: 'Politics (Policy) — power, rules & governance defined',
-    check: (c) => /(policy|policies|governance|rule|permission|role)/i.test(
-      `${c.totems_security_policies ?? ''} ${c.totems_access_controls ?? ''}`
-    )},
-  { label: 'Technology — systems & constraints specified',
-    check: (c) => /(stack|api|infrastructure|constraint|technolog|framework|database)/i.test(
-      `${c.totems_data_architecture ?? ''} ${c.totems_security_policies ?? ''}`
-    )},
-],
-ANTHEMS: [ /* unchanged */ ]
+```text
+POLLENS:
++ "Ontology — controlled vocabulary established"
+  regex: /(vocabulary|glossary|terminology|naming|term)/i
+
+NOEMS:
++ "Ontology — metadata standards defined"
+  regex: /(metadata|schema|descriptor|attribute|tag)/i
++ "Ontology — taxonomy & hierarchy structured"
+  regex: /(taxonomy|hierarchy|parent.?child|categor|classif)/i
+
+POEMS:
++ "Ontology — thesaurus & synonym relations mapped"
+  regex: /(thesaurus|synonym|alias|related term|equivalent)/i
+
+TOTEMS:
++ "Ontology — classes, relations & properties defined"
+  regex: /(ontolog|class|relation|property|properties|entit)/i
++ "Ontology — knowledge graph representation planned"
+  regex: /(knowledge graph|graph|node|edge|triple|rdf|sparql)/i
 ```
 
 ## Out of scope
 
-- No DB migration, no new PRD fields (keeps strict 1:1 ontological mapping).
-- No UI restructure — items appear inline in the existing checklist UI in both surfaces.
-- Bilingual copy not added; current checklist labels are English-only across the file.
+- No DB migration, no new PRD fields, no UI restructure
+- ANTHEMS untouched (pipeline ends at Knowledge Graph, before market/narrative)
+- No bilingual copy (matches existing checklist conventions)
