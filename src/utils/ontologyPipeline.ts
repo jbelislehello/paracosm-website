@@ -14,7 +14,6 @@ export interface OntologyContent {
   poems_systems?: string;
   totems_data_architecture?: string;
   totems_access_controls?: string;
-  [key: string]: string | undefined;
 }
 
 export interface OntologyStage {
