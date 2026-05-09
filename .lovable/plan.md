@@ -1,53 +1,48 @@
 ## Goal
 
-Extend the Calm Magic PRD checklist so it explicitly covers the 6 stages of the Ontology Pipeline (Controlled Vocabulary → Metadata Standards → Taxonomy → Thesaurus → Ontology → Knowledge Graph) from the uploaded reference, mapped onto the existing 5 PRD layers.
+Add a new "Ontology Pipeline" progress panel that visualizes which of the 6 pipeline stages (Controlled Vocabulary → Metadata Standards → Taxonomy → Thesaurus → Ontology → Knowledge Graph) are satisfied for the current PRD, mapped to their owning Calm Magic layer.
 
-Note on "8 layer": the PRD currently has 5 ontological layers (POLLENS, NOEMS, POEMS, TOTEMS, ANTHEMS). I'll treat this as adding 6 ontology-pipeline checklist items distributed across those layers — no schema change, no new DB columns (preserves the strict 1:1 ontological-mapping rule).
+## Approach
 
-## Mapping
+Extract the 6 ontology checks (already added to `LAYER_CHECKLIST` in both `PrdGeneratorWizard.tsx` and `PrdAssemblyPanel.tsx`) into a single shared module so the new panel and the existing checklists share one source of truth.
 
-| Pipeline Stage | PRD Layer | Field(s) checked |
-|---|---|---|
-| Controlled Vocabulary | POLLENS | `pollens_aspirations`, `pollens_cultural_elements` (terms, naming, glossary) |
-| Metadata Standards | NOEMS | `noems_concepts`, `noems_mental_models` (descriptive/structural metadata) |
-| Taxonomy | NOEMS | `noems_concepts`, `noems_intuitions` (parent-child hierarchy) |
-| Thesaurus | POEMS | `poems_objects`, `poems_systems` (synonyms, related terms across surfaces) |
-| Ontology | TOTEMS | `totems_data_architecture` (classes, relations, properties) |
-| Knowledge Graph | TOTEMS | `totems_data_architecture`, `totems_access_controls` (graph + governance) |
+### New file
 
-Each new checklist item uses a case-insensitive regex on the concatenated field values, matching the pattern of the recently-added discipline items.
+`src/utils/ontologyPipeline.ts`
+- Exports `ONTOLOGY_PIPELINE_STAGES`: array of 6 stages with `{ id, label, description, layer, icon, check(content) }`
+- Each `check` is the same regex used in the layer checklist
+- Each entry knows its parent PRD layer (POLLENS/NOEMS/POEMS/TOTEMS)
+- Exports `getPipelineProgress(content)` returning `{ stage, satisfied }[]` and an aggregate `completedCount`
 
-## Files to edit (keep both in sync)
+### New component
 
-1. `src/components/prd-generator/PrdGeneratorWizard.tsx` — `LAYER_CHECKLIST` (lines 145–172)
-2. `src/components/calm-magic/PrdAssemblyPanel.tsx` — `LAYER_CHECKLIST` (lines 180–207)
+`src/components/prd-generator/OntologyPipelinePanel.tsx`
+- Props: `content: GeneratedContent`
+- Renders a vertical stepper (mirrors the uploaded infographic): 6 stages stacked top-to-bottom, each row shows:
+  - Stage number + name
+  - Layer chip (color from existing `SEASON_COLORS`)
+  - Status icon (`CheckCircle2` satisfied / `Circle` pending) using semantic tokens
+  - Short description from the reference image
+- Header shows `X / 6 stages covered` with a `Progress` bar
+- Connector arrows between stages (CSS, no extra deps)
+- Fully theme-token based — no raw colors
 
-## New checklist items
+### Wiring
 
-```text
-POLLENS:
-+ "Ontology — controlled vocabulary established"
-  regex: /(vocabulary|glossary|terminology|naming|term)/i
-
-NOEMS:
-+ "Ontology — metadata standards defined"
-  regex: /(metadata|schema|descriptor|attribute|tag)/i
-+ "Ontology — taxonomy & hierarchy structured"
-  regex: /(taxonomy|hierarchy|parent.?child|categor|classif)/i
-
-POEMS:
-+ "Ontology — thesaurus & synonym relations mapped"
-  regex: /(thesaurus|synonym|alias|related term|equivalent)/i
-
-TOTEMS:
-+ "Ontology — classes, relations & properties defined"
-  regex: /(ontolog|class|relation|property|properties|entit)/i
-+ "Ontology — knowledge graph representation planned"
-  regex: /(knowledge graph|graph|node|edge|triple|rdf|sparql)/i
-```
+1. `src/components/calm-magic/PrdAssemblyPanel.tsx` — add panel to the existing PRD overview area. Place it inside the layer/checklist sidebar region (above or below the existing checklist), gated behind the same visibility as other PRD QA panels. One import + one JSX block.
+2. `src/components/prd-generator/PrdGeneratorWizard.tsx` — render the same panel in the wizard's review step so users see pipeline coverage as they fill layers.
+3. Refactor both `LAYER_CHECKLIST` blocks to reuse the regex/check from `ontologyPipeline.ts` (avoid duplication; keep label text local).
 
 ## Out of scope
 
-- No DB migration, no new PRD fields, no UI restructure
-- ANTHEMS untouched (pipeline ends at Knowledge Graph, before market/narrative)
-- No bilingual copy (matches existing checklist conventions)
+- No new DB columns, no schema changes (uses existing PRD content fields)
+- No bilingual copy in this pass (matches existing checklist convention)
+- No analytics events
+- ANTHEMS layer untouched (pipeline ends at Knowledge Graph)
+
+## Files
+
+- create: `src/utils/ontologyPipeline.ts`
+- create: `src/components/prd-generator/OntologyPipelinePanel.tsx`
+- edit: `src/components/calm-magic/PrdAssemblyPanel.tsx` (import + render + checklist refactor)
+- edit: `src/components/prd-generator/PrdGeneratorWizard.tsx` (import + render + checklist refactor)
