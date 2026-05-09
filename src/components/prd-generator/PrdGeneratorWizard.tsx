@@ -575,6 +575,8 @@ const PrdGeneratorWizard = ({
                   })}
                 </div>
               </Card>
+
+              <OntologyPipelinePanel content={content} />
             </div>
           </ScrollArea>
 

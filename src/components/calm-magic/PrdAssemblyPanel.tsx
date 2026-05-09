@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import OntologyPipelinePanel from '@/components/prd-generator/OntologyPipelinePanel';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -1322,6 +1323,8 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
                         })}
                       </div>
                     </Card>
+
+                    <OntologyPipelinePanel content={content} />
                   </div>
                 </ScrollArea>
                 
