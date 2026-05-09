@@ -1,48 +1,65 @@
 ## Goal
 
-Add a new "Ontology Pipeline" progress panel that visualizes which of the 6 pipeline stages (Controlled Vocabulary → Metadata Standards → Taxonomy → Thesaurus → Ontology → Knowledge Graph) are satisfied for the current PRD, mapped to their owning Calm Magic layer.
+Render a live D3 force-directed knowledge-graph preview from the user's PRD ontology fields, alongside the existing Ontology Pipeline panel. Nodes and edges are extracted from the same checklist inputs that drive pipeline progress.
 
 ## Approach
 
-Extract the 6 ontology checks (already added to `LAYER_CHECKLIST` in both `PrdGeneratorWizard.tsx` and `PrdAssemblyPanel.tsx`) into a single shared module so the new panel and the existing checklists share one source of truth.
+Two new files; one wiring change. d3 v7 is already a dependency.
 
-### New file
+### 1. Extraction utility
 
-`src/utils/ontologyPipeline.ts`
-- Exports `ONTOLOGY_PIPELINE_STAGES`: array of 6 stages with `{ id, label, description, layer, icon, check(content) }`
-- Each `check` is the same regex used in the layer checklist
-- Each entry knows its parent PRD layer (POLLENS/NOEMS/POEMS/TOTEMS)
-- Exports `getPipelineProgress(content)` returning `{ stage, satisfied }[]` and an aggregate `completedCount`
+`src/utils/extractOntologyGraph.ts`
 
-### New component
+Pure function `extractOntologyGraph(content)` returns `{ nodes, links }`.
+
+Per pipeline stage, parse the relevant PRD fields with lightweight heuristics — no LLM call:
+
+| Source | Extraction rule | Node kind |
+|---|---|---|
+| `pollens_aspirations`, `pollens_cultural_elements` | Capitalized terms / quoted strings → `term` nodes | `vocabulary` |
+| `noems_concepts`, `noems_mental_models` | Title-case phrases or bullet items → `concept` nodes | `concept` |
+| `noems_concepts`, `noems_intuitions` | Patterns like `A > B`, `A: B`, `parent → child` → `parent_of` links | hierarchy edges |
+| `poems_objects`, `poems_systems` | `A = B`, `A / B`, `A (alias B)` → `synonym_of` links | thesaurus edges |
+| `totems_data_architecture` | `A has B`, `A relates to B`, `A.property` → `class` nodes + `relation` links | ontology edges |
+| `totems_data_architecture`, `totems_access_controls` | Tokens after "graph:", "node:", "edge:" or `A -> B` → explicit graph nodes/edges | knowledge-graph edges |
+
+Node shape: `{ id, label, kind: 'vocabulary'|'concept'|'class'|'graph', layer: PrdLayer, stageId }`.
+Link shape: `{ source, target, kind: 'hierarchy'|'synonym'|'relation'|'graph' }`.
+
+Cap to ~60 nodes / 120 links; dedupe by lowercased label. If nothing extractable, return empty.
+
+### 2. D3 component
+
+`src/components/prd-generator/OntologyGraphPreview.tsx`
+
+- Props: `content: OntologyContent`, optional `height` (default 320)
+- Wraps `Card` with header "Knowledge Graph Preview" + node/edge counts + a "Re-layout" button
+- ResizeObserver-driven width, fixed height
+- d3 force simulation: `forceLink`, `forceManyBody(-180)`, `forceCenter`, `forceCollide`
+- Nodes colored by `kind` using semantic chart tokens (`hsl(var(--chart-1..4))`) — no raw colors
+- Links styled by `kind`: hierarchy = solid, synonym = dashed, relation = solid thick, graph = double-stroke
+- Hover: highlight node + neighbors, dim others; tooltip with kind/layer/source stage
+- Empty state: friendly message pointing to which fields to fill, with a chip per missing stage
+- Stops simulation on unmount; reuses ref pattern from `KnowledgeConstellation.tsx`
+- Respects `prefers-reduced-motion` (skip animation, place via static layout fallback)
+
+### 3. Wiring
 
 `src/components/prd-generator/OntologyPipelinePanel.tsx`
-- Props: `content: GeneratedContent`
-- Renders a vertical stepper (mirrors the uploaded infographic): 6 stages stacked top-to-bottom, each row shows:
-  - Stage number + name
-  - Layer chip (color from existing `SEASON_COLORS`)
-  - Status icon (`CheckCircle2` satisfied / `Circle` pending) using semantic tokens
-  - Short description from the reference image
-- Header shows `X / 6 stages covered` with a `Progress` bar
-- Connector arrows between stages (CSS, no extra deps)
-- Fully theme-token based — no raw colors
 
-### Wiring
+Render the graph preview directly under the stage list when `compact !== true`. Hidden in compact mode.
 
-1. `src/components/calm-magic/PrdAssemblyPanel.tsx` — add panel to the existing PRD overview area. Place it inside the layer/checklist sidebar region (above or below the existing checklist), gated behind the same visibility as other PRD QA panels. One import + one JSX block.
-2. `src/components/prd-generator/PrdGeneratorWizard.tsx` — render the same panel in the wizard's review step so users see pipeline coverage as they fill layers.
-3. Refactor both `LAYER_CHECKLIST` blocks to reuse the regex/check from `ontologyPipeline.ts` (avoid duplication; keep label text local).
+Both existing consumers (`PrdAssemblyPanel.tsx`, `PrdGeneratorWizard.tsx`) automatically pick it up — no extra changes.
 
 ## Out of scope
 
-- No new DB columns, no schema changes (uses existing PRD content fields)
-- No bilingual copy in this pass (matches existing checklist convention)
-- No analytics events
-- ANTHEMS layer untouched (pipeline ends at Knowledge Graph)
+- No DB persistence of the extracted graph
+- No LLM-based extraction (heuristic only; can be upgraded later)
+- No drag-to-edit, no node creation UI
+- No bilingual copy
 
 ## Files
 
-- create: `src/utils/ontologyPipeline.ts`
-- create: `src/components/prd-generator/OntologyPipelinePanel.tsx`
-- edit: `src/components/calm-magic/PrdAssemblyPanel.tsx` (import + render + checklist refactor)
-- edit: `src/components/prd-generator/PrdGeneratorWizard.tsx` (import + render + checklist refactor)
+- create: `src/utils/extractOntologyGraph.ts`
+- create: `src/components/prd-generator/OntologyGraphPreview.tsx`
+- edit: `src/components/prd-generator/OntologyPipelinePanel.tsx` (render preview when not compact)
