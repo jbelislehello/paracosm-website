@@ -10,6 +10,7 @@ import {
   type OntologyContent,
   type OntologyPrdLayer,
 } from '@/utils/ontologyPipeline';
+import OntologyGraphPreview from '@/components/prd-generator/OntologyGraphPreview';
 
 interface OntologyPipelinePanelProps {
   content: OntologyContent;
@@ -103,6 +104,7 @@ const OntologyPipelinePanel: React.FC<OntologyPipelinePanelProps> = ({
             </li>
           ))}
         </ol>
+        {!compact && <OntologyGraphPreview content={content} className="mt-3" />}
       </CardContent>
     </Card>
   );
