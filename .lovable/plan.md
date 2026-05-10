@@ -1,65 +1,65 @@
-## Goal
+# Improve extractOntologyGraph heuristics
 
-Render a live D3 force-directed knowledge-graph preview from the user's PRD ontology fields, alongside the existing Ontology Pipeline panel. Nodes and edges are extracted from the same checklist inputs that drive pipeline progress.
+Scope: edits to `src/utils/extractOntologyGraph.ts` only. No UI, no DB, no LLM. Pure-function heuristics so the D3 preview reflects PRD content more faithfully.
 
-## Approach
+## Goals
+1. Catch more synonyms, relations, and hierarchy patterns from free-form PRD text.
+2. Reduce noise: better stopword/length filtering, dedupe near-duplicates.
+3. Stay deterministic and fast (regex + small loops, capped at 60 nodes / 120 links).
 
-Two new files; one wiring change. d3 v7 is already a dependency.
+## Parsing upgrades
 
-### 1. Extraction utility
+### Hierarchy (NOEMS, taxonomy)
+Currently: only `A > B | A → B | A: B` at line start, single child split on `,/`.
+Add:
+- Indentation-based nesting on `noems_concepts` / `noems_intuitions`: track parent stack from leading spaces / `-`/`*` bullets (2-space or tab steps).
+- Patterns: `A includes B, C`, `A consists of B and C`, `A is a kind of B`, `A subclass of B`, `B is part of A` (inverse).
+- Split children on `,`, `;`, `/`, ` and `, ` & `.
+- Multi-level chains: `A > B > C` produces both `A→B` and `B→C`.
 
-`src/utils/extractOntologyGraph.ts`
+### Synonyms / equivalence (POEMS, thesaurus)
+Currently: `=`, `≡`, `aka`, `alias`, `(alias: …)`, `A / B`.
+Add:
+- `A also known as B`, `A a.k.a. B`, `A — also B`, `A (also called B)`, `A or B` (when both look like noun phrases of similar shape).
+- `A := B`, `A == B`.
+- `synonyms: A, B, C` (head term inferred from the bullet's parent line; if none, link A↔B, A↔C).
+- Bidirectional link rendering (still one link, but mark `kind: 'synonym'`; dedupe ordered pair regardless of direction).
 
-Pure function `extractOntologyGraph(content)` returns `{ nodes, links }`.
+### Relations / class-property (TOTEMS, ontology)
+Currently: `A.property`, and verbs `has|owns|contains|relates to|is-a|isa|extends|references`.
+Add verb set: `uses`, `depends on`, `consumes`, `produces`, `belongs to`, `manages`, `governs`, `triggers`, `requires`, `provides`, `maps to`, `derived from`, `composed of`, `linked to`, `associated with`.
+Add patterns:
+- Triples `A — verb → B` and `A -[verb]-> B` (capture verb, store on link via new optional `label`).
+- `A: type` (treat right side as class kind, not child).
+- Multi-property: `Class { propA, propB, propC }` → class node + concept nodes + relation links.
 
-Per pipeline stage, parse the relevant PRD fields with lightweight heuristics — no LLM call:
+### Knowledge graph (TOTEMS, knowledge-graph)
+Currently: `A -> B`, `A → B`, `node: X`.
+Add:
+- `edge: A -> B [label]` capturing optional bracketed label.
+- `(A)-[rel]->(B)` Cypher-ish.
+- `A <-> B` (bidirectional graph link).
+- Allow `_` and `.` in node tokens.
 
-| Source | Extraction rule | Node kind |
-|---|---|---|
-| `pollens_aspirations`, `pollens_cultural_elements` | Capitalized terms / quoted strings → `term` nodes | `vocabulary` |
-| `noems_concepts`, `noems_mental_models` | Title-case phrases or bullet items → `concept` nodes | `concept` |
-| `noems_concepts`, `noems_intuitions` | Patterns like `A > B`, `A: B`, `parent → child` → `parent_of` links | hierarchy edges |
-| `poems_objects`, `poems_systems` | `A = B`, `A / B`, `A (alias B)` → `synonym_of` links | thesaurus edges |
-| `totems_data_architecture` | `A has B`, `A relates to B`, `A.property` → `class` nodes + `relation` links | ontology edges |
-| `totems_data_architecture`, `totems_access_controls` | Tokens after "graph:", "node:", "edge:" or `A -> B` → explicit graph nodes/edges | knowledge-graph edges |
+### Vocabulary (POLLENS)
+- Also pull bullet items (not just quoted/Capitalized) when the bullet is short (≤4 words) and not a sentence (no trailing period or verb).
+- Drop pure numerics, URLs, and items >60 chars.
 
-Node shape: `{ id, label, kind: 'vocabulary'|'concept'|'class'|'graph', layer: PrdLayer, stageId }`.
-Link shape: `{ source, target, kind: 'hierarchy'|'synonym'|'relation'|'graph' }`.
+## Quality controls
+- Normalize labels: collapse internal whitespace, strip trailing punctuation, title-case only when input is ALL CAPS.
+- Near-duplicate dedupe: also slug singular form (strip trailing `s` when length >4) so `Customer` and `Customers` collapse.
+- Expand stopwords slightly (`also`, `etc`, `eg`, `ie`).
+- Per-stage caps preserved; verb-link parsing runs after class/property to avoid double-creating nodes.
+- Keep node-kind upgrade rule (vocabulary < concept < class < graph).
 
-Cap to ~60 nodes / 120 links; dedupe by lowercased label. If nothing extractable, return empty.
+## Optional link metadata
+- Extend `GraphLink` with optional `label?: string` to carry verb / edge label. Non-breaking; `OntologyGraphPreview` ignores it unless updated later (out of scope).
 
-### 2. D3 component
-
-`src/components/prd-generator/OntologyGraphPreview.tsx`
-
-- Props: `content: OntologyContent`, optional `height` (default 320)
-- Wraps `Card` with header "Knowledge Graph Preview" + node/edge counts + a "Re-layout" button
-- ResizeObserver-driven width, fixed height
-- d3 force simulation: `forceLink`, `forceManyBody(-180)`, `forceCenter`, `forceCollide`
-- Nodes colored by `kind` using semantic chart tokens (`hsl(var(--chart-1..4))`) — no raw colors
-- Links styled by `kind`: hierarchy = solid, synonym = dashed, relation = solid thick, graph = double-stroke
-- Hover: highlight node + neighbors, dim others; tooltip with kind/layer/source stage
-- Empty state: friendly message pointing to which fields to fill, with a chip per missing stage
-- Stops simulation on unmount; reuses ref pattern from `KnowledgeConstellation.tsx`
-- Respects `prefers-reduced-motion` (skip animation, place via static layout fallback)
-
-### 3. Wiring
-
-`src/components/prd-generator/OntologyPipelinePanel.tsx`
-
-Render the graph preview directly under the stage list when `compact !== true`. Hidden in compact mode.
-
-Both existing consumers (`PrdAssemblyPanel.tsx`, `PrdGeneratorWizard.tsx`) automatically pick it up — no extra changes.
-
-## Out of scope
-
-- No DB persistence of the extracted graph
-- No LLM-based extraction (heuristic only; can be upgraded later)
-- No drag-to-edit, no node creation UI
-- No bilingual copy
+## Validation
+- Add a small `__test__` block? No — keep file pure. Manually verify by pasting representative PRD snippets into the wizard and checking the preview shows expected nodes/edges.
 
 ## Files
+- Edit: `src/utils/extractOntologyGraph.ts`
 
-- create: `src/utils/extractOntologyGraph.ts`
-- create: `src/components/prd-generator/OntologyGraphPreview.tsx`
-- edit: `src/components/prd-generator/OntologyPipelinePanel.tsx` (render preview when not compact)
+## Out of scope
+- LLM extraction, persistence, UI changes to `OntologyGraphPreview`, link-label rendering, bilingual term handling.
