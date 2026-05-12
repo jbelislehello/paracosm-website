@@ -223,23 +223,24 @@ const ParacosmRetreatLanding = () => {
       </section>
 
       {/* 3-Day Journey */}
-      <section className="pb-16 px-4">
+      <section className="relative pb-16 px-4 z-10">
         <div className="container max-w-5xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-10">3-Day Journey</h2>
+          <p className="font-vhs uppercase tracking-[0.4em] text-xs text-[hsl(var(--bloom-amber))] text-center mb-2">// Itinerary</p>
+          <h2 className="text-3xl md:text-4xl font-display text-center mb-10 bloom-chroma-static text-white">3-Day Journey</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {days.map((day, i) => (
-              <div key={day.key} className="bg-white/60 dark:bg-slate-800/60 rounded-xl p-6 shadow-md">
+              <div key={day.key} className="bg-[hsl(var(--bloom-ink)/0.6)] backdrop-blur border border-[hsl(var(--bloom-magenta)/0.25)] rounded-xl p-6 shadow-[0_18px_50px_-20px_hsl(var(--bloom-magenta)/0.4)]">
                 <div className={`w-10 h-10 bg-gradient-to-r ${day.color} rounded-full flex items-center justify-center mb-3`}>
                   <span className="text-white font-bold">{i + 1}</span>
                 </div>
-                <h3 className="font-bold text-lg mb-1">{t(`retreat.${day.key}.title`)}</h3>
-                <p className="text-xs text-purple-600 dark:text-purple-400 font-medium mb-2">{t(`retreat.${day.key}.subtitle`)}</p>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">{t(`retreat.${day.key}.description`)}</p>
-                <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2">{t("retreat.activities_label")}</h4>
+                <h3 className="font-display text-lg mb-1 text-white">{t(`retreat.${day.key}.title`)}</h3>
+                <p className="text-xs font-vhs uppercase tracking-[0.18em] text-[hsl(var(--bloom-amber))] mb-2">{t(`retreat.${day.key}.subtitle`)}</p>
+                <p className="text-sm text-white/75 mb-4">{t(`retreat.${day.key}.description`)}</p>
+                <h4 className="text-[10px] font-vhs uppercase tracking-[0.25em] text-white/50 mb-2">{t("retreat.activities_label")}</h4>
                 <ul className="space-y-1">
                   {[0, 1, 2, 3].map((idx) => (
-                    <li key={idx} className="text-xs text-slate-600 dark:text-slate-400 flex items-start gap-1.5">
-                      <span className="text-purple-500 mt-0.5">•</span>
+                    <li key={idx} className="text-xs text-white/70 flex items-start gap-1.5">
+                      <span className="text-[hsl(var(--bloom-magenta))] mt-0.5">•</span>
                       {t(`retreat.${day.key}.activities.${idx}`)}
                     </li>
                   ))}
@@ -251,30 +252,32 @@ const ParacosmRetreatLanding = () => {
       </section>
 
       {/* Entrepreneurial Tarot Section */}
-      <TarotPreviewSection t={t} />
+      <div className="relative z-10">
+        <TarotPreviewSection t={t} />
+      </div>
 
       {/* Audience & Outcomes */}
-      <section className="pb-16 px-4">
+      <section className="relative pb-16 px-4 z-10">
         <div className="container max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
-          <div className="bg-white/60 dark:bg-slate-800/60 rounded-xl p-6 shadow-md">
-            <h3 className="text-xl font-bold mb-2">{t("retreat.audience.title")}</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">{t("retreat.audience.description")}</p>
+          <div className="bg-[hsl(var(--bloom-ink)/0.6)] backdrop-blur border border-[hsl(var(--bloom-amber)/0.3)] rounded-xl p-6">
+            <h3 className="text-xl font-display mb-2 text-white">{t("retreat.audience.title")}</h3>
+            <p className="text-sm text-white/75 mb-4">{t("retreat.audience.description")}</p>
             <ul className="space-y-2">
               {[0, 1, 2].map((idx) => (
-                <li key={idx} className="text-sm flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <li key={idx} className="text-sm flex items-start gap-2 text-white/85">
+                  <CheckCircle className="w-4 h-4 text-[hsl(var(--bloom-teal))] mt-0.5 flex-shrink-0" />
                   {t(`retreat.audience.points.${idx}`)}
                 </li>
               ))}
             </ul>
           </div>
-          <div className="bg-white/60 dark:bg-slate-800/60 rounded-xl p-6 shadow-md">
-            <h3 className="text-xl font-bold mb-2">{t("retreat.outcomes.title")}</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">{t("retreat.outcomes.description")}</p>
+          <div className="bg-[hsl(var(--bloom-ink)/0.6)] backdrop-blur border border-[hsl(var(--bloom-magenta)/0.3)] rounded-xl p-6">
+            <h3 className="text-xl font-display mb-2 text-white">{t("retreat.outcomes.title")}</h3>
+            <p className="text-sm text-white/75 mb-4">{t("retreat.outcomes.description")}</p>
             <ul className="space-y-2">
               {[0, 1, 2].map((idx) => (
-                <li key={idx} className="text-sm flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
+                <li key={idx} className="text-sm flex items-start gap-2 text-white/85">
+                  <CheckCircle className="w-4 h-4 text-[hsl(var(--bloom-magenta))] mt-0.5 flex-shrink-0" />
                   {t(`retreat.outcomes.points.${idx}`)}
                 </li>
               ))}
@@ -284,31 +287,35 @@ const ParacosmRetreatLanding = () => {
       </section>
 
       {/* Invitation Form */}
-      <section className="pb-24 px-4">
+      <section className="relative pb-24 px-4 z-10">
         <div className="container max-w-lg mx-auto">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-xl border border-purple-200 dark:border-purple-800">
-            <h2 className="text-2xl font-bold text-center mb-2">{t("retreat.invitation.title")}</h2>
-            <p className="text-sm text-center text-slate-600 dark:text-slate-300 mb-6">{t("retreat.invitation.description")}</p>
+          <div className="bg-[hsl(var(--bloom-ink)/0.85)] backdrop-blur rounded-2xl p-8 shadow-[0_30px_80px_-30px_hsl(var(--bloom-magenta)/0.6)] border border-[hsl(var(--bloom-magenta)/0.4)] relative overflow-hidden">
+            <div className="bloom-scanlines absolute inset-0 opacity-[0.15] pointer-events-none" />
+            <p className="relative font-vhs uppercase tracking-[0.4em] text-[10px] text-[hsl(var(--bloom-amber))] text-center mb-2">// RSVP</p>
+            <h2 className="relative text-2xl font-display text-center mb-2 text-white">{t("retreat.invitation.title")}</h2>
+            <p className="relative text-sm text-center text-white/75 mb-6">{t("retreat.invitation.description")}</p>
 
             {submitted ? (
-              <div className="text-center py-6">
-                <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-3" />
-                <p className="font-semibold text-lg">{t("retreat.invitation.success")}</p>
+              <div className="relative text-center py-6">
+                <CheckCircle className="w-12 h-12 text-[hsl(var(--bloom-teal))] mx-auto mb-3" />
+                <p className="font-display text-lg text-white">{t("retreat.invitation.success")}</p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="relative space-y-4">
                 <Input
                   placeholder={t("retreat.invitation.name_placeholder")}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  className="bg-white/10 border-[hsl(var(--bloom-magenta)/0.4)] text-white placeholder:text-white/50"
                 />
                 <Input
                   type="email"
                   placeholder={t("retreat.invitation.email_placeholder")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="bg-white/10 border-[hsl(var(--bloom-magenta)/0.4)] text-white placeholder:text-white/50"
                 />
-                <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white">
+                <Button type="submit" className="w-full bg-[hsl(var(--bloom-magenta))] text-white hover:bg-[hsl(var(--bloom-amber))] hover:text-[hsl(var(--bloom-ink))] font-vhs uppercase tracking-widest text-xs">
                   {t("retreat.invitation.submit")}
                 </Button>
               </form>
