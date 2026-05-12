@@ -15,6 +15,8 @@ import CollapsibleSection from "@/components/CollapsibleSection";
 import BookAnnouncementBanner from "@/components/BookAnnouncementBanner";
 import AgenticEcosystemHero from "@/components/AgenticEcosystemHero";
 import AgenticEcosystemDemo from "@/components/AgenticEcosystemDemo";
+import { lazy, Suspense } from "react";
+const D3GallerySection = lazy(() => import("@/components/d3/D3GallerySection"));
 import FrameworkHero from "@/components/landing/FrameworkHero";
 import EnterpriseGaps from "@/components/landing/EnterpriseGaps";
 import MethodSteps from "@/components/landing/MethodSteps";
