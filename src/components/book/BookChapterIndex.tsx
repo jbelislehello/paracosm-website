@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, BookOpen, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, Check, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
+import { useReaderProgress } from "@/hooks/useReaderProgress";
+import ReaderProgressBar from "./ReaderProgressBar";
 
 interface Chapter {
   id: string;
@@ -36,13 +38,11 @@ const STATUS_LABEL: Record<string, string> = {
 export default function BookChapterIndex() {
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [loading, setLoading] = useState(true);
+  const { readSlugs, lastSlug } = useReaderProgress();
 
   useEffect(() => {
     let mounted = true;
     (async () => {
-      // Public users only see published rows via RLS; admins see all.
-      // We fetch everything and let RLS filter so non-published ones simply
-      // don't appear for visitors.
       const { data } = await supabase
         .from("book_chapters")
         .select("id, slug, order_index, title, phase, summary, status, is_free_sample")
@@ -57,15 +57,15 @@ export default function BookChapterIndex() {
     };
   }, []);
 
-  // Always show the 7 phase outline even if DB has no published rows yet,
-  // so the funnel never looks empty for visitors.
-  const fallbackOutline = FALLBACK_OUTLINE;
-  const visible = chapters.length > 0 ? chapters : fallbackOutline;
+  const visible = chapters.length > 0 ? chapters : FALLBACK_OUTLINE;
+  const continueChapter = lastSlug
+    ? visible.find((c) => c.slug === lastSlug && c.status === "published")
+    : null;
 
   return (
     <section id="chapters" className="px-6 py-16 md:py-24">
       <div className="container mx-auto max-w-5xl">
-        <div className="mb-10 flex items-end justify-between gap-6">
+        <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
           <div>
             <Badge className="mb-3 border-white/20 bg-white/10 text-white">
               <Sparkles className="mr-1 h-3 w-3" />
@@ -75,10 +75,22 @@ export default function BookChapterIndex() {
             <p className="mt-2 max-w-2xl text-sm text-white/60">
               Each chapter is being assembled from the work happening on this site —
               essays, PRDs, drift entries, retreat field notes, and uploaded
-              manuscript material. Free samples unlock as drafts are approved.
+              manuscript material. Open any published chapter; the rest unlock as
+              drafts are approved.
             </p>
           </div>
+          {continueChapter && (
+            <Link
+              to={`/book/chapter/${continueChapter.slug}`}
+              className="inline-flex items-center gap-2 rounded-md bg-white px-3 py-2 text-xs font-semibold text-slate-900 hover:bg-white/90"
+            >
+              Continue: {continueChapter.title}
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          )}
         </div>
+
+        <ReaderProgressBar className="mb-6" />
 
         <div className="grid gap-3">
           {loading
@@ -89,7 +101,11 @@ export default function BookChapterIndex() {
                 />
               ))
             : visible.map((c) => (
-                <ChapterRow key={c.slug} chapter={c} />
+                <ChapterRow
+                  key={c.slug}
+                  chapter={c}
+                  hasRead={readSlugs.includes(c.slug)}
+                />
               ))}
         </div>
       </div>
@@ -97,15 +113,25 @@ export default function BookChapterIndex() {
   );
 }
 
-function ChapterRow({ chapter }: { chapter: Chapter }) {
+function ChapterRow({ chapter, hasRead }: { chapter: Chapter; hasRead: boolean }) {
   const isPublished = chapter.status === "published";
-  const sample = chapter.is_free_sample && isPublished;
+  const isReadable = isPublished;
 
   const Inner = (
-    <Card className="group flex items-center justify-between gap-4 border-white/10 bg-white/[0.04] p-5 transition-colors hover:border-white/20 hover:bg-white/[0.07]">
+    <Card
+      className={`group flex items-center justify-between gap-4 border-white/10 bg-white/[0.04] p-5 transition-colors ${
+        isReadable ? "hover:border-white/20 hover:bg-white/[0.07]" : ""
+      } ${hasRead ? "border-fuchsia-400/30 bg-fuchsia-500/[0.04]" : ""}`}
+    >
       <div className="flex items-center gap-4 min-w-0">
-        <div className="flex h-12 w-12 flex-none items-center justify-center rounded-lg bg-gradient-to-br from-fuchsia-500/30 to-rose-500/20 text-sm font-semibold">
-          {chapter.order_index}
+        <div
+          className={`flex h-12 w-12 flex-none items-center justify-center rounded-lg text-sm font-semibold ${
+            hasRead
+              ? "bg-gradient-to-br from-fuchsia-400 to-rose-400 text-slate-900"
+              : "bg-gradient-to-br from-fuchsia-500/30 to-rose-500/20"
+          }`}
+        >
+          {hasRead ? <Check className="h-5 w-5" /> : chapter.order_index}
         </div>
         <div className="min-w-0">
           <div className="mb-1 flex flex-wrap items-center gap-2">
@@ -126,9 +152,14 @@ function ChapterRow({ chapter }: { chapter: Chapter }) {
             >
               {STATUS_LABEL[chapter.status] ?? chapter.status}
             </Badge>
-            {sample && (
+            {chapter.is_free_sample && isPublished && (
               <Badge className="bg-white text-slate-900 hover:bg-white/90 text-[10px] uppercase tracking-wider">
                 Free sample
+              </Badge>
+            )}
+            {hasRead && (
+              <Badge className="bg-fuchsia-400/20 text-fuchsia-100 text-[10px] uppercase tracking-wider">
+                Read
               </Badge>
             )}
           </div>
@@ -142,21 +173,19 @@ function ChapterRow({ chapter }: { chapter: Chapter }) {
           )}
         </div>
       </div>
-      {sample ? (
+      {isReadable ? (
         <span className="flex flex-none items-center gap-1 rounded-md bg-white/10 px-3 py-2 text-xs font-medium text-white transition-colors group-hover:bg-white/20">
           <BookOpen className="h-3.5 w-3.5" />
-          Read
+          {hasRead ? "Re-read" : "Read"}
           <ArrowRight className="h-3.5 w-3.5" />
         </span>
       ) : (
-        <span className="flex-none text-xs text-white/40">
-          {isPublished ? "Read in book" : "Coming soon"}
-        </span>
+        <span className="flex-none text-xs text-white/40">Coming soon</span>
       )}
     </Card>
   );
 
-  if (sample) {
+  if (isReadable) {
     return <Link to={`/book/chapter/${chapter.slug}`}>{Inner}</Link>;
   }
   return Inner;
