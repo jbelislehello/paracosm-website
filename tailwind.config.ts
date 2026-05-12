@@ -19,6 +19,12 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				display: ['Bungee Shade', 'Space Grotesk', 'system-ui', 'sans-serif'],
+				redacted: ['Redaction', 'Space Grotesk', 'serif'],
+				vhs: ['VT323', 'IBM Plex Mono', 'monospace'],
+				tight: ['Inter Tight', 'Inter', 'system-ui', 'sans-serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
