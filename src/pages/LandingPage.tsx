@@ -83,7 +83,7 @@ const LandingPage = () => {
             <Link to="/design-system" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Why It Works</Link>
             <Link to="/drift" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Drift</Link>
             <Link to="/tonalli" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Tonalli</Link>
-            <a href="#events" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Events</a>
+            <a href="#events" className="text-xs xl:text-sm font-vhs uppercase tracking-[0.18em] text-[hsl(var(--bloom-magenta))] hover:text-[hsl(var(--bloom-amber))] transition-colors">Events &amp; Retreats</a>
             <a href="#contact" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Contact</a>
           </nav>
           
