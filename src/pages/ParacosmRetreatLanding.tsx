@@ -202,19 +202,19 @@ const ParacosmRetreatLanding = () => {
       </section>
 
       {/* Highlights */}
-      <section className="pb-16 px-4">
+      <section className="relative pb-16 px-4 z-10">
         <div className="container max-w-5xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {highlights.map((h, i) => (
-              <Card key={i} className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border-0 shadow-lg">
+              <Card key={i} className="bg-[hsl(var(--bloom-ink)/0.6)] backdrop-blur-sm border border-[hsl(var(--bloom-magenta)/0.3)] shadow-[0_20px_60px_-20px_hsl(var(--bloom-magenta)/0.45)] text-white">
                 <CardHeader className="text-center pb-3">
                   <div className={`w-14 h-14 mx-auto rounded-full bg-gradient-to-r ${h.color} flex items-center justify-center mb-3`}>
                     <h.icon className="w-7 h-7 text-white" />
                   </div>
-                  <CardTitle className="text-lg">{h.title}</CardTitle>
+                  <CardTitle className="text-lg font-display text-white">{h.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-slate-600 dark:text-slate-300 text-center">{h.description}</p>
+                  <p className="text-sm text-white/75 text-center">{h.description}</p>
                 </CardContent>
               </Card>
             ))}
