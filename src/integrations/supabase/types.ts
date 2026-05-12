@@ -89,38 +89,266 @@ export type Database = {
         }
         Relationships: []
       }
+      book_chapter_drafts: {
+        Row: {
+          chapter_id: string
+          created_at: string
+          created_by: string | null
+          draft_md: string
+          id: string
+          is_current: boolean
+          model: string
+          prompt_snapshot: string | null
+        }
+        Insert: {
+          chapter_id: string
+          created_at?: string
+          created_by?: string | null
+          draft_md: string
+          id?: string
+          is_current?: boolean
+          model: string
+          prompt_snapshot?: string | null
+        }
+        Update: {
+          chapter_id?: string
+          created_at?: string
+          created_by?: string | null
+          draft_md?: string
+          id?: string
+          is_current?: boolean
+          model?: string
+          prompt_snapshot?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_chapter_drafts_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "book_chapters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      book_chapters: {
+        Row: {
+          created_at: string
+          id: string
+          is_free_sample: boolean
+          order_index: number
+          phase: string
+          published_at: string | null
+          published_excerpt: string | null
+          slug: string
+          status: string
+          summary: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_free_sample?: boolean
+          order_index?: number
+          phase?: string
+          published_at?: string | null
+          published_excerpt?: string | null
+          slug: string
+          status?: string
+          summary?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_free_sample?: boolean
+          order_index?: number
+          phase?: string
+          published_at?: string | null
+          published_excerpt?: string | null
+          slug?: string
+          status?: string
+          summary?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      book_orders: {
+        Row: {
+          amount: number | null
+          created_at: string
+          currency: string | null
+          email: string
+          id: string
+          metadata: Json | null
+          status: string
+          stripe_session_id: string | null
+          tier: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          currency?: string | null
+          email: string
+          id?: string
+          metadata?: Json | null
+          status?: string
+          stripe_session_id?: string | null
+          tier: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          currency?: string | null
+          email?: string
+          id?: string
+          metadata?: Json | null
+          status?: string
+          stripe_session_id?: string | null
+          tier?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       book_preorders: {
         Row: {
+          chapter_slug: string | null
           created_at: string
           email: string
           id: string
+          interest: string | null
           language: string
           name: string
           role: string | null
           source: string | null
           tier: string
+          utm: Json | null
         }
         Insert: {
+          chapter_slug?: string | null
           created_at?: string
           email: string
           id?: string
+          interest?: string | null
           language?: string
           name: string
           role?: string | null
           source?: string | null
           tier?: string
+          utm?: Json | null
         }
         Update: {
+          chapter_slug?: string | null
           created_at?: string
           email?: string
           id?: string
+          interest?: string | null
           language?: string
           name?: string
           role?: string | null
           source?: string | null
           tier?: string
+          utm?: Json | null
         }
         Relationships: []
+      }
+      book_sources: {
+        Row: {
+          chapter_id: string
+          created_at: string
+          excerpt: string | null
+          id: string
+          included: boolean
+          kind: string
+          notes: string | null
+          ref: string
+          title: string | null
+          weight: number
+        }
+        Insert: {
+          chapter_id: string
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          included?: boolean
+          kind: string
+          notes?: string | null
+          ref: string
+          title?: string | null
+          weight?: number
+        }
+        Update: {
+          chapter_id?: string
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          included?: boolean
+          kind?: string
+          notes?: string | null
+          ref?: string
+          title?: string | null
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_sources_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "book_chapters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      book_uploads: {
+        Row: {
+          chapter_id: string | null
+          created_at: string
+          extracted_text: string | null
+          file_path: string
+          id: string
+          mime: string | null
+          notes: string | null
+          original_name: string | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          chapter_id?: string | null
+          created_at?: string
+          extracted_text?: string | null
+          file_path: string
+          id?: string
+          mime?: string | null
+          notes?: string | null
+          original_name?: string | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          chapter_id?: string | null
+          created_at?: string
+          extracted_text?: string | null
+          file_path?: string
+          id?: string
+          mime?: string | null
+          notes?: string | null
+          original_name?: string | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_uploads_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "book_chapters"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       debts: {
         Row: {
