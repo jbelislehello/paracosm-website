@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Map, Brain } from "lucide-react";
 import JourneyMapTable from "@/components/design-system/JourneyMapTable";
 import MentalModelGrid from "@/components/design-system/MentalModelGrid";
