@@ -125,13 +125,14 @@ const CaseStudiesSection: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-12 px-4">
+    <div className="min-h-screen bg-[hsl(var(--bloom-ink))] text-white py-12 px-4">
       <div className="container max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">
+          <p className="font-vhs uppercase tracking-[0.4em] text-xs text-[hsl(var(--bloom-amber))] mb-3">// Field Notes</p>
+          <h1 className="text-4xl md:text-6xl font-display mb-6 bloom-chroma-static text-white">
             {t("case_studies.page_title")}
           </h1>
-          <p className="text-xl text-slate-600 dark:text-slate-300 mb-8">
+          <p className="text-xl font-redacted italic text-white/80 mb-8">
             {t("case_studies.subtitle")}
           </p>
 
@@ -153,19 +154,19 @@ const CaseStudiesSection: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredStudies.map((study) => (
-            <Card key={study.id} className="group hover:shadow-xl transition-all duration-300 cursor-pointer">
+            <Card key={study.id} className="group hover:shadow-[0_20px_60px_-20px_hsl(var(--bloom-magenta)/0.6)] transition-all duration-300 cursor-pointer bg-[hsl(var(--bloom-ink)/0.6)] border-[hsl(var(--bloom-magenta)/0.3)] text-white backdrop-blur">
               <CardHeader>
                 <div className="flex items-center justify-between mb-2">
-                  <Badge variant="outline">
+                  <Badge variant="outline" className="border-[hsl(var(--bloom-amber))] text-[hsl(var(--bloom-amber))] font-vhs uppercase tracking-widest text-[10px]">
                     {t(`case_studies.categories.${study.category.replace('-', '_')}`)}
                   </Badge>
                 </div>
-                <CardTitle className="group-hover:text-purple-600 transition-colors">
+                <CardTitle className="font-display text-white group-hover:text-[hsl(var(--bloom-amber))] transition-colors">
                   {t(study.title)}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-slate-600 dark:text-slate-300 mb-4 line-clamp-3">
+                <p className="text-white/70 mb-4 line-clamp-3">
                   {t(study.description)}
                 </p>
                 {study.technologies && study.technologies.length > 0 && (
@@ -184,7 +185,7 @@ const CaseStudiesSection: React.FC = () => {
                 )}
                 <Button 
                   variant="outline" 
-                  className="w-full group-hover:bg-purple-600 group-hover:text-white transition-colors"
+                  className="w-full border-[hsl(var(--bloom-magenta))] text-white bg-transparent hover:bg-[hsl(var(--bloom-magenta))] hover:text-white font-vhs uppercase tracking-widest text-xs transition-colors"
                   onClick={() => setSelectedStudy(study.id)}
                 >
                   {t("case_studies.view_details")}

@@ -152,11 +152,16 @@ const ParacosmRetreatLanding = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-purple-950/20 dark:to-blue-950/20">
+    <div className="min-h-screen bg-[hsl(var(--bloom-ink))] text-white relative overflow-hidden">
+      <div className="bloom-scanlines pointer-events-none fixed inset-0 opacity-[0.12] z-[5]" />
+      <div className="pointer-events-none absolute -top-32 -left-32 w-[480px] h-[480px] rounded-full bg-[hsl(var(--bloom-magenta)/0.35)] blur-3xl" />
+      <div className="pointer-events-none absolute top-40 -right-40 w-[520px] h-[520px] rounded-full bg-[hsl(var(--bloom-amber)/0.25)] blur-3xl" />
+      <div className="pointer-events-none absolute bottom-0 left-1/3 w-[420px] h-[420px] rounded-full bg-[hsl(var(--bloom-teal)/0.25)] blur-3xl" />
+
       {/* Navigation */}
-      <header className="fixed w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-purple-100 dark:border-purple-900/30">
+      <header className="fixed w-full z-50 bg-[hsl(var(--bloom-ink)/0.85)] backdrop-blur-md border-b border-[hsl(var(--bloom-magenta)/0.3)]">
         <div className="container flex items-center justify-between py-3 px-4">
-          <Link to="/" className="flex items-center gap-2 text-sm font-medium hover:text-purple-600 transition-colors">
+          <Link to="/" className="flex items-center gap-2 text-xs font-vhs uppercase tracking-[0.2em] hover:text-[hsl(var(--bloom-amber))] transition-colors">
             <ArrowLeft className="w-4 h-4" />
             Back to Paracosm
           </Link>
@@ -164,31 +169,32 @@ const ParacosmRetreatLanding = () => {
       </header>
 
       {/* Hero */}
-      <section className="pt-24 pb-16 px-4 text-center">
+      <section className="relative pt-28 pb-16 px-4 text-center z-10">
         <div className="container max-w-4xl mx-auto">
+          <p className="font-vhs uppercase tracking-[0.4em] text-xs text-[hsl(var(--bloom-amber))] mb-4">// Azores · Sept 2026</p>
           <div className="flex items-center justify-center gap-3 mb-6">
-            <Sparkles className="w-8 h-8 text-purple-600" />
-            <h1 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600">
+            <Sparkles className="w-7 h-7 text-[hsl(var(--bloom-amber))]" />
+            <h1 className="text-4xl md:text-6xl font-display bloom-chroma-static text-white leading-[1.05]">
               {t("retreat.section_title")}
             </h1>
-            <Sparkles className="w-8 h-8 text-purple-600" />
+            <Sparkles className="w-7 h-7 text-[hsl(var(--bloom-amber))]" />
           </div>
-          <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-8">
+          <p className="text-lg md:text-xl font-redacted italic text-white/80 max-w-3xl mx-auto mb-8">
             {t("retreat.section_description")}
           </p>
 
           {/* Location / Venue / Date */}
-          <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-700 dark:text-slate-300">
+          <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-vhs uppercase tracking-[0.18em] text-white/80">
             <span className="inline-flex items-center gap-1.5">
-              <MapPin className="w-4 h-4 text-purple-600" />
+              <MapPin className="w-4 h-4 text-[hsl(var(--bloom-amber))]" />
               {t("retreat.location")}
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <Building className="w-4 h-4 text-purple-600" />
+              <Building className="w-4 h-4 text-[hsl(var(--bloom-amber))]" />
               {t("retreat.venue")}
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <Calendar className="w-4 h-4 text-purple-600" />
+              <Calendar className="w-4 h-4 text-[hsl(var(--bloom-amber))]" />
               {t("retreat.date")}
             </span>
           </div>
@@ -196,19 +202,19 @@ const ParacosmRetreatLanding = () => {
       </section>
 
       {/* Highlights */}
-      <section className="pb-16 px-4">
+      <section className="relative pb-16 px-4 z-10">
         <div className="container max-w-5xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {highlights.map((h, i) => (
-              <Card key={i} className="bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border-0 shadow-lg">
+              <Card key={i} className="bg-[hsl(var(--bloom-ink)/0.6)] backdrop-blur-sm border border-[hsl(var(--bloom-magenta)/0.3)] shadow-[0_20px_60px_-20px_hsl(var(--bloom-magenta)/0.45)] text-white">
                 <CardHeader className="text-center pb-3">
                   <div className={`w-14 h-14 mx-auto rounded-full bg-gradient-to-r ${h.color} flex items-center justify-center mb-3`}>
                     <h.icon className="w-7 h-7 text-white" />
                   </div>
-                  <CardTitle className="text-lg">{h.title}</CardTitle>
+                  <CardTitle className="text-lg font-display text-white">{h.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-slate-600 dark:text-slate-300 text-center">{h.description}</p>
+                  <p className="text-sm text-white/75 text-center">{h.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -217,23 +223,24 @@ const ParacosmRetreatLanding = () => {
       </section>
 
       {/* 3-Day Journey */}
-      <section className="pb-16 px-4">
+      <section className="relative pb-16 px-4 z-10">
         <div className="container max-w-5xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-10">3-Day Journey</h2>
+          <p className="font-vhs uppercase tracking-[0.4em] text-xs text-[hsl(var(--bloom-amber))] text-center mb-2">// Itinerary</p>
+          <h2 className="text-3xl md:text-4xl font-display text-center mb-10 bloom-chroma-static text-white">3-Day Journey</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {days.map((day, i) => (
-              <div key={day.key} className="bg-white/60 dark:bg-slate-800/60 rounded-xl p-6 shadow-md">
+              <div key={day.key} className="bg-[hsl(var(--bloom-ink)/0.6)] backdrop-blur border border-[hsl(var(--bloom-magenta)/0.25)] rounded-xl p-6 shadow-[0_18px_50px_-20px_hsl(var(--bloom-magenta)/0.4)]">
                 <div className={`w-10 h-10 bg-gradient-to-r ${day.color} rounded-full flex items-center justify-center mb-3`}>
                   <span className="text-white font-bold">{i + 1}</span>
                 </div>
-                <h3 className="font-bold text-lg mb-1">{t(`retreat.${day.key}.title`)}</h3>
-                <p className="text-xs text-purple-600 dark:text-purple-400 font-medium mb-2">{t(`retreat.${day.key}.subtitle`)}</p>
-                <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">{t(`retreat.${day.key}.description`)}</p>
-                <h4 className="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-2">{t("retreat.activities_label")}</h4>
+                <h3 className="font-display text-lg mb-1 text-white">{t(`retreat.${day.key}.title`)}</h3>
+                <p className="text-xs font-vhs uppercase tracking-[0.18em] text-[hsl(var(--bloom-amber))] mb-2">{t(`retreat.${day.key}.subtitle`)}</p>
+                <p className="text-sm text-white/75 mb-4">{t(`retreat.${day.key}.description`)}</p>
+                <h4 className="text-[10px] font-vhs uppercase tracking-[0.25em] text-white/50 mb-2">{t("retreat.activities_label")}</h4>
                 <ul className="space-y-1">
                   {[0, 1, 2, 3].map((idx) => (
-                    <li key={idx} className="text-xs text-slate-600 dark:text-slate-400 flex items-start gap-1.5">
-                      <span className="text-purple-500 mt-0.5">•</span>
+                    <li key={idx} className="text-xs text-white/70 flex items-start gap-1.5">
+                      <span className="text-[hsl(var(--bloom-magenta))] mt-0.5">•</span>
                       {t(`retreat.${day.key}.activities.${idx}`)}
                     </li>
                   ))}
@@ -245,30 +252,32 @@ const ParacosmRetreatLanding = () => {
       </section>
 
       {/* Entrepreneurial Tarot Section */}
-      <TarotPreviewSection t={t} />
+      <div className="relative z-10">
+        <TarotPreviewSection t={t} />
+      </div>
 
       {/* Audience & Outcomes */}
-      <section className="pb-16 px-4">
+      <section className="relative pb-16 px-4 z-10">
         <div className="container max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
-          <div className="bg-white/60 dark:bg-slate-800/60 rounded-xl p-6 shadow-md">
-            <h3 className="text-xl font-bold mb-2">{t("retreat.audience.title")}</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">{t("retreat.audience.description")}</p>
+          <div className="bg-[hsl(var(--bloom-ink)/0.6)] backdrop-blur border border-[hsl(var(--bloom-amber)/0.3)] rounded-xl p-6">
+            <h3 className="text-xl font-display mb-2 text-white">{t("retreat.audience.title")}</h3>
+            <p className="text-sm text-white/75 mb-4">{t("retreat.audience.description")}</p>
             <ul className="space-y-2">
               {[0, 1, 2].map((idx) => (
-                <li key={idx} className="text-sm flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                <li key={idx} className="text-sm flex items-start gap-2 text-white/85">
+                  <CheckCircle className="w-4 h-4 text-[hsl(var(--bloom-teal))] mt-0.5 flex-shrink-0" />
                   {t(`retreat.audience.points.${idx}`)}
                 </li>
               ))}
             </ul>
           </div>
-          <div className="bg-white/60 dark:bg-slate-800/60 rounded-xl p-6 shadow-md">
-            <h3 className="text-xl font-bold mb-2">{t("retreat.outcomes.title")}</h3>
-            <p className="text-sm text-slate-600 dark:text-slate-300 mb-4">{t("retreat.outcomes.description")}</p>
+          <div className="bg-[hsl(var(--bloom-ink)/0.6)] backdrop-blur border border-[hsl(var(--bloom-magenta)/0.3)] rounded-xl p-6">
+            <h3 className="text-xl font-display mb-2 text-white">{t("retreat.outcomes.title")}</h3>
+            <p className="text-sm text-white/75 mb-4">{t("retreat.outcomes.description")}</p>
             <ul className="space-y-2">
               {[0, 1, 2].map((idx) => (
-                <li key={idx} className="text-sm flex items-start gap-2">
-                  <CheckCircle className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
+                <li key={idx} className="text-sm flex items-start gap-2 text-white/85">
+                  <CheckCircle className="w-4 h-4 text-[hsl(var(--bloom-magenta))] mt-0.5 flex-shrink-0" />
                   {t(`retreat.outcomes.points.${idx}`)}
                 </li>
               ))}
@@ -278,31 +287,35 @@ const ParacosmRetreatLanding = () => {
       </section>
 
       {/* Invitation Form */}
-      <section className="pb-24 px-4">
+      <section className="relative pb-24 px-4 z-10">
         <div className="container max-w-lg mx-auto">
-          <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-xl border border-purple-200 dark:border-purple-800">
-            <h2 className="text-2xl font-bold text-center mb-2">{t("retreat.invitation.title")}</h2>
-            <p className="text-sm text-center text-slate-600 dark:text-slate-300 mb-6">{t("retreat.invitation.description")}</p>
+          <div className="bg-[hsl(var(--bloom-ink)/0.85)] backdrop-blur rounded-2xl p-8 shadow-[0_30px_80px_-30px_hsl(var(--bloom-magenta)/0.6)] border border-[hsl(var(--bloom-magenta)/0.4)] relative overflow-hidden">
+            <div className="bloom-scanlines absolute inset-0 opacity-[0.15] pointer-events-none" />
+            <p className="relative font-vhs uppercase tracking-[0.4em] text-[10px] text-[hsl(var(--bloom-amber))] text-center mb-2">// RSVP</p>
+            <h2 className="relative text-2xl font-display text-center mb-2 text-white">{t("retreat.invitation.title")}</h2>
+            <p className="relative text-sm text-center text-white/75 mb-6">{t("retreat.invitation.description")}</p>
 
             {submitted ? (
-              <div className="text-center py-6">
-                <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-3" />
-                <p className="font-semibold text-lg">{t("retreat.invitation.success")}</p>
+              <div className="relative text-center py-6">
+                <CheckCircle className="w-12 h-12 text-[hsl(var(--bloom-teal))] mx-auto mb-3" />
+                <p className="font-display text-lg text-white">{t("retreat.invitation.success")}</p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="relative space-y-4">
                 <Input
                   placeholder={t("retreat.invitation.name_placeholder")}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  className="bg-white/10 border-[hsl(var(--bloom-magenta)/0.4)] text-white placeholder:text-white/50"
                 />
                 <Input
                   type="email"
                   placeholder={t("retreat.invitation.email_placeholder")}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="bg-white/10 border-[hsl(var(--bloom-magenta)/0.4)] text-white placeholder:text-white/50"
                 />
-                <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-blue-600 hover:to-purple-600 text-white">
+                <Button type="submit" className="w-full bg-[hsl(var(--bloom-magenta))] text-white hover:bg-[hsl(var(--bloom-amber))] hover:text-[hsl(var(--bloom-ink))] font-vhs uppercase tracking-widest text-xs">
                   {t("retreat.invitation.submit")}
                 </Button>
               </form>

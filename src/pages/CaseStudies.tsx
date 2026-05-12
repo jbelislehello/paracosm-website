@@ -39,36 +39,37 @@ const CaseStudies: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[hsl(var(--bloom-ink))] text-white relative">
+      <div className="bloom-scanlines pointer-events-none fixed inset-0 opacity-[0.12] z-[5]" />
       {/* Navigation */}
-      <header className="fixed w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
+      <header className="fixed w-full z-50 bg-[hsl(var(--bloom-ink)/0.85)] backdrop-blur-md border-b border-[hsl(var(--bloom-magenta)/0.3)]">
         <div className="container flex items-center justify-between py-4">
           <div className="flex items-center gap-4">
             <Link to="/">
-              <Button variant="ghost" size="sm" className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" className="flex items-center gap-2 text-white hover:text-[hsl(var(--bloom-amber))]">
                 <ArrowLeft className="w-4 h-4" />
               </Button>
             </Link>
             <Link to="/" className="flex items-center gap-2">
               <img src={logoParacosm} alt="Paracosm" className="bg-white rounded-lg p-1 w-8 h-8 object-contain" />
-              <span className="font-bold text-slate-900 dark:text-white text-sm">Paracosm</span>
+              <span className="font-display text-base bloom-chroma-static">Paracosm</span>
             </Link>
           </div>
-          <nav className="hidden md:flex gap-6">
-            <Link to="/agentic-ux" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.ai_leadership")}</Link>
-            <Link to="/calm-magic-assistant" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.relational_innovation")}</Link>
-            <Link to="/about-us" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.about")}</Link>
+          <nav className="hidden md:flex gap-6 items-center">
+            <Link to="/agentic-ux" className="text-xs font-vhs uppercase tracking-[0.18em] hover:text-[hsl(var(--bloom-amber))] transition-colors">{t("navigation.ai_leadership")}</Link>
+            <Link to="/calm-magic-assistant" className="text-xs font-vhs uppercase tracking-[0.18em] hover:text-[hsl(var(--bloom-amber))] transition-colors">{t("navigation.relational_innovation")}</Link>
+            <Link to="/about-us" className="text-xs font-vhs uppercase tracking-[0.18em] hover:text-[hsl(var(--bloom-amber))] transition-colors">{t("navigation.about")}</Link>
             <LanguageSwitcher />
           </nav>
           <Link to="/agentic-ux">
-            <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 transition-all duration-300">
+            <Button className="bg-[hsl(var(--bloom-magenta))] text-white hover:bg-[hsl(var(--bloom-amber))] hover:text-[hsl(var(--bloom-ink))] font-vhs uppercase tracking-widest text-xs">
               {t("navigation.ai_leadership")}
             </Button>
           </Link>
         </div>
       </header>
 
-      <div className="pt-16">
+      <div className="pt-16 relative z-10">
         <CaseStudiesSection />
       </div>
 
