@@ -24,24 +24,25 @@ const BookAnnouncementBanner = () => {
   if (!visible) return null;
 
   return (
-    <div className="relative w-full bg-gradient-to-r from-primary via-purple-600 to-pink-600 text-white">
+    <div className="bloom-banner relative w-full text-[hsl(var(--bloom-cream))]">
+      <div className="bloom-scanlines" aria-hidden="true" />
       <Link
         to="/book"
-        className="container max-w-7xl mx-auto flex items-center justify-center gap-2 sm:gap-3 px-10 py-2 text-xs sm:text-sm font-medium hover:opacity-95 transition-opacity"
+        className="relative container max-w-7xl mx-auto flex items-center justify-center gap-2 sm:gap-3 px-10 py-2 text-xs sm:text-sm font-medium hover:opacity-95 transition-opacity"
       >
         <BookOpen className="w-4 h-4 flex-shrink-0" />
-        <span className="hidden sm:inline font-semibold uppercase tracking-wider text-[10px] bg-white/20 px-2 py-0.5 rounded">
+        <span className="hidden sm:inline font-vhs uppercase tracking-[0.3em] text-[11px] bg-[hsl(var(--bloom-ink)/0.45)] px-2 py-0.5 rounded">
           {t("book.banner_label")}
         </span>
-        <span className="truncate">{t("book.banner_text")}</span>
-        <span className="hidden md:inline-flex items-center gap-1 font-semibold underline-offset-2 hover:underline">
+        <span className="truncate font-tight">{t("book.banner_text")}</span>
+        <span className="hidden md:inline-flex items-center gap-1 font-vhs uppercase tracking-widest underline-offset-2 hover:underline">
           {t("book.banner_cta")} <ArrowRight className="w-3.5 h-3.5" />
         </span>
       </Link>
       <button
         onClick={handleDismiss}
         aria-label={t("book.banner_dismiss")}
-        className="absolute top-1/2 right-2 sm:right-4 -translate-y-1/2 p-1 rounded hover:bg-white/20 transition-colors"
+        className="absolute top-1/2 right-2 sm:right-4 -translate-y-1/2 p-1 rounded hover:bg-[hsl(var(--bloom-ink)/0.4)] transition-colors"
       >
         <X className="w-4 h-4" />
       </button>

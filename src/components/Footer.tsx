@@ -9,14 +9,16 @@ const Footer: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <footer className="bg-slate-900 text-slate-300">
-      <div className="container mx-auto px-4 py-12">
+    <footer className="relative overflow-hidden bg-[hsl(var(--bloom-ink))] text-slate-300">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[hsl(var(--bloom-magenta))] to-transparent" />
+      <div className="bloom-scanlines opacity-40" aria-hidden="true" />
+      <div className="relative container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand — HA Labs */}
           <div>
             <div className="flex items-center gap-2 mb-4">
               <img src={logoHA} alt="HA Labs" className="w-8 h-8 rounded-md object-contain" />
-              <span className="font-bold text-lg text-white">HA Labs</span>
+              <span className="font-display text-lg text-[hsl(var(--bloom-cream))]">HA Labs</span>
             </div>
             <p className="text-sm text-slate-400 mb-4">
               Creative technology studio — performance arts, interactive storytelling, AI & IOT software, and innovation frameworks.

@@ -759,3 +759,35 @@
 @media (prefers-reduced-motion: reduce) {
   .bloom-grain, .bloom-chroma, .bloom-wobble, .bloom-flicker, .bloom-scanlines::after { animation: none !important; }
 }
+
+/* Site-wide typography pass — opt-out with .no-bloom-type */
+body { font-family: 'Inter Tight', 'Inter', system-ui, sans-serif; }
+
+/* Subtle accent on every section eyebrow Badge that uses uppercase tracking */
+[class*="uppercase"][class*="tracking-wider"]:not(.no-bloom-type) {
+  font-family: 'VT323', 'IBM Plex Mono', monospace;
+  letter-spacing: 0.18em;
+  font-size: 0.85em;
+}
+
+/* Scanline strip behind the announcement banner */
+.bloom-banner {
+  position: relative;
+  background:
+    repeating-linear-gradient(45deg, hsl(var(--bloom-magenta) / 0.85) 0 8px, hsl(var(--bloom-violet) / 0.85) 8px 16px, hsl(var(--bloom-amber) / 0.7) 16px 24px, hsl(var(--bloom-teal) / 0.7) 24px 32px);
+  background-size: 200% 100%;
+  animation: bloom-banner-slide 24s linear infinite;
+}
+@keyframes bloom-banner-slide {
+  0% { background-position: 0 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Marker underline accent for links/headings */
+.bloom-marker {
+  background-image: linear-gradient(120deg, hsl(var(--bloom-amber) / 0.55) 0%, hsl(var(--bloom-magenta) / 0.55) 100%);
+  background-repeat: no-repeat;
+  background-size: 100% 0.35em;
+  background-position: 0 88%;
+  padding: 0 0.1em;
+}
