@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, BookOpen, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpen, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import { useReaderProgress } from "@/hooks/useReaderProgress";
+import { trackEvent } from "@/lib/analytics";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import BookLeadCaptureForm from "@/components/book/BookLeadCaptureForm";
+import ReaderProgressBar from "@/components/book/ReaderProgressBar";
 
 interface Chapter {
   id: string;
