@@ -125,13 +125,14 @@ const CaseStudiesSection: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-12 px-4">
+    <div className="min-h-screen bg-[hsl(var(--bloom-ink))] text-white py-12 px-4">
       <div className="container max-w-6xl mx-auto">
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent">
+          <p className="font-vhs uppercase tracking-[0.4em] text-xs text-[hsl(var(--bloom-amber))] mb-3">// Field Notes</p>
+          <h1 className="text-4xl md:text-6xl font-display mb-6 bloom-chroma-static text-white">
             {t("case_studies.page_title")}
           </h1>
-          <p className="text-xl text-slate-600 dark:text-slate-300 mb-8">
+          <p className="text-xl font-redacted italic text-white/80 mb-8">
             {t("case_studies.subtitle")}
           </p>
 
