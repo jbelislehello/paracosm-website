@@ -455,8 +455,61 @@ function SourcesTab() {
     load();
   };
 
+  const [seeding, setSeeding] = useState(false);
+  const seedFromCorpus = async () => {
+    setSeeding(true);
+    try {
+      const { fullDeck } = await import("@/data/entrepreneurialTarot");
+      const { driftTools } = await import("@/data/driftTools");
+      const { driftMonthlyDiscoveries } = await import("@/data/driftMonthlyDiscoveries");
+
+      const tarot = fullDeck.map((c) => ({
+        ref: `tarot:${c.id}`,
+        title: `${c.name}${"suit" in c ? ` · ${c.suit}` : ""}`,
+        excerpt: `${c.question}\n\nUpright: ${c.upright}\nReversed: ${c.reversed}`,
+        hint: ("suit" in c ? c.suit : c.dimensionName) ?? "",
+      }));
+
+      const drift: Array<{ ref: string; title: string; excerpt: string; hint: string }> = [];
+      for (const t of driftTools) {
+        drift.push({ ref: `drift-tool:${t.url}`, title: t.name, excerpt: t.description, hint: t.axis });
+      }
+      for (const m of driftMonthlyDiscoveries) {
+        const tag = `${m.year}-${m.month}${m.theme ? ` · ${m.theme}` : ""}`;
+        for (const b of m.books ?? []) drift.push({ ref: `drift-book:${b.amazonUrl}`, title: `${b.title} — ${b.author}`, excerpt: `${tag}\n${b.description}`, hint: b.axis });
+        for (const v of m.videos ?? []) drift.push({ ref: `drift-video:${v.youtubeId}`, title: `${v.title} — ${v.speaker}`, excerpt: `${tag}\n${v.description}`, hint: v.axis });
+        for (const s of m.songs ?? []) drift.push({ ref: `drift-song:${s.url}`, title: `${s.title} — ${s.artist}`, excerpt: `${tag}\n${s.description}`, hint: s.axis });
+        for (const p of m.podcasts ?? []) drift.push({ ref: `drift-pod:${p.url}`, title: `${p.title} — ${p.host}`, excerpt: `${tag}\n${p.description}`, hint: p.axis });
+        for (const a of m.articles ?? []) drift.push({ ref: `drift-article:${a.url}`, title: `${a.title} — ${a.author}`, excerpt: `${tag}\n${a.description}`, hint: a.axis });
+      }
+
+      toast.message("Seeding corpus…", { description: `Scraping site + ingesting ${tarot.length} tarot · ${drift.length} drift items.` });
+      const { data, error } = await supabase.functions.invoke("book-seed-from-corpus", { body: { tarot, drift } });
+      if (error) throw error;
+      const counts = (data as { counts?: Record<string, number>; inserted?: number })?.counts ?? {};
+      toast.success(`Seeded ${(data as { inserted?: number })?.inserted ?? 0} sources`, {
+        description: `web ${counts.web ?? 0} · tile ${counts.tile ?? 0} · tarot ${counts.tarot ?? 0} · drift ${counts.drift ?? 0}`,
+      });
+      load();
+    } catch (e) {
+      toast.error((e as Error).message);
+    } finally {
+      setSeeding(false);
+    }
+  };
+
   return (
     <div className="space-y-4">
+      <Card className="p-4 flex items-center justify-between gap-3">
+        <div>
+          <h3 className="font-semibold flex items-center gap-2"><Sparkles className="w-4 h-4" /> Seed from corpus</h3>
+          <p className="text-xs text-muted-foreground mt-1">Crawl the live site + ingest the 64-tile board, tarot deck, and Drift library. Auto-mapped to chapters by phase.</p>
+        </div>
+        <Button onClick={seedFromCorpus} disabled={seeding} size="sm">
+          {seeding ? <Loader2 className="w-4 h-4 animate-spin" /> : "Seed corpus"}
+        </Button>
+      </Card>
+
       <Card className="p-4 space-y-3">
         <h3 className="font-semibold flex items-center gap-2"><Plus className="w-4 h-4" /> Tag a source</h3>
         <div className="grid md:grid-cols-2 gap-3">
