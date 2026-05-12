@@ -19,6 +19,7 @@ const ParacosmRetreatLanding = lazy(() => import("./pages/ParacosmRetreatLanding
 const WuxiaTheFox = lazy(() => import("./pages/WuxiaTheFox"));
 const RelationalHealing = lazy(() => import("./pages/RelationalHealing"));
 const CaseStudies = lazy(() => import("./pages/CaseStudies"));
+const EventsAndRetreats = lazy(() => import("./pages/EventsAndRetreats"));
 const AboutUs = lazy(() => import("./pages/AboutUs"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const DreamShare = lazy(() => import("./pages/DreamShare"));
@@ -90,6 +91,7 @@ function App() {
                     <Route path="/agentic-ux" element={<Index />} />
                     <Route path="/calm-magic-assistant" element={<RelationalHealing />} />
                     <Route path="/case-studies" element={<CaseStudies />} />
+                    <Route path="/events-and-retreats" element={<EventsAndRetreats />} />
                     <Route path="/about-us" element={<AboutUs />} />
                     <Route path="/pricing" element={<Pricing />} />
                     <Route path="/auth" element={<CalmMagicAuth />} />
