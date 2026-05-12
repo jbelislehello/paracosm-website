@@ -84,6 +84,7 @@ const LandingPage = () => {
             <Link to="/drift" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Drift</Link>
             <Link to="/tonalli" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Tonalli</Link>
             <Link to="/events-and-retreats" className="text-xs xl:text-sm font-vhs uppercase tracking-[0.18em] text-[hsl(var(--bloom-magenta))] hover:text-[hsl(var(--bloom-amber))] transition-colors">Events &amp; Retreats</Link>
+            <Link to="/book" className="text-xs xl:text-sm font-vhs uppercase tracking-[0.18em] text-[hsl(var(--bloom-magenta))] hover:text-[hsl(var(--bloom-amber))] transition-colors">Book</Link>
             <a href="#contact" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Contact</a>
           </nav>
           
@@ -110,6 +111,10 @@ const LandingPage = () => {
                   <Link to="/drift" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Drift</Link>
                   <Link to="/tonalli" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Tonalli</Link>
                   <Link to="/events-and-retreats" onClick={() => setMobileMenuOpen(false)} className="text-lg font-vhs uppercase tracking-[0.18em] text-[hsl(var(--bloom-magenta))] hover:text-[hsl(var(--bloom-amber))] transition-colors">Events &amp; Retreats</Link>
+                  <Link to="/book" onClick={() => setMobileMenuOpen(false)} className="text-lg font-vhs uppercase tracking-[0.18em] text-[hsl(var(--bloom-magenta))] hover:text-[hsl(var(--bloom-amber))] transition-colors flex items-center gap-2">
+                    <BookOpen className="h-4 w-4" />
+                    Book
+                  </Link>
                   <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Contact</a>
                 </nav>
               </SheetContent>
