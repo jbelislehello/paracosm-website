@@ -51,6 +51,10 @@ import transmediaMap from "@/assets/drift/transmediamap.jpg";
 import gameplanImage from "@/assets/drift/JonathanBelisle-gameplan.jpg";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { bookSchema } from "@/lib/structuredData";
+import ChromaText from "@/components/aesthetic/ChromaText";
+import VHSBadge from "@/components/aesthetic/VHSBadge";
+import ScanlineOverlay from "@/components/aesthetic/ScanlineOverlay";
+import ParallaxLayer from "@/components/aesthetic/ParallaxLayer";
 
 const pillars = [
   { icon: Heart, key: "relational" },
@@ -213,29 +217,36 @@ const BookLaunch = () => {
 
       <main className="flex-1 pt-16">
         <section className="relative overflow-hidden px-6 py-20 md:py-32">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_hsl(var(--primary)/0.15),_transparent_50%)]" />
-          <div className="absolute -left-20 top-1/4 h-96 w-96 rounded-full bg-fuchsia-600/20 blur-3xl" />
-          <div className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-rose-600/20 blur-3xl" />
+          <ScanlineOverlay />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_hsl(var(--bloom-magenta)/0.18),_transparent_55%)]" />
+          <ParallaxLayer speed={0.6} className="absolute -left-20 top-1/4 h-96 w-96 rounded-full bg-[hsl(var(--bloom-magenta)/0.30)] blur-3xl" >{null}</ParallaxLayer>
+          <ParallaxLayer speed={-0.4} className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[hsl(var(--bloom-teal)/0.25)] blur-3xl" >{null}</ParallaxLayer>
+          <ParallaxLayer speed={0.25} className="absolute right-10 top-24 h-32 w-32 bloom-halftone opacity-40" >{null}</ParallaxLayer>
+
+          <VHSBadge label="REC · MANUSCRIPT" className="absolute right-6 top-6 text-[hsl(var(--bloom-cream))]" />
 
           <div className="relative container mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
             <div>
-              <Badge className="mb-4 border-white/20 bg-white/10 text-white hover:bg-white/15">
+              <Badge className="mb-4 border-white/20 bg-white/10 font-vhs text-sm uppercase tracking-widest text-white hover:bg-white/15">
                 <Sparkles className="mr-1 h-3 w-3" />
                 {t("book.hero_eyebrow")}
               </Badge>
-              <h1 className="mb-4 bg-gradient-to-br from-white via-fuchsia-100 to-rose-200 bg-clip-text text-5xl font-bold tracking-tight text-transparent md:text-7xl">
+              <ChromaText
+                as="h1"
+                className="mb-4 block font-display text-5xl leading-[0.95] tracking-tight text-[hsl(var(--bloom-cream))] md:text-7xl bloom-wobble"
+              >
                 {t("book.hero_title")}
-              </h1>
-              <p className="mb-6 text-xl font-light text-fuchsia-100/90 md:text-2xl">
+              </ChromaText>
+              <p className="mb-6 font-redacted text-xl font-light italic text-[hsl(var(--bloom-magenta)/0.95)] md:text-3xl">
                 {t("book.hero_subtitle")}
               </p>
-              <p className="mb-8 text-base leading-relaxed text-white/70">
+              <p className="mb-8 font-tight text-base leading-relaxed text-white/75">
                 {t("book.hero_description")}
               </p>
 
               <div className="mb-8 flex flex-wrap gap-3">
                 <a href="#chapters">
-                  <Button size="lg" className="gap-2 bg-white font-semibold text-slate-900 hover:bg-white/90">
+                  <Button size="lg" className="gap-2 bg-[hsl(var(--bloom-cream))] font-display text-base text-[hsl(var(--bloom-ink))] shadow-[var(--shadow-bloom)] hover:bg-white">
                     <BookOpen className="h-4 w-4" />
                     Read the free chapter
                   </Button>
@@ -244,7 +255,7 @@ const BookLaunch = () => {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="gap-2 border-white/20 bg-transparent text-white hover:bg-white/10"
+                    className="gap-2 border-[hsl(var(--bloom-magenta)/0.6)] bg-transparent font-vhs text-base uppercase tracking-widest text-[hsl(var(--bloom-cream))] hover:bg-[hsl(var(--bloom-magenta)/0.15)]"
                   >
                     See the cohort
                     <ArrowRight className="h-4 w-4" />
@@ -252,7 +263,7 @@ const BookLaunch = () => {
                 </a>
               </div>
 
-              <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-white/50">
+              <div className="flex flex-wrap gap-x-6 gap-y-2 font-vhs text-sm uppercase tracking-widest text-white/55">
                 <span>{t("book.hero_meta_format")}</span>
                 <span>·</span>
                 <span>{t("book.hero_meta_pages")}</span>
@@ -262,28 +273,31 @@ const BookLaunch = () => {
             </div>
 
             <div className="flex justify-center md:justify-end [perspective:1000px]">
-              <div
-                className="relative transform-gpu transition-transform duration-700 hover:rotate-y-0"
-                style={{
-                  transform: "rotateY(-18deg) rotateX(4deg)",
-                  transformStyle: "preserve-3d",
-                }}
-              >
-                <img
-                  src={bookCover}
-                  alt={t("book.hero_title")}
-                  className="w-64 rounded-r-md border-l-4 border-l-slate-800 shadow-[0_50px_100px_-20px_rgba(168,85,247,0.5)] md:w-80"
-                  loading="eager"
-                  decoding="async"
-                />
+              <ParallaxLayer speed={0.35}>
                 <div
-                  className="pointer-events-none absolute inset-0 rounded-r-md"
+                  className="relative transform-gpu transition-transform duration-700"
                   style={{
-                    background:
-                      "linear-gradient(105deg, rgba(255,255,255,0.15) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.2) 100%)",
+                    transform: "rotateY(-18deg) rotateX(4deg)",
+                    transformStyle: "preserve-3d",
                   }}
-                />
-              </div>
+                >
+                  <span className="bloom-tape absolute -top-3 left-8 h-6 w-28 rounded-[2px]" aria-hidden="true" />
+                  <img
+                    src={bookCover}
+                    alt={t("book.hero_title")}
+                    className="w-64 rounded-r-md border-l-4 border-l-[hsl(var(--bloom-violet))] shadow-[var(--shadow-bloom)] md:w-80"
+                    loading="eager"
+                    decoding="async"
+                  />
+                  <div
+                    className="pointer-events-none absolute inset-0 rounded-r-md mix-blend-screen"
+                    style={{
+                      background:
+                        "linear-gradient(105deg, hsl(var(--bloom-magenta)/0.25) 0%, transparent 35%, transparent 65%, hsl(var(--bloom-teal)/0.2) 100%)",
+                    }}
+                  />
+                </div>
+              </ParallaxLayer>
             </div>
           </div>
         </section>
