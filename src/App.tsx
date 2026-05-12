@@ -7,6 +7,7 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import { ModeProvider } from "./components/calm-magic/context/ModeContext";
 import { ProjectsProvider } from "./context/ProjectsContext";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import GrainOverlay from "./components/aesthetic/GrainOverlay";
 import "./App.css";
 
 const LandingPage = lazy(() => import("./pages/LandingPage"));
@@ -133,6 +134,7 @@ function App() {
                   </Routes>
                 </Suspense>
                 <Toaster />
+                <GrainOverlay />
               </Router>
             </ProjectsProvider>
           </ModeProvider>
