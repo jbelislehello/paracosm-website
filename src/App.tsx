@@ -19,6 +19,7 @@ const ParacosmRetreatLanding = lazy(() => import("./pages/ParacosmRetreatLanding
 const WuxiaTheFox = lazy(() => import("./pages/WuxiaTheFox"));
 const RelationalHealing = lazy(() => import("./pages/RelationalHealing"));
 const CaseStudies = lazy(() => import("./pages/CaseStudies"));
+const EventsAndRetreats = lazy(() => import("./pages/EventsAndRetreats"));
 const AboutUs = lazy(() => import("./pages/AboutUs"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const DreamShare = lazy(() => import("./pages/DreamShare"));
