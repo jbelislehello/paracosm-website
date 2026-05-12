@@ -185,7 +185,7 @@ const CaseStudiesSection: React.FC = () => {
                 )}
                 <Button 
                   variant="outline" 
-                  className="w-full group-hover:bg-purple-600 group-hover:text-white transition-colors"
+                  className="w-full border-[hsl(var(--bloom-magenta))] text-white bg-transparent hover:bg-[hsl(var(--bloom-magenta))] hover:text-white font-vhs uppercase tracking-widest text-xs transition-colors"
                   onClick={() => setSelectedStudy(study.id)}
                 >
                   {t("case_studies.view_details")}
