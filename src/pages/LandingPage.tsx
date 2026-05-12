@@ -152,6 +152,9 @@ const LandingPage = () => {
       {/* Agentic Ecosystems — service hero with interactive D3 viz */}
       <AgenticEcosystemHero />
       <AgenticEcosystemDemo />
+      <Suspense fallback={null}>
+        <D3GallerySection />
+      </Suspense>
 
       {/* NEW BOOK Promo — between Hero and Spring 2026 */}
       <section className="py-10 px-4 bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
