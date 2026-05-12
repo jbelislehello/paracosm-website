@@ -154,19 +154,19 @@ const CaseStudiesSection: React.FC = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredStudies.map((study) => (
-            <Card key={study.id} className="group hover:shadow-xl transition-all duration-300 cursor-pointer">
+            <Card key={study.id} className="group hover:shadow-[0_20px_60px_-20px_hsl(var(--bloom-magenta)/0.6)] transition-all duration-300 cursor-pointer bg-[hsl(var(--bloom-ink)/0.6)] border-[hsl(var(--bloom-magenta)/0.3)] text-white backdrop-blur">
               <CardHeader>
                 <div className="flex items-center justify-between mb-2">
-                  <Badge variant="outline">
+                  <Badge variant="outline" className="border-[hsl(var(--bloom-amber))] text-[hsl(var(--bloom-amber))] font-vhs uppercase tracking-widest text-[10px]">
                     {t(`case_studies.categories.${study.category.replace('-', '_')}`)}
                   </Badge>
                 </div>
-                <CardTitle className="group-hover:text-purple-600 transition-colors">
+                <CardTitle className="font-display text-white group-hover:text-[hsl(var(--bloom-amber))] transition-colors">
                   {t(study.title)}
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-slate-600 dark:text-slate-300 mb-4 line-clamp-3">
+                <p className="text-white/70 mb-4 line-clamp-3">
                   {t(study.description)}
                 </p>
                 {study.technologies && study.technologies.length > 0 && (
