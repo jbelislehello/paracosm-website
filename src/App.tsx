@@ -48,6 +48,7 @@ const AdminSubscriptions = lazy(() => import("./pages/AdminSubscriptions"));
 const BookLaunch = lazy(() => import("./pages/BookLaunch"));
 const BookChapter = lazy(() => import("./pages/BookChapter"));
 const BookThanks = lazy(() => import("./pages/BookThanks"));
+const BookManuscriptAdmin = lazy(() => import("./pages/BookManuscriptAdmin"));
 const DreamAndLearn = lazy(() => import("./pages/DreamAndLearn"));
 const CalmMagicDemo = lazy(() => import("./pages/CalmMagicDemo"));
 const Lineage = lazy(() => import("./pages/Lineage"));
@@ -116,6 +117,7 @@ function App() {
                     <Route path="/book" element={<BookLaunch />} />
                     <Route path="/book/chapter/:slug" element={<BookChapter />} />
                     <Route path="/book/thanks" element={<BookThanks />} />
+                    <Route path="/book/manuscript" element={<ProtectedRoute><BookManuscriptAdmin /></ProtectedRoute>} />
                     <Route path="/dream-and-learn" element={<DreamAndLearn />} />
                     <Route path="/design-system" element={<DesignSystemShowcase />} />
                     <Route path="/calm-magic-demo" element={<CalmMagicDemo />} />
