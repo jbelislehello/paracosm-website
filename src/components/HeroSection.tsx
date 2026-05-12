@@ -48,8 +48,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
               <span className="sm:hidden">{t("framework.framework")}</span>
             </Button>
             
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-agent-blue via-agent-purple to-agent-pink animate-gradient-x mb-4 md:mb-6 leading-tight">
-              <span className="inline-block overflow-hidden h-[1.2em] align-bottom relative w-[3.5ch] sm:w-[4ch]">
+            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-4 md:mb-6 leading-[0.95] text-foreground bloom-chroma-static">
+              <span className="inline-block overflow-hidden h-[1.1em] align-bottom relative w-[3.5ch] sm:w-[4ch] text-[hsl(var(--bloom-magenta))]">
                 <span
                   className={`inline-block transition-all duration-300 ${
                     animating
@@ -60,9 +60,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
                   {ROTATING_WORDS[wordIndex]}
                 </span>
               </span>{" "}
-              Your Agentic Ecosystem
+              <span className="bloom-marker">Your Agentic Ecosystem</span>
             </h1>
-            <p className="text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 text-gray-700 dark:text-gray-200 leading-relaxed">
+            <p className="font-redacted italic text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 text-foreground/80 leading-relaxed">
               {t("hero.design_deploy_manage")}
             </p>
             <OracleTeaser />
