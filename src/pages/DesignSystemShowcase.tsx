@@ -1,19 +1,8 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Palette, Type, Layers, Map, Brain } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { designSystemColors } from "@/data/offeringModels";
+import { ArrowLeft, Map, Brain } from "lucide-react";
 import JourneyMapTable from "@/components/design-system/JourneyMapTable";
 import MentalModelGrid from "@/components/design-system/MentalModelGrid";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import QuestionResonancePanel from "@/components/resonance/QuestionResonancePanel";
 import WhyItWorksRecap from "@/components/resonance/WhyItWorksRecap";
 
