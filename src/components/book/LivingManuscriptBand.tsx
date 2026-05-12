@@ -36,13 +36,17 @@ export default function LivingManuscriptBand() {
   }, []);
 
   return (
-    <section className="border-y border-white/5 bg-white/[0.02] px-6 py-12">
+    <section className="relative overflow-hidden border-y border-[hsl(var(--bloom-magenta)/0.25)] bg-[hsl(var(--bloom-ink)/0.6)] px-6 py-14">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[hsl(var(--bloom-magenta))] to-transparent" />
       <div className="container mx-auto max-w-5xl">
         <div className="mb-6 text-center">
-          <h2 className="text-xl font-semibold md:text-2xl">
+          <div className="mb-2 font-vhs text-xs uppercase tracking-[0.4em] text-[hsl(var(--bloom-amber))]">
+            ▶ live transmission
+          </div>
+          <h2 className="font-display text-2xl leading-tight text-[hsl(var(--bloom-cream))] md:text-4xl">
             This book is being written from the work happening on this site.
           </h2>
-          <p className="mx-auto mt-2 max-w-2xl text-sm text-white/55">
+          <p className="mx-auto mt-3 max-w-2xl font-tight text-sm text-white/60">
             Essays, PRDs, drift entries, retreat field notes, and uploaded
             manuscript material are mapped to chapters and synthesized into
             drafts. You see the living index — not a finished artifact pretending
@@ -69,11 +73,11 @@ function Stat({
   value: number;
 }) {
   return (
-    <Card className="flex items-center gap-3 border-white/10 bg-white/[0.03] p-4">
-      <Icon className="h-5 w-5 text-fuchsia-300" />
+    <Card className="flex items-center gap-3 border-[hsl(var(--bloom-magenta)/0.25)] bg-[hsl(var(--bloom-violet)/0.18)] p-4 backdrop-blur-sm">
+      <Icon className="h-5 w-5 text-[hsl(var(--bloom-amber))]" />
       <div>
-        <div className="text-2xl font-bold leading-none">{value}</div>
-        <div className="mt-1 text-[11px] uppercase tracking-wider text-white/50">
+        <div className="font-display text-3xl leading-none text-[hsl(var(--bloom-cream))]">{value}</div>
+        <div className="mt-1 font-vhs text-xs uppercase tracking-[0.3em] text-white/55">
           {label}
         </div>
       </div>

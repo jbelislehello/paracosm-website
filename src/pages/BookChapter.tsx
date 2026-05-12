@@ -11,6 +11,8 @@ import Footer from "@/components/Footer";
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import BookLeadCaptureForm from "@/components/book/BookLeadCaptureForm";
 import ReaderProgressBar from "@/components/book/ReaderProgressBar";
+import ChromaText from "@/components/aesthetic/ChromaText";
+import ScanlineOverlay from "@/components/aesthetic/ScanlineOverlay";
 
 interface Chapter {
   id: string;
@@ -152,7 +154,8 @@ export default function BookChapter() {
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
-      <header className="fixed z-50 w-full border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
+      <header className="fixed z-50 w-full overflow-hidden border-b border-[hsl(var(--bloom-magenta)/0.25)] bg-[hsl(var(--bloom-ink)/0.85)] backdrop-blur-md">
+        <ScanlineOverlay />
         <div className="container mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
           <Link to="/" className="flex items-center gap-2">
             <img
@@ -160,10 +163,10 @@ export default function BookChapter() {
               alt="Paracosm"
               className="h-8 w-8 rounded-lg bg-white p-1 object-contain"
             />
-            <span className="text-sm font-bold">Paracosm</span>
+            <span className="font-display text-sm text-[hsl(var(--bloom-cream))]">Paracosm</span>
           </Link>
           <div className="flex items-center gap-3">
-            <Link to="/book" className="flex items-center gap-1 text-xs text-white/60 hover:text-white">
+            <Link to="/book" className="flex items-center gap-1 font-vhs text-xs uppercase tracking-widest text-white/60 hover:text-white">
               <ArrowLeft className="h-3 w-3" /> Back to book
             </Link>
             <LanguageSwitcher />
@@ -195,9 +198,15 @@ export default function BookChapter() {
                 </Badge>
               )}
             </div>
-            <h1 className="text-4xl font-bold leading-tight md:text-5xl">{chapter.title}</h1>
+            <ChromaText
+              as="h1"
+              animated={false}
+              className="font-display text-4xl leading-[0.95] tracking-tight text-[hsl(var(--bloom-cream))] md:text-6xl"
+            >
+              {chapter.title}
+            </ChromaText>
             {chapter.summary && (
-              <p className="mt-4 text-lg text-white/70">{chapter.summary}</p>
+              <p className="mt-4 font-redacted text-lg italic text-white/70">{chapter.summary}</p>
             )}
 
             <div className="mt-10 border-t border-white/10 pt-8">

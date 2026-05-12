@@ -22,14 +22,14 @@ export default function ReaderProgressBar({ compact = false, className = "" }: P
   const pct = Math.round((completed / PHASES.length) * 100);
 
   return (
-    <div className={`rounded-2xl border border-white/10 bg-white/[0.03] p-4 ${className}`}>
+    <div className={`relative overflow-hidden rounded-2xl border border-[hsl(var(--bloom-magenta)/0.25)] bg-[hsl(var(--bloom-violet)/0.18)] p-4 ${className}`}>
       <div className="mb-3 flex items-center justify-between gap-3">
         <div>
-          <div className="text-[10px] uppercase tracking-wider text-white/50">
-            Your reading journey
+          <div className="font-vhs text-xs uppercase tracking-[0.3em] text-[hsl(var(--bloom-amber))]">
+            ▶ Your reading journey
           </div>
           {!compact && (
-            <div className="mt-0.5 text-sm text-white/80">
+            <div className="mt-0.5 font-tight text-sm text-white/80">
               {completed === 0
                 ? "Begin with any phase below."
                 : completed === PHASES.length
@@ -38,12 +38,12 @@ export default function ReaderProgressBar({ compact = false, className = "" }: P
             </div>
           )}
         </div>
-        <div className="text-xs font-semibold text-fuchsia-200">{pct}%</div>
+        <div className="font-display text-base text-[hsl(var(--bloom-cream))]">{pct}%</div>
       </div>
 
       <div className="mb-3 h-1.5 w-full overflow-hidden rounded-full bg-white/5">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-fuchsia-400 to-rose-300 transition-all duration-500"
+          className="h-full rounded-full bg-gradient-to-r from-[hsl(var(--bloom-magenta))] via-[hsl(var(--bloom-amber))] to-[hsl(var(--bloom-teal))] transition-all duration-500"
           style={{ width: `${pct}%` }}
           aria-label={`${pct}% of phases read`}
         />
@@ -55,9 +55,9 @@ export default function ReaderProgressBar({ compact = false, className = "" }: P
           return (
             <li
               key={p.key}
-              className={`flex flex-col items-center gap-1 rounded-md px-1 py-1.5 text-[10px] uppercase tracking-wider transition-colors ${
+              className={`flex flex-col items-center gap-1 rounded-md px-1 py-1.5 font-vhs text-[11px] uppercase tracking-widest transition-colors ${
                 done
-                  ? "bg-fuchsia-500/15 text-fuchsia-100"
+                  ? "bg-[hsl(var(--bloom-magenta)/0.2)] text-[hsl(var(--bloom-cream))]"
                   : "bg-white/[0.02] text-white/40"
               }`}
               aria-current={done ? "step" : undefined}
@@ -65,7 +65,7 @@ export default function ReaderProgressBar({ compact = false, className = "" }: P
               <span
                 className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] ${
                   done
-                    ? "bg-fuchsia-400 text-slate-900"
+                    ? "bg-[hsl(var(--bloom-amber))] text-[hsl(var(--bloom-ink))]"
                     : "border border-white/15 bg-transparent"
                 }`}
               >

@@ -67,12 +67,14 @@ export default function BookChapterIndex() {
       <div className="container mx-auto max-w-5xl">
         <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
           <div>
-            <Badge className="mb-3 border-white/20 bg-white/10 text-white">
+            <Badge className="mb-3 border-[hsl(var(--bloom-magenta)/0.4)] bg-[hsl(var(--bloom-magenta)/0.15)] font-vhs text-sm uppercase tracking-widest text-[hsl(var(--bloom-cream))]">
               <Sparkles className="mr-1 h-3 w-3" />
               Living manuscript
             </Badge>
-            <h2 className="text-3xl font-bold md:text-4xl">Chapters in motion</h2>
-            <p className="mt-2 max-w-2xl text-sm text-white/60">
+            <h2 className="font-display text-3xl leading-tight text-[hsl(var(--bloom-cream))] md:text-5xl bloom-chroma-static">
+              Chapters in motion
+            </h2>
+            <p className="mt-3 max-w-2xl font-tight text-sm text-white/60">
               Each chapter is being assembled from the work happening on this site —
               essays, PRDs, drift entries, retreat field notes, and uploaded
               manuscript material. Open any published chapter; the rest unlock as
@@ -82,9 +84,9 @@ export default function BookChapterIndex() {
           {continueChapter && (
             <Link
               to={`/book/chapter/${continueChapter.slug}`}
-              className="inline-flex items-center gap-2 rounded-md bg-white px-3 py-2 text-xs font-semibold text-slate-900 hover:bg-white/90"
+              className="inline-flex items-center gap-2 rounded-md bg-[hsl(var(--bloom-amber))] px-4 py-2 font-vhs text-sm uppercase tracking-widest text-[hsl(var(--bloom-ink))] shadow-[var(--shadow-bloom)] hover:brightness-110"
             >
-              Continue: {continueChapter.title}
+              ▶ Continue: {continueChapter.title}
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           )}

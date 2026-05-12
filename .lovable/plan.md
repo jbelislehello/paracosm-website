@@ -1,74 +1,54 @@
-## Goal
+# Aesthetic Refresh: "Static Bloom" — 1980 Shoegaze × VHS × Collage
 
-Turn the Calm Magic book into the site's primary revenue and lead generator. The book becomes a **living manuscript** assembled from (a) curated uploads and (b) tagged site content, drafted chapter-by-chapter by Lovable AI, gated behind a tiered funnel.
+A site-wide visual language. Teenage courage, blurred guitars, torn-paper collage, scanline VHS warmth, parallax depth. Implemented as design tokens + reusable primitives so every page inherits it without rewriting business logic.
 
-## 1. Content model (database)
+## Visual language
 
-New tables (all RLS-protected, admin-write / public-read where noted):
+- **Palette (HSL tokens in `index.css`)**: bruised magenta, sodium-lamp amber, acid teal, tape-noise cream, deep-violet shadow. Replaces today's slate/fuchsia hardcodes.
+- **Type pairing**: Display = `Monument Extended` or `Redaction` (heavy, condensed, slightly crushed). Body = `Inter Tight`. Accent = `VT323` for VHS overlays/timestamps. Loaded via Google Fonts in `index.html`.
+- **Texture layer**: animated grain, scanlines, chromatic-aberration offset, soft bloom — as CSS utilities + one canvas-free SVG noise layer.
+- **Collage motifs**: torn-paper edges, halftone dots, tape strips, marker scrawl — as small SVG primitives.
+- **Motion**: parallax on scroll, lazy chromatic-aberration on hover, gentle "tape wobble" on hero text.
 
-- `book_chapters` — `id`, `slug`, `order_index`, `title`, `phase` (GL!TCH/DRIFT/TUNE/LOVE/MAGIC/CALM/FREE), `summary`, `status` (`outline`|`drafting`|`review`|`published`), `is_free_sample` (bool), `published_excerpt` (text), `published_at`. Public SELECT on `status='published'`; admin full access.
-- `book_sources` — `id`, `chapter_id`, `kind` (`upload`|`site_page`|`prd`|`drift`|`journal`|`url`), `ref` (route or external URL), `title`, `excerpt`, `weight` (1–5), `included` (bool). Admin only.
-- `book_uploads` — `id`, `chapter_id` (nullable), `file_path` (storage), `mime`, `original_name`, `extracted_text`, `notes`, `uploaded_by`, `created_at`. Admin only. Backed by a private `book-manuscript` storage bucket.
-- `book_chapter_drafts` — `id`, `chapter_id`, `model`, `prompt_snapshot`, `draft_md`, `created_at`, `created_by`, `is_current`. Admin only — keeps every AI synthesis run for review.
-- `book_leads` — extend the existing `book_preorders` semantics with `interest` (`sample`|`waitlist`|`cohort`|`org`), `chapter_slug` (which sample triggered capture), `utm` jsonb. (Or add columns to `book_preorders`.)
-- `book_orders` — `id`, `user_id` (nullable for guest), `email`, `tier` (`cohort`|`org`), `stripe_session_id`, `amount`, `currency`, `status` (`pending`|`paid`|`refunded`), timestamps. Admin read; user reads own.
+## Deliverables
 
-Core lead routing rule preserved: every captured email also fires `send-demo-request` style notification to **jbelisle@helloarchitekt.com**.
+### 1. Tokens & globals (foundation — touches every page)
+- `src/index.css`: rewrite color tokens (HSL), add gradient + shadow tokens, add `--noise`, `--scanline`, `--bloom` utilities, add font-face wiring.
+- `tailwind.config.ts`: add font families, new semantic colors, keyframes (`tape-wobble`, `chroma-shift`, `scan`, `flicker`, `parallax-float`).
+- `index.html`: preload Google Fonts.
 
-## 2. Edge functions
+### 2. Reusable primitives (`src/components/aesthetic/`)
+- `GrainOverlay.tsx` — full-screen SVG noise (fixed, pointer-events-none).
+- `ScanlineOverlay.tsx` — toggleable VHS scanlines.
+- `ChromaText.tsx` — text with RGB-split hover/idle animation.
+- `TornCard.tsx` — card wrapper with torn-paper edges + tape strip.
+- `ParallaxLayer.tsx` — wraps children, translates Y on scroll (rAF-based, respects `prefers-reduced-motion`).
+- `VHSBadge.tsx` — corner timestamp/REC dot for hero areas.
 
-- `book-ingest-upload` — accepts file path in `book-manuscript` bucket, runs text extraction (pdf/docx/md/txt), writes `book_uploads.extracted_text`. Admin-only (validates `has_role`).
-- `book-tag-site-content` — admin endpoint to attach a site route, PRD id, drift entry, or journal entry as a `book_sources` row.
-- `book-synthesize-chapter` — admin-only. Loads chapter + its included `book_sources` + linked `book_uploads.extracted_text`, sends to Lovable AI Gateway (`google/gemini-3-flash-preview`) with a system prompt enforcing Calm Magic voice, four-capabilities frame, and the chapter's phase. Saves result to `book_chapter_drafts` and (optionally) updates `book_chapters.published_excerpt` after admin approves.
-- `book-checkout-cohort` — Stripe `mode: "payment"` checkout for the practitioner cohort tier; `book-checkout-org` for org license. Both lazy-create Stripe customer by email, support guest checkout, return session URL.
-- `book-lead-capture` — single entrypoint used by all three CTAs (free sample, waitlist, cohort interest). Inserts into `book_preorders`/`book_leads`, emails jbelisle@helloarchitekt.com via Resend, returns sample chapter URL when applicable.
+### 3. Layout shell
+- Mount `GrainOverlay` once in `App.tsx` so every route gets the texture.
+- Add a subtle scanline layer behind heroes via a body class.
 
-## 3. Public /book page restructure
+### 4. Apply to flagship surfaces (visible proof)
+- `LandingPage.tsx` hero: ChromaText headline, parallax collage layers, VHS badge.
+- `BookLaunch.tsx` hero + `LivingManuscriptBand` + `BookOfferTiers`: TornCard treatment, gradient backgrounds via tokens.
+- `BookChapter.tsx` + `ReaderProgressBar`: scanline header, marker-style progress fill, ChromaText chapter title.
+- `BookChapterIndex.tsx`: collage card grid.
+- Replace remaining hardcoded `slate-*` / `fuchsia-*` in book components with new semantic tokens.
 
-Reframe `src/pages/BookLaunch.tsx` around the funnel. New top-to-bottom order:
+### 5. Light pass on shared chrome
+- `Footer.tsx`, `LanguageSwitcher`, `BookAnnouncementBanner`: token-only color swap so they sit in the new palette without restructuring.
 
-1. **Hero** — keep current cover + thesis, replace primary CTA with **"Read the free chapter"** (sample), secondary **"Join the waitlist"**.
-2. **Living manuscript band** — "This book is being written from the work happening on this site." Live counters: chapters drafted / sources mapped / uploads ingested (read from public counts).
-3. **Chapter index** — pulls `book_chapters` ordered by `order_index`. Each row shows phase chip, title, summary, status badge, and either:
-   - "Read sample" button (if `is_free_sample`) → `/book/chapter/:slug`
-   - "Drafting" / "In review" status (no body)
-4. **Free sample chapter route** — new `/book/chapter/:slug` page. Renders `published_excerpt` (markdown). Sticky bottom: "Get the next chapter early — join the waitlist" (lead capture).
-5. **Cohort offer** — practitioner cohort tier card with price + Stripe checkout button.
-6. **Org license** — enterprise card with Stripe checkout (or "talk to us" form for >X seats).
-7. **Existing thesis / pillars / playbooks / bridge / author** sections, condensed.
-8. **Waitlist form** at the end (still email-only, routes to jbelisle@helloarchitekt.com).
-
-All copy added to `src/i18n/{en,fr}/book.json`.
-
-## 4. Admin manuscript console
-
-New route `/book/manuscript` (gated by `has_role('admin')`):
-
-- **Sources tab** — search bar over the site's existing content (PRDs, drift entries, journal, polen, route registry pages). Click → tag to a chapter with weight + notes.
-- **Uploads tab** — drag-drop into `book-manuscript` bucket, calls `book-ingest-upload`, shows extracted preview.
-- **Chapters tab** — list `book_chapters`. Per chapter: included sources, "Synthesize draft" button → calls `book-synthesize-chapter`, shows draft history, "Promote draft to published_excerpt", toggle `is_free_sample`, status change.
-- **Leads tab** — table of `book_preorders` + `book_leads`, filterable by `interest`/`tier`, CSV export.
-
-## 5. Funnel + analytics
-
-- All CTAs fire `analytics_events` rows: `book_sample_viewed`, `book_waitlist_submitted`, `book_cohort_checkout_started`, `book_cohort_purchased`.
-- `BookAnnouncementBanner` CTA changes from "Pre-order" to "Read the free chapter".
-- `OnboardingGuide` keeps the existing book route option but its description points at "Read a free chapter now."
-
-## 6. Stripe
-
-- Two products created via Stripe MCP: **Practitioner Cohort** (one-off) and **Org License** (one-off; or contact form if user prefers no checkout for org).
-- Use existing `STRIPE_SECRET_KEY` secret. Guest checkout supported.
-- Success route `/book/thanks?tier=cohort`, cancel `/book?canceled=1`.
-
-## 7. Out of scope (this pass)
-
-- Recurring subscriptions, multi-language AI drafting beyond EN, full WYSIWYG editor for drafts (textarea + markdown preview only), DRM for the sample chapter.
+## Out of scope (this pass)
+- No changes to data/edge functions, auth, routing, or copy.
+- No refactor of admin console (`/book/manuscript`) beyond inheriting the new tokens.
+- Deep redesign of every page beyond shared chrome — pages auto-inherit via tokens; bespoke per-page collage will come on request.
 
 ## Technical notes
+- All colors HSL via tokens — zero new hex/`text-white` in components I touch.
+- Parallax + chroma effects gated behind `prefers-reduced-motion`.
+- Grain/scanline overlays use `mix-blend-mode: overlay` with low opacity (~6–10%) so legibility stays intact.
+- Fonts loaded with `display=swap`; fallback stack keeps FCP clean.
 
-- AI calls go through Lovable AI Gateway via the Vercel AI SDK helper (`_shared/ai-gateway.ts`), default model `google/gemini-3-flash-preview`, structured prompt per chapter phase.
-- Storage: private `book-manuscript` bucket; only admins read/write via signed URLs.
-- RLS: `book_chapters` SELECT public when `status='published'`; everything else admin-only via `has_role(auth.uid(),'admin')`.
-- File extraction in edge function: pdf via `pdfjs-dist` npm import; docx via `mammoth`; md/txt direct.
-- All lead-capture flows still email **jbelisle@helloarchitekt.com** (core rule).
+## Risk / size
+Foundation + primitives + 4 flagship surfaces. Roughly 12–15 files touched. Other pages will look subtly warmer immediately via token inheritance, then can be polished page-by-page on follow-up.

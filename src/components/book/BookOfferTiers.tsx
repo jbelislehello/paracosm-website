@@ -30,12 +30,14 @@ export default function BookOfferTiers() {
     <section id="offer" className="px-6 py-16 md:py-24">
       <div className="container mx-auto max-w-5xl">
         <div className="mb-10 text-center">
-          <Badge className="mb-3 border-white/20 bg-white/10 text-white">
+          <Badge className="mb-3 border-[hsl(var(--bloom-magenta)/0.4)] bg-[hsl(var(--bloom-magenta)/0.15)] font-vhs text-sm uppercase tracking-widest text-[hsl(var(--bloom-cream))]">
             <Sparkles className="mr-1 h-3 w-3" />
             Three ways in
           </Badge>
-          <h2 className="text-3xl font-bold md:text-4xl">Read first. Practice next. Bring your team.</h2>
-          <p className="mx-auto mt-2 max-w-2xl text-sm text-white/60">
+          <h2 className="font-display text-3xl leading-tight text-[hsl(var(--bloom-cream))] md:text-5xl bloom-chroma-static">
+            Read first. Practice next. Bring your team.
+          </h2>
+          <p className="mx-auto mt-3 max-w-2xl font-tight text-sm text-white/60">
             The book is the entry point. The cohort puts the framework in your hands.
             The org license embeds it in your operating system.
           </p>
