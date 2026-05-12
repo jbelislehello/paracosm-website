@@ -152,11 +152,16 @@ const ParacosmRetreatLanding = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-purple-950/20 dark:to-blue-950/20">
+    <div className="min-h-screen bg-[hsl(var(--bloom-ink))] text-white relative overflow-hidden">
+      <div className="bloom-scanlines pointer-events-none fixed inset-0 opacity-[0.12] z-[5]" />
+      <div className="pointer-events-none absolute -top-32 -left-32 w-[480px] h-[480px] rounded-full bg-[hsl(var(--bloom-magenta)/0.35)] blur-3xl" />
+      <div className="pointer-events-none absolute top-40 -right-40 w-[520px] h-[520px] rounded-full bg-[hsl(var(--bloom-amber)/0.25)] blur-3xl" />
+      <div className="pointer-events-none absolute bottom-0 left-1/3 w-[420px] h-[420px] rounded-full bg-[hsl(var(--bloom-teal)/0.25)] blur-3xl" />
+
       {/* Navigation */}
-      <header className="fixed w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-purple-100 dark:border-purple-900/30">
+      <header className="fixed w-full z-50 bg-[hsl(var(--bloom-ink)/0.85)] backdrop-blur-md border-b border-[hsl(var(--bloom-magenta)/0.3)]">
         <div className="container flex items-center justify-between py-3 px-4">
-          <Link to="/" className="flex items-center gap-2 text-sm font-medium hover:text-purple-600 transition-colors">
+          <Link to="/" className="flex items-center gap-2 text-xs font-vhs uppercase tracking-[0.2em] hover:text-[hsl(var(--bloom-amber))] transition-colors">
             <ArrowLeft className="w-4 h-4" />
             Back to Paracosm
           </Link>
@@ -164,31 +169,32 @@ const ParacosmRetreatLanding = () => {
       </header>
 
       {/* Hero */}
-      <section className="pt-24 pb-16 px-4 text-center">
+      <section className="relative pt-28 pb-16 px-4 text-center z-10">
         <div className="container max-w-4xl mx-auto">
+          <p className="font-vhs uppercase tracking-[0.4em] text-xs text-[hsl(var(--bloom-amber))] mb-4">// Azores · Sept 2026</p>
           <div className="flex items-center justify-center gap-3 mb-6">
-            <Sparkles className="w-8 h-8 text-purple-600" />
-            <h1 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600">
+            <Sparkles className="w-7 h-7 text-[hsl(var(--bloom-amber))]" />
+            <h1 className="text-4xl md:text-6xl font-display bloom-chroma-static text-white leading-[1.05]">
               {t("retreat.section_title")}
             </h1>
-            <Sparkles className="w-8 h-8 text-purple-600" />
+            <Sparkles className="w-7 h-7 text-[hsl(var(--bloom-amber))]" />
           </div>
-          <p className="text-lg md:text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-8">
+          <p className="text-lg md:text-xl font-redacted italic text-white/80 max-w-3xl mx-auto mb-8">
             {t("retreat.section_description")}
           </p>
 
           {/* Location / Venue / Date */}
-          <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-slate-700 dark:text-slate-300">
+          <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-vhs uppercase tracking-[0.18em] text-white/80">
             <span className="inline-flex items-center gap-1.5">
-              <MapPin className="w-4 h-4 text-purple-600" />
+              <MapPin className="w-4 h-4 text-[hsl(var(--bloom-amber))]" />
               {t("retreat.location")}
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <Building className="w-4 h-4 text-purple-600" />
+              <Building className="w-4 h-4 text-[hsl(var(--bloom-amber))]" />
               {t("retreat.venue")}
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <Calendar className="w-4 h-4 text-purple-600" />
+              <Calendar className="w-4 h-4 text-[hsl(var(--bloom-amber))]" />
               {t("retreat.date")}
             </span>
           </div>
