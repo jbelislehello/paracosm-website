@@ -109,7 +109,7 @@ const LandingPage = () => {
                   </Link>
                   <Link to="/drift" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Drift</Link>
                   <Link to="/tonalli" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Tonalli</Link>
-                  <a href="#events" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Events</a>
+                  <a href="#events" onClick={() => setMobileMenuOpen(false)} className="text-lg font-vhs uppercase tracking-[0.18em] text-[hsl(var(--bloom-magenta))] hover:text-[hsl(var(--bloom-amber))] transition-colors">Events &amp; Retreats</a>
                   <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Contact</a>
                 </nav>
               </SheetContent>
