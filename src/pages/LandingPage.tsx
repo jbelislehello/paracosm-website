@@ -332,14 +332,21 @@ const LandingPage = () => {
           <ParacosmUniverseSection />
         </CollapsibleSection>
 
-        <CollapsibleSection
-          title={t('landing.section_events')}
-          subtitle={t('landing.section_events_sub')}
-          icon={<Sparkles className="w-5 h-5" />}
-          id="events"
-        >
-          <ParacosmEventsSection />
-        </CollapsibleSection>
+        <section id="events" className="relative scroll-mt-24 my-12 rounded-2xl border border-[hsl(var(--bloom-magenta)/0.35)] bg-[hsl(var(--bloom-ink))] text-white overflow-hidden shadow-[0_30px_80px_-30px_hsl(var(--bloom-magenta)/0.45)]">
+          <div className="bloom-scanlines pointer-events-none absolute inset-0 opacity-[0.18]" />
+          <div className="relative px-6 md:px-10 pt-10 pb-4">
+            <p className="font-vhs uppercase tracking-[0.35em] text-xs text-[hsl(var(--bloom-amber))]">// Live Programming</p>
+            <h2 className="mt-2 font-display text-3xl md:text-5xl bloom-chroma-static text-white">
+              {t('landing.section_events')}
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm md:text-base font-redacted italic text-white/80">
+              {t('landing.section_events_sub')}
+            </p>
+          </div>
+          <div className="relative px-6 md:px-10 pb-10">
+            <ParacosmEventsSection />
+          </div>
+        </section>
 
         <CollapsibleSection
           title={t('landing.section_coaching')}
