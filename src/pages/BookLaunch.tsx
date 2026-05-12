@@ -43,6 +43,9 @@ import Footer from "@/components/Footer";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import bookCover from "@/assets/calm-magic-book-cover.jpg";
+import LivingManuscriptBand from "@/components/book/LivingManuscriptBand";
+import BookChapterIndex from "@/components/book/BookChapterIndex";
+import BookOfferTiers from "@/components/book/BookOfferTiers";
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import transmediaMap from "@/assets/drift/transmediamap.jpg";
 import gameplanImage from "@/assets/drift/JonathanBelisle-gameplan.jpg";
@@ -231,19 +234,19 @@ const BookLaunch = () => {
               </p>
 
               <div className="mb-8 flex flex-wrap gap-3">
-                <a href="#waitlist">
+                <a href="#chapters">
                   <Button size="lg" className="gap-2 bg-white font-semibold text-slate-900 hover:bg-white/90">
                     <BookOpen className="h-4 w-4" />
-                    {t("book.hero_cta_primary")}
+                    Read the free chapter
                   </Button>
                 </a>
-                <a href="#why-now">
+                <a href="#offer">
                   <Button
                     size="lg"
                     variant="outline"
                     className="gap-2 border-white/20 bg-transparent text-white hover:bg-white/10"
                   >
-                    {t("book.hero_cta_secondary")}
+                    See the cohort
                     <ArrowRight className="h-4 w-4" />
                   </Button>
                 </a>
@@ -284,6 +287,10 @@ const BookLaunch = () => {
             </div>
           </div>
         </section>
+
+        <LivingManuscriptBand />
+        <BookChapterIndex />
+        <BookOfferTiers />
 
         <section className="bg-slate-900/50 px-6 py-20">
           <div className="container mx-auto max-w-6xl">
