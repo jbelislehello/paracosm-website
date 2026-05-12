@@ -91,10 +91,19 @@ function inline(text: string): React.ReactNode {
   return parts;
 }
 
+interface NavChapter {
+  slug: string;
+  title: string;
+  phase: string;
+  order_index: number;
+}
+
 export default function BookChapter() {
   const { slug } = useParams();
   const [chapter, setChapter] = useState<Chapter | null>(null);
+  const [siblings, setSiblings] = useState<NavChapter[]>([]);
   const [loading, setLoading] = useState(true);
+  const { markRead } = useReaderProgress();
 
   usePageSeo({
     title: chapter ? `${chapter.title} — Calm Magic` : "Chapter — Calm Magic",
@@ -107,20 +116,39 @@ export default function BookChapter() {
     setLoading(true);
     (async () => {
       if (!slug) return;
-      const { data } = await supabase
-        .from("book_chapters")
-        .select("*")
-        .eq("slug", slug)
-        .maybeSingle();
-      if (alive) {
-        setChapter((data as Chapter) ?? null);
-        setLoading(false);
-      }
+      const [{ data: ch }, { data: sibs }] = await Promise.all([
+        supabase.from("book_chapters").select("*").eq("slug", slug).maybeSingle(),
+        supabase
+          .from("book_chapters")
+          .select("slug, title, phase, order_index")
+          .eq("status", "published")
+          .order("order_index", { ascending: true }),
+      ]);
+      if (!alive) return;
+      setChapter((ch as Chapter) ?? null);
+      setSiblings((sibs as NavChapter[]) ?? []);
+      setLoading(false);
     })();
     return () => {
       alive = false;
     };
   }, [slug]);
+
+  // Mark this chapter as read once it loads as published
+  useEffect(() => {
+    if (chapter?.status === "published" && chapter.published_excerpt) {
+      markRead(chapter.slug, chapter.phase);
+      void trackEvent("book_chapter_read", {
+        slug: chapter.slug,
+        phase: chapter.phase,
+        order_index: chapter.order_index,
+      });
+    }
+  }, [chapter, markRead]);
+
+  const idx = chapter ? siblings.findIndex((s) => s.slug === chapter.slug) : -1;
+  const prev = idx > 0 ? siblings[idx - 1] : null;
+  const next = idx >= 0 && idx < siblings.length - 1 ? siblings[idx + 1] : null;
 
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
@@ -152,6 +180,8 @@ export default function BookChapter() {
           <NotFoundState />
         ) : (
           <article className="container mx-auto max-w-2xl px-6 py-12">
+            <ReaderProgressBar compact className="mb-8" />
+
             <div className="mb-6 flex flex-wrap items-center gap-2">
               <Badge variant="outline" className="border-white/15 bg-white/5 text-[10px] uppercase tracking-wider">
                 Chapter {chapter.order_index}
@@ -178,7 +208,34 @@ export default function BookChapter() {
               )}
             </div>
 
-            <aside className="mt-16 rounded-2xl border border-fuchsia-300/20 bg-gradient-to-br from-fuchsia-500/10 to-rose-500/5 p-6">
+            {(prev || next) && (
+              <nav className="mt-12 grid gap-3 border-t border-white/10 pt-8 sm:grid-cols-2">
+                {prev ? (
+                  <Link
+                    to={`/book/chapter/${prev.slug}`}
+                    className="group rounded-xl border border-white/10 bg-white/[0.03] p-4 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
+                  >
+                    <div className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-white/40">
+                      <ArrowLeft className="h-3 w-3" /> Previous · {PHASE_LABEL[prev.phase] ?? prev.phase}
+                    </div>
+                    <div className="mt-1 text-sm font-semibold text-white">{prev.title}</div>
+                  </Link>
+                ) : <span />}
+                {next ? (
+                  <Link
+                    to={`/book/chapter/${next.slug}`}
+                    className="group rounded-xl border border-white/10 bg-white/[0.03] p-4 text-right transition-colors hover:border-white/20 hover:bg-white/[0.06] sm:text-right"
+                  >
+                    <div className="flex items-center justify-end gap-1 text-[10px] uppercase tracking-wider text-white/40">
+                      Next · {PHASE_LABEL[next.phase] ?? next.phase} <ArrowRight className="h-3 w-3" />
+                    </div>
+                    <div className="mt-1 text-sm font-semibold text-white">{next.title}</div>
+                  </Link>
+                ) : <span />}
+              </nav>
+            )}
+
+            <aside className="mt-12 rounded-2xl border border-fuchsia-300/20 bg-gradient-to-br from-fuchsia-500/10 to-rose-500/5 p-6">
               <div className="mb-3 flex items-center gap-2 text-sm font-semibold">
                 <BookOpen className="h-4 w-4 text-fuchsia-300" />
                 Get the next chapter early
