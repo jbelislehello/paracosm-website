@@ -7,7 +7,7 @@
  * The canonical host matches `usePageSeo`'s CANONICAL_HOST.
  */
 
-export const CANONICAL_HOST = "https://paracosm.helloarchitekt.com";
+export const CANONICAL_HOST = "https://calm-magic.com";
 export const DEFAULT_IMAGE = `${CANONICAL_HOST}/og-image.jpeg`;
 export const ORG_ID = `${CANONICAL_HOST}/#organization`;
 export const SITE_ID = `${CANONICAL_HOST}/#website`;
