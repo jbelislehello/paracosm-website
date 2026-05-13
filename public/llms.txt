@@ -1,0 +1,33 @@
+# Calm Magic — Paracosm
+
+> Calm Magic is a methodology and platform by Paracosm for building Learning Organizations: AI systems mastery, relational intelligence, and a 64-tile compass for navigating change. Created by Jonathan Belisle.
+
+Paracosm helps executives, founders, and innovators move from chaos to coherence through the seven phases of Calm Magic — GLITCH, DRIFT, TUNE, LOVE, MAGIC, CALM, FREE — combined with agentic AI tools, residencies, and a forthcoming book.
+
+## Pages
+
+- [Home](/): Overview of Paracosm and the Calm Magic methodology.
+- [About](/about-us): Who we are and what we believe.
+- [Case Studies](/case-studies): Engagements and outcomes.
+- [Pricing](/pricing): Plans for practitioners and organizations.
+- [Book — Calm Magic](/book): The book launch, chapters, and cohort.
+- [GL!TCH Methodology](/glitch-methodology): Live facilitation methodology and 25-minute cycle.
+- [Calm Magic Demo](/calm-magic-demo): Interactive walkthrough of the 64-tile board.
+- [Dream & Learn](/dream-and-learn): Inventive gardens of dreams and expressive counterpart.
+- [Paracosm Retreat](/paracosm-retreat): Azores 2026 flagship event.
+- [Wuxia the Fox](/wuxia): Transmedia universe and story guide.
+- [Tonalli](/tonalli): Creative OS — voice and spatial branches.
+- [Entrepreneurial Tarot](/tarot): 64-card matrix deck linked to the Calm Magic board.
+- [Pattern Encyclopedia](/pattern-encyclopedia): Patterns and frameworks reference.
+- [Agentic UX](/agentic-ux): Agentic interfaces and ontological design.
+- [Lineage](/lineage): Influences and comparables behind Calm Magic.
+- [Origins](/origins): Methods 2013–2018 that seeded the work.
+- [Residencies](/residencies): Archetypal residency tracks.
+- [Drift](/drift): Monthly discoveries and the Drift resource library.
+- [Calm Magic Assistant](/calm-magic-assistant): Relational healing assistant.
+- [Events & Retreats](/events-and-retreats): Upcoming Paracosm events.
+
+## Optional
+
+- [Design System](/design-system): Tokens, components, and visual language.
+- [Image Credits](/credits): Attributions for visual assets.

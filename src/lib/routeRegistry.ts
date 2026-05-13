@@ -43,6 +43,10 @@ export const ROUTE_REGISTRY: RouteMeta[] = [
   { path: "/origins", label: "Origins — methods 2013–2018", parent: "/lineage" },
   { path: "/agentic-ecosystem-deck", label: "Agentic Ecosystem Deck", noindex: true },
   { path: "/credits", label: "Image credits" },
+  { path: "/calm-magic-assistant", label: "Calm Magic Assistant" },
+  { path: "/events-and-retreats", label: "Events & Retreats" },
+  { path: "/auth", label: "Sign in", noindex: true },
+  { path: "/glitch-auth", label: "GL!TCH Sign in", noindex: true },
 
   // Residencies
   { path: "/residencies", label: "Residencies" },
@@ -81,6 +85,7 @@ export const ROUTE_REGISTRY: RouteMeta[] = [
     path: "/calm-magic-board/prds/:id",
     label: (p) => `PRD ${p.id ?? ""}`.trim(),
     parent: "/calm-magic-board/prds",
+    noindex: true,
   },
 ];
 
