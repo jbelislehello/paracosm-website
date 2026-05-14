@@ -1,28 +1,40 @@
-Draft a reusable speaking & podcast pitch email (EN + FR) positioning Calm Magic as the canonical platform, with a tiered target list and tracking sheet.
+Import the corpus into `book_sources` and surface progress.
 
-## Deliverables
+## Why nothing imported
 
-1. **`/mnt/documents/calm-magic-speaking-pitch.md`** — Master pitch doc containing:
-   - Short bio (2 versions: 50-word and 120-word) ending with `calm-magic.com` as canonical link
-   - 5 signature talk titles + 1-line abstracts (drawn from Calm Magic methodology, GL!TCH, AI Observatory, Conversation-as-Ontology, Intention Design)
-   - 3 podcast topic angles framed as guest pitches
-   - Reusable email template — EN — for podcasts (cold)
-   - Reusable email template — EN — for conferences/venues (warm, references prior relationship)
-   - Reusable email template — FR — equivalents for Québec venues (Infopresse, Phi, INIS, Creative Mornings MTL)
-   - Follow-up template (7-day nudge)
+The previous "Go" landed in plan mode, so `book-seed-from-corpus` was never invoked. DB still shows: 0 sources, 0 drafts, 0 uploads, 7 chapter outlines.
 
-2. **`/mnt/documents/calm-magic-outreach-targets.csv`** — Target tracker with columns:
-   `tier, type, name, contact_url, relationship, angle, language, status, sent_date, replied`
-   Pre-seeded with the Tier 1–3 list from the previous turn (~25 rows).
+## How to import — pick one
 
-## Key constraints
+### Option A — Click the existing button (fastest, 30 s)
 
-- Every email signature and bio link uses `calm-magic.com` (not helloarchitekt.com) — this is the SEO point of the exercise.
-- Reply-to address: `jbelisle@helloarchitekt.com` (per core memory).
-- Tone: Visionary Storyteller — concrete, generous, no jargon dump. One specific value-prop per email, not a menu.
-- FR variants are full rewrites, not translations.
+1. Go to `/admin/book-manuscript` while logged in as admin.
+2. Click **"Seed corpus"** (top card).
+3. The page builds the tarot + drift payload from in-app data files and invokes `book-seed-from-corpus`. Toast shows per-kind counts.
+
+This is the path the function was designed for. Nothing to build.
+
+### Option B — I trigger it for you from chat (no clicking)
+
+If you're currently logged into the preview as admin, I can call `book-seed-from-corpus` directly via `curl_edge_functions`. Two sub-options:
+
+- **Web + tiles only** (~60 site pages + 64 tiles): one curl with empty `tarot`/`drift` arrays. Tarot and drift can be added later. Fast and simple.
+- **Full corpus**: I'd need to inline the tarot deck (64 cards) + drift items in the request body. Doable but a heavier call.
+
+I default to **Option B / web + tiles only** unless you tell me otherwise — it gets ~120 sources in within a minute and unblocks chapter synthesis. You can run the in-app button later for the rest.
+
+## After import
+
+I'll verify with:
+
+```sql
+SELECT c.phase, c.title, count(s.id) AS sources
+FROM book_chapters c LEFT JOIN book_sources s ON s.chapter_id = c.id
+GROUP BY c.id ORDER BY c.order_index;
+```
+
+…and post the per-chapter counts back. Then the next step is `book-synthesize-chapter` to turn sources into draft prose in `book_chapter_drafts`.
 
 ## Out of scope
 
-- No code changes, no UI, no DB writes.
-- Not sending emails — just producing the artifacts.
+No schema changes, no new functions, no UI changes. Just running what's already built.
