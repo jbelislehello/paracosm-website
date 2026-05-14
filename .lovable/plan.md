@@ -1,40 +1,57 @@
-Import the corpus into `book_sources` and surface progress.
+## Goal
 
-## Why nothing imported
+Populate the existing `book_chapters` (GLITCH, DRIFT, TUNE, LOVE, MAGIC, CALM, FREE) with real source material drawn from the uploaded PDF *CALM MAGIC — Official Book Structure*, so chapter synthesis (`book-synthesize-chapter`) has substance to work with. This becomes the historical / methodological backbone; you'll layer the updated acronyms on top after.
 
-The previous "Go" landed in plan mode, so `book-seed-from-corpus` was never invoked. DB still shows: 0 sources, 0 drafts, 0 uploads, 7 chapter outlines.
+## What's in the PDF (summary of the source)
 
-## How to import — pick one
+- **Préface** — 2007 origin, 25 years of practice, "I think about thinking", reflexive writing journey
+- **Part 1 — The Compasses**: Poiesis at the Office, identity & path, current questionings, Futurogram, Web → IIoT, Programmable World, Spatial Computing, Ethics & Engagement at Work (Self-Determination Theory, Deci & Ryan)
+- **Part 2 — The Transformers**: The Relational Artist, The Organizational Poet, The Idea & Experience Architect
+- **Part 3 — The Methodological Framework**:
+  - The original **SMALL** framework (Seeds / Maps / Agendas / Lens / Love) — ancestor of CALM MAGIC
+  - **CALM** = CREEDS · LENS · AGENDAS · MAPS · LOVE (with chapter sub-lists each)
+  - **MAGIC** = Mindsets · Agility · Goals/Governance/Gardens · Intuition · Cycles/Capabilities/Compasses/Circles
+  - Flow States Tarot as the "secret ingredient" gelling the 4 elements (Major Arcanas)
+  - Organizational Poetics, Creative Leadership in the Learning Organization, Reinventing Meetings, Creative/Transition Design Expeditions, Story-Driven Enterprise Transformation
+- **Activity Maps** appendix
 
-### Option A — Click the existing button (fastest, 30 s)
+## Mapping to the 7 current chapters
 
-1. Go to `/admin/book-manuscript` while logged in as admin.
-2. Click **"Seed corpus"** (top card).
-3. The page builds the tarot + drift payload from in-app data files and invokes `book-seed-from-corpus`. Toast shows per-kind counts.
+| Current phase chapter | PDF material assigned |
+|---|---|
+| **GLITCH** | Préface, "Mes questionnements actuels", censoring system / mental filter, Ethics & Engagement at Work |
+| **DRIFT** | Part 1 Compasses: Poiesis, Futurogram, Web → IIoT, Programmable World, Spatial Computing |
+| **TUNE** | SMALL → CALM transition, AGENDAS (Analysis → Secrets), Reinventing Meetings |
+| **LOVE** | LOVE chapter (Longevity, Oscillations, Velocity, Empathy), Self-Determination Theory, relational artist |
+| **MAGIC** | MAGIC acronym, Flow States Tarot, Organizational Poet, Story-Driven Enterprise Transformation |
+| **CALM** | CREEDS, LENS, MAPS, methodological framework overview, Why Organizational Poetry Works |
+| **FREE** | Creative/Transition Design Expeditions, Activity Maps, Idea & Experience Architect, "preferable futures" closing |
 
-This is the path the function was designed for. Nothing to build.
+## Implementation steps (after you approve)
 
-### Option B — I trigger it for you from chat (no clicking)
+1. **Parse & chunk the PDF** server-side once into ~30–50 logical sections (heading + body + page refs).
+2. **Insert into `book_sources`** with:
+   - `kind = 'manuscript'`
+   - `ref = 'pdf:calm-magic-official-structure#p<page>-<slug>'`
+   - `title` = section heading, `excerpt` = section body (≤1500 chars), `weight = 5` (higher than scraped web sources)
+   - `chapter_id` = mapped per the table above
+   - `included = true`
+3. **Update `book_chapters.summary`** for each of the 7 chapters with a 2–3 sentence outline derived from the assigned PDF material (preserves the bilingual FR/EN voice from the source).
+4. **Add a manuscript record to `book_uploads`** pointing at the PDF (store under the existing `book-manuscript` storage bucket) so it's traceable as the seed document.
+5. Leave `book_chapter_drafts` empty — synthesis is the next step, not part of this plan.
 
-If you're currently logged into the preview as admin, I can call `book-seed-from-corpus` directly via `curl_edge_functions`. Two sub-options:
+## Technical notes
 
-- **Web + tiles only** (~60 site pages + 64 tiles): one curl with empty `tarot`/`drift` arrays. Tarot and drift can be added later. Fast and simple.
-- **Full corpus**: I'd need to inline the tarot deck (64 cards) + drift items in the request body. Doable but a heavier call.
-
-I default to **Option B / web + tiles only** unless you tell me otherwise — it gets ~120 sources in within a minute and unblocks chapter synthesis. You can run the in-app button later for the rest.
-
-## After import
-
-I'll verify with:
-
-```sql
-SELECT c.phase, c.title, count(s.id) AS sources
-FROM book_chapters c LEFT JOIN book_sources s ON s.chapter_id = c.id
-GROUP BY c.id ORDER BY c.order_index;
-```
-
-…and post the per-chapter counts back. Then the next step is `book-synthesize-chapter` to turn sources into draft prose in `book_chapter_drafts`.
+- Done as a one-shot admin script via a small new edge function `book-seed-from-manuscript` (or extend `book-seed-from-corpus` with a `manuscript` mode). Function reads the parsed sections from a JSON payload posted by the admin page, so we don't need to ship the PDF binary into the function.
+- No schema changes. No new tables. RLS already restricts `book_sources` / `book_uploads` / `book_chapters` writes to admins.
+- After this lands, you send the updated acronyms and we either (a) revise chapter titles/summaries in place, or (b) add a second pass of `book_sources` tagged `kind = 'method-update'`.
 
 ## Out of scope
 
-No schema changes, no new functions, no UI changes. Just running what's already built.
+- Running `book-synthesize-chapter` (next step, separate request)
+- Translating FR passages to EN
+- Restructuring the 7-phase ontology — we keep GLITCH…FREE as-is
+
+## Open question (won't block — defaulting unless you say otherwise)
+
+Default = create a small new edge function `book-seed-from-manuscript` invoked from `/admin/book-manuscript` with a "Seed from PDF" button. Alternative = inline the parsed sections into the existing `book-seed-from-corpus` payload. I'll go with the new function for clarity unless you prefer the inline route.
