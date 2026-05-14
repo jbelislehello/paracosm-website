@@ -1,57 +1,57 @@
-## Goal
+# Make the book updates visible on the site
 
-Populate the existing `book_chapters` (GLITCH, DRIFT, TUNE, LOVE, MAGIC, CALM, FREE) with real source material drawn from the uploaded PDF *CALM MAGIC — Official Book Structure*, so chapter synthesis (`book-synthesize-chapter`) has substance to work with. This becomes the historical / methodological backbone; you'll layer the updated acronyms on top after.
+## Why nothing seems to have changed
 
-## What's in the PDF (summary of the source)
+The previous migration updated `book_chapters.summary` and inserted 30 manuscript-mapped `book_sources` rows, but on `/book` every chapter is still `status: outline` → rendered as "Coming soon" cards. From the home page (`/`) you only see the announcement banner, which never reflects chapter content. So the work landed in the database but never crossed into the UI.
 
-- **Préface** — 2007 origin, 25 years of practice, "I think about thinking", reflexive writing journey
-- **Part 1 — The Compasses**: Poiesis at the Office, identity & path, current questionings, Futurogram, Web → IIoT, Programmable World, Spatial Computing, Ethics & Engagement at Work (Self-Determination Theory, Deci & Ryan)
-- **Part 2 — The Transformers**: The Relational Artist, The Organizational Poet, The Idea & Experience Architect
-- **Part 3 — The Methodological Framework**:
-  - The original **SMALL** framework (Seeds / Maps / Agendas / Lens / Love) — ancestor of CALM MAGIC
-  - **CALM** = CREEDS · LENS · AGENDAS · MAPS · LOVE (with chapter sub-lists each)
-  - **MAGIC** = Mindsets · Agility · Goals/Governance/Gardens · Intuition · Cycles/Capabilities/Compasses/Circles
-  - Flow States Tarot as the "secret ingredient" gelling the 4 elements (Major Arcanas)
-  - Organizational Poetics, Creative Leadership in the Learning Organization, Reinventing Meetings, Creative/Transition Design Expeditions, Story-Driven Enterprise Transformation
-- **Activity Maps** appendix
+The new PRD you just uploaded (Calm Magic Board v1.0, April 2026) is the up-to-date acronym/ontology source we'll anchor the book to.
 
-## Mapping to the 7 current chapters
+## What I'll do
 
-| Current phase chapter | PDF material assigned |
-|---|---|
-| **GLITCH** | Préface, "Mes questionnements actuels", censoring system / mental filter, Ethics & Engagement at Work |
-| **DRIFT** | Part 1 Compasses: Poiesis, Futurogram, Web → IIoT, Programmable World, Spatial Computing |
-| **TUNE** | SMALL → CALM transition, AGENDAS (Analysis → Secrets), Reinventing Meetings |
-| **LOVE** | LOVE chapter (Longevity, Oscillations, Velocity, Empathy), Self-Determination Theory, relational artist |
-| **MAGIC** | MAGIC acronym, Flow States Tarot, Organizational Poet, Story-Driven Enterprise Transformation |
-| **CALM** | CREEDS, LENS, MAPS, methodological framework overview, Why Organizational Poetry Works |
-| **FREE** | Creative/Transition Design Expeditions, Activity Maps, Idea & Experience Architect, "preferable futures" closing |
+### 1. Ingest the PRD as a canonical book source
+- Upload `calm-magic-board-prd.pdf` into the `book-manuscript` storage bucket.
+- Create a `book_uploads` row with the parsed full text (already extracted) so `book-synthesize-chapter` can use it.
+- Insert one `book_sources` row per chapter pointing to the relevant PRD section, `weight: 8` (canonical), `kind: 'upload'`:
+  - GLITCH ← §1 Ontological Framework + §3 Polyvagal (friction → state)
+  - DRIFT ← §2 Many-Worlds Quantum Layer + §10 Manifold/Shift Vectors
+  - TUNE ← §5 Ontic State Finder + §8 Decision Log → Proverbial Abilities
+  - LOVE ← §3 Polyvagal + §6 Autopoiesis/Nahual
+  - MAGIC ← §4 53 Senses + §7 Pragmatic Imagination Metaphors
+  - CALM ← §1 Seasons/Quadrants/64 Tiles/260-cycle + §9 Oneiric Alignment
+  - FREE ← §2 QuantumBranchExplorer (re-observation) + §10 Attractors
 
-## Implementation steps (after you approve)
+### 2. Refresh chapter summaries with current acronyms
+Rewrite each `book_chapters.summary` to reflect the v1.0 vocabulary explicitly:
+- POLLENS · NOEMS · POEMS · TOTEMS · ANTHEMS (5 Seasons)
+- SN · IN · IM · SM (4 Quadrants)
+- 64 tiles / 260-cycle / window of tolerance
+- Ventral · Sympathetic · Dorsal (Polyvagal)
+- 53 Senses, Nahual, Oneiric Alignment, QuantumBranch, DistortedTorus
 
-1. **Parse & chunk the PDF** server-side once into ~30–50 logical sections (heading + body + page refs).
-2. **Insert into `book_sources`** with:
-   - `kind = 'manuscript'`
-   - `ref = 'pdf:calm-magic-official-structure#p<page>-<slug>'`
-   - `title` = section heading, `excerpt` = section body (≤1500 chars), `weight = 5` (higher than scraped web sources)
-   - `chapter_id` = mapped per the table above
-   - `included = true`
-3. **Update `book_chapters.summary`** for each of the 7 chapters with a 2–3 sentence outline derived from the assigned PDF material (preserves the bilingual FR/EN voice from the source).
-4. **Add a manuscript record to `book_uploads`** pointing at the PDF (store under the existing `book-manuscript` storage bucket) so it's traceable as the seed document.
-5. Leave `book_chapter_drafts` empty — synthesis is the next step, not part of this plan.
+### 3. Synthesize readable draft chapters
+Invoke the existing `book-synthesize-chapter` edge function for each of the 7 chapters. This writes a markdown draft into `book_chapter_drafts` (current=true) using the mapped `book_sources` + the new PRD upload. Move chapter `status` from `outline` → `drafting` so the chapter cards show the new summaries with a "Drafting" badge and a non-coming-soon state.
+
+I'll leave `status: published` off until you've reviewed the drafts (chapters become readable on `/book/chapter/:slug` only when published — that's a separate "approve" action you trigger).
+
+### 4. Make the work visible on /book
+Add a compact "Manuscript progress" panel to `BookChapterIndex` showing per-chapter source counts (GLITCH 5 · DRIFT 5 · TUNE 5 · LOVE 5 · MAGIC 5 · CALM 7 · FREE 5 after the PRD is mapped) and a "Last synthesized" timestamp. Update `LivingManuscriptBand` stats to reflect the new totals automatically (already wired to live counts).
+
+### 5. Optional — surface a "What's new" line on home
+Add one line under the existing `BookAnnouncementBanner` content (only on `/book`, not home) saying "Drafts in motion: 7 chapters · last refresh {timestamp}" so future updates are obvious without you having to refresh manually.
+
+## Out of scope (ask separately if you want them)
+- Publishing chapters (making them readable to visitors)
+- Paywall / preorder changes
+- Translating drafts to French
+- A new admin UI for approving drafts (the existing flow stays)
 
 ## Technical notes
+- Migration tool used only for the canonical-source insert + chapter summary updates (data changes via insert tool, schema unchanged).
+- Storage upload + edge-function invocation happen via a one-off admin script run from your authenticated session, OR I can script it server-side from a temporary admin-only edge function — tell me which you prefer.
+- `book-synthesize-chapter` already exists and uses Lovable AI Gateway; no new secrets required.
+- Acronym source-of-truth becomes the uploaded PDF + this plan; future chapter regenerations will reference it.
 
-- Done as a one-shot admin script via a small new edge function `book-seed-from-manuscript` (or extend `book-seed-from-corpus` with a `manuscript` mode). Function reads the parsed sections from a JSON payload posted by the admin page, so we don't need to ship the PDF binary into the function.
-- No schema changes. No new tables. RLS already restricts `book_sources` / `book_uploads` / `book_chapters` writes to admins.
-- After this lands, you send the updated acronyms and we either (a) revise chapter titles/summaries in place, or (b) add a second pass of `book_sources` tagged `kind = 'method-update'`.
-
-## Out of scope
-
-- Running `book-synthesize-chapter` (next step, separate request)
-- Translating FR passages to EN
-- Restructuring the 7-phase ontology — we keep GLITCH…FREE as-is
-
-## Open question (won't block — defaulting unless you say otherwise)
-
-Default = create a small new edge function `book-seed-from-manuscript` invoked from `/admin/book-manuscript` with a "Seed from PDF" button. Alternative = inline the parsed sections into the existing `book-seed-from-corpus` payload. I'll go with the new function for clarity unless you prefer the inline route.
+## Confirm before I build
+1. Use the uploaded PRD as the canonical acronym source (yes/no).
+2. Synthesize all 7 chapters now, or only GLITCH first as a quality check.
+3. Add the "Manuscript progress" panel to `/book` (yes/no).
