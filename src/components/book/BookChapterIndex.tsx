@@ -38,19 +38,30 @@ const STATUS_LABEL: Record<string, string> = {
 export default function BookChapterIndex() {
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sourceCounts, setSourceCounts] = useState<Record<string, number>>({});
   const { readSlugs, lastSlug } = useReaderProgress();
 
   useEffect(() => {
     let mounted = true;
     (async () => {
-      const { data } = await supabase
-        .from("book_chapters")
-        .select("id, slug, order_index, title, phase, summary, status, is_free_sample")
-        .order("order_index", { ascending: true });
-      if (mounted) {
-        setChapters((data as Chapter[]) ?? []);
-        setLoading(false);
-      }
+      const [{ data: chs }, { data: srcs }] = await Promise.all([
+        supabase
+          .from("book_chapters")
+          .select("id, slug, order_index, title, phase, summary, status, is_free_sample")
+          .order("order_index", { ascending: true }),
+        supabase
+          .from("book_sources")
+          .select("chapter_id")
+          .eq("included", true),
+      ]);
+      if (!mounted) return;
+      setChapters((chs as Chapter[]) ?? []);
+      const counts: Record<string, number> = {};
+      (srcs ?? []).forEach((s: { chapter_id: string }) => {
+        counts[s.chapter_id] = (counts[s.chapter_id] ?? 0) + 1;
+      });
+      setSourceCounts(counts);
+      setLoading(false);
     })();
     return () => {
       mounted = false;
