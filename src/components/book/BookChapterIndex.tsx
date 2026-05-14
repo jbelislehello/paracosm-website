@@ -105,6 +105,35 @@ export default function BookChapterIndex() {
 
         <ReaderProgressBar className="mb-6" />
 
+        {!loading && Object.keys(sourceCounts).length > 0 && (
+          <Card className="mb-6 border-white/10 bg-white/[0.03] p-4">
+            <div className="mb-2 flex items-center gap-2">
+              <Sparkles className="h-3.5 w-3.5 text-[hsl(var(--bloom-amber))]" />
+              <span className="font-vhs text-[11px] uppercase tracking-widest text-white/70">
+                Manuscript progress
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {visible.map((c) => (
+                <span
+                  key={c.id}
+                  className="inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-white/70"
+                >
+                  <span className="font-vhs uppercase tracking-wider text-white/90">
+                    {PHASE_LABEL[c.phase] ?? c.phase}
+                  </span>
+                  <span className="text-[hsl(var(--bloom-amber))]">
+                    {sourceCounts[c.id] ?? 0}
+                  </span>
+                </span>
+              ))}
+            </div>
+            <p className="mt-2 text-[11px] text-white/40">
+              Sources mapped per chapter (essays, PRDs, drift entries, manuscript uploads).
+            </p>
+          </Card>
+        )}
+
         <div className="grid gap-3">
           {loading
             ? Array.from({ length: 4 }).map((_, i) => (
@@ -118,6 +147,7 @@ export default function BookChapterIndex() {
                   key={c.slug}
                   chapter={c}
                   hasRead={readSlugs.includes(c.slug)}
+                  sourceCount={sourceCounts[c.id] ?? 0}
                 />
               ))}
         </div>
@@ -126,7 +156,7 @@ export default function BookChapterIndex() {
   );
 }
 
-function ChapterRow({ chapter, hasRead }: { chapter: Chapter; hasRead: boolean }) {
+function ChapterRow({ chapter, hasRead, sourceCount }: { chapter: Chapter; hasRead: boolean; sourceCount: number }) {
   const isPublished = chapter.status === "published";
   const isReadable = isPublished;
 
