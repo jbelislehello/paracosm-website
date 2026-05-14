@@ -38,19 +38,30 @@ const STATUS_LABEL: Record<string, string> = {
 export default function BookChapterIndex() {
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [loading, setLoading] = useState(true);
+  const [sourceCounts, setSourceCounts] = useState<Record<string, number>>({});
   const { readSlugs, lastSlug } = useReaderProgress();
 
   useEffect(() => {
     let mounted = true;
     (async () => {
-      const { data } = await supabase
-        .from("book_chapters")
-        .select("id, slug, order_index, title, phase, summary, status, is_free_sample")
-        .order("order_index", { ascending: true });
-      if (mounted) {
-        setChapters((data as Chapter[]) ?? []);
-        setLoading(false);
-      }
+      const [{ data: chs }, { data: srcs }] = await Promise.all([
+        supabase
+          .from("book_chapters")
+          .select("id, slug, order_index, title, phase, summary, status, is_free_sample")
+          .order("order_index", { ascending: true }),
+        supabase
+          .from("book_sources")
+          .select("chapter_id")
+          .eq("included", true),
+      ]);
+      if (!mounted) return;
+      setChapters((chs as Chapter[]) ?? []);
+      const counts: Record<string, number> = {};
+      (srcs ?? []).forEach((s: { chapter_id: string }) => {
+        counts[s.chapter_id] = (counts[s.chapter_id] ?? 0) + 1;
+      });
+      setSourceCounts(counts);
+      setLoading(false);
     })();
     return () => {
       mounted = false;
@@ -94,6 +105,35 @@ export default function BookChapterIndex() {
 
         <ReaderProgressBar className="mb-6" />
 
+        {!loading && Object.keys(sourceCounts).length > 0 && (
+          <Card className="mb-6 border-white/10 bg-white/[0.03] p-4">
+            <div className="mb-2 flex items-center gap-2">
+              <Sparkles className="h-3.5 w-3.5 text-[hsl(var(--bloom-amber))]" />
+              <span className="font-vhs text-[11px] uppercase tracking-widest text-white/70">
+                Manuscript progress
+              </span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {visible.map((c) => (
+                <span
+                  key={c.id}
+                  className="inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-white/70"
+                >
+                  <span className="font-vhs uppercase tracking-wider text-white/90">
+                    {PHASE_LABEL[c.phase] ?? c.phase}
+                  </span>
+                  <span className="text-[hsl(var(--bloom-amber))]">
+                    {sourceCounts[c.id] ?? 0}
+                  </span>
+                </span>
+              ))}
+            </div>
+            <p className="mt-2 text-[11px] text-white/40">
+              Sources mapped per chapter (essays, PRDs, drift entries, manuscript uploads).
+            </p>
+          </Card>
+        )}
+
         <div className="grid gap-3">
           {loading
             ? Array.from({ length: 4 }).map((_, i) => (
@@ -107,6 +147,7 @@ export default function BookChapterIndex() {
                   key={c.slug}
                   chapter={c}
                   hasRead={readSlugs.includes(c.slug)}
+                  sourceCount={sourceCounts[c.id] ?? 0}
                 />
               ))}
         </div>
@@ -115,7 +156,7 @@ export default function BookChapterIndex() {
   );
 }
 
-function ChapterRow({ chapter, hasRead }: { chapter: Chapter; hasRead: boolean }) {
+function ChapterRow({ chapter, hasRead, sourceCount }: { chapter: Chapter; hasRead: boolean; sourceCount: number }) {
   const isPublished = chapter.status === "published";
   const isReadable = isPublished;
 
@@ -182,7 +223,14 @@ function ChapterRow({ chapter, hasRead }: { chapter: Chapter; hasRead: boolean }
           <ArrowRight className="h-3.5 w-3.5" />
         </span>
       ) : (
-        <span className="flex-none text-xs text-white/40">Coming soon</span>
+        <span className="flex flex-none flex-col items-end gap-0.5 text-xs text-white/40">
+          <span>{chapter.status === "drafting" ? "Draft in motion" : "Coming soon"}</span>
+          {sourceCount > 0 && (
+            <span className="text-[10px] text-[hsl(var(--bloom-amber))]/80">
+              {sourceCount} source{sourceCount === 1 ? "" : "s"} mapped
+            </span>
+          )}
+        </span>
       )}
     </Card>
   );
