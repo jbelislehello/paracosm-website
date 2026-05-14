@@ -223,7 +223,14 @@ function ChapterRow({ chapter, hasRead, sourceCount }: { chapter: Chapter; hasRe
           <ArrowRight className="h-3.5 w-3.5" />
         </span>
       ) : (
-        <span className="flex-none text-xs text-white/40">Coming soon</span>
+        <span className="flex flex-none flex-col items-end gap-0.5 text-xs text-white/40">
+          <span>{chapter.status === "drafting" ? "Draft in motion" : "Coming soon"}</span>
+          {sourceCount > 0 && (
+            <span className="text-[10px] text-[hsl(var(--bloom-amber))]/80">
+              {sourceCount} source{sourceCount === 1 ? "" : "s"} mapped
+            </span>
+          )}
+        </span>
       )}
     </Card>
   );
