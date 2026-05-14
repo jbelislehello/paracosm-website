@@ -14,6 +14,21 @@ export type Database = {
   }
   public: {
     Tables: {
+      _tmp_chapter_publish: {
+        Row: {
+          chapter_id: string
+          draft_md: string
+        }
+        Insert: {
+          chapter_id: string
+          draft_md: string
+        }
+        Update: {
+          chapter_id?: string
+          draft_md?: string
+        }
+        Relationships: []
+      }
       agentic_decks: {
         Row: {
           audience: string
