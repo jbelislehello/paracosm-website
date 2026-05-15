@@ -1,53 +1,60 @@
-# Add the missing OPEN chapter
+## Verdict: Yes — both PDFs are highly repurposable
 
-The Calm Magic axes are **MAGIC · LOVE · CALM · OPEN · FREE**, but the book currently jumps from CALM straight to FREE. OPEN is missing in three places: the database, the chapter index, and the reading-journey progress bar.
+The `.docx` (CREATING THE FUTURE) failed to parse — I'll need it re-uploaded as PDF or pasted to include it. The two PDFs alone already give us a full Compasses corpus and a rich pool of reflective fragments that map cleanly onto the existing 8-chapter spine (GLITCH · DRIFT · TUNE · LOVE · MAGIC · CALM · OPEN · FREE).
 
-## Where it goes
+---
 
-OPEN sits between CALM (designing the system / ontology + requirements) and FREE (operating in flow). It covers what the PRD already encodes in its `open_*` fields: **ontology and graph, real workflow, adjustment plan** — the live operationalization that turns a designed system into something the org actually inhabits and tunes.
+### What's in the uploads
 
-Final order:
+**1. Wild Cookie Compasses PDF** — a structured table of ~20 compasses, each with: description, quote, timing, tools/prototypes, practices. Examples: UX Consciousness, Body Maps, IoT/IoB, Cognitive Maps, Ubiquitous Computing, Prediction Engines, Worldbuilding Narratives, Usability, Post-broadcast Engagement, Future-envisioning, Dialogic Imagination, Futurogram, Purpose & Meaning at Work, Noetic Functions, The Human Animal, Ecological Truth & Eco-anxiety, Reinventing Education, The Calmness, Meaningfulness, Playfulness, Calm/Attention, Usefulness, Serendipity. Includes a phase-of-project usage matrix.
 
-```text
-1 GLITCH  · Naming the Friction
-2 DRIFT   · Pattern Exploration
-3 TUNE    · Intentional Commitment
-4 LOVE    · Relational Infrastructure
-5 MAGIC   · Pragmatic Imagination
-6 CALM    · Designing the System
-7 OPEN    · Living the Ontology    ← NEW
-8 FREE    · Operating in Flow      ← reindexed from 7
-```
+**2. Official Book Structure PDF** — the original CALM/MAGIC acronym scaffolding (CREEDS, LENS, AGENDAS, MAPS, LOVE + MAGIC areas), the Préface, "Poiesis at the Office", "Qui suis-je", Futurogram intro, the three Transformer archetypes (Relational Artist, Organizational Poet, Idea & Experience Architect), the 5 Methods, Organizational Poetics, Learning Organization, "Reinventing Meetings", Creative/Transition Design Expeditions, Story-Driven Enterprise Transformation, Activity Maps. Lots of short prose fragments and bilingual (FR/EN) reflective passages.
 
-Working title and summary for the new chapter:
+---
 
-- **Title:** Living the Ontology
-- **Summary:** Where the designed system meets real workflow — ontology, graph, and the adjustment plan that keeps the org tunable.
+### Repurposing plan
 
-## Steps
+#### A. New "Compasses" section in the book
+- Add a top-level `/book/compasses` index plus per-compass routes `/book/compasses/:slug`.
+- New table `book_compasses` (id, slug, name, description, quote, quote_attribution, timing, tools[], practices[], phase_affinity[]) seeded from the Wild Cookie PDF (~20 rows).
+- Card grid on the index, with filter chips for the 8 phases (GLITCH→FREE) using `phase_affinity` so each compass surfaces under the relevant chapter contexts.
+- Link the section into the existing reading-journey bar as an optional sidebar (not a 9th phase) so the spine stays at 8 chapters.
 
-1. **Database migration**
-   - Bump `book_chapters.order_index` of the FREE chapter (`operating-in-flow`) from 7 → 8.
-   - Insert new OPEN chapter row: `slug='living-the-ontology'`, `phase='OPEN'`, `order_index=7`, `status='outline'`, `is_free_sample=false`, with the summary above.
-   - Attach `book_sources` rows mapping the canonical PRD's `open_ontology_and_graph`, `open_real_workflow`, and `open_adjustment_plan` sections to the new chapter (mirrors the pattern used for the other six chapters).
+#### B. Reflection nodes attached to chapters
+- New table `book_reflection_nodes` (id, chapter_slug NULL, compass_slug NULL, kind enum: 'conversation_starter' | 'reflection' | 'fragment' | 'bilingual_passage', body_md, source_ref, language).
+- Seed from the Book Structure PDF: each Préface paragraph, each "questionnement", each Transformer archetype intro, "Reinventing Meetings", "Story-Driven Transformation", "Why Organizational Poetry Works", etc.
+- Mapping (initial, revisable):
+  - GLITCH ← Préface, "Mes questionnements actuels", Friction-related fragments
+  - DRIFT ← Futurogram, Programmable World, Spatial Computing, Worldbuilding Narratives
+  - TUNE ← Reinventing Meetings, StoryTime rituals
+  - LOVE ← Purpose & Meaning at Work, Empathy/EI, Ethics & Engagement
+  - MAGIC ← Poiesis, Playfulness, Serendipity, Dialogic Imagination
+  - CALM ← The Calmness, Calm Computing, Attention, Wellness
+  - OPEN ← Organizational Poetics, Learning Organization, Story-Driven Transformation
+  - FREE ← Creative/Transition Design Expeditions, Activity Maps, Operating in Flow
+- Render at the bottom of each chapter as a "Reflection Nodes" carousel + a "Random reflection" button that pulls one matching node (chapter or compass-affinity).
 
-2. **Frontend phase list (3 files, additive only)**
-   - `src/components/book/ReaderProgressBar.tsx` — add `{ key: "OPEN", label: "Open" }` between CALM and FREE in the `PHASES` array.
-   - `src/components/book/BookChapterIndex.tsx` — add `OPEN: "Open"` to `PHASE_LABEL` and insert the OPEN seed row between CALM and FREE in the fallback `SEED` list, with the FREE seed row's `order_index` bumped to 8.
-   - `src/pages/BookChapter.tsx` — add `OPEN: "Open"` to `PHASE_LABEL`.
-   - No styling changes; the progress bar's grid already uses `grid-cols-N` derived from `PHASES.length`, so it auto-expands to 8 segments.
+#### C. Cross-linking
+- Each chapter page gets a "Compasses for this phase" strip pulled via `phase_affinity`.
+- Each compass page gets "Appears in chapters: …" + its own reflection nodes.
 
-3. **Synthesize and publish the OPEN draft**
-   - Run the same `node synth.mjs` flow used for the other chapters, scoped to the new OPEN chapter, with `google/gemini-2.5-pro` and the canonical PRD's OPEN-season material as grounding.
-   - Reuse the `_tmp_chapter_publish` staging table + the publish path (update `book_chapters.published_excerpt`, `status='published'`, `published_at=now()`; flip prior `book_chapter_drafts.is_current` to false; insert new draft with `is_current=true`).
+#### D. What I will NOT do without your call
+- I won't auto-publish the seeded content. Compasses + reflection nodes will land as `status='draft'` so you can curate before publish.
+- I won't merge the bilingual FR passages into EN chapter bodies — they live as standalone reflection nodes tagged `language='fr'`.
 
-4. **Verification**
-   - `/book` reading journey shows 8 segments: GL!TCH · Drift · Tune · Love · Magic · Calm · **Open** · Free.
-   - `/book/chapter/living-the-ontology` renders the published draft with prev=Calm and next=Free in the chapter nav.
-   - `/book/chapter/operating-in-flow` shows "Chapter 8" badge and prev=Open.
+---
 
-## Out of scope
+### Open questions before building
 
-- No visual redesign of the progress bar or chapter index.
-- No changes to the other six published drafts.
-- No new edge functions; reuse existing synth + publish flow.
+1. The `.docx` (CREATING THE FUTURE) didn't parse. Re-upload as PDF or paste the text? Or proceed with just the two PDFs for v1?
+2. Should compasses be a sibling section under `/book/compasses` (my recommendation) or folded into each chapter as inline cards only?
+3. For reflection nodes: surface them inline at end of chapter, as a floating "pull a card" button, or both?
+
+---
+
+### Technical notes
+
+- New tables + RLS (public read on published rows; admin write).
+- Two seed migrations: `seed_book_compasses` and `seed_book_reflection_nodes`.
+- New routes + components: `BookCompassesIndex.tsx`, `BookCompass.tsx`, `ReflectionNodesStrip.tsx`, `RandomReflectionButton.tsx`.
+- No changes to the 8-chapter spine or the reading-journey bar segmentation.
