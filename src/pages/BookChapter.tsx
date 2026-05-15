@@ -13,6 +13,8 @@ import BookLeadCaptureForm from "@/components/book/BookLeadCaptureForm";
 import ReaderProgressBar from "@/components/book/ReaderProgressBar";
 import ChromaText from "@/components/aesthetic/ChromaText";
 import ScanlineOverlay from "@/components/aesthetic/ScanlineOverlay";
+import ChapterCompasses from "@/components/book/ChapterCompasses";
+import ReflectionNodes from "@/components/book/ReflectionNodes";
 
 interface Chapter {
   id: string;
@@ -217,6 +219,9 @@ export default function BookChapter() {
                 <DraftPlaceholder slug={chapter.slug} />
               )}
             </div>
+
+            <ChapterCompasses phase={chapter.phase} />
+            <ReflectionNodes chapterSlug={chapter.slug} />
 
             {(prev || next) && (
               <nav className="mt-12 grid gap-3 border-t border-white/10 pt-8 sm:grid-cols-2">
