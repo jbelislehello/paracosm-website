@@ -25,6 +25,7 @@ const PHASE_LABEL: Record<string, string> = {
   LOVE: "Love",
   MAGIC: "Magic",
   CALM: "Calm",
+  OPEN: "Open",
   FREE: "Free",
 };
 
@@ -248,5 +249,6 @@ const FALLBACK_OUTLINE: Chapter[] = [
   { id: "4", slug: "relational-infrastructure", order_index: 4, title: "Relational Infrastructure", phase: "LOVE", summary: "Trust, conflict, repair.", status: "outline", is_free_sample: false },
   { id: "5", slug: "pragmatic-imagination", order_index: 5, title: "Pragmatic Imagination", phase: "MAGIC", summary: "Worldbuilding as leadership skill.", status: "outline", is_free_sample: false },
   { id: "6", slug: "designing-the-system", order_index: 6, title: "Designing the System", phase: "CALM", summary: "From insight to ontology.", status: "outline", is_free_sample: false },
-  { id: "7", slug: "operating-in-flow", order_index: 7, title: "Operating in Flow", phase: "FREE", summary: "Continuous reconfiguration.", status: "outline", is_free_sample: false },
+  { id: "7", slug: "living-the-ontology", order_index: 7, title: "Living the Ontology", phase: "OPEN", summary: "Where the designed system meets real workflow — ontology, graph, and the adjustment plan that keeps the org tunable.", status: "outline", is_free_sample: false },
+  { id: "8", slug: "operating-in-flow", order_index: 8, title: "Operating in Flow", phase: "FREE", summary: "Continuous reconfiguration.", status: "outline", is_free_sample: false },
 ];

@@ -1,57 +1,53 @@
-# Make the book updates visible on the site
+# Add the missing OPEN chapter
 
-## Why nothing seems to have changed
+The Calm Magic axes are **MAGIC · LOVE · CALM · OPEN · FREE**, but the book currently jumps from CALM straight to FREE. OPEN is missing in three places: the database, the chapter index, and the reading-journey progress bar.
 
-The previous migration updated `book_chapters.summary` and inserted 30 manuscript-mapped `book_sources` rows, but on `/book` every chapter is still `status: outline` → rendered as "Coming soon" cards. From the home page (`/`) you only see the announcement banner, which never reflects chapter content. So the work landed in the database but never crossed into the UI.
+## Where it goes
 
-The new PRD you just uploaded (Calm Magic Board v1.0, April 2026) is the up-to-date acronym/ontology source we'll anchor the book to.
+OPEN sits between CALM (designing the system / ontology + requirements) and FREE (operating in flow). It covers what the PRD already encodes in its `open_*` fields: **ontology and graph, real workflow, adjustment plan** — the live operationalization that turns a designed system into something the org actually inhabits and tunes.
 
-## What I'll do
+Final order:
 
-### 1. Ingest the PRD as a canonical book source
-- Upload `calm-magic-board-prd.pdf` into the `book-manuscript` storage bucket.
-- Create a `book_uploads` row with the parsed full text (already extracted) so `book-synthesize-chapter` can use it.
-- Insert one `book_sources` row per chapter pointing to the relevant PRD section, `weight: 8` (canonical), `kind: 'upload'`:
-  - GLITCH ← §1 Ontological Framework + §3 Polyvagal (friction → state)
-  - DRIFT ← §2 Many-Worlds Quantum Layer + §10 Manifold/Shift Vectors
-  - TUNE ← §5 Ontic State Finder + §8 Decision Log → Proverbial Abilities
-  - LOVE ← §3 Polyvagal + §6 Autopoiesis/Nahual
-  - MAGIC ← §4 53 Senses + §7 Pragmatic Imagination Metaphors
-  - CALM ← §1 Seasons/Quadrants/64 Tiles/260-cycle + §9 Oneiric Alignment
-  - FREE ← §2 QuantumBranchExplorer (re-observation) + §10 Attractors
+```text
+1 GLITCH  · Naming the Friction
+2 DRIFT   · Pattern Exploration
+3 TUNE    · Intentional Commitment
+4 LOVE    · Relational Infrastructure
+5 MAGIC   · Pragmatic Imagination
+6 CALM    · Designing the System
+7 OPEN    · Living the Ontology    ← NEW
+8 FREE    · Operating in Flow      ← reindexed from 7
+```
 
-### 2. Refresh chapter summaries with current acronyms
-Rewrite each `book_chapters.summary` to reflect the v1.0 vocabulary explicitly:
-- POLLENS · NOEMS · POEMS · TOTEMS · ANTHEMS (5 Seasons)
-- SN · IN · IM · SM (4 Quadrants)
-- 64 tiles / 260-cycle / window of tolerance
-- Ventral · Sympathetic · Dorsal (Polyvagal)
-- 53 Senses, Nahual, Oneiric Alignment, QuantumBranch, DistortedTorus
+Working title and summary for the new chapter:
 
-### 3. Synthesize readable draft chapters
-Invoke the existing `book-synthesize-chapter` edge function for each of the 7 chapters. This writes a markdown draft into `book_chapter_drafts` (current=true) using the mapped `book_sources` + the new PRD upload. Move chapter `status` from `outline` → `drafting` so the chapter cards show the new summaries with a "Drafting" badge and a non-coming-soon state.
+- **Title:** Living the Ontology
+- **Summary:** Where the designed system meets real workflow — ontology, graph, and the adjustment plan that keeps the org tunable.
 
-I'll leave `status: published` off until you've reviewed the drafts (chapters become readable on `/book/chapter/:slug` only when published — that's a separate "approve" action you trigger).
+## Steps
 
-### 4. Make the work visible on /book
-Add a compact "Manuscript progress" panel to `BookChapterIndex` showing per-chapter source counts (GLITCH 5 · DRIFT 5 · TUNE 5 · LOVE 5 · MAGIC 5 · CALM 7 · FREE 5 after the PRD is mapped) and a "Last synthesized" timestamp. Update `LivingManuscriptBand` stats to reflect the new totals automatically (already wired to live counts).
+1. **Database migration**
+   - Bump `book_chapters.order_index` of the FREE chapter (`operating-in-flow`) from 7 → 8.
+   - Insert new OPEN chapter row: `slug='living-the-ontology'`, `phase='OPEN'`, `order_index=7`, `status='outline'`, `is_free_sample=false`, with the summary above.
+   - Attach `book_sources` rows mapping the canonical PRD's `open_ontology_and_graph`, `open_real_workflow`, and `open_adjustment_plan` sections to the new chapter (mirrors the pattern used for the other six chapters).
 
-### 5. Optional — surface a "What's new" line on home
-Add one line under the existing `BookAnnouncementBanner` content (only on `/book`, not home) saying "Drafts in motion: 7 chapters · last refresh {timestamp}" so future updates are obvious without you having to refresh manually.
+2. **Frontend phase list (3 files, additive only)**
+   - `src/components/book/ReaderProgressBar.tsx` — add `{ key: "OPEN", label: "Open" }` between CALM and FREE in the `PHASES` array.
+   - `src/components/book/BookChapterIndex.tsx` — add `OPEN: "Open"` to `PHASE_LABEL` and insert the OPEN seed row between CALM and FREE in the fallback `SEED` list, with the FREE seed row's `order_index` bumped to 8.
+   - `src/pages/BookChapter.tsx` — add `OPEN: "Open"` to `PHASE_LABEL`.
+   - No styling changes; the progress bar's grid already uses `grid-cols-N` derived from `PHASES.length`, so it auto-expands to 8 segments.
 
-## Out of scope (ask separately if you want them)
-- Publishing chapters (making them readable to visitors)
-- Paywall / preorder changes
-- Translating drafts to French
-- A new admin UI for approving drafts (the existing flow stays)
+3. **Synthesize and publish the OPEN draft**
+   - Run the same `node synth.mjs` flow used for the other chapters, scoped to the new OPEN chapter, with `google/gemini-2.5-pro` and the canonical PRD's OPEN-season material as grounding.
+   - Reuse the `_tmp_chapter_publish` staging table + the publish path (update `book_chapters.published_excerpt`, `status='published'`, `published_at=now()`; flip prior `book_chapter_drafts.is_current` to false; insert new draft with `is_current=true`).
 
-## Technical notes
-- Migration tool used only for the canonical-source insert + chapter summary updates (data changes via insert tool, schema unchanged).
-- Storage upload + edge-function invocation happen via a one-off admin script run from your authenticated session, OR I can script it server-side from a temporary admin-only edge function — tell me which you prefer.
-- `book-synthesize-chapter` already exists and uses Lovable AI Gateway; no new secrets required.
-- Acronym source-of-truth becomes the uploaded PDF + this plan; future chapter regenerations will reference it.
+4. **Verification**
+   - `/book` reading journey shows 8 segments: GL!TCH · Drift · Tune · Love · Magic · Calm · **Open** · Free.
+   - `/book/chapter/living-the-ontology` renders the published draft with prev=Calm and next=Free in the chapter nav.
+   - `/book/chapter/operating-in-flow` shows "Chapter 8" badge and prev=Open.
 
-## Confirm before I build
-1. Use the uploaded PRD as the canonical acronym source (yes/no).
-2. Synthesize all 7 chapters now, or only GLITCH first as a quality check.
-3. Add the "Manuscript progress" panel to `/book` (yes/no).
+## Out of scope
+
+- No visual redesign of the progress bar or chapter index.
+- No changes to the other six published drafts.
+- No new edge functions; reuse existing synth + publish flow.

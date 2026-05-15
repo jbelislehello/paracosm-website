@@ -33,6 +33,7 @@ const PHASE_LABEL: Record<string, string> = {
   LOVE: "Love",
   MAGIC: "Magic",
   CALM: "Calm",
+  OPEN: "Open",
   FREE: "Free",
 };
 

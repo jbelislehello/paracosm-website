@@ -8,6 +8,7 @@ const PHASES = [
   { key: "LOVE", label: "Love" },
   { key: "MAGIC", label: "Magic" },
   { key: "CALM", label: "Calm" },
+  { key: "OPEN", label: "Open" },
   { key: "FREE", label: "Free" },
 ];
 
@@ -49,7 +50,7 @@ export default function ReaderProgressBar({ compact = false, className = "" }: P
         />
       </div>
 
-      <ol className="grid grid-cols-7 gap-1.5">
+      <ol className="grid grid-cols-8 gap-1.5">
         {PHASES.map((p) => {
           const done = readPhases.includes(p.key);
           return (
