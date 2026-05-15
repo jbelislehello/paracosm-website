@@ -51,6 +51,8 @@ const BookLaunch = lazy(() => import("./pages/BookLaunch"));
 const BookChapter = lazy(() => import("./pages/BookChapter"));
 const BookThanks = lazy(() => import("./pages/BookThanks"));
 const BookManuscriptAdmin = lazy(() => import("./pages/BookManuscriptAdmin"));
+const BookCompassesIndex = lazy(() => import("./pages/BookCompassesIndex"));
+const BookCompass = lazy(() => import("./pages/BookCompass"));
 const DreamAndLearn = lazy(() => import("./pages/DreamAndLearn"));
 const CalmMagicDemo = lazy(() => import("./pages/CalmMagicDemo"));
 const Lineage = lazy(() => import("./pages/Lineage"));
@@ -121,6 +123,8 @@ function App() {
                     <Route path="/book/chapter/:slug" element={<BookChapter />} />
                     <Route path="/book/thanks" element={<BookThanks />} />
                     <Route path="/book/manuscript" element={<ProtectedRoute><BookManuscriptAdmin /></ProtectedRoute>} />
+                    <Route path="/book/compasses" element={<BookCompassesIndex />} />
+                    <Route path="/book/compasses/:slug" element={<BookCompass />} />
                     <Route path="/dream-and-learn" element={<DreamAndLearn />} />
                     <Route path="/design-system" element={<DesignSystemShowcase />} />
                     <Route path="/calm-magic-demo" element={<CalmMagicDemo />} />
