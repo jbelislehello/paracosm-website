@@ -190,6 +190,57 @@ export type Database = {
         }
         Relationships: []
       }
+      book_compasses: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          order_index: number
+          phase_affinity: string[]
+          practices: string[]
+          quote: string | null
+          quote_attribution: string | null
+          slug: string
+          status: string
+          timing: string | null
+          tools: string[]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          order_index?: number
+          phase_affinity?: string[]
+          practices?: string[]
+          quote?: string | null
+          quote_attribution?: string | null
+          slug: string
+          status?: string
+          timing?: string | null
+          tools?: string[]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          order_index?: number
+          phase_affinity?: string[]
+          practices?: string[]
+          quote?: string | null
+          quote_attribution?: string | null
+          slug?: string
+          status?: string
+          timing?: string | null
+          tools?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       book_orders: {
         Row: {
           amount: number | null
@@ -271,6 +322,51 @@ export type Database = {
           source?: string | null
           tier?: string
           utm?: Json | null
+        }
+        Relationships: []
+      }
+      book_reflection_nodes: {
+        Row: {
+          body_md: string
+          chapter_slug: string | null
+          compass_slug: string | null
+          created_at: string
+          id: string
+          kind: string
+          language: string
+          order_index: number
+          source_ref: string | null
+          status: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          body_md: string
+          chapter_slug?: string | null
+          compass_slug?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          language?: string
+          order_index?: number
+          source_ref?: string | null
+          status?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          body_md?: string
+          chapter_slug?: string | null
+          compass_slug?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          language?: string
+          order_index?: number
+          source_ref?: string | null
+          status?: string
+          title?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
