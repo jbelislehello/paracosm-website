@@ -85,7 +85,8 @@ const FoxRunningSketch = () => {
       let t = 0;
 
       type Blade = { x: number; baseY: number; height: number; sway: number; shade: number; layer: number };
-      type Mote = { x: number; y: number; r: number; vy: number; vx: number; hue: number; sat: number };
+      type ParticleKind = 'pollen' | 'firefly' | 'dust' | 'snow';
+      type Mote = { x: number; y: number; r: number; vy: number; vx: number; hue: number; sat: number; kind: ParticleKind; phase: number; drift: number };
       type Cloud = { x: number; y: number; r: number; speed: number };
       type Tree = { x: number; baseY: number; h: number; w: number; layer: number };
       type Cactus = { x: number; baseY: number; h: number; arms: number };
@@ -118,7 +119,7 @@ const FoxRunningSketch = () => {
         };
       };
 
-      // Biome config — drives palette tints, ground hue, flora & fauna.
+      // Biome config — drives palette tints, ground hue, flora, fauna & particle kind.
       const biomeConfig = () => {
         const b = biomeRef.current;
         switch (b) {
@@ -126,25 +127,28 @@ const FoxRunningSketch = () => {
             return {
               groundHue: 110, groundSat: 50, bladeHueBase: 130,
               skyTint: { h: 200, s: 30, b: -8 },
-              moteHue: [80, 140] as [number, number], moteSat: 40,
+              moteHue: [50, 70] as [number, number], moteSat: 80,
               foxFur: { h: 22, s: 78, b: 78 }, foxEar: { h: 22, s: 78, b: 65 },
               flora: 'pines' as const, fauna: 'fox' as const,
+              particle: 'firefly' as ParticleKind,
             };
           case 'desert':
             return {
               groundHue: 38, groundSat: 55, bladeHueBase: 42,
               skyTint: { h: 25, s: -10, b: 10 },
-              moteHue: [28, 42] as [number, number], moteSat: 25,
+              moteHue: [28, 42] as [number, number], moteSat: 35,
               foxFur: { h: 38, s: 35, b: 96 }, foxEar: { h: 38, s: 35, b: 85 },
               flora: 'cacti' as const, fauna: 'fennec' as const,
+              particle: 'dust' as ParticleKind,
             };
           case 'tundra':
             return {
               groundHue: 200, groundSat: 12, bladeHueBase: 200,
               skyTint: { h: 210, s: 10, b: 6 },
-              moteHue: [200, 220] as [number, number], moteSat: 10,
+              moteHue: [0, 0] as [number, number], moteSat: 0,
               foxFur: { h: 0, s: 0, b: 98 }, foxEar: { h: 0, s: 0, b: 80 },
               flora: 'tufts' as const, fauna: 'arctic' as const,
+              particle: 'snow' as ParticleKind,
             };
           default: // meadow
             return {
@@ -153,20 +157,30 @@ const FoxRunningSketch = () => {
               moteHue: [38, 52] as [number, number], moteSat: 60,
               foxFur: { h: 18, s: 80, b: 92 }, foxEar: { h: 18, s: 80, b: 80 },
               flora: 'grass' as const, fauna: 'fox' as const,
+              particle: 'pollen' as ParticleKind,
             };
         }
       };
 
       const makeMote = (): Mote => {
         const bc = biomeConfig();
+        const kind = bc.particle;
+        // Per-kind defaults
+        let r = p.random(1.2, 3);
+        let vy = p.random(-0.25, -0.05);
+        let vx = p.random(-0.2, 0.2);
+        if (kind === 'firefly') { r = p.random(1.4, 2.4); vy = p.random(-0.15, 0.15); vx = p.random(-0.3, 0.3); }
+        else if (kind === 'dust') { r = p.random(0.8, 2); vy = p.random(-0.05, 0.05); vx = p.random(0.4, 1.2); }
+        else if (kind === 'snow') { r = p.random(1.4, 3.2); vy = p.random(0.4, 1.1); vx = p.random(-0.2, 0.2); }
         return {
           x: p.random(w),
-          y: p.random(h * 0.2, h * 0.9),
-          r: p.random(1.2, 3),
-          vy: p.random(-0.25, -0.05),
-          vx: p.random(-0.2, 0.2),
+          y: p.random(h * 0.1, h * 0.9),
+          r, vy, vx,
           hue: p.random(bc.moteHue[0], bc.moteHue[1]),
           sat: bc.moteSat,
+          kind,
+          phase: p.random(0, Math.PI * 2),
+          drift: p.random(0.5, 1.5),
         };
       };
 
@@ -384,17 +398,62 @@ const FoxRunningSketch = () => {
 
       const drawMotes = () => {
         syncMoteCount();
+        const scroll = scrollLinkedRef.current ? scrollRef.current : 0;
+        const intensity = 1 + scroll * 2;     // velocity multiplier
+        const glowBoost = 1 + scroll * 0.8;   // visual amplification
         p.noStroke();
+
         motes.forEach((s) => {
-          s.x += s.vx + Math.sin(t + s.y * 0.01) * 0.3;
-          s.y += s.vy;
-          if (s.y < -10) { s.y = h + 10; s.x = p.random(w); }
-          if (s.x < -10) s.x = w + 10;
-          if (s.x > w + 10) s.x = -10;
-          p.fill(s.hue, s.sat, 100, 0.5);
-          p.circle(s.x, s.y, s.r * 3);
-          p.fill(s.hue, s.sat * 0.5, 100, 1);
-          p.circle(s.x, s.y, s.r);
+          s.phase += 0.04 * intensity;
+
+          if (s.kind === 'firefly') {
+            // erratic flight, pulsing glow
+            s.x += s.vx * intensity + Math.cos(s.phase * 1.7) * 0.6 * s.drift;
+            s.y += s.vy * intensity + Math.sin(s.phase * 1.3) * 0.5 * s.drift;
+            const pulse = 0.55 + 0.45 * Math.sin(s.phase * 2.2);
+            const a = pulse * (0.6 + 0.4 * glowBoost);
+            // warm yellow-green halo
+            p.fill(s.hue, 90, 100, Math.min(1, 0.18 * a * glowBoost));
+            p.circle(s.x, s.y, s.r * 9 * pulse);
+            p.fill(s.hue, 60, 100, Math.min(1, 0.6 * a));
+            p.circle(s.x, s.y, s.r * 3.5 * pulse);
+            p.fill(s.hue, 20, 100, Math.min(1, a));
+            p.circle(s.x, s.y, s.r * 1.4);
+          } else if (s.kind === 'dust') {
+            // horizontal wind streaks, faster with scroll
+            s.x += (s.vx + 0.6) * intensity + Math.sin(t + s.y * 0.02) * 0.4;
+            s.y += s.vy * intensity + Math.sin(s.phase) * 0.15;
+            p.fill(s.hue, s.sat, 92, 0.18 * glowBoost);
+            p.ellipse(s.x, s.y, s.r * 8 * intensity, s.r * 1.2);
+            p.fill(s.hue, s.sat * 0.6, 100, 0.5);
+            p.circle(s.x, s.y, s.r);
+          } else if (s.kind === 'snow') {
+            // gentle falling flakes, more swirl with scroll
+            s.x += s.vx * intensity + Math.sin(s.phase) * 0.6 * s.drift;
+            s.y += s.vy * intensity;
+            p.fill(0, 0, 100, 0.25 * glowBoost);
+            p.circle(s.x, s.y, s.r * 2.4);
+            p.fill(0, 0, 100, 0.95);
+            p.circle(s.x, s.y, s.r);
+          } else {
+            // pollen — soft drifting motes
+            s.x += s.vx * intensity + Math.sin(t + s.y * 0.01) * 0.3;
+            s.y += s.vy * intensity;
+            p.fill(s.hue, s.sat, 100, 0.5);
+            p.circle(s.x, s.y, s.r * 3);
+            p.fill(s.hue, s.sat * 0.5, 100, 1);
+            p.circle(s.x, s.y, s.r);
+          }
+
+          // Recycle off-screen — direction depends on dominant velocity
+          if (s.kind === 'snow') {
+            if (s.y > h + 10) { s.y = -10; s.x = p.random(w); }
+          } else {
+            if (s.y < -10) { s.y = h + 10; s.x = p.random(w); }
+            if (s.y > h + 10) { s.y = -10; s.x = p.random(w); }
+          }
+          if (s.x < -20) s.x = w + 10;
+          if (s.x > w + 20) s.x = -10;
         });
       };
 
