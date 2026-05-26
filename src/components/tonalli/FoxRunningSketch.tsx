@@ -39,8 +39,27 @@ const FoxRunningSketch = () => {
       type Cloud = { x: number; y: number; r: number; speed: number };
 
       const blades: Blade[] = [];
+      const bladesBack: Blade[] = [];
+      const bladesFront: Blade[] = [];
       const pollen: Pollen[] = [];
       const clouds: Cloud[] = [];
+
+      // Cached sky+hills layer — re-rasterized only when viewport or time-of-day bucket changes
+      let bgLayer: p5.Graphics | null = null;
+      let bgKey = '';
+
+      // Mobile-aware quality tier
+      const tier = () => {
+        const small = w < 640;
+        const tiny = w < 420;
+        return {
+          isSmall: small,
+          bladeMul: tiny ? 0.35 : small ? 0.55 : 1,
+          pollenCap: tiny ? 60 : small ? 120 : 300,
+          skyStep: tiny ? 3 : small ? 2 : 1,
+          frameRate: tiny ? 30 : small ? 45 : 60,
+        };
+      };
 
       const makePollen = (): Pollen => ({
         x: p.random(w),
@@ -52,28 +71,36 @@ const FoxRunningSketch = () => {
       });
 
       const syncPollenCount = () => {
-        const target = Math.round(pollenRef.current);
+        const cap = tier().pollenCap;
+        const target = Math.min(cap, Math.round(pollenRef.current));
         while (pollen.length < target) pollen.push(makePollen());
         if (pollen.length > target) pollen.length = target;
       };
 
       const seedScene = () => {
         blades.length = 0;
+        bladesBack.length = 0;
+        bladesFront.length = 0;
         pollen.length = 0;
         clouds.length = 0;
 
+        const mul = tier().bladeMul;
         for (let layer = 0; layer < 3; layer++) {
-          const density = layer === 0 ? 220 : layer === 1 ? 160 : 110;
+          const base = layer === 0 ? 220 : layer === 1 ? 160 : 110;
+          const density = Math.round(base * mul);
           const baseY = h * (0.72 + layer * 0.07);
           for (let i = 0; i < density; i++) {
-            blades.push({
+            const b: Blade = {
               x: p.random(-40, w + 40),
               baseY: baseY + p.random(-8, 12),
               height: p.random(10, 26) + layer * 6,
               sway: p.random(0.4, 1.4),
               shade: p.random(0, 1),
               layer,
-            });
+            };
+            blades.push(b);
+            if (layer === 2) bladesBack.push(b);
+            else bladesFront.push(b);
           }
         }
 
@@ -87,6 +114,8 @@ const FoxRunningSketch = () => {
             speed: p.random(0.05, 0.2),
           });
         }
+
+        bgKey = ''; // invalidate cached background
       };
 
       const resize = () => {
@@ -94,6 +123,8 @@ const FoxRunningSketch = () => {
         w = rect.width;
         h = rect.height;
         p.resizeCanvas(w, h);
+        if (bgLayer) { bgLayer.remove(); bgLayer = null; }
+        p.frameRate(tier().frameRate);
         seedScene();
       };
 
@@ -104,14 +135,12 @@ const FoxRunningSketch = () => {
         const c = p.createCanvas(w, h);
         c.parent(containerRef.current!);
         p.colorMode(p.HSB, 360, 100, 100, 1);
+        p.frameRate(tier().frameRate);
         seedScene();
       };
 
-      // Time-of-day palette interpolation
-      // tod: 0 dawn → 0.5 midday → 0.75 dusk → 1 night
       const palette = () => {
         const k = todRef.current;
-        // Top sky hue/sat/bri
         const topHue = p.lerp(20, 230, Math.min(1, k * 1.1));
         const topSat = p.lerp(60, 70, k);
         const topBri = p.lerp(92, 18, k);
@@ -123,38 +152,73 @@ const FoxRunningSketch = () => {
         return { topHue, topSat, topBri, botHue, botSat, botBri, sunBri, sunAlpha, k };
       };
 
-      const drawSky = () => {
+      // Rasterize sky + stars + hills into an offscreen buffer.
+      // Re-rendered only when viewport or time-of-day bucket changes.
+      const ensureBackground = () => {
+        const todQ = Math.round(todRef.current * 40); // ~40 buckets across tod range
+        const key = `${w}x${h}|${todQ}`;
+        if (bgLayer && bgKey === key) return;
+        if (!bgLayer) bgLayer = p.createGraphics(w, h);
+        bgLayer.colorMode(p.HSB, 360, 100, 100, 1);
+        const g = bgLayer;
         const pal = palette();
-        for (let y = 0; y < h * 0.78; y++) {
-          const m = y / (h * 0.78);
-          const hue = p.lerp(pal.topHue, pal.botHue, m);
-          const sat = p.lerp(pal.topSat, pal.botSat, m);
-          const bri = p.lerp(pal.topBri, pal.botBri, m);
-          p.stroke(hue, sat, bri);
-          p.line(0, y, w, y);
+        const step = tier().skyStep;
+        const skyH = h * 0.78;
+        g.noStroke();
+        for (let y = 0; y < skyH; y += step) {
+          const m = y / skyH;
+          g.fill(
+            p.lerp(pal.topHue, pal.botHue, m),
+            p.lerp(pal.topSat, pal.botSat, m),
+            p.lerp(pal.topBri, pal.botBri, m),
+          );
+          g.rect(0, y, w, step);
         }
 
-        // Stars after dusk
         if (pal.k > 0.78) {
           const starAlpha = (pal.k - 0.78) / 0.22;
-          p.noStroke();
-          p.fill(0, 0, 100, starAlpha * 0.9);
-          for (let i = 0; i < 40; i++) {
+          g.fill(0, 0, 100, starAlpha * 0.9);
+          const starCount = tier().isSmall ? 20 : 40;
+          for (let i = 0; i < starCount; i++) {
             const sx = (i * 97.3) % w;
             const sy = (i * 53.7) % (h * 0.5);
-            p.circle(sx, sy, 1.4 + (i % 3) * 0.4);
+            g.circle(sx, sy, 1.4 + (i % 3) * 0.4);
           }
         }
+
+        const hillBri = p.lerp(55, 12, pal.k);
+        const fieldBri = p.lerp(48, 10, pal.k);
+        g.fill(150, 30, hillBri);
+        g.beginShape();
+        g.vertex(0, h * 0.7);
+        for (let x = 0; x <= w; x += 14) {
+          const y = h * 0.7 + Math.sin(x * 0.008 + 1) * 18 - 30;
+          g.vertex(x, y);
+        }
+        g.vertex(w, h); g.vertex(0, h);
+        g.endShape(g.CLOSE);
+
+        g.fill(95, 45, fieldBri);
+        g.beginShape();
+        g.vertex(0, h * 0.78);
+        for (let x = 0; x <= w; x += 12) {
+          const y = h * 0.78 + Math.sin(x * 0.012 + 2) * 10;
+          g.vertex(x, y);
+        }
+        g.vertex(w, h); g.vertex(0, h);
+        g.endShape(g.CLOSE);
+
+        bgKey = key;
       };
 
       const drawSun = () => {
         const pal = palette();
         if (pal.sunAlpha <= 0) return;
         const sx = w * 0.78;
-        // Sun arcs down as day progresses
         const sy = h * (0.18 + pal.k * 0.45) + Math.sin(t * 0.4) * 4;
         const hue = p.lerp(45, 12, pal.k);
-        for (let i = 8; i > 0; i--) {
+        const halos = tier().isSmall ? 4 : 8;
+        for (let i = halos; i > 0; i--) {
           p.noStroke();
           p.fill(hue, 70, 100, 0.05 * i * pal.sunAlpha);
           p.circle(sx, sy, 60 + i * 14);
@@ -177,34 +241,6 @@ const FoxRunningSketch = () => {
         });
       };
 
-      const drawHills = () => {
-        const pal = palette();
-        const hillBri = p.lerp(55, 12, pal.k);
-        const fieldBri = p.lerp(48, 10, pal.k);
-        p.noStroke();
-        p.fill(150, 30, hillBri);
-        p.beginShape();
-        p.vertex(0, h * 0.7);
-        for (let x = 0; x <= w; x += 14) {
-          const y = h * 0.7 + Math.sin(x * 0.008 + 1) * 18 - 30;
-          p.vertex(x, y);
-        }
-        p.vertex(w, h);
-        p.vertex(0, h);
-        p.endShape(p.CLOSE);
-
-        p.fill(95, 45, fieldBri);
-        p.beginShape();
-        p.vertex(0, h * 0.78);
-        for (let x = 0; x <= w; x += 12) {
-          const y = h * 0.78 + Math.sin(x * 0.012 + 2) * 10;
-          p.vertex(x, y);
-        }
-        p.vertex(w, h);
-        p.vertex(0, h);
-        p.endShape(p.CLOSE);
-      };
-
       const drawPollen = () => {
         syncPollenCount();
         p.noStroke();
@@ -220,6 +256,9 @@ const FoxRunningSketch = () => {
           p.circle(s.x, s.y, s.r);
         });
       };
+
+
+
 
       const drawFox = (cx: number, cy: number, scale: number, phase: number) => {
         p.push();
@@ -286,13 +325,13 @@ const FoxRunningSketch = () => {
         const dt = 0.016;
         t += dt;
 
-        drawSky();
+        ensureBackground();
+        if (bgLayer) p.image(bgLayer, 0, 0);
         drawClouds();
         drawSun();
-        drawHills();
 
-        const layer2 = blades.filter((b) => b.layer === 2);
-        layer2.forEach((b) => {
+        // Back grass (cached array, no per-frame filter)
+        bladesBack.forEach((b) => {
           const wind = Math.sin(t * 2 + b.x * 0.02) * b.sway;
           p.stroke(60, 50, 60, 0.8);
           p.strokeWeight(1.6);
@@ -302,7 +341,7 @@ const FoxRunningSketch = () => {
         drawPollen();
 
         const speed = speedRef.current;
-        const basePeriod = 9; // seconds at speed=1
+        const basePeriod = 9;
         foxProgress += (dt / basePeriod) * speed;
         if (foxProgress > 1) foxProgress -= 1;
         const foxX = -80 + foxProgress * (w + 160);
@@ -311,14 +350,14 @@ const FoxRunningSketch = () => {
         const gallop = t * 9 * speed;
         drawFox(foxX, foxY, foxScale, gallop);
 
-        const front = blades.filter((b) => b.layer <= 1);
-        front.forEach((b) => {
+        bladesFront.forEach((b) => {
           const wind = Math.sin(t * 2 + b.x * 0.02) * b.sway;
           const hue = 80 - b.layer * 10;
           p.stroke(hue, 65, 30 + b.shade * 25);
           p.strokeWeight(1 + (1 - b.layer) * 0.6);
           p.line(b.x, b.baseY, b.x + wind, b.baseY - b.height);
         });
+
       };
 
       p.windowResized = resize;
