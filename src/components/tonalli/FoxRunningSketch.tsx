@@ -258,21 +258,7 @@ const FoxRunningSketch = () => {
       };
 
 
-      const drawPollen = () => {
-        syncPollenCount();
-        p.noStroke();
-        pollen.forEach((s) => {
-          s.x += s.vx + Math.sin(t + s.y * 0.01) * 0.3;
-          s.y += s.vy;
-          if (s.y < -10) { s.y = h + 10; s.x = p.random(w); }
-          if (s.x < -10) s.x = w + 10;
-          if (s.x > w + 10) s.x = -10;
-          p.fill(s.hue, 60, 100, 0.5);
-          p.circle(s.x, s.y, s.r * 3);
-          p.fill(s.hue, 30, 100, 1);
-          p.circle(s.x, s.y, s.r);
-        });
-      };
+
 
       const drawFox = (cx: number, cy: number, scale: number, phase: number) => {
         p.push();
