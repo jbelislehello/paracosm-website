@@ -1,14 +1,30 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import p5 from 'p5';
 
 /**
  * Tonalli — Wuxia the Fox running through the fields.
  * A p5.js generative scene: parallax grass fields, drifting sun,
  * floating pollen, and a stylized fox in a gallop cycle.
+ *
+ * Controls overlay lets viewers tune fox speed, pollen density,
+ * and time-of-day (dawn → dusk → night) in real time.
  */
 const FoxRunningSketch = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const p5Ref = useRef<p5 | null>(null);
+
+  // Live-tunable params (refs so the p5 loop reads latest values without re-mounting)
+  const speedRef = useRef(1);
+  const pollenRef = useRef(60);
+  const todRef = useRef(0.55); // 0 dawn, 0.5 midday, 0.75 dusk, 1 night
+
+  const [speed, setSpeed] = useState(1);
+  const [pollenCount, setPollenCount] = useState(60);
+  const [tod, setTod] = useState(0.55);
+
+  useEffect(() => { speedRef.current = speed; }, [speed]);
+  useEffect(() => { pollenRef.current = pollenCount; }, [pollenCount]);
+  useEffect(() => { todRef.current = tod; }, [tod]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -26,12 +42,26 @@ const FoxRunningSketch = () => {
       const pollen: Pollen[] = [];
       const clouds: Cloud[] = [];
 
+      const makePollen = (): Pollen => ({
+        x: p.random(w),
+        y: p.random(h * 0.2, h * 0.9),
+        r: p.random(1.2, 3),
+        vy: p.random(-0.25, -0.05),
+        vx: p.random(-0.2, 0.2),
+        hue: p.random(38, 52),
+      });
+
+      const syncPollenCount = () => {
+        const target = Math.round(pollenRef.current);
+        while (pollen.length < target) pollen.push(makePollen());
+        if (pollen.length > target) pollen.length = target;
+      };
+
       const seedScene = () => {
         blades.length = 0;
         pollen.length = 0;
         clouds.length = 0;
 
-        // 3 parallax grass layers
         for (let layer = 0; layer < 3; layer++) {
           const density = layer === 0 ? 220 : layer === 1 ? 160 : 110;
           const baseY = h * (0.72 + layer * 0.07);
@@ -47,16 +77,7 @@ const FoxRunningSketch = () => {
           }
         }
 
-        for (let i = 0; i < 60; i++) {
-          pollen.push({
-            x: p.random(w),
-            y: p.random(h * 0.2, h * 0.9),
-            r: p.random(1.2, 3),
-            vy: p.random(-0.25, -0.05),
-            vx: p.random(-0.2, 0.2),
-            hue: p.random(38, 52),
-          });
-        }
+        syncPollenCount();
 
         for (let i = 0; i < 5; i++) {
           clouds.push({
@@ -86,46 +107,82 @@ const FoxRunningSketch = () => {
         seedScene();
       };
 
+      // Time-of-day palette interpolation
+      // tod: 0 dawn → 0.5 midday → 0.75 dusk → 1 night
+      const palette = () => {
+        const k = todRef.current;
+        // Top sky hue/sat/bri
+        const topHue = p.lerp(20, 230, Math.min(1, k * 1.1));
+        const topSat = p.lerp(60, 70, k);
+        const topBri = p.lerp(92, 18, k);
+        const botHue = p.lerp(35, 250, k);
+        const botSat = p.lerp(40, 55, k);
+        const botBri = p.lerp(85, 8, k);
+        const sunBri = p.lerp(100, 30, Math.max(0, k - 0.4) * 1.6);
+        const sunAlpha = k > 0.9 ? 0 : 1;
+        return { topHue, topSat, topBri, botHue, botSat, botBri, sunBri, sunAlpha, k };
+      };
+
       const drawSky = () => {
-        // Warm dusk gradient
+        const pal = palette();
         for (let y = 0; y < h * 0.78; y++) {
-          const k = y / (h * 0.78);
-          const hue = p.lerp(28, 260, k * 0.6 + 0.05);
-          const sat = p.lerp(55, 35, k);
-          const bri = p.lerp(95, 38, k);
+          const m = y / (h * 0.78);
+          const hue = p.lerp(pal.topHue, pal.botHue, m);
+          const sat = p.lerp(pal.topSat, pal.botSat, m);
+          const bri = p.lerp(pal.topBri, pal.botBri, m);
           p.stroke(hue, sat, bri);
           p.line(0, y, w, y);
+        }
+
+        // Stars after dusk
+        if (pal.k > 0.78) {
+          const starAlpha = (pal.k - 0.78) / 0.22;
+          p.noStroke();
+          p.fill(0, 0, 100, starAlpha * 0.9);
+          for (let i = 0; i < 40; i++) {
+            const sx = (i * 97.3) % w;
+            const sy = (i * 53.7) % (h * 0.5);
+            p.circle(sx, sy, 1.4 + (i % 3) * 0.4);
+          }
         }
       };
 
       const drawSun = () => {
+        const pal = palette();
+        if (pal.sunAlpha <= 0) return;
         const sx = w * 0.78;
-        const sy = h * 0.32 + Math.sin(t * 0.4) * 4;
+        // Sun arcs down as day progresses
+        const sy = h * (0.18 + pal.k * 0.45) + Math.sin(t * 0.4) * 4;
+        const hue = p.lerp(45, 12, pal.k);
         for (let i = 8; i > 0; i--) {
           p.noStroke();
-          p.fill(40, 70, 100, 0.05 * i);
+          p.fill(hue, 70, 100, 0.05 * i * pal.sunAlpha);
           p.circle(sx, sy, 60 + i * 14);
         }
-        p.fill(45, 30, 100, 1);
+        p.fill(hue, 30, pal.sunBri, pal.sunAlpha);
         p.circle(sx, sy, 60);
       };
 
       const drawClouds = () => {
+        const pal = palette();
+        const cloudBri = p.lerp(100, 30, pal.k);
         p.noStroke();
         clouds.forEach((c) => {
           c.x += c.speed;
           if (c.x - c.r > w) c.x = -c.r;
           for (let i = 0; i < 5; i++) {
-            p.fill(30, 18, 100, 0.18);
+            p.fill(30, 18, cloudBri, 0.18);
             p.ellipse(c.x + i * c.r * 0.3, c.y + Math.sin(i) * 4, c.r, c.r * 0.55);
           }
         });
       };
 
       const drawHills = () => {
-        // Distant hill
+        const pal = palette();
+        const hillBri = p.lerp(55, 12, pal.k);
+        const fieldBri = p.lerp(48, 10, pal.k);
         p.noStroke();
-        p.fill(150, 30, 55);
+        p.fill(150, 30, hillBri);
         p.beginShape();
         p.vertex(0, h * 0.7);
         for (let x = 0; x <= w; x += 14) {
@@ -136,8 +193,7 @@ const FoxRunningSketch = () => {
         p.vertex(0, h);
         p.endShape(p.CLOSE);
 
-        // Mid field
-        p.fill(95, 45, 48);
+        p.fill(95, 45, fieldBri);
         p.beginShape();
         p.vertex(0, h * 0.78);
         for (let x = 0; x <= w; x += 12) {
@@ -149,28 +205,13 @@ const FoxRunningSketch = () => {
         p.endShape(p.CLOSE);
       };
 
-      const drawGrass = () => {
-        blades.forEach((b) => {
-          const wind = Math.sin(t * 2 + b.x * 0.02) * b.sway;
-          const layerHue = 80 - b.layer * 12;
-          const sat = 55 + b.layer * 5;
-          const bri = 35 + b.layer * 15 + b.shade * 10;
-          p.stroke(layerHue, sat, bri);
-          p.strokeWeight(1 + b.layer * 0.4);
-          p.noFill();
-          p.line(b.x, b.baseY, b.x + wind, b.baseY - b.height);
-        });
-      };
-
       const drawPollen = () => {
+        syncPollenCount();
         p.noStroke();
         pollen.forEach((s) => {
           s.x += s.vx + Math.sin(t + s.y * 0.01) * 0.3;
           s.y += s.vy;
-          if (s.y < -10) {
-            s.y = h + 10;
-            s.x = p.random(w);
-          }
+          if (s.y < -10) { s.y = h + 10; s.x = p.random(w); }
           if (s.x < -10) s.x = w + 10;
           if (s.x > w + 10) s.x = -10;
           p.fill(s.hue, 60, 100, 0.5);
@@ -185,11 +226,9 @@ const FoxRunningSketch = () => {
         p.translate(cx, cy);
         p.scale(scale);
 
-        // Gallop bob
         const bob = Math.sin(phase * 2) * 2.5;
         p.translate(0, bob);
 
-        // Tail
         const tailSway = Math.sin(phase + 1) * 0.4;
         p.push();
         p.translate(-30, -6);
@@ -201,48 +240,38 @@ const FoxRunningSketch = () => {
         p.ellipse(10, 2, 14, 8);
         p.pop();
 
-        // Body
         p.noStroke();
         p.fill(18, 80, 92);
         p.ellipse(0, 0, 56, 26);
 
-        // Belly
         p.fill(35, 25, 100);
         p.ellipse(2, 6, 42, 14);
 
-        // Back legs (alternating)
         const legA = Math.sin(phase) * 14;
         const legB = Math.sin(phase + p.PI) * 14;
         p.stroke(15, 80, 70);
         p.strokeWeight(4);
         p.strokeCap(p.ROUND);
 
-        // back pair
         p.line(-14, 8, -14 + legA * 0.5, 22 + Math.abs(legA) * 0.3);
         p.line(-18, 8, -18 + legB * 0.5, 22 + Math.abs(legB) * 0.3);
-        // front pair
         p.line(16, 8, 16 + legB * 0.6, 22 + Math.abs(legB) * 0.3);
         p.line(20, 8, 20 + legA * 0.6, 22 + Math.abs(legA) * 0.3);
 
-        // Head
         p.noStroke();
         p.push();
         p.translate(26, -6);
         p.rotate(Math.sin(phase) * 0.05);
         p.fill(18, 80, 92);
         p.triangle(-6, -10, 22, -2, -6, 10);
-        // Cheek
         p.fill(35, 25, 100);
         p.triangle(2, 0, 18, -1, 2, 8);
-        // Ears
         p.fill(18, 80, 80);
         p.triangle(-4, -10, 2, -20, 6, -8);
         p.fill(15, 90, 60);
         p.triangle(-2, -10, 2, -16, 4, -9);
-        // Eye
         p.fill(0, 0, 8);
         p.circle(8, -2, 2.4);
-        // Nose
         p.fill(0, 0, 8);
         p.circle(20, -1, 2.6);
         p.pop();
@@ -250,15 +279,18 @@ const FoxRunningSketch = () => {
         p.pop();
       };
 
+      // Continuous fox position independent of frame rate jitter
+      let foxProgress = 0;
+
       p.draw = () => {
-        t += 0.016;
+        const dt = 0.016;
+        t += dt;
 
         drawSky();
         drawClouds();
         drawSun();
         drawHills();
 
-        // Back grass layer
         const layer2 = blades.filter((b) => b.layer === 2);
         layer2.forEach((b) => {
           const wind = Math.sin(t * 2 + b.x * 0.02) * b.sway;
@@ -269,16 +301,16 @@ const FoxRunningSketch = () => {
 
         drawPollen();
 
-        // Fox runs along middle ground — loops across screen
-        const period = 9; // seconds for a full crossing
-        const progress = ((t % period) / period); // 0..1
-        const foxX = -80 + progress * (w + 160);
+        const speed = speedRef.current;
+        const basePeriod = 9; // seconds at speed=1
+        foxProgress += (dt / basePeriod) * speed;
+        if (foxProgress > 1) foxProgress -= 1;
+        const foxX = -80 + foxProgress * (w + 160);
         const foxY = h * 0.74;
         const foxScale = Math.max(0.7, Math.min(1.4, w / 700));
-        const gallop = t * 9;
+        const gallop = t * 9 * speed;
         drawFox(foxX, foxY, foxScale, gallop);
 
-        // Front grass overlays the fox for depth
         const front = blades.filter((b) => b.layer <= 1);
         front.forEach((b) => {
           const wind = Math.sin(t * 2 + b.x * 0.02) * b.sway;
@@ -295,7 +327,6 @@ const FoxRunningSketch = () => {
     p5Ref.current = new p5(sketch);
 
     const ro = new ResizeObserver(() => {
-      // p5 listens to windowResized; trigger it
       window.dispatchEvent(new Event('resize'));
     });
     ro.observe(containerRef.current);
@@ -308,12 +339,55 @@ const FoxRunningSketch = () => {
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className="w-full h-[320px] md:h-[460px] rounded-2xl overflow-hidden border border-amber-500/20 shadow-[0_0_60px_-15px_rgba(245,158,11,0.35)] bg-slate-900"
-      aria-label="Wuxia the fox running through generative fields"
-      role="img"
-    />
+    <div className="relative w-full">
+      <div
+        ref={containerRef}
+        className="w-full h-[320px] md:h-[460px] rounded-2xl overflow-hidden border border-amber-500/20 shadow-[0_0_60px_-15px_rgba(245,158,11,0.35)] bg-slate-900"
+        aria-label="Wuxia the fox running through generative fields"
+        role="img"
+      />
+      <div className="absolute top-3 right-3 w-[220px] rounded-xl bg-slate-950/70 backdrop-blur-md border border-amber-500/20 p-3 text-xs text-amber-50 shadow-lg">
+        <div className="font-semibold tracking-wide uppercase text-amber-200/90 mb-2">Scene controls</div>
+
+        <label className="block mb-2">
+          <div className="flex justify-between mb-1">
+            <span>Fox speed</span>
+            <span className="tabular-nums text-amber-200/80">{speed.toFixed(2)}×</span>
+          </div>
+          <input
+            type="range" min={0.2} max={3} step={0.05} value={speed}
+            onChange={(e) => setSpeed(parseFloat(e.target.value))}
+            className="w-full accent-amber-400"
+          />
+        </label>
+
+        <label className="block mb-2">
+          <div className="flex justify-between mb-1">
+            <span>Pollen</span>
+            <span className="tabular-nums text-amber-200/80">{pollenCount}</span>
+          </div>
+          <input
+            type="range" min={0} max={300} step={5} value={pollenCount}
+            onChange={(e) => setPollenCount(parseInt(e.target.value, 10))}
+            className="w-full accent-amber-400"
+          />
+        </label>
+
+        <label className="block">
+          <div className="flex justify-between mb-1">
+            <span>Time of day</span>
+            <span className="tabular-nums text-amber-200/80">
+              {tod < 0.25 ? 'dawn' : tod < 0.55 ? 'midday' : tod < 0.85 ? 'dusk' : 'night'}
+            </span>
+          </div>
+          <input
+            type="range" min={0} max={1} step={0.01} value={tod}
+            onChange={(e) => setTod(parseFloat(e.target.value))}
+            className="w-full accent-amber-400"
+          />
+        </label>
+      </div>
+    </div>
   );
 };
 
