@@ -3,6 +3,7 @@ import logoTonalli from "@/assets/logo-tonalli.jpeg";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
+import FoxRunningSketch from "@/components/tonalli/FoxRunningSketch";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { productSchema } from "@/lib/structuredData";
 
@@ -59,6 +60,16 @@ const Tonalli = () => {
         <p className="text-xl text-white/60 max-w-2xl mx-auto">
           Expression becomes the interface — voice and presence become the controller for learning, ideation, and generative storytelling.
         </p>
+      </section>
+
+      {/* Wuxia — generative p5.js fox running through fields */}
+      <section className="container mx-auto px-6 pb-4">
+        <div className="max-w-5xl mx-auto">
+          <FoxRunningSketch />
+          <p className="text-center text-xs text-white/40 mt-3">
+            Wuxia runs the fields — a live p5.js sketch. Voice and presence become the controller.
+          </p>
+        </div>
       </section>
 
       {/* Two Branches */}
