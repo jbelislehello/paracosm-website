@@ -39,6 +39,7 @@ const FoxRunningSketch = () => {
   const scrollLinkedRef = useRef(true);
 
   const reseedRef = useRef<() => void>(() => {});
+  const biomeChangeRef = useRef<(b: Biome) => void>(() => {});
 
   const [speed, setSpeed] = useState(1);
   const [pollenCount, setPollenCount] = useState(60);
@@ -51,8 +52,8 @@ const FoxRunningSketch = () => {
   useEffect(() => { todRef.current = tod; }, [tod]);
   useEffect(() => { scrollLinkedRef.current = scrollLinked; }, [scrollLinked]);
   useEffect(() => {
-    biomeRef.current = biome;
-    reseedRef.current?.();
+    // Defer to sketch so it can snapshot the current frame and crossfade
+    biomeChangeRef.current?.(biome);
   }, [biome]);
 
   // Scroll listener — maps the canvas's vertical position in viewport to 0..1
