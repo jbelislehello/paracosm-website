@@ -398,17 +398,62 @@ const FoxRunningSketch = () => {
 
       const drawMotes = () => {
         syncMoteCount();
+        const scroll = scrollLinkedRef.current ? scrollRef.current : 0;
+        const intensity = 1 + scroll * 2;     // velocity multiplier
+        const glowBoost = 1 + scroll * 0.8;   // visual amplification
         p.noStroke();
+
         motes.forEach((s) => {
-          s.x += s.vx + Math.sin(t + s.y * 0.01) * 0.3;
-          s.y += s.vy;
-          if (s.y < -10) { s.y = h + 10; s.x = p.random(w); }
-          if (s.x < -10) s.x = w + 10;
-          if (s.x > w + 10) s.x = -10;
-          p.fill(s.hue, s.sat, 100, 0.5);
-          p.circle(s.x, s.y, s.r * 3);
-          p.fill(s.hue, s.sat * 0.5, 100, 1);
-          p.circle(s.x, s.y, s.r);
+          s.phase += 0.04 * intensity;
+
+          if (s.kind === 'firefly') {
+            // erratic flight, pulsing glow
+            s.x += s.vx * intensity + Math.cos(s.phase * 1.7) * 0.6 * s.drift;
+            s.y += s.vy * intensity + Math.sin(s.phase * 1.3) * 0.5 * s.drift;
+            const pulse = 0.55 + 0.45 * Math.sin(s.phase * 2.2);
+            const a = pulse * (0.6 + 0.4 * glowBoost);
+            // warm yellow-green halo
+            p.fill(s.hue, 90, 100, Math.min(1, 0.18 * a * glowBoost));
+            p.circle(s.x, s.y, s.r * 9 * pulse);
+            p.fill(s.hue, 60, 100, Math.min(1, 0.6 * a));
+            p.circle(s.x, s.y, s.r * 3.5 * pulse);
+            p.fill(s.hue, 20, 100, Math.min(1, a));
+            p.circle(s.x, s.y, s.r * 1.4);
+          } else if (s.kind === 'dust') {
+            // horizontal wind streaks, faster with scroll
+            s.x += (s.vx + 0.6) * intensity + Math.sin(t + s.y * 0.02) * 0.4;
+            s.y += s.vy * intensity + Math.sin(s.phase) * 0.15;
+            p.fill(s.hue, s.sat, 92, 0.18 * glowBoost);
+            p.ellipse(s.x, s.y, s.r * 8 * intensity, s.r * 1.2);
+            p.fill(s.hue, s.sat * 0.6, 100, 0.5);
+            p.circle(s.x, s.y, s.r);
+          } else if (s.kind === 'snow') {
+            // gentle falling flakes, more swirl with scroll
+            s.x += s.vx * intensity + Math.sin(s.phase) * 0.6 * s.drift;
+            s.y += s.vy * intensity;
+            p.fill(0, 0, 100, 0.25 * glowBoost);
+            p.circle(s.x, s.y, s.r * 2.4);
+            p.fill(0, 0, 100, 0.95);
+            p.circle(s.x, s.y, s.r);
+          } else {
+            // pollen — soft drifting motes
+            s.x += s.vx * intensity + Math.sin(t + s.y * 0.01) * 0.3;
+            s.y += s.vy * intensity;
+            p.fill(s.hue, s.sat, 100, 0.5);
+            p.circle(s.x, s.y, s.r * 3);
+            p.fill(s.hue, s.sat * 0.5, 100, 1);
+            p.circle(s.x, s.y, s.r);
+          }
+
+          // Recycle off-screen — direction depends on dominant velocity
+          if (s.kind === 'snow') {
+            if (s.y > h + 10) { s.y = -10; s.x = p.random(w); }
+          } else {
+            if (s.y < -10) { s.y = h + 10; s.x = p.random(w); }
+            if (s.y > h + 10) { s.y = -10; s.x = p.random(w); }
+          }
+          if (s.x < -20) s.x = w + 10;
+          if (s.x > w + 20) s.x = -10;
         });
       };
 
