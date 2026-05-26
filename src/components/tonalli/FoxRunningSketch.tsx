@@ -36,6 +36,7 @@ const FoxRunningSketch = () => {
 
   // Scroll-driven (0..1) — boosts fox speed & wind
   const scrollRef = useRef(0);
+  const scrollLinkedRef = useRef(true);
 
   const reseedRef = useRef<() => void>(() => {});
 
@@ -43,10 +44,12 @@ const FoxRunningSketch = () => {
   const [pollenCount, setPollenCount] = useState(60);
   const [tod, setTod] = useState(0.55);
   const [biome, setBiome] = useState<Biome>('meadow');
+  const [scrollLinked, setScrollLinked] = useState(true);
 
   useEffect(() => { speedRef.current = speed; }, [speed]);
   useEffect(() => { pollenRef.current = pollenCount; }, [pollenCount]);
   useEffect(() => { todRef.current = tod; }, [tod]);
+  useEffect(() => { scrollLinkedRef.current = scrollLinked; }, [scrollLinked]);
   useEffect(() => {
     biomeRef.current = biome;
     reseedRef.current?.();
@@ -484,7 +487,7 @@ const FoxRunningSketch = () => {
 
       p.draw = () => {
         const dt = 0.016;
-        const scroll = scrollRef.current;
+        const scroll = scrollLinkedRef.current ? scrollRef.current : 0;
         // wind & speed boosters: 1× at top of view → 2.5× / 3× as you scroll past
         const windBoost = 1 + scroll * 2.5;
         const speedBoost = 1 + scroll * 2;
@@ -566,6 +569,25 @@ const FoxRunningSketch = () => {
       />
       <div className="absolute top-3 right-3 w-[240px] rounded-xl bg-slate-950/70 backdrop-blur-md border border-amber-500/20 p-3 text-xs text-amber-50 shadow-lg">
         <div className="font-semibold tracking-wide uppercase text-amber-200/90 mb-2">Biosphere</div>
+
+        <label className="flex items-center justify-between mb-3 cursor-pointer">
+          <span>Scroll-linked motion</span>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={scrollLinked}
+            onClick={() => setScrollLinked((v) => !v)}
+            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+              scrollLinked ? 'bg-amber-400/70' : 'bg-slate-700/70'
+            }`}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-amber-50 transition-transform ${
+                scrollLinked ? 'translate-x-4' : 'translate-x-0.5'
+              }`}
+            />
+          </button>
+        </label>
 
         <label className="block mb-3">
           <div className="flex justify-between mb-1">
