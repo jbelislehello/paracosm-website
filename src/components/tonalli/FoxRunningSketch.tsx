@@ -248,6 +248,17 @@ const FoxRunningSketch = () => {
 
       reseedRef.current = seedScene;
 
+      biomeChangeRef.current = (next: Biome) => {
+        if (next === biomeRef.current) return;
+        // Snapshot the current rendered scene, then swap biome and reseed.
+        // The snapshot is drawn on top with decaying alpha = crossfade.
+        try { prevFrame = p.get(); } catch { prevFrame = null; }
+        biomeRef.current = next;
+        seedScene();
+        fadeStart = p.millis();
+        fadeAlpha = 1;
+      };
+
       const resize = () => {
         const rect = containerRef.current!.getBoundingClientRect();
         w = rect.width;
