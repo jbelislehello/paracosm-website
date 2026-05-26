@@ -570,6 +570,25 @@ const FoxRunningSketch = () => {
       <div className="absolute top-3 right-3 w-[240px] rounded-xl bg-slate-950/70 backdrop-blur-md border border-amber-500/20 p-3 text-xs text-amber-50 shadow-lg">
         <div className="font-semibold tracking-wide uppercase text-amber-200/90 mb-2">Biosphere</div>
 
+        <label className="flex items-center justify-between mb-3 cursor-pointer">
+          <span>Scroll-linked motion</span>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={scrollLinked}
+            onClick={() => setScrollLinked((v) => !v)}
+            className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+              scrollLinked ? 'bg-amber-400/70' : 'bg-slate-700/70'
+            }`}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-amber-50 transition-transform ${
+                scrollLinked ? 'translate-x-4' : 'translate-x-0.5'
+              }`}
+            />
+          </button>
+        </label>
+
         <label className="block mb-3">
           <div className="flex justify-between mb-1">
             <span>Biome</span>
