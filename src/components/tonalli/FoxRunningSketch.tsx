@@ -119,7 +119,7 @@ const FoxRunningSketch = () => {
         };
       };
 
-      // Biome config — drives palette tints, ground hue, flora & fauna.
+      // Biome config — drives palette tints, ground hue, flora, fauna & particle kind.
       const biomeConfig = () => {
         const b = biomeRef.current;
         switch (b) {
@@ -127,25 +127,28 @@ const FoxRunningSketch = () => {
             return {
               groundHue: 110, groundSat: 50, bladeHueBase: 130,
               skyTint: { h: 200, s: 30, b: -8 },
-              moteHue: [80, 140] as [number, number], moteSat: 40,
+              moteHue: [50, 70] as [number, number], moteSat: 80,
               foxFur: { h: 22, s: 78, b: 78 }, foxEar: { h: 22, s: 78, b: 65 },
               flora: 'pines' as const, fauna: 'fox' as const,
+              particle: 'firefly' as ParticleKind,
             };
           case 'desert':
             return {
               groundHue: 38, groundSat: 55, bladeHueBase: 42,
               skyTint: { h: 25, s: -10, b: 10 },
-              moteHue: [28, 42] as [number, number], moteSat: 25,
+              moteHue: [28, 42] as [number, number], moteSat: 35,
               foxFur: { h: 38, s: 35, b: 96 }, foxEar: { h: 38, s: 35, b: 85 },
               flora: 'cacti' as const, fauna: 'fennec' as const,
+              particle: 'dust' as ParticleKind,
             };
           case 'tundra':
             return {
               groundHue: 200, groundSat: 12, bladeHueBase: 200,
               skyTint: { h: 210, s: 10, b: 6 },
-              moteHue: [200, 220] as [number, number], moteSat: 10,
+              moteHue: [0, 0] as [number, number], moteSat: 0,
               foxFur: { h: 0, s: 0, b: 98 }, foxEar: { h: 0, s: 0, b: 80 },
               flora: 'tufts' as const, fauna: 'arctic' as const,
+              particle: 'snow' as ParticleKind,
             };
           default: // meadow
             return {
@@ -154,20 +157,30 @@ const FoxRunningSketch = () => {
               moteHue: [38, 52] as [number, number], moteSat: 60,
               foxFur: { h: 18, s: 80, b: 92 }, foxEar: { h: 18, s: 80, b: 80 },
               flora: 'grass' as const, fauna: 'fox' as const,
+              particle: 'pollen' as ParticleKind,
             };
         }
       };
 
       const makeMote = (): Mote => {
         const bc = biomeConfig();
+        const kind = bc.particle;
+        // Per-kind defaults
+        let r = p.random(1.2, 3);
+        let vy = p.random(-0.25, -0.05);
+        let vx = p.random(-0.2, 0.2);
+        if (kind === 'firefly') { r = p.random(1.4, 2.4); vy = p.random(-0.15, 0.15); vx = p.random(-0.3, 0.3); }
+        else if (kind === 'dust') { r = p.random(0.8, 2); vy = p.random(-0.05, 0.05); vx = p.random(0.4, 1.2); }
+        else if (kind === 'snow') { r = p.random(1.4, 3.2); vy = p.random(0.4, 1.1); vx = p.random(-0.2, 0.2); }
         return {
           x: p.random(w),
-          y: p.random(h * 0.2, h * 0.9),
-          r: p.random(1.2, 3),
-          vy: p.random(-0.25, -0.05),
-          vx: p.random(-0.2, 0.2),
+          y: p.random(h * 0.1, h * 0.9),
+          r, vy, vx,
           hue: p.random(bc.moteHue[0], bc.moteHue[1]),
           sat: bc.moteSat,
+          kind,
+          phase: p.random(0, Math.PI * 2),
+          drift: p.random(0.5, 1.5),
         };
       };
 
