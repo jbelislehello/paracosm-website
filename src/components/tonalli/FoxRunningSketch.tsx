@@ -487,7 +487,7 @@ const FoxRunningSketch = () => {
 
       p.draw = () => {
         const dt = 0.016;
-        const scroll = scrollRef.current;
+        const scroll = scrollLinkedRef.current ? scrollRef.current : 0;
         // wind & speed boosters: 1× at top of view → 2.5× / 3× as you scroll past
         const windBoost = 1 + scroll * 2.5;
         const speedBoost = 1 + scroll * 2;
