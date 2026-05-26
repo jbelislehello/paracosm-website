@@ -62,6 +62,16 @@ const Tonalli = () => {
         </p>
       </section>
 
+      {/* Wuxia — generative p5.js fox running through fields */}
+      <section className="container mx-auto px-6 pb-4">
+        <div className="max-w-5xl mx-auto">
+          <FoxRunningSketch />
+          <p className="text-center text-xs text-white/40 mt-3">
+            Wuxia runs the fields — a live p5.js sketch. Voice and presence become the controller.
+          </p>
+        </div>
+      </section>
+
       {/* Two Branches */}
       <section className="container mx-auto px-6 py-12">
         <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
