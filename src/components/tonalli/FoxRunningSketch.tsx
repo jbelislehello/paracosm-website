@@ -36,6 +36,7 @@ const FoxRunningSketch = () => {
 
   // Scroll-driven (0..1) — boosts fox speed & wind
   const scrollRef = useRef(0);
+  const scrollLinkedRef = useRef(true);
 
   const reseedRef = useRef<() => void>(() => {});
 
@@ -43,10 +44,12 @@ const FoxRunningSketch = () => {
   const [pollenCount, setPollenCount] = useState(60);
   const [tod, setTod] = useState(0.55);
   const [biome, setBiome] = useState<Biome>('meadow');
+  const [scrollLinked, setScrollLinked] = useState(true);
 
   useEffect(() => { speedRef.current = speed; }, [speed]);
   useEffect(() => { pollenRef.current = pollenCount; }, [pollenCount]);
   useEffect(() => { todRef.current = tod; }, [tod]);
+  useEffect(() => { scrollLinkedRef.current = scrollLinked; }, [scrollLinked]);
   useEffect(() => {
     biomeRef.current = biome;
     reseedRef.current?.();
