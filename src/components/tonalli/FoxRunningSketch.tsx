@@ -39,6 +39,7 @@ const FoxRunningSketch = () => {
   const scrollLinkedRef = useRef(true);
 
   const reseedRef = useRef<() => void>(() => {});
+  const biomeChangeRef = useRef<(b: Biome) => void>(() => {});
 
   const [speed, setSpeed] = useState(1);
   const [pollenCount, setPollenCount] = useState(60);
@@ -51,8 +52,8 @@ const FoxRunningSketch = () => {
   useEffect(() => { todRef.current = tod; }, [tod]);
   useEffect(() => { scrollLinkedRef.current = scrollLinked; }, [scrollLinked]);
   useEffect(() => {
-    biomeRef.current = biome;
-    reseedRef.current?.();
+    // Defer to sketch so it can snapshot the current frame and crossfade
+    biomeChangeRef.current?.(biome);
   }, [biome]);
 
   // Scroll listener — maps the canvas's vertical position in viewport to 0..1
@@ -98,6 +99,12 @@ const FoxRunningSketch = () => {
 
       let bgLayer: p5.Graphics | null = null;
       let bgKey = '';
+
+      // Crossfade state — snapshot of previous biome, faded out over FADE_MS
+      let prevFrame: p5.Image | null = null;
+      let fadeAlpha = 0;
+      let fadeStart = 0;
+      const FADE_MS = 750;
 
       const tier = () => {
         const small = w < 640;
@@ -240,6 +247,17 @@ const FoxRunningSketch = () => {
       };
 
       reseedRef.current = seedScene;
+
+      biomeChangeRef.current = (next: Biome) => {
+        if (next === biomeRef.current) return;
+        // Snapshot the current rendered scene, then swap biome and reseed.
+        // The snapshot is drawn on top with decaying alpha = crossfade.
+        try { prevFrame = p.get(); } catch { prevFrame = null; }
+        biomeRef.current = next;
+        seedScene();
+        fadeStart = p.millis();
+        fadeAlpha = 1;
+      };
 
       const resize = () => {
         const rect = containerRef.current!.getBoundingClientRect();
@@ -540,6 +558,23 @@ const FoxRunningSketch = () => {
         p.rect(12, 12, 80, 3, 2);
         p.fill(45, 80, 100, 0.95);
         p.rect(12, 12, 80 * scroll, 3, 2);
+
+        // Biome crossfade — draw the previous biome snapshot on top, fading out
+        if (prevFrame && fadeAlpha > 0) {
+          const elapsed = p.millis() - fadeStart;
+          const linear = Math.max(0, 1 - elapsed / FADE_MS);
+          // ease-out cubic for a softer end
+          fadeAlpha = linear * linear * (3 - 2 * linear);
+          p.push();
+          p.tint(0, 0, 100, fadeAlpha);
+          p.image(prevFrame, 0, 0);
+          p.noTint();
+          p.pop();
+          if (fadeAlpha <= 0.01) {
+            prevFrame = null;
+            fadeAlpha = 0;
+          }
+        }
       };
 
       p.windowResized = resize;
