@@ -3,6 +3,7 @@ import logoTonalli from "@/assets/logo-tonalli.jpeg";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
+import FoxRunningSketch from "@/components/tonalli/FoxRunningSketch";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { productSchema } from "@/lib/structuredData";
 
