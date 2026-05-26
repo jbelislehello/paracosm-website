@@ -558,6 +558,23 @@ const FoxRunningSketch = () => {
         p.rect(12, 12, 80, 3, 2);
         p.fill(45, 80, 100, 0.95);
         p.rect(12, 12, 80 * scroll, 3, 2);
+
+        // Biome crossfade — draw the previous biome snapshot on top, fading out
+        if (prevFrame && fadeAlpha > 0) {
+          const elapsed = p.millis() - fadeStart;
+          const linear = Math.max(0, 1 - elapsed / FADE_MS);
+          // ease-out cubic for a softer end
+          fadeAlpha = linear * linear * (3 - 2 * linear);
+          p.push();
+          p.tint(0, 0, 100, fadeAlpha);
+          p.image(prevFrame, 0, 0);
+          p.noTint();
+          p.pop();
+          if (fadeAlpha <= 0.01) {
+            prevFrame = null;
+            fadeAlpha = 0;
+          }
+        }
       };
 
       p.windowResized = resize;
