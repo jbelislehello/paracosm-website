@@ -325,13 +325,13 @@ const FoxRunningSketch = () => {
         const dt = 0.016;
         t += dt;
 
-        drawSky();
+        ensureBackground();
+        if (bgLayer) p.image(bgLayer, 0, 0);
         drawClouds();
         drawSun();
-        drawHills();
 
-        const layer2 = blades.filter((b) => b.layer === 2);
-        layer2.forEach((b) => {
+        // Back grass (cached array, no per-frame filter)
+        bladesBack.forEach((b) => {
           const wind = Math.sin(t * 2 + b.x * 0.02) * b.sway;
           p.stroke(60, 50, 60, 0.8);
           p.strokeWeight(1.6);
@@ -341,7 +341,7 @@ const FoxRunningSketch = () => {
         drawPollen();
 
         const speed = speedRef.current;
-        const basePeriod = 9; // seconds at speed=1
+        const basePeriod = 9;
         foxProgress += (dt / basePeriod) * speed;
         if (foxProgress > 1) foxProgress -= 1;
         const foxX = -80 + foxProgress * (w + 160);
@@ -350,14 +350,14 @@ const FoxRunningSketch = () => {
         const gallop = t * 9 * speed;
         drawFox(foxX, foxY, foxScale, gallop);
 
-        const front = blades.filter((b) => b.layer <= 1);
-        front.forEach((b) => {
+        bladesFront.forEach((b) => {
           const wind = Math.sin(t * 2 + b.x * 0.02) * b.sway;
           const hue = 80 - b.layer * 10;
           p.stroke(hue, 65, 30 + b.shade * 25);
           p.strokeWeight(1 + (1 - b.layer) * 0.6);
           p.line(b.x, b.baseY, b.x + wind, b.baseY - b.height);
         });
+
       };
 
       p.windowResized = resize;
