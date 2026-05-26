@@ -2,29 +2,75 @@ import { useEffect, useRef, useState } from 'react';
 import p5 from 'p5';
 
 /**
- * Tonalli — Wuxia the Fox running through the fields.
- * A p5.js generative scene: parallax grass fields, drifting sun,
- * floating pollen, and a stylized fox in a gallop cycle.
+ * Tonalli — generative biosphere scene.
  *
- * Controls overlay lets viewers tune fox speed, pollen density,
- * and time-of-day (dawn → dusk → night) in real time.
+ * Multiple scene generators (biomes) populate flora & fauna procedurally:
+ *   meadow  → tall grass + pollen + fox
+ *   forest  → pines + ferns + fox + fireflies
+ *   desert  → cacti + dust motes + fennec fox
+ *   tundra  → snow tufts + drifting flakes + arctic fox
+ *
+ * Scroll-linked behavior: as the viewer scrolls through the section,
+ * the fox accelerates and grass wind intensifies (mapped to scroll
+ * progress through the canvas's viewport position).
  */
+
+type Biome = 'meadow' | 'forest' | 'desert' | 'tundra';
+
+const BIOMES: { id: Biome; label: string }[] = [
+  { id: 'meadow', label: 'Meadow' },
+  { id: 'forest', label: 'Forest' },
+  { id: 'desert', label: 'Desert' },
+  { id: 'tundra', label: 'Tundra' },
+];
+
 const FoxRunningSketch = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const p5Ref = useRef<p5 | null>(null);
 
-  // Live-tunable params (refs so the p5 loop reads latest values without re-mounting)
+  // Live-tunable params
   const speedRef = useRef(1);
   const pollenRef = useRef(60);
-  const todRef = useRef(0.55); // 0 dawn, 0.5 midday, 0.75 dusk, 1 night
+  const todRef = useRef(0.55);
+  const biomeRef = useRef<Biome>('meadow');
+
+  // Scroll-driven (0..1) — boosts fox speed & wind
+  const scrollRef = useRef(0);
+
+  const reseedRef = useRef<() => void>(() => {});
 
   const [speed, setSpeed] = useState(1);
   const [pollenCount, setPollenCount] = useState(60);
   const [tod, setTod] = useState(0.55);
+  const [biome, setBiome] = useState<Biome>('meadow');
 
   useEffect(() => { speedRef.current = speed; }, [speed]);
   useEffect(() => { pollenRef.current = pollenCount; }, [pollenCount]);
   useEffect(() => { todRef.current = tod; }, [tod]);
+  useEffect(() => {
+    biomeRef.current = biome;
+    reseedRef.current?.();
+  }, [biome]);
+
+  // Scroll listener — maps the canvas's vertical position in viewport to 0..1
+  useEffect(() => {
+    const update = () => {
+      const el = containerRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      // progress: 0 when canvas bottom enters viewport, 1 when canvas top exits
+      const raw = 1 - (rect.bottom) / (vh + rect.height);
+      scrollRef.current = Math.max(0, Math.min(1, raw));
+    };
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, []);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -35,20 +81,21 @@ const FoxRunningSketch = () => {
       let t = 0;
 
       type Blade = { x: number; baseY: number; height: number; sway: number; shade: number; layer: number };
-      type Pollen = { x: number; y: number; r: number; vy: number; vx: number; hue: number };
+      type Mote = { x: number; y: number; r: number; vy: number; vx: number; hue: number; sat: number };
       type Cloud = { x: number; y: number; r: number; speed: number };
+      type Tree = { x: number; baseY: number; h: number; w: number; layer: number };
+      type Cactus = { x: number; baseY: number; h: number; arms: number };
 
-      const blades: Blade[] = [];
       const bladesBack: Blade[] = [];
       const bladesFront: Blade[] = [];
-      const pollen: Pollen[] = [];
+      const motes: Mote[] = [];
       const clouds: Cloud[] = [];
+      const trees: Tree[] = [];
+      const cacti: Cactus[] = [];
 
-      // Cached sky+hills layer — re-rasterized only when viewport or time-of-day bucket changes
       let bgLayer: p5.Graphics | null = null;
       let bgKey = '';
 
-      // Mobile-aware quality tier
       const tier = () => {
         const small = w < 640;
         const tiny = w < 420;
@@ -61,33 +108,80 @@ const FoxRunningSketch = () => {
         };
       };
 
-      const makePollen = (): Pollen => ({
-        x: p.random(w),
-        y: p.random(h * 0.2, h * 0.9),
-        r: p.random(1.2, 3),
-        vy: p.random(-0.25, -0.05),
-        vx: p.random(-0.2, 0.2),
-        hue: p.random(38, 52),
-      });
+      // Biome config — drives palette tints, ground hue, flora & fauna.
+      const biomeConfig = () => {
+        const b = biomeRef.current;
+        switch (b) {
+          case 'forest':
+            return {
+              groundHue: 110, groundSat: 50, bladeHueBase: 130,
+              skyTint: { h: 200, s: 30, b: -8 },
+              moteHue: [80, 140] as [number, number], moteSat: 40,
+              foxFur: { h: 22, s: 78, b: 78 }, foxEar: { h: 22, s: 78, b: 65 },
+              flora: 'pines' as const, fauna: 'fox' as const,
+            };
+          case 'desert':
+            return {
+              groundHue: 38, groundSat: 55, bladeHueBase: 42,
+              skyTint: { h: 25, s: -10, b: 10 },
+              moteHue: [28, 42] as [number, number], moteSat: 25,
+              foxFur: { h: 38, s: 35, b: 96 }, foxEar: { h: 38, s: 35, b: 85 },
+              flora: 'cacti' as const, fauna: 'fennec' as const,
+            };
+          case 'tundra':
+            return {
+              groundHue: 200, groundSat: 12, bladeHueBase: 200,
+              skyTint: { h: 210, s: 10, b: 6 },
+              moteHue: [200, 220] as [number, number], moteSat: 10,
+              foxFur: { h: 0, s: 0, b: 98 }, foxEar: { h: 0, s: 0, b: 80 },
+              flora: 'tufts' as const, fauna: 'arctic' as const,
+            };
+          default: // meadow
+            return {
+              groundHue: 95, groundSat: 45, bladeHueBase: 80,
+              skyTint: { h: 0, s: 0, b: 0 },
+              moteHue: [38, 52] as [number, number], moteSat: 60,
+              foxFur: { h: 18, s: 80, b: 92 }, foxEar: { h: 18, s: 80, b: 80 },
+              flora: 'grass' as const, fauna: 'fox' as const,
+            };
+        }
+      };
 
-      const syncPollenCount = () => {
+      const makeMote = (): Mote => {
+        const bc = biomeConfig();
+        return {
+          x: p.random(w),
+          y: p.random(h * 0.2, h * 0.9),
+          r: p.random(1.2, 3),
+          vy: p.random(-0.25, -0.05),
+          vx: p.random(-0.2, 0.2),
+          hue: p.random(bc.moteHue[0], bc.moteHue[1]),
+          sat: bc.moteSat,
+        };
+      };
+
+      const syncMoteCount = () => {
         const cap = tier().pollenCap;
         const target = Math.min(cap, Math.round(pollenRef.current));
-        while (pollen.length < target) pollen.push(makePollen());
-        if (pollen.length > target) pollen.length = target;
+        while (motes.length < target) motes.push(makeMote());
+        if (motes.length > target) motes.length = target;
       };
 
       const seedScene = () => {
-        blades.length = 0;
         bladesBack.length = 0;
         bladesFront.length = 0;
-        pollen.length = 0;
+        motes.length = 0;
         clouds.length = 0;
+        trees.length = 0;
+        cacti.length = 0;
 
+        const bc = biomeConfig();
         const mul = tier().bladeMul;
+
+        // Universal ground blades / tufts
         for (let layer = 0; layer < 3; layer++) {
           const base = layer === 0 ? 220 : layer === 1 ? 160 : 110;
-          const density = Math.round(base * mul);
+          const density = Math.round(base * mul * (bc.flora === 'tufts' ? 0.4 : 1));
           const baseY = h * (0.72 + layer * 0.07);
           for (let i = 0; i < density; i++) {
             const b: Blade = {
@@ -98,13 +192,37 @@ const FoxRunningSketch = () => {
               shade: p.random(0, 1),
               layer,
             };
-            blades.push(b);
             if (layer === 2) bladesBack.push(b);
             else bladesFront.push(b);
           }
         }
 
-        syncPollenCount();
+        // Biome-specific flora
+        if (bc.flora === 'pines') {
+          const n = Math.round(14 * mul);
+          for (let i = 0; i < n; i++) {
+            trees.push({
+              x: p.random(-30, w + 30),
+              baseY: h * (0.74 + p.random(-0.02, 0.04)),
+              h: p.random(70, 140),
+              w: p.random(28, 48),
+              layer: p.random() < 0.5 ? 0 : 1,
+            });
+          }
+          trees.sort((a, b) => a.layer - b.layer);
+        } else if (bc.flora === 'cacti') {
+          const n = Math.round(8 * mul);
+          for (let i = 0; i < n; i++) {
+            cacti.push({
+              x: p.random(-20, w + 20),
+              baseY: h * (0.76 + p.random(-0.02, 0.04)),
+              h: p.random(40, 90),
+              arms: Math.floor(p.random(0, 3)),
+            });
+          }
+        }
+
+        syncMoteCount();
 
         for (let i = 0; i < 5; i++) {
           clouds.push({
@@ -115,8 +233,10 @@ const FoxRunningSketch = () => {
           });
         }
 
-        bgKey = ''; // invalidate cached background
+        bgKey = '';
       };
+
+      reseedRef.current = seedScene;
 
       const resize = () => {
         const rect = containerRef.current!.getBoundingClientRect();
@@ -141,27 +261,27 @@ const FoxRunningSketch = () => {
 
       const palette = () => {
         const k = todRef.current;
-        const topHue = p.lerp(20, 230, Math.min(1, k * 1.1));
-        const topSat = p.lerp(60, 70, k);
-        const topBri = p.lerp(92, 18, k);
-        const botHue = p.lerp(35, 250, k);
-        const botSat = p.lerp(40, 55, k);
-        const botBri = p.lerp(85, 8, k);
+        const bc = biomeConfig();
+        const topHue = p.lerp(20, 230, Math.min(1, k * 1.1)) + bc.skyTint.h * 0.15;
+        const topSat = Math.max(0, p.lerp(60, 70, k) + bc.skyTint.s);
+        const topBri = Math.max(0, p.lerp(92, 18, k) + bc.skyTint.b);
+        const botHue = p.lerp(35, 250, k) + bc.skyTint.h * 0.1;
+        const botSat = Math.max(0, p.lerp(40, 55, k) + bc.skyTint.s * 0.5);
+        const botBri = Math.max(0, p.lerp(85, 8, k) + bc.skyTint.b);
         const sunBri = p.lerp(100, 30, Math.max(0, k - 0.4) * 1.6);
         const sunAlpha = k > 0.9 ? 0 : 1;
         return { topHue, topSat, topBri, botHue, botSat, botBri, sunBri, sunAlpha, k };
       };
 
-      // Rasterize sky + stars + hills into an offscreen buffer.
-      // Re-rendered only when viewport or time-of-day bucket changes.
       const ensureBackground = () => {
-        const todQ = Math.round(todRef.current * 40); // ~40 buckets across tod range
-        const key = `${w}x${h}|${todQ}`;
+        const todQ = Math.round(todRef.current * 40);
+        const key = `${w}x${h}|${todQ}|${biomeRef.current}`;
         if (bgLayer && bgKey === key) return;
         if (!bgLayer) bgLayer = p.createGraphics(w, h);
         bgLayer.colorMode(p.HSB, 360, 100, 100, 1);
         const g = bgLayer;
         const pal = palette();
+        const bc = biomeConfig();
         const step = tier().skyStep;
         const skyH = h * 0.78;
         g.noStroke();
@@ -188,7 +308,7 @@ const FoxRunningSketch = () => {
 
         const hillBri = p.lerp(55, 12, pal.k);
         const fieldBri = p.lerp(48, 10, pal.k);
-        g.fill(150, 30, hillBri);
+        g.fill((bc.groundHue + 50) % 360, bc.groundSat * 0.6, hillBri);
         g.beginShape();
         g.vertex(0, h * 0.7);
         for (let x = 0; x <= w; x += 14) {
@@ -198,7 +318,7 @@ const FoxRunningSketch = () => {
         g.vertex(w, h); g.vertex(0, h);
         g.endShape(g.CLOSE);
 
-        g.fill(95, 45, fieldBri);
+        g.fill(bc.groundHue, bc.groundSat, fieldBri);
         g.beginShape();
         g.vertex(0, h * 0.78);
         for (let x = 0; x <= w; x += 12) {
@@ -241,26 +361,66 @@ const FoxRunningSketch = () => {
         });
       };
 
-      const drawPollen = () => {
-        syncPollenCount();
+      const drawMotes = () => {
+        syncMoteCount();
         p.noStroke();
-        pollen.forEach((s) => {
+        motes.forEach((s) => {
           s.x += s.vx + Math.sin(t + s.y * 0.01) * 0.3;
           s.y += s.vy;
           if (s.y < -10) { s.y = h + 10; s.x = p.random(w); }
           if (s.x < -10) s.x = w + 10;
           if (s.x > w + 10) s.x = -10;
-          p.fill(s.hue, 60, 100, 0.5);
+          p.fill(s.hue, s.sat, 100, 0.5);
           p.circle(s.x, s.y, s.r * 3);
-          p.fill(s.hue, 30, 100, 1);
+          p.fill(s.hue, s.sat * 0.5, 100, 1);
           p.circle(s.x, s.y, s.r);
         });
       };
 
+      const drawTrees = (layer: number) => {
+        const pal = palette();
+        const bri = p.lerp(60, 14, pal.k);
+        trees.filter((tr) => tr.layer === layer).forEach((tr) => {
+          // trunk
+          p.noStroke();
+          p.fill(22, 60, bri * 0.7);
+          p.rect(tr.x - 3, tr.baseY - tr.h * 0.35, 6, tr.h * 0.35);
+          // triangular pine canopy
+          p.fill(135, 60, bri);
+          const tiers = 3;
+          for (let i = 0; i < tiers; i++) {
+            const yTop = tr.baseY - tr.h + i * (tr.h * 0.25);
+            const yBot = yTop + tr.h * 0.45;
+            const halfW = tr.w * (0.4 + i * 0.18);
+            p.triangle(tr.x - halfW, yBot, tr.x + halfW, yBot, tr.x, yTop);
+          }
+        });
+      };
 
-
+      const drawCacti = () => {
+        const pal = palette();
+        const bri = p.lerp(55, 18, pal.k);
+        p.noStroke();
+        cacti.forEach((c) => {
+          p.fill(130, 55, bri);
+          p.rect(c.x - 8, c.baseY - c.h, 16, c.h, 8);
+          if (c.arms > 0) {
+            p.rect(c.x - 20, c.baseY - c.h * 0.7, 8, c.h * 0.4, 4);
+            p.rect(c.x - 20, c.baseY - c.h * 0.7, 18, 8, 4);
+          }
+          if (c.arms > 1) {
+            p.rect(c.x + 12, c.baseY - c.h * 0.55, 8, c.h * 0.35, 4);
+            p.rect(c.x + 2, c.baseY - c.h * 0.55, 18, 8, 4);
+          }
+        });
+      };
 
       const drawFox = (cx: number, cy: number, scale: number, phase: number) => {
+        const bc = biomeConfig();
+        const isFennec = bc.fauna === 'fennec';
+        const isArctic = bc.fauna === 'arctic';
+        const earScale = isFennec ? 1.6 : 1;
+
         p.push();
         p.translate(cx, cy);
         p.scale(scale);
@@ -268,47 +428,49 @@ const FoxRunningSketch = () => {
         const bob = Math.sin(phase * 2) * 2.5;
         p.translate(0, bob);
 
+        // tail
         const tailSway = Math.sin(phase + 1) * 0.4;
         p.push();
         p.translate(-30, -6);
         p.rotate(-0.5 + tailSway);
         p.noStroke();
-        p.fill(18, 75, 88);
+        p.fill(bc.foxFur.h, bc.foxFur.s * 0.95, bc.foxFur.b * 0.95);
         p.ellipse(0, 0, 36, 14);
         p.fill(0, 0, 100);
         p.ellipse(10, 2, 14, 8);
         p.pop();
 
+        // body
         p.noStroke();
-        p.fill(18, 80, 92);
+        p.fill(bc.foxFur.h, bc.foxFur.s, bc.foxFur.b);
         p.ellipse(0, 0, 56, 26);
 
-        p.fill(35, 25, 100);
+        p.fill(isArctic ? 0 : 35, isArctic ? 0 : 25, 100);
         p.ellipse(2, 6, 42, 14);
 
         const legA = Math.sin(phase) * 14;
         const legB = Math.sin(phase + p.PI) * 14;
-        p.stroke(15, 80, 70);
+        p.stroke(bc.foxFur.h, Math.min(100, bc.foxFur.s * 1.1), bc.foxFur.b * 0.75);
         p.strokeWeight(4);
         p.strokeCap(p.ROUND);
-
         p.line(-14, 8, -14 + legA * 0.5, 22 + Math.abs(legA) * 0.3);
         p.line(-18, 8, -18 + legB * 0.5, 22 + Math.abs(legB) * 0.3);
         p.line(16, 8, 16 + legB * 0.6, 22 + Math.abs(legB) * 0.3);
         p.line(20, 8, 20 + legA * 0.6, 22 + Math.abs(legA) * 0.3);
 
+        // head + ear
         p.noStroke();
         p.push();
         p.translate(26, -6);
         p.rotate(Math.sin(phase) * 0.05);
-        p.fill(18, 80, 92);
+        p.fill(bc.foxFur.h, bc.foxFur.s, bc.foxFur.b);
         p.triangle(-6, -10, 22, -2, -6, 10);
-        p.fill(35, 25, 100);
+        p.fill(isArctic ? 0 : 35, isArctic ? 0 : 25, 100);
         p.triangle(2, 0, 18, -1, 2, 8);
-        p.fill(18, 80, 80);
-        p.triangle(-4, -10, 2, -20, 6, -8);
-        p.fill(15, 90, 60);
-        p.triangle(-2, -10, 2, -16, 4, -9);
+        p.fill(bc.foxEar.h, bc.foxEar.s, bc.foxEar.b);
+        p.triangle(-4, -10, 2 + (earScale - 1) * 2, -20 * earScale, 6 + (earScale - 1) * 4, -8);
+        p.fill(bc.foxFur.h, bc.foxFur.s, bc.foxFur.b * 0.7);
+        p.triangle(-2, -10, 2, -16 * earScale, 4, -9);
         p.fill(0, 0, 8);
         p.circle(8, -2, 2.4);
         p.fill(0, 0, 8);
@@ -318,46 +480,63 @@ const FoxRunningSketch = () => {
         p.pop();
       };
 
-      // Continuous fox position independent of frame rate jitter
       let foxProgress = 0;
 
       p.draw = () => {
         const dt = 0.016;
-        t += dt;
+        const scroll = scrollRef.current;
+        // wind & speed boosters: 1× at top of view → 2.5× / 3× as you scroll past
+        const windBoost = 1 + scroll * 2.5;
+        const speedBoost = 1 + scroll * 2;
+        t += dt * windBoost * 0.5 + dt * 0.5; // wind progresses faster with scroll
 
         ensureBackground();
         if (bgLayer) p.image(bgLayer, 0, 0);
         drawClouds();
         drawSun();
 
-        // Back grass (cached array, no per-frame filter)
+        const bc = biomeConfig();
+        if (bc.flora === 'pines') drawTrees(0);
+
+        // back grass
         bladesBack.forEach((b) => {
-          const wind = Math.sin(t * 2 + b.x * 0.02) * b.sway;
-          p.stroke(60, 50, 60, 0.8);
+          const wind = Math.sin(t * 2 + b.x * 0.02) * b.sway * windBoost;
+          const hue = bc.bladeHueBase - 20;
+          p.stroke(hue, 50, 60, 0.8);
           p.strokeWeight(1.6);
           p.line(b.x, b.baseY, b.x + wind, b.baseY - b.height);
         });
 
-        drawPollen();
+        if (bc.flora === 'cacti') drawCacti();
+        if (bc.flora === 'pines') drawTrees(1);
 
-        const speed = speedRef.current;
+        drawMotes();
+
+        const userSpeed = speedRef.current;
+        const effSpeed = userSpeed * speedBoost;
         const basePeriod = 9;
-        foxProgress += (dt / basePeriod) * speed;
+        foxProgress += (dt / basePeriod) * effSpeed;
         if (foxProgress > 1) foxProgress -= 1;
         const foxX = -80 + foxProgress * (w + 160);
         const foxY = h * 0.74;
         const foxScale = Math.max(0.7, Math.min(1.4, w / 700));
-        const gallop = t * 9 * speed;
+        const gallop = t * 9 * effSpeed;
         drawFox(foxX, foxY, foxScale, gallop);
 
         bladesFront.forEach((b) => {
-          const wind = Math.sin(t * 2 + b.x * 0.02) * b.sway;
-          const hue = 80 - b.layer * 10;
+          const wind = Math.sin(t * 2 + b.x * 0.02) * b.sway * windBoost;
+          const hue = bc.bladeHueBase - b.layer * 10;
           p.stroke(hue, 65, 30 + b.shade * 25);
           p.strokeWeight(1 + (1 - b.layer) * 0.6);
           p.line(b.x, b.baseY, b.x + wind, b.baseY - b.height);
         });
 
+        // subtle scroll indicator (top-left bar)
+        p.noStroke();
+        p.fill(45, 80, 100, 0.25);
+        p.rect(12, 12, 80, 3, 2);
+        p.fill(45, 80, 100, 0.95);
+        p.rect(12, 12, 80 * scroll, 3, 2);
       };
 
       p.windowResized = resize;
@@ -382,11 +561,34 @@ const FoxRunningSketch = () => {
       <div
         ref={containerRef}
         className="w-full h-[320px] md:h-[460px] rounded-2xl overflow-hidden border border-amber-500/20 shadow-[0_0_60px_-15px_rgba(245,158,11,0.35)] bg-slate-900"
-        aria-label="Wuxia the fox running through generative fields"
+        aria-label="Wuxia the fox running through a generative biosphere"
         role="img"
       />
-      <div className="absolute top-3 right-3 w-[220px] rounded-xl bg-slate-950/70 backdrop-blur-md border border-amber-500/20 p-3 text-xs text-amber-50 shadow-lg">
-        <div className="font-semibold tracking-wide uppercase text-amber-200/90 mb-2">Scene controls</div>
+      <div className="absolute top-3 right-3 w-[240px] rounded-xl bg-slate-950/70 backdrop-blur-md border border-amber-500/20 p-3 text-xs text-amber-50 shadow-lg">
+        <div className="font-semibold tracking-wide uppercase text-amber-200/90 mb-2">Biosphere</div>
+
+        <label className="block mb-3">
+          <div className="flex justify-between mb-1">
+            <span>Biome</span>
+            <span className="text-amber-200/80 capitalize">{biome}</span>
+          </div>
+          <div className="grid grid-cols-2 gap-1">
+            {BIOMES.map((b) => (
+              <button
+                key={b.id}
+                type="button"
+                onClick={() => setBiome(b.id)}
+                className={`px-2 py-1 rounded-md border text-[11px] transition-colors ${
+                  biome === b.id
+                    ? 'bg-amber-400/20 border-amber-400/60 text-amber-100'
+                    : 'bg-slate-900/40 border-slate-700/60 text-amber-50/70 hover:bg-slate-800/60'
+                }`}
+              >
+                {b.label}
+              </button>
+            ))}
+          </div>
+        </label>
 
         <label className="block mb-2">
           <div className="flex justify-between mb-1">
@@ -402,7 +604,7 @@ const FoxRunningSketch = () => {
 
         <label className="block mb-2">
           <div className="flex justify-between mb-1">
-            <span>Pollen</span>
+            <span>Particles</span>
             <span className="tabular-nums text-amber-200/80">{pollenCount}</span>
           </div>
           <input
@@ -425,6 +627,10 @@ const FoxRunningSketch = () => {
             className="w-full accent-amber-400"
           />
         </label>
+
+        <p className="mt-3 text-[10px] leading-tight text-amber-200/60">
+          Scroll the page — fox gallop and wind intensify with scroll progress.
+        </p>
       </div>
     </div>
   );
