@@ -100,6 +100,12 @@ const FoxRunningSketch = () => {
       let bgLayer: p5.Graphics | null = null;
       let bgKey = '';
 
+      // Crossfade state — snapshot of previous biome, faded out over FADE_MS
+      let prevFrame: p5.Image | null = null;
+      let fadeAlpha = 0;
+      let fadeStart = 0;
+      const FADE_MS = 750;
+
       const tier = () => {
         const small = w < 640;
         const tiny = w < 420;
