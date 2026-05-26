@@ -85,7 +85,8 @@ const FoxRunningSketch = () => {
       let t = 0;
 
       type Blade = { x: number; baseY: number; height: number; sway: number; shade: number; layer: number };
-      type Mote = { x: number; y: number; r: number; vy: number; vx: number; hue: number; sat: number };
+      type ParticleKind = 'pollen' | 'firefly' | 'dust' | 'snow';
+      type Mote = { x: number; y: number; r: number; vy: number; vx: number; hue: number; sat: number; kind: ParticleKind; phase: number; drift: number };
       type Cloud = { x: number; y: number; r: number; speed: number };
       type Tree = { x: number; baseY: number; h: number; w: number; layer: number };
       type Cactus = { x: number; baseY: number; h: number; arms: number };
