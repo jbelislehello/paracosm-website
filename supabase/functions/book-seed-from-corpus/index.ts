@@ -1,7 +1,7 @@
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.95.0";
 import { z } from "https://esm.sh/zod@3.23.8";
-import { ALLOWED_HOST, BLOCKED_HOSTS } from "../_shared/sourceGuard.ts";
+import { ALLOWED_HOSTS, BLOCKED_HOSTS } from "../_shared/sourceGuard.ts";
 
 const PHASES = ["GLITCH", "DRIFT", "TUNE", "LOVE", "MAGIC", "CALM", "FREE"] as const;
 type Phase = typeof PHASES[number];
