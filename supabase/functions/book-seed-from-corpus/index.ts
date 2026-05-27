@@ -115,7 +115,7 @@ Deno.serve(async (req) => {
               const d = await r.json();
               const md: string = d?.markdown ?? d?.data?.markdown ?? "";
               const title: string = d?.metadata?.title ?? d?.data?.metadata?.title ?? url;
-              if (md && enqueue("web", url, title, md.slice(0, 1200))) counts.web++;
+              if (md && md.length > 200 && enqueue("web", url, title, md.slice(0, 6000))) counts.web++;
             } catch { /* skip */ }
           }
         };
