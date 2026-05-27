@@ -44,14 +44,18 @@ Deno.serve(async (req) => {
     const FIRECRAWL = Deno.env.get("FIRECRAWL_API_KEY");
 
     const authHeader = req.headers.get("Authorization") ?? "";
-    const userClient = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_ANON_KEY")!, {
-      global: { headers: { Authorization: authHeader } },
-    });
-    const { data: userRes } = await userClient.auth.getUser();
-    if (!userRes?.user) return json({ error: "Not authenticated" }, 401);
+    const bearer = authHeader.replace(/^Bearer\s+/i, "");
     const admin = createClient(SUPABASE_URL, SERVICE);
-    const { data: roleRow } = await admin.from("user_roles").select("role").eq("user_id", userRes.user.id).eq("role", "admin").maybeSingle();
-    if (!roleRow) return json({ error: "Admin only" }, 403);
+    // Allow service-role bearer for server-side invocation; otherwise require admin user.
+    if (bearer !== SERVICE) {
+      const userClient = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_ANON_KEY")!, {
+        global: { headers: { Authorization: authHeader } },
+      });
+      const { data: userRes } = await userClient.auth.getUser();
+      if (!userRes?.user) return json({ error: "Not authenticated" }, 401);
+      const { data: roleRow } = await admin.from("user_roles").select("role").eq("user_id", userRes.user.id).eq("role", "admin").maybeSingle();
+      if (!roleRow) return json({ error: "Admin only" }, 403);
+    }
 
     const parsed = Body.safeParse(await req.json().catch(() => ({})));
     if (!parsed.success) return json({ error: parsed.error.flatten() }, 400);
