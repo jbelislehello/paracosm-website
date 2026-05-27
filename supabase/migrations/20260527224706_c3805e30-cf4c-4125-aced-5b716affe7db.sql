@@ -1,0 +1,2 @@
+ALTER TABLE public.book_sources DROP CONSTRAINT IF EXISTS book_sources_kind_check;
+ALTER TABLE public.book_sources ADD CONSTRAINT book_sources_kind_check CHECK (kind = ANY (ARRAY['upload','site_page','prd','drift','journal','polen','url','web','tile','tarot','board']));
