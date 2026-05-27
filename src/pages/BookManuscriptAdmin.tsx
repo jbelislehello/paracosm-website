@@ -57,12 +57,13 @@ type Lead = {
   created_at: string;
 };
 
-type Audience = "general" | "practitioner" | "executive";
-const AUDIENCES: Audience[] = ["general", "practitioner", "executive"];
+type Audience = "general" | "practitioner" | "executive" | "pragmatic";
+const AUDIENCES: Audience[] = ["general", "practitioner", "executive", "pragmatic"];
 const AUDIENCE_LABEL: Record<Audience, string> = {
   general: "General",
   practitioner: "Practitioner",
   executive: "Executive",
+  pragmatic: "Operator's Cut",
 };
 
 type Draft = {
