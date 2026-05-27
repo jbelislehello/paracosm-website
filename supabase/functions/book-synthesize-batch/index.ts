@@ -14,7 +14,7 @@ const AudienceSchema = z.enum(["general", "practitioner", "executive", "pragmati
 
 const BodySchema = z.object({
   chapter_ids: z.array(z.string().uuid()).min(1).max(20),
-  audiences: z.array(AudienceSchema).min(1).max(3),
+  audiences: z.array(AudienceSchema).min(1).max(4),
   model: z.string().optional(),
   guidance: z.string().max(4000).optional(),
   concurrency: z.number().int().min(1).max(6).optional(),
