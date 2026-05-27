@@ -57,12 +57,21 @@ type Lead = {
   created_at: string;
 };
 
+type Audience = "general" | "practitioner" | "executive";
+const AUDIENCES: Audience[] = ["general", "practitioner", "executive"];
+const AUDIENCE_LABEL: Record<Audience, string> = {
+  general: "General",
+  practitioner: "Practitioner",
+  executive: "Executive",
+};
+
 type Draft = {
   id: string;
   chapter_id: string;
   model: string;
   draft_md: string;
   is_current: boolean;
+  audience: Audience;
   created_at: string;
 };
 
@@ -93,12 +102,14 @@ export default function BookManuscriptAdmin() {
         <Tabs defaultValue="chapters" className="w-full">
           <TabsList className="mb-6">
             <TabsTrigger value="chapters">Chapters</TabsTrigger>
+            <TabsTrigger value="batch">Batch drafting</TabsTrigger>
             <TabsTrigger value="uploads">Uploads</TabsTrigger>
             <TabsTrigger value="sources">Sources</TabsTrigger>
             <TabsTrigger value="leads">Leads</TabsTrigger>
           </TabsList>
 
           <TabsContent value="chapters"><ChaptersTab /></TabsContent>
+          <TabsContent value="batch"><BatchTab /></TabsContent>
           <TabsContent value="uploads"><UploadsTab /></TabsContent>
           <TabsContent value="sources"><SourcesTab /></TabsContent>
           <TabsContent value="leads"><LeadsTab /></TabsContent>
@@ -116,6 +127,7 @@ function ChaptersTab() {
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const [synth, setSynth] = useState(false);
   const [guidance, setGuidance] = useState("");
+  const [audience, setAudience] = useState<Audience>("practitioner");
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -151,7 +163,7 @@ function ChaptersTab() {
     if (!activeChapter) return;
     setSynth(true);
     const { data, error } = await supabase.functions.invoke("book-synthesize-chapter", {
-      body: { chapter_id: activeChapter.id, guidance: guidance || undefined },
+      body: { chapter_id: activeChapter.id, audience, guidance: guidance || undefined },
     });
     setSynth(false);
     if (error) return toast.error(error.message);
@@ -247,12 +259,24 @@ function ChaptersTab() {
             </div>
 
             <div className="border-t border-border pt-4 space-y-2">
+              <div className="flex flex-wrap items-end gap-3">
+                <div>
+                  <Label className="text-xs">Audience voice</Label>
+                  <select
+                    className="block h-9 rounded border border-input bg-background px-2 text-sm"
+                    value={audience}
+                    onChange={(e) => setAudience(e.target.value as Audience)}
+                  >
+                    {AUDIENCES.map(a => <option key={a} value={a}>{AUDIENCE_LABEL[a]}</option>)}
+                  </select>
+                </div>
+                <Button onClick={synthesize} disabled={synth} size="sm">
+                  {synth ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
+                  Synthesize {AUDIENCE_LABEL[audience]} draft
+                </Button>
+              </div>
               <Label className="text-xs">Author guidance for the next draft (optional)</Label>
               <Textarea rows={2} value={guidance} onChange={(e) => setGuidance(e.target.value)} />
-              <Button onClick={synthesize} disabled={synth} size="sm">
-                {synth ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
-                Synthesize draft
-              </Button>
             </div>
 
             <div className="border-t border-border pt-4">
@@ -262,9 +286,10 @@ function ChaptersTab() {
                 {drafts.map(d => (
                   <details key={d.id} className="border border-border rounded p-2 text-sm">
                     <summary className="cursor-pointer flex items-center justify-between gap-2">
-                      <span>
+                      <span className="flex items-center gap-2 flex-wrap">
+                        <Badge variant="outline">{AUDIENCE_LABEL[d.audience] ?? d.audience}</Badge>
                         {new Date(d.created_at).toLocaleString()}
-                        {d.is_current && <Badge className="ml-2" variant="default">current</Badge>}
+                        {d.is_current && <Badge variant="default">current</Badge>}
                       </span>
                       <Button size="sm" variant="outline" onClick={(e) => { e.preventDefault(); promoteDraft(d); }}>
                         Promote → published_excerpt
@@ -640,6 +665,196 @@ function LeadsTab() {
         </table>
       </Card>
       <p className="text-xs text-muted-foreground">{filtered.length} of {leads.length} leads</p>
+    </div>
+  );
+}
+
+/* ───────── Batch drafting (parallel subagent fan-out) ───────── */
+type BatchJobStatus = "pending" | "running" | "done" | "error";
+type BatchCell = {
+  status: BatchJobStatus;
+  draft_id?: string;
+  error?: string;
+};
+
+function BatchTab() {
+  const [chapters, setChapters] = useState<Chapter[]>([]);
+  const [selectedChapters, setSelectedChapters] = useState<Set<string>>(new Set());
+  const [selectedAudiences, setSelectedAudiences] = useState<Set<Audience>>(
+    new Set<Audience>(["general", "practitioner", "executive"]),
+  );
+  const [guidance, setGuidance] = useState("");
+  const [concurrency, setConcurrency] = useState(3);
+  const [running, setRunning] = useState(false);
+  const [cells, setCells] = useState<Record<string, BatchCell>>({});
+
+  useEffect(() => {
+    supabase
+      .from("book_chapters")
+      .select("id, slug, title, phase, order_index, status, summary, is_free_sample, published_excerpt")
+      .order("order_index")
+      .then(({ data }) => setChapters((data as Chapter[]) ?? []));
+  }, []);
+
+  const cellKey = (chapterId: string, audience: Audience) => `${chapterId}:${audience}`;
+  const toggleChapter = (id: string) => {
+    const next = new Set(selectedChapters);
+    next.has(id) ? next.delete(id) : next.add(id);
+    setSelectedChapters(next);
+  };
+  const toggleAudience = (a: Audience) => {
+    const next = new Set(selectedAudiences);
+    next.has(a) ? next.delete(a) : next.add(a);
+    setSelectedAudiences(next);
+  };
+  const selectAllChapters = () => setSelectedChapters(new Set(chapters.map(c => c.id)));
+  const clearChapters = () => setSelectedChapters(new Set());
+
+  const runBatch = async () => {
+    const chapter_ids = Array.from(selectedChapters);
+    const audiences = Array.from(selectedAudiences);
+    if (!chapter_ids.length || !audiences.length) {
+      toast.error("Select at least one chapter and one audience");
+      return;
+    }
+    setRunning(true);
+    const initial: Record<string, BatchCell> = {};
+    for (const cid of chapter_ids) for (const a of audiences) initial[cellKey(cid, a)] = { status: "running" };
+    setCells(initial);
+
+    const { data, error } = await supabase.functions.invoke("book-synthesize-batch", {
+      body: {
+        chapter_ids,
+        audiences,
+        guidance: guidance || undefined,
+        concurrency,
+      },
+    });
+    setRunning(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    const results = (data as { results?: Array<{ chapter_id: string; audience: Audience; ok: boolean; draft_id?: string; error?: string }> })?.results ?? [];
+    const next: Record<string, BatchCell> = { ...initial };
+    for (const r of results) {
+      next[cellKey(r.chapter_id, r.audience)] = r.ok
+        ? { status: "done", draft_id: r.draft_id }
+        : { status: "error", error: r.error };
+    }
+    setCells(next);
+    const summary = (data as { summary?: { succeeded: number; failed: number } })?.summary;
+    if (summary) {
+      toast.success(`Batch complete: ${summary.succeeded} succeeded, ${summary.failed} failed`);
+    }
+  };
+
+  const audiencesArr = Array.from(selectedAudiences);
+
+  return (
+    <div className="space-y-6">
+      <Card className="p-5 space-y-4">
+        <div>
+          <h3 className="text-lg font-semibold">Parallel chapter drafting</h3>
+          <p className="text-sm text-muted-foreground mt-1">
+            Fan out subagent workers across chapters and audience voices. Each cell is one independent
+            draft saved to <code className="text-xs">book_chapter_drafts</code> with its own audience.
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-end gap-4">
+          <div>
+            <Label className="text-xs">Audiences</Label>
+            <div className="flex gap-2 mt-1">
+              {AUDIENCES.map(a => (
+                <label key={a} className={`px-3 py-1.5 rounded border text-sm cursor-pointer transition ${
+                  selectedAudiences.has(a) ? "border-primary bg-primary/10" : "border-border"
+                }`}>
+                  <input
+                    type="checkbox"
+                    className="sr-only"
+                    checked={selectedAudiences.has(a)}
+                    onChange={() => toggleAudience(a)}
+                  />
+                  {AUDIENCE_LABEL[a]}
+                </label>
+              ))}
+            </div>
+          </div>
+          <div>
+            <Label className="text-xs">Concurrency</Label>
+            <Input
+              type="number"
+              min={1}
+              max={6}
+              value={concurrency}
+              onChange={(e) => setConcurrency(Math.max(1, Math.min(6, Number(e.target.value) || 1)))}
+              className="w-20"
+            />
+          </div>
+          <div className="flex-1 min-w-[240px]">
+            <Label className="text-xs">Shared guidance (optional)</Label>
+            <Input value={guidance} onChange={(e) => setGuidance(e.target.value)} placeholder="e.g. emphasize the threshold crossing" />
+          </div>
+          <Button onClick={runBatch} disabled={running}>
+            {running ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
+            Draft {selectedChapters.size} × {audiencesArr.length} = {selectedChapters.size * audiencesArr.length}
+          </Button>
+        </div>
+      </Card>
+
+      <Card className="p-5 space-y-3">
+        <div className="flex items-center justify-between">
+          <h4 className="text-sm font-semibold">Chapters</h4>
+          <div className="flex gap-2">
+            <Button size="sm" variant="outline" onClick={selectAllChapters}>Select all</Button>
+            <Button size="sm" variant="ghost" onClick={clearChapters}>Clear</Button>
+          </div>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="text-left text-xs text-muted-foreground border-b border-border">
+                <th className="p-2 w-8"></th>
+                <th className="p-2">Chapter</th>
+                <th className="p-2">Phase</th>
+                {audiencesArr.map(a => (
+                  <th key={a} className="p-2">{AUDIENCE_LABEL[a]}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {chapters.map(c => (
+                <tr key={c.id} className="border-b border-border/50">
+                  <td className="p-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedChapters.has(c.id)}
+                      onChange={() => toggleChapter(c.id)}
+                    />
+                  </td>
+                  <td className="p-2">
+                    <div className="font-medium truncate max-w-xs">{c.title}</div>
+                    <div className="text-xs text-muted-foreground">/{c.slug}</div>
+                  </td>
+                  <td className="p-2"><Badge variant="outline">{c.phase}</Badge></td>
+                  {audiencesArr.map(a => {
+                    const cell = cells[`${c.id}:${a}`];
+                    if (!cell) return <td key={a} className="p-2 text-xs text-muted-foreground">—</td>;
+                    if (cell.status === "running")
+                      return <td key={a} className="p-2"><Loader2 className="w-3.5 h-3.5 animate-spin" /></td>;
+                    if (cell.status === "done")
+                      return <td key={a} className="p-2"><Badge variant="default" className="text-[10px]">done</Badge></td>;
+                    if (cell.status === "error")
+                      return <td key={a} className="p-2"><Badge variant="destructive" className="text-[10px]" title={cell.error}>error</Badge></td>;
+                    return <td key={a} className="p-2 text-xs text-muted-foreground">pending</td>;
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Card>
     </div>
   );
 }

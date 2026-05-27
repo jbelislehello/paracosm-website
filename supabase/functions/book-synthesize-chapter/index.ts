@@ -10,21 +10,36 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const AudienceSchema = z.enum(["general", "practitioner", "executive"]);
+type Audience = z.infer<typeof AudienceSchema>;
+
 const BodySchema = z.object({
   chapter_id: z.string().uuid(),
   model: z.string().optional(),
   guidance: z.string().max(4000).optional(),
+  audience: AudienceSchema.optional(),
 });
 
-const SYSTEM_PROMPT = `You are the ghostwriter for "Calm Magic", a book by Jonathan Belisle on the four capabilities of the agentic era: Relational Intelligence, Pragmatic Imagination, Creative Ideation, and Existential Design.
-
-Voice: lucid, generous, slightly literary. Sentences earn their weight. No corporate cliches, no hype, no listicle vibes. Use second person sparingly. Avoid bullet-point soup; favor flowing prose with occasional structural beats.
+const BASE_PROMPT = `You are the ghostwriter for "Calm Magic", a book by Jonathan Belisle on the four capabilities of the agentic era: Relational Intelligence, Pragmatic Imagination, Creative Ideation, and Existential Design.
 
 Constraints:
 - Stay strictly within the chapter's phase (GLITCH, DRIFT, TUNE, LOVE, MAGIC, CALM, FREE) and its summary.
 - Synthesize from the provided source excerpts. Quote sparingly; never fabricate sources or names.
 - Write in markdown. Open with a 2-3 sentence cold-open scene or claim. Then 4-7 short sections with H2 headings. End with a "Field Note" callout.
 - Aim for 1500-2200 words.`;
+
+const AUDIENCE_VOICE: Record<Audience, string> = {
+  general: `Audience: curious general reader, no prior background assumed.
+Voice: plain-language, warm, accessible. Literary but jargon-free. Define any term that isn't everyday English on first use. Prefer concrete scenes and everyday metaphors over abstractions. Use second person sparingly. No corporate cliches, no hype, no listicle vibes.`,
+  practitioner: `Audience: facilitators, coaches, designers, and operators already inside the Calm Magic world.
+Voice: lucid, generous, slightly literary. Sentences earn their weight. Assume fluency with the seven phases, the board, polyvagal regulation, and the Paracosm vocabulary. No corporate cliches, no hype, no listicle vibes. Use second person sparingly. Favor flowing prose with occasional structural beats.`,
+  executive: `Audience: executives and decision-makers in organizations adopting agentic systems.
+Voice: strategic, calm, precise. Translate the phase into operating implications: risk, capability, governance, velocity, preferable futures. Keep the literary spine, but lead each section with a clear claim a leader can act on. No hype. No listicle soup. Use crisp prose with occasional decision-oriented beats.`,
+};
+
+function systemPromptFor(audience: Audience): string {
+  return `${BASE_PROMPT}\n\n${AUDIENCE_VOICE[audience]}`;
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -64,6 +79,7 @@ Deno.serve(async (req) => {
       });
     }
     const { chapter_id, guidance } = parsed.data;
+    const audience: Audience = parsed.data.audience ?? "practitioner";
     const model = parsed.data.model ?? "google/gemini-3-flash-preview";
 
     // Load chapter + sources + uploads
@@ -125,23 +141,25 @@ ${uploadBlock || "(no uploads attached)"}
 Write the full chapter draft now in markdown.`;
 
     const messages: ChatMessage[] = [
-      { role: "system", content: SYSTEM_PROMPT },
+      { role: "system", content: systemPromptFor(audience) },
       { role: "user", content: userPrompt },
     ];
 
     const draft = await callLovableAi(messages, { model, maxTokens: 6000 });
 
-    // Mark previous drafts non-current, insert new as current
+    // Mark previous drafts of this (chapter, audience) non-current
     await supabase
       .from("book_chapter_drafts")
       .update({ is_current: false })
-      .eq("chapter_id", chapter_id);
+      .eq("chapter_id", chapter_id)
+      .eq("audience", audience);
 
     const { data: inserted, error: insErr } = await supabase
       .from("book_chapter_drafts")
       .insert({
         chapter_id,
         model,
+        audience,
         prompt_snapshot: userPrompt.slice(0, 20000),
         draft_md: draft,
         is_current: true,
@@ -166,7 +184,7 @@ Write the full chapter draft now in markdown.`;
     }
 
     return new Response(
-      JSON.stringify({ ok: true, draft_id: inserted?.id, draft_md: draft }),
+      JSON.stringify({ ok: true, draft_id: inserted?.id, draft_md: draft, audience }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err) {
