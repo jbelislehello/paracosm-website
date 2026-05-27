@@ -79,6 +79,7 @@ Deno.serve(async (req) => {
       });
     }
     const { chapter_id, guidance } = parsed.data;
+    const audience: Audience = parsed.data.audience ?? "practitioner";
     const model = parsed.data.model ?? "google/gemini-3-flash-preview";
 
     // Load chapter + sources + uploads
