@@ -528,7 +528,7 @@ function SourcesTab() {
       <Card className="p-4 flex items-center justify-between gap-3">
         <div>
           <h3 className="font-semibold flex items-center gap-2"><Sparkles className="w-4 h-4" /> Seed from corpus</h3>
-          <p className="text-xs text-muted-foreground mt-1">Crawl the live site + ingest the 64-tile board, tarot deck, and Drift library. Auto-mapped to chapters by phase.</p>
+          <p className="text-xs text-muted-foreground mt-1">Deep-crawl calm-magic.com (up to 200 pages, 6k-char excerpts) + ingest all 64 Calm Magic Board tiles with full ontology (hexagram · tzolkin · Senge · Wu-Wei · VL path · mindfulness focus) + tarot deck + Drift library. Auto-mapped to chapters by phase.</p>
         </div>
         <Button onClick={seedFromCorpus} disabled={seeding} size="sm">
           {seeding ? <Loader2 className="w-4 h-4 animate-spin" /> : "Seed corpus"}
