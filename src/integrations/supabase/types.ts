@@ -91,6 +91,7 @@ export type Database = {
       }
       book_chapter_drafts: {
         Row: {
+          audience: string
           chapter_id: string
           created_at: string
           created_by: string | null
@@ -101,6 +102,7 @@ export type Database = {
           prompt_snapshot: string | null
         }
         Insert: {
+          audience?: string
           chapter_id: string
           created_at?: string
           created_by?: string | null
@@ -111,6 +113,7 @@ export type Database = {
           prompt_snapshot?: string | null
         }
         Update: {
+          audience?: string
           chapter_id?: string
           created_at?: string
           created_by?: string | null
