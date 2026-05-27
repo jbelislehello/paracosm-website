@@ -163,7 +163,7 @@ function ChaptersTab() {
     if (!activeChapter) return;
     setSynth(true);
     const { data, error } = await supabase.functions.invoke("book-synthesize-chapter", {
-      body: { chapter_id: activeChapter.id, guidance: guidance || undefined },
+      body: { chapter_id: activeChapter.id, audience, guidance: guidance || undefined },
     });
     setSynth(false);
     if (error) return toast.error(error.message);
