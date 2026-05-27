@@ -127,6 +127,7 @@ function ChaptersTab() {
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const [synth, setSynth] = useState(false);
   const [guidance, setGuidance] = useState("");
+  const [audience, setAudience] = useState<Audience>("practitioner");
 
   const load = useCallback(async () => {
     setLoading(true);
