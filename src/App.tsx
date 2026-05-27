@@ -126,6 +126,7 @@ function App() {
                     <Route path="/book/manuscript" element={<ProtectedRoute><BookManuscriptAdmin /></ProtectedRoute>} />
                     <Route path="/book/compasses" element={<BookCompassesIndex />} />
                     <Route path="/book/compasses/:slug" element={<BookCompass />} />
+                    <Route path="/book/operators-index" element={<BookOperatorsIndex />} />
                     <Route path="/dream-and-learn" element={<DreamAndLearn />} />
                     <Route path="/design-system" element={<DesignSystemShowcase />} />
                     <Route path="/calm-magic-demo" element={<CalmMagicDemo />} />
