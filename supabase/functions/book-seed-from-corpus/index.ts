@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
       const key = `${chapter_id}::${ref}`;
       if (existing.has(key)) return false;
       existing.add(key);
-      queue.push({ chapter_id, kind, ref, title: title?.slice(0, 240) ?? null, excerpt: excerpt?.slice(0, 1500) ?? null, weight: 3, included: true });
+      queue.push({ chapter_id, kind, ref, title: title?.slice(0, 240) ?? null, excerpt: excerpt?.slice(0, 6000) ?? null, weight: 3, included: true });
       return true;
     };
 
