@@ -102,12 +102,14 @@ export default function BookManuscriptAdmin() {
         <Tabs defaultValue="chapters" className="w-full">
           <TabsList className="mb-6">
             <TabsTrigger value="chapters">Chapters</TabsTrigger>
+            <TabsTrigger value="batch">Batch drafting</TabsTrigger>
             <TabsTrigger value="uploads">Uploads</TabsTrigger>
             <TabsTrigger value="sources">Sources</TabsTrigger>
             <TabsTrigger value="leads">Leads</TabsTrigger>
           </TabsList>
 
           <TabsContent value="chapters"><ChaptersTab /></TabsContent>
+          <TabsContent value="batch"><BatchTab /></TabsContent>
           <TabsContent value="uploads"><UploadsTab /></TabsContent>
           <TabsContent value="sources"><SourcesTab /></TabsContent>
           <TabsContent value="leads"><LeadsTab /></TabsContent>
