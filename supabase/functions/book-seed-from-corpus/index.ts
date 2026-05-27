@@ -29,7 +29,7 @@ const InputItem = z.object({
 });
 const Body = z.object({
   scrapeSite: z.boolean().optional().default(true),
-  siteLimit: z.number().int().min(1).max(120).optional().default(60),
+  siteLimit: z.number().int().min(1).max(300).optional().default(200),
   tarot: z.array(InputItem).optional().default([]),
   drift: z.array(InputItem).optional().default([]),
 });
