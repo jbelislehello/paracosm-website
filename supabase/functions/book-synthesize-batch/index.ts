@@ -10,7 +10,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const AudienceSchema = z.enum(["general", "practitioner", "executive"]);
+const AudienceSchema = z.enum(["general", "practitioner", "executive", "pragmatic"]);
 
 const BodySchema = z.object({
   chapter_ids: z.array(z.string().uuid()).min(1).max(20),
