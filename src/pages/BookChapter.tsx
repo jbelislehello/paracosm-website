@@ -230,8 +230,30 @@ export default function BookChapter() {
               <p className="mt-4 font-redacted text-lg italic text-white/70">{chapter.summary}</p>
             )}
 
-            <div className="mt-10 border-t border-white/10 pt-8">
-              {chapter.status === "published" && chapter.published_excerpt ? (
+            {/* Edition switch */}
+            <div className="mt-8 inline-flex rounded-full border border-white/15 bg-white/[0.03] p-1 text-xs">
+              <button
+                type="button"
+                onClick={() => { searchParams.delete("edition"); setSearchParams(searchParams, { replace: true }); }}
+                className={`rounded-full px-3 py-1 transition ${edition === "visionary" ? "bg-white text-slate-900" : "text-white/70 hover:text-white"}`}
+              >
+                Field Guide
+              </button>
+              <button
+                type="button"
+                onClick={() => { searchParams.set("edition", "pragmatic"); setSearchParams(searchParams, { replace: true }); }}
+                disabled={!pragmaticBody}
+                className={`rounded-full px-3 py-1 transition ${edition === "pragmatic" ? "bg-white text-slate-900" : "text-white/70 hover:text-white"} ${!pragmaticBody ? "opacity-40 cursor-not-allowed" : ""}`}
+                title={pragmaticBody ? "Operator's Cut — 90-minute pragmatic edition" : "Operator's Cut not yet available for this chapter"}
+              >
+                Operator's Cut
+              </button>
+            </div>
+
+            <div className="mt-6 border-t border-white/10 pt-8">
+              {edition === "pragmatic" && pragmaticBody ? (
+                renderMarkdown(pragmaticBody)
+              ) : chapter.status === "published" && chapter.published_excerpt ? (
                 renderMarkdown(chapter.published_excerpt)
               ) : (
                 <DraftPlaceholder slug={chapter.slug} />
