@@ -184,7 +184,7 @@ Write the full chapter draft now in markdown.`;
     }
 
     return new Response(
-      JSON.stringify({ ok: true, draft_id: inserted?.id, draft_md: draft }),
+      JSON.stringify({ ok: true, draft_id: inserted?.id, draft_md: draft, audience }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (err) {
