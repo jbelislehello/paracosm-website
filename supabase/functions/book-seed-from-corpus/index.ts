@@ -1,7 +1,7 @@
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.95.0";
 import { z } from "https://esm.sh/zod@3.23.8";
-import { ALLOWED_HOST, BLOCKED_HOSTS } from "../_shared/sourceGuard.ts";
+import { ALLOWED_HOSTS, BLOCKED_HOSTS } from "../_shared/sourceGuard.ts";
 
 const PHASES = ["GLITCH", "DRIFT", "TUNE", "LOVE", "MAGIC", "CALM", "FREE"] as const;
 type Phase = typeof PHASES[number];
@@ -44,14 +44,18 @@ Deno.serve(async (req) => {
     const FIRECRAWL = Deno.env.get("FIRECRAWL_API_KEY");
 
     const authHeader = req.headers.get("Authorization") ?? "";
-    const userClient = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_ANON_KEY")!, {
-      global: { headers: { Authorization: authHeader } },
-    });
-    const { data: userRes } = await userClient.auth.getUser();
-    if (!userRes?.user) return json({ error: "Not authenticated" }, 401);
+    const bearer = authHeader.replace(/^Bearer\s+/i, "");
     const admin = createClient(SUPABASE_URL, SERVICE);
-    const { data: roleRow } = await admin.from("user_roles").select("role").eq("user_id", userRes.user.id).eq("role", "admin").maybeSingle();
-    if (!roleRow) return json({ error: "Admin only" }, 403);
+    // Allow service-role bearer for server-side invocation; otherwise require admin user.
+    if (bearer !== SERVICE) {
+      const userClient = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_ANON_KEY")!, {
+        global: { headers: { Authorization: authHeader } },
+      });
+      const { data: userRes } = await userClient.auth.getUser();
+      if (!userRes?.user) return json({ error: "Not authenticated" }, 401);
+      const { data: roleRow } = await admin.from("user_roles").select("role").eq("user_id", userRes.user.id).eq("role", "admin").maybeSingle();
+      if (!roleRow) return json({ error: "Admin only" }, 403);
+    }
 
     const parsed = Body.safeParse(await req.json().catch(() => ({})));
     if (!parsed.success) return json({ error: parsed.error.flatten() }, 400);
@@ -81,49 +85,58 @@ Deno.serve(async (req) => {
       return true;
     };
 
-    // 1. Site scrape
+    // 1. Site scrape — map BOTH calm-magic.com and paracosm.helloarchitekt.com
     if (scrapeSite && FIRECRAWL) {
-      try {
-        const mapRes = await fetch("https://api.firecrawl.dev/v2/map", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${FIRECRAWL}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ url: `https://${ALLOWED_HOST}`, limit: siteLimit, includeSubdomains: false }),
-        });
-        const mapData = await mapRes.json();
-        const rawLinks: string[] = Array.isArray(mapData?.links)
-          ? mapData.links.map((l: unknown) => (typeof l === "string" ? l : (l as { url?: string })?.url)).filter(Boolean)
-          : [];
-        const urls = Array.from(new Set(rawLinks.filter((l) => {
-          try { const u = new URL(l); return u.host === ALLOWED_HOST && !BLOCKED_HOSTS.has(u.host); } catch { return false; }
-        }))).slice(0, siteLimit);
-
-        // Concurrency pool
-        let i = 0;
-        const worker = async () => {
-          while (i < urls.length) {
-            const url = urls[i++];
-            try {
-              const ctrl = new AbortController();
-              const t = setTimeout(() => ctrl.abort(), 25000);
-              const r = await fetch("https://api.firecrawl.dev/v2/scrape", {
-                method: "POST",
-                headers: { Authorization: `Bearer ${FIRECRAWL}`, "Content-Type": "application/json" },
-                body: JSON.stringify({ url, formats: ["markdown"], onlyMainContent: true }),
-                signal: ctrl.signal,
-              });
-              clearTimeout(t);
-              const d = await r.json();
-              const md: string = d?.markdown ?? d?.data?.markdown ?? "";
-              const title: string = d?.metadata?.title ?? d?.data?.metadata?.title ?? url;
-              if (md && md.length > 200 && enqueue("web", url, title, md.slice(0, 6000))) counts.web++;
-            } catch { /* skip */ }
-          }
-        };
-        await Promise.all([worker(), worker(), worker(), worker()]);
-      } catch (e) {
-        console.error("site pass failed", e);
+      const seeds = ["https://calm-magic.com", "https://paracosm.helloarchitekt.com"];
+      const allLinks: string[] = [];
+      for (const seed of seeds) {
+        try {
+          const mapRes = await fetch("https://api.firecrawl.dev/v2/map", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${FIRECRAWL}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ url: seed, limit: siteLimit, includeSubdomains: false }),
+          });
+          const mapData = await mapRes.json();
+          const rawLinks: string[] = Array.isArray(mapData?.links)
+            ? mapData.links.map((l: unknown) => (typeof l === "string" ? l : (l as { url?: string })?.url)).filter(Boolean)
+            : Array.isArray(mapData?.data?.links)
+              ? mapData.data.links.map((l: unknown) => (typeof l === "string" ? l : (l as { url?: string })?.url)).filter(Boolean)
+              : [];
+          allLinks.push(...rawLinks);
+        } catch (e) {
+          console.error("map failed for", seed, e);
+        }
       }
+      const urls = Array.from(new Set(allLinks.filter((l) => {
+        try { const u = new URL(l); return ALLOWED_HOSTS.has(u.host) && !BLOCKED_HOSTS.has(u.host); } catch { return false; }
+      }))).slice(0, siteLimit);
+      console.log(`site pass: ${urls.length} urls to scrape`);
+
+      // Concurrency pool
+      let i = 0;
+      const worker = async () => {
+        while (i < urls.length) {
+          const url = urls[i++];
+          try {
+            const ctrl = new AbortController();
+            const t = setTimeout(() => ctrl.abort(), 25000);
+            const r = await fetch("https://api.firecrawl.dev/v2/scrape", {
+              method: "POST",
+              headers: { Authorization: `Bearer ${FIRECRAWL}`, "Content-Type": "application/json" },
+              body: JSON.stringify({ url, formats: ["markdown"], onlyMainContent: true }),
+              signal: ctrl.signal,
+            });
+            clearTimeout(t);
+            const d = await r.json();
+            const md: string = d?.markdown ?? d?.data?.markdown ?? "";
+            const title: string = d?.metadata?.title ?? d?.data?.metadata?.title ?? url;
+            if (md && md.length > 200 && enqueue("web", url, title, md.slice(0, 6000))) counts.web++;
+          } catch { /* skip */ }
+        }
+      };
+      await Promise.all([worker(), worker(), worker(), worker(), worker(), worker()]);
     }
+
 
     // 2. Board (tiles) — enriched with hexagram, tzolkin, discipline, wu-wei, mindfulness focus, VL path
     const { data: tiles } = await admin

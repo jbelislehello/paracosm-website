@@ -1,4 +1,10 @@
-export const ALLOWED_HOST = "paracosm.helloarchitekt.com";
+export const ALLOWED_HOSTS = new Set([
+  "paracosm.helloarchitekt.com",
+  "calm-magic.com",
+  "www.calm-magic.com",
+]);
+// Backward-compat: default allowed host used by callers expecting a single value.
+export const ALLOWED_HOST = "calm-magic.com";
 export const BLOCKED_HOSTS = new Set(["paracosm.life", "www.paracosm.life"]);
 
 export function assertAllowedUrl(raw: string): URL {
@@ -11,8 +17,8 @@ export function assertAllowedUrl(raw: string): URL {
   if (BLOCKED_HOSTS.has(u.host)) {
     throw new Error("paracosm.life is not an allowed source.");
   }
-  if (u.host !== ALLOWED_HOST) {
-    throw new Error(`Only ${ALLOWED_HOST} URLs are allowed (got ${u.host}).`);
+  if (!ALLOWED_HOSTS.has(u.host)) {
+    throw new Error(`Host not allowed: ${u.host}.`);
   }
   return u;
 }
