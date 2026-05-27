@@ -10,7 +10,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const AudienceSchema = z.enum(["general", "practitioner", "executive"]);
+const AudienceSchema = z.enum(["general", "practitioner", "executive", "pragmatic"]);
 type Audience = z.infer<typeof AudienceSchema>;
 
 const BodySchema = z.object({
@@ -28,6 +28,23 @@ Constraints:
 - Write in markdown. Open with a 2-3 sentence cold-open scene or claim. Then 4-7 short sections with H2 headings. End with a "Field Note" callout.
 - Aim for 1500-2200 words.`;
 
+const PRAGMATIC_PROMPT = `You are the ghostwriter for "Calm Magic — The Operator's Cut", the pragmatic field edition by Jonathan Belisle, distilled for founders, COOs, and transformation leads who have 90 minutes on a flight and need to walk off the plane ready to act Monday.
+
+Constraints:
+- Stay strictly within the chapter's phase (GLITCH, DRIFT, TUNE, LOVE, MAGIC, CALM, FREE) and its summary.
+- Synthesize from the provided source excerpts. Quote sparingly; never fabricate sources or names.
+- Write in second person ("you", "your team"). Operator voice — calm, direct, no hype, no listicle vibes, no corporate cliches.
+- Markdown. Open with a 2-sentence diagnosis of the friction this phase names. Then 3-5 short H2 sections of tight prose (no bullet lists inside sections).
+- Where a Calm Magic Board tile is directly relevant, drop a one-line italic sidebar: *Tile reference: <id> · <phase> · <short_prompt>*. Use at most 3 tile sidebars per chapter.
+- End the chapter with THREE required blocks, each as an H2 in this exact order:
+  ## Do this Monday
+  One concrete action the reader can run with their team next week. Two to four sentences. No bullet list.
+  ## Diagnostic
+  Exactly three numbered questions to ask the team this week.
+  ## Anti-pattern
+  Name one trap operators fall into in this phase and how to spot it early. Two to four sentences.
+- Hard length cap: 1800 words maximum. Tighter is better.`;
+
 const AUDIENCE_VOICE: Record<Audience, string> = {
   general: `Audience: curious general reader, no prior background assumed.
 Voice: plain-language, warm, accessible. Literary but jargon-free. Define any term that isn't everyday English on first use. Prefer concrete scenes and everyday metaphors over abstractions. Use second person sparingly. No corporate cliches, no hype, no listicle vibes.`,
@@ -35,9 +52,11 @@ Voice: plain-language, warm, accessible. Literary but jargon-free. Define any te
 Voice: lucid, generous, slightly literary. Sentences earn their weight. Assume fluency with the seven phases, the board, polyvagal regulation, and the Paracosm vocabulary. No corporate cliches, no hype, no listicle vibes. Use second person sparingly. Favor flowing prose with occasional structural beats.`,
   executive: `Audience: executives and decision-makers in organizations adopting agentic systems.
 Voice: strategic, calm, precise. Translate the phase into operating implications: risk, capability, governance, velocity, preferable futures. Keep the literary spine, but lead each section with a clear claim a leader can act on. No hype. No listicle soup. Use crisp prose with occasional decision-oriented beats.`,
+  pragmatic: `(pragmatic voice is embedded in its own system prompt — this entry is unused)`,
 };
 
 function systemPromptFor(audience: Audience): string {
+  if (audience === "pragmatic") return PRAGMATIC_PROMPT;
   return `${BASE_PROMPT}\n\n${AUDIENCE_VOICE[audience]}`;
 }
 
