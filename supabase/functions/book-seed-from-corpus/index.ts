@@ -75,8 +75,10 @@ Deno.serve(async (req) => {
     const queue: Row[] = [];
     const counts = { web: 0, tile: 0, tarot: 0, drift: 0 };
 
-    const enqueue = (kind: string, ref: string, title: string | null, excerpt: string | null, hint?: string) => {
-      const phase = classify(`${title ?? ""} ${excerpt ?? ""} ${hint ?? ""}`);
+    const enqueue = (kind: string, ref: string, title: string | null, excerpt: string | null, hint?: string, forcePhase?: string) => {
+      const phase = forcePhase && phaseToChapter.has(forcePhase)
+        ? forcePhase
+        : classify(`${title ?? ""} ${excerpt ?? ""} ${hint ?? ""}`);
       const chapter_id = phaseToChapter.get(phase) ?? fallback;
       const key = `${chapter_id}::${ref}`;
       if (existing.has(key)) return false;
@@ -158,7 +160,9 @@ Deno.serve(async (req) => {
         `Prompt: ${t.short_prompt ?? ""}`,
       ].filter(Boolean).join("\n");
       const hint = `${t.calm_magic_phase ?? ""} ${t.board ?? ""} ${t.senge_discipline ?? ""}`;
-      if (enqueue("tile", ref, title, excerpt, hint)) counts.tile++;
+      // Route tiles by their own ontological phase, not the keyword classifier.
+      const tilePhase = typeof t.calm_magic_phase === "string" ? String(t.calm_magic_phase).toUpperCase() : undefined;
+      if (enqueue("tile", ref, title, excerpt, hint, tilePhase)) counts.tile++;
     }
 
 
