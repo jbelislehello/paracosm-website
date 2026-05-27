@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, BookOpen, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
@@ -105,13 +105,16 @@ interface NavChapter {
 
 export default function BookChapter() {
   const { slug } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const edition = searchParams.get("edition") === "pragmatic" ? "pragmatic" : "visionary";
   const [chapter, setChapter] = useState<Chapter | null>(null);
   const [siblings, setSiblings] = useState<NavChapter[]>([]);
+  const [pragmaticBody, setPragmaticBody] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { markRead } = useReaderProgress();
 
   usePageSeo({
-    title: chapter ? `${chapter.title} — Calm Magic` : "Chapter — Calm Magic",
+    title: chapter ? `${chapter.title} — Calm Magic${edition === "pragmatic" ? " · Operator's Cut" : ""}` : "Chapter — Calm Magic",
     description: chapter?.summary ?? "A free chapter from the Calm Magic book.",
     path: `/book/chapter/${slug ?? ""}`,
   });
@@ -132,6 +135,21 @@ export default function BookChapter() {
       if (!alive) return;
       setChapter((ch as Chapter) ?? null);
       setSiblings((sibs as NavChapter[]) ?? []);
+
+      // Fetch the pragmatic (Operator's Cut) draft if requested
+      if (ch?.id) {
+        const { data: prag } = await supabase
+          .from("book_chapter_drafts")
+          .select("draft_md")
+          .eq("chapter_id", (ch as Chapter).id)
+          .eq("audience", "pragmatic")
+          .eq("is_current", true)
+          .maybeSingle();
+        if (!alive) return;
+        setPragmaticBody((prag as { draft_md?: string } | null)?.draft_md ?? null);
+      } else {
+        setPragmaticBody(null);
+      }
       setLoading(false);
     })();
     return () => {
@@ -212,8 +230,30 @@ export default function BookChapter() {
               <p className="mt-4 font-redacted text-lg italic text-white/70">{chapter.summary}</p>
             )}
 
-            <div className="mt-10 border-t border-white/10 pt-8">
-              {chapter.status === "published" && chapter.published_excerpt ? (
+            {/* Edition switch */}
+            <div className="mt-8 inline-flex rounded-full border border-white/15 bg-white/[0.03] p-1 text-xs">
+              <button
+                type="button"
+                onClick={() => { searchParams.delete("edition"); setSearchParams(searchParams, { replace: true }); }}
+                className={`rounded-full px-3 py-1 transition ${edition === "visionary" ? "bg-white text-slate-900" : "text-white/70 hover:text-white"}`}
+              >
+                Field Guide
+              </button>
+              <button
+                type="button"
+                onClick={() => { searchParams.set("edition", "pragmatic"); setSearchParams(searchParams, { replace: true }); }}
+                disabled={!pragmaticBody}
+                className={`rounded-full px-3 py-1 transition ${edition === "pragmatic" ? "bg-white text-slate-900" : "text-white/70 hover:text-white"} ${!pragmaticBody ? "opacity-40 cursor-not-allowed" : ""}`}
+                title={pragmaticBody ? "Operator's Cut — 90-minute pragmatic edition" : "Operator's Cut not yet available for this chapter"}
+              >
+                Operator's Cut
+              </button>
+            </div>
+
+            <div className="mt-6 border-t border-white/10 pt-8">
+              {edition === "pragmatic" && pragmaticBody ? (
+                renderMarkdown(pragmaticBody)
+              ) : chapter.status === "published" && chapter.published_excerpt ? (
                 renderMarkdown(chapter.published_excerpt)
               ) : (
                 <DraftPlaceholder slug={chapter.slug} />
