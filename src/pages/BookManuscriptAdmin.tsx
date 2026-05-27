@@ -259,12 +259,24 @@ function ChaptersTab() {
             </div>
 
             <div className="border-t border-border pt-4 space-y-2">
+              <div className="flex flex-wrap items-end gap-3">
+                <div>
+                  <Label className="text-xs">Audience voice</Label>
+                  <select
+                    className="block h-9 rounded border border-input bg-background px-2 text-sm"
+                    value={audience}
+                    onChange={(e) => setAudience(e.target.value as Audience)}
+                  >
+                    {AUDIENCES.map(a => <option key={a} value={a}>{AUDIENCE_LABEL[a]}</option>)}
+                  </select>
+                </div>
+                <Button onClick={synthesize} disabled={synth} size="sm">
+                  {synth ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
+                  Synthesize {AUDIENCE_LABEL[audience]} draft
+                </Button>
+              </div>
               <Label className="text-xs">Author guidance for the next draft (optional)</Label>
               <Textarea rows={2} value={guidance} onChange={(e) => setGuidance(e.target.value)} />
-              <Button onClick={synthesize} disabled={synth} size="sm">
-                {synth ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
-                Synthesize draft
-              </Button>
             </div>
 
             <div className="border-t border-border pt-4">
@@ -274,9 +286,10 @@ function ChaptersTab() {
                 {drafts.map(d => (
                   <details key={d.id} className="border border-border rounded p-2 text-sm">
                     <summary className="cursor-pointer flex items-center justify-between gap-2">
-                      <span>
+                      <span className="flex items-center gap-2 flex-wrap">
+                        <Badge variant="outline">{AUDIENCE_LABEL[d.audience] ?? d.audience}</Badge>
                         {new Date(d.created_at).toLocaleString()}
-                        {d.is_current && <Badge className="ml-2" variant="default">current</Badge>}
+                        {d.is_current && <Badge variant="default">current</Badge>}
                       </span>
                       <Button size="sm" variant="outline" onClick={(e) => { e.preventDefault(); promoteDraft(d); }}>
                         Promote → published_excerpt
