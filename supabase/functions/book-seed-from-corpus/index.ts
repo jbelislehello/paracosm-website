@@ -160,7 +160,9 @@ Deno.serve(async (req) => {
         `Prompt: ${t.short_prompt ?? ""}`,
       ].filter(Boolean).join("\n");
       const hint = `${t.calm_magic_phase ?? ""} ${t.board ?? ""} ${t.senge_discipline ?? ""}`;
-      if (enqueue("tile", ref, title, excerpt, hint)) counts.tile++;
+      // Route tiles by their own ontological phase, not the keyword classifier.
+      const tilePhase = typeof t.calm_magic_phase === "string" ? String(t.calm_magic_phase).toUpperCase() : undefined;
+      if (enqueue("tile", ref, title, excerpt, hint, tilePhase)) counts.tile++;
     }
 
 
