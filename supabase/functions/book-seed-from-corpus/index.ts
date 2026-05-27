@@ -29,7 +29,7 @@ const InputItem = z.object({
 });
 const Body = z.object({
   scrapeSite: z.boolean().optional().default(true),
-  siteLimit: z.number().int().min(1).max(120).optional().default(60),
+  siteLimit: z.number().int().min(1).max(300).optional().default(200),
   tarot: z.array(InputItem).optional().default([]),
   drift: z.array(InputItem).optional().default([]),
 });
@@ -77,7 +77,7 @@ Deno.serve(async (req) => {
       const key = `${chapter_id}::${ref}`;
       if (existing.has(key)) return false;
       existing.add(key);
-      queue.push({ chapter_id, kind, ref, title: title?.slice(0, 240) ?? null, excerpt: excerpt?.slice(0, 1500) ?? null, weight: 3, included: true });
+      queue.push({ chapter_id, kind, ref, title: title?.slice(0, 240) ?? null, excerpt: excerpt?.slice(0, 6000) ?? null, weight: 3, included: true });
       return true;
     };
 
@@ -115,7 +115,7 @@ Deno.serve(async (req) => {
               const d = await r.json();
               const md: string = d?.markdown ?? d?.data?.markdown ?? "";
               const title: string = d?.metadata?.title ?? d?.data?.metadata?.title ?? url;
-              if (md && enqueue("web", url, title, md.slice(0, 1200))) counts.web++;
+              if (md && md.length > 200 && enqueue("web", url, title, md.slice(0, 6000))) counts.web++;
             } catch { /* skip */ }
           }
         };
@@ -125,14 +125,29 @@ Deno.serve(async (req) => {
       }
     }
 
-    // 2. Board (tiles)
-    const { data: tiles } = await admin.from("tiles").select("id, board, calm_magic_phase, short_prompt").limit(200);
-    for (const t of tiles ?? []) {
+    // 2. Board (tiles) — enriched with hexagram, tzolkin, discipline, wu-wei, mindfulness focus, VL path
+    const { data: tiles } = await admin
+      .from("tiles")
+      .select("id, board, row, col, hexagram, tzolkin_index, calm_magic_phase, vl_path_index, default_process_state, mindfulness_focus, senge_discipline, wu_wei_intensity, short_prompt")
+      .limit(400);
+    for (const t of (tiles ?? []) as Array<Record<string, unknown>>) {
       const ref = `tile:${t.id}`;
-      const title = `${t.board ?? ""} · tile #${t.id}`;
-      const hint = `${t.calm_magic_phase ?? ""} ${t.board ?? ""}`;
-      if (enqueue("tile", ref, title, t.short_prompt ?? "", hint)) counts.tile++;
+      const title = `Calm Magic Board · ${t.board ?? ""} tile #${t.id} (r${t.row},c${t.col}) · ${t.calm_magic_phase ?? ""}`;
+      const mf = t.mindfulness_focus ? JSON.stringify(t.mindfulness_focus) : "";
+      const excerpt = [
+        `Board: ${t.board ?? ""}  ·  Position: row ${t.row}, col ${t.col}`,
+        `Phase: ${t.calm_magic_phase ?? ""}  ·  VL path index: ${t.vl_path_index ?? ""}`,
+        `Hexagram: ${t.hexagram ?? ""}  ·  Tzolkin: ${t.tzolkin_index ?? ""}`,
+        `Senge discipline: ${t.senge_discipline ?? ""}  ·  Wu-Wei intensity: ${t.wu_wei_intensity ?? ""}`,
+        `Default process state: ${t.default_process_state ?? ""}`,
+        mf ? `Mindfulness focus: ${mf}` : "",
+        "",
+        `Prompt: ${t.short_prompt ?? ""}`,
+      ].filter(Boolean).join("\n");
+      const hint = `${t.calm_magic_phase ?? ""} ${t.board ?? ""} ${t.senge_discipline ?? ""}`;
+      if (enqueue("tile", ref, title, excerpt, hint)) counts.tile++;
     }
+
 
     // 3. Tarot (passed inline)
     for (const c of tarot) {

@@ -508,8 +508,8 @@ function SourcesTab() {
         for (const a of m.articles ?? []) drift.push({ ref: `drift-article:${a.url}`, title: `${a.title} — ${a.author}`, excerpt: `${tag}\n${a.description}`, hint: a.axis });
       }
 
-      toast.message("Seeding corpus…", { description: `Scraping site + ingesting ${tarot.length} tarot · ${drift.length} drift items.` });
-      const { data, error } = await supabase.functions.invoke("book-seed-from-corpus", { body: { tarot, drift } });
+      toast.message("Seeding corpus…", { description: `Deep crawl (up to 200 pages) + ingesting ${tarot.length} tarot · ${drift.length} drift items · all 64 board tiles with full ontology.` });
+      const { data, error } = await supabase.functions.invoke("book-seed-from-corpus", { body: { tarot, drift, siteLimit: 200 } });
       if (error) throw error;
       const counts = (data as { counts?: Record<string, number>; inserted?: number })?.counts ?? {};
       toast.success(`Seeded ${(data as { inserted?: number })?.inserted ?? 0} sources`, {
@@ -528,7 +528,7 @@ function SourcesTab() {
       <Card className="p-4 flex items-center justify-between gap-3">
         <div>
           <h3 className="font-semibold flex items-center gap-2"><Sparkles className="w-4 h-4" /> Seed from corpus</h3>
-          <p className="text-xs text-muted-foreground mt-1">Crawl the live site + ingest the 64-tile board, tarot deck, and Drift library. Auto-mapped to chapters by phase.</p>
+          <p className="text-xs text-muted-foreground mt-1">Deep-crawl calm-magic.com (up to 200 pages, 6k-char excerpts) + ingest all 64 Calm Magic Board tiles with full ontology (hexagram · tzolkin · Senge · Wu-Wei · VL path · mindfulness focus) + tarot deck + Drift library. Auto-mapped to chapters by phase.</p>
         </div>
         <Button onClick={seedFromCorpus} disabled={seeding} size="sm">
           {seeding ? <Loader2 className="w-4 h-4 animate-spin" /> : "Seed corpus"}
