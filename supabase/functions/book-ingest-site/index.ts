@@ -102,7 +102,7 @@ Deno.serve(async (req) => {
         if (!dryRun) {
           const { error } = await admin.from("book_sources").insert({
             chapter_id: target.id,
-            kind: "site",
+            kind: "site_page",
             title: title.slice(0, 240),
             ref: link,
             excerpt,
