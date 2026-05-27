@@ -141,23 +141,25 @@ ${uploadBlock || "(no uploads attached)"}
 Write the full chapter draft now in markdown.`;
 
     const messages: ChatMessage[] = [
-      { role: "system", content: SYSTEM_PROMPT },
+      { role: "system", content: systemPromptFor(audience) },
       { role: "user", content: userPrompt },
     ];
 
     const draft = await callLovableAi(messages, { model, maxTokens: 6000 });
 
-    // Mark previous drafts non-current, insert new as current
+    // Mark previous drafts of this (chapter, audience) non-current
     await supabase
       .from("book_chapter_drafts")
       .update({ is_current: false })
-      .eq("chapter_id", chapter_id);
+      .eq("chapter_id", chapter_id)
+      .eq("audience", audience);
 
     const { data: inserted, error: insErr } = await supabase
       .from("book_chapter_drafts")
       .insert({
         chapter_id,
         model,
+        audience,
         prompt_snapshot: userPrompt.slice(0, 20000),
         draft_md: draft,
         is_current: true,
