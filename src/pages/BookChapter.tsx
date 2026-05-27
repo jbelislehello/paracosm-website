@@ -105,13 +105,16 @@ interface NavChapter {
 
 export default function BookChapter() {
   const { slug } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const edition = searchParams.get("edition") === "pragmatic" ? "pragmatic" : "visionary";
   const [chapter, setChapter] = useState<Chapter | null>(null);
   const [siblings, setSiblings] = useState<NavChapter[]>([]);
+  const [pragmaticBody, setPragmaticBody] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { markRead } = useReaderProgress();
 
   usePageSeo({
-    title: chapter ? `${chapter.title} — Calm Magic` : "Chapter — Calm Magic",
+    title: chapter ? `${chapter.title} — Calm Magic${edition === "pragmatic" ? " · Operator's Cut" : ""}` : "Chapter — Calm Magic",
     description: chapter?.summary ?? "A free chapter from the Calm Magic book.",
     path: `/book/chapter/${slug ?? ""}`,
   });
@@ -132,6 +135,21 @@ export default function BookChapter() {
       if (!alive) return;
       setChapter((ch as Chapter) ?? null);
       setSiblings((sibs as NavChapter[]) ?? []);
+
+      // Fetch the pragmatic (Operator's Cut) draft if requested
+      if (ch?.id) {
+        const { data: prag } = await supabase
+          .from("book_chapter_drafts")
+          .select("draft_md")
+          .eq("chapter_id", (ch as Chapter).id)
+          .eq("audience", "pragmatic")
+          .eq("is_current", true)
+          .maybeSingle();
+        if (!alive) return;
+        setPragmaticBody((prag as { draft_md?: string } | null)?.draft_md ?? null);
+      } else {
+        setPragmaticBody(null);
+      }
       setLoading(false);
     })();
     return () => {
