@@ -75,8 +75,10 @@ Deno.serve(async (req) => {
     const queue: Row[] = [];
     const counts = { web: 0, tile: 0, tarot: 0, drift: 0 };
 
-    const enqueue = (kind: string, ref: string, title: string | null, excerpt: string | null, hint?: string) => {
-      const phase = classify(`${title ?? ""} ${excerpt ?? ""} ${hint ?? ""}`);
+    const enqueue = (kind: string, ref: string, title: string | null, excerpt: string | null, hint?: string, forcePhase?: string) => {
+      const phase = forcePhase && phaseToChapter.has(forcePhase)
+        ? forcePhase
+        : classify(`${title ?? ""} ${excerpt ?? ""} ${hint ?? ""}`);
       const chapter_id = phaseToChapter.get(phase) ?? fallback;
       const key = `${chapter_id}::${ref}`;
       if (existing.has(key)) return false;
