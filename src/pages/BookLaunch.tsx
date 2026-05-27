@@ -304,6 +304,53 @@ const BookLaunch = () => {
 
         <LivingManuscriptBand />
         <BookChapterIndex />
+
+        {/* Edition picker — Field Guide vs Operator's Cut */}
+        <section className="px-6 py-16">
+          <div className="container mx-auto max-w-5xl">
+            <div className="mb-10 text-center">
+              <Badge variant="outline" className="mb-3 border-white/20 text-white/70">
+                Two editions, one ontology
+              </Badge>
+              <h2 className="mb-3 text-3xl font-bold md:text-4xl">Choose how you want to read it</h2>
+              <p className="mx-auto max-w-2xl text-base text-white/60">
+                Same source corpus, two voices. Pick the one that matches the next 90 minutes of your life.
+              </p>
+            </div>
+            <div className="grid gap-5 md:grid-cols-2">
+              <Link
+                to="/book/chapter/naming-the-friction"
+                className="group rounded-2xl border border-white/10 bg-white/[0.03] p-6 transition hover:border-white/25 hover:bg-white/[0.06]"
+              >
+                <div className="mb-2 font-vhs text-[10px] uppercase tracking-widest text-white/40">The Field Guide</div>
+                <h3 className="text-xl font-semibold text-white">Visionary edition</h3>
+                <p className="mt-3 text-sm text-white/70">
+                  Essayistic, mythic, slow. For practitioners and the curious general reader who
+                  want the full literary spine — 4–6k words per chapter, reflection prompts, the
+                  Paracosm vocabulary woven in.
+                </p>
+                <div className="mt-5 text-sm text-white/60 group-hover:text-white">
+                  Start reading →
+                </div>
+              </Link>
+              <Link
+                to="/book/operators-index"
+                className="group rounded-2xl border border-fuchsia-300/25 bg-gradient-to-br from-fuchsia-500/10 to-rose-500/5 p-6 transition hover:border-fuchsia-300/50"
+              >
+                <div className="mb-2 font-vhs text-[10px] uppercase tracking-widest text-fuchsia-200/70">The Operator's Cut</div>
+                <h3 className="text-xl font-semibold text-white">Pragmatic Reader</h3>
+                <p className="mt-3 text-sm text-white/80">
+                  90 minutes on a flight. For founders, COOs, and transformation leads who need
+                  vocabulary, one Monday move, and a 3-question diagnostic per chapter. ≤1800 words.
+                </p>
+                <div className="mt-5 text-sm text-white/70 group-hover:text-white">
+                  Open the Symptom Index →
+                </div>
+              </Link>
+            </div>
+          </div>
+        </section>
+
         <BookOfferTiers />
 
         <section className="bg-slate-900/50 px-6 py-20">
