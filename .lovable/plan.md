@@ -1,61 +1,54 @@
-## Goal
-Use parallel "subagent" edge function workers to draft Calm Magic chapters in multiple audience voices simultaneously, controlled from the manuscript admin.
+# Two changes
 
-## Architecture
+## 1. Rebalance Calm Magic Board tile routing
 
-```text
-Admin UI (BookManuscriptAdmin)
-   │  select chapters + audiences
-   ▼
-book-synthesize-batch (orchestrator)
-   │  fan-out: Promise.all over chapter × audience
-   ▼
-book-synthesize-chapter (worker, now audience-aware)
-   ├─ general        → draft_md saved with audience='general'
-   ├─ practitioner   → draft_md saved with audience='practitioner'
-   └─ executive      → draft_md saved with audience='executive'
-```
+**Problem:** the keyword classifier sent ~260 tiles into GLITCH/DRIFT/TUNE because tile metadata keeps repeating those phase names, starving CALM/MAGIC/OPEN/FREE.
 
-Each audience runs as an independent invocation of the worker function, so chapters draft in parallel (subagent-style) without blocking each other.
+**Fix:** for `kind = "tile"`, route directly by the tile's own `calm_magic_phase` column (the ontological source of truth) instead of keyword classification. Web pages, tarot, drift items keep using the classifier.
 
-## Database
-Add `audience` to `book_chapter_drafts`:
-- column `audience text not null default 'general'`
-- check in `('general','practitioner','executive')`
-- replace existing `is_current` semantics: current = latest per `(chapter_id, audience)` (handled in app, no schema change beyond the column).
-- backfill existing rows to `'general'`.
+**Steps**
+1. In `book-seed-from-corpus`, pass an optional `forcePhase` into `enqueue()`.
+2. When iterating tiles, map `t.calm_magic_phase` (uppercased) to a chapter via `phaseToChapter`; fall back to classifier only if the value is null or not in the map.
+3. Re-run via `book-kick-seed`. Expected distribution: ~32 tiles per primary phase across the 8 chapters with the proper Senge/Wu-Wei spread.
+4. Verify per-chapter counts with a read query.
 
-## Edge functions
+Optional: re-balance the existing 260 mis-routed tile rows by updating `chapter_id` in place rather than re-inserting (keeps the source set clean).
 
-**`book-synthesize-chapter` (modify)**
-- Accept `audience` ('general' | 'practitioner' | 'executive', default 'general') and `guidance`.
-- Switch SYSTEM_PROMPT voice per audience:
-  - general: plain-language, accessible, literary but jargon-free
-  - practitioner: current Calm Magic ghostwriter voice (operators, facilitators)
-  - executive: strategic, decision-oriented, business framing
-- Save draft with audience; `is_current=false` only on prior drafts of the same `(chapter_id, audience)`.
+## 2. Pragmatic Reader edition
 
-**`book-synthesize-batch` (new)**
-- Admin-only.
-- Body: `{ chapter_ids: uuid[], audiences: string[], model?: string, guidance?: string }`.
-- Verifies admin via `has_role`.
-- Concurrency-limited `Promise.allSettled` (pool of 4) that invokes the worker function over HTTP for each chapter × audience pair, forwarding the user's Authorization header.
-- Returns per-pair `{ chapter_id, audience, ok, draft_id?, error? }`.
+A second audience-tuned cut of the same manuscript, generated from the same `book_sources`, optimized for **operators who need to apply Calm Magic this quarter** — not the visionary/contemplative read.
 
-## UI (BookManuscriptAdmin)
-Add a "Batch drafting" panel:
-- Multi-select chapters (checkbox list of `book_chapters`).
-- Audience checkboxes (general / practitioner / executive).
-- "Draft all variants" button → calls `book-synthesize-batch`.
-- Live status table: chapter × audience cell shows pending / running / done / error with the resulting `draft_id` link.
-- Existing single-chapter editor extended with an audience tab to view the current draft per audience.
+**Use case (one sentence):**
+> A founder, COO, or transformation lead who has 90 minutes on a flight and needs to walk off the plane with: a vocabulary for the friction they're feeling, a 5-step move for this week, and one diagnostic to run with their team Monday.
 
-## Out of scope
-- No public reader UI changes; published excerpts stay as-is.
-- No new Stripe / cohort changes.
+**What changes vs. the visionary edition**
 
-## Files
-- migration: add `audience` column + backfill
-- edit: `supabase/functions/book-synthesize-chapter/index.ts`
-- new: `supabase/functions/book-synthesize-batch/index.ts`
-- edit: `src/pages/BookManuscriptAdmin.tsx` (add batch panel + audience tabs)
+| Dimension | Visionary edition | Pragmatic Reader |
+|---|---|---|
+| Voice | Essayistic, mythic | Operator, second person |
+| Avg chapter length | 4–6k words | 1.5–2k words |
+| Each chapter ends with | Reflection prompt | **Do this Monday** (1 action) + **Diagnostic** (3 questions) + **Anti-pattern** (1 trap) |
+| Tile references | Woven into prose | Sidebar: "If you're stuck at tile X, try Y" |
+| Tarot/Drift refs | Inline allusions | Footnotes only |
+| Reading order | Linear (GLITCH→FREE) | Index by symptom ("my team can't decide", "we keep relaunching the same product") |
+
+**Implementation**
+
+1. **DB:** add `audience` to `book_chapter_drafts` is already there (`'general'` default). Add a new audience value `'pragmatic'`. No schema change needed.
+2. **Synthesis prompt:** extend `book-synthesize-chapter` to accept `audience: 'visionary' | 'pragmatic'` and switch the system prompt + length budget accordingly. Pragmatic prompt enforces: ≤1800 words, 2nd person, ends with the three required blocks, cites tile IDs as sidebar refs.
+3. **Admin UI:** in `BookManuscriptAdmin`, add an audience toggle next to "Synthesize" so each chapter can produce both drafts. Drafts are stored side-by-side; `is_current` per audience.
+4. **Reader UI:** `BookChapter.tsx` already reads the current draft; add `?edition=pragmatic` query (and a toggle in the chapter header). Default = visionary.
+5. **Landing:** on `/book` add a "Choose your edition" card — **The Field Guide** (visionary) vs **The Operator's Cut** (pragmatic) — with the one-sentence use case above.
+6. **Symptom index** (pragmatic-only): a static page at `/book/operators-index` listing 12 common symptoms → recommended chapter + tile. Source from a small `data/operatorSymptoms.ts` file (no DB needed v1).
+7. **Pre-order tier:** existing `tier` values are `reader | practitioner | org`. No new tier needed; pragmatic edition ships to all tiers as a second PDF/EPUB.
+
+**Out of scope for v1**
+- Translating pragmatic edition to FR (do after EN is validated).
+- Per-reader symptom quiz (manual index is enough).
+- Print version differences.
+
+## Order of work
+1. Tile routing fix + re-run seed (5 min).
+2. Pragmatic synthesis prompt + audience flag (20 min).
+3. Admin toggle + reader edition switch (20 min).
+4. `/book` edition picker + operators-index page (30 min).
