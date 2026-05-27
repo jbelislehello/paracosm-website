@@ -508,8 +508,8 @@ function SourcesTab() {
         for (const a of m.articles ?? []) drift.push({ ref: `drift-article:${a.url}`, title: `${a.title} — ${a.author}`, excerpt: `${tag}\n${a.description}`, hint: a.axis });
       }
 
-      toast.message("Seeding corpus…", { description: `Scraping site + ingesting ${tarot.length} tarot · ${drift.length} drift items.` });
-      const { data, error } = await supabase.functions.invoke("book-seed-from-corpus", { body: { tarot, drift } });
+      toast.message("Seeding corpus…", { description: `Deep crawl (up to 200 pages) + ingesting ${tarot.length} tarot · ${drift.length} drift items · all 64 board tiles with full ontology.` });
+      const { data, error } = await supabase.functions.invoke("book-seed-from-corpus", { body: { tarot, drift, siteLimit: 200 } });
       if (error) throw error;
       const counts = (data as { counts?: Record<string, number>; inserted?: number })?.counts ?? {};
       toast.success(`Seeded ${(data as { inserted?: number })?.inserted ?? 0} sources`, {
