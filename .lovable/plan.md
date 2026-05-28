@@ -1,31 +1,31 @@
 ## Goal
-Fix the "Live Transmission" stats band on the homepage so it reflects the real numbers from the database:
-- Chapters: 8 (already correct)
-- Drafts in motion: should be **16** (8 visionary + 8 pragmatic Operator's Cut), currently shows 8
-- Sources mapped: should be **346**, currently shows 0
+Fix references to "7 chapters" on the book landing — the book is actually 8 chapters. Also correct the i18n mismatch where `chapter_7` is currently labelled "Operating in Flow" (FREE) but chapter 7 in the database is "Living the Ontology" (OPEN); the FREE chapter is actually chapter 8.
 
-## Root Cause
-`LivingManuscriptBand.tsx` queries `book_chapters` (for "drafts" using `status != 'outline'`) and `book_sources` directly from the browser. Two problems:
+## What's wrong today
+- `src/i18n/en/book.json` line 39: `"chapters_title": "Seven chapters, one breath cycle"` → should be "Eight".
+- `src/i18n/fr/book.json` line 39: `"Sept chapitres, un cycle de respiration"` → should be "Huit".
+- `chapter_7_*` keys (EN + FR) currently hold the FREE / "Operating in Flow" content but chapter 7 in the DB is OPEN / "Living the Ontology". The OPEN chapter has no i18n entry, and chapter 8 (FREE) is also missing.
+- `src/pages/BookLaunch.tsx` line 66: `const chapters = [1, 2, 3, 4, 5, 6, 7]` → should be `[1, 2, 3, 4, 5, 6, 7, 8]`.
 
-1. **Wrong table for drafts** — it counts chapters not in outline status, not actual rows in `book_chapter_drafts`. Real draft count lives in `book_chapter_drafts` (16 current rows).
-2. **RLS blocks public reads** — `book_sources` is admin-only, so anon visitors get `count = 0`. Same restriction applies to non-pragmatic drafts in `book_chapter_drafts`.
+## Fix
+1. **`src/i18n/en/book.json`**
+   - Update `chapters_title` to `"Eight chapters, one breath cycle"`.
+   - Replace `chapter_7_*` with OPEN / "Living the Ontology" using the DB summary:
+     - phase: `OPEN`
+     - title: `Living the Ontology`
+     - desc: short excerpt of "Where the designed system meets real workflow — ontology, graph, and the adjustment plan that keeps the org tunable."
+   - Add `chapter_8_phase` / `chapter_8_title` / `chapter_8_desc` for FREE / "Operating in Flow" (move the current chapter_7 content here, keep wording).
 
-## Approach
-Create a small `SECURITY DEFINER` SQL function `public.get_book_stats()` that returns the three counts as a single row. It bypasses RLS safely (returns only aggregate counts, no row data) and is callable by `anon` + `authenticated`. Then update `LivingManuscriptBand.tsx` to call it via `supabase.rpc('get_book_stats')` instead of three separate table queries.
+2. **`src/i18n/fr/book.json`** — same shape, French translations:
+   - `chapters_title` → `"Huit chapitres, un cycle de respiration"`.
+   - `chapter_7_*` → OPEN / "Vivre l'ontologie" with a French description of the DB summary.
+   - Add `chapter_8_*` for FREE / "Opérer en flow" (use current `chapter_7_*` French copy).
 
-## Steps
-1. **Migration** — create `public.get_book_stats()` returning `(chapters int, drafts int, sources int)`:
-   - `chapters` = `count(*) from book_chapters`
-   - `drafts` = `count(*) from book_chapter_drafts where is_current = true`
-   - `sources` = `count(*) from book_sources`
-   - `SECURITY DEFINER`, `STABLE`, `search_path = public`
-   - `GRANT EXECUTE ... TO anon, authenticated`
-2. **`src/components/book/LivingManuscriptBand.tsx`** — replace the three `supabase.from(...).select(..., { count })` calls with one `supabase.rpc('get_book_stats')` call. Keep the same `stats` shape and fallback defaults.
+3. **`src/pages/BookLaunch.tsx`** line 66 — extend the chapters array to include `8`.
 
 ## Verification
-- Reload `/` → band shows **8 / 16 / 346**.
-- Spot-check as anon (logged out) to confirm RLS bypass works via the RPC.
+- Reload `/book` (EN and FR) → title reads "Eight chapters…" / "Huit chapitres…", and the chapter list renders 8 cards with the correct phase + title for chapters 7 (OPEN) and 8 (FREE).
 
 ## Notes
-- No UI/visual changes — only the data source.
-- Function returns only counts, so no data leak risk despite `SECURITY DEFINER`.
+- No DB changes — the 8 chapters already exist in `book_chapters`.
+- No other component references `chapter_7_*` keys beyond `BookLaunch.tsx`; the change is contained.
