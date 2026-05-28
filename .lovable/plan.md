@@ -1,44 +1,36 @@
-## Problem
+## Goal
+Each training and book chapter ships with its own Open Graph + Twitter image so shared links preview uniquely. Use a stored custom image when present; otherwise auto-generate a branded SVG placeholder at build time.
 
-Two issues:
+## What changes
 
-1. **Link previews missing on Trainings & Book pages.** This is a Vite SPA; social crawlers (Facebook, LinkedIn, iMessage, Slack, WhatsApp, Twitter) don't execute the JS that `usePageSeo` uses to set `<title>` and `og:*`. They only ever read the static tags in `index.html`, so every shared link previews as the generic homepage card.
-2. **"Trainings" is missing from the site nav.**
+### 1. Database (one migration)
+Add a nullable `og_image_url` text column to `trainings` and `book_chapters`. Stores either a full URL (uploaded asset) or a relative path under the site (e.g. `/og/trainings-glitch.svg`). No new bucket, no RLS changes — both tables already have admin write + public read for published rows.
 
-## Plan
+### 2. Build-time generator (`vite-plugin-prerender-og.ts`)
+Extend the existing prerender plugin:
+- Select `og_image_url` alongside slug/title/summary for trainings and book chapters.
+- When a row has `og_image_url`, use it verbatim in `og:image` and `twitter:image`.
+- When it's null, **generate a branded SVG placeholder** during the build and emit it at `dist/og/trainings-<slug>.svg` (or `dist/og/book-<slug>.svg`). The SVG is deterministic: 1200×630, Paracosm dark gradient background, white "PARACOSM" wordmark top-left, training/chapter title wrapped center, phase or tagline below. No external font calls — uses system-stack `font-family` so it renders on every social crawler.
+- Reference the emitted file (`/og/...svg`) in the route's head.
 
-### 1. Build-time prerender plugin for shareable pages
+Static index routes (`/trainings`, `/book`, `/book/compasses`, `/book/operators`) keep the existing `/og-image.jpeg` default.
 
-Add `vite-plugin-prerender-og.ts` (sibling of the existing `vite-plugin-sitemap.ts`) that runs during `generateBundle`:
+### 3. Admin editor (light touch)
+Add a single "OG image URL" text input to the existing training and book-chapter admin editors so an admin can paste a custom image URL later. No upload widget in this pass — admins can drop any public URL (Supabase Storage, Unsplash, etc.). If you'd rather have an upload-to-Storage flow now, say so and I'll fold a `og-images` public bucket + uploader into the plan.
 
-- Connects to Supabase with the public anon key (same client used in app)
-- Pulls all published trainings (`/trainings/:slug`) and book chapters (`/book/chapter/:slug`), plus the static index routes `/trainings`, `/book`, `/book/compasses`, `/book/operators`
-- For each route, emits `dist/<path>/index.html` — a copy of the built `index.html` with the head's `<title>`, `<meta name="description">`, `og:title`, `og:description`, `og:url`, `og:image`, `twitter:*`, and `<link rel="canonical">` rewritten for that page
-- Keeps the SPA shell intact (same `<div id="root">` + script tags), so when a real browser loads the URL, the React app boots normally and React Router takes over. Only the head differs.
-- Image: use `training.og_image` / `chapter.og_image` if a column exists, otherwise fall back to the default `/og-image.jpeg`. (I'll check the schema; if no per-row image column exists I'll use the default and note it — no schema change unless you ask.)
-
-This is the standard "prerender just the head for crawlers" pattern and is the minimum change needed to make previews work without moving to SSR.
-
-Files:
-- `vite-plugin-prerender-og.ts` (new)
-- `vite.config.ts` (register plugin after `sitemapPlugin()`)
-
-`usePageSeo` stays as-is so the tab title still updates during in-app navigation.
-
-### 2. Add Trainings to navigation
-
-In `src/pages/Index.tsx`:
-- Desktop nav (~line 134): add `<Link to="/trainings">Trainings</Link>` next to "Relational Intelligence"
-- Mobile sheet (~line 188): same link in the mobile menu, with the existing styling
-
-No i18n key needed for now (the existing nav links there are hardcoded English); matches current pattern.
+### 4. Runtime (`usePageSeo` consumers)
+`TrainingDetail.tsx` and `BookChapter.tsx` already call `usePageSeo`. Pass the new `og_image_url` (or the generated placeholder URL) so JS-executing crawlers and the browser tab see the same image as the static head.
 
 ## Out of scope
-
-- No SSR migration, no static export of full page content — only the head is rewritten.
-- No changes to `usePageSeo`, route registry, or sitemap.
-- No new database columns. If you later want per-training OG images, we can add a `og_image` column and a small upload UI.
+- No SSR migration. Social crawlers continue to read the prerendered HTML head emitted at build.
+- No image upload UI (unless you ask for it — see step 3).
+- Nav, sitemap, and routing untouched.
 
 ## Verification
+After build:
+- `dist/trainings/glitch/index.html` `og:image` points at either the stored URL or `/og/trainings-glitch.svg`.
+- `dist/og/trainings-glitch.svg` exists and renders a unique branded card.
+- LinkedIn Post Inspector / `curl -A facebookexternalhit` against the published URL shows the per-page image.
 
-After build, `dist/trainings/index.html` and `dist/book/chapter/<slug>/index.html` should contain the correct `<title>` and `og:*` tags. I'll spot-check by reading two emitted files.
+## One question before I build
+Do you want admins to **upload** OG images into Supabase Storage (I'll add a public `og-images` bucket + uploader), or is a **URL input** field enough for now? Default = URL input only.
