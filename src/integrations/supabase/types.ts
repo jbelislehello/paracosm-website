@@ -2560,7 +2560,27 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      training_questions_public: {
+        Row: {
+          created_at: string | null
+          id: string | null
+          kind: string | null
+          module_id: string | null
+          options: Json | null
+          order_index: number | null
+          prompt: string | null
+          weight: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_questions_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "training_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       get_book_stats: {
@@ -2570,6 +2590,10 @@ export type Database = {
           drafts: number
           sources: number
         }[]
+      }
+      grade_training_attempt: {
+        Args: { p_answers: Json; p_module_id: string }
+        Returns: Json
       }
       has_role: {
         Args: {

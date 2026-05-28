@@ -25,9 +25,14 @@ type Question = {
   order_index: number;
   prompt: string;
   options: string[];
+};
+type GradedResult = {
+  id: string;
+  correct: boolean;
   correct_answer: number;
   explanation_md: string | null;
 };
+
 
 export default function TrainingModule() {
   const { slug = "", order = "1" } = useParams();
@@ -37,6 +42,9 @@ export default function TrainingModule() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [graded, setGraded] = useState<Record<string, GradedResult>>({});
+  const [score, setScore] = useState(0);
+
 
   const moduleOrder = Number(order);
   const current = useMemo(
@@ -74,36 +82,40 @@ export default function TrainingModule() {
     if (!current) return;
     setSubmitted(false);
     setAnswers({});
+    setGraded({});
+    setScore(0);
     supabase
-      .from("training_questions")
-      .select("id,order_index,prompt,options,correct_answer,explanation_md")
+      .from("training_questions_public" as never)
+      .select("id,order_index,prompt,options")
       .eq("module_id", current.id)
       .order("order_index")
       .then(({ data }) => setQuestions((data as unknown as Question[]) ?? []));
   }, [current]);
 
-  const score = useMemo(() => {
-    if (!questions.length) return 0;
-    const correct = questions.filter((q) => answers[q.id] === q.correct_answer).length;
-    return Math.round((correct / questions.length) * 100);
-  }, [answers, questions]);
-
   const submitQuiz = async () => {
-    setSubmitted(true);
-    const passed = score >= 66;
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user && current) {
-      await supabase.from("training_attempts").insert({
-        user_id: user.id,
-        module_id: current.id,
-        answers,
-        score,
-        passed,
-      });
+    if (!current) return;
+    const { data, error } = await supabase.rpc("grade_training_attempt" as never, {
+      p_module_id: current.id,
+      p_answers: answers,
+    } as never);
+    if (error) {
+      toast.error(error.message);
+      return;
     }
-    if (passed) toast.success(`Passed — ${score}%`);
-    else toast.error(`Keep going — ${score}%`);
+    const payload = data as unknown as {
+      score: number;
+      passed: boolean;
+      results: GradedResult[];
+    };
+    const map: Record<string, GradedResult> = {};
+    payload.results.forEach((r) => (map[r.id] = r));
+    setGraded(map);
+    setScore(payload.score);
+    setSubmitted(true);
+    if (payload.passed) toast.success(`Passed — ${payload.score}%`);
+    else toast.error(`Keep going — ${payload.score}%`);
   };
+
 
   if (!training || !current) {
     return (
@@ -171,7 +183,7 @@ export default function TrainingModule() {
                   <div className="space-y-2">
                     {q.options.map((opt, i) => {
                       const isSelected = answers[q.id] === i;
-                      const isCorrect = q.correct_answer === i;
+                      const isCorrect = graded[q.id]?.correct_answer === i;
                       let cls =
                         "w-full text-left px-4 py-2 rounded-lg border transition-colors text-sm ";
                       if (submitted) {
@@ -204,9 +216,10 @@ export default function TrainingModule() {
                       );
                     })}
                   </div>
-                  {submitted && q.explanation_md && (
-                    <div className="mt-2 text-xs text-white/60 italic">{q.explanation_md}</div>
+                  {submitted && graded[q.id]?.explanation_md && (
+                    <div className="mt-2 text-xs text-white/60 italic">{graded[q.id]?.explanation_md}</div>
                   )}
+
                 </div>
               ))}
             </div>
