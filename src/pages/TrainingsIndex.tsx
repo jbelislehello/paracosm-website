@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import { itemListSchema } from "@/lib/structuredData";
 import { ArrowRight, Clock, GraduationCap, Sparkles } from "lucide-react";
 
 type Training = {
@@ -26,11 +27,25 @@ const slugAccent: Record<string, string> = {
 export default function TrainingsIndex() {
   const [trainings, setTrainings] = useState<Training[]>([]);
 
+  const jsonLd = useMemo(() => {
+    if (!trainings.length) return undefined;
+    return itemListSchema({
+      url: "/trainings",
+      name: "Paracosm Trainings",
+      items: trainings.map((t) => ({
+        name: t.title,
+        url: `/trainings/${t.slug}`,
+        description: t.tagline ?? undefined,
+      })),
+    });
+  }, [trainings]);
+
   usePageSeo({
     title: "Trainings — GL!TCH, Drift & Tune | Paracosm × Crewdle",
     description:
       "Three Crewdle-bound trainings by Paracosm: GL!TCH (official 65h Crewdle AI Formation), Drift (60h co-assisted development) and Tune (60h orchestrated autonomy).",
     path: "/trainings",
+    jsonLd,
   });
 
   useEffect(() => {
@@ -41,6 +56,7 @@ export default function TrainingsIndex() {
       .order("order_index")
       .then(({ data }) => setTrainings((data as Training[]) ?? []));
   }, []);
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
