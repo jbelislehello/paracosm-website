@@ -62,6 +62,9 @@ const ResonanceDemo = lazy(() => import("./pages/ResonanceDemo"));
 const ResidencyDetail = lazy(() => import("./pages/ResidencyDetail"));
 const Credits = lazy(() => import("./pages/Credits"));
 const Origins = lazy(() => import("./pages/Origins"));
+const TrainingsIndex = lazy(() => import("./pages/TrainingsIndex"));
+const TrainingDetail = lazy(() => import("./pages/TrainingDetail"));
+const TrainingModule = lazy(() => import("./pages/TrainingModule"));
 
 const queryClient = new QueryClient();
 
@@ -138,6 +141,9 @@ function App() {
                     <Route path="/credits" element={<Credits />} />
                     <Route path="/origins" element={<Origins />} />
                     <Route path="/dream/:slug" element={<DreamShare />} />
+                    <Route path="/trainings" element={<TrainingsIndex />} />
+                    <Route path="/trainings/:slug" element={<TrainingDetail />} />
+                    <Route path="/trainings/:slug/modules/:order" element={<TrainingModule />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Suspense>

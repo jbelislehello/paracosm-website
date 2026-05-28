@@ -2184,6 +2184,252 @@ export type Database = {
           },
         ]
       }
+      training_attempts: {
+        Row: {
+          answers: Json
+          created_at: string
+          id: string
+          module_id: string
+          passed: boolean | null
+          score: number | null
+          user_id: string
+        }
+        Insert: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          module_id: string
+          passed?: boolean | null
+          score?: number | null
+          user_id: string
+        }
+        Update: {
+          answers?: Json
+          created_at?: string
+          id?: string
+          module_id?: string
+          passed?: boolean | null
+          score?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_attempts_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "training_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      training_enrollments: {
+        Row: {
+          created_at: string
+          data_maturity: number | null
+          email: string
+          goals: string | null
+          id: string
+          language: string
+          name: string
+          org: string | null
+          productivity_style: string | null
+          role: string | null
+          training_slug: string
+          utm: Json | null
+        }
+        Insert: {
+          created_at?: string
+          data_maturity?: number | null
+          email: string
+          goals?: string | null
+          id?: string
+          language?: string
+          name: string
+          org?: string | null
+          productivity_style?: string | null
+          role?: string | null
+          training_slug: string
+          utm?: Json | null
+        }
+        Update: {
+          created_at?: string
+          data_maturity?: number | null
+          email?: string
+          goals?: string | null
+          id?: string
+          language?: string
+          name?: string
+          org?: string | null
+          productivity_style?: string | null
+          role?: string | null
+          training_slug?: string
+          utm?: Json | null
+        }
+        Relationships: []
+      }
+      training_modules: {
+        Row: {
+          content_md: string | null
+          created_at: string
+          hands_on_md: string | null
+          hours: number | null
+          id: string
+          order_index: number
+          summary: string | null
+          title: string
+          training_id: string
+          updated_at: string
+          video_duration_min: number | null
+          video_placeholder_url: string | null
+          video_theme: string | null
+          video_title: string | null
+        }
+        Insert: {
+          content_md?: string | null
+          created_at?: string
+          hands_on_md?: string | null
+          hours?: number | null
+          id?: string
+          order_index?: number
+          summary?: string | null
+          title: string
+          training_id: string
+          updated_at?: string
+          video_duration_min?: number | null
+          video_placeholder_url?: string | null
+          video_theme?: string | null
+          video_title?: string | null
+        }
+        Update: {
+          content_md?: string | null
+          created_at?: string
+          hands_on_md?: string | null
+          hours?: number | null
+          id?: string
+          order_index?: number
+          summary?: string | null
+          title?: string
+          training_id?: string
+          updated_at?: string
+          video_duration_min?: number | null
+          video_placeholder_url?: string | null
+          video_theme?: string | null
+          video_title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_modules_training_id_fkey"
+            columns: ["training_id"]
+            isOneToOne: false
+            referencedRelation: "trainings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      training_questions: {
+        Row: {
+          correct_answer: Json | null
+          created_at: string
+          explanation_md: string | null
+          id: string
+          kind: string
+          module_id: string
+          options: Json
+          order_index: number
+          prompt: string
+          weight: number
+        }
+        Insert: {
+          correct_answer?: Json | null
+          created_at?: string
+          explanation_md?: string | null
+          id?: string
+          kind?: string
+          module_id: string
+          options?: Json
+          order_index?: number
+          prompt: string
+          weight?: number
+        }
+        Update: {
+          correct_answer?: Json | null
+          created_at?: string
+          explanation_md?: string | null
+          id?: string
+          kind?: string
+          module_id?: string
+          options?: Json
+          order_index?: number
+          prompt?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "training_questions_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "training_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trainings: {
+        Row: {
+          audience_md: string | null
+          big_picture_md: string | null
+          created_at: string
+          crewdle_focus: string | null
+          cta_label: string
+          delivery_breakdown: Json | null
+          hero_quote: string | null
+          hours: number
+          id: string
+          order_index: number
+          outcomes: Json
+          slug: string
+          status: string
+          tagline: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          audience_md?: string | null
+          big_picture_md?: string | null
+          created_at?: string
+          crewdle_focus?: string | null
+          cta_label?: string
+          delivery_breakdown?: Json | null
+          hero_quote?: string | null
+          hours?: number
+          id?: string
+          order_index?: number
+          outcomes?: Json
+          slug: string
+          status?: string
+          tagline?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          audience_md?: string | null
+          big_picture_md?: string | null
+          created_at?: string
+          crewdle_focus?: string | null
+          cta_label?: string
+          delivery_breakdown?: Json | null
+          hero_quote?: string | null
+          hours?: number
+          id?: string
+          order_index?: number
+          outcomes?: Json
+          slug?: string
+          status?: string
+          tagline?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       trajectory_states: {
         Row: {
           created_at: string
