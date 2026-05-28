@@ -1,36 +1,45 @@
-## Goal
-Each training and book chapter ships with its own Open Graph + Twitter image so shared links preview uniquely. Use a stored custom image when present; otherwise auto-generate a branded SVG placeholder at build time.
+# JSON-LD for trainings & book chapters
 
-## What changes
+Wire schema.org structured data through the existing `usePageSeo({ jsonLd })` pipeline so Google can render rich results (Course cards for trainings, Article cards for chapters). BreadcrumbList is already auto-injected by `usePageSeo`, so it comes along for free.
 
-### 1. Database (one migration)
-Add a nullable `og_image_url` text column to `trainings` and `book_chapters`. Stores either a full URL (uploaded asset) or a relative path under the site (e.g. `/og/trainings-glitch.svg`). No new bucket, no RLS changes — both tables already have admin write + public read for published rows.
+## 1. `src/lib/structuredData.ts` — add a `courseSchema` helper
 
-### 2. Build-time generator (`vite-plugin-prerender-og.ts`)
-Extend the existing prerender plugin:
-- Select `og_image_url` alongside slug/title/summary for trainings and book chapters.
-- When a row has `og_image_url`, use it verbatim in `og:image` and `twitter:image`.
-- When it's null, **generate a branded SVG placeholder** during the build and emit it at `dist/og/trainings-<slug>.svg` (or `dist/og/book-<slug>.svg`). The SVG is deterministic: 1200×630, Paracosm dark gradient background, white "PARACOSM" wordmark top-left, training/chapter title wrapped center, phase or tagline below. No external font calls — uses system-stack `font-family` so it renders on every social crawler.
-- Reference the emitted file (`/og/...svg`) in the route's head.
+Trainings map naturally to schema.org **Course**. Add a builder alongside the existing `articleSchema` / `bookSchema`:
 
-Static index routes (`/trainings`, `/book`, `/book/compasses`, `/book/operators`) keep the existing `/og-image.jpeg` default.
+- `@type: "Course"` with `name`, `description`, `url`, `image`
+- `provider: { "@id": ORG_ID }` (reuses Paracosm Organization)
+- Optional `hasCourseInstance` with `courseMode: "Online"`, `courseWorkload` (ISO 8601 like `PT6H` from `training.hours`)
+- Optional `syllabusSections` built from `training_modules` (name + description) when modules are loaded
+- Optional `about` from `crewdle_focus`
 
-### 3. Admin editor (light touch)
-Add a single "OG image URL" text input to the existing training and book-chapter admin editors so an admin can paste a custom image URL later. No upload widget in this pass — admins can drop any public URL (Supabase Storage, Unsplash, etc.). If you'd rather have an upload-to-Storage flow now, say so and I'll fold a `og-images` public bucket + uploader into the plan.
+## 2. `src/pages/TrainingDetail.tsx` — emit Course JSON-LD
 
-### 4. Runtime (`usePageSeo` consumers)
-`TrainingDetail.tsx` and `BookChapter.tsx` already call `usePageSeo`. Pass the new `og_image_url` (or the generated placeholder URL) so JS-executing crawlers and the browser tab see the same image as the static head.
+Build the schema once `training` (and ideally `modules`) is loaded and pass it to `usePageSeo({ jsonLd })`. Memoize so the effect dep (`ldKey`) is stable. Image uses the same fallback chain already in place (`og_image_url` → generated SVG → default).
+
+## 3. `src/pages/BookChapter.tsx` — emit Article JSON-LD
+
+Use the existing `articleSchema` builder once `chapter` is loaded:
+
+- `title` = chapter title (with edition suffix matching `<title>`)
+- `description` = `chapter.summary`
+- `url` = `/book/chapter/${slug}`
+- `image` = same fallback chain
+- `author` defaults to "Jonathan" from the helper
+- Add `isPartOf` pointer to the Calm Magic Book by composing the schema inline (spread `articleSchema(...)` then add `isPartOf: { "@type": "Book", name: "Calm Magic", url: abs("/book") }`)
+
+## 4. Index pages (small bonus, keeps coverage consistent)
+
+- `src/pages/TrainingsIndex.tsx` — emit `ItemList` of trainings (uses existing `itemListSchema`)
+- `src/pages/BookCompassesIndex.tsx` — already covered by breadcrumbs; add `ItemList` only if chapter list is loaded on that page (skip otherwise)
 
 ## Out of scope
-- No SSR migration. Social crawlers continue to read the prerendered HTML head emitted at build.
-- No image upload UI (unless you ask for it — see step 3).
-- Nav, sitemap, and routing untouched.
 
-## Verification
-After build:
-- `dist/trainings/glitch/index.html` `og:image` points at either the stored URL or `/og/trainings-glitch.svg`.
-- `dist/og/trainings-glitch.svg` exists and renders a unique branded card.
-- LinkedIn Post Inspector / `curl -A facebookexternalhit` against the published URL shows the per-page image.
+- No DB changes, no new columns
+- No SSR — JSON-LD ships via `usePageSeo` after hydration; Googlebot executes JS and reads it. LinkedIn/Slack previews are unaffected (they only read og:* which is already handled).
+- No changes to the build-time OG plugin
 
-## One question before I build
-Do you want admins to **upload** OG images into Supabase Storage (I'll add a public `og-images` bucket + uploader), or is a **URL input** field enough for now? Default = URL input only.
+## Technical notes
+
+- `usePageSeo` already clears and re-injects page-scoped JSON-LD on each render via `data-page-seo="true"`, so we just pass the object(s).
+- `jsonLd` accepts a single object or an array; pass an array when we want Course + an `ItemList` of modules.
+- Memoize composed schemas with `useMemo` keyed on `training?.id` / `chapter?.id` to avoid effect thrash.
