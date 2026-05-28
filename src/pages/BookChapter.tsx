@@ -110,6 +110,7 @@ export default function BookChapter() {
   const [chapter, setChapter] = useState<Chapter | null>(null);
   const [siblings, setSiblings] = useState<NavChapter[]>([]);
   const [pragmaticBody, setPragmaticBody] = useState<string | null>(null);
+  const [visionaryBody, setVisionaryBody] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { markRead } = useReaderProgress();
 
