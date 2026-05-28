@@ -259,6 +259,8 @@ export default function BookChapter() {
             <div className="mt-6 border-t border-white/10 pt-8">
               {edition === "pragmatic" && pragmaticBody ? (
                 renderMarkdown(pragmaticBody)
+              ) : visionaryBody ? (
+                renderMarkdown(visionaryBody)
               ) : chapter.status === "published" && chapter.published_excerpt ? (
                 renderMarkdown(chapter.published_excerpt)
               ) : (
