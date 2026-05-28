@@ -177,6 +177,50 @@ export const bookSchema = (args: {
   publisher: { "@id": ORG_ID },
 });
 
+export const courseSchema = (args: {
+  name: string;
+  description: string;
+  url: string;
+  image?: string;
+  hours?: number;
+  about?: string;
+  providerName?: string;
+  syllabus?: Array<{ name: string; description?: string }>;
+}): Record<string, unknown> => {
+  const schema: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: args.name,
+    description: args.description,
+    url: abs(args.url),
+    image: args.image ?? DEFAULT_IMAGE,
+    provider: {
+      "@type": "Organization",
+      "@id": ORG_ID,
+      name: args.providerName ?? "Paracosm",
+      sameAs: CANONICAL_HOST,
+    },
+  };
+  if (args.about) schema.about = args.about;
+  if (typeof args.hours === "number" && args.hours > 0) {
+    schema.hasCourseInstance = {
+      "@type": "CourseInstance",
+      courseMode: "Online",
+      courseWorkload: `PT${args.hours}H`,
+    };
+  }
+  if (args.syllabus && args.syllabus.length) {
+    schema.syllabusSections = args.syllabus.map((s, idx) => ({
+      "@type": "Syllabus",
+      name: s.name,
+      description: s.description,
+      position: idx + 1,
+    }));
+  }
+  return schema;
+};
+
+
 export const creativeWorkSchema = (args: {
   name: string;
   description: string;

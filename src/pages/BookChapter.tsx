@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, BookOpen, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import { articleSchema, CANONICAL_HOST } from "@/lib/structuredData";
 import { useReaderProgress } from "@/hooks/useReaderProgress";
 import { trackEvent } from "@/lib/analytics";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -13,8 +14,10 @@ import BookLeadCaptureForm from "@/components/book/BookLeadCaptureForm";
 import ReaderProgressBar from "@/components/book/ReaderProgressBar";
 import ChromaText from "@/components/aesthetic/ChromaText";
 import ScanlineOverlay from "@/components/aesthetic/ScanlineOverlay";
+
 import ChapterCompasses from "@/components/book/ChapterCompasses";
 import ReflectionNodes from "@/components/book/ReflectionNodes";
+
 
 interface Chapter {
   id: string;
@@ -115,15 +118,42 @@ export default function BookChapter() {
   const [visionaryBody, setVisionaryBody] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { markRead } = useReaderProgress();
+
+  const image =
+    chapter?.og_image_url?.trim() ||
+    (slug ? `https://calm-magic.com/og/book-${slug}.svg` : undefined);
+
+  const chapterTitle = chapter
+    ? `${chapter.title} — Calm Magic${edition === "pragmatic" ? " · Operator's Cut" : ""}`
+    : "Chapter — Calm Magic";
+  const chapterDesc = chapter?.summary ?? "A free chapter from the Calm Magic book.";
+
+  const jsonLd = useMemo(() => {
+    if (!chapter) return undefined;
+    return {
+      ...articleSchema({
+        title: chapterTitle,
+        description: chapterDesc,
+        url: `/book/chapter/${chapter.slug}`,
+        image,
+      }),
+      isPartOf: {
+        "@type": "Book",
+        name: "Calm Magic",
+        url: `${CANONICAL_HOST}/book`,
+      },
+    };
+  }, [chapter, chapterTitle, chapterDesc, image]);
+
   usePageSeo({
-    title: chapter ? `${chapter.title} — Calm Magic${edition === "pragmatic" ? " · Operator's Cut" : ""}` : "Chapter — Calm Magic",
-    description: chapter?.summary ?? "A free chapter from the Calm Magic book.",
+    title: chapterTitle,
+    description: chapterDesc,
     path: `/book/chapter/${slug ?? ""}`,
-    image:
-      chapter?.og_image_url?.trim() ||
-      (slug ? `https://calm-magic.com/og/book-${slug}.svg` : undefined),
+    image,
     ogType: "article",
+    jsonLd,
   });
+
 
 
 

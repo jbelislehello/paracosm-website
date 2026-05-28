@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import { courseSchema } from "@/lib/structuredData";
 import { ArrowLeft, ArrowRight, Clock, PlayCircle, Sparkles } from "lucide-react";
 import EnrollDialog from "@/components/trainings/EnrollDialog";
 
@@ -38,15 +39,35 @@ export default function TrainingDetail() {
   const [training, setTraining] = useState<Training | null>(null);
   const [modules, setModules] = useState<ModuleRow[]>([]);
 
+  const image =
+    training?.og_image_url?.trim() ||
+    (slug ? `https://calm-magic.com/og/trainings-${slug}.svg` : undefined);
+
+  const jsonLd = useMemo(() => {
+    if (!training) return undefined;
+    return courseSchema({
+      name: training.title,
+      description: training.tagline ?? "Paracosm Crewdle-bound training.",
+      url: `/trainings/${training.slug}`,
+      image,
+      hours: training.hours,
+      about: training.crewdle_focus ?? undefined,
+      syllabus: modules.map((m) => ({
+        name: m.title,
+        description: m.summary ?? undefined,
+      })),
+    });
+  }, [training, modules, image]);
+
   usePageSeo({
     title: training ? `${training.title} | Paracosm Trainings` : "Training | Paracosm",
     description: training?.tagline ?? "Paracosm Crewdle-bound training.",
     path: `/trainings/${slug}`,
-    image:
-      training?.og_image_url?.trim() ||
-      (slug ? `https://calm-magic.com/og/trainings-${slug}.svg` : undefined),
+    image,
     ogType: "article",
+    jsonLd,
   });
+
 
 
   useEffect(() => {
