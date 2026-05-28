@@ -20,6 +20,7 @@ type Training = {
   hero_quote: string | null;
   cta_label: string;
   delivery_breakdown: Record<string, unknown> | null;
+  og_image_url: string | null;
 };
 
 type ModuleRow = {
@@ -41,7 +42,12 @@ export default function TrainingDetail() {
     title: training ? `${training.title} | Paracosm Trainings` : "Training | Paracosm",
     description: training?.tagline ?? "Paracosm Crewdle-bound training.",
     path: `/trainings/${slug}`,
+    image:
+      training?.og_image_url?.trim() ||
+      (slug ? `https://calm-magic.com/og/trainings-${slug}.svg` : undefined),
+    ogType: "article",
   });
+
 
   useEffect(() => {
     (async () => {

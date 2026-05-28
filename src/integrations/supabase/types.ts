@@ -138,6 +138,7 @@ export type Database = {
           created_at: string
           id: string
           is_free_sample: boolean
+          og_image_url: string | null
           order_index: number
           phase: string
           published_at: string | null
@@ -152,6 +153,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_free_sample?: boolean
+          og_image_url?: string | null
           order_index?: number
           phase?: string
           published_at?: string | null
@@ -166,6 +168,7 @@ export type Database = {
           created_at?: string
           id?: string
           is_free_sample?: boolean
+          og_image_url?: string | null
           order_index?: number
           phase?: string
           published_at?: string | null
@@ -2387,6 +2390,7 @@ export type Database = {
           hero_quote: string | null
           hours: number
           id: string
+          og_image_url: string | null
           order_index: number
           outcomes: Json
           slug: string
@@ -2405,6 +2409,7 @@ export type Database = {
           hero_quote?: string | null
           hours?: number
           id?: string
+          og_image_url?: string | null
           order_index?: number
           outcomes?: Json
           slug: string
@@ -2423,6 +2428,7 @@ export type Database = {
           hero_quote?: string | null
           hours?: number
           id?: string
+          og_image_url?: string | null
           order_index?: number
           outcomes?: Json
           slug?: string

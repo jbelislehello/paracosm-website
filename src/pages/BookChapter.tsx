@@ -26,7 +26,9 @@ interface Chapter {
   status: string;
   is_free_sample: boolean;
   published_excerpt: string | null;
+  og_image_url: string | null;
 }
+
 
 const PHASE_LABEL: Record<string, string> = {
   GLITCH: "GL!TCH",
@@ -113,12 +115,17 @@ export default function BookChapter() {
   const [visionaryBody, setVisionaryBody] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { markRead } = useReaderProgress();
-
   usePageSeo({
     title: chapter ? `${chapter.title} — Calm Magic${edition === "pragmatic" ? " · Operator's Cut" : ""}` : "Chapter — Calm Magic",
     description: chapter?.summary ?? "A free chapter from the Calm Magic book.",
     path: `/book/chapter/${slug ?? ""}`,
+    image:
+      chapter?.og_image_url?.trim() ||
+      (slug ? `https://calm-magic.com/og/book-${slug}.svg` : undefined),
+    ogType: "article",
   });
+
+
 
   useEffect(() => {
     let alive = true;
