@@ -53,38 +53,28 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    // TEMP one-shot admin bypass for ops backfill — remove after run.
-    const BYPASS = "278af436616417e15c0db24c68f5d898b628e9a35373944687d2ddcfaa8d1c96";
-    const BYPASS_USER_ID = "57dde48a-f211-400f-88d8-fda6602d71df";
-    const bypassToken = req.headers.get("x-admin-bypass-token");
     const auth = req.headers.get("Authorization");
+    if (!auth) return new Response("Unauthorized", { status: 401, headers: corsHeaders });
 
-    let userId: string | null = null;
-    if (bypassToken === BYPASS) {
-      userId = BYPASS_USER_ID;
-    } else {
-      if (!auth) return new Response("Unauthorized", { status: 401, headers: corsHeaders });
-      const supabaseUser = createClient(
-        Deno.env.get("SUPABASE_URL")!,
-        Deno.env.get("SUPABASE_ANON_KEY")!,
-        { global: { headers: { Authorization: auth } } },
-      );
-      const { data: userData } = await supabaseUser.auth.getUser();
-      const user = userData.user;
-      if (!user) return new Response("Unauthorized", { status: 401, headers: corsHeaders });
-      userId = user.id;
+    const supabaseUser = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: auth } } },
+    );
+    const { data: userData } = await supabaseUser.auth.getUser();
+    const user = userData.user;
+    if (!user) return new Response("Unauthorized", { status: 401, headers: corsHeaders });
 
-      const supabase = createClient(
-        Deno.env.get("SUPABASE_URL")!,
-        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-      );
-      const { data: roleCheck } = await supabase.rpc("has_role", {
-        _user_id: user.id,
-        _role: "admin",
-      });
-      if (!roleCheck) {
-        return new Response("Forbidden", { status: 403, headers: corsHeaders });
-      }
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
+    const { data: roleCheck } = await supabase.rpc("has_role", {
+      _user_id: user.id,
+      _role: "admin",
+    });
+    if (!roleCheck) {
+      return new Response("Forbidden", { status: 403, headers: corsHeaders });
     }
 
     const parsed = BodySchema.safeParse(await req.json());
