@@ -754,6 +754,8 @@ function BatchTab() {
 
   return (
     <div className="space-y-6">
+      <OperatorsCutOneClick />
+
       <Card className="p-5 space-y-4">
         <div>
           <h3 className="text-lg font-semibold">Parallel chapter drafting</h3>
