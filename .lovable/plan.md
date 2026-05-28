@@ -1,29 +1,23 @@
 ## Goal
-Add a prominent "Generate Operator's Cut for all chapters" one-click action in the Manuscript Console's Batch tab, with live per-chapter progress and error reporting.
+Populate `book_chapter_drafts` for all 8 chapters with both the `visionary` long-form bodies and the `pragmatic` (Operator's Cut) versions, so every chapter has a complete Field Guide AND Operator's Cut edition.
 
-## Where
-`src/pages/BookManuscriptAdmin.tsx` — `BatchTab` component (existing grid stays untouched).
+## Approach
+Invoke the existing `book-synthesize-batch` edge function twice (once per audience) across all 8 chapter IDs, then re-query the DB to confirm 8/8 visionary + 8/8 pragmatic drafts exist and are marked `is_current`.
 
-## UI
-At the top of the Batch tab, a new card "Operator's Cut — one click":
-- Headline + 1-sentence explainer (pragmatic edition across all chapters).
-- Primary button: **Generate Operator's Cut for all chapters** (disabled while running).
-- Optional concurrency selector (default 3) and an optional shared guidance textarea.
-- Live progress strip: `X / N complete · Y failed`.
-- Per-chapter list (ordered by `order_index`), each row shows:
-  - Chapter number + title
-  - Status badge: queued / running / done / error
-  - Draft link (opens `/book/<slug>?edition=pragmatic`) when done
-  - Inline error message + Retry button when failed
+No code changes, no schema changes — this is purely an operational run of the already-deployed pipeline.
 
-## Behavior
-- On click: load all chapters from `book_chapters` ordered by `order_index`, seed local state `Record<chapterId, {status, draft_id?, error?}>` to `queued`.
-- Invoke `book-synthesize-batch` with `chapter_ids = all`, `audiences = ["pragmatic"]`, chosen `concurrency`, `guidance`.
-- Since the edge function returns only the final batched result, we flip all rows to `running` on submit and reconcile to `done`/`error` from `results` on response.
-- Retry: re-invoke `book-synthesize-batch` for just the failed `chapter_id` with `audiences=["pragmatic"]`.
-- Toast summary at the end (`X succeeded, Y failed`).
+## Steps
+1. Fetch the 8 chapter IDs ordered by `order_index`.
+2. Call `book-synthesize-batch` with `audiences: ["visionary"]` for all 8 chapters.
+3. Call `book-synthesize-batch` with `audiences: ["pragmatic"]` for all 8 chapters.
+4. Query `book_chapter_drafts` and report per-chapter status (visionary len, pragmatic len, any failures).
+5. If any chapter failed, retry it individually via `book-synthesize-chapter` and show errors from edge logs.
+
+## Verification
+- DB check: `SELECT count(*) per audience` should return 8 + 8.
+- Spot-check `/book/chapter/naming-the-friction?edition=pragmatic` renders the Operator's Cut body.
+- Confirm `/book/operators-index` lists all 8 chapters as available.
 
 ## Notes
-- No backend/schema changes — reuses existing `book-synthesize-batch` edge function which already supports `pragmatic` and concurrency.
-- Existing batch grid below remains for power use.
-- Pure UI work in one file.
+- Generation will consume Lovable AI credits (16 chapter syntheses total). If credits run out the function returns 402 — I will surface that immediately rather than retrying silently.
+- This does not republish or change `book_chapters.status`; excerpts already published remain untouched.
