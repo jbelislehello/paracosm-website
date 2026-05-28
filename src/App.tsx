@@ -141,6 +141,9 @@ function App() {
                     <Route path="/credits" element={<Credits />} />
                     <Route path="/origins" element={<Origins />} />
                     <Route path="/dream/:slug" element={<DreamShare />} />
+                    <Route path="/trainings" element={<TrainingsIndex />} />
+                    <Route path="/trainings/:slug" element={<TrainingDetail />} />
+                    <Route path="/trainings/:slug/modules/:order" element={<TrainingModule />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Suspense>
