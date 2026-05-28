@@ -137,19 +137,24 @@ export default function BookChapter() {
       setChapter((ch as Chapter) ?? null);
       setSiblings((sibs as NavChapter[]) ?? []);
 
-      // Fetch the pragmatic (Operator's Cut) draft if requested
+      // Fetch both the visionary (general) and pragmatic (Operator's Cut) drafts
       if (ch?.id) {
-        const { data: prag } = await supabase
+        const { data: drafts } = await supabase
           .from("book_chapter_drafts")
-          .select("draft_md")
+          .select("audience, draft_md")
           .eq("chapter_id", (ch as Chapter).id)
-          .eq("audience", "pragmatic")
-          .eq("is_current", true)
-          .maybeSingle();
+          .in("audience", ["pragmatic", "general", "visionary"])
+          .eq("is_current", true);
         if (!alive) return;
-        setPragmaticBody((prag as { draft_md?: string } | null)?.draft_md ?? null);
+        const list = (drafts ?? []) as { audience: string; draft_md: string }[];
+        const prag = list.find((d) => d.audience === "pragmatic");
+        const vis = list.find((d) => d.audience === "visionary") ?? list.find((d) => d.audience === "general");
+        setPragmaticBody(prag?.draft_md ?? null);
+        // Only override the excerpt when the draft is substantive (avoid 45-char stubs)
+        setVisionaryBody(vis && (vis.draft_md?.length ?? 0) > 500 ? vis.draft_md : null);
       } else {
         setPragmaticBody(null);
+        setVisionaryBody(null);
       }
       setLoading(false);
     })();
