@@ -9,24 +9,13 @@ export default function LivingManuscriptBand() {
   useEffect(() => {
     let alive = true;
     (async () => {
-      const [{ count: drafts }, { count: chapters }, { count: sources }] =
-        await Promise.all([
-          supabase
-            .from("book_chapters")
-            .select("*", { count: "exact", head: true })
-            .neq("status", "outline"),
-          supabase
-            .from("book_chapters")
-            .select("*", { count: "exact", head: true }),
-          supabase
-            .from("book_sources")
-            .select("*", { count: "exact", head: true }),
-        ]);
-      if (alive) {
+      const { data } = await supabase.rpc("get_book_stats");
+      const row = Array.isArray(data) ? data[0] : data;
+      if (alive && row) {
         setStats({
-          chapters: chapters ?? 7,
-          drafts: drafts ?? 0,
-          sources: sources ?? 0,
+          chapters: row.chapters ?? 0,
+          drafts: row.drafts ?? 0,
+          sources: row.sources ?? 0,
         });
       }
     })();
