@@ -62,6 +62,9 @@ const ResonanceDemo = lazy(() => import("./pages/ResonanceDemo"));
 const ResidencyDetail = lazy(() => import("./pages/ResidencyDetail"));
 const Credits = lazy(() => import("./pages/Credits"));
 const Origins = lazy(() => import("./pages/Origins"));
+const TrainingsIndex = lazy(() => import("./pages/TrainingsIndex"));
+const TrainingDetail = lazy(() => import("./pages/TrainingDetail"));
+const TrainingModule = lazy(() => import("./pages/TrainingModule"));
 
 const queryClient = new QueryClient();
 
