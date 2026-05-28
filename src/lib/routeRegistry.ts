@@ -87,7 +87,25 @@ export const ROUTE_REGISTRY: RouteMeta[] = [
     parent: "/calm-magic-board/prds",
     noindex: true,
   },
+
+  // Trainings hierarchy
+  { path: "/trainings", label: "Trainings" },
+  {
+    path: "/trainings/:slug",
+    label: (p) => {
+      const s = p.slug ?? "";
+      return s ? s.charAt(0).toUpperCase() + s.slice(1) : "Training";
+    },
+    parent: "/trainings",
+  },
+  {
+    path: "/trainings/:slug/modules/:order",
+    label: (p) => `Module ${p.order ?? ""}`.trim(),
+    parent: "/trainings/:slug",
+    noindex: true,
+  },
 ];
+
 
 /* ------------------------------------------------------------------ */
 /* Pattern matching                                                    */
