@@ -125,7 +125,7 @@ export default function BookChapter() {
     ogType: "article",
   });
 
-  });
+
 
   useEffect(() => {
     let alive = true;
