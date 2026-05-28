@@ -1,0 +1,2 @@
+ALTER TABLE public.book_chapter_drafts DROP CONSTRAINT IF EXISTS book_chapter_drafts_audience_check;
+ALTER TABLE public.book_chapter_drafts ADD CONSTRAINT book_chapter_drafts_audience_check CHECK (audience = ANY (ARRAY['general'::text, 'practitioner'::text, 'executive'::text, 'pragmatic'::text]));
