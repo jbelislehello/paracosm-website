@@ -678,6 +678,192 @@ type BatchCell = {
   error?: string;
 };
 
+type OperatorRow = {
+  chapter: Chapter;
+  status: BatchJobStatus;
+  draft_id?: string;
+  error?: string;
+};
+
+function OperatorsCutOneClick() {
+  const [chapters, setChapters] = useState<Chapter[]>([]);
+  const [rows, setRows] = useState<Record<string, OperatorRow>>({});
+  const [running, setRunning] = useState(false);
+  const [guidance, setGuidance] = useState("");
+  const [concurrency, setConcurrency] = useState(3);
+
+  useEffect(() => {
+    supabase
+      .from("book_chapters")
+      .select("id, slug, title, phase, order_index, status, summary, is_free_sample, published_excerpt")
+      .order("order_index")
+      .then(({ data }) => setChapters((data as Chapter[]) ?? []));
+  }, []);
+
+  const runFor = async (targetChapters: Chapter[]) => {
+    if (!targetChapters.length) return;
+    setRunning(true);
+    setRows((prev) => {
+      const next = { ...prev };
+      for (const c of targetChapters) next[c.id] = { chapter: c, status: "running" };
+      return next;
+    });
+    const { data, error } = await supabase.functions.invoke("book-synthesize-batch", {
+      body: {
+        chapter_ids: targetChapters.map((c) => c.id),
+        audiences: ["pragmatic"],
+        guidance: guidance || undefined,
+        concurrency,
+      },
+    });
+    if (error) {
+      setRows((prev) => {
+        const next = { ...prev };
+        for (const c of targetChapters) next[c.id] = { chapter: c, status: "error", error: error.message };
+        return next;
+      });
+      toast.error(error.message);
+      setRunning(false);
+      return;
+    }
+    const results = (data as { results?: Array<{ chapter_id: string; ok: boolean; draft_id?: string; error?: string }> })?.results ?? [];
+    setRows((prev) => {
+      const next = { ...prev };
+      for (const c of targetChapters) {
+        const r = results.find((x) => x.chapter_id === c.id);
+        if (!r) {
+          next[c.id] = { chapter: c, status: "error", error: "No result returned" };
+        } else if (r.ok) {
+          next[c.id] = { chapter: c, status: "done", draft_id: r.draft_id };
+        } else {
+          next[c.id] = { chapter: c, status: "error", error: r.error };
+        }
+      }
+      return next;
+    });
+    const summary = (data as { summary?: { succeeded: number; failed: number } })?.summary;
+    if (summary) toast.success(`Operator's Cut: ${summary.succeeded} succeeded, ${summary.failed} failed`);
+    setRunning(false);
+  };
+
+  const runAll = () => runFor(chapters);
+  const retry = (c: Chapter) => runFor([c]);
+
+  const ordered = chapters;
+  const states = ordered.map((c) => rows[c.id]?.status);
+  const total = ordered.length;
+  const done = states.filter((s) => s === "done").length;
+  const failed = states.filter((s) => s === "error").length;
+  const inFlight = states.filter((s) => s === "running").length;
+
+  return (
+    <Card className="p-5 space-y-4 border-primary/30">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h3 className="text-lg font-semibold flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-primary" />
+            Operator's Cut — one click
+          </h3>
+          <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
+            Generate the <strong>pragmatic</strong> edition (Operator's Cut) across every chapter in parallel.
+            Each chapter gets a fresh current draft saved to <code className="text-xs">book_chapter_drafts</code>.
+          </p>
+        </div>
+        <Button onClick={runAll} disabled={running || !chapters.length} size="lg">
+          {running ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
+          Generate Operator's Cut for all {chapters.length || ""} chapters
+        </Button>
+      </div>
+
+      <div className="flex flex-wrap items-end gap-4">
+        <div>
+          <Label className="text-xs">Concurrency</Label>
+          <Input
+            type="number"
+            min={1}
+            max={6}
+            value={concurrency}
+            onChange={(e) => setConcurrency(Math.max(1, Math.min(6, Number(e.target.value) || 1)))}
+            className="w-20"
+            disabled={running}
+          />
+        </div>
+        <div className="flex-1 min-w-[240px]">
+          <Label className="text-xs">Shared guidance (optional)</Label>
+          <Input
+            value={guidance}
+            onChange={(e) => setGuidance(e.target.value)}
+            placeholder="e.g. lean harder on Monday actions"
+            disabled={running}
+          />
+        </div>
+      </div>
+
+      {(done + failed + inFlight > 0) && (
+        <div className="text-xs text-muted-foreground">
+          {done} / {total} complete · {failed} failed{inFlight ? ` · ${inFlight} running` : ""}
+        </div>
+      )}
+
+      <div className="border border-border rounded-md divide-y divide-border/60">
+        {ordered.map((c, i) => {
+          const row = rows[c.id];
+          const status = row?.status;
+          return (
+            <div key={c.id} className="flex items-center gap-3 p-2.5 text-sm">
+              <div className="w-6 text-xs text-muted-foreground tabular-nums">{i + 1}</div>
+              <div className="flex-1 min-w-0">
+                <div className="font-medium truncate">{c.title}</div>
+                <div className="text-xs text-muted-foreground flex items-center gap-2">
+                  <Badge variant="outline" className="text-[10px]">{c.phase}</Badge>
+                  <span className="truncate">/{c.slug}</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {status === "running" && (
+                  <span className="text-xs text-muted-foreground flex items-center gap-1.5">
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" /> drafting
+                  </span>
+                )}
+                {status === "done" && (
+                  <>
+                    <Badge className="text-[10px]">done</Badge>
+                    <a
+                      href={`/book/${c.slug}?edition=pragmatic`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs underline text-primary"
+                    >
+                      view
+                    </a>
+                  </>
+                )}
+                {status === "error" && (
+                  <>
+                    <Badge variant="destructive" className="text-[10px]" title={row?.error}>error</Badge>
+                    <span className="text-[11px] text-destructive max-w-[260px] truncate" title={row?.error}>
+                      {row?.error}
+                    </span>
+                    <Button size="sm" variant="outline" onClick={() => retry(c)} disabled={running}>
+                      <RefreshCw className="w-3 h-3 mr-1" /> Retry
+                    </Button>
+                  </>
+                )}
+                {!status && <span className="text-xs text-muted-foreground">—</span>}
+              </div>
+            </div>
+          );
+        })}
+        {!ordered.length && (
+          <div className="p-4 text-sm text-muted-foreground">No chapters found.</div>
+        )}
+      </div>
+    </Card>
+  );
+}
+
+
+
 function BatchTab() {
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [selectedChapters, setSelectedChapters] = useState<Set<string>>(new Set());
