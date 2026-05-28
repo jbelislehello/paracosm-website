@@ -26,7 +26,9 @@ interface Chapter {
   status: string;
   is_free_sample: boolean;
   published_excerpt: string | null;
+  og_image_url: string | null;
 }
+
 
 const PHASE_LABEL: Record<string, string> = {
   GLITCH: "GL!TCH",
