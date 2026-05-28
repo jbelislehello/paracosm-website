@@ -1,31 +1,86 @@
-## Goal
-Fix references to "7 chapters" on the book landing — the book is actually 8 chapters. Also correct the i18n mismatch where `chapter_7` is currently labelled "Operating in Flow" (FREE) but chapter 7 in the database is "Living the Ontology" (OPEN); the FREE chapter is actually chapter 8.
+## Trainings (Formations) — GL!TCH · Drift · Tune
 
-## What's wrong today
-- `src/i18n/en/book.json` line 39: `"chapters_title": "Seven chapters, one breath cycle"` → should be "Eight".
-- `src/i18n/fr/book.json` line 39: `"Sept chapitres, un cycle de respiration"` → should be "Huit".
-- `chapter_7_*` keys (EN + FR) currently hold the FREE / "Operating in Flow" content but chapter 7 in the DB is OPEN / "Living the Ontology". The OPEN chapter has no i18n entry, and chapter 8 (FREE) is also missing.
-- `src/pages/BookLaunch.tsx` line 66: `const chapters = [1, 2, 3, 4, 5, 6, 7]` → should be `[1, 2, 3, 4, 5, 6, 7, 8]`.
+Three sellable 60h trainings, one per playbook, each teaching organizations to adapt AI to their productivity style and data maturity through sequenced Crewdle platform mastery.
 
-## Fix
-1. **`src/i18n/en/book.json`**
-   - Update `chapters_title` to `"Eight chapters, one breath cycle"`.
-   - Replace `chapter_7_*` with OPEN / "Living the Ontology" using the DB summary:
-     - phase: `OPEN`
-     - title: `Living the Ontology`
-     - desc: short excerpt of "Where the designed system meets real workflow — ontology, graph, and the adjustment plan that keeps the org tunable."
-   - Add `chapter_8_phase` / `chapter_8_title` / `chapter_8_desc` for FREE / "Operating in Flow" (move the current chapter_7 content here, keep wording).
+### Narrative spine
 
-2. **`src/i18n/fr/book.json`** — same shape, French translations:
-   - `chapters_title` → `"Huit chapitres, un cycle de respiration"`.
-   - `chapter_7_*` → OPEN / "Vivre l'ontologie" with a French description of the DB summary.
-   - Add `chapter_8_*` for FREE / "Opérer en flow" (use current `chapter_7_*` French copy).
+| Training | Hours | Crewdle focus | Maturity stage taught |
+|---|---|---|---|
+| GL!TCH Formation — *Naming the AI Moment* | 60h | **Crewdle Core** — unified LLM, workflow & agent platform, model-agnostic, preserving enterprise project memory & context | Foundations: AI in industrial society + first contact with a maturity-aware unified platform |
+| Drift Formation — *Co-Assisted Exploration* | 60h | **Crewdle Build** + **Lovable** | Intermediate: co-assisted development of apps and systems |
+| Tune Formation — *Orchestrating Autonomy* | 60h | **Crewdle Forge** | Advanced: automation workflow orchestration |
 
-3. **`src/pages/BookLaunch.tsx`** line 66 — extend the chapters array to include `8`.
+### Each training contains
 
-## Verification
-- Reload `/book` (EN and FR) → title reads "Eight chapters…" / "Huit chapitres…", and the chapter list renders 8 cards with the correct phase + title for chapters 7 (OPEN) and 8 (FREE).
+- Big-picture frame (why this stage matters in the agentic era)
+- 6 modules × ~10h, mixing video lessons, live exercises, Crewdle hands-on labs
+- Per-module **knowledge-check questionnaire** (auto-graded MCQ + short answer) gating progress
+- Capstone: apply the playbook to learner's own org context
+- Enrollment form routing to **jbelisle@helloarchitekt.com**
 
-## Notes
-- No DB changes — the 8 chapters already exist in `book_chapters`.
-- No other component references `chapter_7_*` keys beyond `BookLaunch.tsx`; the change is contained.
+### Suggested video pieces (placeholders, per training)
+
+GL!TCH — 6 videos, ~8–12 min each:
+1. "The Industrial AI Moment" (10m) · 2. "Why Most AI Pilots Stall" (8m) · 3. "Crewdle Core Tour: Memory & Context" (12m) · 4. "Model-Agnostic Thinking" (9m) · 5. "Routing Workflows & Agents in One Place" (11m) · 6. "Your First Maturity-Aware Stack" (10m)
+
+Drift — 6 videos:
+1. "From Tools to Co-Assistance" (9m) · 2. "Crewdle Build, First Project" (12m) · 3. "Lovable for System Prototyping" (12m) · 4. "Designing the Co-Assisted Loop" (10m) · 5. "Patterns That Survive Production" (11m) · 6. "Drift Capstone Brief" (8m)
+
+Tune — 6 videos:
+1. "What Orchestration Really Means" (9m) · 2. "Crewdle Forge: Workflow Anatomy" (12m) · 3. "Autonomy Without Chaos" (11m) · 4. "Observability & Guardrails" (10m) · 5. "Scaling From Pilot to Practice" (12m) · 6. "Tune Capstone Brief" (8m)
+
+### Data model
+
+```text
+trainings (id, slug[glitch|drift|tune], title, tagline, hours, crewdle_focus,
+           big_picture_md, outcomes[], audience_md, order_index, status,
+           hero_quote, cta_label)
+
+training_modules (id, training_id, order_index, title, summary,
+                  video_title, video_duration_min, video_theme,
+                  video_placeholder_url, content_md, hands_on_md)
+
+training_questions (id, module_id, order_index, prompt, kind[mcq|short],
+                    options jsonb, correct_answer, explanation_md, weight)
+
+training_enrollments (id, training_slug, name, email, org, role,
+                      productivity_style, data_maturity[1..5], goals,
+                      utm jsonb, created_at)
+
+training_attempts (id, user_id, module_id, answers jsonb, score, passed,
+                   created_at)   -- auth-gated, optional phase 2
+```
+
+GRANTs + RLS: public SELECT on `trainings`/`training_modules` where `status='published'`; public INSERT on `training_enrollments` with validation check; admin-only ALL via `has_role(auth.uid(),'admin')`. `training_attempts` scoped to `auth.uid()`.
+
+### Pages & routes
+
+- `/trainings` — hub (3 cards, comparison table)
+- `/trainings/glitch` · `/trainings/drift` · `/trainings/tune` — each renders: hero, big picture, Crewdle focus, 6 module accordion (with video placeholder + duration + theme), questionnaire preview, capstone, enrollment form
+- `/admin/trainings` — admin CRUD (reuse `BookManuscriptAdmin` patterns)
+
+### Landing surfaces
+
+- **BookLaunch.tsx** — add `TrainingsBand` under the Playbooks section: 3 cards linking to each training page
+- **LandingPage.tsx** — add `TrainingsBand` between Services and Transformation Journey sections
+- i18n: new `trainings.json` (EN + FR)
+
+### Edge function
+
+`enroll-training` — validates payload, inserts row, sends Resend email to `jbelisle@helloarchitekt.com` with enrollment summary + maturity self-score.
+
+### Build order
+
+1. Migration: 4 tables + GRANTs + RLS + seed (3 trainings, 18 modules, ~3 questions per module placeholder)
+2. `src/i18n/{en,fr}/trainings.json`
+3. `src/pages/TrainingsIndex.tsx`, `src/pages/Training.tsx` (slug-routed), `src/components/training/{TrainingHero,ModuleAccordion,QuestionnairePreview,EnrollmentForm,TrainingsBand}.tsx`
+4. Route registration in `src/App.tsx`
+5. `TrainingsBand` added to `BookLaunch.tsx` and `LandingPage.tsx`
+6. Edge function `enroll-training` + wire to `EnrollmentForm`
+7. Admin page `src/pages/TrainingsAdmin.tsx`
+
+### Notes
+
+- Videos are placeholders only — `video_placeholder_url` stays null; UI renders a styled "Coming soon — {title} · {duration}m" tile
+- All copy bilingual EN/FR; brand tokens only (no hard-coded colors)
+- Questionnaire engine is read-only in phase 1 (preview); attempt tracking ships in phase 2 once auth gate confirmed
