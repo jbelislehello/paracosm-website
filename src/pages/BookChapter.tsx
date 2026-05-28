@@ -13,6 +13,8 @@ import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import BookLeadCaptureForm from "@/components/book/BookLeadCaptureForm";
 import ReaderProgressBar from "@/components/book/ReaderProgressBar";
 import ChromaText from "@/components/aesthetic/ChromaText";
+import ScanlineOverlay from "@/components/aesthetic/ScanlineOverlay";
+
 import ChapterCompasses from "@/components/book/ChapterCompasses";
 import ReflectionNodes from "@/components/book/ReflectionNodes";
 
