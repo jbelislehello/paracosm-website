@@ -46,9 +46,13 @@ const expandDynamic = (meta: RouteMeta): string[] => {
       driftTools.forEach((t) => seen.add(`${t.year}/${t.month}`));
       return Array.from(seen).map((ym) => `/drift/${ym}`);
     }
+    case "/trainings/:slug": {
+      return ["glitch", "drift", "tune"].map((s) => `/trainings/${s}`);
+    }
     default:
       return [];
   }
+
 };
 
 const escapeXml = (s: string) =>
