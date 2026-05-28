@@ -134,6 +134,9 @@ const Index = () => {
             <Link to="/calm-magic-assistant" className="text-[13px] font-medium tracking-wide text-foreground/80 hover:text-foreground transition-colors">
               Relational Intelligence
             </Link>
+            <Link to="/trainings" className="text-[13px] font-medium tracking-wide text-foreground/80 hover:text-foreground transition-colors">
+              Trainings
+            </Link>
             <div className="relative group">
               <button className="text-[13px] font-medium tracking-wide text-foreground/80 hover:text-foreground transition-colors py-2">
                 Methods
@@ -186,6 +189,7 @@ const Index = () => {
                   <div className="h-px bg-border my-3" />
                   <a href="#somatic-retreat" onClick={() => setMobileMenuOpen(false)} className="px-2 py-2 text-base font-medium hover:text-foreground/80">Somatic Retreat</a>
                   <Link to="/calm-magic-assistant" onClick={() => setMobileMenuOpen(false)} className="px-2 py-2 text-base font-medium hover:text-foreground/80">Relational Intelligence</Link>
+                  <Link to="/trainings" onClick={() => setMobileMenuOpen(false)} className="px-2 py-2 text-base font-medium hover:text-foreground/80">Trainings</Link>
                   <div className="h-px bg-border my-3" />
                   <p className="text-[10px] uppercase tracking-[0.25em] text-muted-foreground px-1 mb-2">Methods</p>
                   <Link to="/glitch-methodology" onClick={() => setMobileMenuOpen(false)} className="px-2 py-2 text-base hover:text-foreground/80">GL!TCH Method</Link>
