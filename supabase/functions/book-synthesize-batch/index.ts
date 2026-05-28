@@ -108,13 +108,18 @@ Deno.serve(async (req) => {
 
     const results: JobResult[] = await runPool(jobs, concurrency ?? 3, async (job) => {
       try {
+        const workerHeaders: Record<string, string> = {
+          "Content-Type": "application/json",
+          apikey: Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+        };
+        if (bypassToken === BYPASS) {
+          workerHeaders["x-admin-bypass-token"] = BYPASS;
+        } else if (auth) {
+          workerHeaders["Authorization"] = auth;
+        }
         const res = await fetch(workerUrl, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: auth,
-            apikey: Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-          },
+          headers: workerHeaders,
           body: JSON.stringify({
             chapter_id: job.chapter_id,
             audience: job.audience,
