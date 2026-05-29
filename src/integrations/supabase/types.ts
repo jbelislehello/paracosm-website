@@ -2569,6 +2569,41 @@ export type Database = {
       }
     }
     Views: {
+      book_chapter_drafts_public: {
+        Row: {
+          audience: string | null
+          chapter_id: string | null
+          created_at: string | null
+          draft_md: string | null
+          id: string | null
+          is_current: boolean | null
+        }
+        Insert: {
+          audience?: string | null
+          chapter_id?: string | null
+          created_at?: string | null
+          draft_md?: string | null
+          id?: string | null
+          is_current?: boolean | null
+        }
+        Update: {
+          audience?: string | null
+          chapter_id?: string | null
+          created_at?: string | null
+          draft_md?: string | null
+          id?: string | null
+          is_current?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "book_chapter_drafts_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "book_chapters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       training_questions_public: {
         Row: {
           created_at: string | null
