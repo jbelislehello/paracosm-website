@@ -1,6 +1,7 @@
 import { corsHeaders } from "https://esm.sh/@supabase/supabase-js@2.95.0/cors";
 import { z } from "https://esm.sh/zod@3.23.8";
 import { assertAllowedUrl } from "../_shared/sourceGuard.ts";
+import { requireAdmin } from "../_shared/requireAdmin.ts";
 
 const BodySchema = z.object({
   urls: z.array(z.string().url()).min(1).max(12),
@@ -35,6 +36,10 @@ async function scrapeOne(url: string, apiKey: string): Promise<ScrapedPage> {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+
+  const gate = await requireAdmin(req);
+  if (gate instanceof Response) return gate;
+
 
   try {
     const FIRECRAWL_API_KEY = Deno.env.get("FIRECRAWL_API_KEY");
