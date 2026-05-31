@@ -1,4 +1,4 @@
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import QuestionResonancePanel from "@/components/resonance/QuestionResonancePanel";
@@ -41,8 +41,14 @@ export default function FrameworkHero({ onScrollToMethod }: FrameworkHeroProps) 
               forcing them through a roadmap.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
-              <Button onClick={onScrollToMethod} size="lg" className="gap-2">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-2">
+              <a href="mailto:jbelisle@helloarchitekt.com?subject=Discovery%20Call%20—%20Paracosm">
+                <Button size="lg" className="w-full sm:w-auto gap-2">
+                  <Calendar className="w-4 h-4" />
+                  Book a Discovery Call
+                </Button>
+              </a>
+              <Button onClick={onScrollToMethod} variant="secondary" size="lg" className="gap-2">
                 See how the method works
                 <ArrowRight className="w-4 h-4" />
               </Button>
