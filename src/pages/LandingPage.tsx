@@ -21,6 +21,8 @@ import FrameworkHero from "@/components/landing/FrameworkHero";
 import EnterpriseGaps from "@/components/landing/EnterpriseGaps";
 import MethodSteps from "@/components/landing/MethodSteps";
 import ThreePaths from "@/components/landing/ThreePaths";
+import OfferingTriadSection from "@/components/landing/OfferingTriadSection";
+import CaseStudiesSection from "@/components/case-studies/CaseStudiesSection";
 import WhyItWorksRecap from "@/components/resonance/WhyItWorksRecap";
 import AxisLegend from "@/components/AxisLegend";
 
