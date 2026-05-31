@@ -131,6 +131,26 @@ const LandingPage = () => {
       
       <FrameworkHero onScrollToMethod={() => document.getElementById('method-steps')?.scrollIntoView({ behavior: 'smooth' })} />
 
+      {/* Triad: Foreplay (Trainings) → Foresight (Retreats) → Forecast (Residencies) */}
+      <OfferingTriadSection />
+
+      {/* Field proof: case studies excerpt */}
+      <section id="case-studies-excerpt" className="py-16 px-4 bg-background">
+        <div className="container max-w-6xl mx-auto mb-6 flex items-end justify-between gap-4 flex-wrap">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-primary">// Field notes</p>
+            <h2 className="mt-1 text-2xl md:text-3xl font-bold">Case studies from the arc.</h2>
+          </div>
+          <Link
+            to="/case-studies"
+            className="text-xs font-semibold uppercase tracking-wider text-primary hover:text-primary/80 inline-flex items-center gap-1"
+          >
+            View all <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <CaseStudiesSection />
+      </section>
+
       <OnboardingGuide triggerOpen={onboardingOpen} onClose={() => setOnboardingOpen(false)} />
 
       <EnterpriseGaps />
