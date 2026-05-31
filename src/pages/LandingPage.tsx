@@ -21,6 +21,8 @@ import FrameworkHero from "@/components/landing/FrameworkHero";
 import EnterpriseGaps from "@/components/landing/EnterpriseGaps";
 import MethodSteps from "@/components/landing/MethodSteps";
 import ThreePaths from "@/components/landing/ThreePaths";
+import OfferingTriadSection from "@/components/landing/OfferingTriadSection";
+import CaseStudiesSection from "@/components/case-studies/CaseStudiesSection";
 import WhyItWorksRecap from "@/components/resonance/WhyItWorksRecap";
 import AxisLegend from "@/components/AxisLegend";
 
@@ -45,15 +47,15 @@ const LandingPage = () => {
   usePageSeo({
     title: t("page_titles.choose_coaching_path"),
     description:
-      "Paracosm builds Learning Organizations for executives and innovators — AI systems mastery, relational intelligence, and the Calm Magic methodology.",
+      "Paracosm: Trainings (Foreplay), Vision Retreats (Foresight), and Prototype Residencies (Forecast) — one arc that turns AI questions into built evidence.",
     path: "/",
     jsonLd: [
       orgSchema(),
       websiteSchema(),
       webPageSchema({
-        title: "Paracosm | Building Learning Organizations",
+        title: "Paracosm | Foreplay · Foresight · Forecast",
         description:
-          "Paracosm builds Learning Organizations for executives and innovators — AI systems mastery, relational intelligence, and the Calm Magic methodology.",
+          "Trainings, vision retreats, and prototype residencies — one continuous practice for learning and inventive organizations.",
         url: "/",
       }),
       
@@ -128,6 +130,26 @@ const LandingPage = () => {
       <CalmMagicAssistant onStartJourney={handleStartCoaching} isOpen={isCalmMagicAssistantOpen} onOpenChange={setIsCalmMagicAssistantOpen} />
       
       <FrameworkHero onScrollToMethod={() => document.getElementById('method-steps')?.scrollIntoView({ behavior: 'smooth' })} />
+
+      {/* Triad: Foreplay (Trainings) → Foresight (Retreats) → Forecast (Residencies) */}
+      <OfferingTriadSection />
+
+      {/* Field proof: case studies excerpt */}
+      <section id="case-studies-excerpt" className="py-16 px-4 bg-background">
+        <div className="container max-w-6xl mx-auto mb-6 flex items-end justify-between gap-4 flex-wrap">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-wider text-primary">// Field notes</p>
+            <h2 className="mt-1 text-2xl md:text-3xl font-bold">Case studies from the arc.</h2>
+          </div>
+          <Link
+            to="/case-studies"
+            className="text-xs font-semibold uppercase tracking-wider text-primary hover:text-primary/80 inline-flex items-center gap-1"
+          >
+            View all <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <CaseStudiesSection />
+      </section>
 
       <OnboardingGuide triggerOpen={onboardingOpen} onClose={() => setOnboardingOpen(false)} />
 
