@@ -1,10 +1,14 @@
-// One-shot internal kick that invokes book-seed-from-corpus with service-role auth.
-// Builds tarot + drift payloads server-side from the calm-magic corpus is not possible
-// here (no client data tables yet); this kick only triggers the site + board pass.
+// Internal admin kick that invokes book-seed-from-corpus.
+// Requires an authenticated admin caller.
 import { corsHeaders } from "npm:@supabase/supabase-js@2/cors";
+import { requireAdmin } from "../_shared/requireAdmin.ts";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+
+  const gate = await requireAdmin(req);
+  if (gate instanceof Response) return gate;
+
   try {
     const URL = Deno.env.get("SUPABASE_URL")!;
     const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;

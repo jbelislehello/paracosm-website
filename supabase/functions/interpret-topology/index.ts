@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { checkRateLimit } from "../_shared/rateLimit.ts";
+import { requireUser } from "../_shared/requireUser.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -242,6 +243,9 @@ serve(async (req) => {
   }
 
   // Per-IP rate limit to prevent unauthenticated AI credit abuse.
+  const _authGate = await requireUser(req);
+  if (_authGate instanceof Response) return _authGate;
+
   const _rl = checkRateLimit(req, { limit: 20, windowMs: 60_000 });
   if (_rl) return _rl;
 

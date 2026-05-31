@@ -5,6 +5,7 @@
 import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 import { z } from "https://esm.sh/zod@3.23.8";
+import { safeOrigin } from "../_shared/allowedOrigin.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -62,7 +63,7 @@ Deno.serve(async (req) => {
           },
         };
 
-    const origin = req.headers.get("origin") ?? "https://calm-magic.com";
+    const origin = safeOrigin(req, "https://calm-magic.com");
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : email,
