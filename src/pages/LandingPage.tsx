@@ -47,15 +47,15 @@ const LandingPage = () => {
   usePageSeo({
     title: t("page_titles.choose_coaching_path"),
     description:
-      "Paracosm builds Learning Organizations for executives and innovators — AI systems mastery, relational intelligence, and the Calm Magic methodology.",
+      "Paracosm: Trainings (Foreplay), Vision Retreats (Foresight), and Prototype Residencies (Forecast) — one arc that turns AI questions into built evidence.",
     path: "/",
     jsonLd: [
       orgSchema(),
       websiteSchema(),
       webPageSchema({
-        title: "Paracosm | Building Learning Organizations",
+        title: "Paracosm | Foreplay · Foresight · Forecast",
         description:
-          "Paracosm builds Learning Organizations for executives and innovators — AI systems mastery, relational intelligence, and the Calm Magic methodology.",
+          "Trainings, vision retreats, and prototype residencies — one continuous practice for learning and inventive organizations.",
         url: "/",
       }),
       
