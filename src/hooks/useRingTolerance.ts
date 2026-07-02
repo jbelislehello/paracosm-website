@@ -4,7 +4,8 @@ import {
   RingLevel, 
   getCurrentUnlockedRing, 
   detectRingPattern,
-  RING_DEFINITIONS 
+  RING_DEFINITIONS,
+  canAccessTile as checkTileAccess
 } from '@/utils/ringToleranceSystem';
 import { DetectedPattern } from '@/utils/patternDetection';
 import { useToast } from '@/hooks/use-toast';
