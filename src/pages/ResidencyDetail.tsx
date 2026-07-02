@@ -38,7 +38,7 @@ const ResidencyDetail: React.FC = () => {
   }, [residency]);
 
   if (!residency) {
-    return <Navigate to="/index#residencies" replace />;
+    return <Navigate to="/agentic-ux#residencies" replace />;
   }
 
   const r = residency;
