@@ -22,6 +22,8 @@ import EnterpriseGaps from "@/components/landing/EnterpriseGaps";
 import MethodSteps from "@/components/landing/MethodSteps";
 import ThreePaths from "@/components/landing/ThreePaths";
 import OfferingTriadSection from "@/components/landing/OfferingTriadSection";
+import RelationalPlaceQuote from "@/components/landing/RelationalPlaceQuote";
+import NavigatorPositioningSection from "@/components/landing/NavigatorPositioningSection";
 import CaseStudiesSection from "@/components/case-studies/CaseStudiesSection";
 import WhyItWorksRecap from "@/components/resonance/WhyItWorksRecap";
 import AxisLegend from "@/components/AxisLegend";
@@ -130,6 +132,12 @@ const LandingPage = () => {
       <CalmMagicAssistant onStartJourney={handleStartCoaching} isOpen={isCalmMagicAssistantOpen} onOpenChange={setIsCalmMagicAssistantOpen} />
       
       <FrameworkHero onScrollToMethod={() => document.getElementById('method-steps')?.scrollIntoView({ behavior: 'smooth' })} />
+
+      {/* Anchor statement */}
+      <RelationalPlaceQuote />
+
+      {/* Practitioner positioning: Calm Magic as navigator across Crewdle / Lovable / Base44 */}
+      <NavigatorPositioningSection />
 
       {/* Triad: Foreplay (Trainings) → Foresight (Retreats) → Forecast (Residencies) */}
       <OfferingTriadSection />
