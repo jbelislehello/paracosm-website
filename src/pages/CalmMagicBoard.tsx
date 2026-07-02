@@ -58,6 +58,7 @@ import { HigherSelfProphecyModal } from '@/components/calm-magic/HigherSelfProph
 import { PrdAssemblyPanel } from '@/components/calm-magic/PrdAssemblyPanel';
 import OnboardingTour from '@/components/calm-magic/OnboardingTour';
 import UpgradePromptModal from '@/components/UpgradePromptModal';
+import GuidedTestPanel from '@/components/board/GuidedTestPanel';
 import PremiumBadge from '@/components/PremiumBadge';
 import { getPrdAccessLevel, Season as PrdSeason } from '@/utils/prdAccessLevel';
 import { parseBoardEntryParams, getAssessmentContextDescription } from '@/utils/parseBoardEntryParams';
@@ -983,6 +984,7 @@ const CalmMagicBoard = () => {
 
   return (
     <div className="h-screen flex flex-col bg-gradient-to-br from-background via-background to-muted overflow-hidden">
+      <GuidedTestPanel />
       {/* Project Title Bar - Above everything */}
       {projectContext && (
         <ProjectTitleBar
