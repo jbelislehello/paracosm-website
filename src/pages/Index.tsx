@@ -25,6 +25,7 @@ import SomaticCreativityRetreat from "@/components/SomaticCreativityRetreat";
 import { residencies } from "@/data/residencies";
 import SummerDealBanner from "@/components/landing/SummerDealBanner";
 import SummerDealSection from "@/components/landing/SummerDealSection";
+import NavigatorPositioningSection from "@/components/landing/NavigatorPositioningSection";
 
 
 const MOBILE_NAV_SECTIONS = [
