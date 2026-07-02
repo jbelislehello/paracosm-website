@@ -135,7 +135,7 @@ const ResidencyDetail: React.FC = () => {
           </div>
 
           <Link
-            to="/#residencies"
+            to="/residencies"
             className="inline-flex items-center gap-2 text-sm text-foreground/70 hover:text-foreground mb-8 transition-colors"
           >
             <ArrowLeft className="w-4 h-4" /> All residencies
