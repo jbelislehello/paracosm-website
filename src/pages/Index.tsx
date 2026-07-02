@@ -26,6 +26,7 @@ import { residencies } from "@/data/residencies";
 import SummerDealBanner from "@/components/landing/SummerDealBanner";
 import SummerDealSection from "@/components/landing/SummerDealSection";
 import NavigatorPositioningSection from "@/components/landing/NavigatorPositioningSection";
+import RelationalPlaceQuote from "@/components/landing/RelationalPlaceQuote";
 
 
 const MOBILE_NAV_SECTIONS = [
@@ -229,6 +230,9 @@ const Index = () => {
       <section id="hero">
         <HeroSection onDiscoverFramework={handleDiscoverFramework} />
       </section>
+
+      {/* Anchor statement */}
+      <RelationalPlaceQuote />
 
       {/* Summer Deal offer */}
       <SummerDealSection />
