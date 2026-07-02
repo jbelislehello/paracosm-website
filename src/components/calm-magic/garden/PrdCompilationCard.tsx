@@ -161,7 +161,7 @@ export const PrdCompilationCard: React.FC<PrdCompilationCardProps> = ({
           // Update PRD with generated content
           const { error: updateError } = await supabase
             .from('prds')
-            .update(generatedContent)
+            .update(generatedContent as any)
             .eq('id', prdId);
 
           if (updateError) {
@@ -215,7 +215,7 @@ export const PrdCompilationCard: React.FC<PrdCompilationCardProps> = ({
         if (Object.keys(generatedContent).length > 0) {
           const { error: updateError } = await supabase
             .from('prds')
-            .update(generatedContent)
+            .update(generatedContent as any)
             .eq('id', prdId);
 
           if (updateError) {

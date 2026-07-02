@@ -92,8 +92,7 @@ export function useRingTolerance({ userId, cycleId, visitedTiles }: UseRingToler
 
   // Check if a specific tile can be accessed
   const canAccessTile = useCallback((row: number, col: number): boolean => {
-    const { canAccessTile: checkAccess } = require('@/utils/ringToleranceSystem');
-    return checkAccess(row, col, unlockedRing);
+    return checkTileAccess(row, col, unlockedRing);
   }, [unlockedRing]);
 
   // Get current ring progress

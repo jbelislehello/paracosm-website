@@ -863,7 +863,7 @@ const CalmMagicBoard = () => {
           .from('prds')
           .update({
             [`${SEASON_TO_PRD_FIELD[currentSeason]}_signals_summary`]: data?.content || '',
-          })
+          } as any)
           .eq('id', prdId);
       }
 
@@ -1837,7 +1837,7 @@ const CalmMagicBoard = () => {
                     .from('prds')
                     .update({
                       [`${layerField}_signals_summary`]: data?.content || '',
-                    })
+                    } as any)
                     .eq('id', prdId);
                 }
 

@@ -60,7 +60,7 @@ export const useAgentTileConversation = (
   const [pendingAutoSave, setPendingAutoSave] = useState(false);
   const autoSaveTriggered = useRef(false);
   const previousTile = useRef<{ row: number; col: number } | null>(null);
-  const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const autoSaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Get messages for current branch (including parent branches up to branch point)
   const messages = useCallback(() => {
