@@ -133,6 +133,12 @@ const LandingPage = () => {
       
       <FrameworkHero onScrollToMethod={() => document.getElementById('method-steps')?.scrollIntoView({ behavior: 'smooth' })} />
 
+      {/* Anchor statement */}
+      <RelationalPlaceQuote />
+
+      {/* Practitioner positioning: Calm Magic as navigator across Crewdle / Lovable / Base44 */}
+      <NavigatorPositioningSection />
+
       {/* Triad: Foreplay (Trainings) → Foresight (Retreats) → Forecast (Residencies) */}
       <OfferingTriadSection />
 
