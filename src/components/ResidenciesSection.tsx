@@ -1,13 +1,40 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { residencies } from "@/data/residencies";
 import { retreatImages, formatCredit } from "@/assets/retreats";
 import { useImageCredits } from "@/hooks/useImageCredits";
+import { trackEvent } from "@/lib/analytics";
 
 const ResidenciesSection: React.FC = () => {
   const { getCredit } = useImageCredits();
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const trackedRef = useRef(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el || trackedRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting && !trackedRef.current) {
+            trackedRef.current = true;
+            trackEvent("residencies_section_view", {
+              intersection_ratio: Number(entry.intersectionRatio.toFixed(2)),
+              count: residencies.length,
+            });
+            observer.disconnect();
+          }
+        }
+      },
+      { threshold: 0.35 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section
+      ref={sectionRef}
       id="residencies"
       className="relative py-20 md:py-28 px-4 bg-gradient-to-b from-background via-background to-muted/30"
     >
@@ -64,6 +91,14 @@ const ResidenciesSection: React.FC = () => {
               key={r.id}
               to={`/residencies/${r.id}`}
               id={`residency-${r.id}`}
+              onClick={() =>
+                trackEvent("residency_card_click", {
+                  residency_id: r.id,
+                  residency_name: r.name,
+                  position: i,
+                  source: "residencies_section",
+                })
+              }
               className={`group relative overflow-hidden rounded-2xl p-6 md:p-7 border border-border/40 bg-card transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl ${
                 i === 0 ? "lg:col-span-2 lg:row-span-1" : ""
               } ${i === 6 ? "sm:col-span-2 lg:col-span-1" : ""}`}
@@ -124,6 +159,9 @@ const ResidenciesSection: React.FC = () => {
           </p>
           <a
             href="#contact"
+            onClick={() =>
+              trackEvent("residency_begin_click", { source: "residencies_section" })
+            }
             className="shrink-0 inline-flex items-center gap-2 text-sm font-medium px-5 py-3 rounded-full bg-foreground text-background hover:bg-foreground/85 transition-colors"
           >
             Begin a residency →
