@@ -159,6 +159,9 @@ const ResidenciesSection: React.FC = () => {
           </p>
           <a
             href="#contact"
+            onClick={() =>
+              trackEvent("residency_begin_click", { source: "residencies_section" })
+            }
             className="shrink-0 inline-flex items-center gap-2 text-sm font-medium px-5 py-3 rounded-full bg-foreground text-background hover:bg-foreground/85 transition-colors"
           >
             Begin a residency →
