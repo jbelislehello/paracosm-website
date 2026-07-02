@@ -24,6 +24,8 @@ import ThreePaths from "@/components/landing/ThreePaths";
 import OfferingTriadSection from "@/components/landing/OfferingTriadSection";
 import RelationalPlaceQuote from "@/components/landing/RelationalPlaceQuote";
 import NavigatorPositioningSection from "@/components/landing/NavigatorPositioningSection";
+import SummerDealBanner from "@/components/landing/SummerDealBanner";
+import SummerDealSection from "@/components/landing/SummerDealSection";
 import CaseStudiesSection from "@/components/case-studies/CaseStudiesSection";
 import WhyItWorksRecap from "@/components/resonance/WhyItWorksRecap";
 import AxisLegend from "@/components/AxisLegend";
@@ -74,6 +76,7 @@ const LandingPage = () => {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <BookAnnouncementBanner />
+      <SummerDealBanner />
       {/* Navigation */}
       <header className="fixed w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
         <div className="container max-w-7xl mx-auto flex items-center justify-between py-3 px-6">
@@ -86,6 +89,7 @@ const LandingPage = () => {
             <Link to="/agentic-ux" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">AI Leadership</Link>
             <Link to="/calm-magic-assistant" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Team Coaching</Link>
             <Link to="/calm-magic-demo" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Calm Magic</Link>
+            <Link to="/trainings" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Trainings</Link>
             <Link to="/design-system" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Why It Works</Link>
             <Link to="/drift" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Drift</Link>
             <Link to="/tonalli" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Tonalli</Link>
@@ -109,6 +113,10 @@ const LandingPage = () => {
                   <Link to="/calm-magic-demo" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors flex items-center gap-2">
                     <Grid3x3 className="h-4 w-4" />
                     Calm Magic
+                  </Link>
+                  <Link to="/trainings" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors flex items-center gap-2">
+                    <GraduationCap className="h-4 w-4" />
+                    Trainings
                   </Link>
                   <Link to="/design-system" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors flex items-center gap-2">
                     <Lightbulb className="h-4 w-4" />
@@ -141,6 +149,9 @@ const LandingPage = () => {
 
       {/* Triad: Foreplay (Trainings) → Foresight (Retreats) → Forecast (Residencies) */}
       <OfferingTriadSection />
+
+      {/* Summer Deal offer */}
+      <SummerDealSection />
 
       {/* Field proof: case studies excerpt */}
       <section id="case-studies-excerpt" className="py-16 px-4 bg-background">

@@ -89,6 +89,7 @@ function App() {
                 <Suspense fallback={<RouteLoadingFallback />}>
                   <Routes>
                     <Route path="/" element={<LandingPage />} />
+                    <Route path="/index" element={<Navigate to="/" replace />} />
                     <Route path="/drift" element={<DriftLanding />} />
                     <Route path="/drift/:year/:month" element={<DriftMonthlyDiscovery />} />
                     <Route path="/drift/library/:axis" element={<DriftLibrary />} />
