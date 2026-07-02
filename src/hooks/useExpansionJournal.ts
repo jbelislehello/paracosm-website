@@ -213,16 +213,17 @@ export const useExpansionJournal = (projectId?: string | null) => {
 
       warnIfMissingProjectId('noems', projectId, user.id, 'useExpansionJournal.saveNoem');
 
+      const { topology_position, spiral_quadrant, ...noemRest } = noem as any;
       const { data, error } = await supabase
         .from('noems')
         .insert({
           user_id: user.id,
           cycle_id: currentCycle?.id,
           project_id: projectId || null,
-          ...noem,
-          topology_x: noem.topology_position?.x,
-          topology_y: noem.topology_position?.y
-        })
+          ...noemRest,
+          topology_x: topology_position?.x,
+          topology_y: topology_position?.y
+        } as any)
         .select()
         .single();
 

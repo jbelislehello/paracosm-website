@@ -4,7 +4,8 @@ import {
   RingLevel, 
   getCurrentUnlockedRing, 
   detectRingPattern,
-  RING_DEFINITIONS 
+  RING_DEFINITIONS,
+  canAccessTile as checkTileAccess
 } from '@/utils/ringToleranceSystem';
 import { DetectedPattern } from '@/utils/patternDetection';
 import { useToast } from '@/hooks/use-toast';
@@ -92,8 +93,7 @@ export function useRingTolerance({ userId, cycleId, visitedTiles }: UseRingToler
 
   // Check if a specific tile can be accessed
   const canAccessTile = useCallback((row: number, col: number): boolean => {
-    const { canAccessTile: checkAccess } = require('@/utils/ringToleranceSystem');
-    return checkAccess(row, col, unlockedRing);
+    return checkTileAccess(row, col, unlockedRing);
   }, [unlockedRing]);
 
   // Get current ring progress

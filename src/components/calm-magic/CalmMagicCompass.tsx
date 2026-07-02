@@ -366,7 +366,7 @@ const CalmMagicCompass: React.FC = () => {
   };
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: ReturnType<typeof setInterval>;
     if (isAnimating) {
       interval = setInterval(nextPosition, 2500);
     }

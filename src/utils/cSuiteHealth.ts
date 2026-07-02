@@ -1,6 +1,6 @@
 // C-Suite Health Calculation Utilities
 
-import { CSuiteRole } from '@/data/cSuiteRoles';
+import { CSuiteRole, C_SUITE_ROLES } from '@/data/cSuiteRoles';
 import { PRD_DIMENSIONS, PrdDimension } from '@/data/prdDimensions';
 
 export interface HealthMetricResult {
@@ -214,7 +214,8 @@ export const generateCSuiteExportSummary = (
   seasonProgress: Record<string, Set<number>>,
   prdData: Record<string, any> | null
 ): string => {
-  const { C_SUITE_ROLES } = require('@/data/cSuiteRoles');
+  
+
   
   let summary = `## 👔 C-Suite Executive Summary\n\n`;
   summary += `*"Bridge Intelligence with Empathy"*\n\n`;

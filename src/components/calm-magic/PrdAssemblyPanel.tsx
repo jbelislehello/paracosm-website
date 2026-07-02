@@ -436,7 +436,7 @@ export const PrdAssemblyPanel: React.FC<PrdAssemblyPanelProps> = ({
   const [compilingLayer, setCompilingLayer] = useState<PrdLayer | null>(null);
   
   // Refs for auto-save debouncing
-  const autoSaveTimeoutRef = useRef<NodeJS.Timeout>();
+  const autoSaveTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const contentRef = useRef(content);
   contentRef.current = content;
   
