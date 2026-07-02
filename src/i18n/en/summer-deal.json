@@ -1,0 +1,40 @@
+{
+  "banner": {
+    "tag": "Summer Deal",
+    "message": "MVP of your app or website in 2 weeks — $8,500",
+    "cta": "Reserve a slot",
+    "dismiss": "Dismiss"
+  },
+  "section": {
+    "eyebrow": "Limited summer cohort",
+    "title": "Ship your MVP in 2 weeks. Fixed price. $8,500.",
+    "subtitle": "A focused 2-week sprint to take your app or website from idea to a live, functional MVP — designed, built, and deployed by the Paracosm team.",
+    "price_label": "Fixed price",
+    "duration_label": "2-week delivery",
+    "scope_label": "Fixed scope",
+    "includes_title": "What's included",
+    "includes": [
+      "Discovery call + scoped MVP spec",
+      "Custom design system aligned with your brand",
+      "Working web app (React + Supabase, or Next-equivalent)",
+      "Deployment, custom domain & handoff",
+      "1 week of post-launch support & tweaks",
+      "Session recordings & documentation"
+    ],
+    "for_title": "Who it's for",
+    "for": "Founders validating a concept, consultants launching a service, and teams needing a real product — not another deck.",
+    "slots": "Only 4 slots available this summer.",
+    "form_title": "Tell us about your project",
+    "form_note": "We'll reply within 24 hours with next steps.",
+    "success": "Got it — we'll be in touch shortly.",
+    "error": "Something went wrong. Please try again or email jbelisle@helloarchitekt.com."
+  },
+  "form": {
+    "name": "Your name",
+    "email": "Email",
+    "company": "Company (optional)",
+    "project_idea": "What are you building? (1–3 sentences)",
+    "submit": "Reserve my slot",
+    "submitting": "Sending…"
+  }
+}
