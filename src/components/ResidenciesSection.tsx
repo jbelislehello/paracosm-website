@@ -91,6 +91,14 @@ const ResidenciesSection: React.FC = () => {
               key={r.id}
               to={`/residencies/${r.id}`}
               id={`residency-${r.id}`}
+              onClick={() =>
+                trackEvent("residency_card_click", {
+                  residency_id: r.id,
+                  residency_name: r.name,
+                  position: i,
+                  source: "residencies_section",
+                })
+              }
               className={`group relative overflow-hidden rounded-2xl p-6 md:p-7 border border-border/40 bg-card transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl ${
                 i === 0 ? "lg:col-span-2 lg:row-span-1" : ""
               } ${i === 6 ? "sm:col-span-2 lg:col-span-1" : ""}`}
