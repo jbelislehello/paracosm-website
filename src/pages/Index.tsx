@@ -231,6 +231,9 @@ const Index = () => {
         <HeroSection onDiscoverFramework={handleDiscoverFramework} />
       </section>
 
+      {/* Anchor statement */}
+      <RelationalPlaceQuote />
+
       {/* Summer Deal offer */}
       <SummerDealSection />
 
