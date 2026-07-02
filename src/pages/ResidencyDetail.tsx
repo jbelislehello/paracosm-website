@@ -105,7 +105,7 @@ const ResidencyDetail: React.FC = () => {
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
                   <BreadcrumbLink asChild>
-                    <Link to="/#residencies">Residencies</Link>
+                    <Link to="/residencies">Residencies</Link>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
