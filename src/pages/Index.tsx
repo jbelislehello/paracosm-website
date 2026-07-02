@@ -233,7 +233,11 @@ const Index = () => {
       {/* Summer Deal offer */}
       <SummerDealSection />
 
+      {/* Practitioner positioning: Calm Magic as navigator across Crewdle / Lovable / Base44 */}
+      <NavigatorPositioningSection />
+
       <WhyItWorksRecap lens="leadership" />
+
 
 
       <ResidenciesSection />
