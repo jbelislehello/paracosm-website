@@ -13,6 +13,7 @@ import SocialProofSection from "@/components/SocialProofSection";
 import OnboardingGuide from "@/components/OnboardingGuide";
 import CollapsibleSection from "@/components/CollapsibleSection";
 import BookAnnouncementBanner from "@/components/BookAnnouncementBanner";
+import HybridCognitionBanner from "@/components/landing/HybridCognitionBanner";
 import AgenticEcosystemHero from "@/components/AgenticEcosystemHero";
 import AgenticEcosystemDemo from "@/components/AgenticEcosystemDemo";
 import { lazy, Suspense } from "react";
@@ -75,6 +76,7 @@ const LandingPage = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+      <HybridCognitionBanner />
       <BookAnnouncementBanner />
       <SummerDealBanner />
       {/* Navigation */}
