@@ -1,47 +1,64 @@
-# Verify the Calm Magic Board
+# Guided Test Mode for Calm Magic Board
 
-Two-pass check: static code audit + live Playwright walkthrough, covering both entry paths.
+An in-app checklist overlay that walks you through each Board step, auto-detects success/failure from live app state (DOM, network, DB), and shows pass/fail per step. Runs against your real session — no Playwright, no separate test harness.
 
-## 1. Static audit (read-only)
+## How you'll use it
 
-Trace and report issues, no code changes:
+1. Sign in, go to `/calm-magic-board?test=1` (or click a new "Run guided test" button in the board header, visible only to admins).
+2. A floating panel appears on the right with an ordered checklist. Each step highlights the target UI element and shows what to do.
+3. As you interact, the panel auto-marks steps ✅ pass / ❌ fail / ⏭ skipped, with a short reason and a "Retry" button.
+4. At the end: summary with pass count, failing step details, and a "Copy report" button (Markdown) you can paste back to me.
 
-- `BoardEntryGate` → what it routes to (personal vs organizational / PRD)
-- `CalmMagicBoard.tsx` page: data loading, RPC/edge-function calls, error handling
-- Tile persistence via `useTileMatrixPersistence` + related hooks (`useTileEmotionalCheckins`, `useAgentTileConversation`, `useWeavingConnections`)
-- `tile-agent` and `map-question-to-board` edge functions (recent errors in logs)
-- RLS on tile / board-related tables — confirm authenticated users can read/write their own rows
-- `ProtectedRoute` behavior on `/calm-magic-board/*`
+## Steps covered
 
-Deliverable: a short table of findings — file:line, severity (blocker / bug / polish), and suggested fix.
+Personal mode
+1. Board mounts — 8×8 matrix renders (64 tile buttons present).
+2. Entry gate — opens from `/calm-magic-assistant`, routes to `/calm-magic-board` in personal mode.
+3. Tile open — click any tile, detail/agent panel opens.
+4. Tile write — type an answer, save triggers a Supabase write (watch `tiles` insert/update).
+5. Persistence — reload, reopen same tile, content matches.
+6. Tile agent — send one message, `tile-agent` edge function returns 200.
+7. Weaving — with ≥2 tiles filled, weaving visualization renders without error.
 
-## 2. Live browser run (Playwright, admin session injected)
+Organizational / PRD mode
+8. Navigate `/calm-magic-board/prds`, list loads.
+9. Open one PRD → board enters org mode (PRD id in URL/context).
+10. Quick-fill — `prd-quick-fill` returns 200 (if surfaced).
+11. Edit a PRD-linked tile → write lands on the `prds` row, not `tiles`.
 
-Executed from the sandbox against `http://localhost:8080`, screenshots saved under `/tmp/browser/board-check/`.
+Cross-cutting
+12. View-mode nav (Journey / Spiral / Tests / Learning / Overview / Tools / Dream) — each mounts, no red console errors.
+13. Mobile viewport check — board usable at 390px.
+14. Console clean — no red errors captured during the run.
 
-**Personal path**
-1. Open `/relational-healing` → click "Launch Calm Magic Board" → verify `BoardEntryGate` modal opens and routes to `/calm-magic-board` in personal mode.
-2. On the board: confirm the 8×8 tile matrix renders, tiles are clickable, tile detail/agent panel opens.
-3. Write a short answer on 1–2 tiles → reload → confirm persistence.
-4. Capture console errors + failed network requests.
+## How each step is auto-verified
 
-**Organizational / PRD path**
-1. Go to `/calm-magic-board/prds` → open or create a PRD → enter the board in org mode.
-2. Verify PRD-linked tiles load, quick-fill (if surfaced) runs, `prd-quick-fill` edge function returns 200.
-3. Edit a tile in org mode → confirm it writes to the PRD row (not personal).
-4. Check weaving visualization renders when ≥2 tiles have content.
+- **DOM assertions**: MutationObserver + `document.querySelector` on stable selectors (data-testid added where missing).
+- **Network assertions**: monkey-patch `window.fetch` inside the panel to record calls to Supabase REST and edge functions, then match by URL + status.
+- **DB assertions**: read-back via the existing supabase client (`from('tiles').select(...).eq('user_id', auth.uid())`) to confirm persistence.
+- **Console assertions**: wrap `console.error` / `window.onerror` while the run is active.
 
-**Cross-cutting checks**
-- View-mode nav (Journey / Spiral / Tests / Learning / Overview / Tools / Dream) — each mounts without runtime error.
-- Mobile viewport (390×592, current preview): board is usable or gracefully degrades.
-- Console has no red errors after full walkthrough.
+Each step has: `label`, `instruction`, `autoCheck()` returning `{ status, detail }`, timeout (default 30s), and a manual "Mark pass/fail" fallback.
 
-## 3. Report back
+## Files to add / change
 
-Single message with: findings table, screenshots inline, and a prioritized list of fixes to run once you approve moving to build mode. No code edits happen in this plan.
+New:
+- `src/components/board/GuidedTestPanel.tsx` — floating panel, step list, progress, report export.
+- `src/components/board/guidedTestSteps.ts` — the ordered step definitions and their `autoCheck` functions.
+- `src/hooks/useGuidedTestRunner.ts` — runner state machine (current step, results, fetch/console interceptors, cleanup).
 
-## Technical notes
+Modified:
+- `src/pages/CalmMagicBoard.tsx` (and PRD board page) — mount `<GuidedTestPanel />` when `?test=1` is present and user is admin (`useAdminStatus`).
+- A handful of board components — add `data-testid` on the tile grid, tile detail save button, agent send button, weaving canvas, view-mode tabs. Non-visual changes only.
 
-- Uses `LOVABLE_BROWSER_SUPABASE_*` env to restore the admin session before hitting protected routes.
-- No DB migrations, no edge-function redeploys, no file edits during the audit.
-- If a blocker is found (e.g., tiles fail to persist), I'll stop the walkthrough early and surface it before continuing.
+No DB migrations, no edge-function changes, no route changes.
+
+## Access & safety
+
+- Gated behind `useAdminStatus` **and** `?test=1` query param — invisible to normal users.
+- Interceptors (`fetch`, `console.error`) install on mount and are removed on unmount, so they never leak into normal sessions.
+- All writes done during the test are your real writes; the panel offers a "Cleanup test tile" button that deletes the tile row it created.
+
+## Deliverable
+
+After you approve, I'll implement the panel + steps + testids, then you open `/calm-magic-board?test=1` and click **Start**. The panel walks you through, and at the end you paste the Markdown report back so we prioritize any failures.
