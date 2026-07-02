@@ -23,6 +23,9 @@ import WhyItWorksRecap from "@/components/resonance/WhyItWorksRecap";
 import ResidenciesSection from "@/components/ResidenciesSection";
 import SomaticCreativityRetreat from "@/components/SomaticCreativityRetreat";
 import { residencies } from "@/data/residencies";
+import SummerDealBanner from "@/components/landing/SummerDealBanner";
+import SummerDealSection from "@/components/landing/SummerDealSection";
+
 
 const MOBILE_NAV_SECTIONS = [
   { id: "hero", label: "Home" },
@@ -218,12 +221,19 @@ const Index = () => {
       {/* Mobile Section Navigation Dots */}
       <MobileSectionNav sections={MOBILE_NAV_SECTIONS} />
       
+      {/* Summer Deal announcement banner */}
+      <SummerDealBanner />
+
       {/* Hero Section - Paracosm Focus */}
       <section id="hero">
         <HeroSection onDiscoverFramework={handleDiscoverFramework} />
       </section>
 
+      {/* Summer Deal offer */}
+      <SummerDealSection />
+
       <WhyItWorksRecap lens="leadership" />
+
 
       <ResidenciesSection />
 

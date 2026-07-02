@@ -1,0 +1,40 @@
+{
+  "banner": {
+    "tag": "Deal d'été",
+    "message": "MVP de votre app ou site web en 2 semaines — 8 500 $",
+    "cta": "Réserver une place",
+    "dismiss": "Fermer"
+  },
+  "section": {
+    "eyebrow": "Cohorte d'été limitée",
+    "title": "Livrez votre MVP en 2 semaines. Prix fixe. 8 500 $.",
+    "subtitle": "Un sprint focalisé de 2 semaines pour transformer votre idée en un MVP vivant et fonctionnel — conçu, développé et déployé par l'équipe Paracosm.",
+    "price_label": "Prix fixe",
+    "duration_label": "Livraison 2 semaines",
+    "scope_label": "Portée fixe",
+    "includes_title": "Ce qui est inclus",
+    "includes": [
+      "Appel de découverte + spécification MVP cadrée",
+      "Système de design sur mesure aligné à votre marque",
+      "Application web fonctionnelle (React + Supabase)",
+      "Déploiement, domaine personnalisé et transfert",
+      "1 semaine de support post-lancement et ajustements",
+      "Enregistrements de sessions et documentation"
+    ],
+    "for_title": "Pour qui",
+    "for": "Fondateur·rice·s qui valident un concept, consultant·e·s qui lancent un service, et équipes qui ont besoin d'un vrai produit — pas d'un deck de plus.",
+    "slots": "Seulement 4 places disponibles cet été.",
+    "form_title": "Parlez-nous de votre projet",
+    "form_note": "Nous répondons en moins de 24 heures avec les prochaines étapes.",
+    "success": "Bien reçu — nous vous répondons sous peu.",
+    "error": "Une erreur est survenue. Réessayez ou écrivez à jbelisle@helloarchitekt.com."
+  },
+  "form": {
+    "name": "Votre nom",
+    "email": "Courriel",
+    "company": "Entreprise (facultatif)",
+    "project_idea": "Que voulez-vous construire ? (1 à 3 phrases)",
+    "submit": "Réserver ma place",
+    "submitting": "Envoi…"
+  }
+}

@@ -1943,6 +1943,39 @@ export type Database = {
         }
         Relationships: []
       }
+      summer_deal_leads: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string
+          id: string
+          language: string
+          name: string
+          project_idea: string
+          source: string | null
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          language?: string
+          name: string
+          project_idea: string
+          source?: string | null
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          language?: string
+          name?: string
+          project_idea?: string
+          source?: string | null
+        }
+        Relationships: []
+      }
       tasks: {
         Row: {
           category: string

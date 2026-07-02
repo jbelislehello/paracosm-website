@@ -34,7 +34,9 @@ const TRANSLATION_MODULES = [
   'client-assessment',
   'landing',
   'book',
+  'summer-deal',
 ] as const;
+
 
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
   const [language, setLanguage] = useState<Language>('en');
