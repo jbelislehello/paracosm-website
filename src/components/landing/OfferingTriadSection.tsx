@@ -148,7 +148,18 @@ export default function OfferingTriadSection() {
                 </ul>
 
                 <div className="mt-auto pt-7">
-                  <Link to={o.route}>
+                  <Link
+                    to={o.route}
+                    onClick={() =>
+                      trackEvent("offering_cta_click", {
+                        f_word: o.fWord,
+                        label: o.label,
+                        route: o.route,
+                        cta: o.cta,
+                        source: "offering_triad",
+                      })
+                    }
+                  >
                     <Button
                       variant="outline"
                       className="w-full border-white/20 bg-transparent text-white hover:bg-white hover:text-[hsl(var(--bloom-ink))] font-vhs uppercase tracking-widest text-xs gap-2"
