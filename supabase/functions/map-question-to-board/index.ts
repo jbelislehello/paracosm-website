@@ -4,6 +4,7 @@
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 import { checkRateLimit } from "../_shared/rateLimit.ts";
+import { requireUser } from "../_shared/requireUser.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -112,6 +113,9 @@ Deno.serve(async (req) => {
   }
 
   // Per-IP rate limit to prevent unauthenticated AI credit abuse.
+  const _auth = await requireUser(req);
+  if (_auth instanceof Response) return _auth;
+
   const _rl = checkRateLimit(req, { limit: 20, windowMs: 60_000 });
   if (_rl) return _rl;
 

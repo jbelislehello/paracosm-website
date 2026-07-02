@@ -1,6 +1,7 @@
 import { corsHeaders } from "https://esm.sh/@supabase/supabase-js@2.95.0/cors";
 import { z } from "https://esm.sh/zod@3.23.8";
 import { checkRateLimit } from "../_shared/rateLimit.ts";
+import { requireUser } from "../_shared/requireUser.ts";
 
 const SLIDE_TYPES = ["title", "bullets", "two-column", "quote", "stat", "closing-cta"] as const;
 type SlideType = typeof SLIDE_TYPES[number];
@@ -175,6 +176,9 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders }
 
   // Per-IP rate limit to prevent unauthenticated AI credit abuse.
+  const _auth = await requireUser(req);
+  if (_auth instanceof Response) return _auth;
+
   const _rl = checkRateLimit(req, { limit: 20, windowMs: 60_000 });
   if (_rl) return _rl;);
 
