@@ -1,4 +1,10 @@
 {
+  "hybrid_cognition": {
+    "tag": "New event",
+    "message": "Entrepreneurs & creatives — dive into a new form of hybrid cognition.",
+    "cta": "Join the event",
+    "dismiss": "Dismiss"
+  },
   "hero_headline": "Building Learning Organizations",
   "hero_description": "Bridge the gap between vision and execution through specialized coaching that aligns technical innovation with human intelligence",
   "hero_long_description": "We help leaders and organizations create breakthrough innovations by developing the specific capabilities needed for each stage of transformation: visionary leadership, technical excellence, and learning-oriented culture.",
