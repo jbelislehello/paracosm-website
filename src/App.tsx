@@ -136,7 +136,7 @@ function App() {
                     <Route path="/lineage" element={<Lineage />} />
                     <Route path="/agentic-ecosystem-deck" element={<AgenticEcosystemDeck />} />
                     <Route path="/resonance" element={<ResonanceDemo />} />
-                    <Route path="/residencies" element={<Navigate to="/#residencies" replace />} />
+                    <Route path="/residencies" element={<Navigate to="/agentic-ux#residencies" replace />} />
                     <Route path="/residencies/:archetype" element={<ResidencyDetail />} />
                     <Route path="/credits" element={<Credits />} />
                     <Route path="/origins" element={<Origins />} />
