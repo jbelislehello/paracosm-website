@@ -34,6 +34,7 @@ const ResidenciesSection: React.FC = () => {
 
   return (
     <section
+      ref={sectionRef}
       id="residencies"
       className="relative py-20 md:py-28 px-4 bg-gradient-to-b from-background via-background to-muted/30"
     >
