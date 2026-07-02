@@ -22,10 +22,24 @@ export default function SummerDealSection() {
   });
   const startedAt = useRef<number>(Date.now());
 
-  const includesRaw = t("summer_deal.section.includes");
-  const includes: string[] = Array.isArray(includesRaw)
-    ? (includesRaw as unknown as string[])
-    : [];
+  const includes: string[] = language === "fr"
+    ? [
+        "Appel de découverte + spécification MVP cadrée",
+        "Système de design sur mesure aligné à votre marque",
+        "Application web fonctionnelle (React + Supabase)",
+        "Déploiement, domaine personnalisé et transfert",
+        "1 semaine de support post-lancement et ajustements",
+        "Enregistrements de sessions et documentation",
+      ]
+    : [
+        "Discovery call + scoped MVP spec",
+        "Custom design system aligned with your brand",
+        "Working web app (React + Supabase, or Next-equivalent)",
+        "Deployment, custom domain & handoff",
+        "1 week of post-launch support & tweaks",
+        "Session recordings & documentation",
+      ];
+
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
