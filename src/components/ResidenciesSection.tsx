@@ -1,11 +1,37 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { residencies } from "@/data/residencies";
 import { retreatImages, formatCredit } from "@/assets/retreats";
 import { useImageCredits } from "@/hooks/useImageCredits";
+import { trackEvent } from "@/lib/analytics";
 
 const ResidenciesSection: React.FC = () => {
   const { getCredit } = useImageCredits();
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const trackedRef = useRef(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el || trackedRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting && !trackedRef.current) {
+            trackedRef.current = true;
+            trackEvent("residencies_section_view", {
+              intersection_ratio: Number(entry.intersectionRatio.toFixed(2)),
+              count: residencies.length,
+            });
+            observer.disconnect();
+          }
+        }
+      },
+      { threshold: 0.35 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section
       id="residencies"
