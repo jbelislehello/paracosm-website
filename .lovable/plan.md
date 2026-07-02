@@ -1,25 +1,26 @@
-## Plan
+## Plan — Top-of-site CTA: Hybrid Cognition Event
 
-1. **Fix the homepage route mismatch**
-   - Add an explicit `/index` route that redirects to `/`, so the preview path the user is currently viewing shows the real homepage instead of missing/old content.
+Add a new promotional banner at the very top of the site (above the existing Summer Deal / Book banners) inviting entrepreneurs and creatives to explore a new form of hybrid cognition, linking out to the Prisme.one event.
 
-2. **Put every recent visible homepage change on the actual homepage**
-   - Ensure `LandingPage.tsx` includes, near the top:
-     - Relational quote: “Most organizations don't lack ideas...”
-     - Practitioner positioning: Base44 / Lovable + Powerbase / Crewdle bridged by Calm Magic
-     - Foreplay / Foresight / Forecast offering triad
-     - Summer Deal banner and Summer Deal section
-     - Existing primary hero CTA for booking a discovery call
+### 1. New component: `src/components/landing/HybridCognitionBanner.tsx`
+- Sticky-eligible top banner, distinct gradient from Summer Deal (e.g. deep indigo → cyan) so the two stack visually without clashing.
+- Bilingual copy via `LanguageContext`:
+  - FR (primary): "Entrepreneurs & créatifs — plongez dans une nouvelle forme de cognition hybride."
+  - EN: "Entrepreneurs & creatives — dive into a new form of hybrid cognition."
+- CTA button → opens the Prisme.one URL in a new tab (`rel="noopener noreferrer"`), full UTM chain preserved.
+- Dismiss (X) with `localStorage` key `hybrid_cognition_banner_dismissed_v1` (same pattern as `SummerDealBanner`).
+- Fires `trackEvent('hybrid_cognition_cta_click', { location: 'top_banner' })` on click and `hybrid_cognition_banner_dismiss` on dismiss.
 
-3. **Add Trainings to the homepage navigation**
-   - Add `Trainings` to both desktop and mobile nav in `LandingPage.tsx`, matching the existing `/trainings` route.
+### 2. i18n
+- Add `hybrid_cognition` keys to `src/i18n/en/landing.json` and `src/i18n/fr/landing.json` (tag, message, CTA label, dismiss label).
 
-4. **Verify the visible result**
-   - Check `/` and `/index` in the browser preview.
-   - Confirm the recent sections are present on the homepage and `/index` lands on the same homepage content.
+### 3. Mount
+- In `src/pages/LandingPage.tsx`, render `<HybridCognitionBanner />` as the first child, above `BookAnnouncementBanner` and `SummerDealBanner`.
 
-## Technical notes
+### 4. Verify
+- Playwright screenshot of `/` at mobile + desktop to confirm stacking order and that the CTA is visible above the fold.
 
-- Keep changes frontend-only.
-- Do not touch database, Supabase, security findings, or publishing settings.
-- Avoid changing the existing `/agentic-ux` page except where routing needs to point users back to the canonical homepage.
+### Technical notes
+- Frontend-only, no DB or edge function changes.
+- External link — no routing changes.
+- No changes to security, sitemap, or SEO metadata.
