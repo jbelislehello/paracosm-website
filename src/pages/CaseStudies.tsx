@@ -1,22 +1,24 @@
-import React from 'react';
+import React from "react";
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { useLanguage } from '@/contexts/LanguageContext';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
-import CaseStudiesSection from '@/components/case-studies/CaseStudiesSection';
-import Footer from '@/components/Footer';
-import { usePageSeo } from '@/hooks/usePageSeo';
-import { webPageSchema, itemListSchema } from '@/lib/structuredData';
-import { caseStudies } from '@/data/caseStudies';
+import { ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import CaseStudiesSection from "@/components/case-studies/CaseStudiesSection";
+import Footer from "@/components/Footer";
+import { usePageSeo } from "@/hooks/usePageSeo";
+import { webPageSchema, itemListSchema } from "@/lib/structuredData";
+import { caseStudies } from "@/data/caseStudies";
+import { editorialType } from "@/components/editorial/editorialTokens";
+import { cn } from "@/lib/utils";
 
 const CaseStudies: React.FC = () => {
   const { t } = useLanguage();
 
   usePageSeo({
     title: "Case Studies — Learning Organizations in practice | Paracosm",
-    description: "Real engagements where Paracosm helped executives and innovators build Learning Organizations using AI systems and relational intelligence.",
+    description:
+      "Real engagements where Paracosm helped executives and innovators build Learning Organizations using AI systems and relational intelligence.",
     path: "/case-studies",
     jsonLd: [
       webPageSchema({
@@ -39,41 +41,43 @@ const CaseStudies: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-[hsl(var(--bloom-ink))] text-white relative">
-      <div className="bloom-scanlines pointer-events-none fixed inset-0 opacity-[0.12] z-[5]" />
-      {/* Navigation */}
-      <header className="fixed w-full z-50 bg-[hsl(var(--bloom-ink)/0.85)] backdrop-blur-md border-b border-[hsl(var(--bloom-magenta)/0.3)]">
-        <div className="container flex items-center justify-between py-4">
-          <div className="flex items-center gap-4">
-            <Link to="/">
-              <Button variant="ghost" size="sm" className="flex items-center gap-2 text-white hover:text-[hsl(var(--bloom-amber))]">
-                <ArrowLeft className="w-4 h-4" />
-              </Button>
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Editorial masthead */}
+      <header className="sticky top-0 z-40 backdrop-blur-md bg-background/85 border-b border-border">
+        <div className="container max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link
+              to="/"
+              className={cn(editorialType.cta, "inline-flex items-center gap-1 opacity-70 hover:opacity-100")}
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
             </Link>
             <Link to="/" className="flex items-center gap-2">
-              <img src={logoParacosm} alt="Paracosm" className="bg-white rounded-lg p-1 w-8 h-8 object-contain" />
-              <span className="font-display text-base bloom-chroma-static">Paracosm</span>
+              <img
+                src={logoParacosm}
+                alt="Paracosm"
+                className="w-8 h-8 rounded-md bg-white p-1 object-contain"
+              />
+              <span className={cn(editorialType.serif, "text-base")}>Paracosm</span>
             </Link>
           </div>
           <nav className="hidden md:flex gap-6 items-center">
-            <Link to="/agentic-ux" className="text-xs font-vhs uppercase tracking-[0.18em] hover:text-[hsl(var(--bloom-amber))] transition-colors">{t("navigation.ai_leadership")}</Link>
-            <Link to="/calm-magic-assistant" className="text-xs font-vhs uppercase tracking-[0.18em] hover:text-[hsl(var(--bloom-amber))] transition-colors">{t("navigation.relational_innovation")}</Link>
-            <Link to="/about-us" className="text-xs font-vhs uppercase tracking-[0.18em] hover:text-[hsl(var(--bloom-amber))] transition-colors">{t("navigation.about")}</Link>
+            <Link to="/trainings" className={cn(editorialType.cta, "opacity-70 hover:opacity-100")}>
+              Trainings
+            </Link>
+            <Link to="/events-and-retreats" className={cn(editorialType.cta, "opacity-70 hover:opacity-100")}>
+              Retreats
+            </Link>
+            <Link to="/about-us" className={cn(editorialType.cta, "opacity-70 hover:opacity-100")}>
+              About
+            </Link>
             <LanguageSwitcher />
           </nav>
-          <Link to="/agentic-ux">
-            <Button className="bg-[hsl(var(--bloom-magenta))] text-white hover:bg-[hsl(var(--bloom-amber))] hover:text-[hsl(var(--bloom-ink))] font-vhs uppercase tracking-widest text-xs">
-              {t("navigation.ai_leadership")}
-            </Button>
-          </Link>
         </div>
       </header>
 
-      <div className="pt-16 relative z-10">
-        <CaseStudiesSection />
-      </div>
+      <CaseStudiesSection />
 
-      {/* Footer */}
       <Footer />
     </div>
   );
