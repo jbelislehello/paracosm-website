@@ -80,36 +80,41 @@ const Drift = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted flex items-center justify-center">
+      <div className="min-h-screen bg-[hsl(35_45%_96%)] dark:bg-[hsl(25_15%_12%)] flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted">
-      <div className="max-w-6xl mx-auto p-6 sm:p-8 lg:p-12 space-y-8">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" onClick={() => navigate('/calm-magic-board')}>
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back
-            </Button>
+    <div className="min-h-screen bg-[hsl(35_45%_96%)] dark:bg-[hsl(25_15%_12%)] text-foreground">
+      <div className="max-w-6xl mx-auto p-6 sm:p-8 lg:p-12 space-y-8 pt-10">
+        <div className="flex items-center justify-between flex-wrap gap-4 border-b border-current/10 pb-6">
+          <div className="flex items-baseline gap-6">
+            <span className="font-serif text-5xl md:text-6xl text-[hsl(15_75%_55%)] leading-none">02</span>
             <div>
-              <h1 className="text-3xl font-bold">Drift → PRD</h1>
-              <p className="text-muted-foreground">
-                Select glitches to synthesize into a 5-layer PRD
+              <p className="text-[10px] uppercase tracking-[0.4em] font-semibold opacity-60">Drift · Synthesis</p>
+              <h1 className="font-serif text-3xl md:text-4xl mt-1"><em className="italic font-light">Drift</em> → PRD</h1>
+              <p className="text-sm opacity-70 mt-1">
+                Select glitches to synthesize into a 5-layer PRD.
               </p>
             </div>
           </div>
-          <Button 
-            onClick={createPrd} 
-            disabled={selectedIds.length === 0 || creating}
-          >
-            {creating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Create PRD ({selectedIds.length})
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" onClick={() => navigate('/calm-magic-board')}>
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back
+            </Button>
+            <Button
+              onClick={createPrd}
+              disabled={selectedIds.length === 0 || creating}
+              className="rounded-full text-xs uppercase tracking-[0.2em]"
+            >
+              {creating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Create PRD ({selectedIds.length})
+            </Button>
+          </div>
         </div>
+
 
         {events.length === 0 ? (
           <Card className="p-8 text-center">
