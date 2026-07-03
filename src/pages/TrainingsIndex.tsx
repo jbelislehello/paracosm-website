@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import EditorialSection from "@/components/editorial/EditorialSection";
 import EditorialChapterHeader from "@/components/editorial/EditorialChapterHeader";
 import EditorialCTA from "@/components/editorial/EditorialCTA";
+import EditorialSiteHeader from "@/components/editorial/EditorialSiteHeader";
 import { editorialTone, editorialType, type EditorialTone } from "@/components/editorial/editorialTokens";
 import { cn } from "@/lib/utils";
 
@@ -64,47 +65,62 @@ export default function TrainingsIndex() {
 
   return (
     <main className="bg-background text-foreground">
+      <EditorialSiteHeader />
+
       {/* Masthead + hero — warm opening chapter */}
       <EditorialSection tone="warm" className="pt-14 pb-16 md:pt-20 md:pb-24">
-        <div className="flex items-center justify-between mb-14 pb-6 border-b border-current/15">
-          <Link to="/" className={cn(editorialType.cta, "opacity-70 hover:opacity-100")}>
-            ← Paracosm
-          </Link>
-          <Link to="/about-us" className={cn(editorialType.cta, "opacity-70 hover:opacity-100")}>
-            About
-          </Link>
+        <div className="mb-10">
+          <p className={cn(editorialType.eyebrow, editorialTone.warm.kicker)}>
+            Volume I · The rehearsal arc
+          </p>
         </div>
 
         <div className="grid md:grid-cols-12 gap-10 items-end">
           <div className="md:col-span-8 space-y-6">
             <p className={cn(editorialType.eyebrow, editorialTone.warm.kicker)}>
-              Volume I · Chapter 01 — Foreplay
+              Volume I · The rehearsal arc
             </p>
             <h1 className={cn(editorialType.serif, "text-5xl md:text-7xl leading-[0.98] tracking-tight")}>
-              Three trainings to <em className="italic font-light">rehearse</em> the AI shift.
+              Foreplay, Foresight, Forecast — <em className="italic font-light">rehearse</em> the AI shift.
             </h1>
             <p className="text-lg md:text-xl opacity-80 max-w-2xl leading-relaxed">
-              GL!TCH is the official Crewdle AI Formation. Drift and Tune extend the journey from
-              co-assisted exploration into orchestrated autonomy.
+              A three-phase arc. Trainings build the muscle. Retreats sharpen the sight. Residencies ship the evidence.
             </p>
           </div>
           <aside className="md:col-span-4 border-l border-current/20 pl-6 space-y-3">
             <p className={editorialType.caption}>In this issue</p>
             <ol className="space-y-2 text-sm">
-              {trainings.map((t, i) => (
-                <li key={t.id} className="flex gap-3">
-                  <span className={cn(editorialType.serif, editorialTone.warm.numeral)}>
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span>{t.title}</span>
-                </li>
-              ))}
+              <li className="flex gap-3">
+                <span className={cn(editorialType.serif, editorialTone.warm.numeral)}>01</span>
+                <span>Foreplay — Trainings</span>
+              </li>
+              <li className="flex gap-3">
+                <span className={cn(editorialType.serif, editorialTone.warm.numeral)}>02</span>
+                <span>Foresight — Vision Retreats</span>
+              </li>
+              <li className="flex gap-3">
+                <span className={cn(editorialType.serif, editorialTone.warm.numeral)}>03</span>
+                <span>Forecast — Prototype Residencies</span>
+              </li>
             </ol>
           </aside>
         </div>
       </EditorialSection>
 
-      {/* One chapter per training */}
+      {/* Chapter 01 — Foreplay: the three trainings */}
+      <EditorialSection tone="paper" id="foreplay">
+        <EditorialChapterHeader
+          numeral="01"
+          kicker="Foreplay · Trainings"
+          subtitle="Rehearse the moves before the stakes get real."
+          tone="paper"
+        />
+        <p className="mt-6 max-w-3xl text-lg opacity-80">
+          GL!TCH is the official Crewdle AI Formation. Drift and Tune extend the journey from co-assisted
+          exploration into orchestrated autonomy.
+        </p>
+      </EditorialSection>
+
       {trainings.map((t, i) => {
         const tone = slugTone[t.slug] ?? (["warm", "night", "clay"][i % 3] as EditorialTone);
         const numeral = String(i + 1).padStart(2, "0");
@@ -116,7 +132,7 @@ export default function TrainingsIndex() {
           >
             <div className="container max-w-7xl mx-auto">
               <EditorialChapterHeader
-                numeral={numeral}
+                numeral={`01·${numeral}`}
                 kicker={t.crewdle_focus ?? "Training"}
                 subtitle={t.tagline ?? undefined}
                 tone={tone}
@@ -165,6 +181,72 @@ export default function TrainingsIndex() {
           </section>
         );
       })}
+
+      {/* Chapter 02 — Foresight → Retreats */}
+      <EditorialSection tone="night" id="foresight">
+        <EditorialChapterHeader
+          numeral="02"
+          kicker="Foresight · Vision Retreats"
+          subtitle="Slow down long enough to see what wants to happen."
+          tone="night"
+        />
+        <div className="mt-10 grid md:grid-cols-12 gap-10 items-end">
+          <div className="md:col-span-8 space-y-6">
+            <p className={cn(editorialType.serif, "text-3xl md:text-4xl leading-tight")}>
+              After the training muscle, the retreat is where leadership steps out of the machine to sense what the
+              machine is actually asking for.
+            </p>
+            <p className="opacity-80 max-w-2xl">
+              Think Like a Forest, Stories of a Near Future, and the Relational Intelligence Summit turn intuition
+              into a legible map you can share with your team on Monday.
+            </p>
+          </div>
+          <div className="md:col-span-4 md:text-right">
+            <Link
+              to="/events-and-retreats"
+              className={cn(
+                "inline-flex items-center gap-2 px-6 py-3 text-xs uppercase tracking-[0.25em] font-semibold",
+                editorialTone.night.ctaPrimary,
+              )}
+            >
+              See upcoming retreats <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </div>
+      </EditorialSection>
+
+      {/* Chapter 03 — Forecast → Residencies */}
+      <EditorialSection tone="clay" id="forecast">
+        <EditorialChapterHeader
+          numeral="03"
+          kicker="Forecast · Prototype Residencies"
+          subtitle="Turn the vision into measurable, working evidence."
+          tone="clay"
+        />
+        <div className="mt-10 grid md:grid-cols-12 gap-10 items-end">
+          <div className="md:col-span-8 space-y-6">
+            <p className={cn(editorialType.serif, "text-3xl md:text-4xl leading-tight")}>
+              Multi-week residencies where Paracosm embeds with your team to build the prototype that proves — or
+              breaks — the hypothesis.
+            </p>
+            <p className="opacity-80 max-w-2xl">
+              Every residency uses the Prototypes Garden: structured foresight scenarios wired to real data, real
+              users and a real ROI thesis.
+            </p>
+          </div>
+          <div className="md:col-span-4 md:text-right">
+            <Link
+              to="/agentic-ux#residencies"
+              className={cn(
+                "inline-flex items-center gap-2 px-6 py-3 text-xs uppercase tracking-[0.25em] font-semibold",
+                editorialTone.clay.ctaPrimary,
+              )}
+            >
+              Begin a residency <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        </div>
+      </EditorialSection>
 
       <Footer />
     </main>

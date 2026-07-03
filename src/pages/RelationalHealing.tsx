@@ -1,114 +1,169 @@
-import { useEffect, useState } from "react";
-import CoachingServices from "@/components/calm-magic/CoachingServices";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
-import { Button } from "@/components/ui/button";
-import { Heart, ArrowLeft, ArrowRight } from 'lucide-react';
-import { Link, useNavigate } from "react-router-dom";
-import { useLanguage } from "@/contexts/LanguageContext";
 import BoardEntryGate from "@/components/calm-magic/BoardEntryGate";
-import WhyItWorksRecap from "@/components/resonance/WhyItWorksRecap";
+import {
+  EditorialSiteHeader,
+  EditorialPageHero,
+  EditorialSection,
+  EditorialChapterHeader,
+  editorialTone,
+  editorialType,
+} from "@/components/editorial";
+import { cn } from "@/lib/utils";
+import { usePageSeo } from "@/hooks/usePageSeo";
+
+const services = [
+  {
+    numeral: "01",
+    name: "Clarity Reset",
+    duration: "7 days",
+    price: "$800",
+    tagline: "From confusion to a clear, executable decision.",
+    features: [
+      "45-min diagnostic call",
+      "Situation deconstruction",
+      "1–3 clear decisions delivered",
+      "Async support + 1 follow-up",
+    ],
+    subject: "Spring 2026 — Clarity Reset",
+  },
+  {
+    numeral: "02",
+    name: "Decision Sprint",
+    duration: "14 days",
+    price: "$1,500",
+    tagline: "AI-augmented pattern analysis with full accountability.",
+    features: [
+      "Everything in Clarity Reset",
+      "Pattern analysis & scenario generation",
+      "2 additional coaching calls",
+      "Execution accountability loop",
+    ],
+    subject: "Spring 2026 — Decision Sprint",
+  },
+  {
+    numeral: "03",
+    name: "Founder Companion",
+    duration: "3 months",
+    price: "$4,500",
+    tagline: "Ongoing thinking partner for pivotal seasons.",
+    features: [
+      "Weekly working sessions",
+      "Async support between calls",
+      "Full Calm Magic Board access",
+      "Quarterly strategic review",
+    ],
+    subject: "Spring 2026 — Founder Companion",
+  },
+];
 
 const RelationalHealing = () => {
-  const { t } = useLanguage();
-  const navigate = useNavigate();
   const [showBoardGate, setShowBoardGate] = useState(false);
 
-  useEffect(() => {
-    document.title = t("page_titles.relational_intelligence");
-  }, [t]);
+  usePageSeo({
+    title: "Calm Magic Assistant — A relational coaching companion | Paracosm",
+    description:
+      "The Calm Magic Assistant is a relational coaching companion for leaders navigating pivotal decisions — grounded in the 5-axis compass of Love, Magic, Calm, Open, Free.",
+    path: "/calm-magic-assistant",
+  });
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-rose-50 to-purple-50 dark:from-rose-950/20 dark:to-purple-950/20">
-      {/* Navigation */}
-      <header className="fixed w-full z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
-        <div className="container flex items-center justify-between py-4">
-          <div className="flex items-center gap-4">
-            <Link to="/">
-              <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                <ArrowLeft className="w-4 h-4" />
-              </Button>
-            </Link>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-rose-600 to-purple-600 rounded-md flex items-center justify-center">
-                <Heart className="w-4 h-4 text-white" />
+    <main className="bg-background text-foreground">
+      <EditorialSiteHeader />
+
+      <EditorialPageHero
+        tone="warm"
+        numeral="00"
+        kicker="Resource · Coaching companion"
+        title={
+          <>
+            A relational coaching <em className="italic font-light">companion</em>.
+          </>
+        }
+        subtitle="The Calm Magic Assistant helps leaders move through pivotal decisions with a 5-axis compass — Love, Magic, Calm, Open, Free — and a working method that turns confusion into a clear next step."
+      />
+
+      <EditorialSection tone="paper" id="services">
+        <EditorialChapterHeader
+          numeral="01"
+          kicker="Working with the assistant"
+          subtitle="Three ways in. Each ends with something you can act on."
+          tone="paper"
+        />
+
+        <div className="mt-12 grid md:grid-cols-3 gap-8">
+          {services.map((s) => (
+            <article
+              key={s.name}
+              className="border-t-2 border-current/70 pt-6 flex flex-col"
+            >
+              <div className="flex items-baseline justify-between mb-4">
+                <span className={cn(editorialType.serif, "text-4xl", editorialTone.paper.numeral)}>
+                  {s.numeral}
+                </span>
+                <span className={editorialType.caption}>{s.duration}</span>
               </div>
-              <span className="font-bold text-lg">Calm Magic Assistant</span>
-            </div>
-          </div>
-          <nav className="hidden md:flex gap-6">
-            <Link to="/case-studies" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.case_studies")}</Link>
-            <Link to="/about-us" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.about")}</Link>
-            <a href="#coaching-services" className="text-sm font-medium hover:text-purple-600 transition-colors">{t("navigation.services")}</a>
-            <LanguageSwitcher />
-          </nav>
-          <Button
-            onClick={() => setShowBoardGate(true)}
-            className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600"
-          >
-            {t("calm_magic.open_calm_magic")}
-          </Button>
-        </div>
-      </header>
-
-      <div className="pt-20">
-        <WhyItWorksRecap lens="coaching" />
-      </div>
-
-      {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center pt-16 overflow-hidden">
-        <div className="container relative md:py-12 py-[41px] px-[14px]">
-          <div className="max-w-4xl mx-auto text-center">
-            <div className="backdrop-blur-sm bg-white/10 dark:bg-slate-900/10 rounded-2xl px-8 border border-white/20 py-[28px]">
-              <h1 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-rose-600 via-purple-600 to-pink-600 animate-gradient-x mb-6">
-                {t("calm_magic.title")}
-              </h1>
-              <p className="text-xl md:text-2xl mb-8 text-gray-700 dark:text-gray-200">
-                {t("calm_magic.description")}
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-                <Button
-                  onClick={() => setShowBoardGate(true)}
-                  className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-purple-600 hover:to-rose-600 flex items-center gap-2"
+              <h3 className={cn(editorialType.serif, "text-2xl md:text-3xl leading-tight tracking-tight mb-2")}>
+                {s.name}
+              </h3>
+              <p className="italic font-light opacity-80 mb-5">{s.tagline}</p>
+              <ul className="space-y-2 text-sm opacity-80 mb-6 flex-1">
+                {s.features.map((f) => (
+                  <li key={f} className="flex gap-2">
+                    <span className="opacity-40">·</span>
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="flex items-center justify-between border-t border-current/15 pt-4">
+                <span className={cn(editorialType.serif, "text-xl")}>{s.price}</span>
+                <a
+                  href={`mailto:jbelisle@helloarchitekt.com?subject=${encodeURIComponent(s.subject)}`}
+                  className="inline-flex items-center gap-1.5 text-xs uppercase tracking-[0.2em] font-semibold hover:opacity-70"
                 >
-                  <Heart className="w-4 h-4" />
-                  Launch Calm Magic Board
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
-                <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt/flexible-quick-meeting" target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" className="flex items-center gap-2">
-                    {t("hero.book_discovery")}
-                  </Button>
+                  Request <ArrowRight className="w-3 h-3" />
                 </a>
               </div>
-              
-              <p className="text-sm text-slate-600 dark:text-slate-300">
-                {t("calm_magic.tools_description")}
-              </p>
-            </div>
+            </article>
+          ))}
+        </div>
+
+        <div className="mt-16 pt-10 border-t-2 border-current/60 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+          <div className="max-w-xl">
+            <p className={cn(editorialType.caption, "mb-3")}>Try the working surface</p>
+            <p className={cn(editorialType.serif, "text-2xl md:text-3xl leading-tight")}>
+              The Calm Magic Board is where the assistant does its thinking. Open it and see the 5-axis compass live.
+            </p>
           </div>
+          <button
+            onClick={() => setShowBoardGate(true)}
+            className="inline-flex items-center gap-2 bg-foreground text-background px-6 py-3 text-xs uppercase tracking-[0.25em] font-semibold hover:opacity-90 self-start md:self-auto"
+          >
+            Launch the Board <ArrowRight className="w-3.5 h-3.5" />
+          </button>
         </div>
-      </section>
 
-      {/* Coaching Services Section */}
-      <section id="coaching-services" className="py-20 px-4">
-        <div className="container max-w-6xl mx-auto">
-          <CoachingServices />
+        <div className="mt-6 text-xs opacity-60">
+          Prefer a conversation first?{" "}
+          <Link to="/contact" className="underline hover:opacity-100">
+            Book a discovery call
+          </Link>
+          .
         </div>
-      </section>
+      </EditorialSection>
 
-      {/* Footer */}
       <Footer />
 
-      {/* Board Entry Gate Modal */}
       <BoardEntryGate
         isOpen={showBoardGate}
         onClose={() => setShowBoardGate(false)}
         sourceContext="relational"
         preselectedMode="personal"
       />
-    </div>
+    </main>
   );
 };
+
 export default RelationalHealing;

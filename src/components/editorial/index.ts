@@ -7,4 +7,5 @@ export { default as EditorialCTA } from "./EditorialCTA";
 export { default as EditorialPageHero } from "./EditorialPageHero";
 export { default as EditorialAuthShell } from "./EditorialAuthShell";
 export { default as EditorialDispatchesSection } from "./EditorialDispatchesSection";
+export { default as EditorialSiteHeader } from "./EditorialSiteHeader";
 export { editorialTone, editorialType, type EditorialTone } from "./editorialTokens";
