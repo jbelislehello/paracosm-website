@@ -121,19 +121,26 @@ const Index = () => {
           tone="night"
         />
         <div className="mt-12 divide-y divide-current/20 border-t-2 border-current/60">
-          {residencies.map((r) => (
-            <article key={r.n} className="grid grid-cols-[auto_1fr_auto] gap-6 md:gap-10 py-8 items-baseline">
+          {agenticResidencies.map((r) => (
+            <Link
+              key={r.slug}
+              to={`/agentic-ux/residencies/${r.slug}`}
+              className="group grid grid-cols-[auto_1fr_auto] gap-6 md:gap-10 py-8 items-baseline hover:bg-current/5 transition-colors -mx-4 md:-mx-6 px-4 md:px-6"
+            >
               <span className={cn(editorialType.serif, "text-4xl md:text-5xl w-14 md:w-16", editorialTone.night.numeral)}>
-                {r.n}
+                {r.numeral}
               </span>
               <div>
-                <h3 className={cn(editorialType.serif, "text-2xl md:text-3xl leading-tight tracking-tight mb-2")}>
+                <h3 className={cn(editorialType.serif, "text-2xl md:text-3xl leading-tight tracking-tight mb-2 group-hover:italic transition-all")}>
                   {r.title}
                 </h3>
-                <p className="italic font-light opacity-80 max-w-2xl leading-relaxed">{r.body}</p>
+                <p className="italic font-light opacity-80 max-w-2xl leading-relaxed mb-3">{r.summary}</p>
+                <span className={cn(editorialType.caption, "inline-flex items-center gap-2 opacity-70 group-hover:opacity-100")}>
+                  Read the residency <ArrowRight className="w-3.5 h-3.5" />
+                </span>
               </div>
               <span className={cn(editorialType.caption, "hidden md:block")}>{r.duration}</span>
-            </article>
+            </Link>
           ))}
         </div>
         <div className="mt-12 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
