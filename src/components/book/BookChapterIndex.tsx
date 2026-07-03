@@ -184,36 +184,43 @@ function ChapterRow({
   const Inner = (
     <article
       className={cn(
-        "group flex items-baseline justify-between gap-6 border-t border-current/20 py-6 transition-colors",
-        isReadable && "hover:border-current/60",
+        "group grid grid-cols-[auto_1fr_auto] items-baseline gap-6 md:gap-10 border-t border-current/25 py-7 transition-colors",
+        isReadable && "hover:border-current/70",
       )}
     >
-      <div className="flex items-baseline gap-6 min-w-0">
-        <div className={cn(
-          editorialType.serif,
-          "text-3xl md:text-4xl leading-none tabular-nums flex-none w-14",
-          hasRead ? toneKicker : "opacity-40",
-        )}>
-          {hasRead ? <Check className="h-6 w-6" /> : String(chapter.order_index).padStart(2, "0")}
-        </div>
-        <div className="min-w-0 flex-1">
-          <div className={cn("flex flex-wrap items-baseline gap-x-4 gap-y-1 mb-2", editorialType.caption)}>
-            <span className={cn(toneKicker)}>{PHASE_LABEL[chapter.phase] ?? chapter.phase}</span>
-            <span className="opacity-60">{STATUS_LABEL[chapter.status] ?? chapter.status}</span>
-            {chapter.is_free_sample && isPublished && (
-              <span className={cn("opacity-90 border-b", toneAccentBorder)}>Free sample</span>
-            )}
-            {hasRead && <span className={cn("opacity-90", toneKicker)}>Read</span>}
-          </div>
-          <h3 className="font-serif text-xl md:text-2xl leading-tight tracking-tight truncate">
-            {chapter.title}
-          </h3>
-          {chapter.summary && (
-            <p className="mt-2 text-sm opacity-70 leading-relaxed line-clamp-2 max-w-2xl">
-              {chapter.summary}
-            </p>
+      <div className={cn(
+        editorialType.serif,
+        "text-4xl md:text-5xl leading-none tabular-nums w-14 md:w-16 self-start",
+        hasRead ? toneKicker : "opacity-30",
+      )}>
+        {hasRead ? <Check className="h-7 w-7" /> : String(chapter.order_index).padStart(2, "0")}
+      </div>
+      <div className="min-w-0">
+        <div className={cn("flex flex-wrap items-baseline gap-x-4 gap-y-1 mb-2", editorialType.caption)}>
+          <span className={cn(toneKicker)}>{PHASE_LABEL[chapter.phase] ?? chapter.phase}</span>
+          <span className="opacity-40">·</span>
+          <span className="opacity-60">{STATUS_LABEL[chapter.status] ?? chapter.status}</span>
+          {chapter.is_free_sample && isPublished && (
+            <>
+              <span className="opacity-40">·</span>
+              <span className={cn("border-b pb-0.5", toneAccentBorder, toneKicker)}>Free sample</span>
+            </>
+          )}
+          {hasRead && (
+            <>
+              <span className="opacity-40">·</span>
+              <span className={cn(toneKicker)}>Read</span>
+            </>
           )}
         </div>
+        <h3 className={cn(editorialType.serif, "text-2xl md:text-3xl leading-[1.1] tracking-tight")}>
+          {chapter.title}
+        </h3>
+        {chapter.summary && (
+          <p className={cn(editorialType.serif, "mt-2 italic font-light text-base md:text-lg leading-snug opacity-75 line-clamp-2 max-w-2xl")}>
+            {chapter.summary}
+          </p>
+        )}
       </div>
       {isReadable ? (
         <span className={cn(
