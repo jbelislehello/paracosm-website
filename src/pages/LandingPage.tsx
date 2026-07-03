@@ -303,27 +303,28 @@ const LandingPage = () => {
             </p>
 
             <div className="relative space-y-6">
-              <div className="absolute left-6 md:left-8 top-12 bottom-12 w-px bg-gradient-to-b from-purple-400 via-blue-400 to-amber-400 opacity-30 hidden md:block" />
+              <div className="absolute left-6 md:left-8 top-12 bottom-12 w-px bg-current/20 hidden md:block" />
 
               {[
-                { label: t('landing.step1_label'), title: t('landing.step1_title'), desc: t('landing.step1_desc'), items: [t('landing.step1_item1'), t('landing.step1_item2'), t('landing.step1_item3')], icon: Brain, gradient: 'from-purple-500 to-indigo-600', dotColor: 'bg-purple-500', labelColor: 'text-purple-600 dark:text-purple-400' },
-                { label: t('landing.step2_label'), title: t('landing.step2_title'), desc: t('landing.step2_desc'), items: [t('landing.step2_item1'), t('landing.step2_item2'), t('landing.step2_item3')], icon: FileText, gradient: 'from-blue-500 to-purple-600', dotColor: 'bg-blue-500', labelColor: 'text-blue-600 dark:text-blue-400' },
-                { label: t('landing.step3_label'), title: t('landing.step3_title'), desc: t('landing.step3_desc'), items: [t('landing.step3_item1'), t('landing.step3_item2'), t('landing.step3_item3')], icon: Users, gradient: 'from-teal-500 to-blue-600', dotColor: 'bg-teal-500', labelColor: 'text-teal-600 dark:text-teal-400' },
-                { label: t('landing.step4_label'), title: t('landing.step4_title'), desc: t('landing.step4_desc'), items: [t('landing.step4_item1'), t('landing.step4_item2'), t('landing.step4_item3')], icon: Zap, gradient: 'from-amber-500 to-orange-600', dotColor: 'bg-amber-500', labelColor: 'text-amber-600 dark:text-amber-400' },
-                { label: t('landing.step5_label'), title: t('landing.step5_title'), desc: t('landing.step5_desc'), items: [t('landing.step5_item1'), t('landing.step5_item2'), t('landing.step5_item3')], icon: Lightbulb, gradient: 'from-emerald-500 to-teal-600', dotColor: 'bg-emerald-500', labelColor: 'text-emerald-600 dark:text-emerald-400' },
-              ].map((step) => (
+                { label: t('landing.step1_label'), title: t('landing.step1_title'), desc: t('landing.step1_desc'), items: [t('landing.step1_item1'), t('landing.step1_item2'), t('landing.step1_item3')], icon: Brain },
+                { label: t('landing.step2_label'), title: t('landing.step2_title'), desc: t('landing.step2_desc'), items: [t('landing.step2_item1'), t('landing.step2_item2'), t('landing.step2_item3')], icon: FileText },
+                { label: t('landing.step3_label'), title: t('landing.step3_title'), desc: t('landing.step3_desc'), items: [t('landing.step3_item1'), t('landing.step3_item2'), t('landing.step3_item3')], icon: Users },
+                { label: t('landing.step4_label'), title: t('landing.step4_title'), desc: t('landing.step4_desc'), items: [t('landing.step4_item1'), t('landing.step4_item2'), t('landing.step4_item3')], icon: Zap },
+                { label: t('landing.step5_label'), title: t('landing.step5_title'), desc: t('landing.step5_desc'), items: [t('landing.step5_item1'), t('landing.step5_item2'), t('landing.step5_item3')], icon: Lightbulb },
+              ].map((step, idx) => (
                 <div key={step.label} className="relative flex gap-4 md:gap-6 items-start">
-                  <div className={`flex-shrink-0 w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br ${step.gradient} flex items-center justify-center text-white z-10`}>
-                    <step.icon className="w-6 h-6 md:w-7 md:h-7" />
+                  <div className="flex-shrink-0 w-12 h-12 md:w-16 md:h-16 border border-current/30 bg-background flex items-center justify-center z-10">
+                    <step.icon className="w-5 h-5 md:w-6 md:h-6" />
                   </div>
-                  <div className="flex-1 bg-card border rounded-xl p-5 shadow-sm">
-                    <span className={`text-xs font-semibold uppercase tracking-wider ${step.labelColor}`}>{step.label}</span>
-                    <h3 className="text-lg font-bold mt-1">{step.title}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">{step.desc}</p>
-                    <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
+                  <div className="flex-1 border-t border-current/20 pt-4">
+                    <p className="text-[10px] uppercase tracking-[0.3em] opacity-60 tabular-nums">Step 0{idx + 1}</p>
+                    <p className="text-[10px] uppercase tracking-[0.3em] font-semibold text-[hsl(15_75%_45%)] mt-1">{step.label}</p>
+                    <h3 className="font-serif text-xl md:text-2xl leading-tight mt-2">{step.title}</h3>
+                    <p className="text-sm opacity-75 mt-2">{step.desc}</p>
+                    <ul className="mt-3 space-y-1 text-sm opacity-75">
                       {step.items.map((item, i) => (
                         <li key={i} className="flex items-center gap-2">
-                          <span className={`w-1 h-1 rounded-full ${step.dotColor}`} />{item}
+                          <span className="w-1 h-1 rounded-full bg-current opacity-50" />{item}
                         </li>
                       ))}
                     </ul>
@@ -333,38 +334,28 @@ const LandingPage = () => {
             </div>
 
             {/* Transformation Trap */}
-            <div className="mt-12 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-xl p-6">
-              <div className="flex items-start gap-3">
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
-                  <Zap className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-amber-800 dark:text-amber-300">{t('landing.trap_title')}</h3>
-                  <p className="text-sm text-amber-700 dark:text-amber-400/80 mt-1">
-                    {t('landing.trap_desc')} <strong>{t('landing.trap_result')}</strong>
-                  </p>
-                  <p className="text-sm text-amber-700 dark:text-amber-400/80 mt-2 font-medium">
-                    {t('landing.trap_rule')}
-                  </p>
-                </div>
-              </div>
+            <div className="mt-12 border-l-2 border-[hsl(15_75%_55%)] pl-6 py-2">
+              <p className="text-[10px] uppercase tracking-[0.4em] font-semibold text-[hsl(15_75%_45%)]">{t('landing.trap_title')}</p>
+              <p className="font-serif text-lg italic mt-2 leading-snug">
+                {t('landing.trap_desc')} <strong className="not-italic">{t('landing.trap_result')}</strong>
+              </p>
+              <p className="text-sm opacity-75 mt-3">
+                {t('landing.trap_rule')}
+              </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
-              <Link to="/auth?mode=professional">
-                <Button className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-indigo-600 hover:to-purple-600 text-white">
-                  <Grid3x3 className="mr-2 h-4 w-4" />
-                  {t('landing.start_journey')}
-                </Button>
+            <div className="flex flex-col sm:flex-row gap-3 mt-10">
+              <Link to="/auth?mode=professional" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-foreground text-background text-xs font-semibold uppercase tracking-[0.2em] hover:-translate-y-0.5 transition-transform">
+                <Grid3x3 className="h-4 w-4" />
+                {t('landing.start_journey')}
               </Link>
-              <Link to="/pricing">
-                <Button variant="outline">
-                  {t('landing.view_pricing')}
-                </Button>
+              <Link to="/pricing" className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-current/40 text-xs font-semibold uppercase tracking-[0.2em] hover:bg-current/10 transition-colors">
+                {t('landing.view_pricing')}
               </Link>
             </div>
           </div>
         </CollapsibleSection>
+
         
         <CollapsibleSection
           title={t('landing.section_services')}
