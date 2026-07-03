@@ -200,7 +200,7 @@ const DreamAndLearn = () => {
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-            <Link to="/#agentic-demo">
+            <Link to="/home#agentic-demo">
               <Button
                 size="lg"
                 className="gap-2 bg-gradient-to-r from-primary to-accent text-primary-foreground"
