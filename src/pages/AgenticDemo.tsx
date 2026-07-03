@@ -1,9 +1,8 @@
-import { Link } from "react-router-dom";
-import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import AgenticEcosystemDemo from "@/components/AgenticEcosystemDemo";
 import Footer from "@/components/Footer";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import {
+  EditorialSiteHeader,
   EditorialPageHero,
   EditorialSection,
   EditorialChapterHeader,
