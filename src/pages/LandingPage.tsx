@@ -201,40 +201,37 @@ const LandingPage = () => {
         <D3GallerySection />
       </Suspense>
 
-      {/* NEW BOOK Promo — between Hero and Spring 2026 */}
-      <section className="py-10 px-4 bg-gradient-to-br from-slate-950 via-purple-950 to-slate-950">
+      {/* NEW BOOK Promo — editorial dispatch */}
+      <section className="py-16 px-6 bg-[hsl(230_35%_10%)] text-[hsl(35_20%_92%)]">
         <div className="container mx-auto max-w-5xl">
           <Link to="/book" className="block group">
-            <div className="relative overflow-hidden rounded-2xl border border-purple-500/30 bg-gradient-to-r from-slate-900 via-purple-900/40 to-slate-900 p-6 md:p-8 hover:border-purple-400/50 transition-all">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-pink-600/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4" />
-              <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-600/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
-
-              <div className="relative grid md:grid-cols-[auto_1fr_auto] gap-6 items-center">
+            <div className="relative border border-white/15 bg-white/5 p-8 md:p-12 hover:-translate-y-1 transition-transform">
+              <div className="grid md:grid-cols-[auto_1fr_auto] gap-8 md:gap-12 items-center">
                 <div className="flex justify-center md:justify-start">
-                  <div className="w-20 md:w-28 aspect-[3/4] rounded-md bg-gradient-to-br from-purple-900 via-slate-900 to-pink-900 border border-purple-400/30 shadow-2xl flex items-center justify-center">
-                    <BookOpen className="w-8 h-8 md:w-10 md:h-10 text-purple-200" />
+                  <div className="w-24 md:w-32 aspect-[3/4] border border-[hsl(45_90%_65%)]/40 bg-[hsl(230_35%_14%)] flex items-center justify-center">
+                    <BookOpen className="w-8 h-8 md:w-10 md:h-10 text-[hsl(45_90%_65%)]" />
                   </div>
                 </div>
-                <div className="text-center md:text-left">
-                  <Badge className="mb-2 bg-white/10 text-white border-white/20 hover:bg-white/15">
-                    <Sparkles className="w-3 h-3 mr-1" />
+                <div className="text-center md:text-left space-y-3">
+                  <p className="text-[10px] uppercase tracking-[0.4em] font-semibold text-[hsl(45_90%_65%)] inline-flex items-center gap-2">
+                    <Sparkles className="w-3 h-3" />
                     {t('book.banner_label')}
-                  </Badge>
-                  <h2 className="text-2xl md:text-3xl font-bold text-white mb-1">
+                  </p>
+                  <h2 className="font-serif text-3xl md:text-4xl leading-tight italic">
                     {t('book.hero_title')}
                   </h2>
-                  <p className="text-purple-100/80 text-sm md:text-base mb-2">
+                  <p className="text-sm md:text-base opacity-85">
                     {t('book.hero_subtitle')}
                   </p>
-                  <p className="text-xs md:text-sm text-white/60">
+                  <p className="text-xs md:text-sm opacity-60">
                     {t('book.section_book_summary')}
                   </p>
                 </div>
                 <div className="flex justify-center md:justify-end">
-                  <Button className="bg-white text-slate-900 hover:bg-white/90 font-semibold gap-2">
+                  <span className="inline-flex items-center gap-2 px-6 py-3 bg-[hsl(45_90%_65%)] text-[hsl(230_35%_10%)] text-xs font-semibold uppercase tracking-[0.2em]">
                     {t('book.banner_cta')}
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </Button>
+                  </span>
                 </div>
               </div>
             </div>
@@ -242,54 +239,53 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Spring 2026 Featured Offer — Always expanded */}
-      <section id="spring-offer-home" className="py-12 px-4 bg-gradient-to-r from-primary/5 via-accent/10 to-primary/5">
+      {/* Spring 2026 Featured Offer — editorial column */}
+      <section id="spring-offer-home" className="py-20 px-6 bg-[hsl(35_45%_96%)] dark:bg-[hsl(25_15%_12%)]">
         <div className="container mx-auto max-w-4xl">
-          <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-card p-6 md:p-10 shadow-lg">
-            <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full -translate-y-1/2 translate-x-1/2" />
-            <Badge className="mb-3 bg-primary/10 text-primary border-primary/20">{t('landing.spring_badge')}</Badge>
-            <h2 className="text-2xl md:text-3xl font-bold mb-2">{t('landing.spring_headline')}</h2>
-            <p className="text-muted-foreground mb-6 text-sm md:text-base">
+          <div className="border-t-2 border-current/30 pt-10">
+            <p className="text-[10px] uppercase tracking-[0.4em] font-semibold text-[hsl(15_75%_45%)]">{t('landing.spring_badge')}</p>
+            <h2 className="font-serif text-3xl md:text-5xl leading-tight mt-3">{t('landing.spring_headline')}</h2>
+            <p className="mt-4 text-base opacity-80 max-w-2xl">
               {t('landing.spring_description')}
             </p>
 
-            <div className="flex flex-wrap items-center justify-center gap-2 mb-8 text-xs font-semibold">
+            <div className="flex flex-wrap items-center gap-2 mt-8 mb-10 text-[10px] uppercase tracking-[0.3em] font-semibold">
               {[t('landing.spring_clarity'), t('landing.spring_decision'), t('landing.spring_alignment'), t('landing.spring_action')].map((step, i) => (
-                <span key={step} className="flex items-center gap-1">
-                  <span className="px-3 py-1.5 rounded-full bg-primary/10 text-primary">{step}</span>
-                  {i < 3 && <ArrowRight className="w-3 h-3 text-muted-foreground" />}
+                <span key={step} className="flex items-center gap-2">
+                  <span className="px-3 py-1.5 border border-current/30">{step}</span>
+                  {i < 3 && <ArrowRight className="w-3 h-3 opacity-50" />}
                 </span>
               ))}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
               {[
                 { name: t('landing.spring_clarity_reset'), duration: t('landing.spring_clarity_reset_duration'), price: '$800', desc: t('landing.spring_clarity_reset_desc') },
                 { name: t('landing.spring_decision_sprint'), duration: t('landing.spring_decision_sprint_duration'), price: '$1,500', desc: t('landing.spring_decision_sprint_desc') },
                 { name: t('landing.spring_strategic'), duration: t('landing.spring_strategic_duration'), price: '$2,800', desc: t('landing.spring_strategic_desc') },
-              ].map((tier) => (
-                <div key={tier.name} className="border rounded-xl p-4 bg-accent/30 hover:bg-accent/50 transition-colors text-center">
-                  <p className="font-bold text-sm">{tier.name}</p>
-                  <p className="text-xs text-muted-foreground">{tier.duration}</p>
-                  <p className="text-lg font-bold text-primary mt-1">{tier.price}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{tier.desc}</p>
+              ].map((tier, i) => (
+                <div key={tier.name} className="border-t border-current/20 pt-5">
+                  <p className="text-[10px] uppercase tracking-[0.3em] opacity-60 tabular-nums">0{i + 1}</p>
+                  <p className="font-serif text-xl leading-tight mt-2">{tier.name}</p>
+                  <p className="text-[10px] uppercase tracking-[0.3em] opacity-70 mt-1">{tier.duration}</p>
+                  <p className="font-serif text-3xl mt-3 text-[hsl(15_75%_45%)]">{tier.price}</p>
+                  <p className="text-sm opacity-75 mt-2">{tier.desc}</p>
                 </div>
               ))}
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Link to="/calm-magic-assistant#spring-offer">
-                <Button className="gap-2">
-                  <Zap className="w-4 h-4" /> {t('landing.spring_view_offer')}
-                </Button>
+            <div className="flex flex-col sm:flex-row items-start gap-3">
+              <Link to="/calm-magic-assistant#spring-offer" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-foreground text-background text-xs font-semibold uppercase tracking-[0.2em] hover:-translate-y-0.5 transition-transform">
+                <Zap className="w-4 h-4" /> {t('landing.spring_view_offer')}
               </Link>
-              <a href="mailto:jbelisle@helloarchitekt.com?subject=Spring%202026%20—%20From%20Idea%20to%20Software">
-                <Button variant="outline" className="gap-2">{t('landing.spring_get_started')}</Button>
+              <a href="mailto:jbelisle@helloarchitekt.com?subject=Spring%202026%20—%20From%20Idea%20to%20Software" className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-current/40 text-xs font-semibold uppercase tracking-[0.2em] hover:bg-current/10 transition-colors">
+                {t('landing.spring_get_started')}
               </a>
             </div>
           </div>
         </div>
       </section>
+
 
       {/* Collapsible Sections */}
       <div className="container mx-auto max-w-5xl px-4 py-8 space-y-2">
