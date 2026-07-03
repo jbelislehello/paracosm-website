@@ -4,6 +4,7 @@ import TriadChapter from "@/components/editorial/TriadChapter";
 import PartnerInnovationPlaysSection from "@/components/editorial/PartnerInnovationPlaysSection";
 import EditorialDispatchesSection from "@/components/editorial/EditorialDispatchesSection";
 import EditorialClosing from "@/components/editorial/EditorialClosing";
+import EditorialBulletinsSection from "@/components/editorial/EditorialBulletinsSection";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { orgSchema, websiteSchema, webPageSchema } from "@/lib/structuredData";
 
@@ -126,6 +127,8 @@ export default function EditorialHome() {
       </Suspense>
 
       <PartnerInnovationPlaysSection />
+
+      <EditorialBulletinsSection />
 
       <EditorialDispatchesSection />
 
