@@ -198,8 +198,6 @@ const LandingPage = () => {
 
       <ThreePaths />
 
-      {/* Agentic Ecosystems — service hero with interactive D3 viz */}
-      <AgenticEcosystemHero />
       <Suspense fallback={null}>
         <D3GallerySection />
       </Suspense>
