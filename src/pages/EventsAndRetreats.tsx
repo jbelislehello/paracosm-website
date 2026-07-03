@@ -1,12 +1,10 @@
 import { Link } from "react-router-dom";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import logoParacosm from "@/assets/logo-paracosm.jpeg";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
 import ParacosmEventsSection from "@/components/ParacosmEventsSection";
 import CaseStudiesSection from "@/components/case-studies/CaseStudiesSection";
 import {
+  EditorialSiteHeader,
   EditorialPageHero,
   EditorialSection,
   EditorialCTA,
