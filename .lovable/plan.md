@@ -1,40 +1,26 @@
-## Goal
-Replace fragile `/#contact` and `/#agentic-demo` hash links with dedicated, always-available routes.
+# Complete the "Think Like a Forest" section
 
-## New routes (in `src/App.tsx`)
-- `/contact` → new lazy page `src/pages/Contact.tsx`
-- `/agentic-demo` → new lazy page `src/pages/AgenticDemo.tsx`
+The section on `/events-and-retreats` (`src/pages/EventsAndRetreats.tsx`, block `#think-like-a-forest`) is currently just a headline, one paragraph, and a CTA. Rich source material for this retreat already exists in `src/data/residencies.ts` (the `forest` archetype: manifesto, teacher, duration, format, practices, examples, threshold, artifact) and the forest hero image is in `src/assets/retreats/forest-circle.jpg`.
 
-## New pages
-Both are thin editorial-styled wrappers reusing the existing section components so content stays canonical (no duplication):
+## What to build
 
-- `src/pages/Contact.tsx`
-  - Renders `ContactSection` inside a minimal shell (header/nav + `Footer`) matching the site's magazine aesthetic.
-  - Uses `usePageSeo` (title "Contact — Paracosm", description, `/contact` path).
-  - Keeps the `id="contact"` on the section so legacy `#contact` deep links still work if reached.
+Expand the `night`-toned `#think-like-a-forest` section into a full editorial block that keeps the current partnership framing (Les Hédonistes × Create Yourself) and layers in the existing forest content, while preserving the editorial magazine aesthetic (no purple/blue gradients, no bloom).
 
-- `src/pages/AgenticDemo.tsx`
-  - Renders `AgenticEcosystemDemo` in the same shell.
-  - `usePageSeo` with title "Live Agentic UX Demo — Paracosm", `/agentic-demo` path.
-  - Keeps `id="agentic-demo"` on the section.
+Proposed structure inside the same `EditorialSection tone="night"`:
 
-## Update outgoing CTAs
-Point every previously-patched hash link to the new canonical routes:
+1. **Header row** (kept): numeral `03`, kicker "Flagship retreat", H2 "Think Like a Forest.", partnership paragraph, "Dates & location — TBA" caption, "Read the invitation" CTA. Move CTA to bottom of the block.
+2. **Editorial image** — full-width `forest-circle.jpg` with a small italic caption ("Cohort circle, Banff. Outdoor council under the canopy." — already in `residencyImageCaption.forest`) and inline photo credit via `formatCredit(residencyImageCredit.forest)`.
+3. **Manifesto pull-quotes** — the three lines from `residencies[forest].manifesto` rendered as large serif italic statements, separated by hairline dividers.
+4. **Two-column meta strip** — "Teacher", "Duration", "Format" as small kicker/label pairs (source: `teacher`, `duration`, `format`).
+5. **Three practices grid** — `residencies[forest].practices` (Canopy mapping, Mycelial inventory, Composting failures) as a 3-column editorial grid matching the highlights style used on `ParacosmRetreatLanding`.
+6. **Threshold + artifact** — two short blocks: "The threshold" (`threshold`) and "What you leave with" (`artifact`).
+7. **CTA row** — keep the existing "Read the invitation" mailto and add a secondary ghost link to `/residencies/forest` ("Explore the full residency") since the forest residency detail page already exists.
 
-| File | Old target | New target |
-|---|---|---|
-| `src/pages/Pricing.tsx` | `/agentic-ux#contact` | `/contact` |
-| `src/components/UpgradePromptModal.tsx` | `/agentic-ux#contact` | `/contact` |
-| `src/components/calm-magic/BoardEntryGate.tsx` | `/agentic-ux#contact` | `/contact` |
-| `src/pages/WuxiaTheFox.tsx` | `#contact` | keep in-page anchor (section is on same page) — no change |
-| `src/pages/DreamAndLearn.tsx` (2 links) | `/home#agentic-demo` | `/agentic-demo` |
+## Technical notes
 
-Also sweep with `rg` for any remaining `/#contact`, `/#agentic-demo`, `/home#agentic-demo`, `/agentic-ux#contact` and repoint to the new routes (except in-page anchors within `LandingPage`, `Index`, `WuxiaTheFox`, and `AgenticEcosystemDemo` themselves).
-
-## Route registry / SEO
-- Add both routes to `src/lib/routeRegistry.ts` with labels "Contact" and "Live Demo" so breadcrumbs and sitemap pick them up.
-
-## Out of scope
-- No changes to `ContactSection` or `AgenticEcosystemDemo` internals.
-- No form/business-logic changes.
-- Existing `#contact` / `#agentic-demo` anchors on `LandingPage` / `Index` / `WuxiaTheFox` remain functional for anyone deep-linking there.
+- Single-file change: `src/pages/EventsAndRetreats.tsx`.
+- Import `residencies` from `@/data/residencies` and pick `forest`; import `residencyImage`, `residencyImageCaption`, `residencyImageCredit`, `formatCredit` from `@/assets/retreats`.
+- Reuse existing editorial primitives (`editorialType`, `editorialTone.night`, `EditorialCTA`) — no new components, no new tokens.
+- Keep all copy verbatim from `residencies.ts` (already user-approved content) to avoid inventing new voice.
+- No i18n keys needed (surrounding section is already English-only inline copy).
+- No changes to data, routes, or backend.
