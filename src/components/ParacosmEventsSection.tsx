@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Calendar, MapPin, Users, ExternalLink, BookOpen, Globe, Building } from 'lucide-react';
+import { Calendar, MapPin, ArrowUpRight, BookOpen } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { editorialTone, editorialType, type EditorialTone } from '@/components/editorial/editorialTokens';
 
 const categories = [
-  { name: "All", icon: Users },
-  { name: "Relational Intelligence", icon: Users },
-  { name: "Learning Organizations", icon: Building },
-  { name: "Retreats", icon: Globe },
-  { name: "Events", icon: Calendar },
+  "All",
+  "Relational Intelligence",
+  "Learning Organizations",
+  "Retreats",
+  "Events",
 ];
 
 const events = [
@@ -68,136 +68,160 @@ const events = [
   }
 ];
 
-const ParacosmEventsSection = () => {
+interface ParacosmEventsSectionProps {
+  tone?: EditorialTone;
+}
+
+const ParacosmEventsSection: React.FC<ParacosmEventsSectionProps> = ({ tone = "warm" }) => {
   const [activeCategory, setActiveCategory] = useState("All");
+  const t = editorialTone[tone];
 
   const filtered = activeCategory === "All" ? events : events.filter(e => e.category === activeCategory);
-  const getCategoryMeta = (name: string) => categories.find(c => c.name === name);
 
   return (
     <div className="relative">
-      {/* Category filter tabs — bloom style */}
-      <div className="flex flex-wrap gap-2 mb-8">
+      {/* Editorial filter — inline typographic index */}
+      <div className={cn("flex flex-wrap items-baseline gap-x-6 gap-y-2 pb-6 mb-10 border-b border-current/15", editorialType.caption)}>
+        <span className="opacity-60">Index —</span>
         {categories.map((cat) => {
-          const Icon = cat.icon;
-          const isActive = activeCategory === cat.name;
+          const isActive = activeCategory === cat;
           return (
             <button
-              key={cat.name}
-              onClick={() => setActiveCategory(cat.name)}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-vhs uppercase tracking-[0.18em] text-[10px] transition-all duration-200 border ${
+              key={cat}
+              onClick={() => setActiveCategory(cat)}
+              className={cn(
+                "transition-opacity",
                 isActive
-                  ? 'bg-[hsl(var(--bloom-amber))] text-[hsl(var(--bloom-ink))] border-[hsl(var(--bloom-amber))] shadow-[0_0_16px_hsl(var(--bloom-amber)/0.4)]'
-                  : 'bg-[hsl(var(--bloom-ink)/0.5)] text-white/70 border-[hsl(var(--bloom-magenta)/0.35)] hover:text-[hsl(var(--bloom-amber))] hover:border-[hsl(var(--bloom-amber)/0.5)]'
-              }`}
+                  ? cn("opacity-100 border-b pb-0.5", t.accentBorder, t.kicker)
+                  : "opacity-60 hover:opacity-100"
+              )}
             >
-              <Icon className="w-3 h-3" />
-              {cat.name}
+              {cat}
             </button>
           );
         })}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {/* Editorial index-card grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
         {filtered.map((event, index) => {
-          const catMeta = getCategoryMeta(event.category);
-          const CatIcon = catMeta?.icon || Users;
+          const primaryHref = event.link?.startsWith('/') ? undefined : (event.link || "https://app.reclaim.ai/m/jonathan-helloarchitekt");
+          const primaryTo = event.link?.startsWith('/') ? event.link : undefined;
+
           return (
-            <Card
-              key={index}
-              className="group relative overflow-hidden rounded-xl border border-[hsl(var(--bloom-magenta)/0.3)] bg-[hsl(var(--bloom-ink)/0.55)] backdrop-blur-sm hover:border-[hsl(var(--bloom-amber)/0.6)] transition-all duration-300"
-            >
-              <div className="bloom-scanlines pointer-events-none absolute inset-0 opacity-[0.08]" />
-              <CardHeader className="pb-3 relative">
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-vhs uppercase tracking-[0.18em] text-[hsl(var(--bloom-amber))] border border-[hsl(var(--bloom-amber)/0.4)] bg-[hsl(var(--bloom-amber)/0.08)] w-fit mb-3">
-                  <CatIcon className="w-3 h-3" />
-                  {event.category}
-                </span>
-                <CardTitle className="font-display text-xl leading-tight text-white group-hover:text-[hsl(var(--bloom-amber))] transition-colors">
-                  {event.name}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 relative">
-                <p className="text-sm font-redacted italic text-white/85 leading-relaxed">
-                  {event.description}
-                </p>
+            <article key={index} className="group flex flex-col border-t border-current/20 pt-6">
+              <div className={cn("flex items-baseline justify-between mb-4", editorialType.caption)}>
+                <span className={cn("opacity-80", t.kicker)}>{event.category}</span>
+                <span className="opacity-50 tabular-nums">{String(index + 1).padStart(2, '0')}</span>
+              </div>
 
-                <div className="space-y-1.5 pt-1 border-t border-[hsl(var(--bloom-magenta)/0.2)]">
-                  <div className="flex items-center gap-2 text-xs font-vhs uppercase tracking-[0.15em] text-white/60 pt-2">
-                    <Calendar className="w-3.5 h-3.5 text-[hsl(var(--bloom-amber))]" />
-                    <span>{event.date}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs font-vhs uppercase tracking-[0.15em] text-white/60">
-                    <MapPin className="w-3.5 h-3.5 text-[hsl(var(--bloom-magenta))]" />
-                    <span>{event.location}</span>
-                  </div>
+              <h3 className={cn(editorialType.serif, "text-2xl md:text-[26px] leading-[1.15] tracking-tight mb-4")}>
+                {event.name}
+              </h3>
+
+              <p className="text-[15px] leading-relaxed opacity-85 mb-6 flex-1">
+                {event.description}
+              </p>
+
+              <dl className={cn("space-y-1.5 mb-6", editorialType.caption)}>
+                <div className="flex items-center gap-2 opacity-70">
+                  <Calendar className="w-3.5 h-3.5" />
+                  <span className="normal-case tracking-normal text-xs">{event.date}</span>
                 </div>
+                <div className="flex items-center gap-2 opacity-70">
+                  <MapPin className="w-3.5 h-3.5" />
+                  <span className="normal-case tracking-normal text-xs">{event.location}</span>
+                </div>
+              </dl>
 
-                {event.link?.startsWith('/') ? (
-                  <Link to={event.link}>
-                    <Button
-                      size="sm"
-                      className="w-full bg-[hsl(var(--bloom-magenta))] text-white hover:bg-[hsl(var(--bloom-amber))] hover:text-[hsl(var(--bloom-ink))] font-vhs uppercase tracking-widest text-[10px] transition-all"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5 mr-2" />
-                      {event.cta}
-                    </Button>
+              <div className="mt-auto space-y-2">
+                {primaryTo ? (
+                  <Link
+                    to={primaryTo}
+                    className={cn(
+                      "inline-flex items-center gap-1.5 border-b pb-1 transition-transform group-hover:translate-x-0.5",
+                      editorialType.cta,
+                      t.accentBorder,
+                      t.kicker,
+                    )}
+                  >
+                    {event.cta}
+                    <ArrowUpRight className="w-3.5 h-3.5" />
                   </Link>
                 ) : (
-                  <a href={event.link || "https://app.reclaim.ai/m/jonathan-helloarchitekt"} target="_blank" rel="noopener noreferrer">
-                    <Button
-                      size="sm"
-                      className="w-full bg-[hsl(var(--bloom-magenta))] text-white hover:bg-[hsl(var(--bloom-amber))] hover:text-[hsl(var(--bloom-ink))] font-vhs uppercase tracking-widest text-[10px] transition-all"
-                    >
-                      <ExternalLink className="w-3.5 h-3.5 mr-2" />
-                      {event.cta}
-                    </Button>
+                  <a
+                    href={primaryHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(
+                      "inline-flex items-center gap-1.5 border-b pb-1 transition-transform group-hover:translate-x-0.5",
+                      editorialType.cta,
+                      t.accentBorder,
+                      t.kicker,
+                    )}
+                  >
+                    {event.cta}
+                    <ArrowUpRight className="w-3.5 h-3.5" />
                   </a>
                 )}
 
                 {event.secondaryLink && (
-                  <a href={event.secondaryLink} target="_blank" rel="noopener noreferrer">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full bg-transparent border-[hsl(var(--bloom-magenta)/0.4)] text-white/80 hover:bg-[hsl(var(--bloom-ink)/0.6)] hover:text-[hsl(var(--bloom-amber))] hover:border-[hsl(var(--bloom-amber)/0.5)] font-vhs uppercase tracking-widest text-[10px] transition-all"
+                  <div>
+                    <a
+                      href={event.secondaryLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={cn(
+                        "inline-flex items-center gap-1.5 opacity-70 hover:opacity-100 transition-opacity",
+                        editorialType.caption,
+                      )}
                     >
-                      <BookOpen className="w-3.5 h-3.5 mr-2" />
+                      <BookOpen className="w-3 h-3" />
                       {event.secondaryCta}
-                    </Button>
-                  </a>
+                    </a>
+                  </div>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </article>
           );
         })}
       </div>
 
-      {/* Closing CTA — bloom style */}
-      <div className="mt-12 rounded-xl border border-[hsl(var(--bloom-amber)/0.35)] bg-gradient-to-br from-[hsl(var(--bloom-ink)/0.7)] to-[hsl(var(--bloom-magenta)/0.15)] p-8 text-center relative overflow-hidden">
-        <div className="bloom-scanlines pointer-events-none absolute inset-0 opacity-[0.1]" />
-        <div className="relative">
-          <p className="font-vhs uppercase tracking-[0.35em] text-xs text-[hsl(var(--bloom-amber))]">// Next step</p>
-          <h3 className="mt-2 font-display text-2xl md:text-3xl bloom-chroma-static text-white">Ready to transform your leadership?</h3>
-          <p className="mt-3 text-sm md:text-base font-redacted italic text-white/80 max-w-2xl mx-auto">
+      {/* Closing editorial CTA */}
+      <div className="mt-20 pt-10 border-t-2 border-current/30 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+        <div className="max-w-2xl">
+          <p className={cn(editorialType.kicker, t.kicker)}>Next step</p>
+          <h3 className={cn(editorialType.serif, "text-3xl md:text-4xl leading-tight mt-2")}>
+            Ready to transform your leadership?
+          </h3>
+          <p className="mt-3 text-base opacity-80">
             Don't wait for the next event. Start your transformation journey today with a personalized discovery call.
           </p>
-          <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
-            <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt" target="_blank" rel="noopener noreferrer">
-              <Button className="bg-[hsl(var(--bloom-amber))] text-[hsl(var(--bloom-ink))] hover:bg-white font-vhs uppercase tracking-widest text-xs px-6">
-                <Calendar className="w-4 h-4 mr-2" />
-                Book a discovery call
-              </Button>
-            </a>
-            <a href="#contact">
-              <Button
-                variant="outline"
-                className="bg-transparent border-[hsl(var(--bloom-magenta)/0.5)] text-white hover:bg-[hsl(var(--bloom-magenta)/0.2)] hover:text-white font-vhs uppercase tracking-widest text-xs px-6"
-              >
-                Learn more
-              </Button>
-            </a>
-          </div>
+        </div>
+        <div className="flex flex-wrap gap-3 shrink-0">
+          <a
+            href="https://app.reclaim.ai/m/jonathan-helloarchitekt"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              "inline-flex items-center gap-2 px-6 py-3 rounded-full transition-transform hover:-translate-y-0.5",
+              editorialType.cta,
+              t.ctaPrimary,
+            )}
+          >
+            <Calendar className="w-4 h-4" />
+            Book a discovery call
+          </a>
+          <a
+            href="#contact"
+            className={cn(
+              "inline-flex items-center gap-2 px-6 py-3 rounded-full transition-transform hover:-translate-y-0.5",
+              editorialType.cta,
+              t.ctaGhost,
+            )}
+          >
+            Learn more
+          </a>
         </div>
       </div>
     </div>
