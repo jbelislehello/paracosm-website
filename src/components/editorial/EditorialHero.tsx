@@ -13,18 +13,11 @@ export default function EditorialHero() {
 
       {/* Masthead */}
       <div className="relative z-10 container max-w-7xl mx-auto px-6 pt-8 pb-6 flex items-center justify-between border-b border-border/40">
-        <div className="flex items-center gap-3">
-          <img
-            src={logoParacosm}
-            alt="Paracosm"
-            className="w-9 h-9 rounded-md bg-white p-1 object-contain"
-          />
-          <div className="leading-tight">
-            <div className="text-[10px] uppercase tracking-[0.35em] text-muted-foreground">
-              Paracosm — an editorial
-            </div>
-            <div className="text-sm font-semibold">Vol. I · Imagination as Infrastructure</div>
+        <div className="leading-tight">
+          <div className="text-[10px] uppercase tracking-[0.35em] text-muted-foreground">
+            An Editorial
           </div>
+          <div className="text-sm font-semibold">Vol. I · Imagination as Infrastructure</div>
         </div>
         <Link
           to="/home"
