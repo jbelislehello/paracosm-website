@@ -406,7 +406,7 @@ const WuxiaTheFox = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/#contact">
+            <a href="#contact">
               <Button size="lg" className="bg-white text-amber-600 hover:bg-amber-50">
                 Stay Updated
                 <ExternalLink className="w-4 h-4 ml-2" />
