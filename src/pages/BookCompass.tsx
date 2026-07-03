@@ -71,7 +71,7 @@ export default function BookCompass() {
   }, [slug]);
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
+    <div className="flex min-h-screen flex-col bg-[hsl(15_35%_92%)] dark:bg-[hsl(15_15%_14%)] text-foreground">
       <header className="fixed z-50 w-full border-b border-white/10 bg-slate-950/85 backdrop-blur-md">
         <div className="container mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
           <Link to="/" className="flex items-center gap-2">
