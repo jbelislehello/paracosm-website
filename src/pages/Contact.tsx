@@ -316,16 +316,17 @@ const Contact = () => {
                 />
               </div>
 
-              <EditorialCTA
-                tone="night"
-                variant="primary"
-                href="#"
-                onClick={() => {
-                  /* form submit handles it */
-                }}
+              <button
+                type="submit"
+                disabled={sending}
+                className={cn(
+                  "inline-flex items-center gap-2 px-6 py-3 rounded-full transition-transform hover:-translate-y-0.5",
+                  editorialType.cta,
+                  nightTone.ctaPrimary,
+                )}
               >
-                {sending ? "Sending…" : "Send message"}
-              </EditorialCTA>
+                {sending ? "Sending…" : "Send message →"}
+              </button>
             </form>
 
             <aside className="lg:col-span-5 space-y-10">
