@@ -75,32 +75,32 @@ const LandingPage = () => {
 
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-b from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+    <div className="flex flex-col min-h-screen bg-background text-foreground">
       <HybridCognitionBanner />
       <BookAnnouncementBanner />
       <SummerDealBanner />
-      {/* Navigation */}
-      <header className="fixed w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md">
+      {/* Navigation — editorial masthead */}
+      <header className="fixed w-full z-50 bg-background/85 backdrop-blur-md border-b border-border/60">
         <div className="container max-w-7xl mx-auto flex items-center justify-between py-3 px-6">
-          <div className="flex items-center gap-2">
-            <img src={logoParacosm} alt="Paracosm" className="bg-white rounded-lg p-1 w-8 h-8 object-contain" />
-            <span className="font-bold text-slate-900 dark:text-white text-sm">Paracosm</span>
+          <div className="flex items-center gap-3">
+            <img src={logoParacosm} alt="Paracosm" className="bg-white rounded-md p-1 w-8 h-8 object-contain" />
+            <span className="font-serif text-base tracking-tight">Paracosm</span>
           </div>
-          
-          <nav className="hidden lg:flex gap-4 xl:gap-6">
-            <Link to="/" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Editorial</Link>
-            <Link to="/agentic-ux" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">AI Leadership</Link>
-            <Link to="/calm-magic-assistant" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Team Coaching</Link>
-            <Link to="/calm-magic-demo" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Calm Magic</Link>
-            <Link to="/trainings" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Trainings</Link>
-            <Link to="/design-system" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Why It Works</Link>
-            <Link to="/drift" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Drift</Link>
-            <Link to="/tonalli" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Tonalli</Link>
-            <Link to="/events-and-retreats" className="text-xs xl:text-sm font-vhs uppercase tracking-[0.18em] text-[hsl(var(--bloom-magenta))] hover:text-[hsl(var(--bloom-amber))] transition-colors">Events &amp; Retreats</Link>
-            <Link to="/book" className="text-xs xl:text-sm font-vhs uppercase tracking-[0.18em] text-[hsl(var(--bloom-magenta))] hover:text-[hsl(var(--bloom-amber))] transition-colors">Book</Link>
-            <a href="#contact" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Contact</a>
+
+          <nav className="hidden lg:flex gap-4 xl:gap-6 text-[11px] uppercase tracking-[0.2em] font-semibold">
+            <Link to="/" className="hover:opacity-60 transition-opacity">Editorial</Link>
+            <Link to="/agentic-ux" className="hover:opacity-60 transition-opacity">AI Leadership</Link>
+            <Link to="/calm-magic-assistant" className="hover:opacity-60 transition-opacity">Team Coaching</Link>
+            <Link to="/calm-magic-demo" className="hover:opacity-60 transition-opacity">Calm Magic</Link>
+            <Link to="/trainings" className="hover:opacity-60 transition-opacity">Trainings</Link>
+            <Link to="/design-system" className="hover:opacity-60 transition-opacity">Why It Works</Link>
+            <Link to="/drift" className="hover:opacity-60 transition-opacity">Drift</Link>
+            <Link to="/tonalli" className="hover:opacity-60 transition-opacity">Tonalli</Link>
+            <Link to="/events-and-retreats" className="hover:opacity-60 transition-opacity">Events &amp; Retreats</Link>
+            <Link to="/book" className="hover:opacity-60 transition-opacity">Book</Link>
+            <a href="#contact" className="hover:opacity-60 transition-opacity">Contact</a>
           </nav>
-          
+
           <div className="flex items-center gap-2 flex-shrink-0">
             <LanguageSwitcher />
             <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
@@ -110,35 +110,36 @@ const LandingPage = () => {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-                <nav className="flex flex-col gap-4 mt-8">
-                  <Link to="/agentic-ux" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">AI Leadership</Link>
-                  <Link to="/calm-magic-assistant" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Team Coaching</Link>
-                  <Link to="/calm-magic-demo" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors flex items-center gap-2">
+                <nav className="flex flex-col gap-4 mt-8 text-sm uppercase tracking-[0.18em] font-semibold">
+                  <Link to="/agentic-ux" onClick={() => setMobileMenuOpen(false)} className="hover:opacity-60 transition-opacity">AI Leadership</Link>
+                  <Link to="/calm-magic-assistant" onClick={() => setMobileMenuOpen(false)} className="hover:opacity-60 transition-opacity">Team Coaching</Link>
+                  <Link to="/calm-magic-demo" onClick={() => setMobileMenuOpen(false)} className="hover:opacity-60 transition-opacity flex items-center gap-2">
                     <Grid3x3 className="h-4 w-4" />
                     Calm Magic
                   </Link>
-                  <Link to="/trainings" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors flex items-center gap-2">
+                  <Link to="/trainings" onClick={() => setMobileMenuOpen(false)} className="hover:opacity-60 transition-opacity flex items-center gap-2">
                     <GraduationCap className="h-4 w-4" />
                     Trainings
                   </Link>
-                  <Link to="/design-system" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors flex items-center gap-2">
+                  <Link to="/design-system" onClick={() => setMobileMenuOpen(false)} className="hover:opacity-60 transition-opacity flex items-center gap-2">
                     <Lightbulb className="h-4 w-4" />
                     Why It Works
                   </Link>
-                  <Link to="/drift" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Drift</Link>
-                  <Link to="/tonalli" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Tonalli</Link>
-                  <Link to="/events-and-retreats" onClick={() => setMobileMenuOpen(false)} className="text-lg font-vhs uppercase tracking-[0.18em] text-[hsl(var(--bloom-magenta))] hover:text-[hsl(var(--bloom-amber))] transition-colors">Events &amp; Retreats</Link>
-                  <Link to="/book" onClick={() => setMobileMenuOpen(false)} className="text-lg font-vhs uppercase tracking-[0.18em] text-[hsl(var(--bloom-magenta))] hover:text-[hsl(var(--bloom-amber))] transition-colors flex items-center gap-2">
+                  <Link to="/drift" onClick={() => setMobileMenuOpen(false)} className="hover:opacity-60 transition-opacity">Drift</Link>
+                  <Link to="/tonalli" onClick={() => setMobileMenuOpen(false)} className="hover:opacity-60 transition-opacity">Tonalli</Link>
+                  <Link to="/events-and-retreats" onClick={() => setMobileMenuOpen(false)} className="hover:opacity-60 transition-opacity">Events &amp; Retreats</Link>
+                  <Link to="/book" onClick={() => setMobileMenuOpen(false)} className="hover:opacity-60 transition-opacity flex items-center gap-2">
                     <BookOpen className="h-4 w-4" />
                     Book
                   </Link>
-                  <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="text-lg font-medium hover:text-purple-600 transition-colors">Contact</a>
+                  <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="hover:opacity-60 transition-opacity">Contact</a>
                 </nav>
               </SheetContent>
             </Sheet>
           </div>
         </div>
       </header>
+
       
       <CalmMagicAssistant onStartJourney={handleStartCoaching} isOpen={isCalmMagicAssistantOpen} onOpenChange={setIsCalmMagicAssistantOpen} />
       
