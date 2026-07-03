@@ -81,7 +81,7 @@ const DriftLibrary = () => {
   const totalResources = allBooks.length + allVideos.length + allSongs.length + allPodcasts.length + allArticles.length + allArtefacts.length + allTools.length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-background/90">
+    <div className="min-h-screen bg-[hsl(35_45%_96%)] dark:bg-[hsl(25_15%_12%)] text-foreground">
       {/* Lightbox */}
       {lightboxImage && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 cursor-pointer" onClick={() => setLightboxImage(null)}>
@@ -89,22 +89,30 @@ const DriftLibrary = () => {
         </div>
       )}
 
-      {/* Header */}
-      <section className="py-16 px-4" style={{ background: `linear-gradient(135deg, ${color}08, ${color}15)` }}>
+      {/* Editorial header */}
+      <section className="py-16 md:py-20 px-6 border-b border-current/10">
         <div className="container max-w-5xl mx-auto">
           <Link to="/drift">
-            <Button variant="ghost" className="mb-8"><ArrowLeft className="w-4 h-4 mr-2" />Back to Drift</Button>
+            <Button variant="ghost" size="sm" className="mb-8 text-[10px] uppercase tracking-[0.3em]">
+              <ArrowLeft className="w-3 h-3 mr-2" />Back to Drift
+            </Button>
           </Link>
-          <div className="space-y-4">
-            <Badge style={{ backgroundColor: `${color}20`, color, borderColor: `${color}40` }} className="text-lg px-5 py-2 font-bold">
-              {axisInfo.name}
-            </Badge>
-            <h1 className="text-4xl md:text-5xl font-bold">{axisInfo.subtitle}</h1>
-            <p className="text-xl text-muted-foreground max-w-2xl">{axisInfo.description}</p>
-            <p className="text-muted-foreground">{totalResources} resources curated across the Drift archive</p>
+          <div className="flex items-baseline gap-8">
+            <span className="font-serif text-6xl md:text-7xl leading-none" style={{ color }}>02</span>
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.4em] font-semibold opacity-60" style={{ color }}>
+                Drift · {axisInfo.name}
+              </p>
+              <h1 className="font-serif text-4xl md:text-5xl mt-3 leading-[1.05]">
+                <em className="italic font-light">{axisInfo.subtitle}</em>
+              </h1>
+              <p className="mt-4 text-base opacity-70 max-w-2xl font-serif italic">{axisInfo.description}</p>
+              <p className="mt-3 text-[10px] uppercase tracking-[0.3em] opacity-50">{totalResources} resources curated across the archive</p>
+            </div>
           </div>
         </div>
       </section>
+
 
       {/* Books */}
       {allBooks.length > 0 && (
