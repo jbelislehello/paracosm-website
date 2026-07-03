@@ -78,16 +78,17 @@ const LandingPage = () => {
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       
       
-      <SummerDealBanner />
-      {/* Navigation — editorial masthead */}
-      <header className="fixed w-full z-50 bg-background/85 backdrop-blur-md border-b border-border/60">
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <SummerDealBanner />
+        {/* Navigation — editorial masthead */}
+        <header className="w-full bg-background/85 backdrop-blur-md border-b border-border/60">
         <div className="container max-w-7xl mx-auto flex items-center justify-between py-3 px-6">
           <div className="flex items-center gap-3">
             <img src={logoParacosm} alt="Paracosm" className="bg-white rounded-md p-1 w-8 h-8 object-contain" />
             <span className="font-serif text-base tracking-tight">Paracosm</span>
           </div>
 
-          <nav className="hidden lg:flex gap-4 xl:gap-6 text-[11px] uppercase tracking-[0.2em] font-semibold">
+          <nav className="hidden lg:flex gap-4 xl:gap-6 text-base font-bold tracking-tight">
             <Link to="/" className="hover:opacity-60 transition-opacity">Editorial</Link>
             <Link to="/agentic-ux" className="hover:opacity-60 transition-opacity">AI Leadership</Link>
             <Link to="/calm-magic-assistant" className="hover:opacity-60 transition-opacity">Team Coaching</Link>
@@ -100,6 +101,7 @@ const LandingPage = () => {
             <Link to="/book" className="hover:opacity-60 transition-opacity">Book</Link>
             <a href="#contact" className="hover:opacity-60 transition-opacity">Contact</a>
           </nav>
+
 
           <div className="flex items-center gap-2 flex-shrink-0">
             <LanguageSwitcher />
