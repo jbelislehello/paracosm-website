@@ -196,7 +196,7 @@ const LandingPage = () => {
 
       <WhyItWorksRecap lens="method" />
 
-      <ThreePaths />
+      
 
       <Suspense fallback={null}>
         <D3GallerySection />
