@@ -60,15 +60,15 @@ const Lineage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-[hsl(35_45%_96%)] dark:bg-[hsl(25_15%_12%)] text-foreground">
       {/* Top bar */}
-      <header className="border-b border-border/60 bg-background/70 backdrop-blur-sm">
+      <header className="border-b border-current/10 bg-background/70 backdrop-blur-sm">
         <div className="container mx-auto flex items-center justify-between px-4 py-4">
           <Link
             to="/book"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground transition-colors hover:text-foreground"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-3 w-3" />
             Back to the book
           </Link>
           <LanguageSwitcher />
@@ -76,39 +76,39 @@ const Lineage = () => {
       </header>
 
       <main className="container mx-auto px-4">
-        {/* Hero */}
-        <section className="py-16 md:py-24">
-          <div className="mx-auto max-w-3xl text-center">
-            <Badge variant="outline" className="mb-6">
-              Lineage &amp; Comparables
-            </Badge>
-            <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
-              Where Calm Magic sits — and where it doesn't
-            </h1>
-            <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-              Calm Magic is a post–design-thinking, agentic-era framework. It
-              shares DNA with several traditions — Design Thinking, Theory U,
-              Cynefin, Speculative Design — but it recombines them around a new
-              bottleneck: when agents do the doing, humans become responsible
-              for the framing, the relational fabric, and the futures worth
-              authoring.
-            </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link to="/book">
-                <Button size="lg" className="gap-2">
-                  <BookOpen className="h-4 w-4" />
-                  Read the manifesto
-                </Button>
-              </Link>
-              <Link to="/calm-magic-demo">
-                <Button size="lg" variant="outline" className="gap-2">
-                  See it in practice
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
+        {/* Editorial Hero */}
+        <section className="py-16 md:py-20 max-w-5xl mx-auto">
+          <div className="flex items-baseline gap-8 border-b border-current/10 pb-10">
+            <span className="font-serif text-6xl md:text-7xl text-[hsl(15_75%_55%)] leading-none">12</span>
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.4em] font-semibold opacity-60">
+                Appendix · Lineage &amp; Comparables
+              </p>
+              <h1 className="font-serif text-4xl md:text-5xl mt-3 leading-[1.05]">
+                Where Calm Magic <em className="italic font-light">sits</em> —<br/>
+                and where it <em className="italic font-light">doesn't</em>.
+              </h1>
+              <p className="mt-4 text-base opacity-70 max-w-2xl font-serif italic">
+                A post–design-thinking, agentic-era framework recombining Design Thinking, Theory U, Cynefin, and Speculative Design around a new bottleneck: when agents do the doing, humans become responsible for the framing.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link to="/book">
+                  <Button size="sm" className="gap-2 rounded-full text-[10px] uppercase tracking-[0.25em]">
+                    <BookOpen className="h-3 w-3" />
+                    Read the manifesto
+                  </Button>
+                </Link>
+                <Link to="/calm-magic-demo">
+                  <Button size="sm" variant="outline" className="gap-2 rounded-full text-[10px] uppercase tracking-[0.25em]">
+                    See it in practice
+                    <ArrowRight className="h-3 w-3" />
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </section>
+
 
         <GradientDivider />
 
