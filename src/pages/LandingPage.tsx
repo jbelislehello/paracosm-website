@@ -141,6 +141,8 @@ const LandingPage = () => {
           </div>
         </div>
       </header>
+      </div>
+
 
       
       <CalmMagicAssistant onStartJourney={handleStartCoaching} isOpen={isCalmMagicAssistantOpen} onOpenChange={setIsCalmMagicAssistantOpen} />
