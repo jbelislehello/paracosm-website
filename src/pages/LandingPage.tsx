@@ -77,7 +77,7 @@ const LandingPage = () => {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <HybridCognitionBanner />
-      <BookAnnouncementBanner />
+      
       <SummerDealBanner />
       {/* Navigation — editorial masthead */}
       <header className="fixed w-full z-50 bg-background/85 backdrop-blur-md border-b border-border/60">
