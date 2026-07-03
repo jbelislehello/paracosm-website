@@ -374,17 +374,21 @@ const LandingPage = () => {
           <ParacosmUniverseSection />
         </CollapsibleSection>
 
-        <section id="events" className="relative scroll-mt-24 my-12 rounded-2xl border border-[hsl(var(--bloom-magenta)/0.35)] bg-[hsl(var(--bloom-ink))] text-white overflow-hidden shadow-[0_30px_80px_-30px_hsl(var(--bloom-magenta)/0.45)]">
-          <div className="bloom-scanlines pointer-events-none absolute inset-0 opacity-[0.18]" />
-          <div className="relative px-6 md:px-10 pt-10 pb-4">
-            <p className="font-vhs uppercase tracking-[0.35em] text-xs text-[hsl(var(--bloom-amber))]">// Live Programming</p>
-            <h2 className="mt-2 font-display text-3xl md:text-5xl bloom-chroma-static text-white">
+        <section id="events" className="relative scroll-mt-24 my-12 border border-current/15 bg-[hsl(35_45%_96%)] dark:bg-[hsl(25_15%_12%)] text-foreground overflow-hidden">
+          <div className="relative px-6 md:px-10 pt-12 pb-6 border-b border-current/15">
+            <p className="text-[10px] uppercase tracking-[0.4em] font-semibold text-[hsl(15_75%_45%)]">Live Programming</p>
+            <h2 className="mt-3 font-serif text-3xl md:text-5xl leading-tight">
               {t('landing.section_events')}
             </h2>
-            <p className="mt-3 max-w-2xl text-sm md:text-base font-redacted italic text-white/80">
+            <p className="mt-3 max-w-2xl text-sm md:text-base italic opacity-80 font-serif">
               {t('landing.section_events_sub')}
             </p>
           </div>
+          <div className="relative px-6 md:px-10 py-10">
+            <ParacosmEventsSection />
+          </div>
+        </section>
+
           <div className="relative px-6 md:px-10 pb-10">
             <ParacosmEventsSection />
           </div>
