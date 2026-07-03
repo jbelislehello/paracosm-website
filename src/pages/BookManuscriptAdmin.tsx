@@ -91,11 +91,19 @@ export default function BookManuscriptAdmin() {
   if (!isAdmin) return <Navigate to="/" replace />;
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <div className="container max-w-6xl mx-auto px-6 py-10">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold">Manuscript Console</h1>
-          <p className="text-sm text-muted-foreground mt-2">
+    <div className="min-h-screen bg-[hsl(230_35%_10%)] text-[hsl(35_20%_92%)]">
+      <div className="container max-w-6xl mx-auto px-6 py-12">
+        <header className="mb-10 pb-8 border-b border-white/10">
+          <div className="flex items-baseline gap-3 mb-3">
+            <span className="font-serif text-4xl md:text-5xl leading-none text-[hsl(45_90%_65%)]">15</span>
+            <p className="text-[10px] uppercase tracking-[0.4em] font-semibold text-[hsl(45_90%_65%)]">
+              Command / Manuscript
+            </p>
+          </div>
+          <h1 className="font-serif text-3xl md:text-5xl leading-[1.05] tracking-tight">
+            Manuscript Console
+          </h1>
+          <p className="text-sm md:text-base opacity-75 mt-4 max-w-2xl">
             Curate sources, upload manuscript material, synthesize chapter drafts, and watch the funnel.
           </p>
         </header>

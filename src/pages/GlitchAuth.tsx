@@ -127,14 +127,16 @@ const GlitchAuth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex items-center justify-center p-4">
-      <Card className="w-full max-w-md p-8 space-y-6">
-        <div className="text-center space-y-2">
-          <div className="flex justify-center mb-4">
-            <Compass className="h-12 w-12 text-primary" />
-          </div>
-          <h1 className="text-3xl font-bold">Calm Magic Board</h1>
-          <p className="text-muted-foreground">
+    <div className="min-h-screen bg-[hsl(230_35%_10%)] text-[hsl(35_20%_92%)] flex items-center justify-center p-6">
+      <Card className="w-full max-w-md p-8 space-y-6 bg-white/[0.03] border-white/10 backdrop-blur-sm">
+        <div className="text-center space-y-3">
+          <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] font-semibold text-[hsl(45_90%_65%)]">
+            Vol. 02 · GL!TCH Passage
+          </p>
+          <h1 className="font-serif text-4xl md:text-5xl leading-[1.05] tracking-tight">
+            Calm Magic Board
+          </h1>
+          <p className="text-sm opacity-70">
             {isLogin ? 'Welcome back' : 'Create your account'}
           </p>
         </div>

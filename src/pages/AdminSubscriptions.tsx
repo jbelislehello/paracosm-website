@@ -296,19 +296,24 @@ const AdminSubscriptions: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container max-w-6xl py-8 px-4">
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="icon" onClick={() => navigate('/settings')}>
+    <div className="min-h-screen bg-[hsl(230_35%_10%)] text-[hsl(35_20%_92%)]">
+      <div className="container max-w-6xl py-10 px-4">
+        {/* Editorial Header */}
+        <div className="flex items-center gap-4 mb-10 pb-8 border-b border-white/10">
+          <Button variant="ghost" size="icon" onClick={() => navigate('/settings')} className="text-current hover:bg-white/10">
             <ArrowLeft className="w-5 h-5" />
           </Button>
-          <div className="flex-1">
-            <h1 className="text-2xl font-semibold flex items-center gap-2">
-              <Shield className="w-6 h-6" />
-              Admin: Subscription Overrides
+          <div className="flex-1 min-w-0">
+            <div className="flex items-baseline gap-3">
+              <span className="font-serif text-3xl leading-none text-[hsl(45_90%_65%)]">14</span>
+              <p className="text-[10px] uppercase tracking-[0.4em] font-semibold text-[hsl(45_90%_65%)]">
+                Command / Admin
+              </p>
+            </div>
+            <h1 className="font-serif text-3xl md:text-4xl leading-tight mt-2">
+              Subscription Overrides
             </h1>
-            <p className="text-muted-foreground text-sm">Grant free tier access to users</p>
+            <p className="text-sm opacity-70 mt-1">Grant free tier access to users</p>
           </div>
           <Dialog open={isAddDialogOpen} onOpenChange={(open) => { setIsAddDialogOpen(open); if (!open) resetForm(); }}>
             <DialogTrigger asChild>
