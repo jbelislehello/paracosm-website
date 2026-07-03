@@ -18,6 +18,16 @@ const AgenticResidency = () => {
   const { slug = "" } = useParams<{ slug: string }>();
   const residency = agenticResidencyBySlug(slug);
 
+  usePageSeo({
+    title: residency
+      ? `${residency.title} — Agentic UX Residency · Paracosm`
+      : "Agentic UX Residency — Paracosm",
+    description: residency
+      ? residency.tagline
+      : "Three ways to work with Paracosm on multi-agent surfaces.",
+    path: `/agentic-ux/residencies/${slug}`,
+  });
+
   if (!residency) {
     return <Navigate to="/agentic-ux#residencies" replace />;
   }
@@ -36,11 +46,6 @@ const AgenticResidency = () => {
     next,
   } = residency;
 
-  usePageSeo({
-    title: `${title} — Agentic UX Residency · Paracosm`,
-    description: tagline,
-    path: `/agentic-ux/residencies/${slug}`,
-  });
 
   const mailto = `mailto:jbelisle@helloarchitekt.com?subject=${encodeURIComponent(
     `${title} — inquiry`,
