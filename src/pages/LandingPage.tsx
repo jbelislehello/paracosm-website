@@ -91,6 +91,9 @@ const LandingPage = () => {
       
       <FrameworkHero onScrollToMethod={() => document.getElementById('method-steps')?.scrollIntoView({ behavior: 'smooth' })} />
 
+      {/* How the method works — target of the hero CTA */}
+      <MethodSteps />
+
       {/* Anchor statement */}
       <RelationalPlaceQuote />
 
