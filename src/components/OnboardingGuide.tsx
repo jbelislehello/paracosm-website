@@ -3,102 +3,185 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowRight, ArrowLeft, Compass, Brain, Users, Zap, Sparkles, BookOpen, Target, Building } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowLeft,
+  Compass,
+  Brain,
+  Users,
+  Zap,
+  Sparkles,
+  BookOpen,
+  Target,
+  Building,
+  Rocket,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
 
-const STORAGE_KEY = 'paracosm-onboarding-completed';
-const PROFILE_KEY = 'paracosm-onboarding-profile';
+const STORAGE_KEY = "paracosm-onboarding-completed";
+const PROFILE_KEY = "paracosm-onboarding-profile";
+
+type MaturityId = "exploring" | "practicing" | "leading";
+type ReadinessId = "solo" | "small-team" | "organization" | "enterprise";
 
 interface OnboardingProfile {
-  need: string;
-  maturity: string;
-  capability: string;
+  maturity: MaturityId | "";
+  readiness: ReadinessId | "";
 }
 
-interface Recommendation {
+interface Path {
+  id: string;
   offering: string;
+  needMet: string;
   description: string;
   startingPoint: string;
   route: string;
-  caseStudyRoute: string;
   ctaLabel: string;
   ctaHref: string;
+  icon: typeof BookOpen;
+  fits: {
+    maturity: MaturityId[];
+    readiness: ReadinessId[];
+  };
 }
 
-function getRecommendation(profile: OnboardingProfile, t: (k: string) => string): Recommendation {
-  const { need, maturity, capability } = profile;
+const PATHS: Path[] = [
+  {
+    id: "book",
+    offering: "Calm Magic — the Book",
+    needMet: "You need a shared vocabulary before you invest in change.",
+    description:
+      "The framework in long form: how organizations learn and invent with AI without losing their soul.",
+    startingPoint: "Foundational reading",
+    route: "/book",
+    ctaLabel: "Read the free chapter",
+    ctaHref: "/book#waitlist",
+    icon: BookOpen,
+    fits: {
+      maturity: ["exploring", "practicing", "leading"],
+      readiness: ["solo", "small-team", "organization", "enterprise"],
+    },
+  },
+  {
+    id: "clarity-reset",
+    offering: "Clarity Reset — 7 Days",
+    needMet: "You're stuck on a single decision and need to move this week.",
+    description:
+      "A focused sprint to move from confusion to a clear, executable decision.",
+    startingPoint: "Spring 2026 Offer",
+    route: "/calm-magic-assistant#spring-offer",
+    ctaLabel: "Book Clarity Reset",
+    ctaHref:
+      "mailto:jbelisle@helloarchitekt.com?subject=Clarity%20Reset%20—%20Spring%202026&body=I%20need%20clarity%20on%20a%20stuck%20decision.",
+    icon: Target,
+    fits: {
+      maturity: ["exploring", "practicing"],
+      readiness: ["solo", "small-team"],
+    },
+  },
+  {
+    id: "decision-sprint",
+    offering: "Decision Sprint — 14 Days",
+    needMet:
+      "You have a complex, multi-stakeholder decision that needs structured analysis.",
+    description:
+      "AI-augmented analysis with an accountability loop for complex decisions.",
+    startingPoint: "Spring 2026 Offer",
+    route: "/calm-magic-assistant#spring-offer",
+    ctaLabel: "Book Decision Sprint",
+    ctaHref:
+      "mailto:jbelisle@helloarchitekt.com?subject=Decision%20Sprint%20—%20Spring%202026&body=I%20need%20help%20making%20a%20complex%20decision.",
+    icon: Zap,
+    fits: {
+      maturity: ["practicing", "leading"],
+      readiness: ["small-team", "organization"],
+    },
+  },
+  {
+    id: "ai-leadership",
+    offering: "AI Leadership Coaching",
+    needMet:
+      "Your team is using AI but you lack strategy, governance, and a shared narrative.",
+    description:
+      "Navigate AI adoption with clear strategy, governance, and human-centered design.",
+    startingPoint: "AI Leadership",
+    route: "/agentic-ux",
+    ctaLabel: "Start AI Leadership",
+    ctaHref:
+      "mailto:jbelisle@helloarchitekt.com?subject=AI%20Leadership%20Coaching&body=I%20need%20AI%20strategy%20and%20governance%20support.",
+    icon: Brain,
+    fits: {
+      maturity: ["practicing", "leading"],
+      readiness: ["small-team", "organization", "enterprise"],
+    },
+  },
+  {
+    id: "intention-design",
+    offering: "Intention Design Pipeline",
+    needMet:
+      "You want to build a learning organization instead of automating chaos.",
+    description:
+      "Transform your organization into a learning system that continuously reconfigures itself.",
+    startingPoint: "Intention Design",
+    route: "/",
+    ctaLabel: "Explore Intention Design",
+    ctaHref:
+      "mailto:jbelisle@helloarchitekt.com?subject=Intention%20Design%20Pipeline&body=I%20want%20to%20build%20a%20learning%20organization.",
+    icon: Building,
+    fits: {
+      maturity: ["practicing", "leading"],
+      readiness: ["organization", "enterprise"],
+    },
+  },
+  {
+    id: "strategic-retainer",
+    offering: "Strategic Intervention — Retainer",
+    needMet:
+      "You're driving org-wide AI transformation and need ongoing strategic partnership.",
+    description:
+      "Full Calm Magic Board access with continuous strategic support at the executive layer.",
+    startingPoint: "Spring 2026 Offer",
+    route: "/calm-magic-assistant#spring-offer",
+    ctaLabel: "Request Retainer",
+    ctaHref:
+      "mailto:jbelisle@helloarchitekt.com?subject=Strategic%20Intervention%20Retainer&body=I%20want%20to%20discuss%20an%20ongoing%20engagement.",
+    icon: Rocket,
+    fits: {
+      maturity: ["leading"],
+      readiness: ["organization", "enterprise"],
+    },
+  },
+  {
+    id: "team-coaching",
+    offering: "Team Coaching — Relational Intelligence",
+    needMet:
+      "Your team dynamics are the bottleneck — not the tools or the strategy.",
+    description:
+      "Develop your team's capacity for authentic relating, creative tension, and co-creation.",
+    startingPoint: "Team Coaching",
+    route: "/calm-magic-assistant",
+    ctaLabel: "Start Team Coaching",
+    ctaHref:
+      "mailto:jbelisle@helloarchitekt.com?subject=Team%20Coaching%20Inquiry&body=I%20want%20to%20develop%20relational%20intelligence%20in%20my%20team.",
+    icon: Users,
+    fits: {
+      maturity: ["exploring", "practicing", "leading"],
+      readiness: ["small-team", "organization"],
+    },
+  },
+];
 
-  if (need === 'book') {
-    return {
-      offering: t('book.onboarding_book_offering'),
-      description: t('book.onboarding_book_description'),
-      startingPoint: t('book.onboarding_book_starting'),
-      route: '/book',
-      caseStudyRoute: '/book#waitlist',
-      ctaLabel: t('book.onboarding_book_cta'),
-      ctaHref: '/book#waitlist',
-    };
-  }
-
-  if (need === 'clarity') {
-    if (maturity === 'exploring' || capability === 'solo') {
-      return {
-        offering: 'Clarity Reset — 7 Days',
-        description: 'A focused sprint to move from confusion to a clear, executable decision.',
-        startingPoint: 'Spring 2026 Offer',
-        route: '/calm-magic-assistant#spring-offer',
-        caseStudyRoute: '/case-studies',
-        ctaLabel: 'Book Clarity Reset',
-        ctaHref: 'mailto:jbelisle@helloarchitekt.com?subject=Clarity%20Reset%20—%20Spring%202026&body=I%20need%20clarity%20on%20a%20stuck%20decision.',
-      };
-    }
-    return {
-      offering: 'Decision Sprint — 14 Days',
-      description: 'AI-augmented analysis with accountability loop for complex decisions.',
-      startingPoint: 'Spring 2026 Offer',
-      route: '/calm-magic-assistant#spring-offer',
-      caseStudyRoute: '/case-studies',
-      ctaLabel: 'Book Decision Sprint',
-      ctaHref: 'mailto:jbelisle@helloarchitekt.com?subject=Decision%20Sprint%20—%20Spring%202026&body=I%20need%20help%20making%20a%20complex%20decision.',
-    };
-  }
-
-  if (need === 'ai-strategy') {
-    return {
-      offering: maturity === 'leading' ? 'Strategic Intervention — Retainer' : 'AI Leadership Coaching',
-      description: maturity === 'leading'
-        ? 'Full Calm Magic Board access with ongoing strategic support for AI transformation.'
-        : 'Navigate AI adoption with clear strategy, governance, and human-centered design.',
-      startingPoint: maturity === 'leading' ? 'Spring 2026 Offer' : 'AI Leadership',
-      route: maturity === 'leading' ? '/calm-magic-assistant#spring-offer' : '/agentic-ux',
-      caseStudyRoute: '/case-studies',
-      ctaLabel: 'Get Started',
-      ctaHref: 'mailto:jbelisle@helloarchitekt.com?subject=AI%20Strategy%20Inquiry&body=I%20need%20AI%20strategy%20and%20governance%20support.',
-    };
-  }
-
-  if (need === 'learning-org') {
-    return {
-      offering: capability === 'enterprise' ? 'Strategic Intervention — Retainer' : 'Intention Design Pipeline',
-      description: 'Transform your organization into a learning system that continuously reconfigures itself.',
-      startingPoint: 'Intention Design',
-      route: '/',
-      caseStudyRoute: '/case-studies',
-      ctaLabel: 'Explore Intention Design',
-      ctaHref: 'mailto:jbelisle@helloarchitekt.com?subject=Learning%20Organization&body=I%20want%20to%20build%20a%20learning%20organization.',
-    };
-  }
-
-  return {
-    offering: 'Team Coaching — Relational Intelligence',
-    description: 'Develop your team\'s capacity for authentic relating, creative tension, and co-creation.',
-    startingPoint: 'Team Coaching',
-    route: '/calm-magic-assistant',
-    caseStudyRoute: '/case-studies',
-    ctaLabel: 'Start Team Coaching',
-    ctaHref: 'mailto:jbelisle@helloarchitekt.com?subject=Team%20Coaching%20Inquiry&body=I%20want%20to%20develop%20relational%20intelligence%20in%20my%20team.',
-  };
+function getPaths(profile: OnboardingProfile): Path[] {
+  if (!profile.maturity || !profile.readiness) return [];
+  const matches = PATHS.filter(
+    (p) =>
+      p.fits.maturity.includes(profile.maturity as MaturityId) &&
+      p.fits.readiness.includes(profile.readiness as ReadinessId),
+  );
+  // Always keep the book as an anchor option, even if filtered out.
+  const book = PATHS.find((p) => p.id === "book")!;
+  return matches.some((m) => m.id === "book") ? matches : [...matches, book];
 }
 
 interface OnboardingGuideProps {
@@ -109,35 +192,75 @@ interface OnboardingGuideProps {
 const OnboardingGuide = ({ triggerOpen, onClose }: OnboardingGuideProps) => {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
-  const [profile, setProfile] = useState<OnboardingProfile>({ need: '', maturity: '', capability: '' });
+  const [profile, setProfile] = useState<OnboardingProfile>({
+    maturity: "",
+    readiness: "",
+  });
   const { t } = useLanguage();
 
-  const needs = [
-    { id: 'book', label: t('book.onboarding_book_label'), icon: BookOpen, description: t('book.onboarding_book_desc') },
-    { id: 'clarity', label: t('landing.onboarding_need_clarity'), icon: Target, description: t('landing.onboarding_need_clarity_desc') },
-    { id: 'learning-org', label: t('landing.onboarding_need_learning'), icon: Building, description: t('landing.onboarding_need_learning_desc') },
-    { id: 'ai-strategy', label: t('landing.onboarding_need_ai'), icon: Brain, description: t('landing.onboarding_need_ai_desc') },
-    { id: 'relational', label: t('landing.onboarding_need_relational'), icon: Users, description: t('landing.onboarding_need_relational_desc') },
+  const maturities: {
+    id: MaturityId;
+    label: string;
+    description: string;
+    icon: typeof Compass;
+  }[] = [
+    {
+      id: "exploring",
+      label: "Exploring — Curious observer",
+      description:
+        "You're learning the terms, watching what others do, and forming a point of view on AI.",
+      icon: Compass,
+    },
+    {
+      id: "practicing",
+      label: "Practicing — Active experimenter",
+      description:
+        "You're running AI pilots, prompting daily, and starting to see what generalizes.",
+      icon: BookOpen,
+    },
+    {
+      id: "leading",
+      label: "Leading — Systems architect",
+      description:
+        "You're shaping strategy, governance, and org-wide adoption across multiple teams.",
+      icon: Sparkles,
+    },
   ];
 
-  const maturities = [
-    { id: 'exploring', label: t('landing.onboarding_exploring'), icon: Compass, description: t('landing.onboarding_exploring_desc') },
-    { id: 'practicing', label: t('landing.onboarding_practicing'), icon: BookOpen, description: t('landing.onboarding_practicing_desc') },
-    { id: 'leading', label: t('landing.onboarding_leading'), icon: Sparkles, description: t('landing.onboarding_leading_desc') },
-  ];
-
-  const capabilities = [
-    { id: 'solo', label: t('landing.onboarding_solo'), description: t('landing.onboarding_solo_desc') },
-    { id: 'small-team', label: t('landing.onboarding_small_team'), description: t('landing.onboarding_small_team_desc') },
-    { id: 'organization', label: t('landing.onboarding_organization'), description: t('landing.onboarding_organization_desc') },
-    { id: 'enterprise', label: t('landing.onboarding_enterprise'), description: t('landing.onboarding_enterprise_desc') },
+  const readinessLevels: {
+    id: ReadinessId;
+    label: string;
+    description: string;
+  }[] = [
+    {
+      id: "solo",
+      label: "Solo — just me right now",
+      description: "You're the one making the moves. Low friction, fast decisions.",
+    },
+    {
+      id: "small-team",
+      label: "Small team — 2 to 15 people",
+      description: "You can align a room. Change moves at conversation speed.",
+    },
+    {
+      id: "organization",
+      label: "Organization — 15 to 200 people",
+      description:
+        "Multiple stakeholders. You need structured process to move together.",
+    },
+    {
+      id: "enterprise",
+      label: "Enterprise — 200+ people",
+      description:
+        "Multiple business units, governance, and compliance are in play.",
+    },
   ];
 
   useEffect(() => {
     if (triggerOpen) {
       setOpen(true);
       setStep(0);
-      setProfile({ need: '', maturity: '', capability: '' });
+      setProfile({ maturity: "", readiness: "" });
     }
   }, [triggerOpen]);
 
@@ -155,130 +278,187 @@ const OnboardingGuide = ({ triggerOpen, onClose }: OnboardingGuideProps) => {
   };
 
   const handleComplete = () => {
-    localStorage.setItem(STORAGE_KEY, 'true');
+    localStorage.setItem(STORAGE_KEY, "true");
     localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
   };
 
-  const recommendation = step === 3 ? getRecommendation(profile, t) : null;
+  const paths = step === 2 ? getPaths(profile) : [];
+
+  const stepTitles = [
+    "Your AI & Innovation maturity",
+    "Your readiness to act",
+    "Your matching paths",
+  ];
+  const stepDescriptions = [
+    "Where are you right now on the AI & innovation journey? Pick the description that fits best today.",
+    "How much can you move? Readiness sets the pace and shape of what we recommend.",
+    "Each path is scoped to the need it meets. Pick the one that matches yours.",
+  ];
 
   return (
-    <Dialog open={open} onOpenChange={(val) => { if (!val) handleClose(); else setOpen(true); }}>
+    <Dialog
+      open={open}
+      onOpenChange={(val) => {
+        if (!val) handleClose();
+        else setOpen(true);
+      }}
+    >
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Compass className="w-5 h-5 text-primary" />
-            {step < 3 ? t('landing.onboarding_find_path') : t('landing.onboarding_recommended')}
+            {step < 2 ? "Find your path" : "Paths matched to your profile"}
           </DialogTitle>
-          <DialogDescription>
-            {step === 0 && t('landing.onboarding_step0')}
-            {step === 1 && t('landing.onboarding_step1')}
-            {step === 2 && t('landing.onboarding_step2')}
-            {step === 3 && t('landing.onboarding_step3')}
-          </DialogDescription>
+          <DialogDescription>{stepDescriptions[step]}</DialogDescription>
         </DialogHeader>
 
+        {/* Progress */}
         <div className="flex gap-1 mb-2">
-          {[0, 1, 2, 3].map((s) => (
-            <div key={s} className={`h-1 flex-1 rounded-full transition-colors ${s <= step ? 'bg-primary' : 'bg-muted'}`} />
+          {[0, 1, 2].map((s) => (
+            <div
+              key={s}
+              className={`h-1 flex-1 rounded-full transition-colors ${
+                s <= step ? "bg-primary" : "bg-muted"
+              }`}
+            />
           ))}
         </div>
 
+        <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+          Step {step + 1} of 3 — {stepTitles[step]}
+        </p>
+
+        {/* Step 0 — Maturity */}
         {step === 0 && (
-          <div className="space-y-2">
-            {needs.map((n) => (
-              <button
-                key={n.id}
-                onClick={() => { setProfile({ ...profile, need: n.id }); setStep(1); }}
-                className={`w-full text-left p-3 rounded-lg border transition-all hover:border-primary hover:bg-accent/50 flex items-start gap-3 ${profile.need === n.id ? 'border-primary bg-accent/50' : 'border-border'}`}
-              >
-                <n.icon className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                <div>
-                  <div className="font-medium text-sm">{n.label}</div>
-                  <div className="text-xs text-muted-foreground">{n.description}</div>
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
-
-        {step === 1 && profile.need === 'book' && (() => {
-          // Skip steps 1 & 2 for book path — go straight to recommendation
-          setProfile({ ...profile, maturity: 'exploring', capability: 'solo' });
-          setStep(3);
-          handleComplete();
-          return null;
-        })()}
-
-        {step === 1 && profile.need !== 'book' && (
           <div className="space-y-2">
             {maturities.map((m) => (
               <button
                 key={m.id}
-                onClick={() => { setProfile({ ...profile, maturity: m.id }); setStep(2); }}
-                className={`w-full text-left p-3 rounded-lg border transition-all hover:border-primary hover:bg-accent/50 flex items-start gap-3 ${profile.maturity === m.id ? 'border-primary bg-accent/50' : 'border-border'}`}
+                onClick={() => {
+                  setProfile({ ...profile, maturity: m.id });
+                  setStep(1);
+                }}
+                className={`w-full text-left p-3 rounded-lg border transition-all hover:border-primary hover:bg-accent/50 flex items-start gap-3 ${
+                  profile.maturity === m.id
+                    ? "border-primary bg-accent/50"
+                    : "border-border"
+                }`}
               >
                 <m.icon className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                 <div>
                   <div className="font-medium text-sm">{m.label}</div>
-                  <div className="text-xs text-muted-foreground">{m.description}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {m.description}
+                  </div>
                 </div>
               </button>
             ))}
           </div>
         )}
 
-        {step === 2 && (
+        {/* Step 1 — Readiness */}
+        {step === 1 && (
           <div className="space-y-2">
-            {capabilities.map((c) => (
+            {readinessLevels.map((r) => (
               <button
-                key={c.id}
-                onClick={() => { setProfile({ ...profile, capability: c.id }); setStep(3); handleComplete(); }}
-                className={`w-full text-left p-3 rounded-lg border transition-all hover:border-primary hover:bg-accent/50 ${profile.capability === c.id ? 'border-primary bg-accent/50' : 'border-border'}`}
+                key={r.id}
+                onClick={() => {
+                  setProfile({ ...profile, readiness: r.id });
+                  setStep(2);
+                  handleComplete();
+                }}
+                className={`w-full text-left p-3 rounded-lg border transition-all hover:border-primary hover:bg-accent/50 ${
+                  profile.readiness === r.id
+                    ? "border-primary bg-accent/50"
+                    : "border-border"
+                }`}
               >
-                <div className="font-medium text-sm">{c.label}</div>
-                <div className="text-xs text-muted-foreground">{c.description}</div>
+                <div className="font-medium text-sm">{r.label}</div>
+                <div className="text-xs text-muted-foreground">
+                  {r.description}
+                </div>
               </button>
             ))}
           </div>
         )}
 
-        {step === 3 && recommendation && (
-          <Card className="border-primary/30 bg-accent/20">
-            <CardContent className="p-4 space-y-3">
-              <Badge variant="secondary" className="text-xs">{recommendation.startingPoint}</Badge>
-              <h3 className="font-bold text-lg">{recommendation.offering}</h3>
-              <p className="text-sm text-muted-foreground">{recommendation.description}</p>
-              <div className="flex flex-col gap-2 pt-2">
-                <a href={recommendation.ctaHref}>
-                  <Button className="w-full gap-2">
-                    <Zap className="w-4 h-4" />
-                    {recommendation.ctaLabel}
-                  </Button>
-                </a>
-                <Link to={recommendation.route} onClick={handleClose}>
-                  <Button variant="outline" className="w-full gap-2">
-                    {t('landing.onboarding_learn_more')} <ArrowRight className="w-4 h-4" />
-                  </Button>
-                </Link>
-                <Link to={recommendation.caseStudyRoute} onClick={handleClose}>
-                  <Button variant="ghost" size="sm" className="w-full text-xs">
-                    {t('landing.onboarding_view_cases')}
-                  </Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
+        {/* Step 2 — Matching paths */}
+        {step === 2 && (
+          <div className="space-y-3">
+            {paths.length === 0 && (
+              <p className="text-sm text-muted-foreground">
+                No exact match — start with the book below.
+              </p>
+            )}
+            {paths.map((p) => (
+              <Card key={p.id} className="border-primary/20">
+                <CardContent className="p-4 space-y-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-2">
+                      <p.icon className="w-4 h-4 text-primary mt-1 flex-shrink-0" />
+                      <div>
+                        <Badge variant="secondary" className="text-[10px] mb-1">
+                          {p.startingPoint}
+                        </Badge>
+                        <h3 className="font-bold text-sm leading-tight">
+                          {p.offering}
+                        </h3>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="border-l-2 border-primary/40 pl-3">
+                    <p className="text-[10px] uppercase tracking-[0.2em] text-primary font-semibold">
+                      Need met
+                    </p>
+                    <p className="text-sm font-medium mt-1">{p.needMet}</p>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {p.description}
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-2 pt-1">
+                    <a href={p.ctaHref} className="flex-1">
+                      <Button size="sm" className="w-full gap-2">
+                        <Zap className="w-3.5 h-3.5" />
+                        {p.ctaLabel}
+                      </Button>
+                    </a>
+                    <Link
+                      to={p.route}
+                      onClick={handleClose}
+                      className="flex-1"
+                    >
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full gap-1"
+                      >
+                        Learn more <ArrowRight className="w-3.5 h-3.5" />
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         )}
 
+        {/* Nav */}
         <div className="flex justify-between pt-2">
-          {step > 0 && step < 3 ? (
-            <Button variant="ghost" size="sm" onClick={() => setStep(step - 1)}>
-              <ArrowLeft className="w-4 h-4 mr-1" /> {t('landing.onboarding_back')}
+          {step > 0 ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setStep(step - 1)}
+            >
+              <ArrowLeft className="w-4 h-4 mr-1" />{" "}
+              {t("landing.onboarding_back")}
             </Button>
-          ) : <div />}
-          {step === 3 && (
+          ) : (
+            <div />
+          )}
+          {step === 2 && (
             <Button variant="ghost" size="sm" onClick={handleClose}>
-              {t('landing.onboarding_close')}
+              {t("landing.onboarding_close")}
             </Button>
           )}
         </div>
