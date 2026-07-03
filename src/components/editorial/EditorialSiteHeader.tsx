@@ -87,8 +87,7 @@ export default function EditorialSiteHeader() {
             className="h-7 w-7 rounded-md bg-white p-1 object-contain"
           />
           <div className="leading-none">
-            <div className="text-[9px] uppercase tracking-[0.3em] opacity-60">Paracosm</div>
-            <div className="font-serif text-[13px] tracking-tight">Vol. I</div>
+            <div className="font-serif text-[13px] tracking-tight">Paracosm</div>
           </div>
         </Link>
 
