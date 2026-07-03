@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import logoParacosm from "@/assets/logo-paracosm.jpeg";
+import { EditorialSiteHeader } from "@/components/editorial";
 import DemoHero from "@/components/calm-magic-demo/DemoHero";
 import ProblemSection from "@/components/calm-magic-demo/ProblemSection";
 import BoardAnatomy from "@/components/calm-magic-demo/BoardAnatomy";
