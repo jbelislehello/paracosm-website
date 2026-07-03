@@ -2,11 +2,16 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { courseSchema } from "@/lib/structuredData";
-import { ArrowLeft, ArrowRight, Clock, PlayCircle, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, PlayCircle } from "lucide-react";
 import EnrollDialog from "@/components/trainings/EnrollDialog";
+import Footer from "@/components/Footer";
+import EditorialSection from "@/components/editorial/EditorialSection";
+import EditorialChapterHeader from "@/components/editorial/EditorialChapterHeader";
+import EditorialPullQuote from "@/components/editorial/EditorialPullQuote";
+import { editorialTone, editorialType, type EditorialTone } from "@/components/editorial/editorialTokens";
+import { cn } from "@/lib/utils";
 
 type Training = {
   id: string;
@@ -34,10 +39,18 @@ type ModuleRow = {
   video_duration_min: number | null;
 };
 
+const slugTone: Record<string, EditorialTone> = {
+  glitch: "warm",
+  drift: "night",
+  tune: "clay",
+};
+
 export default function TrainingDetail() {
   const { slug = "" } = useParams();
   const [training, setTraining] = useState<Training | null>(null);
   const [modules, setModules] = useState<ModuleRow[]>([]);
+  const tone: EditorialTone = slugTone[slug] ?? "warm";
+  const styles = editorialTone[tone];
 
   const image =
     training?.og_image_url?.trim() ||
@@ -68,8 +81,6 @@ export default function TrainingDetail() {
     jsonLd,
   });
 
-
-
   useEffect(() => {
     (async () => {
       const { data: t } = await supabase
@@ -92,8 +103,8 @@ export default function TrainingDetail() {
 
   if (!training) {
     return (
-      <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
-        <p className="text-white/60">Loading…</p>
+      <div className={cn("min-h-screen flex items-center justify-center", styles.section)}>
+        <p className="opacity-60">Loading…</p>
       </div>
     );
   }
@@ -101,110 +112,141 @@ export default function TrainingDetail() {
   const breakdown = training.delivery_breakdown as Record<string, string | number> | null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
-      <header className="container mx-auto px-6 py-8 flex items-center justify-between">
-        <Link to="/trainings" className="inline-flex items-center gap-2 text-white/70 hover:text-white">
-          <ArrowLeft className="h-4 w-4" /> All trainings
-        </Link>
-        <EnrollDialog
-          trainingSlug={training.slug}
-          trainingTitle={training.title}
-          triggerLabel={training.cta_label}
-        />
-      </header>
-
-      <section className="container mx-auto px-6 pt-10 pb-16 max-w-4xl">
-        <div className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-white/60 mb-4">
-          <Sparkles className="h-3.5 w-3.5" /> {training.crewdle_focus}
-        </div>
-        <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">{training.title}</h1>
-        <p className="text-xl text-white/70 mb-6">{training.tagline}</p>
-        <div className="inline-flex items-center gap-2 text-sm text-white/60">
-          <Clock className="h-4 w-4" /> {training.hours} hours total
-        </div>
-        {training.hero_quote && (
-          <blockquote className="mt-10 border-l-2 border-white/30 pl-5 italic text-white/70 text-lg">
-            "{training.hero_quote}"
-          </blockquote>
-        )}
-      </section>
-
-      {training.big_picture_md && (
-        <section className="container mx-auto px-6 pb-16 max-w-3xl">
-          <h2 className="text-sm uppercase tracking-widest text-white/50 mb-4">The big picture</h2>
-          <div className="prose prose-invert max-w-none text-white/80">
-            <ReactMarkdown>{training.big_picture_md}</ReactMarkdown>
-          </div>
-        </section>
-      )}
-
-      {training.outcomes?.length > 0 && (
-        <section className="container mx-auto px-6 pb-16 max-w-3xl">
-          <h2 className="text-sm uppercase tracking-widest text-white/50 mb-4">What you'll walk away with</h2>
-          <ul className="space-y-3">
-            {training.outcomes.map((o, i) => (
-              <li key={i} className="flex gap-3 text-white/80">
-                <span className="text-emerald-300">→</span>
-                {o}
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {breakdown && (
-        <section className="container mx-auto px-6 pb-16 max-w-3xl">
-          <h2 className="text-sm uppercase tracking-widest text-white/50 mb-4">Delivery breakdown</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {Object.entries(breakdown).map(([k, v]) => (
-              <div key={k} className="rounded-xl border border-white/10 bg-white/5 p-4">
-                <div className="text-xs uppercase tracking-widest text-white/50">{k.replace(/_/g, " ")}</div>
-                <div className="mt-1 text-lg font-semibold">{String(v)}</div>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      <section className="container mx-auto px-6 pb-24 max-w-4xl">
-        <h2 className="text-sm uppercase tracking-widest text-white/50 mb-6">Curriculum</h2>
-        <ol className="space-y-3">
-          {modules.map((m) => (
-            <li key={m.id}>
-              <Link
-                to={`/trainings/${slug}/modules/${m.order_index}`}
-                className="group flex items-start gap-5 rounded-2xl border border-white/10 bg-white/5 p-5 hover:bg-white/10 transition-colors"
-              >
-                <div className="text-2xl font-bold text-white/40 w-10 shrink-0">
-                  {String(m.order_index).padStart(2, "0")}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 text-xs text-white/50 mb-1">
-                    {m.hours && <span>{m.hours}h</span>}
-                    {m.video_title && (
-                      <span className="inline-flex items-center gap-1">
-                        <PlayCircle className="h-3 w-3" /> {m.video_title}
-                        {m.video_duration_min ? ` · ${m.video_duration_min} min` : ""}
-                      </span>
-                    )}
-                  </div>
-                  <div className="font-semibold mb-1">{m.title}</div>
-                  {m.summary && <p className="text-sm text-white/60">{m.summary}</p>}
-                </div>
-                <ArrowRight className="h-5 w-5 text-white/40 group-hover:text-white group-hover:translate-x-1 transition-all shrink-0 mt-1" />
-              </Link>
-            </li>
-          ))}
-        </ol>
-
-        <div className="mt-12 flex justify-center">
+    <main className="bg-background text-foreground">
+      {/* Hero chapter */}
+      <section className={cn("relative", styles.section)}>
+        <div className="container max-w-7xl mx-auto px-6 pt-10 pb-6 flex items-center justify-between border-b border-current/10">
+          <Link
+            to="/trainings"
+            className={cn(editorialType.cta, "inline-flex items-center gap-2 opacity-70 hover:opacity-100")}
+          >
+            <ArrowLeft className="w-4 h-4" /> All trainings
+          </Link>
           <EnrollDialog
             trainingSlug={training.slug}
             trainingTitle={training.title}
             triggerLabel={training.cta_label}
           />
         </div>
+
+        <div className="container max-w-7xl mx-auto px-6 py-20 md:py-28 grid md:grid-cols-12 gap-10 items-end">
+          <div className="md:col-span-9 space-y-6">
+            <p className={cn(editorialType.eyebrow, styles.kicker)}>
+              Foreplay · {training.crewdle_focus}
+            </p>
+            <h1 className={cn(editorialType.serif, "text-5xl md:text-7xl leading-[0.98] tracking-tight")}>
+              {training.title}
+            </h1>
+            {training.tagline && (
+              <p className="text-xl md:text-2xl opacity-80 max-w-3xl leading-snug">
+                {training.tagline}
+              </p>
+            )}
+            <div className="inline-flex items-center gap-2 text-sm opacity-70">
+              <Clock className="w-4 h-4" /> {training.hours} hours total
+            </div>
+          </div>
+        </div>
       </section>
-    </div>
+
+      {training.hero_quote && (
+        <EditorialSection tone={tone} className="py-16 md:py-24">
+          <div className="max-w-3xl">
+            <EditorialPullQuote tone={tone}>{training.hero_quote}</EditorialPullQuote>
+          </div>
+        </EditorialSection>
+      )}
+
+      {training.big_picture_md && (
+        <EditorialSection tone="paper">
+          <EditorialChapterHeader
+            numeral="I"
+            kicker="The big picture"
+            tone="paper"
+          />
+          <div className="prose prose-lg max-w-3xl dark:prose-invert">
+            <ReactMarkdown>{training.big_picture_md}</ReactMarkdown>
+          </div>
+        </EditorialSection>
+      )}
+
+      {training.outcomes?.length > 0 && (
+        <EditorialSection tone={tone === "night" ? "warm" : "night"}>
+          <EditorialChapterHeader
+            numeral="II"
+            kicker="What you'll walk away with"
+            tone={tone === "night" ? "warm" : "night"}
+          />
+          <ul className="grid md:grid-cols-2 gap-x-10 gap-y-4 max-w-4xl">
+            {training.outcomes.map((o, i) => (
+              <li key={i} className="flex gap-3 text-lg leading-relaxed">
+                <span className="opacity-50 font-serif">→</span>
+                <span>{o}</span>
+              </li>
+            ))}
+          </ul>
+        </EditorialSection>
+      )}
+
+      {breakdown && (
+        <EditorialSection tone="paper">
+          <EditorialChapterHeader numeral="III" kicker="Delivery breakdown" tone="paper" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl">
+            {Object.entries(breakdown).map(([k, v]) => (
+              <div key={k} className="rounded-xl border border-border bg-muted/40 p-5">
+                <div className={editorialType.caption}>{k.replace(/_/g, " ")}</div>
+                <div className={cn(editorialType.serif, "mt-2 text-2xl")}>{String(v)}</div>
+              </div>
+            ))}
+          </div>
+        </EditorialSection>
+      )}
+
+      <EditorialSection tone={tone}>
+        <EditorialChapterHeader numeral="IV" kicker="Curriculum" tone={tone} />
+        <ol className="space-y-3 max-w-4xl">
+          {modules.map((m) => (
+            <li key={m.id}>
+              <Link
+                to={`/trainings/${slug}/modules/${m.order_index}`}
+                className={cn(
+                  "group flex items-start gap-6 rounded-2xl border p-6 transition-colors",
+                  styles.calloutBox,
+                  "hover:bg-current/10",
+                )}
+              >
+                <div className={cn(editorialType.serif, "text-3xl opacity-40 w-12 shrink-0")}>
+                  {String(m.order_index).padStart(2, "0")}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className={cn(editorialType.caption, "flex items-center gap-3 mb-1.5")}>
+                    {m.hours && <span>{m.hours}h</span>}
+                    {m.video_title && (
+                      <span className="inline-flex items-center gap-1 normal-case tracking-normal opacity-80">
+                        <PlayCircle className="w-3 h-3" /> {m.video_title}
+                        {m.video_duration_min ? ` · ${m.video_duration_min} min` : ""}
+                      </span>
+                    )}
+                  </div>
+                  <div className={cn(editorialType.serif, "text-xl mb-1")}>{m.title}</div>
+                  {m.summary && <p className="text-sm opacity-70 leading-relaxed">{m.summary}</p>}
+                </div>
+                <ArrowRight className="w-5 h-5 opacity-40 group-hover:opacity-100 group-hover:translate-x-1 transition-all shrink-0 mt-1" />
+              </Link>
+            </li>
+          ))}
+        </ol>
+
+        <div className="mt-14 flex justify-center">
+          <EnrollDialog
+            trainingSlug={training.slug}
+            trainingTitle={training.title}
+            triggerLabel={training.cta_label}
+          />
+        </div>
+      </EditorialSection>
+
+      <Footer />
+    </main>
   );
 }

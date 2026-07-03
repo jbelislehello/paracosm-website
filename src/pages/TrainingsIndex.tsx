@@ -1,10 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Button } from "@/components/ui/button";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { itemListSchema } from "@/lib/structuredData";
-import { ArrowRight, Clock, GraduationCap, Sparkles } from "lucide-react";
+import { ArrowRight, Clock, Sparkles } from "lucide-react";
+import Footer from "@/components/Footer";
+import EditorialSection from "@/components/editorial/EditorialSection";
+import EditorialChapterHeader from "@/components/editorial/EditorialChapterHeader";
+import EditorialCTA from "@/components/editorial/EditorialCTA";
+import { editorialTone, editorialType, type EditorialTone } from "@/components/editorial/editorialTokens";
+import { cn } from "@/lib/utils";
 
 type Training = {
   id: string;
@@ -18,10 +23,10 @@ type Training = {
   order_index: number;
 };
 
-const slugAccent: Record<string, string> = {
-  glitch: "from-rose-500/30 to-amber-500/20 border-rose-400/30",
-  drift: "from-sky-500/30 to-violet-500/20 border-sky-400/30",
-  tune: "from-emerald-500/30 to-teal-500/20 border-emerald-400/30",
+const slugTone: Record<string, EditorialTone> = {
+  glitch: "warm",
+  drift: "night",
+  tune: "clay",
 };
 
 export default function TrainingsIndex() {
@@ -57,68 +62,111 @@ export default function TrainingsIndex() {
       .then(({ data }) => setTrainings((data as Training[]) ?? []));
   }, []);
 
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
-      <header className="container mx-auto px-6 py-8 flex items-center justify-between">
-        <Link to="/" className="text-xl font-bold tracking-tight">
-          Paracosm <span className="text-white/40">/</span> Trainings
-        </Link>
-        <Button asChild variant="outline" className="border-white/20 text-white hover:bg-white/10">
-          <Link to="/about-us">About</Link>
-        </Button>
-      </header>
-
-      <section className="container mx-auto px-6 py-16 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
-          <GraduationCap className="h-4 w-4 text-amber-300" />
-          <span className="text-sm text-white/70">Crewdle-bound formations by Paracosm</span>
+    <main className="bg-background text-foreground">
+      {/* Masthead + hero — warm opening chapter */}
+      <EditorialSection tone="warm" className="pt-14 pb-16 md:pt-20 md:pb-24">
+        <div className="flex items-center justify-between mb-14 pb-6 border-b border-current/15">
+          <Link to="/" className={cn(editorialType.cta, "opacity-70 hover:opacity-100")}>
+            ← Paracosm
+          </Link>
+          <Link to="/about-us" className={cn(editorialType.cta, "opacity-70 hover:opacity-100")}>
+            About
+          </Link>
         </div>
-        <h1 className="text-4xl md:text-6xl font-bold mb-5 max-w-3xl mx-auto leading-tight">
-          Three trainings to <span className="text-rose-300">name</span>,{" "}
-          <span className="text-sky-300">explore</span> and{" "}
-          <span className="text-emerald-300">orchestrate</span> the AI shift.
-        </h1>
-        <p className="text-lg text-white/60 max-w-2xl mx-auto">
-          GL!TCH is the official Crewdle AI Formation. Drift and Tune extend the journey from
-          co-assisted exploration into orchestrated autonomy.
-        </p>
-      </section>
 
-      <section className="container mx-auto px-6 pb-24">
-        <div className="grid lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {trainings.map((t) => (
-            <Link
-              key={t.id}
-              to={`/trainings/${t.slug}`}
-              className={`relative group rounded-3xl border bg-gradient-to-br ${
-                slugAccent[t.slug] ?? "from-white/10 to-white/5 border-white/10"
-              } p-8 hover:translate-y-[-2px] transition-all`}
-            >
-              <div className="flex items-center justify-between mb-6">
-                <div className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-white/60">
-                  <Sparkles className="h-3.5 w-3.5" />
-                  {t.crewdle_focus}
-                </div>
-                <div className="inline-flex items-center gap-1 text-xs text-white/60">
-                  <Clock className="h-3.5 w-3.5" />
-                  {t.hours}h
-                </div>
-              </div>
-              <h2 className="text-2xl font-bold mb-3">{t.title}</h2>
-              <p className="text-white/70 mb-6">{t.tagline}</p>
-              {t.hero_quote && (
-                <blockquote className="border-l-2 border-white/30 pl-4 italic text-white/60 mb-6 text-sm">
-                  "{t.hero_quote}"
-                </blockquote>
-              )}
-              <div className="inline-flex items-center gap-2 text-sm font-medium text-white group-hover:gap-3 transition-all">
-                {t.cta_label} <ArrowRight className="h-4 w-4" />
-              </div>
-            </Link>
-          ))}
+        <div className="grid md:grid-cols-12 gap-10 items-end">
+          <div className="md:col-span-8 space-y-6">
+            <p className={cn(editorialType.eyebrow, editorialTone.warm.kicker)}>
+              Volume I · Chapter 01 — Foreplay
+            </p>
+            <h1 className={cn(editorialType.serif, "text-5xl md:text-7xl leading-[0.98] tracking-tight")}>
+              Three trainings to <em className="italic font-light">rehearse</em> the AI shift.
+            </h1>
+            <p className="text-lg md:text-xl opacity-80 max-w-2xl leading-relaxed">
+              GL!TCH is the official Crewdle AI Formation. Drift and Tune extend the journey from
+              co-assisted exploration into orchestrated autonomy.
+            </p>
+          </div>
+          <aside className="md:col-span-4 border-l border-current/20 pl-6 space-y-3">
+            <p className={editorialType.caption}>In this issue</p>
+            <ol className="space-y-2 text-sm">
+              {trainings.map((t, i) => (
+                <li key={t.id} className="flex gap-3">
+                  <span className={cn(editorialType.serif, editorialTone.warm.numeral)}>
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span>{t.title}</span>
+                </li>
+              ))}
+            </ol>
+          </aside>
         </div>
-      </section>
-    </div>
+      </EditorialSection>
+
+      {/* One chapter per training */}
+      {trainings.map((t, i) => {
+        const tone = slugTone[t.slug] ?? (["warm", "night", "clay"][i % 3] as EditorialTone);
+        const numeral = String(i + 1).padStart(2, "0");
+        const styles = editorialTone[tone];
+        return (
+          <section
+            key={t.id}
+            className={cn("py-20 md:py-28 px-6 relative", styles.section)}
+          >
+            <div className="container max-w-7xl mx-auto">
+              <EditorialChapterHeader
+                numeral={numeral}
+                kicker={t.crewdle_focus ?? "Training"}
+                subtitle={t.tagline ?? undefined}
+                tone={tone}
+              />
+              <div className="grid md:grid-cols-12 gap-10">
+                <div className="md:col-span-8 space-y-6">
+                  <h2 className={cn(editorialType.serif, "text-4xl md:text-5xl leading-[1.05] tracking-tight")}>
+                    {t.title}
+                  </h2>
+                  {t.hero_quote && (
+                    <blockquote
+                      className={cn(
+                        editorialType.serif,
+                        "border-l-4 pl-5 py-2 italic text-xl md:text-2xl leading-snug",
+                        styles.quoteBorder,
+                      )}
+                    >
+                      “{t.hero_quote}”
+                    </blockquote>
+                  )}
+                  <div className="pt-2">
+                    <EditorialCTA to={`/trainings/${t.slug}`} tone={tone}>
+                      {t.cta_label || "Read the chapter"}
+                    </EditorialCTA>
+                  </div>
+                </div>
+                <aside className="md:col-span-4 space-y-4">
+                  <div className={cn("rounded-2xl border p-6", styles.calloutBox)}>
+                    <div className="flex items-center gap-2 mb-3">
+                      <Clock className="w-4 h-4" />
+                      <span className={editorialType.caption}>Duration</span>
+                    </div>
+                    <p className={cn(editorialType.serif, "text-3xl")}>{t.hours}h</p>
+                    <p className="text-xs opacity-70 mt-1">Total contact + self-paced</p>
+                  </div>
+                  <Link
+                    to={`/trainings/${t.slug}`}
+                    className="group inline-flex items-center gap-2 text-sm opacity-80 hover:opacity-100"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" /> See full syllabus
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </aside>
+              </div>
+            </div>
+          </section>
+        );
+      })}
+
+      <Footer />
+    </main>
   );
 }
