@@ -38,35 +38,7 @@ const CalmMagicDemo = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-md">
-        <div className="container mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
-          <Link to="/" className="flex items-center gap-2">
-            <img
-              src={logoParacosm}
-              alt="Paracosm"
-              className="h-8 w-8 rounded-lg bg-white p-1 object-contain"
-            />
-            <span className="text-sm font-bold">Paracosm</span>
-          </Link>
-          <nav className="hidden items-center gap-6 md:flex">
-            <a href="#anatomy" className="text-sm text-muted-foreground hover:text-foreground">
-              The Board
-            </a>
-            <a href="#seasons" className="text-sm text-muted-foreground hover:text-foreground">
-              Seasons
-            </a>
-            <a href="#benefits" className="text-sm text-muted-foreground hover:text-foreground">
-              Benefits
-            </a>
-            <button
-              onClick={() => setDemoOpen(true)}
-              className="rounded-md bg-gradient-to-r from-primary to-accent px-4 py-1.5 text-sm font-medium text-primary-foreground hover:opacity-95"
-            >
-              Get a demo
-            </button>
-          </nav>
-        </div>
-      </header>
+      <EditorialSiteHeader />
 
       <main>
         <DemoHero onDemo={() => setDemoOpen(true)} />
