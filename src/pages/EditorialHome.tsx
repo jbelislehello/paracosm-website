@@ -127,6 +127,8 @@ export default function EditorialHome() {
 
       <PartnerInnovationPlaysSection />
 
+      <EditorialDispatchesSection />
+
       <EditorialClosing />
     </main>
   );
