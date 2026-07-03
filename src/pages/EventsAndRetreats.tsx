@@ -134,7 +134,7 @@ const EventsAndRetreats = () => {
               Think Like a <em className="italic font-light">Forest.</em>
             </h2>
             <p className="text-lg md:text-xl leading-relaxed opacity-85 mb-4 max-w-2xl">
-              A multi-day retreat for leaders learning to sense the whole system before intervening in it. Root, canopy, understory — an embodied lesson in complexity.
+              In collaboration with <em className="italic">Les Hédonistes</em> and <em className="italic">Create Yourself</em>, Paracosm holds this bi-annual multi-day retreat for leaders and visionaries to sense the whole system before intervening in it. Mycelium, roots, canopy, understory — an embodied lesson in complexity.
             </p>
             <p className={cn(editorialType.caption, "opacity-70")}>
               Dates &amp; location — TBA
