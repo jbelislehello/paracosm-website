@@ -14,6 +14,13 @@ import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { webPageSchema } from "@/lib/structuredData";
+import { residencies } from "@/data/residencies";
+import {
+  residencyImage,
+  residencyImageCaption,
+  residencyImageCredit,
+  formatCredit,
+} from "@/assets/retreats";
 
 const EventsAndRetreats = () => {
   const { t } = useLanguage();
