@@ -12,7 +12,7 @@ import ServicesShowcase from "@/components/ServicesShowcase";
 import SocialProofSection from "@/components/SocialProofSection";
 import OnboardingGuide from "@/components/OnboardingGuide";
 import CollapsibleSection from "@/components/CollapsibleSection";
-import BookAnnouncementBanner from "@/components/BookAnnouncementBanner";
+
 import HybridCognitionBanner from "@/components/landing/HybridCognitionBanner";
 import AgenticEcosystemHero from "@/components/AgenticEcosystemHero";
 import AgenticEcosystemDemo from "@/components/AgenticEcosystemDemo";
@@ -77,7 +77,7 @@ const LandingPage = () => {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <HybridCognitionBanner />
-      <BookAnnouncementBanner />
+      
       <SummerDealBanner />
       {/* Navigation — editorial masthead */}
       <header className="fixed w-full z-50 bg-background/85 backdrop-blur-md border-b border-border/60">
