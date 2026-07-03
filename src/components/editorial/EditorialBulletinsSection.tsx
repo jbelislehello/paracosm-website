@@ -26,10 +26,10 @@ const workshop: Bulletin = {
 
 const drift = {
   kicker: "The Drift — Latest edition",
-  currentTitle: "Hybrid Cognition",
-  currentTag: "June 2026 · Now reading",
-  nextTitle: "Queer AI",
-  nextTag: "July 2026 · In the works",
+  currentTitle: "Queer AI",
+  currentTag: "July 2026 · Now reading",
+  nextTitle: "In the works",
+  nextTag: "Next edition · TBA",
   dek: "Field notes tracking what wants to think next — a monthly pulse across the five Calm Magic axes.",
   cta: "Enter The Drift",
   to: "/drift",
