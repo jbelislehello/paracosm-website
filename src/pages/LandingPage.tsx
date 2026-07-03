@@ -389,11 +389,6 @@ const LandingPage = () => {
           </div>
         </section>
 
-          <div className="relative px-6 md:px-10 pb-10">
-            <ParacosmEventsSection />
-          </div>
-        </section>
-
         <CollapsibleSection
           title={t('landing.section_coaching')}
           subtitle={t('landing.section_coaching_sub')}
