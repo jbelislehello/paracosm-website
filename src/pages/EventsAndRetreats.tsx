@@ -14,6 +14,13 @@ import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { webPageSchema } from "@/lib/structuredData";
+import { residencies } from "@/data/residencies";
+import {
+  residencyImage,
+  residencyImageCaption,
+  residencyImageCredit,
+  formatCredit,
+} from "@/assets/retreats";
 
 const EventsAndRetreats = () => {
   const { t } = useLanguage();
@@ -102,32 +109,125 @@ const EventsAndRetreats = () => {
 
       {/* Think Like a Forest */}
       <EditorialSection tone="night" id="think-like-a-forest">
-        <div className="grid md:grid-cols-12 gap-8 md:gap-12 items-end">
-          <div className="md:col-span-8">
-            <div className="flex items-baseline gap-6 mb-6">
-              <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", night.numeral)}>03</span>
-              <p className={cn(editorialType.kicker, night.kicker)}>Flagship retreat</p>
-            </div>
-            <h2 className={cn(editorialType.serif, "text-4xl md:text-6xl leading-[1.05] tracking-tight mb-6")}>
-              Think Like a <em className="italic font-light">Forest.</em>
-            </h2>
-            <p className="text-lg md:text-xl leading-relaxed opacity-85 mb-4 max-w-2xl">
-              In collaboration with <em className="italic">Les Hédonistes</em> and <em className="italic">Create Yourself</em>, Paracosm holds this bi-annual multi-day retreat for leaders and visionaries to sense the whole system before intervening in it. Mycelium, roots, canopy, understory — an embodied lesson in complexity.
-            </p>
-            <p className={cn(editorialType.caption, "opacity-70")}>
-              Dates &amp; location — TBA
-            </p>
-          </div>
-          <div className="md:col-span-4 md:text-right">
-            <EditorialCTA
-              href="mailto:jbelisle@helloarchitekt.com?subject=Think%20Like%20a%20Forest%20—%20invitation"
-              tone="night"
-            >
-              Read the invitation
-            </EditorialCTA>
-          </div>
-        </div>
+        {(() => {
+          const forest = residencies.find((r) => r.id === "forest")!;
+          const credit = formatCredit(residencyImageCredit.forest);
+          return (
+            <>
+              <div className="grid md:grid-cols-12 gap-8 md:gap-12 items-end mb-16">
+                <div className="md:col-span-8">
+                  <div className="flex items-baseline gap-6 mb-6">
+                    <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", night.numeral)}>03</span>
+                    <p className={cn(editorialType.kicker, night.kicker)}>Flagship retreat</p>
+                  </div>
+                  <h2 className={cn(editorialType.serif, "text-4xl md:text-6xl leading-[1.05] tracking-tight mb-6")}>
+                    Think Like a <em className="italic font-light">Forest.</em>
+                  </h2>
+                  <p className="text-lg md:text-xl leading-relaxed opacity-85 mb-4 max-w-2xl">
+                    In collaboration with <em className="italic">Les Hédonistes</em> and <em className="italic">Create Yourself</em>, Paracosm holds this bi-annual multi-day retreat for leaders and visionaries to sense the whole system before intervening in it. Mycelium, roots, canopy, understory — an embodied lesson in complexity.
+                  </p>
+                  <p className={cn(editorialType.caption, "opacity-70")}>
+                    {forest.tagline} · Dates &amp; location — TBA
+                  </p>
+                </div>
+                <div className="md:col-span-4 md:text-right">
+                  <p className={cn(editorialType.kicker, night.kicker, "mb-2")}>For leaders</p>
+                  <p className="text-sm md:text-base opacity-80 leading-relaxed">{forest.forLeaders}</p>
+                </div>
+              </div>
+
+              {/* Editorial image */}
+              <figure className="mb-16">
+                <img
+                  src={residencyImage.forest}
+                  alt="Cohort circle under the forest canopy at a Paracosm retreat"
+                  className="w-full h-auto object-cover aspect-[16/9] md:aspect-[21/9]"
+                  loading="lazy"
+                />
+                <figcaption className={cn(editorialType.caption, "mt-3 opacity-70 flex flex-wrap gap-x-4 gap-y-1")}>
+                  <span className="italic">{residencyImageCaption.forest}</span>
+                  {credit && <span className="opacity-70">{credit}</span>}
+                </figcaption>
+              </figure>
+
+              {/* Manifesto */}
+              <div className="mb-16 max-w-4xl">
+                <p className={cn(editorialType.kicker, night.kicker, "mb-6")}>Manifesto</p>
+                <div className="divide-y divide-foreground/15">
+                  {forest.manifesto.map((line, i) => (
+                    <p
+                      key={i}
+                      className={cn(editorialType.serif, "text-2xl md:text-3xl leading-snug italic font-light py-6")}
+                    >
+                      {line}
+                    </p>
+                  ))}
+                </div>
+              </div>
+
+              {/* Meta strip */}
+              <div className="grid md:grid-cols-3 gap-8 md:gap-12 mb-16 border-t border-foreground/20 pt-8">
+                {[
+                  { label: "Teacher", value: forest.teacher },
+                  { label: "Duration", value: forest.duration },
+                  { label: "Format", value: forest.format },
+                ].map((meta) => (
+                  <div key={meta.label}>
+                    <p className={cn(editorialType.kicker, night.kicker, "mb-2")}>{meta.label}</p>
+                    <p className="text-sm md:text-base opacity-85 leading-relaxed">{meta.value}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Practices */}
+              <div className="mb-16">
+                <div className="flex items-baseline gap-6 mb-8">
+                  <p className={cn(editorialType.kicker, night.kicker)}>Practices</p>
+                  <h3 className={cn(editorialType.serif, "text-2xl md:text-3xl italic font-light")}>
+                    What we do together.
+                  </h3>
+                </div>
+                <div className="grid md:grid-cols-3 gap-8 md:gap-10">
+                  {forest.practices.map((p) => (
+                    <div key={p.name} className="border-t border-foreground/25 pt-5">
+                      <h4 className={cn(editorialType.serif, "text-xl md:text-2xl leading-tight mb-3")}>{p.name}</h4>
+                      <p className="text-sm md:text-base opacity-80 leading-relaxed">{p.description}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Threshold + Artifact */}
+              <div className="grid md:grid-cols-2 gap-10 md:gap-16 mb-16">
+                <div>
+                  <p className={cn(editorialType.kicker, night.kicker, "mb-3")}>The threshold</p>
+                  <p className={cn(editorialType.serif, "text-xl md:text-2xl leading-snug italic font-light")}>
+                    {forest.threshold}
+                  </p>
+                </div>
+                <div>
+                  <p className={cn(editorialType.kicker, night.kicker, "mb-3")}>What you leave with</p>
+                  <p className="text-base md:text-lg opacity-85 leading-relaxed">{forest.artifact}</p>
+                </div>
+              </div>
+
+              {/* CTA row */}
+              <div className="flex flex-wrap gap-6 items-center border-t border-foreground/20 pt-8">
+                <EditorialCTA
+                  href="mailto:jbelisle@helloarchitekt.com?subject=Think%20Like%20a%20Forest%20—%20invitation"
+                  tone="night"
+                >
+                  Read the invitation
+                </EditorialCTA>
+                <EditorialCTA to="/residencies/forest" tone="night" variant="ghost">
+                  Explore the full residency
+                </EditorialCTA>
+              </div>
+            </>
+          );
+        })()}
       </EditorialSection>
+
 
       {/* Case Studies */}
       <EditorialSection tone="paper" id="case-studies" containerClassName="max-w-6xl">
