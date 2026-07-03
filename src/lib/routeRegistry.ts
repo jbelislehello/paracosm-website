@@ -22,7 +22,8 @@ export interface RouteMeta {
 }
 
 export const ROUTE_REGISTRY: RouteMeta[] = [
-  { path: "/", label: "Home", parent: null },
+  { path: "/", label: "Editorial", parent: null },
+  { path: "/home", label: "Home" },
 
   // Top-level public pages
   { path: "/about-us", label: "About" },
