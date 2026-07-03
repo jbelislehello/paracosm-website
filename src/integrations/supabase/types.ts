@@ -720,6 +720,39 @@ export type Database = {
         }
         Relationships: []
       }
+      hybrid_cognition_signups: {
+        Row: {
+          consent: boolean
+          created_at: string
+          email: string
+          first_name: string
+          id: string
+          language: string
+          phone: string | null
+          source: string | null
+        }
+        Insert: {
+          consent?: boolean
+          created_at?: string
+          email: string
+          first_name: string
+          id?: string
+          language?: string
+          phone?: string | null
+          source?: string | null
+        }
+        Update: {
+          consent?: boolean
+          created_at?: string
+          email?: string
+          first_name?: string
+          id?: string
+          language?: string
+          phone?: string | null
+          source?: string | null
+        }
+        Relationships: []
+      }
       image_credits: {
         Row: {
           created_at: string

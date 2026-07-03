@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { X, Brain } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { trackEvent } from "@/lib/analytics";
 
 const DISMISS_KEY = "hybrid_cognition_banner_dismissed_v1";
-const EVENT_URL =
-  "https://prisme.one/inscription-evenement-ia?utm_source=meta&utm_medium=paid&utm_campaign=event2607&utm_content=Batch+1+%7C+H4+%7C+B1&utm_term=CreaTest++(B1)+%7C+Prosumer+IA+%7C+Broad+%7C+Sign-up&fbclid=IwZnRzaASzYs9wZG9mA2ZkaWQWUJwIBbA_CG_VSa-LTA5tgrfpkUCb6GV4dG4DYWVtATAAYWRpZAGrNU5ecO6cc3J0YwZhcHBfaWQKNjYyODU2ODM3OQABHr93dd8IgN3JdGK-4Ykiq6CrP-ZEZQippMWhuuPWp6L42__yGatw5d4Tiz6G_aem_m3DQB79EpLQK3KYMw-xNNA&utm_id=120248415918550748";
 
 export default function HybridCognitionBanner() {
   const { t } = useLanguage();
@@ -27,17 +26,15 @@ export default function HybridCognitionBanner() {
           </span>
           <span className="truncate">{t("hybrid_cognition.message")}</span>
         </div>
-        <a
-          href={EVENT_URL}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          to="/cognition-hybride"
           onClick={() =>
             trackEvent("hybrid_cognition_cta_click", { location: "top_banner" })
           }
           className="flex-none rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-slate-900 hover:bg-white transition-colors"
         >
           {t("hybrid_cognition.cta")}
-        </a>
+        </Link>
         <button
           type="button"
           aria-label={t("hybrid_cognition.dismiss")}

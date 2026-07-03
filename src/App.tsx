@@ -65,6 +65,7 @@ const Origins = lazy(() => import("./pages/Origins"));
 const TrainingsIndex = lazy(() => import("./pages/TrainingsIndex"));
 const TrainingDetail = lazy(() => import("./pages/TrainingDetail"));
 const TrainingModule = lazy(() => import("./pages/TrainingModule"));
+const HybridCognitionEvent = lazy(() => import("./pages/HybridCognitionEvent"));
 
 const queryClient = new QueryClient();
 
@@ -145,6 +146,8 @@ function App() {
                     <Route path="/trainings" element={<TrainingsIndex />} />
                     <Route path="/trainings/:slug" element={<TrainingDetail />} />
                     <Route path="/trainings/:slug/modules/:order" element={<TrainingModule />} />
+                    <Route path="/cognition-hybride" element={<HybridCognitionEvent />} />
+                    <Route path="/hybrid-cognition" element={<HybridCognitionEvent />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Suspense>
