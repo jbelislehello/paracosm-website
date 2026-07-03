@@ -42,7 +42,7 @@ import EditorialSiteHeader from "@/components/editorial/EditorialSiteHeader";
 
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import bookCoverAsset from "@/assets/calm-magic-cover.png.asset.json";
+import bookCoverAsset from "@/assets/calm-magic-cover-v2.jpeg.asset.json";
 const bookCover = bookCoverAsset.url;
 import LivingManuscriptBand from "@/components/book/LivingManuscriptBand";
 import BookChapterIndex from "@/components/book/BookChapterIndex";
