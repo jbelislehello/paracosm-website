@@ -190,31 +190,33 @@ const Pricing: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-500/5 via-purple-500/5 to-indigo-500/5">
-      <div className="container mx-auto px-4 py-12">
+    <div className="min-h-screen bg-[hsl(35_45%_96%)] dark:bg-[hsl(25_15%_12%)] text-foreground">
+      <div className="container mx-auto px-4 py-10 max-w-5xl">
         <div className="mb-6">
-          <Link 
-            to="/" 
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <ArrowLeft className="h-3 w-3" />
             Back to home
           </Link>
         </div>
 
-        <div className="text-center space-y-4 mb-12">
-          <div className="flex items-center justify-center gap-2">
-            <Sparkles className="h-8 w-8 text-purple-500" />
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-rose-500 to-purple-500 bg-clip-text text-transparent">
-              Calm Magic Board
+        <div className="flex items-baseline gap-8 border-b border-current/10 pb-10 mb-12">
+          <span className="font-serif text-6xl md:text-7xl text-[hsl(15_75%_55%)] leading-none">11</span>
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.4em] font-semibold opacity-60 flex items-center gap-2">
+              <Sparkles className="h-3 w-3" /> The Ledger · Pricing
+            </p>
+            <h1 className="font-serif text-4xl md:text-5xl mt-3 leading-[1.05]">
+              Choose your <em className="italic font-light">journey</em>.
             </h1>
+            <p className="mt-4 text-base opacity-70 max-w-2xl font-serif italic">
+              Start your transformation with the plan that fits your season. All plans include a 14-day free trial.
+            </p>
           </div>
-          <h2 className="text-2xl font-semibold">Choose Your Journey</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Start your transformation journey with the plan that fits your needs. 
-            All plans include a 14-day free trial.
-          </p>
         </div>
+
 
         <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
           {Object.entries(SUBSCRIPTION_TIERS).map(([key, tier]) => (
