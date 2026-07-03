@@ -65,6 +65,8 @@ export default function TrainingsIndex() {
 
   return (
     <main className="bg-background text-foreground">
+      <EditorialSiteHeader />
+
       {/* Masthead + hero — warm opening chapter */}
       <EditorialSection tone="warm" className="pt-14 pb-16 md:pt-20 md:pb-24">
         <div className="flex items-center justify-between mb-14 pb-6 border-b border-current/15">
