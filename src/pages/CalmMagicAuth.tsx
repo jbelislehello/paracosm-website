@@ -361,21 +361,21 @@ const CalmMagicAuth: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-rose-500/5 via-purple-500/5 to-indigo-500/5">
-      <div className="w-full max-w-md space-y-6">
-        <div className="text-center space-y-2">
-          <div className="flex items-center justify-center gap-2">
-            <Sparkles className="h-8 w-8 text-purple-500" />
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-rose-500 to-purple-500 bg-clip-text text-transparent">
-              Calm Magic Board
-            </h1>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            Your space for relational intelligence and living PRDs
+    <div className="min-h-screen flex items-center justify-center p-6 bg-[hsl(35_45%_96%)] dark:bg-[hsl(25_15%_12%)]">
+      <div className="w-full max-w-md space-y-8">
+        <div className="text-center space-y-3">
+          <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] font-semibold text-[hsl(15_75%_45%)]">
+            Vol. 01 · Passage
+          </p>
+          <h1 className="font-serif text-4xl md:text-5xl leading-[1.05] tracking-tight text-foreground">
+            Calm Magic Board
+          </h1>
+          <p className="text-sm text-foreground/70 max-w-sm mx-auto">
+            Your space for relational intelligence and living PRDs.
           </p>
         </div>
 
-        <Card className="border-primary/20">
+        <Card className="border-current/15 bg-background/80 backdrop-blur-sm shadow-none">
           {renderCardContent()}
         </Card>
 
@@ -383,10 +383,10 @@ const CalmMagicAuth: React.FC = () => {
           <div className="text-center">
             <Link 
               to="/" 
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] text-foreground/60 hover:text-foreground transition-colors"
             >
-              <ArrowLeft className="h-4 w-4" />
-              Back to home
+              <ArrowLeft className="h-3 w-3" />
+              Back to the front page
             </Link>
           </div>
         )}

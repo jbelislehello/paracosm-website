@@ -113,30 +113,36 @@ const ParacosmDashboard = () => {
   const totalBits = calculateTotalConsciousnessBits();
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+    <div className="min-h-screen bg-[hsl(35_45%_96%)] dark:bg-[hsl(25_15%_12%)] text-foreground">
+      {/* Editorial Header */}
+      <header className="border-b border-current/10 bg-background/70 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-5">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-4 min-w-0">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => navigate('/calm-magic-board')}
+                className="shrink-0"
               >
                 <ArrowLeft className="h-5 w-5" />
               </Button>
-              <div>
-                <h1 className="text-2xl font-bold flex items-center gap-2">
-                  <GitBranch className="h-6 w-6 text-primary" />
-                  Paracosm Creative Lineage
+              <div className="min-w-0">
+                <div className="flex items-baseline gap-3">
+                  <span className="font-serif text-2xl leading-none text-[hsl(15_75%_55%)]">10</span>
+                  <p className="text-[10px] uppercase tracking-[0.4em] font-semibold text-[hsl(15_75%_45%)]">
+                    Command / Paracosm
+                  </p>
+                </div>
+                <h1 className="font-serif text-2xl md:text-3xl leading-tight mt-1 truncate">
+                  Creative Lineage
                 </h1>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs text-muted-foreground mt-1">
                   {publishedSoftware.length} products · {recursiveProducts.length} recursive · {totalBits.toFixed(1)} consciousness bits
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <Button variant="outline" size="sm" onClick={handleRefresh}>
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Refresh

@@ -1,5 +1,7 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
+import EditorialAuthShell from "@/components/editorial/EditorialAuthShell";
+import EditorialCTA from "@/components/editorial/EditorialCTA";
 
 const NotFound = () => {
   const location = useLocation();
@@ -12,15 +14,35 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">404</h1>
-        <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>
-        <a href="/" className="text-blue-500 hover:text-blue-700 underline">
-          Return to Home
-        </a>
+    <EditorialAuthShell
+      numeral="404"
+      kicker="Dispatch / Not Found"
+      tone="night"
+      title={<>The page you sought is not in this issue.</>}
+      subtitle={
+        <>
+          The route <span className="font-mono opacity-90">{location.pathname}</span> doesn't
+          exist — or has been folded into another chapter.
+        </>
+      }
+      footer={
+        <Link
+          to="/"
+          className="text-xs uppercase tracking-[0.3em] opacity-70 hover:opacity-100 transition-opacity"
+        >
+          Paracosm · Editorial Front Door
+        </Link>
+      }
+    >
+      <div className="flex flex-col gap-3">
+        <EditorialCTA to="/" tone="night" variant="primary">
+          Return to the front page
+        </EditorialCTA>
+        <EditorialCTA to="/trainings" tone="night" variant="ghost">
+          Browse trainings
+        </EditorialCTA>
       </div>
-    </div>
+    </EditorialAuthShell>
   );
 };
 

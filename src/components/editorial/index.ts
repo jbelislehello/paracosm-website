@@ -5,5 +5,6 @@ export { default as EditorialWovenCallout } from "./EditorialWovenCallout";
 export { default as EditorialPlate } from "./EditorialPlate";
 export { default as EditorialCTA } from "./EditorialCTA";
 export { default as EditorialPageHero } from "./EditorialPageHero";
+export { default as EditorialAuthShell } from "./EditorialAuthShell";
 export { default as EditorialDispatchesSection } from "./EditorialDispatchesSection";
 export { editorialTone, editorialType, type EditorialTone } from "./editorialTokens";

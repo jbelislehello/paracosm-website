@@ -198,12 +198,12 @@ const ProjectsDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted pb-20 md:pb-0">
-      {/* Header */}
-      <header className="border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-4 md:px-6 py-3 md:py-4">
+    <div className="min-h-screen bg-[hsl(35_45%_96%)] dark:bg-[hsl(25_15%_12%)] text-foreground pb-20 md:pb-0">
+      {/* Editorial Header */}
+      <header className="border-b border-current/10 bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-10">
+        <div className="max-w-6xl mx-auto px-4 md:px-6 py-4">
           <div className="flex items-center justify-between gap-2 md:gap-4">
-            <div className="flex items-center gap-2 md:gap-4 min-w-0">
+            <div className="flex items-center gap-3 md:gap-4 min-w-0">
               <Button
                 variant="ghost"
                 size="icon"
@@ -213,10 +213,16 @@ const ProjectsDashboard: React.FC = () => {
                 <ArrowLeft className="w-5 h-5" />
               </Button>
               <div className="min-w-0">
-                <h1 className="text-lg md:text-2xl font-bold tracking-tight bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent truncate">
+                <div className="flex items-baseline gap-2">
+                  <span className="font-serif text-xl leading-none text-[hsl(15_75%_55%)]">11</span>
+                  <p className="text-[10px] uppercase tracking-[0.4em] font-semibold text-[hsl(15_75%_45%)]">
+                    Atelier
+                  </p>
+                </div>
+                <h1 className="font-serif text-xl md:text-3xl leading-tight tracking-tight mt-1 truncate">
                   My Projects
                 </h1>
-                <p className="text-xs md:text-sm text-muted-foreground truncate">
+                <p className="text-[11px] md:text-xs text-muted-foreground truncate">
                   {limitDisplay}
                 </p>
               </div>
@@ -228,7 +234,7 @@ const ProjectsDashboard: React.FC = () => {
                 <Button
                   onClick={() => setShowCreateModal(true)}
                   size={isMobile ? "icon" : "default"}
-                  className="bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90"
+                  className="bg-foreground text-background hover:bg-foreground/90"
                 >
                   <Plus className="w-4 h-4 md:mr-2" />
                   <span className="hidden md:inline">New Project</span>
@@ -237,7 +243,7 @@ const ProjectsDashboard: React.FC = () => {
                 <Button
                   onClick={() => setShowUpgradeModal(true)}
                   size={isMobile ? "sm" : "default"}
-                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                  className="bg-[hsl(15_75%_55%)] text-white hover:bg-[hsl(15_75%_48%)]"
                 >
                   <Rocket className="w-4 h-4 md:mr-2" />
                   <span className="hidden md:inline">Upgrade to Create More</span>
