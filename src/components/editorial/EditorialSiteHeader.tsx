@@ -10,17 +10,34 @@ type NavItem =
   | { label: string; children: SubLink[] };
 
 const NAV: NavItem[] = [
-  { label: "Trainings", to: "/trainings" },
+  {
+    label: "Trainings",
+    children: [
+      { label: "Crewdle Connect", to: "/trainings#crewdle-connect" },
+      { label: "Crewdle Forge", to: "/trainings#crewdle-forge" },
+      { label: "GL!TCH — Clarity Reset", to: "/trainings/glitch" },
+      { label: "Drift — Decision Sprint", to: "/trainings/drift" },
+      { label: "Tune — Founder Companion", to: "/trainings/tune" },
+    ],
+  },
   {
     label: "Retreats",
     children: [
-      { label: "Think Like a Forest", to: "/events-and-retreats#think-like-a-forest" },
+      { label: "GL!TCH — Learning Organizations", to: "/events-and-retreats#glitch-learning-orgs" },
+      { label: "Drift — Co-Assisted Exploration", to: "/events-and-retreats#drift-co-assisted" },
+      { label: "Tune — Relational Intelligence Summit", to: "/events-and-retreats#relational-intelligence-summit" },
       { label: "Stories of a Near Future", to: "/events-and-retreats#stories-near-future" },
-      { label: "Relational Intelligence Summit", to: "/events-and-retreats#relational-intelligence-summit" },
-      { label: "All retreats", to: "/events-and-retreats" },
+      { label: "Think Like a Forest", to: "/events-and-retreats#think-like-a-forest" },
     ],
   },
-  { label: "Residencies", to: "/agentic-ux#residencies" },
+  {
+    label: "Residencies",
+    children: [
+      { label: "GL!TCH — Diagnostic Sprint", to: "/agentic-ux#glitch-diagnostic" },
+      { label: "Drift — Prototype Residency", to: "/agentic-ux#drift-prototype" },
+      { label: "Tune — Ecosystem Build", to: "/agentic-ux#tune-ecosystem" },
+    ],
+  },
   {
     label: "Products",
     children: [
@@ -33,7 +50,7 @@ const NAV: NavItem[] = [
     label: "Resources",
     children: [
       { label: "Drift", to: "/drift" },
-      { label: "Why It Works", to: "/resonance" },
+      { label: "How It Works", to: "/design-system" },
       { label: "Agentic UX", to: "/agentic-ux" },
       { label: "Calm Magic Assistant", to: "/calm-magic-assistant" },
     ],
