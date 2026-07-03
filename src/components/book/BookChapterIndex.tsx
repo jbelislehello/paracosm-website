@@ -76,22 +76,30 @@ export default function BookChapterIndex() {
     : null;
 
   return (
-    <section id="chapters" className={cn("px-6 py-20 md:py-32", t.section)}>
+    <section id="chapters" className={cn("px-6 py-20 md:py-32 border-t-2 border-current/80", t.section)}>
       <div className="container mx-auto max-w-5xl">
+        {/* Running head */}
+        <div className={cn("flex items-baseline justify-between pb-4 mb-10 border-b border-current/20", editorialType.caption)}>
+          <span className={t.kicker}>Paracosm · Calm Magic</span>
+          <span className="opacity-60 tabular-nums">Vol. 01 — Chapter Index</span>
+        </div>
+
         <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
           <div>
             <div className="flex items-baseline gap-6 mb-6">
-              <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", t.numeral)}>02</span>
+              <span className={cn(editorialType.serif, "text-5xl md:text-7xl leading-none", t.numeral)}>02</span>
               <p className={cn(editorialType.kicker, t.kicker)}>Living manuscript</p>
             </div>
-            <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-[1.1] tracking-tight max-w-2xl")}>
+            <h2 className={cn(editorialType.serif, "text-4xl md:text-6xl leading-[1.02] tracking-tight max-w-2xl")}>
               Chapters in <em className="italic font-light">motion.</em>
             </h2>
-            <p className="mt-4 max-w-2xl text-base opacity-80 leading-relaxed">
+            <p className={cn(editorialType.serif, "mt-5 max-w-2xl text-lg md:text-xl italic font-light leading-snug opacity-80")}>
               Each chapter is being assembled from the work happening on this site —
               essays, PRDs, drift entries, retreat field notes, and uploaded
-              manuscript material. Open any published chapter; the rest unlock as
-              drafts are approved.
+              manuscript material.
+            </p>
+            <p className="mt-4 max-w-2xl text-sm md:text-base opacity-70 leading-relaxed">
+              Open any published chapter; the rest unlock as drafts are approved.
             </p>
           </div>
           {continueChapter && (
@@ -109,23 +117,29 @@ export default function BookChapterIndex() {
           )}
         </div>
 
-        <ReaderProgressBar className="mb-8" />
+        <ReaderProgressBar className="mb-10" />
 
         {!loading && Object.keys(sourceCounts).length > 0 && (
-          <div className="mb-8 border-t border-b border-current/15 py-4">
-            <div className={cn(editorialType.caption, "mb-3 opacity-70")}>
+          <div className="mb-10 border-t border-b border-current/20 py-5">
+            <div className={cn(editorialType.caption, "mb-3", t.kicker)}>
               Sources mapped per chapter
             </div>
-            <div className="flex flex-wrap gap-x-4 gap-y-2">
+            <div className="flex flex-wrap gap-x-5 gap-y-2">
               {visible.map((c) => (
                 <span key={c.id} className={cn("inline-flex items-baseline gap-1.5", editorialType.caption)}>
-                  <span className="opacity-80">{PHASE_LABEL[c.phase] ?? c.phase}</span>
-                  <span className={cn("tabular-nums", t.kicker)}>{sourceCounts[c.id] ?? 0}</span>
+                  <span className="opacity-70">{PHASE_LABEL[c.phase] ?? c.phase}</span>
+                  <span className={cn("tabular-nums", t.numeral, editorialType.serif, "text-sm")}>{sourceCounts[c.id] ?? 0}</span>
                 </span>
               ))}
             </div>
           </div>
         )}
+
+        {/* Table-of-contents header */}
+        <div className={cn("flex items-baseline justify-between border-t-2 border-current/60 pt-3 mb-0", editorialType.caption)}>
+          <span className={t.kicker}>Chapter</span>
+          <span className="opacity-60 tabular-nums">{visible.length.toString().padStart(2, "0")} entries</span>
+        </div>
 
         <ol className="space-y-0">
           {loading
