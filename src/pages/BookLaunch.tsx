@@ -38,6 +38,8 @@ import { toast } from "sonner";
 
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
+import EditorialSiteHeader from "@/components/editorial/EditorialSiteHeader";
+
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
 import bookCoverAsset from "@/assets/calm-magic-cover.png.asset.json";
