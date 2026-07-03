@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar, MapPin, Users, ExternalLink, Wifi, BookOpen, Globe, Building, Radio } from 'lucide-react';
+import { Calendar, MapPin, Users, ExternalLink, BookOpen, Globe, Building } from 'lucide-react';
 
 const categories = [
-  { name: "All", color: "from-slate-500 to-slate-600", icon: Users },
-  { name: "Relational Intelligence", color: "from-pink-500 to-rose-500", icon: Users },
-  { name: "Learning Organizations", color: "from-blue-500 to-indigo-500", icon: Building },
-  { name: "Retreats", color: "from-purple-500 to-violet-500", icon: Globe },
-  { name: "Events", color: "from-orange-500 to-amber-500", icon: Calendar },
+  { name: "All", icon: Users },
+  { name: "Relational Intelligence", icon: Users },
+  { name: "Learning Organizations", icon: Building },
+  { name: "Retreats", icon: Globe },
+  { name: "Events", icon: Calendar },
 ];
 
 const events = [
@@ -19,7 +19,6 @@ const events = [
     date: "February 18-19, 2026",
     location: "Montreal Convention Centre",
     category: "Learning Organizations",
-    color: "from-blue-500 to-indigo-500",
     cta: "View Presentation",
     link: "https://www.beautiful.ai/player/-OmpqZeoUAksIU7UF7lT",
     secondaryCta: "Read Newsletter Article",
@@ -31,7 +30,6 @@ const events = [
     date: "April 22-23, 2026",
     location: "Cantons-de-l'Est, QC",
     category: "Learning Organizations",
-    color: "from-blue-500 to-indigo-500",
     cta: "Join Waitlist"
   },
   {
@@ -40,7 +38,6 @@ const events = [
     date: "June 9-10, 2026",
     location: "Turku, Finland",
     category: "Events",
-    color: "from-orange-500 to-amber-500",
     cta: "Learn More",
     link: "https://futuresconference2026.com/"
   },
@@ -50,7 +47,6 @@ const events = [
     date: "Summer 2026",
     location: "Montreal, QC",
     category: "Retreats",
-    color: "from-purple-500 to-violet-500",
     cta: "Early Access"
   },
   {
@@ -59,7 +55,6 @@ const events = [
     date: "August 25-27, 2026",
     location: "Botanico House, Azores Island",
     category: "Retreats",
-    color: "from-purple-500 to-violet-500",
     cta: "Request Invitation",
     link: "/paracosm-retreat"
   },
@@ -69,7 +64,6 @@ const events = [
     date: "Autumn 2026",
     location: "Madeira, Portugal",
     category: "Relational Intelligence",
-    color: "from-pink-500 to-rose-500",
     cta: "Get Notified"
   }
 ];
@@ -78,149 +72,135 @@ const ParacosmEventsSection = () => {
   const [activeCategory, setActiveCategory] = useState("All");
 
   const filtered = activeCategory === "All" ? events : events.filter(e => e.category === activeCategory);
-
   const getCategoryMeta = (name: string) => categories.find(c => c.name === name);
 
   return (
-    <section id="events" className="py-16 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-blue-600">
-            Upcoming Learning Events
-          </h2>
-          <p className="text-lg text-slate-600 dark:text-slate-300 max-w-3xl mx-auto">
-            Join exclusive workshops and intensives designed to accelerate your transformation journey through hands-on learning and expert guidance.
-          </p>
-        </div>
+    <div className="relative">
+      {/* Category filter tabs — bloom style */}
+      <div className="flex flex-wrap gap-2 mb-8">
+        {categories.map((cat) => {
+          const Icon = cat.icon;
+          const isActive = activeCategory === cat.name;
+          return (
+            <button
+              key={cat.name}
+              onClick={() => setActiveCategory(cat.name)}
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full font-vhs uppercase tracking-[0.18em] text-[10px] transition-all duration-200 border ${
+                isActive
+                  ? 'bg-[hsl(var(--bloom-amber))] text-[hsl(var(--bloom-ink))] border-[hsl(var(--bloom-amber))] shadow-[0_0_16px_hsl(var(--bloom-amber)/0.4)]'
+                  : 'bg-[hsl(var(--bloom-ink)/0.5)] text-white/70 border-[hsl(var(--bloom-magenta)/0.35)] hover:text-[hsl(var(--bloom-amber))] hover:border-[hsl(var(--bloom-amber)/0.5)]'
+              }`}
+            >
+              <Icon className="w-3 h-3" />
+              {cat.name}
+            </button>
+          );
+        })}
+      </div>
 
-        {/* Category filter tabs */}
-        <div className="flex flex-wrap justify-center gap-2 mb-10">
-          {categories.map((cat) => {
-            const Icon = cat.icon;
-            const isActive = activeCategory === cat.name;
-            return (
-              <button
-                key={cat.name}
-                onClick={() => setActiveCategory(cat.name)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
-                  isActive
-                    ? `bg-gradient-to-r ${cat.color} text-white shadow-md scale-105`
-                    : 'bg-white/80 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5" />
-                {cat.name}
-              </button>
-            );
-          })}
-        </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {filtered.map((event, index) => {
+          const catMeta = getCategoryMeta(event.category);
+          const CatIcon = catMeta?.icon || Users;
+          return (
+            <Card
+              key={index}
+              className="group relative overflow-hidden rounded-xl border border-[hsl(var(--bloom-magenta)/0.3)] bg-[hsl(var(--bloom-ink)/0.55)] backdrop-blur-sm hover:border-[hsl(var(--bloom-amber)/0.6)] transition-all duration-300"
+            >
+              <div className="bloom-scanlines pointer-events-none absolute inset-0 opacity-[0.08]" />
+              <CardHeader className="pb-3 relative">
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-vhs uppercase tracking-[0.18em] text-[hsl(var(--bloom-amber))] border border-[hsl(var(--bloom-amber)/0.4)] bg-[hsl(var(--bloom-amber)/0.08)] w-fit mb-3">
+                  <CatIcon className="w-3 h-3" />
+                  {event.category}
+                </span>
+                <CardTitle className="font-display text-xl leading-tight text-white group-hover:text-[hsl(var(--bloom-amber))] transition-colors">
+                  {event.name}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4 relative">
+                <p className="text-sm font-redacted italic text-white/85 leading-relaxed">
+                  {event.description}
+                </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          {filtered.map((event, index) => {
-            const catMeta = getCategoryMeta(event.category);
-            const CatIcon = catMeta?.icon || Users;
-            return (
-              <Card key={index} className="group hover:shadow-xl transition-all duration-300 border-0 bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm">
-                <CardHeader className="pb-3">
-                  {/* Category badge */}
-                  <span
-                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold text-white bg-gradient-to-r ${event.color} w-fit mb-3`}
-                  >
-                    <CatIcon className="w-3 h-3" />
-                    {event.category}
-                  </span>
-                  <CardTitle className="text-xl font-bold group-hover:text-purple-600 transition-colors">
-                    {event.name}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="text-sm text-slate-800 dark:text-slate-100 font-medium leading-relaxed">
-                    {event.description}
-                  </p>
-                  
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                      <Calendar className="w-4 h-4" />
-                      <span>{event.date}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                      <MapPin className="w-4 h-4" />
-                      <span>{event.location}</span>
-                    </div>
+                <div className="space-y-1.5 pt-1 border-t border-[hsl(var(--bloom-magenta)/0.2)]">
+                  <div className="flex items-center gap-2 text-xs font-vhs uppercase tracking-[0.15em] text-white/60 pt-2">
+                    <Calendar className="w-3.5 h-3.5 text-[hsl(var(--bloom-amber))]" />
+                    <span>{event.date}</span>
                   </div>
+                  <div className="flex items-center gap-2 text-xs font-vhs uppercase tracking-[0.15em] text-white/60">
+                    <MapPin className="w-3.5 h-3.5 text-[hsl(var(--bloom-magenta))]" />
+                    <span>{event.location}</span>
+                  </div>
+                </div>
 
-                  {event.link?.startsWith('/') ? (
-                    <Link to={event.link}>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="w-full group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-blue-600 group-hover:text-white group-hover:border-transparent transition-all duration-300"
-                      >
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        {event.cta}
-                      </Button>
-                    </Link>
-                  ) : (
-                    <a href={event.link || "https://app.reclaim.ai/m/jonathan-helloarchitekt"} target="_blank" rel="noopener noreferrer">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="w-full group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-blue-600 group-hover:text-white group-hover:border-transparent transition-all duration-300"
-                      >
-                        <ExternalLink className="w-4 h-4 mr-2" />
-                        {event.cta}
-                      </Button>
-                    </a>
-                  )}
+                {event.link?.startsWith('/') ? (
+                  <Link to={event.link}>
+                    <Button
+                      size="sm"
+                      className="w-full bg-[hsl(var(--bloom-magenta))] text-white hover:bg-[hsl(var(--bloom-amber))] hover:text-[hsl(var(--bloom-ink))] font-vhs uppercase tracking-widest text-[10px] transition-all"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5 mr-2" />
+                      {event.cta}
+                    </Button>
+                  </Link>
+                ) : (
+                  <a href={event.link || "https://app.reclaim.ai/m/jonathan-helloarchitekt"} target="_blank" rel="noopener noreferrer">
+                    <Button
+                      size="sm"
+                      className="w-full bg-[hsl(var(--bloom-magenta))] text-white hover:bg-[hsl(var(--bloom-amber))] hover:text-[hsl(var(--bloom-ink))] font-vhs uppercase tracking-widest text-[10px] transition-all"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5 mr-2" />
+                      {event.cta}
+                    </Button>
+                  </a>
+                )}
 
-                  {event.secondaryLink && (
-                    <a href={event.secondaryLink} target="_blank" rel="noopener noreferrer">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="w-full text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all duration-300"
-                      >
-                        <BookOpen className="w-4 h-4 mr-2" />
-                        {event.secondaryCta}
-                      </Button>
-                    </a>
-                  )}
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+                {event.secondaryLink && (
+                  <a href={event.secondaryLink} target="_blank" rel="noopener noreferrer">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full bg-transparent border-[hsl(var(--bloom-magenta)/0.4)] text-white/80 hover:bg-[hsl(var(--bloom-ink)/0.6)] hover:text-[hsl(var(--bloom-amber))] hover:border-[hsl(var(--bloom-amber)/0.5)] font-vhs uppercase tracking-widest text-[10px] transition-all"
+                    >
+                      <BookOpen className="w-3.5 h-3.5 mr-2" />
+                      {event.secondaryCta}
+                    </Button>
+                  </a>
+                )}
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
 
-        <div className="text-center mt-12">
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-xl p-8 mb-6">
-            <h3 className="text-xl font-bold mb-4">Ready to Transform Your Leadership?</h3>
-            <p className="text-slate-600 dark:text-slate-300 mb-6 max-w-2xl mx-auto">
-              Don't wait for the next event. Start your transformation journey today with a personalized discovery call to explore how our proven methodologies can accelerate your success.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt" target="_blank" rel="noopener noreferrer">
-                <Button 
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-purple-600 hover:to-blue-600 px-8 py-3"
-                  size="lg"
-                >
-                  <Calendar className="w-5 h-5 mr-2" />
-                  Book Your Free Discovery Call
-                </Button>
-              </a>
-              <a href="#contact">
-                <Button 
-                  variant="outline"
-                  size="lg"
-                  className="px-8 py-3"
-                >
-                  Learn More About Our Services
-                </Button>
-              </a>
-            </div>
+      {/* Closing CTA — bloom style */}
+      <div className="mt-12 rounded-xl border border-[hsl(var(--bloom-amber)/0.35)] bg-gradient-to-br from-[hsl(var(--bloom-ink)/0.7)] to-[hsl(var(--bloom-magenta)/0.15)] p-8 text-center relative overflow-hidden">
+        <div className="bloom-scanlines pointer-events-none absolute inset-0 opacity-[0.1]" />
+        <div className="relative">
+          <p className="font-vhs uppercase tracking-[0.35em] text-xs text-[hsl(var(--bloom-amber))]">// Next step</p>
+          <h3 className="mt-2 font-display text-2xl md:text-3xl bloom-chroma-static text-white">Ready to transform your leadership?</h3>
+          <p className="mt-3 text-sm md:text-base font-redacted italic text-white/80 max-w-2xl mx-auto">
+            Don't wait for the next event. Start your transformation journey today with a personalized discovery call.
+          </p>
+          <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
+            <a href="https://app.reclaim.ai/m/jonathan-helloarchitekt" target="_blank" rel="noopener noreferrer">
+              <Button className="bg-[hsl(var(--bloom-amber))] text-[hsl(var(--bloom-ink))] hover:bg-white font-vhs uppercase tracking-widest text-xs px-6">
+                <Calendar className="w-4 h-4 mr-2" />
+                Book a discovery call
+              </Button>
+            </a>
+            <a href="#contact">
+              <Button
+                variant="outline"
+                className="bg-transparent border-[hsl(var(--bloom-magenta)/0.5)] text-white hover:bg-[hsl(var(--bloom-magenta)/0.2)] hover:text-white font-vhs uppercase tracking-widest text-xs px-6"
+              >
+                Learn more
+              </Button>
+            </a>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
