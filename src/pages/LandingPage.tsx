@@ -88,6 +88,7 @@ const LandingPage = () => {
           </div>
           
           <nav className="hidden lg:flex gap-4 xl:gap-6">
+            <Link to="/" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Editorial</Link>
             <Link to="/agentic-ux" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">AI Leadership</Link>
             <Link to="/calm-magic-assistant" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Team Coaching</Link>
             <Link to="/calm-magic-demo" className="text-xs xl:text-sm font-medium hover:text-purple-600 transition-colors">Calm Magic</Link>

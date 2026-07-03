@@ -11,6 +11,7 @@ import GrainOverlay from "./components/aesthetic/GrainOverlay";
 import "./App.css";
 
 const LandingPage = lazy(() => import("./pages/LandingPage"));
+const EditorialHome = lazy(() => import("./pages/EditorialHome"));
 const Index = lazy(() => import("./pages/Index"));
 const DriftLanding = lazy(() => import("./pages/DriftLanding"));
 const DriftMonthlyDiscovery = lazy(() => import("./pages/DriftMonthlyDiscovery"));
@@ -89,8 +90,9 @@ function App() {
               <Router>
                 <Suspense fallback={<RouteLoadingFallback />}>
                   <Routes>
-                    <Route path="/" element={<LandingPage />} />
-                    <Route path="/index" element={<Navigate to="/" replace />} />
+                    <Route path="/" element={<EditorialHome />} />
+                    <Route path="/home" element={<LandingPage />} />
+                    <Route path="/index" element={<Navigate to="/home" replace />} />
                     <Route path="/drift" element={<DriftLanding />} />
                     <Route path="/drift/:year/:month" element={<DriftMonthlyDiscovery />} />
                     <Route path="/drift/library/:axis" element={<DriftLibrary />} />
