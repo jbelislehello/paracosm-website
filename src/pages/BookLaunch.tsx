@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -19,8 +19,6 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Accordion,
@@ -51,10 +49,12 @@ import transmediaMap from "@/assets/drift/transmediamap.jpg";
 import gameplanImage from "@/assets/drift/JonathanBelisle-gameplan.jpg";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { bookSchema } from "@/lib/structuredData";
-import ChromaText from "@/components/aesthetic/ChromaText";
-import VHSBadge from "@/components/aesthetic/VHSBadge";
-import ScanlineOverlay from "@/components/aesthetic/ScanlineOverlay";
-import ParallaxLayer from "@/components/aesthetic/ParallaxLayer";
+import {
+  EditorialSection,
+  EditorialCTA,
+} from "@/components/editorial";
+import { editorialTone, editorialType } from "@/components/editorial/editorialTokens";
+import { cn } from "@/lib/utils";
 
 const pillars = [
   { icon: Heart, key: "relational" },
@@ -106,16 +106,8 @@ const BookLaunch = () => {
   const formSchema = useMemo(
     () =>
       z.object({
-        name: z
-          .string()
-          .trim()
-          .min(1, { message: t("book.form_name_required") })
-          .max(100),
-        email: z
-          .string()
-          .trim()
-          .email({ message: t("book.form_invalid_email") })
-          .max(255),
+        name: z.string().trim().min(1, { message: t("book.form_name_required") }).max(100),
+        email: z.string().trim().email({ message: t("book.form_invalid_email") }).max(255),
         role: z.string().trim().max(100).optional(),
         tier: z.enum(["reader", "practitioner", "org"]),
       }),
@@ -129,7 +121,6 @@ const BookLaunch = () => {
     defaultValues: { name: "", email: "", role: "", tier: "reader" },
   });
 
-  // Spam protection: honeypot field + min time-on-page
   const honeypotRef = useRef<HTMLInputElement>(null);
   const formMountedAt = useRef<number>(Date.now());
 
@@ -153,13 +144,11 @@ const BookLaunch = () => {
   );
 
   const onSubmit = async (values: FormValues) => {
-    // Honeypot: silently drop bot submissions
     if (honeypotRef.current?.value) {
       setSubmitted(true);
       form.reset();
       return;
     }
-    // Min time-on-page: humans take >2s to fill form
     if (Date.now() - formMountedAt.current < 2000) {
       setSubmitted(true);
       form.reset();
@@ -190,9 +179,15 @@ const BookLaunch = () => {
     form.reset();
   };
 
+  const warm = editorialTone.warm;
+  const paper = editorialTone.paper;
+  const clay = editorialTone.clay;
+  const night = editorialTone.night;
+
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
-      <header className="fixed z-50 w-full border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
+    <div className="flex min-h-screen flex-col bg-[hsl(35_45%_96%)] text-foreground">
+      {/* Editorial navigation */}
+      <header className="fixed z-50 w-full border-b border-current/10 bg-[hsl(35_45%_96%/0.9)] backdrop-blur-md">
         <div className="container mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
           <Link to="/" className="flex items-center gap-2">
             <img
@@ -201,13 +196,10 @@ const BookLaunch = () => {
               className="h-8 w-8 rounded-lg bg-white p-1 object-contain"
               loading="eager"
             />
-            <span className="text-sm font-bold">Paracosm</span>
+            <span className={cn(editorialType.serif, "text-lg")}>Paracosm</span>
           </Link>
-          <div className="flex items-center gap-3">
-            <Link
-              to="/"
-              className="flex items-center gap-1 text-xs text-white/60 transition-colors hover:text-white"
-            >
+          <div className={cn("flex items-center gap-6", editorialType.caption)}>
+            <Link to="/" className="inline-flex items-center gap-1 opacity-70 transition-opacity hover:opacity-100">
               <ArrowLeft className="h-3 w-3" /> {t("book.nav_book")}
             </Link>
             <LanguageSwitcher />
@@ -216,54 +208,37 @@ const BookLaunch = () => {
       </header>
 
       <main className="flex-1 pt-16">
-        <section className="relative overflow-hidden px-6 py-20 md:py-32">
-          <ScanlineOverlay />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_hsl(var(--bloom-magenta)/0.18),_transparent_55%)]" />
-          <ParallaxLayer speed={0.6} className="absolute -left-20 top-1/4 h-96 w-96 rounded-full bg-[hsl(var(--bloom-magenta)/0.30)] blur-3xl" >{null}</ParallaxLayer>
-          <ParallaxLayer speed={-0.4} className="absolute bottom-0 right-0 h-96 w-96 rounded-full bg-[hsl(var(--bloom-teal)/0.25)] blur-3xl" >{null}</ParallaxLayer>
-          <ParallaxLayer speed={0.25} className="absolute right-10 top-24 h-32 w-32 bloom-halftone opacity-40" >{null}</ParallaxLayer>
-
-          <VHSBadge label="REC · MANUSCRIPT" className="absolute right-6 top-6 text-[hsl(var(--bloom-cream))]" />
-
-          <div className="relative container mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-2">
+        {/* Editorial hero */}
+        <section className={cn("relative overflow-hidden px-6 pt-20 pb-24 md:pt-32 md:pb-32 border-b border-current/10", warm.section)}>
+          <div className="container mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-[1.2fr_1fr]">
             <div>
-              <Badge className="mb-4 border-white/20 bg-white/10 font-vhs text-sm uppercase tracking-widest text-white hover:bg-white/15">
-                <Sparkles className="mr-1 h-3 w-3" />
-                {t("book.hero_eyebrow")}
-              </Badge>
-              <ChromaText
-                as="h1"
-                className="mb-4 block font-display text-5xl leading-[0.95] tracking-tight text-[hsl(var(--bloom-cream))] md:text-7xl bloom-wobble"
-              >
+              <div className="flex items-baseline gap-6 mb-8">
+                <span className={cn(editorialType.serif, "text-5xl md:text-7xl leading-none", warm.numeral)}>01</span>
+                <p className={cn(editorialType.kicker, warm.kicker)}>
+                  Volume 01 · {t("book.hero_eyebrow")}
+                </p>
+              </div>
+              <h1 className={cn(editorialType.serif, "mb-6 text-5xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight")}>
                 {t("book.hero_title")}
-              </ChromaText>
-              <p className="mb-6 font-redacted text-xl font-light italic text-[hsl(var(--bloom-magenta)/0.95)] md:text-3xl">
+              </h1>
+              <p className={cn(editorialType.serif, "mb-6 text-xl md:text-3xl leading-tight italic font-light opacity-80")}>
                 {t("book.hero_subtitle")}
               </p>
-              <p className="mb-8 font-tight text-base leading-relaxed text-white/75">
+              <p className="mb-10 text-base md:text-lg leading-relaxed opacity-80 max-w-xl">
                 {t("book.hero_description")}
               </p>
 
-              <div className="mb-8 flex flex-wrap gap-3">
-                <a href="#chapters">
-                  <Button size="lg" className="gap-2 bg-[hsl(var(--bloom-cream))] font-display text-base text-[hsl(var(--bloom-ink))] shadow-[var(--shadow-bloom)] hover:bg-white">
-                    <BookOpen className="h-4 w-4" />
-                    Read the free chapter
-                  </Button>
-                </a>
-                <a href="#offer">
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="gap-2 border-[hsl(var(--bloom-magenta)/0.6)] bg-transparent font-vhs text-base uppercase tracking-widest text-[hsl(var(--bloom-cream))] hover:bg-[hsl(var(--bloom-magenta)/0.15)]"
-                  >
-                    See the cohort
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </a>
+              <div className="mb-10 flex flex-wrap gap-3">
+                <EditorialCTA href="#chapters" tone="warm">
+                  <BookOpen className="h-4 w-4" />
+                  Read the free chapter
+                </EditorialCTA>
+                <EditorialCTA href="#offer" tone="warm" variant="ghost">
+                  See the cohort
+                </EditorialCTA>
               </div>
 
-              <div className="flex flex-wrap gap-x-6 gap-y-2 font-vhs text-sm uppercase tracking-widest text-white/55">
+              <div className={cn("flex flex-wrap gap-x-6 gap-y-2 opacity-60", editorialType.caption)}>
                 <span>{t("book.hero_meta_format")}</span>
                 <span>·</span>
                 <span>{t("book.hero_meta_pages")}</span>
@@ -272,32 +247,21 @@ const BookLaunch = () => {
               </div>
             </div>
 
-            <div className="flex justify-center md:justify-end [perspective:1000px]">
-              <ParallaxLayer speed={0.35}>
-                <div
-                  className="relative transform-gpu transition-transform duration-700"
-                  style={{
-                    transform: "rotateY(-18deg) rotateX(4deg)",
-                    transformStyle: "preserve-3d",
-                  }}
-                >
-                  <span className="bloom-tape absolute -top-3 left-8 h-6 w-28 rounded-[2px]" aria-hidden="true" />
-                  <img
-                    src={bookCover}
-                    alt={t("book.hero_title")}
-                    className="w-64 rounded-r-md border-l-4 border-l-[hsl(var(--bloom-violet))] shadow-[var(--shadow-bloom)] md:w-80"
-                    loading="eager"
-                    decoding="async"
-                  />
-                  <div
-                    className="pointer-events-none absolute inset-0 rounded-r-md mix-blend-screen"
-                    style={{
-                      background:
-                        "linear-gradient(105deg, hsl(var(--bloom-magenta)/0.25) 0%, transparent 35%, transparent 65%, hsl(var(--bloom-teal)/0.2) 100%)",
-                    }}
-                  />
-                </div>
-              </ParallaxLayer>
+            <div className="flex justify-center md:justify-end">
+              <div
+                className="relative"
+                style={{
+                  transform: "rotate(-2deg)",
+                }}
+              >
+                <img
+                  src={bookCover}
+                  alt={t("book.hero_title")}
+                  className="w-64 md:w-80 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.35)]"
+                  loading="eager"
+                  decoding="async"
+                />
+              </div>
             </div>
           </div>
         </section>
@@ -305,458 +269,500 @@ const BookLaunch = () => {
         <LivingManuscriptBand />
         <BookChapterIndex />
 
-        {/* Edition picker — Field Guide vs Operator's Cut */}
-        <section className="px-6 py-16">
-          <div className="container mx-auto max-w-5xl">
-            <div className="mb-10 text-center">
-              <Badge variant="outline" className="mb-3 border-white/20 text-white/70">
-                Two editions, one ontology
-              </Badge>
-              <h2 className="mb-3 text-3xl font-bold md:text-4xl">Choose how you want to read it</h2>
-              <p className="mx-auto max-w-2xl text-base text-white/60">
-                Same source corpus, two voices. Pick the one that matches the next 90 minutes of your life.
-              </p>
+        {/* Edition picker */}
+        <EditorialSection tone="clay" containerClassName="max-w-5xl">
+          <div className="mb-12">
+            <div className="flex items-baseline gap-6 mb-6">
+              <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", clay.numeral)}>04</span>
+              <p className={cn(editorialType.kicker, clay.kicker)}>Two editions, one ontology</p>
             </div>
-            <div className="grid gap-5 md:grid-cols-2">
-              <Link
-                to="/book/chapter/naming-the-friction"
-                className="group rounded-2xl border border-white/10 bg-white/[0.03] p-6 transition hover:border-white/25 hover:bg-white/[0.06]"
-              >
-                <div className="mb-2 font-vhs text-[10px] uppercase tracking-widest text-white/40">The Field Guide</div>
-                <h3 className="text-xl font-semibold text-white">Visionary edition</h3>
-                <p className="mt-3 text-sm text-white/70">
-                  Essayistic, mythic, slow. For practitioners and the curious general reader who
-                  want the full literary spine — 4–6k words per chapter, reflection prompts, the
-                  Paracosm vocabulary woven in.
-                </p>
-                <div className="mt-5 text-sm text-white/60 group-hover:text-white">
-                  Start reading →
-                </div>
-              </Link>
-              <Link
-                to="/book/operators-index"
-                className="group rounded-2xl border border-fuchsia-300/25 bg-gradient-to-br from-fuchsia-500/10 to-rose-500/5 p-6 transition hover:border-fuchsia-300/50"
-              >
-                <div className="mb-2 font-vhs text-[10px] uppercase tracking-widest text-fuchsia-200/70">The Operator's Cut</div>
-                <h3 className="text-xl font-semibold text-white">Pragmatic Reader</h3>
-                <p className="mt-3 text-sm text-white/80">
-                  90 minutes on a flight. For founders, COOs, and transformation leads who need
-                  vocabulary, one Monday move, and a 3-question diagnostic per chapter. ≤1800 words.
-                </p>
-                <div className="mt-5 text-sm text-white/70 group-hover:text-white">
-                  Open the Symptom Index →
-                </div>
-              </Link>
-            </div>
+            <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-[1.1] tracking-tight max-w-3xl")}>
+              Choose how you want to <em className="italic font-light">read it.</em>
+            </h2>
+            <p className="mt-4 max-w-2xl text-base md:text-lg opacity-80">
+              Same source corpus, two voices. Pick the one that matches the next 90 minutes of your life.
+            </p>
           </div>
-        </section>
+          <div className="grid gap-0 md:grid-cols-2 border-t border-current/20">
+            <Link
+              to="/book/chapter/naming-the-friction"
+              className="group flex flex-col p-8 md:p-10 md:border-r border-b md:border-b-0 border-current/20 hover:bg-current/[0.04] transition-colors"
+            >
+              <div className={cn(editorialType.caption, clay.kicker, "mb-4")}>The Field Guide</div>
+              <h3 className={cn(editorialType.serif, "text-2xl md:text-3xl leading-tight tracking-tight mb-4")}>
+                Visionary <em className="italic font-light">edition.</em>
+              </h3>
+              <p className="text-base opacity-80 leading-relaxed">
+                Essayistic, mythic, slow. For practitioners and the curious general reader who
+                want the full literary spine — 4–6k words per chapter, reflection prompts, the
+                Paracosm vocabulary woven in.
+              </p>
+              <div className={cn("mt-8 inline-flex items-center gap-1.5 border-b w-fit pb-1 transition-transform group-hover:translate-x-0.5", editorialType.cta, clay.accentBorder, clay.kicker)}>
+                Start reading <ArrowRight className="h-3.5 w-3.5" />
+              </div>
+            </Link>
+            <Link
+              to="/book/operators-index"
+              className="group flex flex-col p-8 md:p-10 hover:bg-current/[0.04] transition-colors"
+            >
+              <div className={cn(editorialType.caption, clay.kicker, "mb-4")}>The Operator's Cut</div>
+              <h3 className={cn(editorialType.serif, "text-2xl md:text-3xl leading-tight tracking-tight mb-4")}>
+                Pragmatic <em className="italic font-light">reader.</em>
+              </h3>
+              <p className="text-base opacity-80 leading-relaxed">
+                90 minutes on a flight. For founders, COOs, and transformation leads who need
+                vocabulary, one Monday move, and a 3-question diagnostic per chapter. ≤1800 words.
+              </p>
+              <div className={cn("mt-8 inline-flex items-center gap-1.5 border-b w-fit pb-1 transition-transform group-hover:translate-x-0.5", editorialType.cta, clay.accentBorder, clay.kicker)}>
+                Open the Symptom Index <ArrowRight className="h-3.5 w-3.5" />
+              </div>
+            </Link>
+          </div>
+        </EditorialSection>
 
         <BookOfferTiers />
 
-        <section className="bg-slate-900/50 px-6 py-20">
-          <div className="container mx-auto max-w-6xl">
-            <div className="mb-12 text-center">
-              <Badge variant="outline" className="mb-3 border-white/20 text-white/70">
-                {t("book.thesis_eyebrow")}
-              </Badge>
-              <h2 className="mb-4 text-3xl font-bold md:text-5xl">{t("book.thesis_title")}</h2>
-              <p className="mx-auto max-w-2xl text-base text-white/60 md:text-lg">
-                {t("book.thesis_description")}
-              </p>
+        {/* Thesis / pillars */}
+        <EditorialSection tone="paper">
+          <div className="mb-14">
+            <div className="flex items-baseline gap-6 mb-6">
+              <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none text-primary")}>05</span>
+              <p className={cn(editorialType.kicker, "text-primary")}>{t("book.thesis_eyebrow")}</p>
             </div>
-
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {pillars.map(({ icon: Icon, key }) => (
-                <Card key={key} className="border-white/10 bg-white/5 backdrop-blur-sm transition-colors hover:bg-white/10">
-                  <CardContent className="p-6">
-                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br from-fuchsia-500/30 to-rose-500/30">
-                      <Icon className="h-6 w-6 text-fuchsia-200" />
-                    </div>
-                    <h3 className="mb-2 text-lg font-bold text-white">{t(`book.pillar_${key}_title`)}</h3>
-                    <p className="text-sm leading-relaxed text-white/60">{t(`book.pillar_${key}_desc`)}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-[1.1] tracking-tight max-w-3xl")}>
+              {t("book.thesis_title")}
+            </h2>
+            <p className="mt-4 max-w-2xl text-base md:text-lg opacity-80">
+              {t("book.thesis_description")}
+            </p>
           </div>
-        </section>
 
-        <section id="why-now" className="px-6 py-20">
-          <div className="container mx-auto max-w-3xl">
-            <Badge variant="outline" className="mb-3 border-white/20 text-white/70">
-              {t("book.why_now_eyebrow")}
-            </Badge>
-            <h2 className="mb-8 text-3xl font-bold leading-tight md:text-5xl">{t("book.why_now_title")}</h2>
-            <div className="space-y-5 text-base leading-relaxed text-white/75 md:text-lg">
-              <p>{t("book.why_now_p1")}</p>
-              <p>{t("book.why_now_p2")}</p>
-              <p className="font-medium text-white/90">{t("book.why_now_p3")}</p>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-slate-900/50 px-6 py-20">
-          <div className="container mx-auto max-w-4xl">
-            <div className="mb-10 text-center">
-              <Badge variant="outline" className="mb-3 border-white/20 text-white/70">
-                {t("book.chapters_eyebrow")}
-              </Badge>
-              <h2 className="mb-4 text-3xl font-bold md:text-5xl">{t("book.chapters_title")}</h2>
-              <p className="mx-auto max-w-2xl text-base text-white/60">{t("book.chapters_description")}</p>
-            </div>
-
-            <Accordion type="single" collapsible className="space-y-2">
-              {chapters.map((n) => (
-                <AccordionItem
-                  key={n}
-                  value={`ch-${n}`}
-                  className="rounded-lg border border-white/10 bg-white/5 px-4"
-                >
-                  <AccordionTrigger className="py-4 hover:no-underline">
-                    <div className="flex items-center gap-4 text-left">
-                      <span className="w-12 text-xs font-mono text-fuchsia-300">0{n}</span>
-                      <Badge variant="secondary" className="border-0 bg-fuchsia-500/20 font-mono text-[10px] text-fuchsia-200">
-                        {t(`book.chapter_${n}_phase`)}
-                      </Badge>
-                      <span className="font-semibold text-white">{t(`book.chapter_${n}_title`)}</span>
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="pb-4 pl-16 leading-relaxed text-white/70">
-                    {t(`book.chapter_${n}_desc`)}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
-        </section>
-
-        <section className="px-6 py-20">
-          <div className="container mx-auto max-w-6xl">
-            <div className="mb-12 text-center">
-              <Badge variant="outline" className="mb-3 border-white/20 text-white/70">
-                {t("book.playbooks_eyebrow")}
-              </Badge>
-              <h2 className="mb-4 text-3xl font-bold md:text-5xl">{t("book.playbooks_title")}</h2>
-              <p className="mx-auto max-w-3xl text-base text-white/60">{t("book.playbooks_description")}</p>
-            </div>
-
-            <div className="grid gap-5 lg:grid-cols-3">
-              {playbooks.map(({ key, icon: Icon, items }) => (
-                <Card key={key} className="border-white/10 bg-white/5 backdrop-blur-sm">
-                  <CardContent className="p-6">
-                    <div className="mb-4 flex items-center justify-between">
-                      <Badge className="border-white/20 bg-white/10 text-white hover:bg-white/15">
-                        {t(`book.playbook_${key}_label`)}
-                      </Badge>
-                      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/10">
-                        <Icon className="h-5 w-5 text-fuchsia-200" />
-                      </div>
-                    </div>
-                    <h3 className="mb-3 text-xl font-bold text-white">{t(`book.playbook_${key}_title`)}</h3>
-                    <p className="mb-5 text-sm leading-relaxed text-white/65">{t(`book.playbook_${key}_desc`)}</p>
-                    <ul className="space-y-3 text-sm text-white/80">
-                      {items.map((item) => (
-                        <li key={item} className="flex gap-3">
-                          <span className="mt-1 h-2 w-2 rounded-full bg-fuchsia-300" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="px-6 py-20">
-          <div className="container mx-auto max-w-5xl">
-            <div className="mb-12 text-center">
-              <Badge variant="outline" className="mb-3 border-white/20 text-white/70">
-                {t("book.bridge_eyebrow")}
-              </Badge>
-              <h2 className="mb-4 text-3xl font-bold md:text-5xl">{t("book.bridge_title")}</h2>
-              <p className="mx-auto max-w-2xl text-base text-white/60">{t("book.bridge_description")}</p>
-            </div>
-
-            <div className="grid items-center gap-6 md:grid-cols-[1fr_auto_1fr]">
-              <Card className="border-fuchsia-500/30 bg-gradient-to-br from-fuchsia-900/40 to-slate-900/40">
-                <CardContent className="p-6">
-                  <div className="mb-2 text-xs uppercase tracking-wider text-fuchsia-300">{t("book.bridge_left_label")}</div>
-                  <h3 className="mb-3 text-2xl font-bold text-white">{t("book.bridge_left_title")}</h3>
-                  <p className="text-sm leading-relaxed text-white/70">{t("book.bridge_left_desc")}</p>
-                </CardContent>
-              </Card>
-
-              <div className="flex items-center justify-center gap-2 text-fuchsia-300 md:flex-col">
-                <ArrowRight className="hidden h-8 w-8 md:block" />
-                <ArrowRight className="h-6 w-6 md:hidden" />
-              </div>
-
-              <Card className="border-rose-500/30 bg-gradient-to-br from-rose-900/40 to-slate-900/40">
-                <CardContent className="p-6">
-                  <div className="mb-2 text-xs uppercase tracking-wider text-rose-300">{t("book.bridge_right_label")}</div>
-                  <h3 className="mb-3 text-2xl font-bold text-white">{t("book.bridge_right_title")}</h3>
-                  <p className="text-sm leading-relaxed text-white/70">{t("book.bridge_right_desc")}</p>
-                </CardContent>
-              </Card>
-            </div>
-
-            <p className="mt-8 text-center font-mono text-sm text-white/50">{t("book.bridge_arrow")}</p>
-          </div>
-        </section>
-
-        <section className="bg-slate-900/50 px-6 py-20">
-          <div className="container mx-auto max-w-6xl">
-            <div className="mb-10 text-center">
-              <Badge variant="outline" className="mb-3 border-white/20 text-white/70">
-                {t("book.compare_eyebrow")}
-              </Badge>
-              <h2 className="text-3xl font-bold md:text-4xl">{t("book.compare_title")}</h2>
-            </div>
-
-            <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm">
-              <div className="grid grid-cols-[0.8fr_1fr_1fr] border-b border-white/10 bg-white/5 text-sm font-semibold text-white">
-                <div className="p-4 text-white/50">&nbsp;</div>
-                <div className="p-4">{t("book.compare_left_title")}</div>
-                <div className="border-l border-white/10 p-4">{t("book.compare_right_title")}</div>
-              </div>
-              {comparisonRows.map((row) => (
-                <div key={row.label} className="grid grid-cols-[0.8fr_1fr_1fr] border-b border-white/10 last:border-b-0">
-                  <div className="p-4 text-sm font-medium text-white/70">{row.label}</div>
-                  <div className="p-4 text-sm leading-relaxed text-white/55">{row.left}</div>
-                  <div className="border-l border-white/10 p-4 text-sm leading-relaxed text-white/85">{row.right}</div>
+          <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4 border-t border-current/15 pt-10">
+            {pillars.map(({ icon: Icon, key }, i) => (
+              <div key={key} className="flex flex-col gap-3">
+                <div className="flex items-baseline gap-3 mb-2">
+                  <span className={cn(editorialType.serif, "text-2xl text-primary tabular-nums")}>{String(i + 1).padStart(2, "0")}</span>
+                  <Icon className="h-4 w-4 opacity-60" />
                 </div>
-              ))}
-            </div>
+                <h3 className={cn(editorialType.serif, "text-xl md:text-2xl leading-tight tracking-tight")}>
+                  {t(`book.pillar_${key}_title`)}
+                </h3>
+                <p className="text-sm leading-relaxed opacity-75">{t(`book.pillar_${key}_desc`)}</p>
+              </div>
+            ))}
+          </div>
+        </EditorialSection>
 
-            <div className="mt-8 text-center">
-              <Link
-                to="/lineage"
-                className="inline-flex items-center gap-2 text-sm font-medium text-fuchsia-300 hover:text-fuchsia-200"
+        {/* Why now */}
+        <EditorialSection tone="warm" id="why-now" containerClassName="max-w-3xl">
+          <div className="flex items-baseline gap-6 mb-6">
+            <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", warm.numeral)}>06</span>
+            <p className={cn(editorialType.kicker, warm.kicker)}>{t("book.why_now_eyebrow")}</p>
+          </div>
+          <h2 className={cn(editorialType.serif, "mb-10 text-3xl md:text-5xl leading-[1.1] tracking-tight")}>
+            {t("book.why_now_title")}
+          </h2>
+          <div className="space-y-6 text-lg md:text-xl leading-relaxed opacity-85">
+            <p>{t("book.why_now_p1")}</p>
+            <p>{t("book.why_now_p2")}</p>
+            <p className={cn(editorialType.serif, "text-2xl italic font-light")}>{t("book.why_now_p3")}</p>
+          </div>
+        </EditorialSection>
+
+        {/* Chapters accordion */}
+        <EditorialSection tone="clay" containerClassName="max-w-4xl">
+          <div className="mb-12">
+            <div className="flex items-baseline gap-6 mb-6">
+              <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", clay.numeral)}>07</span>
+              <p className={cn(editorialType.kicker, clay.kicker)}>{t("book.chapters_eyebrow")}</p>
+            </div>
+            <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-[1.1] tracking-tight max-w-2xl")}>
+              {t("book.chapters_title")}
+            </h2>
+            <p className="mt-4 max-w-2xl text-base md:text-lg opacity-80">{t("book.chapters_description")}</p>
+          </div>
+
+          <Accordion type="single" collapsible className="border-t border-current/20">
+            {chapters.map((n) => (
+              <AccordionItem
+                key={n}
+                value={`ch-${n}`}
+                className="border-b border-current/20"
               >
-                See the full lineage matrix — Calm Magic vs. Design Thinking, Theory U, Cynefin, Speculative Design
-                <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-slate-900/50 px-6 py-20">
-          <div className="container mx-auto max-w-3xl text-center">
-            <Badge variant="outline" className="mb-3 border-white/20 text-white/70">
-              {t("book.author_eyebrow")}
-            </Badge>
-            <h2 className="mb-2 text-3xl font-bold md:text-4xl">{t("book.author_name")}</h2>
-            <p className="mb-6 text-fuchsia-300">{t("book.author_role")}</p>
-            <p className="leading-relaxed text-white/70">{t("book.author_bio")}</p>
-          </div>
-        </section>
-
-        <section className="px-6 py-20">
-          <div className="container mx-auto max-w-6xl">
-            <div className="mb-10 text-center">
-              <Badge variant="outline" className="mb-3 border-white/20 text-white/70">
-                {t("book.author_work_eyebrow")}
-              </Badge>
-              <h2 className="mb-4 text-3xl font-bold md:text-4xl">{t("book.author_work_title")}</h2>
-              <p className="mx-auto max-w-3xl text-base text-white/60">{t("book.author_work_description")}</p>
-            </div>
-
-            <div className="grid gap-6 md:grid-cols-2">
-              {authorWorkImages.map((image, index) => (
-                <Card key={image.titleKey} className="overflow-hidden border-white/10 bg-white/5">
-                  <img
-                    src={image.src}
-                    alt={t(image.titleKey)}
-                    className="aspect-[16/10] w-full object-cover"
-                    loading={index === 0 ? "eager" : "lazy"}
-                    decoding="async"
-                  />
-                  <CardContent className="p-5">
-                    <h3 className="mb-2 text-xl font-semibold text-white">{t(image.titleKey)}</h3>
-                    <p className="text-sm leading-relaxed text-white/65">{t(image.descKey)}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            <p className="mt-5 text-center text-sm text-white/45">{t("book.author_work_card_note")}</p>
-          </div>
-        </section>
-
-        <section id="waitlist" className="px-6 py-20">
-          <div className="container mx-auto max-w-xl">
-            <div className="mb-8 text-center">
-              <Badge variant="outline" className="mb-3 border-white/20 text-white/70">
-                {t("book.form_eyebrow")}
-              </Badge>
-              <h2 className="mb-3 text-3xl font-bold md:text-4xl">{t("book.form_title")}</h2>
-              <p className="text-sm text-white/60">{t("book.form_description")}</p>
-            </div>
-
-            <Card className="border-white/10 bg-white/5 backdrop-blur-sm">
-              <CardContent className="p-6 md:p-8">
-                {submitted ? (
-                  <div className="py-6 text-center">
-                    <CheckCircle2 className="mx-auto mb-4 h-12 w-12 text-emerald-400" />
-                    <h3 className="mb-2 text-xl font-bold">{t("book.form_success_title")}</h3>
-                    <p className="text-sm text-white/70">{t("book.form_success_desc")}</p>
+                <AccordionTrigger className="py-6 hover:no-underline">
+                  <div className="flex items-baseline gap-6 text-left flex-1 min-w-0">
+                    <span className={cn(editorialType.serif, "text-2xl tabular-nums w-10 flex-none", clay.numeral)}>
+                      0{n}
+                    </span>
+                    <span className={cn(editorialType.caption, clay.kicker, "w-24 flex-none")}>
+                      {t(`book.chapter_${n}_phase`)}
+                    </span>
+                    <span className={cn(editorialType.serif, "text-lg md:text-xl leading-tight truncate flex-1")}>
+                      {t(`book.chapter_${n}_title`)}
+                    </span>
                   </div>
-                ) : (
-                  <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                      {/* Honeypot field — hidden from humans, bots will fill it */}
-                      <div aria-hidden="true" className="absolute left-[-9999px] h-0 w-0 overflow-hidden" tabIndex={-1}>
-                        <label htmlFor="website_url">Leave this field empty</label>
-                        <input
-                          ref={honeypotRef}
-                          id="website_url"
-                          name="website_url"
-                          type="text"
-                          autoComplete="off"
-                          tabIndex={-1}
-                        />
-                      </div>
-                      <FormField
-                        control={form.control}
-                        name="name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-white/80">{t("book.form_name_label")}</FormLabel>
-                            <FormControl>
-                              <Input
-                                {...field}
-                                placeholder={t("book.form_name_placeholder")}
-                                className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                </AccordionTrigger>
+                <AccordionContent className="pb-6 pl-16 text-base leading-relaxed opacity-80">
+                  {t(`book.chapter_${n}_desc`)}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </EditorialSection>
 
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-white/80">{t("book.form_email_label")}</FormLabel>
-                            <FormControl>
-                              <Input
-                                {...field}
-                                type="email"
-                                placeholder={t("book.form_email_placeholder")}
-                                className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="role"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-white/80">{t("book.form_role_label")}</FormLabel>
-                            <FormControl>
-                              <Input
-                                {...field}
-                                placeholder={t("book.form_role_placeholder")}
-                                className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <FormField
-                        control={form.control}
-                        name="tier"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel className="text-white/80">{t("book.form_tier_label")}</FormLabel>
-                            <div className="grid grid-cols-3 gap-2">
-                              {(["reader", "practitioner", "org"] as const).map((tier) => (
-                                <button
-                                  key={tier}
-                                  type="button"
-                                  onClick={() => field.onChange(tier)}
-                                  className={`rounded-md border p-3 text-xs transition-all ${
-                                    field.value === tier
-                                      ? "border-fuchsia-400 bg-fuchsia-500/20 text-white"
-                                      : "border-white/10 bg-white/5 text-white/60 hover:border-white/20"
-                                  }`}
-                                >
-                                  {t(`book.form_tier_${tier}`)}
-                                </button>
-                              ))}
-                            </div>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-
-                      <Button
-                        type="submit"
-                        size="lg"
-                        disabled={form.formState.isSubmitting}
-                        className="w-full gap-2 bg-white font-semibold text-slate-900 hover:bg-white/90"
-                      >
-                        {form.formState.isSubmitting ? (
-                          <>
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                            {t("book.form_submitting")}
-                          </>
-                        ) : (
-                          <>
-                            <BookOpen className="h-4 w-4" />
-                            {t("book.form_submit")}
-                          </>
-                        )}
-                      </Button>
-                    </form>
-                  </Form>
-                )}
-              </CardContent>
-            </Card>
+        {/* Playbooks */}
+        <EditorialSection tone="night">
+          <div className="mb-12">
+            <div className="flex items-baseline gap-6 mb-6">
+              <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", night.numeral)}>08</span>
+              <p className={cn(editorialType.kicker, night.kicker)}>{t("book.playbooks_eyebrow")}</p>
+            </div>
+            <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-[1.1] tracking-tight max-w-3xl")}>
+              {t("book.playbooks_title")}
+            </h2>
+            <p className="mt-4 max-w-3xl text-base md:text-lg opacity-80">{t("book.playbooks_description")}</p>
           </div>
-        </section>
 
-        <section className="bg-slate-900/50 px-6 py-16">
-          <div className="container mx-auto max-w-3xl text-center">
-            <Badge variant="outline" className="mb-3 border-white/20 text-white/70">
-              {t("book.endorsements_eyebrow")}
-            </Badge>
-            <h2 className="mb-3 text-2xl font-bold md:text-3xl">{t("book.endorsements_title")}</h2>
-            <p className="text-sm italic text-white/50">{t("book.endorsements_placeholder")}</p>
+          <div className="grid gap-0 lg:grid-cols-3 border-t border-white/20">
+            {playbooks.map(({ key, icon: Icon, items }, i) => (
+              <div
+                key={key}
+                className="flex flex-col p-8 md:p-10 border-b lg:border-b-0 lg:border-r last:border-r-0 border-white/15"
+              >
+                <div className={cn("flex items-baseline gap-4 mb-6", editorialType.caption)}>
+                  <span className={cn(editorialType.serif, "text-xl", night.kicker)}>{String(i + 1).padStart(2, "0")}</span>
+                  <Icon className="h-4 w-4 opacity-70" />
+                  <span className={cn(night.kicker)}>{t(`book.playbook_${key}_label`)}</span>
+                </div>
+                <h3 className={cn(editorialType.serif, "text-2xl md:text-3xl leading-tight tracking-tight mb-4")}>
+                  {t(`book.playbook_${key}_title`)}
+                </h3>
+                <p className="text-base leading-relaxed opacity-80 mb-6">{t(`book.playbook_${key}_desc`)}</p>
+                <ul className="space-y-3 text-sm opacity-90">
+                  {items.map((item) => (
+                    <li key={item} className="flex gap-3">
+                      <span className={cn("mt-2 h-1 w-4 flex-none", night.accentBorder, "border-t")} />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-        </section>
+        </EditorialSection>
 
-        <section className="px-6 py-20">
-          <div className="container mx-auto max-w-3xl">
-            <h2 className="mb-8 text-center text-3xl font-bold md:text-4xl">{t("book.faq_title")}</h2>
-            <Accordion type="single" collapsible className="space-y-2">
-              {[1, 2, 3, 4].map((n) => (
-                <AccordionItem
-                  key={n}
-                  value={`faq-${n}`}
-                  className="rounded-lg border border-white/10 bg-white/5 px-4"
-                >
-                  <AccordionTrigger className="text-left text-white hover:no-underline">
-                    {t(`book.faq_q${n}`)}
-                  </AccordionTrigger>
-                  <AccordionContent className="leading-relaxed text-white/70">
-                    {t(`book.faq_a${n}`)}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
+        {/* Bridge */}
+        <EditorialSection tone="warm" containerClassName="max-w-5xl">
+          <div className="mb-12">
+            <div className="flex items-baseline gap-6 mb-6">
+              <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", warm.numeral)}>09</span>
+              <p className={cn(editorialType.kicker, warm.kicker)}>{t("book.bridge_eyebrow")}</p>
+            </div>
+            <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-[1.1] tracking-tight max-w-2xl")}>
+              {t("book.bridge_title")}
+            </h2>
+            <p className="mt-4 max-w-2xl text-base md:text-lg opacity-80">{t("book.bridge_description")}</p>
           </div>
-        </section>
+
+          <div className="grid items-stretch gap-0 md:grid-cols-[1fr_auto_1fr] border-t border-current/20">
+            <div className="p-8 md:p-10 border-b md:border-b-0 md:border-r border-current/20">
+              <div className={cn(editorialType.caption, warm.kicker, "mb-4")}>{t("book.bridge_left_label")}</div>
+              <h3 className={cn(editorialType.serif, "text-2xl md:text-3xl leading-tight tracking-tight mb-4")}>
+                {t("book.bridge_left_title")}
+              </h3>
+              <p className="text-base leading-relaxed opacity-80">{t("book.bridge_left_desc")}</p>
+            </div>
+
+            <div className={cn("flex items-center justify-center p-6", warm.kicker)}>
+              <ArrowRight className="hidden h-8 w-8 md:block" />
+              <ArrowRight className="h-6 w-6 md:hidden" />
+            </div>
+
+            <div className="p-8 md:p-10">
+              <div className={cn(editorialType.caption, warm.kicker, "mb-4")}>{t("book.bridge_right_label")}</div>
+              <h3 className={cn(editorialType.serif, "text-2xl md:text-3xl leading-tight tracking-tight mb-4")}>
+                {t("book.bridge_right_title")}
+              </h3>
+              <p className="text-base leading-relaxed opacity-80">{t("book.bridge_right_desc")}</p>
+            </div>
+          </div>
+
+          <p className={cn("mt-8 text-center opacity-60", editorialType.caption)}>
+            {t("book.bridge_arrow")}
+          </p>
+        </EditorialSection>
+
+        {/* Comparison */}
+        <EditorialSection tone="paper" containerClassName="max-w-6xl">
+          <div className="mb-12">
+            <div className="flex items-baseline gap-6 mb-6">
+              <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none text-primary")}>10</span>
+              <p className={cn(editorialType.kicker, "text-primary")}>{t("book.compare_eyebrow")}</p>
+            </div>
+            <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-[1.1] tracking-tight max-w-2xl")}>
+              {t("book.compare_title")}
+            </h2>
+          </div>
+
+          <div className="border-t-2 border-b border-current/30">
+            <div className={cn("grid grid-cols-[0.8fr_1fr_1fr] py-4 border-b border-current/15", editorialType.caption)}>
+              <div />
+              <div className="text-primary">{t("book.compare_left_title")}</div>
+              <div className={cn("border-l border-current/15 pl-4 text-primary")}>{t("book.compare_right_title")}</div>
+            </div>
+            {comparisonRows.map((row) => (
+              <div key={row.label} className="grid grid-cols-[0.8fr_1fr_1fr] py-5 border-b border-current/10 last:border-b-0 gap-4">
+                <div className={cn("font-serif text-sm md:text-base font-medium")}>{row.label}</div>
+                <div className="text-sm md:text-base leading-relaxed opacity-70 pr-4">{row.left}</div>
+                <div className="border-l border-current/15 pl-4 text-sm md:text-base leading-relaxed">{row.right}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10">
+            <Link
+              to="/lineage"
+              className={cn("inline-flex items-center gap-1.5 border-b pb-1 text-primary transition-transform hover:translate-x-0.5", editorialType.cta, "border-primary")}
+            >
+              See the full lineage matrix — Calm Magic vs. Design Thinking, Theory U, Cynefin, Speculative Design
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+        </EditorialSection>
+
+        {/* Author */}
+        <EditorialSection tone="clay" containerClassName="max-w-3xl">
+          <div className="flex items-baseline gap-6 mb-8">
+            <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", clay.numeral)}>11</span>
+            <p className={cn(editorialType.kicker, clay.kicker)}>{t("book.author_eyebrow")}</p>
+          </div>
+          <h2 className={cn(editorialType.serif, "mb-2 text-3xl md:text-5xl leading-[1.1] tracking-tight")}>
+            {t("book.author_name")}
+          </h2>
+          <p className={cn("mb-8", editorialType.caption, clay.kicker)}>{t("book.author_role")}</p>
+          <p className="text-lg leading-relaxed opacity-85">{t("book.author_bio")}</p>
+        </EditorialSection>
+
+        {/* Author work */}
+        <EditorialSection tone="warm">
+          <div className="mb-12">
+            <div className="flex items-baseline gap-6 mb-6">
+              <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", warm.numeral)}>12</span>
+              <p className={cn(editorialType.kicker, warm.kicker)}>{t("book.author_work_eyebrow")}</p>
+            </div>
+            <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-[1.1] tracking-tight max-w-3xl")}>
+              {t("book.author_work_title")}
+            </h2>
+            <p className="mt-4 max-w-3xl text-base md:text-lg opacity-80">{t("book.author_work_description")}</p>
+          </div>
+
+          <div className="grid gap-10 md:grid-cols-2">
+            {authorWorkImages.map((image, index) => (
+              <figure key={image.titleKey} className="flex flex-col">
+                <img
+                  src={image.src}
+                  alt={t(image.titleKey)}
+                  className="aspect-[16/10] w-full object-cover"
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                />
+                <figcaption className="pt-5">
+                  <h3 className={cn(editorialType.serif, "text-xl md:text-2xl leading-tight tracking-tight mb-2")}>
+                    {t(image.titleKey)}
+                  </h3>
+                  <p className="text-sm md:text-base leading-relaxed opacity-75">{t(image.descKey)}</p>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+
+          <p className={cn("mt-8", editorialType.caption, "opacity-60")}>{t("book.author_work_card_note")}</p>
+        </EditorialSection>
+
+        {/* Waitlist form */}
+        <EditorialSection tone="night" id="waitlist" containerClassName="max-w-2xl">
+          <div className="mb-10">
+            <div className="flex items-baseline gap-6 mb-6">
+              <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", night.numeral)}>13</span>
+              <p className={cn(editorialType.kicker, night.kicker)}>{t("book.form_eyebrow")}</p>
+            </div>
+            <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-[1.1] tracking-tight mb-4")}>
+              {t("book.form_title")}
+            </h2>
+            <p className="text-base opacity-80">{t("book.form_description")}</p>
+          </div>
+
+          <div className="border-t border-white/20 pt-10">
+            {submitted ? (
+              <div className="py-6 text-center">
+                <CheckCircle2 className={cn("mx-auto mb-4 h-10 w-10", night.kicker)} />
+                <h3 className={cn(editorialType.serif, "mb-2 text-2xl")}>{t("book.form_success_title")}</h3>
+                <p className="text-sm opacity-80">{t("book.form_success_desc")}</p>
+              </div>
+            ) : (
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+                  <div aria-hidden="true" className="absolute left-[-9999px] h-0 w-0 overflow-hidden" tabIndex={-1}>
+                    <label htmlFor="website_url">Leave this field empty</label>
+                    <input
+                      ref={honeypotRef}
+                      id="website_url"
+                      name="website_url"
+                      type="text"
+                      autoComplete="off"
+                      tabIndex={-1}
+                    />
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className={cn(editorialType.caption, "opacity-80")}>{t("book.form_name_label")}</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder={t("book.form_name_placeholder")}
+                            className="border-white/20 bg-white/5 text-current placeholder:text-current/40 rounded-none border-0 border-b focus-visible:ring-0 px-0"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className={cn(editorialType.caption, "opacity-80")}>{t("book.form_email_label")}</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            type="email"
+                            placeholder={t("book.form_email_placeholder")}
+                            className="border-white/20 bg-white/5 text-current placeholder:text-current/40 rounded-none border-0 border-b focus-visible:ring-0 px-0"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="role"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className={cn(editorialType.caption, "opacity-80")}>{t("book.form_role_label")}</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder={t("book.form_role_placeholder")}
+                            className="border-white/20 bg-white/5 text-current placeholder:text-current/40 rounded-none border-0 border-b focus-visible:ring-0 px-0"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="tier"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className={cn(editorialType.caption, "opacity-80")}>{t("book.form_tier_label")}</FormLabel>
+                        <div className="grid grid-cols-3 gap-0 border-t border-white/15 border-b">
+                          {(["reader", "practitioner", "org"] as const).map((tier, i) => (
+                            <button
+                              key={tier}
+                              type="button"
+                              onClick={() => field.onChange(tier)}
+                              className={cn(
+                                "py-4 transition-colors border-white/15",
+                                i > 0 && "border-l",
+                                editorialType.cta,
+                                field.value === tier
+                                  ? cn(night.ctaPrimary)
+                                  : "opacity-60 hover:opacity-100",
+                              )}
+                            >
+                              {t(`book.form_tier_${tier}`)}
+                            </button>
+                          ))}
+                        </div>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <Button
+                    type="submit"
+                    size="lg"
+                    disabled={form.formState.isSubmitting}
+                    className={cn(
+                      "w-full mt-4 rounded-full",
+                      editorialType.cta,
+                      night.ctaPrimary,
+                    )}
+                  >
+                    {form.formState.isSubmitting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        {t("book.form_submitting")}
+                      </>
+                    ) : (
+                      <>
+                        <BookOpen className="h-4 w-4 mr-2" />
+                        {t("book.form_submit")}
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </Form>
+            )}
+          </div>
+        </EditorialSection>
+
+        {/* Endorsements */}
+        <EditorialSection tone="paper" containerClassName="max-w-3xl">
+          <div className="flex items-baseline gap-6 mb-6">
+            <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none text-primary")}>14</span>
+            <p className={cn(editorialType.kicker, "text-primary")}>{t("book.endorsements_eyebrow")}</p>
+          </div>
+          <h2 className={cn(editorialType.serif, "mb-4 text-3xl md:text-4xl leading-tight tracking-tight")}>
+            {t("book.endorsements_title")}
+          </h2>
+          <p className={cn(editorialType.serif, "text-xl italic font-light opacity-60")}>{t("book.endorsements_placeholder")}</p>
+        </EditorialSection>
+
+        {/* FAQ */}
+        <EditorialSection tone="warm" containerClassName="max-w-3xl">
+          <div className="flex items-baseline gap-6 mb-10">
+            <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", warm.numeral)}>15</span>
+            <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-tight tracking-tight")}>
+              {t("book.faq_title")}
+            </h2>
+          </div>
+          <Accordion type="single" collapsible className="border-t border-current/20">
+            {[1, 2, 3, 4].map((n) => (
+              <AccordionItem
+                key={n}
+                value={`faq-${n}`}
+                className="border-b border-current/20"
+              >
+                <AccordionTrigger className={cn("py-6 text-left hover:no-underline", editorialType.serif, "text-lg md:text-xl leading-tight")}>
+                  {t(`book.faq_q${n}`)}
+                </AccordionTrigger>
+                <AccordionContent className="pb-6 text-base leading-relaxed opacity-80">
+                  {t(`book.faq_a${n}`)}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </EditorialSection>
       </main>
 
       <Footer />

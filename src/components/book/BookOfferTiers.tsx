@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { Check, Loader2, Mail, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Check, Loader2, Mail } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import BookLeadCaptureForm from "./BookLeadCaptureForm";
+import { cn } from "@/lib/utils";
+import { editorialTone, editorialType } from "@/components/editorial/editorialTokens";
 
 export default function BookOfferTiers() {
   const [loadingCohort, setLoadingCohort] = useState(false);
+  const t = editorialTone.night;
 
   const startCohortCheckout = async () => {
     setLoadingCohort(true);
@@ -27,110 +27,143 @@ export default function BookOfferTiers() {
   };
 
   return (
-    <section id="offer" className="px-6 py-16 md:py-24">
-      <div className="container mx-auto max-w-5xl">
-        <div className="mb-10 text-center">
-          <Badge className="mb-3 border-[hsl(var(--bloom-magenta)/0.4)] bg-[hsl(var(--bloom-magenta)/0.15)] font-vhs text-sm uppercase tracking-widest text-[hsl(var(--bloom-cream))]">
-            <Sparkles className="mr-1 h-3 w-3" />
-            Three ways in
-          </Badge>
-          <h2 className="font-display text-3xl leading-tight text-[hsl(var(--bloom-cream))] md:text-5xl bloom-chroma-static">
-            Read first. Practice next. Bring your team.
+    <section id="offer" className={cn("px-6 py-20 md:py-32", t.section)}>
+      <div className="container mx-auto max-w-6xl">
+        <div className="mb-14">
+          <div className="flex items-baseline gap-6 mb-6">
+            <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", t.numeral)}>03</span>
+            <p className={cn(editorialType.kicker, t.kicker)}>Three ways in</p>
+          </div>
+          <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-[1.1] tracking-tight max-w-3xl")}>
+            Read first. Practice next. <em className="italic font-light">Bring your team.</em>
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl font-tight text-sm text-white/60">
+          <p className="mt-4 max-w-2xl text-base md:text-lg opacity-80 leading-relaxed">
             The book is the entry point. The cohort puts the framework in your hands.
             The org license embeds it in your operating system.
           </p>
         </div>
 
-        <div className="grid gap-5 md:grid-cols-3">
-          {/* Free chapter */}
-          <Card className="flex flex-col border-white/10 bg-white/[0.04] p-6">
-            <div className="text-xs uppercase tracking-wider text-white/50">Free</div>
-            <div className="mt-2 text-2xl font-bold">Sample chapter</div>
-            <div className="mt-1 text-sm text-white/60">
-              Read the GL!TCH chapter the moment it's ready. We'll email you when it drops.
-            </div>
-            <ul className="mt-5 space-y-2 text-sm text-white/70">
-              <Li>One free chapter</Li>
-              <Li>Launch updates</Li>
-              <Li>No spam, unsubscribe anytime</Li>
-            </ul>
-            <div className="mt-6 flex-1" />
+        <div className="grid gap-0 md:grid-cols-3 border-t border-white/20">
+          {/* Free */}
+          <TierColumn
+            index="i"
+            label="Free"
+            title="Sample chapter"
+            description="Read the GL!TCH chapter the moment it's ready. We'll email you when it drops."
+            items={["One free chapter", "Launch updates", "No spam, unsubscribe anytime"]}
+            tone={t}
+          >
             <BookLeadCaptureForm
               source="book_offer_tier_free"
               interest="sample"
               cta="Send me the chapter"
               placeholder="you@email.com"
             />
-          </Card>
+          </TierColumn>
 
           {/* Cohort */}
-          <Card className="relative flex flex-col border-fuchsia-400/30 bg-gradient-to-b from-fuchsia-500/10 to-rose-500/5 p-6 ring-1 ring-fuchsia-300/20">
-            <Badge className="absolute -top-3 right-4 bg-white text-slate-900 text-[10px] uppercase tracking-wider">
-              Most popular
-            </Badge>
-            <div className="text-xs uppercase tracking-wider text-fuchsia-200/80">Practitioner</div>
-            <div className="mt-2 text-2xl font-bold">Cohort + signed book</div>
-            <div className="mt-1 flex items-baseline gap-1 text-sm text-white/60">
-              <span className="text-3xl font-bold text-white">$497</span>
-              <span>· one-time</span>
-            </div>
-            <ul className="mt-5 space-y-2 text-sm text-white/80">
-              <Li>Signed hardcover + digital + audiobook</Li>
-              <Li>6-week practitioner cohort with Jonathan</Li>
-              <Li>GL!TCH, Drift, Tune playbooks (workbook)</Li>
-              <Li>Private community of operators</Li>
-            </ul>
-            <div className="mt-6 flex-1" />
-            <Button
+          <TierColumn
+            index="ii"
+            label="Practitioner · most chosen"
+            title="Cohort + signed book"
+            description={<><span className={cn(editorialType.serif, "text-4xl md:text-5xl", t.kicker)}>$497</span> <span className={cn(editorialType.caption, "opacity-70")}>one-time</span></>}
+            items={[
+              "Signed hardcover + digital + audiobook",
+              "6-week practitioner cohort with Jonathan",
+              "GL!TCH, Drift, Tune playbooks (workbook)",
+              "Private community of operators",
+            ]}
+            tone={t}
+            emphasized
+          >
+            <button
               onClick={startCohortCheckout}
               disabled={loadingCohort}
-              className="w-full bg-white font-semibold text-slate-900 hover:bg-white/90"
-            >
-              {loadingCohort ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                "Reserve my seat"
+              className={cn(
+                "inline-flex w-full items-center justify-center gap-2 px-6 py-3 rounded-full transition-transform hover:-translate-y-0.5 disabled:opacity-50",
+                editorialType.cta,
+                t.ctaPrimary,
               )}
-            </Button>
-          </Card>
+            >
+              {loadingCohort ? <Loader2 className="h-4 w-4 animate-spin" /> : "Reserve my seat"}
+            </button>
+          </TierColumn>
 
           {/* Org */}
-          <Card className="flex flex-col border-white/10 bg-white/[0.04] p-6">
-            <div className="text-xs uppercase tracking-wider text-white/50">Organization</div>
-            <div className="mt-2 text-2xl font-bold">Org license + workshop</div>
-            <div className="mt-1 text-sm text-white/60">
-              Book pack, internal workshop, and embedded coaching for your leadership team.
-            </div>
-            <ul className="mt-5 space-y-2 text-sm text-white/70">
-              <Li>Bulk hardcover + digital licenses</Li>
-              <Li>Half-day Calm Magic workshop</Li>
-              <Li>Crewdle.ai pilot included</Li>
-              <Li>Quarterly executive office hours</Li>
-            </ul>
-            <div className="mt-6 flex-1" />
+          <TierColumn
+            index="iii"
+            label="Organization"
+            title="Org license + workshop"
+            description="Book pack, internal workshop, and embedded coaching for your leadership team."
+            items={[
+              "Bulk hardcover + digital licenses",
+              "Half-day Calm Magic workshop",
+              "Crewdle.ai pilot included",
+              "Quarterly executive office hours",
+            ]}
+            tone={t}
+          >
             <BookLeadCaptureForm
               source="book_offer_tier_org"
               interest="org"
               cta="Talk to us"
               placeholder="work@company.com"
             />
-            <div className="mt-2 flex items-center gap-1 text-[11px] text-white/40">
+            <div className={cn("mt-3 flex items-center gap-1.5 opacity-50", editorialType.caption)}>
               <Mail className="h-3 w-3" /> jbelisle@helloarchitekt.com
             </div>
-          </Card>
+          </TierColumn>
         </div>
       </div>
     </section>
   );
 }
 
-function Li({ children }: { children: React.ReactNode }) {
+function TierColumn({
+  index,
+  label,
+  title,
+  description,
+  items,
+  tone,
+  emphasized,
+  children,
+}: {
+  index: string;
+  label: string;
+  title: string;
+  description: React.ReactNode;
+  items: string[];
+  tone: typeof editorialTone.night;
+  emphasized?: boolean;
+  children: React.ReactNode;
+}) {
   return (
-    <li className="flex items-start gap-2">
-      <Check className="mt-0.5 h-4 w-4 flex-none text-fuchsia-300" />
-      <span>{children}</span>
-    </li>
+    <div
+      className={cn(
+        "flex flex-col p-8 md:p-10 border-b md:border-b-0 md:border-r last:border-r-0 border-white/15",
+        emphasized && "bg-white/[0.04]",
+      )}
+    >
+      <div className={cn("flex items-baseline gap-4 mb-6", editorialType.caption)}>
+        <span className={cn(editorialType.serif, "text-xl", tone.kicker)}>{index}.</span>
+        <span className={cn(tone.kicker)}>{label}</span>
+      </div>
+      <h3 className={cn(editorialType.serif, "text-2xl md:text-3xl leading-tight tracking-tight mb-3")}>
+        {title}
+      </h3>
+      <div className="text-base opacity-80 leading-relaxed mb-6 min-h-[3rem]">
+        {description}
+      </div>
+      <ul className="space-y-3 text-sm opacity-90 mb-8">
+        {items.map((item) => (
+          <li key={item} className="flex items-start gap-3">
+            <Check className={cn("mt-0.5 h-4 w-4 flex-none", tone.kicker)} />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-auto">{children}</div>
+    </div>
   );
 }
