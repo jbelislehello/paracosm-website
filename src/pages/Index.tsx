@@ -10,7 +10,7 @@ import {
   editorialType,
 } from "@/components/editorial";
 import { cn } from "@/lib/utils";
-import { usePageSeo } from "@/hooks/usePageSeo";
+import { agenticResidencies } from "@/data/agenticResidencies";
 
 const principles = [
   {
@@ -36,27 +36,6 @@ const principles = [
     title: "Living orchestration",
     body:
       "Agents coordinate through a shared ontology. Handoffs are narrated. The system thinks out loud so teams can audit, adjust and take over.",
-  },
-];
-
-const residencies = [
-  {
-    n: "01",
-    title: "Diagnostic Sprint",
-    duration: "2 weeks",
-    body: "Map the current agentic surface, biases, consent gaps and one high-leverage prototype opportunity.",
-  },
-  {
-    n: "02",
-    title: "Prototype Residency",
-    duration: "6–8 weeks",
-    body: "Embed with your team to ship one agentic surface end-to-end — wired to real data, real users, a real ROI thesis.",
-  },
-  {
-    n: "03",
-    title: "Ecosystem Build",
-    duration: "3–6 months",
-    body: "Design and hand off a multi-agent ecosystem with the governance, consent architecture and handoff practices your team owns after we leave.",
   },
 ];
 
