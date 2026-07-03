@@ -160,6 +160,8 @@ export default function BookChapterIndex() {
                 />
               ))}
         </ol>
+        <div className="border-t-2 border-current/60" />
+        <p className={cn("mt-4 text-right opacity-50", editorialType.caption)}>End of index</p>
       </div>
     </section>
   );
