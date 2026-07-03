@@ -104,10 +104,11 @@ const EventsAndRetreats = () => {
               <p className="font-vhs uppercase tracking-[0.35em] text-xs text-[hsl(var(--bloom-amber))]">// Evening series</p>
               <h2 className="mt-2 font-display text-3xl md:text-4xl bloom-chroma-static text-white">Yutori Nights</h2>
               <p className="mt-3 max-w-2xl text-sm md:text-base font-redacted italic text-white/80">
-                Intimate evenings for founders and creatives. Space, tea, and slow conversation
-                about what wants to happen next. Small room, real presence.
+                A series of listening &amp; dance parties designed around hybrid cognition
+                and creative somatics — a private event where AI meets sensory pleasures,
+                music, and audio-visuals.
               </p>
-              <p className="mt-3 text-xs uppercase tracking-[0.3em] text-white/60">Next date &amp; city — TBA</p>
+              <p className="mt-3 text-xs uppercase tracking-[0.3em] text-white/60">By invitation · dates announced per city</p>
             </div>
             <a href="mailto:jbelisle@helloarchitekt.com?subject=Yutori%20Nights%20—%20save%20my%20chair">
               <Button className="bg-[hsl(var(--bloom-amber))] text-[hsl(var(--bloom-ink))] hover:bg-white font-vhs uppercase tracking-widest text-xs">
