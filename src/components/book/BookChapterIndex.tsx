@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, BookOpen, Check, Sparkles } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
+import { ArrowRight, BookOpen, Check } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useReaderProgress } from "@/hooks/useReaderProgress";
 import ReaderProgressBar from "./ReaderProgressBar";
+import { cn } from "@/lib/utils";
+import { editorialTone, editorialType } from "@/components/editorial/editorialTokens";
 
 interface Chapter {
   id: string;
@@ -41,6 +41,7 @@ export default function BookChapterIndex() {
   const [loading, setLoading] = useState(true);
   const [sourceCounts, setSourceCounts] = useState<Record<string, number>>({});
   const { readSlugs, lastSlug } = useReaderProgress();
+  const t = editorialTone.warm;
 
   useEffect(() => {
     let mounted = true;
@@ -75,18 +76,18 @@ export default function BookChapterIndex() {
     : null;
 
   return (
-    <section id="chapters" className="px-6 py-16 md:py-24">
+    <section id="chapters" className={cn("px-6 py-20 md:py-32", t.section)}>
       <div className="container mx-auto max-w-5xl">
-        <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
+        <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
           <div>
-            <Badge className="mb-3 border-[hsl(var(--bloom-magenta)/0.4)] bg-[hsl(var(--bloom-magenta)/0.15)] font-vhs text-sm uppercase tracking-widest text-[hsl(var(--bloom-cream))]">
-              <Sparkles className="mr-1 h-3 w-3" />
-              Living manuscript
-            </Badge>
-            <h2 className="font-display text-3xl leading-tight text-[hsl(var(--bloom-cream))] md:text-5xl bloom-chroma-static">
-              Chapters in motion
+            <div className="flex items-baseline gap-6 mb-6">
+              <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", t.numeral)}>02</span>
+              <p className={cn(editorialType.kicker, t.kicker)}>Living manuscript</p>
+            </div>
+            <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-[1.1] tracking-tight max-w-2xl")}>
+              Chapters in <em className="italic font-light">motion.</em>
             </h2>
-            <p className="mt-3 max-w-2xl font-tight text-sm text-white/60">
+            <p className="mt-4 max-w-2xl text-base opacity-80 leading-relaxed">
               Each chapter is being assembled from the work happening on this site —
               essays, PRDs, drift entries, retreat field notes, and uploaded
               manuscript material. Open any published chapter; the rest unlock as
@@ -96,51 +97,42 @@ export default function BookChapterIndex() {
           {continueChapter && (
             <Link
               to={`/book/chapter/${continueChapter.slug}`}
-              className="inline-flex items-center gap-2 rounded-md bg-[hsl(var(--bloom-amber))] px-4 py-2 font-vhs text-sm uppercase tracking-widest text-[hsl(var(--bloom-ink))] shadow-[var(--shadow-bloom)] hover:brightness-110"
+              className={cn(
+                "inline-flex items-center gap-2 px-5 py-3 rounded-full transition-transform hover:-translate-y-0.5",
+                editorialType.cta,
+                t.ctaPrimary,
+              )}
             >
-              ▶ Continue: {continueChapter.title}
+              Continue: {continueChapter.title}
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           )}
         </div>
 
-        <ReaderProgressBar className="mb-6" />
+        <ReaderProgressBar className="mb-8" />
 
         {!loading && Object.keys(sourceCounts).length > 0 && (
-          <Card className="mb-6 border-white/10 bg-white/[0.03] p-4">
-            <div className="mb-2 flex items-center gap-2">
-              <Sparkles className="h-3.5 w-3.5 text-[hsl(var(--bloom-amber))]" />
-              <span className="font-vhs text-[11px] uppercase tracking-widest text-white/70">
-                Manuscript progress
-              </span>
+          <div className="mb-8 border-t border-b border-current/15 py-4">
+            <div className={cn(editorialType.caption, "mb-3 opacity-70")}>
+              Sources mapped per chapter
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-x-4 gap-y-2">
               {visible.map((c) => (
-                <span
-                  key={c.id}
-                  className="inline-flex items-center gap-1.5 rounded-md border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-white/70"
-                >
-                  <span className="font-vhs uppercase tracking-wider text-white/90">
-                    {PHASE_LABEL[c.phase] ?? c.phase}
-                  </span>
-                  <span className="text-[hsl(var(--bloom-amber))]">
-                    {sourceCounts[c.id] ?? 0}
-                  </span>
+                <span key={c.id} className={cn("inline-flex items-baseline gap-1.5", editorialType.caption)}>
+                  <span className="opacity-80">{PHASE_LABEL[c.phase] ?? c.phase}</span>
+                  <span className={cn("tabular-nums", t.kicker)}>{sourceCounts[c.id] ?? 0}</span>
                 </span>
               ))}
             </div>
-            <p className="mt-2 text-[11px] text-white/40">
-              Sources mapped per chapter (essays, PRDs, drift entries, manuscript uploads).
-            </p>
-          </Card>
+          </div>
         )}
 
-        <div className="grid gap-3">
+        <ol className="space-y-0">
           {loading
             ? Array.from({ length: 4 }).map((_, i) => (
-                <div
+                <li
                   key={i}
-                  className="h-24 animate-pulse rounded-xl border border-white/5 bg-white/5"
+                  className="h-24 animate-pulse border-t border-current/15"
                 />
               ))
             : visible.map((c) => (
@@ -149,97 +141,93 @@ export default function BookChapterIndex() {
                   chapter={c}
                   hasRead={readSlugs.includes(c.slug)}
                   sourceCount={sourceCounts[c.id] ?? 0}
+                  toneKicker={t.kicker}
+                  toneAccentBorder={t.accentBorder}
                 />
               ))}
-        </div>
+        </ol>
       </div>
     </section>
   );
 }
 
-function ChapterRow({ chapter, hasRead, sourceCount }: { chapter: Chapter; hasRead: boolean; sourceCount: number }) {
+function ChapterRow({
+  chapter,
+  hasRead,
+  sourceCount,
+  toneKicker,
+  toneAccentBorder,
+}: {
+  chapter: Chapter;
+  hasRead: boolean;
+  sourceCount: number;
+  toneKicker: string;
+  toneAccentBorder: string;
+}) {
   const isPublished = chapter.status === "published";
   const isReadable = isPublished;
 
   const Inner = (
-    <Card
-      className={`group flex items-center justify-between gap-4 border-white/10 bg-white/[0.04] p-5 transition-colors ${
-        isReadable ? "hover:border-white/20 hover:bg-white/[0.07]" : ""
-      } ${hasRead ? "border-fuchsia-400/30 bg-fuchsia-500/[0.04]" : ""}`}
+    <article
+      className={cn(
+        "group flex items-baseline justify-between gap-6 border-t border-current/20 py-6 transition-colors",
+        isReadable && "hover:border-current/60",
+      )}
     >
-      <div className="flex items-center gap-4 min-w-0">
-        <div
-          className={`flex h-12 w-12 flex-none items-center justify-center rounded-lg text-sm font-semibold ${
-            hasRead
-              ? "bg-gradient-to-br from-fuchsia-400 to-rose-400 text-slate-900"
-              : "bg-gradient-to-br from-fuchsia-500/30 to-rose-500/20"
-          }`}
-        >
-          {hasRead ? <Check className="h-5 w-5" /> : chapter.order_index}
+      <div className="flex items-baseline gap-6 min-w-0">
+        <div className={cn(
+          editorialType.serif,
+          "text-3xl md:text-4xl leading-none tabular-nums flex-none w-14",
+          hasRead ? toneKicker : "opacity-40",
+        )}>
+          {hasRead ? <Check className="h-6 w-6" /> : String(chapter.order_index).padStart(2, "0")}
         </div>
-        <div className="min-w-0">
-          <div className="mb-1 flex flex-wrap items-center gap-2">
-            <Badge variant="outline" className="border-white/15 bg-white/5 text-[10px] uppercase tracking-wider text-white/70">
-              {PHASE_LABEL[chapter.phase] ?? chapter.phase}
-            </Badge>
-            <Badge
-              variant="outline"
-              className={`border-white/15 text-[10px] uppercase tracking-wider ${
-                isPublished
-                  ? "bg-emerald-500/15 text-emerald-200"
-                  : chapter.status === "review"
-                    ? "bg-amber-500/15 text-amber-200"
-                    : chapter.status === "drafting"
-                      ? "bg-fuchsia-500/15 text-fuchsia-200"
-                      : "bg-white/5 text-white/60"
-              }`}
-            >
-              {STATUS_LABEL[chapter.status] ?? chapter.status}
-            </Badge>
+        <div className="min-w-0 flex-1">
+          <div className={cn("flex flex-wrap items-baseline gap-x-4 gap-y-1 mb-2", editorialType.caption)}>
+            <span className={cn(toneKicker)}>{PHASE_LABEL[chapter.phase] ?? chapter.phase}</span>
+            <span className="opacity-60">{STATUS_LABEL[chapter.status] ?? chapter.status}</span>
             {chapter.is_free_sample && isPublished && (
-              <Badge className="bg-white text-slate-900 hover:bg-white/90 text-[10px] uppercase tracking-wider">
-                Free sample
-              </Badge>
+              <span className={cn("opacity-90 border-b", toneAccentBorder)}>Free sample</span>
             )}
-            {hasRead && (
-              <Badge className="bg-fuchsia-400/20 text-fuchsia-100 text-[10px] uppercase tracking-wider">
-                Read
-              </Badge>
-            )}
+            {hasRead && <span className={cn("opacity-90", toneKicker)}>Read</span>}
           </div>
-          <h3 className="truncate text-base font-semibold text-white">
+          <h3 className="font-serif text-xl md:text-2xl leading-tight tracking-tight truncate">
             {chapter.title}
           </h3>
           {chapter.summary && (
-            <p className="mt-1 line-clamp-2 text-xs text-white/55">
+            <p className="mt-2 text-sm opacity-70 leading-relaxed line-clamp-2 max-w-2xl">
               {chapter.summary}
             </p>
           )}
         </div>
       </div>
       {isReadable ? (
-        <span className="flex flex-none items-center gap-1 rounded-md bg-white/10 px-3 py-2 text-xs font-medium text-white transition-colors group-hover:bg-white/20">
+        <span className={cn(
+          "flex flex-none items-center gap-1.5 transition-transform group-hover:translate-x-0.5",
+          editorialType.cta,
+          toneKicker,
+        )}>
           <BookOpen className="h-3.5 w-3.5" />
           {hasRead ? "Re-read" : "Read"}
           <ArrowRight className="h-3.5 w-3.5" />
         </span>
       ) : (
-        <span className="flex flex-none flex-col items-end gap-0.5 text-xs text-white/40">
+        <span className={cn("flex flex-none flex-col items-end gap-0.5 opacity-50", editorialType.caption)}>
           <span>{chapter.status === "drafting" ? "Draft in motion" : "Coming soon"}</span>
           {sourceCount > 0 && (
-            <span className="text-[10px] text-[hsl(var(--bloom-amber))]/80">
-              {sourceCount} source{sourceCount === 1 ? "" : "s"} mapped
+            <span className={toneKicker}>
+              {sourceCount} source{sourceCount === 1 ? "" : "s"}
             </span>
           )}
         </span>
       )}
-    </Card>
+    </article>
   );
 
   if (isReadable) {
-    return <Link to={`/book/chapter/${chapter.slug}`}>{Inner}</Link>;
+    return <li><Link to={`/book/chapter/${chapter.slug}`}>{Inner}</Link></li>;
   }
-  return Inner;
+  return <li>{Inner}</li>;
 }
 
 const FALLBACK_OUTLINE: Chapter[] = [
