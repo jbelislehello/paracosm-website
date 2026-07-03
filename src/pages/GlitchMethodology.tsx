@@ -20,33 +20,38 @@ const GlitchMethodology = () => {
     ],
   });
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
+    <div className="min-h-screen bg-[hsl(220_40%_8%)] text-white">
       {/* Header */}
-      <header className="container mx-auto px-6 py-8">
+      <header className="container mx-auto px-6 py-6 border-b border-white/10">
         <div className="flex items-center justify-between">
-          <Link to="/" className="text-xl font-bold tracking-tight">
-            <span className="text-rose-400">GL!</span>TCH
+          <Link to="/" className="text-sm uppercase tracking-[0.3em]">
+            <span className="text-rose-400 font-serif italic normal-case text-base">GL!</span>TCH
           </Link>
-          <Button asChild variant="outline" className="border-white/20 text-white hover:bg-white/10">
+          <Button asChild variant="outline" className="border-white/20 text-white hover:bg-white/10 rounded-full text-[10px] uppercase tracking-[0.25em]">
             <Link to="/auth">Get Started</Link>
           </Button>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="container mx-auto px-6 py-12 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
-          <Clock className="h-4 w-4 text-amber-400" />
-          <span className="text-sm text-white/70">25-Minute Transformation</span>
+      {/* Editorial Hero */}
+      <section className="container mx-auto px-6 py-20 max-w-5xl">
+        <div className="flex items-baseline gap-8 border-b border-white/10 pb-10">
+          <span className="font-serif text-6xl md:text-7xl text-rose-400/80 leading-none">04</span>
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.4em] text-rose-400/70 font-semibold flex items-center gap-2">
+              <Clock className="h-3 w-3" /> A 25-Minute Live Cycle
+            </p>
+            <h1 className="font-serif text-4xl md:text-6xl mt-3 leading-[1.05]">
+              From <em className="italic font-light text-rose-300">Conversation</em><br/>
+              to <em className="italic font-light text-violet-300">Software</em>.
+            </h1>
+            <p className="mt-4 text-lg text-white/60 max-w-2xl font-serif italic">
+              A live facilitation methodology that transforms group dialogue into technical specifications.
+            </p>
+          </div>
         </div>
-        <h1 className="text-4xl md:text-6xl font-bold mb-4">
-          From <span className="text-rose-400">Conversation</span> to{" "}
-          <span className="text-violet-400">Software</span>
-        </h1>
-        <p className="text-xl text-white/60 max-w-2xl mx-auto">
-          A live facilitation methodology that transforms group dialogue into technical specifications
-        </p>
       </section>
+
 
       {/* The 3 Phases */}
       <section className="container mx-auto px-6 py-12">
