@@ -12,7 +12,7 @@ import ServicesShowcase from "@/components/ServicesShowcase";
 import SocialProofSection from "@/components/SocialProofSection";
 import OnboardingGuide from "@/components/OnboardingGuide";
 import CollapsibleSection from "@/components/CollapsibleSection";
-import BookAnnouncementBanner from "@/components/BookAnnouncementBanner";
+
 import HybridCognitionBanner from "@/components/landing/HybridCognitionBanner";
 import AgenticEcosystemHero from "@/components/AgenticEcosystemHero";
 import AgenticEcosystemDemo from "@/components/AgenticEcosystemDemo";
