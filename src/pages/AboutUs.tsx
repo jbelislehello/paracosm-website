@@ -169,7 +169,7 @@ const AboutUs = () => {
             {t("about.cta_description")}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 mt-8">
-            <EditorialCTA to="/agentic-ux#contact" tone="clay" variant="primary">
+            <EditorialCTA to="/contact" tone="clay" variant="primary">
               {t("about.cta_professional")}
             </EditorialCTA>
             <EditorialCTA to="/calm-magic-assistant" tone="clay" variant="ghost">
