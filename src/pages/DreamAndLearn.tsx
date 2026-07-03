@@ -200,7 +200,7 @@ const DreamAndLearn = () => {
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-            <Link to="/#agentic-demo">
+            <Link to="/home#agentic-demo">
               <Button
                 size="lg"
                 className="gap-2 bg-gradient-to-r from-primary to-accent text-primary-foreground"
@@ -467,7 +467,7 @@ const DreamAndLearn = () => {
                 <CardContent>
                   <p className="text-sm text-muted-foreground">{u.body}</p>
                   <Link
-                    to="/#agentic-demo"
+                    to="/home#agentic-demo"
                     className="inline-flex items-center gap-1 mt-3 text-sm text-primary hover:underline underline-offset-4"
                   >
                     See it in the demo <ArrowRight className="h-3.5 w-3.5" />
