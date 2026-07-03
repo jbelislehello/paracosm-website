@@ -1,8 +1,6 @@
-import { ArrowRight, Sparkles, Calendar } from "lucide-react";
+import { ArrowRight, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import QuestionResonancePanel from "@/components/resonance/QuestionResonancePanel";
-import LivingGeometryAmbient from "@/components/landing/LivingGeometryAmbient";
 
 interface FrameworkHeroProps {
   onScrollToMethod: () => void;
@@ -12,74 +10,99 @@ export default function FrameworkHero({ onScrollToMethod }: FrameworkHeroProps) 
   return (
     <section
       id="framework-hero"
-      className="relative pt-24 pb-12 px-4 overflow-hidden bg-gradient-to-b from-background via-background to-muted/30"
+      className="relative pt-28 pb-20 md:pt-36 md:pb-28 px-6 bg-[hsl(35_45%_96%)] text-foreground border-b border-current/10 overflow-hidden"
     >
-      <LivingGeometryAmbient />
-      <div className="container max-w-6xl mx-auto relative">
-        <div className="grid lg:grid-cols-[1.1fr_1fr] gap-10 items-start">
-          {/* Left: Promise */}
-          <div className="space-y-6 lg:pt-8">
-            <Badge
-              variant="secondary"
-              className="gap-1.5 text-[11px] uppercase tracking-wider"
-            >
-              <Sparkles className="w-3 h-3" />
-              The Calm Magic Framework
-            </Badge>
+      {/* editorial texture */}
+      <div className="pointer-events-none absolute inset-0 opacity-[0.05]">
+        <div className="absolute -top-40 -left-40 w-[36rem] h-[36rem] rounded-full bg-[hsl(15_75%_55%)] blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-[32rem] h-[32rem] rounded-full bg-[hsl(15_75%_45%)] blur-3xl" />
+      </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.05] tracking-tight">
+      <div className="container max-w-6xl mx-auto relative">
+        {/* Masthead line */}
+        <div className="flex items-baseline gap-6 mb-8 pb-6 border-b border-current/15">
+          <span className="font-serif text-5xl md:text-6xl leading-none text-[hsl(15_75%_55%)]">
+            01
+          </span>
+          <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] font-semibold text-[hsl(15_75%_45%)]">
+            The Calm Magic Framework · Chapter One
+          </p>
+        </div>
+
+        <div className="grid lg:grid-cols-12 gap-10 items-start">
+          {/* Left: Editorial promise */}
+          <div className="lg:col-span-7 space-y-8">
+            <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.02] tracking-tight">
               Turn your enterprise into a{" "}
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-fuchsia-500 via-purple-500 to-blue-600">
-                Learning &amp; Inventive Organization.
+              <em className="italic font-light">
+                learning &amp; inventive
+              </em>{" "}
+              <span className="underline decoration-[hsl(15_75%_55%)] decoration-4 underline-offset-[10px]">
+                organization
               </span>
+              .
             </h1>
 
-            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-xl">
+            <p className="text-lg md:text-xl leading-relaxed max-w-2xl opacity-80">
               Calm Magic is the framework that helps enterprises{" "}
-              <strong className="text-foreground">educate and invent with AI</strong>{" "}
-              — by mapping your real questions onto a living ontology instead of
-              forcing them through a roadmap.
+              <b className="text-foreground">educate and invent with AI</b>
+              {" "}— by mapping your real questions onto a living ontology
+              instead of forcing them through a roadmap.
             </p>
 
             <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-2">
               <a href="mailto:jbelisle@helloarchitekt.com?subject=Discovery%20Call%20—%20Paracosm">
-                <Button size="lg" className="w-full sm:w-auto gap-2">
+                <Button
+                  size="lg"
+                  className="w-full sm:w-auto gap-2 bg-foreground text-background hover:bg-foreground/90 rounded-none text-xs uppercase tracking-[0.2em] font-semibold"
+                >
                   <Calendar className="w-4 h-4" />
                   Book a Discovery Call
                 </Button>
               </a>
-              <Button onClick={onScrollToMethod} variant="secondary" size="lg" className="gap-2">
+              <Button
+                onClick={onScrollToMethod}
+                size="lg"
+                variant="outline"
+                className="gap-2 border border-current/40 bg-transparent hover:bg-current/10 rounded-none text-xs uppercase tracking-[0.2em] font-semibold"
+              >
                 See how the method works
                 <ArrowRight className="w-4 h-4" />
               </Button>
               <a href="mailto:jbelisle@helloarchitekt.com?subject=Calm%20Magic%20—%20Clarity%20Sprint">
-                <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full sm:w-auto border border-current/40 bg-transparent hover:bg-current/10 rounded-none text-xs uppercase tracking-[0.2em] font-semibold"
+                >
                   Book a Clarity Sprint
                 </Button>
               </a>
             </div>
 
-            <p className="text-xs text-muted-foreground pt-2">
-              Used by executives, designers and inventive teams — from boardroom to
-              prototype.
+            <p className="text-[10px] uppercase tracking-[0.3em] opacity-60 pt-4">
+              Used by executives, designers &amp; inventive teams — boardroom
+              to prototype.
             </p>
           </div>
 
-          {/* Right: Live Resonance prompt — the framework in action */}
-          <div className="relative">
-            <div className="absolute -inset-4 bg-gradient-to-br from-fuchsia-500/10 via-purple-500/10 to-blue-500/10 rounded-3xl blur-2xl" />
-            <div className="relative rounded-2xl border border-primary/20 bg-card/90 backdrop-blur-sm p-4 md:p-5 shadow-xl">
-              <div className="mb-3 flex items-center justify-between">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
-                  Try the framework now
-                </span>
-                <span className="text-[10px] text-muted-foreground">
-                  Live · powered by the board
-                </span>
-              </div>
+          {/* Right: Sidebar dossier — the framework in action */}
+          <aside className="lg:col-span-5 lg:border-l lg:border-current/20 lg:pl-8 space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[hsl(15_75%_45%)]">
+                Field Instrument
+              </span>
+              <span className="text-[10px] uppercase tracking-[0.25em] opacity-60">
+                Live · powered by the board
+              </span>
+            </div>
+            <p className="font-serif italic text-2xl md:text-3xl leading-[1.15]">
+              Try the framework — with a question you're carrying right now.
+            </p>
+            <div className="border-t border-current/15 pt-4">
               <QuestionResonancePanel />
             </div>
-          </div>
+          </aside>
         </div>
       </div>
     </section>
