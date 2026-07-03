@@ -1,16 +1,23 @@
-import { Mic, Eye, ExternalLink, Lightbulb, Box, Palette } from "lucide-react";
-import logoTonalli from "@/assets/logo-tonalli.jpeg";
-import { Button } from "@/components/ui/button";
+import { Mic, Eye, ExternalLink, Lightbulb, Box, Palette, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import Footer from "@/components/Footer";
 import FoxRunningSketch from "@/components/tonalli/FoxRunningSketch";
+import {
+  EditorialSiteHeader,
+  EditorialPageHero,
+  EditorialSection,
+  EditorialCTA,
+} from "@/components/editorial";
+import { editorialType, editorialTone } from "@/components/editorial/editorialTokens";
+import { cn } from "@/lib/utils";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { productSchema } from "@/lib/structuredData";
 
 const Tonalli = () => {
   usePageSeo({
     title: "Tonalli — A Creative OS with Voice and Spatial branches | Paracosm",
-    description: "Tonalli is Paracosm's Creative Operating System — voice computing and spatial interfaces for relational, consent-aware experiences.",
+    description:
+      "Tonalli is Paracosm's Creative Operating System — voice computing and spatial interfaces for relational, consent-aware experiences.",
     path: "/tonalli",
     jsonLd: [
       productSchema({
@@ -22,207 +29,163 @@ const Tonalli = () => {
       }),
     ],
   });
+
+  const warm = editorialTone.warm;
+  const clay = editorialTone.clay;
+  const paper = editorialTone.paper;
+  const night = editorialTone.night;
+
   return (
-    <div className="min-h-screen bg-[hsl(220_40%_8%)] text-white">
-      {/* Header */}
-      <header className="container mx-auto px-6 py-6 border-b border-white/10">
-        <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-sm uppercase tracking-[0.3em]">
-            <img src={logoTonalli} alt="Tonalli" className="h-7 w-auto rounded-md object-contain" />
-            <span className="text-amber-400 font-serif italic normal-case tracking-normal text-base">Tonalli</span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link to="/glitch-methodology" className="text-[10px] uppercase tracking-[0.3em] text-white/60 hover:text-white transition-colors">
-              GL!TCH Method
-            </Link>
-            <Button asChild variant="outline" className="border-white/20 text-white hover:bg-white/10 rounded-full text-[10px] uppercase tracking-[0.25em]">
-              <a href="mailto:jbelisle@helloarchitekt.com?subject=Tonalli Initiative Inquiry">Get in Touch</a>
-            </Button>
-          </div>
-        </div>
-      </header>
+    <main className="bg-background text-foreground">
+      <EditorialSiteHeader />
 
-      {/* Editorial Hero */}
-      <section className="container mx-auto px-6 py-20 max-w-5xl">
-        <div className="flex items-baseline gap-8 border-b border-white/10 pb-10">
-          <span className="font-serif text-6xl md:text-7xl text-amber-400/80 leading-none">10</span>
-          <div>
-            <p className="text-[10px] uppercase tracking-[0.4em] text-amber-400/70 font-semibold">Part II · R&D Branch of Paracosm</p>
-            <h1 className="font-serif text-4xl md:text-6xl mt-3 leading-[1.05]">
-              <em className="italic font-light">Tonalli</em> Initiative.
-            </h1>
-            <p className="mt-4 text-lg text-white/60 max-w-2xl font-serif italic">
-              Expression becomes the interface — voice and presence become the controller for learning, ideation, and generative storytelling.
-            </p>
-            <a
-              href="https://medium.com/noemtoys"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-6 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-amber-300 hover:text-amber-200"
-            >
-              <Lightbulb className="h-3 w-3" />
-              Read the field notes
-              <ExternalLink className="h-3 w-3 opacity-60" />
-            </a>
-          </div>
-        </div>
-      </section>
+      <EditorialPageHero
+        tone="warm"
+        numeral="10"
+        kicker="Part II · R&D branch of Paracosm"
+        title={
+          <>
+            <em className="italic font-light">Tonalli</em> — expression becomes the interface.
+          </>
+        }
+        subtitle="Voice and presence become the controller for learning, ideation, and generative storytelling."
+        actions={
+          <a
+            href="https://medium.com/noemtoys"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(editorialType.cta, "inline-flex items-center gap-2 border-b border-current pb-1")}
+          >
+            <Lightbulb className="w-3.5 h-3.5" /> Read the field notes <ExternalLink className="w-3 h-3 opacity-60" />
+          </a>
+        }
+      />
 
-
-      {/* Wuxia — generative p5.js fox running through fields */}
-      <section className="container mx-auto px-6 pb-4">
-        <div className="max-w-5xl mx-auto">
+      {/* Wuxia sketch */}
+      <EditorialSection tone="warm">
+        <div className="max-w-4xl mx-auto">
           <FoxRunningSketch />
-          <p className="text-center text-xs text-white/40 mt-3">
+          <p className={cn(editorialType.caption, "text-center mt-4 opacity-70")}>
             Wuxia runs the fields — a live p5.js sketch. Voice and presence become the controller.
           </p>
         </div>
-      </section>
+      </EditorialSection>
 
-      {/* Two Branches */}
-      <section className="container mx-auto px-6 py-12">
-        <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-          {/* Tonalli Voice */}
-          <div className="relative group">
-            <div className="absolute inset-0 bg-gradient-to-br from-rose-500/20 to-violet-600/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
-            <div className="relative bg-slate-900/80 border border-rose-500/30 rounded-2xl p-6 h-full">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-xl bg-rose-500/20">
-                  <Mic className="h-6 w-6 text-rose-400" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-rose-400">Tonalli Voice</h3>
-                  <span className="text-sm text-white/50">Audio-first interactive medium</span>
-                </div>
-              </div>
-              <p className="text-white/70 mb-4">
-                People read aloud, speak prompts, or recite poetry — the system responds with soundscapes, scenes, and generative variations. Voice = agency.
-              </p>
-              <div className="space-y-2 text-sm">
-                {["Brainstorming & ideation", "Writing / story prototyping", "Workshops & group creativity", "Learning-by-speaking (presence + recall)"].map((use) => (
-                  <div key={use} className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-rose-400" />
-                    <span className="text-white/60">{use}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Tonalli Spatial */}
-          <div className="relative group">
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-teal-600/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
-            <div className="relative bg-slate-900/80 border border-cyan-500/30 rounded-2xl p-6 h-full">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 rounded-xl bg-cyan-500/20">
-                  <Eye className="h-6 w-6 text-cyan-400" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-cyan-400">Tonalli Spatial</h3>
-                  <span className="text-sm text-white/50">Camera-vision + projection lamp</span>
-                </div>
-              </div>
-              <p className="text-white/70 mb-4">
-                A physical device that sees the space and projects back into it. Movement and presence become inputs for interactive stories and installations.
-              </p>
-              <div className="space-y-2 text-sm">
-                {["Interactive storytelling in a room", "Playful learning environments", "Museum & school installations", '"Walkable" scenes — explore by moving'].map((use) => (
-                  <div key={use} className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-cyan-400" />
-                    <span className="text-white/60">{use}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+      {/* Two branches */}
+      <EditorialSection tone="paper" id="branches">
+        <div className="flex items-baseline gap-6 mb-10">
+          <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", paper.numeral)}>01</span>
+          <p className={cn(editorialType.kicker, paper.kicker)}>Two branches</p>
         </div>
-      </section>
+        <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-tight tracking-tight max-w-3xl mb-12")}>
+          One <em className="italic font-light">operating system</em>, two surfaces.
+        </h2>
 
-      {/* Educational Design Platforms */}
-      <section className="container mx-auto px-6 py-12">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-center text-2xl font-semibold mb-8 text-white/80">Educational Design Platforms</h2>
-          <div className="grid sm:grid-cols-3 gap-4 mb-8">
+        <div className="grid md:grid-cols-2 gap-8">
+          <article className="border-t-2 border-current/70 pt-6">
+            <div className="flex items-center gap-3 mb-4">
+              <Mic className="w-6 h-6" />
+              <h3 className={cn(editorialType.serif, "text-2xl")}>Tonalli Voice</h3>
+            </div>
+            <p className={cn(editorialType.caption, "opacity-70 mb-4")}>Audio-first interactive medium</p>
+            <p className="opacity-85 leading-relaxed mb-5">
+              People read aloud, speak prompts, or recite poetry — the system responds with soundscapes, scenes, and generative variations. Voice = agency.
+            </p>
+            <ul className="space-y-1.5 text-sm opacity-80">
+              {["Brainstorming & ideation", "Writing / story prototyping", "Workshops & group creativity", "Learning-by-speaking (presence + recall)"].map((u) => (
+                <li key={u}>— {u}</li>
+              ))}
+            </ul>
+          </article>
+
+          <article className="border-t-2 border-current/70 pt-6">
+            <div className="flex items-center gap-3 mb-4">
+              <Eye className="w-6 h-6" />
+              <h3 className={cn(editorialType.serif, "text-2xl")}>Tonalli Spatial</h3>
+            </div>
+            <p className={cn(editorialType.caption, "opacity-70 mb-4")}>Camera-vision + projection lamp</p>
+            <p className="opacity-85 leading-relaxed mb-5">
+              A physical device that sees the space and projects back into it. Movement and presence become inputs for interactive stories and installations.
+            </p>
+            <ul className="space-y-1.5 text-sm opacity-80">
+              {["Interactive storytelling in a room", "Playful learning environments", "Museum & school installations", '"Walkable" scenes — explore by moving'].map((u) => (
+                <li key={u}>— {u}</li>
+              ))}
+            </ul>
+          </article>
+        </div>
+      </EditorialSection>
+
+      {/* Educational design platforms */}
+      <EditorialSection tone="clay" id="platforms">
+        <div className="flex items-baseline gap-6 mb-10">
+          <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", clay.numeral)}>02</span>
+          <p className={cn(editorialType.kicker, clay.kicker)}>Educational design platforms</p>
+        </div>
+        <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-tight tracking-tight max-w-3xl mb-12")}>
+          Where research becomes <em className="italic font-light">practice</em>.
+        </h2>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {[
+            { icon: Lightbulb, title: "Sensory Rooms", body: "Immersive spatial experiences for sensory learning.", href: "https://medium.com/noemtoys/tagged/sensory-rooms" },
+            { icon: Box, title: "Cognitive Toys", body: "Tangible computing toys for embodied cognition.", href: "https://medium.com/noemtoys/tagged/tangible-play" },
+            { icon: Palette, title: "Expressivity", body: "Wearables and embodied interaction for creative expression.", href: "https://medium.com/noemtoys/tagged/embodied-cognition" },
+          ].map(({ icon: Icon, title, body, href }) => (
             <a
-              href="https://medium.com/noemtoys/tagged/sensory-rooms"
+              key={title}
+              href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-slate-800/50 border border-white/10 rounded-xl p-5 text-center hover:border-amber-500/30 transition-colors group"
+              className="group border-t-2 border-current/70 pt-6 hover:opacity-80 transition-opacity"
             >
-              <div className="mx-auto w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center mb-3">
-                <Lightbulb className="h-6 w-6 text-amber-400" />
-              </div>
-              <h4 className="font-semibold mb-1">Sensory Rooms</h4>
-              <p className="text-sm text-white/50">Immersive spatial experiences for sensory learning</p>
-              <span className="inline-flex items-center gap-1 mt-2 text-xs text-amber-400/60 group-hover:text-amber-400 transition-colors">
-                Read more <ExternalLink className="h-3 w-3" />
+              <Icon className="w-6 h-6 mb-4" />
+              <h3 className={cn(editorialType.serif, "text-xl mb-2")}>{title}</h3>
+              <p className="text-sm opacity-80 mb-4 leading-relaxed">{body}</p>
+              <span className={cn(editorialType.caption, "inline-flex items-center gap-1.5")}>
+                Read more <ExternalLink className="w-3 h-3" />
               </span>
             </a>
-            <a
-              href="https://medium.com/noemtoys/tagged/tangible-play"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-slate-800/50 border border-white/10 rounded-xl p-5 text-center hover:border-cyan-500/30 transition-colors group"
-            >
-              <div className="mx-auto w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center mb-3">
-                <Box className="h-6 w-6 text-cyan-400" />
-              </div>
-              <h4 className="font-semibold mb-1">Cognitive Toys</h4>
-              <p className="text-sm text-white/50">Tangible computing toys for embodied cognition</p>
-              <span className="inline-flex items-center gap-1 mt-2 text-xs text-cyan-400/60 group-hover:text-cyan-400 transition-colors">
-                Read more <ExternalLink className="h-3 w-3" />
-              </span>
-            </a>
-            <a
-              href="https://medium.com/noemtoys/tagged/embodied-cognition"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-slate-800/50 border border-white/10 rounded-xl p-5 text-center hover:border-rose-500/30 transition-colors group"
-            >
-              <div className="mx-auto w-12 h-12 rounded-xl bg-rose-500/20 flex items-center justify-center mb-3">
-                <Palette className="h-6 w-6 text-rose-400" />
-              </div>
-              <h4 className="font-semibold mb-1">Expressivity</h4>
-              <p className="text-sm text-white/50">Wearables and embodied interaction for creative expression</p>
-              <span className="inline-flex items-center gap-1 mt-2 text-xs text-rose-400/60 group-hover:text-rose-400 transition-colors">
-                Read more <ExternalLink className="h-3 w-3" />
-              </span>
-            </a>
+          ))}
+        </div>
+      </EditorialSection>
+
+      {/* CTA */}
+      <EditorialSection tone="night" id="contact">
+        <div className="grid md:grid-cols-12 gap-8 items-end">
+          <div className="md:col-span-8">
+            <div className="flex items-baseline gap-6 mb-6">
+              <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", night.numeral)}>03</span>
+              <p className={cn(editorialType.kicker, night.kicker)}>Get in touch</p>
+            </div>
+            <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-tight tracking-tight max-w-2xl")}>
+              Interested in <em className="italic font-light">Tonalli</em>?
+            </h2>
+            <p className="mt-5 opacity-80 max-w-xl leading-relaxed">
+              Whether you're an educator, museum curator, or creative technologist — let's explore what expression-first interfaces can do.
+            </p>
           </div>
-
-          <div className="text-center">
+          <div className="md:col-span-4 md:text-right flex flex-col md:items-end gap-3">
+            <EditorialCTA
+              href="mailto:jbelisle@helloarchitekt.com?subject=Tonalli%20Initiative"
+              tone="night"
+            >
+              Begin a conversation
+            </EditorialCTA>
             <a
               href="https://medium.com/noemtoys"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm text-white/40 hover:text-amber-400 transition-colors"
+              className={cn(editorialType.cta, "inline-flex items-center gap-1.5 opacity-70 hover:opacity-100")}
             >
-              Read our research on Medium <ExternalLink className="h-4 w-4" />
+              Read research <ArrowRight className="w-3.5 h-3.5" />
             </a>
           </div>
         </div>
-      </section>
-
-      {/* CTA */}
-      <section className="container mx-auto px-6 py-16 text-center">
-        <div className="max-w-xl mx-auto">
-          <h2 className="text-3xl font-bold mb-4">Interested in Tonalli?</h2>
-          <p className="text-white/60 mb-8">
-            Whether you're an educator, museum curator, or creative technologist — let's explore what expression-first interfaces can do.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" className="bg-amber-500 hover:bg-amber-600 text-slate-950">
-              <a href="mailto:jbelisle@helloarchitekt.com?subject=Tonalli Initiative">Get in Touch</a>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="border-white/20 hover:bg-white/10">
-              <a href="https://medium.com/noemtoys" target="_blank" rel="noopener noreferrer">Read Research</a>
-            </Button>
-          </div>
-        </div>
-      </section>
+      </EditorialSection>
 
       <Footer />
-    </div>
+    </main>
   );
 };
 
