@@ -1,16 +1,12 @@
 import React from "react";
-import logoParacosm from "@/assets/logo-paracosm.jpeg";
-import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useLanguage } from "@/contexts/LanguageContext";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+import EditorialSiteHeader from "@/components/editorial/EditorialSiteHeader";
 import CaseStudiesSection from "@/components/case-studies/CaseStudiesSection";
 import Footer from "@/components/Footer";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { webPageSchema, itemListSchema } from "@/lib/structuredData";
 import { caseStudies } from "@/data/caseStudies";
-import { editorialType } from "@/components/editorial/editorialTokens";
-import { cn } from "@/lib/utils";
+
 
 const CaseStudies: React.FC = () => {
   const { t } = useLanguage();
