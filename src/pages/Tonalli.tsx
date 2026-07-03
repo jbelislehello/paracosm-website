@@ -23,44 +23,51 @@ const Tonalli = () => {
     ],
   });
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
+    <div className="min-h-screen bg-[hsl(220_40%_8%)] text-white">
       {/* Header */}
-      <header className="container mx-auto px-6 py-8">
+      <header className="container mx-auto px-6 py-6 border-b border-white/10">
         <div className="flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-xl font-bold tracking-tight">
-            <img src={logoTonalli} alt="Tonalli" className="h-8 w-auto rounded-md object-contain" />
-            <span className="text-amber-400">Tonalli</span>
+          <Link to="/" className="flex items-center gap-2 text-sm uppercase tracking-[0.3em]">
+            <img src={logoTonalli} alt="Tonalli" className="h-7 w-auto rounded-md object-contain" />
+            <span className="text-amber-400 font-serif italic normal-case tracking-normal text-base">Tonalli</span>
           </Link>
           <div className="flex items-center gap-4">
-            <Link to="/glitch-methodology" className="text-sm text-white/60 hover:text-white transition-colors">
+            <Link to="/glitch-methodology" className="text-[10px] uppercase tracking-[0.3em] text-white/60 hover:text-white transition-colors">
               GL!TCH Method
             </Link>
-            <Button asChild variant="outline" className="border-white/20 text-white hover:bg-white/10">
+            <Button asChild variant="outline" className="border-white/20 text-white hover:bg-white/10 rounded-full text-[10px] uppercase tracking-[0.25em]">
               <a href="mailto:jbelisle@helloarchitekt.com?subject=Tonalli Initiative Inquiry">Get in Touch</a>
             </Button>
           </div>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="container mx-auto px-6 py-12 text-center">
-        <a
-          href="https://medium.com/noemtoys"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/30 mb-6 hover:bg-amber-500/20 transition-colors"
-        >
-          <Lightbulb className="h-4 w-4 text-amber-400" />
-          <span className="text-sm text-amber-300">R&D Branch of Paracosm</span>
-          <ExternalLink className="h-3 w-3 text-amber-400/60" />
-        </a>
-        <h1 className="text-4xl md:text-6xl font-bold mb-4">
-          <span className="text-amber-400">Tonalli</span> Initiative
-        </h1>
-        <p className="text-xl text-white/60 max-w-2xl mx-auto">
-          Expression becomes the interface — voice and presence become the controller for learning, ideation, and generative storytelling.
-        </p>
+      {/* Editorial Hero */}
+      <section className="container mx-auto px-6 py-20 max-w-5xl">
+        <div className="flex items-baseline gap-8 border-b border-white/10 pb-10">
+          <span className="font-serif text-6xl md:text-7xl text-amber-400/80 leading-none">10</span>
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.4em] text-amber-400/70 font-semibold">Part II · R&D Branch of Paracosm</p>
+            <h1 className="font-serif text-4xl md:text-6xl mt-3 leading-[1.05]">
+              <em className="italic font-light">Tonalli</em> Initiative.
+            </h1>
+            <p className="mt-4 text-lg text-white/60 max-w-2xl font-serif italic">
+              Expression becomes the interface — voice and presence become the controller for learning, ideation, and generative storytelling.
+            </p>
+            <a
+              href="https://medium.com/noemtoys"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-amber-300 hover:text-amber-200"
+            >
+              <Lightbulb className="h-3 w-3" />
+              Read the field notes
+              <ExternalLink className="h-3 w-3 opacity-60" />
+            </a>
+          </div>
+        </div>
       </section>
+
 
       {/* Wuxia — generative p5.js fox running through fields */}
       <section className="container mx-auto px-6 pb-4">
