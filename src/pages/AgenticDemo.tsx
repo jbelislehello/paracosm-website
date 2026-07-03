@@ -53,8 +53,7 @@ const AgenticDemo = () => {
           <EditorialChapterHeader
             numeral="01"
             kicker="The demo"
-            title="Agents, scenarios, transitions"
-            subtitle="Pick a scenario, step through the reasoning, and read the biases the ecosystem is compensating for."
+            subtitle="Pick a scenario, step through the reasoning, read the biases the ecosystem is compensating for."
             tone="paper"
           />
           <div className="mt-12">

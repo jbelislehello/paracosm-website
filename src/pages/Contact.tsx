@@ -54,8 +54,7 @@ const Contact = () => {
           <EditorialChapterHeader
             numeral="01"
             kicker="Book a session"
-            title="Sessions & inbox"
-            subtitle="Everything below routes to a single inbox: jbelisle@helloarchitekt.com."
+            subtitle="Everything routes to a single inbox — jbelisle@helloarchitekt.com."
             tone="paper"
           />
           <div className="mt-12">
