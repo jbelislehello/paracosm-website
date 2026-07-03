@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
-import ChromaText from "@/components/aesthetic/ChromaText";
+
 import ReflectionNodes from "@/components/book/ReflectionNodes";
 
 interface CompassDetail {
