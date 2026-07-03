@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
 import GradientDivider from "@/components/GradientDivider";
+import { EditorialPageHero, EditorialCTA } from "@/components/editorial";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { ORIGIN_METHODS } from "@/data/origins";
 
@@ -20,43 +21,31 @@ const Origins = () => {
   });
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border/60 bg-background/70 backdrop-blur-sm">
-        <div className="container mx-auto flex items-center justify-between px-4 py-4">
+    <div className="min-h-screen bg-[hsl(35_45%_96%)] dark:bg-[hsl(25_15%_12%)] text-foreground">
+      <header className="fixed top-0 z-50 w-full border-b border-current/10 bg-[hsl(35_45%_96%)]/85 dark:bg-[hsl(25_15%_12%)]/85 backdrop-blur-md">
+        <div className="container mx-auto flex items-center justify-between px-6 py-3">
           <Link
             to="/lineage"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] font-semibold opacity-70 hover:opacity-100"
           >
-            <ArrowLeft className="h-4 w-4" />
-            Back to Lineage
+            <ArrowLeft className="h-3 w-3" />
+            Lineage
           </Link>
           <LanguageSwitcher />
         </div>
       </header>
 
+      <EditorialPageHero
+        numeral="07"
+        kicker="Origins · 2013 – 2018"
+        title={<>The methods that became <em className="italic font-light">Calm Magic</em>.</>}
+        subtitle="Calm Magic didn't appear in 2024. These ten methods, sketched by Jonathan Bélisle between 2013 and 2018, are its bones — relational intelligence, programmable environments, the five-season descent, the consciousness manifold."
+        meta="A 13-year continuum, drawn by hand, then made operational."
+        tone="warm"
+      />
+
       <main className="container mx-auto px-4">
-        {/* Hero */}
-        <section className="py-16 md:py-24">
-          <div className="mx-auto max-w-3xl text-center">
-            <Badge variant="outline" className="mb-6 gap-1.5">
-              <Sparkles className="h-3 w-3" />
-              Origins
-            </Badge>
-            <h1 className="text-4xl font-semibold tracking-tight md:text-5xl">
-              The methods that became Calm Magic
-            </h1>
-            <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-              Calm Magic didn't appear in 2024. These ten methods, sketched by
-              Jonathan Bélisle between 2013 and 2018, are its bones. Each one
-              names a piece of the grammar that the live system now uses every
-              day — relational intelligence, programmable environments, the
-              five-season descent, the consciousness manifold.
-            </p>
-            <p className="mt-4 text-sm text-muted-foreground">
-              A 13-year continuum, drawn by hand, then made operational.
-            </p>
-          </div>
-        </section>
+
 
         <GradientDivider />
 
@@ -151,31 +140,22 @@ const Origins = () => {
 
         {/* Closing */}
         <section className="py-16 md:py-24">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
-              See where this goes
+          <div className="mx-auto max-w-2xl text-center space-y-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.4em] opacity-60">End of chapter</p>
+            <h2 className="font-serif text-3xl md:text-5xl tracking-tight">
+              See where this <em className="italic font-light">goes</em>.
             </h2>
-            <p className="mt-4 text-base text-muted-foreground">
+            <p className="text-base opacity-70">
               Origins shows the internal lineage. Lineage shows where Calm Magic
-              sits next to the frameworks you already know. The board shows it
-              running.
+              sits next to the frameworks you already know. The board shows it running.
             </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link to="/lineage">
-                <Button size="lg" variant="outline" className="gap-2">
-                  External lineage
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
-              <Link to="/calm-magic-board">
-                <Button size="lg" className="gap-2">
-                  The live system
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
+              <EditorialCTA to="/lineage" tone="warm" variant="ghost">External lineage</EditorialCTA>
+              <EditorialCTA to="/calm-magic-board" tone="warm">The live system</EditorialCTA>
             </div>
           </div>
         </section>
+
       </main>
 
       <Footer />
