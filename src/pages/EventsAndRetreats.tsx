@@ -96,6 +96,52 @@ const EventsAndRetreats = () => {
         </div>
       </section>
 
+      {/* Yutori Nights — evening series */}
+      <section id="yutori" className="relative z-10 px-4 pb-12 scroll-mt-24">
+        <div className="container max-w-6xl mx-auto rounded-2xl border border-[hsl(var(--bloom-amber)/0.35)] bg-[hsl(var(--bloom-ink)/0.55)] backdrop-blur p-6 md:p-10 relative overflow-hidden">
+          <div className="grid md:grid-cols-[1fr_auto] gap-6 items-end">
+            <div>
+              <p className="font-vhs uppercase tracking-[0.35em] text-xs text-[hsl(var(--bloom-amber))]">// Evening series</p>
+              <h2 className="mt-2 font-display text-3xl md:text-4xl bloom-chroma-static text-white">Yutori Nights</h2>
+              <p className="mt-3 max-w-2xl text-sm md:text-base font-redacted italic text-white/80">
+                Intimate evenings for founders and creatives. Space, tea, and slow conversation
+                about what wants to happen next. Small room, real presence.
+              </p>
+              <p className="mt-3 text-xs uppercase tracking-[0.3em] text-white/60">Next date &amp; city — TBA</p>
+            </div>
+            <a href="mailto:jbelisle@helloarchitekt.com?subject=Yutori%20Nights%20—%20save%20my%20chair">
+              <Button className="bg-[hsl(var(--bloom-amber))] text-[hsl(var(--bloom-ink))] hover:bg-white font-vhs uppercase tracking-widest text-xs">
+                Save my chair <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Think Like a Forest — flagship retreat */}
+      <section id="think-like-a-forest" className="relative z-10 px-4 pb-12 scroll-mt-24">
+        <div className="container max-w-6xl mx-auto rounded-2xl border border-[hsl(var(--bloom-magenta)/0.35)] bg-gradient-to-br from-[hsl(var(--bloom-ink)/0.75)] to-[hsl(var(--bloom-magenta)/0.15)] backdrop-blur p-6 md:p-10 relative overflow-hidden">
+          <div className="grid md:grid-cols-[1fr_auto] gap-6 items-end">
+            <div>
+              <p className="font-vhs uppercase tracking-[0.35em] text-xs text-[hsl(var(--bloom-magenta))]">// Flagship retreat</p>
+              <h2 className="mt-2 font-display text-3xl md:text-4xl bloom-chroma-static text-white">Think Like a Forest</h2>
+              <p className="mt-3 max-w-2xl text-sm md:text-base font-redacted italic text-white/80">
+                A multi-day retreat for leaders learning to sense the whole system before
+                intervening in it. Root, canopy, understory — an embodied lesson in complexity.
+              </p>
+              <p className="mt-3 text-xs uppercase tracking-[0.3em] text-white/60">Dates &amp; location — TBA</p>
+            </div>
+            <a href="mailto:jbelisle@helloarchitekt.com?subject=Think%20Like%20a%20Forest%20—%20invitation">
+              <Button className="bg-[hsl(var(--bloom-magenta))] text-white hover:bg-[hsl(var(--bloom-amber))] hover:text-[hsl(var(--bloom-ink))] font-vhs uppercase tracking-widest text-xs">
+                Read the invitation <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </a>
+          </div>
+        </div>
+      </section>
+
+
+
       {/* Case Studies preview */}
       <section id="case-studies" className="relative z-10 pb-16 scroll-mt-24">
         <div className="container max-w-6xl mx-auto px-4 mb-4 flex items-end justify-between gap-4 flex-wrap">

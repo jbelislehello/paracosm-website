@@ -2,6 +2,7 @@ import { lazy, Suspense } from "react";
 import EditorialHero from "@/components/editorial/EditorialHero";
 import TriadChapter from "@/components/editorial/TriadChapter";
 import PartnerInnovationPlaysSection from "@/components/editorial/PartnerInnovationPlaysSection";
+import EditorialDispatchesSection from "@/components/editorial/EditorialDispatchesSection";
 import EditorialClosing from "@/components/editorial/EditorialClosing";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { orgSchema, websiteSchema, webPageSchema } from "@/lib/structuredData";
@@ -125,6 +126,8 @@ export default function EditorialHome() {
       </Suspense>
 
       <PartnerInnovationPlaysSection />
+
+      <EditorialDispatchesSection />
 
       <EditorialClosing />
     </main>
