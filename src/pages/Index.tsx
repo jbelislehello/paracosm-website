@@ -10,6 +10,7 @@ import {
   editorialType,
 } from "@/components/editorial";
 import { cn } from "@/lib/utils";
+import { usePageSeo } from "@/hooks/usePageSeo";
 import { agenticResidencies } from "@/data/agenticResidencies";
 
 const principles = [
