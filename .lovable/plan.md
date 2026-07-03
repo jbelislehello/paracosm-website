@@ -1,27 +1,40 @@
 ## Goal
-Restyle `OfferingTriadSection.tsx` to match the site-wide magazine editorial system — remove all bloom/VHS treatments (scanlines, chroma text, gradient halos, VHS/Redacted fonts, magenta/amber blur orbs).
+Replace fragile `/#contact` and `/#agentic-demo` hash links with dedicated, always-available routes.
 
-## What changes
+## New routes (in `src/App.tsx`)
+- `/contact` → new lazy page `src/pages/Contact.tsx`
+- `/agentic-demo` → new lazy page `src/pages/AgenticDemo.tsx`
 
-**Section shell**
-- Replace `bloom-ink` background + scanlines + magenta/amber blur halos with `EditorialSection` wrapper (tone `night` — keeps the dramatic dark register the current design uses, but through the editorial tokens with gold accent).
-- Header uses `EditorialChapterHeader` (numeral "02", kicker "The Arc", subtitle "One practice, three intensities.").
-- Kill `font-vhs`, `font-display`, `font-redacted`, `bloom-chroma-static`. All headlines → `font-serif`. All labels → `editorialType.kicker` / `caption` / `cta`.
+## New pages
+Both are thin editorial-styled wrappers reusing the existing section components so content stays canonical (no duplication):
 
-**Triad cards**
-- Remove gradient halo divs, backdrop-blur, rounded-2xl gradient icon chips, framer-motion stagger.
-- Each card becomes an editorial index-card: hairline top border, tabular numeral (01/02/03), small kicker with offering label, large serif F-word, italic serif promise, checklist with thin dividers, editorial CTA (`editorialType.cta` + `night.accentBorder` underline).
-- Preserve all data: `fWord`, `label`, `route`, `promise`, `bullets`, `cta`, `Icon`, and the `trackEvent` analytics call.
+- `src/pages/Contact.tsx`
+  - Renders `ContactSection` inside a minimal shell (header/nav + `Footer`) matching the site's magazine aesthetic.
+  - Uses `usePageSeo` (title "Contact — Paracosm", description, `/contact` path).
+  - Keeps the `id="contact"` on the section so legacy `#contact` deep links still work if reached.
 
-**Connective line**
-- Bottom "Foreplay → Foresight → Forecast" strip restyled with `editorialType.caption` and gold divider.
+- `src/pages/AgenticDemo.tsx`
+  - Renders `AgenticEcosystemDemo` in the same shell.
+  - `usePageSeo` with title "Live Agentic UX Demo — Paracosm", `/agentic-demo` path.
+  - Keeps `id="agentic-demo"` on the section.
 
-## Scope
-- Single file: `src/components/landing/OfferingTriadSection.tsx`.
-- No prop/API changes; drop-in replacement.
-- No other files touched.
+## Update outgoing CTAs
+Point every previously-patched hash link to the new canonical routes:
 
-## Technical notes
-- Import `EditorialSection`, `EditorialChapterHeader`, `editorialTone`, `editorialType` from `@/components/editorial`.
-- Drop `framer-motion` and `Button` imports (no longer needed).
-- Keep `Link`, `trackEvent`, and lucide icons (`Flame`, `Eye`, `Hammer`, `ArrowUpRight`, `Check`).
+| File | Old target | New target |
+|---|---|---|
+| `src/pages/Pricing.tsx` | `/agentic-ux#contact` | `/contact` |
+| `src/components/UpgradePromptModal.tsx` | `/agentic-ux#contact` | `/contact` |
+| `src/components/calm-magic/BoardEntryGate.tsx` | `/agentic-ux#contact` | `/contact` |
+| `src/pages/WuxiaTheFox.tsx` | `#contact` | keep in-page anchor (section is on same page) — no change |
+| `src/pages/DreamAndLearn.tsx` (2 links) | `/home#agentic-demo` | `/agentic-demo` |
+
+Also sweep with `rg` for any remaining `/#contact`, `/#agentic-demo`, `/home#agentic-demo`, `/agentic-ux#contact` and repoint to the new routes (except in-page anchors within `LandingPage`, `Index`, `WuxiaTheFox`, and `AgenticEcosystemDemo` themselves).
+
+## Route registry / SEO
+- Add both routes to `src/lib/routeRegistry.ts` with labels "Contact" and "Live Demo" so breadcrumbs and sitemap pick them up.
+
+## Out of scope
+- No changes to `ContactSection` or `AgenticEcosystemDemo` internals.
+- No form/business-logic changes.
+- Existing `#contact` / `#agentic-demo` anchors on `LandingPage` / `Index` / `WuxiaTheFox` remain functional for anyone deep-linking there.

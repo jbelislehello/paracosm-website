@@ -48,6 +48,8 @@ export const ROUTE_REGISTRY: RouteMeta[] = [
   { path: "/events-and-retreats", label: "Events & Retreats" },
   { path: "/auth", label: "Sign in", noindex: true },
   { path: "/glitch-auth", label: "GL!TCH Sign in", noindex: true },
+  { path: "/contact", label: "Contact" },
+  { path: "/agentic-demo", label: "Live Agentic Demo" },
 
   // Residencies
   { path: "/residencies", label: "Residencies" },
