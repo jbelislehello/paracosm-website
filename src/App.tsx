@@ -69,6 +69,7 @@ const TrainingModule = lazy(() => import("./pages/TrainingModule"));
 
 const Contact = lazy(() => import("./pages/Contact"));
 const AgenticDemo = lazy(() => import("./pages/AgenticDemo"));
+const AgenticResidency = lazy(() => import("./pages/AgenticResidency"));
 
 const queryClient = new QueryClient();
 
@@ -101,6 +102,7 @@ function App() {
                     <Route path="/paracosm-retreat" element={<ParacosmRetreatLanding />} />
                     <Route path="/wuxia" element={<WuxiaTheFox />} />
                     <Route path="/agentic-ux" element={<Index />} />
+                    <Route path="/agentic-ux/residencies/:slug" element={<AgenticResidency />} />
                     <Route path="/calm-magic-assistant" element={<RelationalHealing />} />
                     <Route path="/case-studies" element={<CaseStudies />} />
                     <Route path="/events-and-retreats" element={<EventsAndRetreats />} />
