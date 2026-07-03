@@ -69,13 +69,10 @@ export default function TrainingsIndex() {
 
       {/* Masthead + hero — warm opening chapter */}
       <EditorialSection tone="warm" className="pt-14 pb-16 md:pt-20 md:pb-24">
-        <div className="flex items-center justify-between mb-14 pb-6 border-b border-current/15">
-          <Link to="/" className={cn(editorialType.cta, "opacity-70 hover:opacity-100")}>
-            ← Paracosm
-          </Link>
-          <Link to="/about-us" className={cn(editorialType.cta, "opacity-70 hover:opacity-100")}>
-            About
-          </Link>
+        <div className="mb-10">
+          <p className={cn(editorialType.eyebrow, editorialTone.warm.kicker)}>
+            Volume I · The rehearsal arc
+          </p>
         </div>
 
         <div className="grid md:grid-cols-12 gap-10 items-end">
