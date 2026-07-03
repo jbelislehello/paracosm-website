@@ -236,7 +236,7 @@ const Pricing: React.FC = () => {
         <div className="mt-12 text-center">
           <p className="text-sm text-muted-foreground">
             Need a custom plan for your organization?{' '}
-            <Link to="/#contact" className="text-primary hover:underline">
+            <Link to="/agentic-ux#contact" className="text-primary hover:underline">
               Contact us
             </Link>
             {' '}or email{' '}
