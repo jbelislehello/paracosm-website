@@ -12,6 +12,7 @@ import {
 import { cn } from "@/lib/utils";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { creativeWorkSchema } from "@/lib/structuredData";
+import wuxiaAsset from "@/assets/wuxia-the-fox.jpg.asset.json";
 
 const books = [
   {
@@ -135,16 +136,27 @@ const WuxiaTheFox = () => {
               into the same living story — a paracosm where your choices ripple through the narrative.
             </p>
           </div>
-          <aside className={cn("md:col-span-4 border-l border-current/20 pl-6 space-y-3", editorialType.caption)}>
-            <p>In this issue</p>
-            <ol className="space-y-2 text-sm normal-case tracking-normal opacity-90">
-              <li>01 — The pentalogy</li>
-              <li>02 — The film</li>
-              <li>03 — The Paracosm connection</li>
-            </ol>
+          <aside className={cn("md:col-span-4 space-y-6")}>
+            <figure className="overflow-hidden rounded-sm shadow-2xl">
+              <img
+                src={wuxiaAsset.url}
+                alt="Wuxia the Fox — geometric fox emblem with glyphs"
+                className="w-full h-auto object-cover"
+                loading="lazy"
+              />
+            </figure>
+            <div className={cn("border-l border-current/20 pl-6 space-y-3", editorialType.caption)}>
+              <p>In this issue</p>
+              <ol className="space-y-2 text-sm normal-case tracking-normal opacity-90">
+                <li>01 — The pentalogy</li>
+                <li>02 — The film</li>
+                <li>03 — The Paracosm connection</li>
+              </ol>
+            </div>
           </aside>
         </div>
       </EditorialSection>
+
 
       <EditorialSection tone="warm" id="books">
         <EditorialChapterHeader
