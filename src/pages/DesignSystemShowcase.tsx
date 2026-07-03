@@ -1,73 +1,103 @@
-import { Link } from "react-router-dom";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Map, Brain } from "lucide-react";
+import { Map, Brain } from "lucide-react";
 import JourneyMapTable from "@/components/design-system/JourneyMapTable";
 import MentalModelGrid from "@/components/design-system/MentalModelGrid";
 import QuestionResonancePanel from "@/components/resonance/QuestionResonancePanel";
 import WhyItWorksRecap from "@/components/resonance/WhyItWorksRecap";
+import EditorialSiteHeader from "@/components/editorial/EditorialSiteHeader";
+import EditorialSection from "@/components/editorial/EditorialSection";
+import EditorialChapterHeader from "@/components/editorial/EditorialChapterHeader";
+import Footer from "@/components/Footer";
+import { editorialType, editorialTone } from "@/components/editorial/editorialTokens";
+import { cn } from "@/lib/utils";
 
 const DesignSystemShowcase = () => {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b bg-card/80 backdrop-blur-md sticky top-0 z-40">
-        <div className="container max-w-6xl mx-auto flex items-center justify-between py-3 px-4">
-          <Link to="/" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Back to Home
-          </Link>
-          <h1 className="font-bold text-sm">Why It Works</h1>
-        </div>
-      </header>
+    <main className="min-h-screen bg-background text-foreground">
+      <EditorialSiteHeader />
 
-      <WhyItWorksRecap lens="design-system" />
-
-      <div className="container max-w-6xl mx-auto px-4 py-12 space-y-16">
-
-        <div className="text-center space-y-3">
-          <h1 className="text-3xl md:text-4xl font-bold">Design System & Journey Map</h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Explore the architecture behind Paracosm and Calm Magic — the design tokens, mental models, task flows, and system touchpoints that power our offerings.
-          </p>
-        </div>
-
-        {/* Learn — Resonance: situate your question on the Calm Magic board */}
-        <section className="rounded-2xl border bg-card/50 p-6 md:p-8 space-y-4">
-          <div className="flex items-center gap-2 flex-wrap">
-            <Badge variant="secondary" className="text-[10px] uppercase tracking-wider">Learn · Try it</Badge>
-            <h2 className="text-xl md:text-2xl font-bold">Situate your question on the board</h2>
+      {/* Masthead */}
+      <EditorialSection tone="warm" className="pt-14 pb-12 md:pt-20 md:pb-16">
+        <p className={cn(editorialType.eyebrow, editorialTone.warm.kicker)}>
+          Vol. I · Resource · How It Works
+        </p>
+        <div className="mt-6 grid md:grid-cols-12 gap-10 items-end">
+          <div className="md:col-span-8 space-y-5">
+            <h1 className={cn(editorialType.serif, "text-5xl md:text-7xl leading-[0.98] tracking-tight")}>
+              How it <em className="italic font-light">works</em>.
+            </h1>
+            <p className="text-lg md:text-xl opacity-80 max-w-2xl leading-relaxed">
+              The architecture behind Paracosm and Calm Magic — the mental models, task flows, and
+              system touchpoints that turn a question into shipped software.
+            </p>
           </div>
-          <p className="text-sm text-muted-foreground max-w-2xl">
-            The five axes below — Magic, Love, Calm, Open, Free — are the
-            same axes that structure every model and journey on this page.
-            Ask the real question your team is sitting with: we'll map it
-            onto the Calm Magic board and point you to the path on the
-            homepage that fits.
-          </p>
-          <QuestionResonancePanel />
-        </section>
+          <aside className="md:col-span-4 border-l border-current/20 pl-6 space-y-3">
+            <p className={editorialType.caption}>In this dispatch</p>
+            <ol className="space-y-2 text-sm">
+              <li className="flex gap-3"><span className={cn(editorialType.serif, editorialTone.warm.numeral)}>01</span><span>Situate your question</span></li>
+              <li className="flex gap-3"><span className={cn(editorialType.serif, editorialTone.warm.numeral)}>02</span><span>Mental & task models</span></li>
+              <li className="flex gap-3"><span className={cn(editorialType.serif, editorialTone.warm.numeral)}>03</span><span>System journey map</span></li>
+            </ol>
+          </aside>
+        </div>
+      </EditorialSection>
 
-        <Tabs defaultValue="mental-models" className="w-full">
+      <WhyItWorksRecap lens="design-system" homeHash="#framework-hero" />
+
+      {/* Chapter 01 — Situate your question */}
+      <EditorialSection tone="paper" id="situate">
+        <EditorialChapterHeader
+          numeral="01"
+          kicker="Situate your question"
+          subtitle="Ask the real question your team is sitting with."
+          tone="paper"
+        />
+        <p className="mt-6 max-w-3xl text-lg opacity-80">
+          The five axes — Magic, Love, Calm, Open, Free — structure every model and journey on this
+          page. We map your question onto the Calm Magic board and point to the path that fits.
+        </p>
+        <div className="mt-10">
+          <QuestionResonancePanel />
+        </div>
+      </EditorialSection>
+
+      {/* Chapters 02 + 03 */}
+      <EditorialSection tone="clay" id="architecture">
+        <EditorialChapterHeader
+          numeral="02"
+          kicker="The architecture"
+          subtitle="Mental models on one side, the full system journey on the other."
+          tone="clay"
+        />
+
+        <Tabs defaultValue="mental-models" className="w-full mt-10">
           <TabsList className="grid w-full grid-cols-2 max-w-lg mx-auto">
-            <TabsTrigger value="mental-models" className="text-xs sm:text-sm gap-1"><Brain className="w-3 h-3" /> Models</TabsTrigger>
-            <TabsTrigger value="journey-map" className="text-xs sm:text-sm gap-1"><Map className="w-3 h-3" /> Journey Map</TabsTrigger>
+            <TabsTrigger value="mental-models" className="text-xs sm:text-sm gap-1">
+              <Brain className="w-3 h-3" /> Models
+            </TabsTrigger>
+            <TabsTrigger value="journey-map" className="text-xs sm:text-sm gap-1">
+              <Map className="w-3 h-3" /> Journey Map
+            </TabsTrigger>
           </TabsList>
 
-          {/* Tab B — Mental & Task Models */}
           <TabsContent value="mental-models" className="mt-8">
             <MentalModelGrid />
           </TabsContent>
 
-          {/* Tab C — Journey Map */}
           <TabsContent value="journey-map" className="space-y-6 mt-8">
             <div className="text-center mb-4">
-              <h2 className="text-xl font-bold">System Journey Map</h2>
-              <p className="text-sm text-muted-foreground">Every touchpoint across the Paracosm ecosystem — activities, goals, experience, and technology.</p>
+              <h3 className={cn(editorialType.serif, "text-2xl md:text-3xl")}>System Journey Map</h3>
+              <p className="text-sm opacity-70 mt-1">
+                Every touchpoint across the Paracosm ecosystem — activities, goals, experience, and technology.
+              </p>
             </div>
             <JourneyMapTable />
           </TabsContent>
         </Tabs>
-      </div>
-    </div>
+      </EditorialSection>
+
+      <Footer />
+    </main>
   );
 };
 

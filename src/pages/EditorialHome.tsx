@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import EditorialHero from "@/components/editorial/EditorialHero";
+import EditorialSiteHeader from "@/components/editorial/EditorialSiteHeader";
 import TriadChapter from "@/components/editorial/TriadChapter";
 import PartnerInnovationPlaysSection from "@/components/editorial/PartnerInnovationPlaysSection";
 import EditorialDispatchesSection from "@/components/editorial/EditorialDispatchesSection";
@@ -36,6 +37,7 @@ export default function EditorialHome() {
 
   return (
     <main className="bg-background text-foreground">
+      <EditorialSiteHeader />
       <EditorialHero />
 
       <TriadChapter
