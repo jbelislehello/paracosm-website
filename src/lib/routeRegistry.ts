@@ -39,6 +39,16 @@ export const ROUTE_REGISTRY: RouteMeta[] = [
   { path: "/tarot", label: "Entrepreneurial Tarot" },
   { path: "/pattern-encyclopedia", label: "Pattern Encyclopedia" },
   { path: "/agentic-ux", label: "Agentic UX" },
+  {
+    path: "/agentic-ux/residencies/:slug",
+    label: (p) => {
+      const s = p.slug ?? "";
+      return s
+        ? s.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
+        : "Residency";
+    },
+    parent: "/agentic-ux",
+  },
   { path: "/design-system", label: "Design System" },
   { path: "/lineage", label: "Lineage & Comparables", parent: "/book" },
   { path: "/origins", label: "Origins — methods 2013–2018", parent: "/lineage" },
