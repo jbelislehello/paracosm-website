@@ -23,6 +23,7 @@ const NAV: NavItem[] = [
   {
     label: "Retreats",
     children: [
+      { label: "Paracosm Summit — Azores 2026", to: "/paracosm-retreat" },
       { label: "GL!TCH — Learning Organizations", to: "/events-and-retreats#glitch-learning-orgs" },
       { label: "Drift — Co-Assisted Exploration", to: "/events-and-retreats#drift-co-assisted" },
       { label: "Tune — Relational Intelligence Summit", to: "/events-and-retreats#relational-intelligence-summit" },
