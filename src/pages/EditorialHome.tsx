@@ -128,6 +128,8 @@ export default function EditorialHome() {
 
       <PartnerInnovationPlaysSection />
 
+      <EditorialBulletinsSection />
+
       <EditorialDispatchesSection />
 
       <EditorialClosing />
