@@ -1,11 +1,9 @@
 import { useRef, useState } from "react";
-import { Check, Loader2, Sparkles, Clock, DollarSign, Target } from "lucide-react";
+import { Check, Loader2, Clock, DollarSign, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -18,7 +16,7 @@ export default function SummerDealSection() {
     email: "",
     company: "",
     project_idea: "",
-    website: "", // honeypot
+    website: "",
   });
   const startedAt = useRef<number>(Date.now());
 
@@ -39,7 +37,6 @@ export default function SummerDealSection() {
         "1 week of post-launch support & tweaks",
         "Session recordings & documentation",
       ];
-
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -74,63 +71,80 @@ export default function SummerDealSection() {
   return (
     <section
       id="summer-deal"
-      className="scroll-mt-24 px-4 py-16 md:py-24 bg-gradient-to-b from-[hsl(var(--bloom-ink))] via-[hsl(var(--bloom-ink))] to-[hsl(var(--bloom-ink)/0.95)] text-white relative overflow-hidden"
+      className="scroll-mt-24 relative overflow-hidden px-4 py-20 md:py-28 bg-[hsl(35_45%_96%)] text-foreground"
     >
-      <div className="pointer-events-none absolute -top-20 -left-20 h-96 w-96 rounded-full bg-[hsl(var(--bloom-magenta)/0.25)] blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-20 -right-20 h-96 w-96 rounded-full bg-[hsl(var(--bloom-amber)/0.2)] blur-3xl" />
+      {/* Editorial texture */}
+      <div className="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-[hsl(15_75%_55%)]/10 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-24 -right-24 h-96 w-96 rounded-full bg-[hsl(15_75%_55%)]/10 blur-3xl" />
 
       <div className="container relative mx-auto max-w-6xl">
-        <div className="mb-10 text-center">
-          <Badge className="mb-4 border-[hsl(var(--bloom-magenta)/0.5)] bg-[hsl(var(--bloom-magenta)/0.15)] font-vhs text-xs uppercase tracking-widest text-white">
-            <Sparkles className="mr-1 h-3 w-3" />
-            {t("summer_deal.section.eyebrow")}
-          </Badge>
-          <h2 className="mx-auto max-w-3xl font-display text-3xl leading-tight md:text-5xl">
+        {/* Masthead */}
+        <div className="mb-12 border-b border-current/20 pb-8">
+          <div className="flex items-baseline gap-4">
+            <span className="font-serif text-5xl italic text-[hsl(15_75%_55%)] md:text-6xl">03</span>
+            <span className="text-[11px] font-semibold uppercase tracking-[0.3em] opacity-70">
+              Chapter 03 · {t("summer_deal.section.eyebrow")}
+            </span>
+          </div>
+          <h2 className="mt-6 max-w-4xl font-serif text-4xl leading-[1.05] sm:text-5xl md:text-6xl">
             {t("summer_deal.section.title")}
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-base text-white/70 md:text-lg">
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed opacity-80">
             {t("summer_deal.section.subtitle")}
           </p>
 
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-3 text-sm">
+          <div className="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-sm">
             <Stat icon={<DollarSign className="h-4 w-4" />} label={t("summer_deal.section.price_label")} value="$8,500" />
             <Stat icon={<Clock className="h-4 w-4" />} label={t("summer_deal.section.duration_label")} value="14 days" />
             <Stat icon={<Target className="h-4 w-4" />} label={t("summer_deal.section.scope_label")} value="MVP" />
           </div>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-10 md:grid-cols-2">
           {/* Includes / audience */}
-          <Card className="border-white/10 bg-white/[0.04] p-6 md:p-8 backdrop-blur">
-            <h3 className="font-display text-xl text-white">{t("summer_deal.section.includes_title")}</h3>
-            <ul className="mt-4 space-y-2.5 text-sm text-white/85">
+          <div className="border border-current/15 bg-background/40 p-8">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.3em] opacity-60">
+              The Package
+            </span>
+            <h3 className="mt-2 font-serif text-2xl md:text-3xl">
+              {t("summer_deal.section.includes_title")}
+            </h3>
+            <ul className="mt-6 space-y-3 text-base">
               {includes.map((item, i) => (
-                <li key={i} className="flex items-start gap-2">
-                  <Check className="mt-0.5 h-4 w-4 flex-none text-[hsl(var(--bloom-amber))]" />
-                  <span>{item}</span>
+                <li key={i} className="flex items-start gap-3 border-b border-current/10 pb-3 last:border-b-0">
+                  <span className="mt-1 font-serif text-sm text-[hsl(15_75%_55%)]">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <span className="opacity-90">{item}</span>
                 </li>
               ))}
             </ul>
 
-            <div className="mt-6 border-t border-white/10 pt-5">
-              <h4 className="font-display text-sm uppercase tracking-widest text-white/60">
+            <div className="mt-8 border-t border-current/20 pt-6">
+              <h4 className="text-[10px] font-semibold uppercase tracking-[0.3em] opacity-60">
                 {t("summer_deal.section.for_title")}
               </h4>
-              <p className="mt-2 text-sm text-white/75">{t("summer_deal.section.for")}</p>
+              <p className="mt-3 font-serif text-lg italic leading-relaxed">
+                {t("summer_deal.section.for")}
+              </p>
             </div>
 
-            <div className="mt-5 rounded-md border border-[hsl(var(--bloom-amber)/0.4)] bg-[hsl(var(--bloom-amber)/0.1)] px-3 py-2 text-xs font-vhs uppercase tracking-wider text-[hsl(var(--bloom-amber))]">
+            <div className="mt-6 border-l-2 border-[hsl(15_75%_55%)] bg-[hsl(15_75%_55%)]/5 px-4 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-[hsl(15_75%_35%)]">
               {t("summer_deal.section.slots")}
             </div>
-          </Card>
+          </div>
 
           {/* Form */}
-          <Card className="border-fuchsia-400/30 bg-gradient-to-b from-fuchsia-500/10 to-rose-500/5 p-6 md:p-8 ring-1 ring-fuchsia-300/20 backdrop-blur">
-            <h3 className="font-display text-xl text-white">{t("summer_deal.section.form_title")}</h3>
-            <p className="mt-1 text-xs text-white/60">{t("summer_deal.section.form_note")}</p>
+          <div className="border border-current/15 bg-background/60 p-8">
+            <span className="text-[10px] font-semibold uppercase tracking-[0.3em] opacity-60">
+              Reservation
+            </span>
+            <h3 className="mt-2 font-serif text-2xl md:text-3xl">
+              {t("summer_deal.section.form_title")}
+            </h3>
+            <p className="mt-2 text-sm opacity-70">{t("summer_deal.section.form_note")}</p>
 
-            <form onSubmit={submit} className="mt-5 space-y-4">
-              {/* Honeypot */}
+            <form onSubmit={submit} className="mt-6 space-y-5">
               <input
                 type="text"
                 tabIndex={-1}
@@ -141,20 +155,24 @@ export default function SummerDealSection() {
                 className="absolute left-[-9999px] h-0 w-0 opacity-0"
               />
 
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                  <Label htmlFor="sd_name" className="text-white/80">{t("summer_deal.form.name")}</Label>
+                  <Label htmlFor="sd_name" className="text-[10px] font-semibold uppercase tracking-[0.25em] opacity-70">
+                    {t("summer_deal.form.name")}
+                  </Label>
                   <Input
                     id="sd_name"
                     required
                     maxLength={120}
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="mt-1 border-white/15 bg-white/5 text-white placeholder:text-white/40"
+                    className="mt-2 rounded-none border-0 border-b border-current/30 bg-transparent px-0 focus-visible:ring-0 focus-visible:border-[hsl(15_75%_55%)]"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="sd_email" className="text-white/80">{t("summer_deal.form.email")}</Label>
+                  <Label htmlFor="sd_email" className="text-[10px] font-semibold uppercase tracking-[0.25em] opacity-70">
+                    {t("summer_deal.form.email")}
+                  </Label>
                   <Input
                     id="sd_email"
                     type="email"
@@ -162,24 +180,28 @@ export default function SummerDealSection() {
                     maxLength={255}
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    className="mt-1 border-white/15 bg-white/5 text-white placeholder:text-white/40"
+                    className="mt-2 rounded-none border-0 border-b border-current/30 bg-transparent px-0 focus-visible:ring-0 focus-visible:border-[hsl(15_75%_55%)]"
                   />
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="sd_company" className="text-white/80">{t("summer_deal.form.company")}</Label>
+                <Label htmlFor="sd_company" className="text-[10px] font-semibold uppercase tracking-[0.25em] opacity-70">
+                  {t("summer_deal.form.company")}
+                </Label>
                 <Input
                   id="sd_company"
                   maxLength={200}
                   value={form.company}
                   onChange={(e) => setForm({ ...form, company: e.target.value })}
-                  className="mt-1 border-white/15 bg-white/5 text-white placeholder:text-white/40"
+                  className="mt-2 rounded-none border-0 border-b border-current/30 bg-transparent px-0 focus-visible:ring-0 focus-visible:border-[hsl(15_75%_55%)]"
                 />
               </div>
 
               <div>
-                <Label htmlFor="sd_idea" className="text-white/80">{t("summer_deal.form.project_idea")}</Label>
+                <Label htmlFor="sd_idea" className="text-[10px] font-semibold uppercase tracking-[0.25em] opacity-70">
+                  {t("summer_deal.form.project_idea")}
+                </Label>
                 <Textarea
                   id="sd_idea"
                   required
@@ -187,14 +209,14 @@ export default function SummerDealSection() {
                   maxLength={2000}
                   value={form.project_idea}
                   onChange={(e) => setForm({ ...form, project_idea: e.target.value })}
-                  className="mt-1 border-white/15 bg-white/5 text-white placeholder:text-white/40"
+                  className="mt-2 rounded-none border border-current/30 bg-transparent focus-visible:ring-0 focus-visible:border-[hsl(15_75%_55%)]"
                 />
               </div>
 
               <Button
                 type="submit"
                 disabled={submitting}
-                className="w-full bg-white font-semibold text-slate-900 hover:bg-white/90"
+                className="w-full rounded-none bg-foreground text-background font-semibold uppercase tracking-[0.2em] hover:bg-foreground/90 h-12"
               >
                 {submitting ? (
                   <>
@@ -206,7 +228,7 @@ export default function SummerDealSection() {
                 )}
               </Button>
             </form>
-          </Card>
+          </div>
         </div>
       </div>
     </section>
@@ -215,10 +237,10 @@ export default function SummerDealSection() {
 
 function Stat({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
   return (
-    <div className="flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1.5">
-      <span className="text-[hsl(var(--bloom-amber))]">{icon}</span>
-      <span className="text-white/60 text-xs uppercase tracking-wider">{label}</span>
-      <span className="font-semibold text-white">{value}</span>
+    <div className="flex items-baseline gap-2">
+      <span className="text-[hsl(15_75%_55%)]">{icon}</span>
+      <span className="text-[10px] font-semibold uppercase tracking-[0.25em] opacity-60">{label}</span>
+      <span className="font-serif text-lg italic">{value}</span>
     </div>
   );
 }
