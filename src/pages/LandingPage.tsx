@@ -200,7 +200,6 @@ const LandingPage = () => {
 
       {/* Agentic Ecosystems — service hero with interactive D3 viz */}
       <AgenticEcosystemHero />
-      <AgenticEcosystemDemo />
       <Suspense fallback={null}>
         <D3GallerySection />
       </Suspense>
