@@ -192,7 +192,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <MethodSteps />
+      
 
       <WhyItWorksRecap lens="method" />
 
