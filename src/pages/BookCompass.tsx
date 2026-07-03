@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
-import ChromaText from "@/components/aesthetic/ChromaText";
+
 import ReflectionNodes from "@/components/book/ReflectionNodes";
 
 interface CompassDetail {
@@ -71,15 +71,15 @@ export default function BookCompass() {
   }, [slug]);
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
-      <header className="fixed z-50 w-full border-b border-white/10 bg-slate-950/85 backdrop-blur-md">
+    <div className="flex min-h-screen flex-col bg-[hsl(15_35%_92%)] dark:bg-[hsl(15_15%_14%)] text-foreground">
+      <header className="fixed z-50 w-full border-b border-current/10 bg-[hsl(15_35%_92%)]/85 dark:bg-[hsl(15_15%_14%)]/85 backdrop-blur-md">
         <div className="container mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
           <Link to="/" className="flex items-center gap-2">
             <img src={logoParacosm} alt="Paracosm" className="h-8 w-8 rounded-lg bg-white p-1 object-contain" />
-            <span className="font-display text-sm">Paracosm</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.3em]">Paracosm</span>
           </Link>
           <div className="flex items-center gap-3">
-            <Link to="/book/compasses" className="flex items-center gap-1 text-xs uppercase tracking-widest text-white/60 hover:text-white">
+            <Link to="/book/compasses" className="flex items-center gap-1 text-[10px] uppercase tracking-[0.3em] opacity-70 hover:opacity-100">
               <ArrowLeft className="h-3 w-3" /> All compasses
             </Link>
             <LanguageSwitcher />
@@ -90,52 +90,52 @@ export default function BookCompass() {
       <main className="flex-1 pt-20">
         {loading ? (
           <div className="flex justify-center py-32">
-            <Loader2 className="h-6 w-6 animate-spin text-white/40" />
+            <Loader2 className="h-6 w-6 animate-spin opacity-40" />
           </div>
         ) : !item ? (
           <div className="container mx-auto max-w-xl px-6 py-24 text-center">
-            <h1 className="text-2xl font-bold">Compass not yet published</h1>
-            <Link to="/book/compasses" className="mt-6 inline-flex items-center gap-1 text-sm text-white/60 hover:text-white">
+            <h1 className="font-serif text-2xl">Compass not yet published</h1>
+            <Link to="/book/compasses" className="mt-6 inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.3em] opacity-70 hover:opacity-100">
               <ArrowLeft className="h-3 w-3" /> Back to compasses
             </Link>
           </div>
         ) : (
-          <article className="container mx-auto max-w-2xl px-6 py-12">
-            <div className="mb-3 flex items-center gap-2 text-cyan-300">
+          <article className="container mx-auto max-w-3xl px-6 py-16">
+            <div className="mb-4 flex items-center gap-2 text-[hsl(345_65%_45%)]">
               <Compass className="h-4 w-4" />
-              <span className="text-xs uppercase tracking-widest">Compass</span>
+              <span className="text-[10px] uppercase tracking-[0.35em] font-semibold">Compass</span>
             </div>
-            <ChromaText as="h1" animated={false} className="font-display text-4xl leading-[0.95] md:text-5xl">
+            <h1 className="font-serif text-4xl md:text-5xl leading-[1.05]">
               {item.name}
-            </ChromaText>
+            </h1>
             {item.description && (
-              <p className="mt-4 text-lg text-white/75">{item.description}</p>
+              <p className="mt-5 text-lg opacity-75 font-serif italic">{item.description}</p>
             )}
 
             {item.quote && (
-              <blockquote className="my-8 border-l-2 border-cyan-300/50 pl-4 italic text-white/70">
+              <blockquote className="my-10 border-l-2 border-[hsl(345_65%_45%)]/50 pl-5 font-serif italic text-lg opacity-80">
                 "{item.quote}"
                 {item.quote_attribution && (
-                  <span className="not-italic block text-xs uppercase tracking-wider text-white/50">
+                  <span className="not-italic block mt-2 text-[10px] uppercase tracking-[0.3em] opacity-60">
                     — {item.quote_attribution}
                   </span>
                 )}
               </blockquote>
             )}
 
-            <div className="mt-8 grid gap-6 sm:grid-cols-2">
+            <div className="mt-10 grid gap-6 sm:grid-cols-2">
               {item.timing && (
                 <div>
-                  <div className="mb-2 text-[10px] uppercase tracking-wider text-white/40">When</div>
-                  <p className="text-sm text-white/80">{item.timing}</p>
+                  <div className="mb-2 text-[10px] uppercase tracking-[0.3em] opacity-50">When</div>
+                  <p className="text-sm opacity-80">{item.timing}</p>
                 </div>
               )}
               {item.phase_affinity.length > 0 && (
                 <div>
-                  <div className="mb-2 text-[10px] uppercase tracking-wider text-white/40">Phases</div>
+                  <div className="mb-2 text-[10px] uppercase tracking-[0.3em] opacity-50">Phases</div>
                   <div className="flex flex-wrap gap-1">
                     {item.phase_affinity.map((p) => (
-                      <Badge key={p} variant="outline" className="border-white/15 bg-white/5 text-[10px] uppercase tracking-wider">
+                      <Badge key={p} variant="outline" className="border-current/20 bg-transparent text-[10px] uppercase tracking-[0.2em]">
                         {p}
                       </Badge>
                     ))}
@@ -144,16 +144,16 @@ export default function BookCompass() {
               )}
               {item.tools.length > 0 && (
                 <div>
-                  <div className="mb-2 text-[10px] uppercase tracking-wider text-white/40">Tools / prototypes</div>
-                  <ul className="list-disc space-y-1 pl-5 text-sm text-white/80">
+                  <div className="mb-2 text-[10px] uppercase tracking-[0.3em] opacity-50">Tools / prototypes</div>
+                  <ul className="list-disc space-y-1 pl-5 text-sm opacity-80">
                     {item.tools.map((t) => <li key={t}>{t}</li>)}
                   </ul>
                 </div>
               )}
               {item.practices.length > 0 && (
                 <div>
-                  <div className="mb-2 text-[10px] uppercase tracking-wider text-white/40">Practices</div>
-                  <ul className="list-disc space-y-1 pl-5 text-sm text-white/80">
+                  <div className="mb-2 text-[10px] uppercase tracking-[0.3em] opacity-50">Practices</div>
+                  <ul className="list-disc space-y-1 pl-5 text-sm opacity-80">
                     {item.practices.map((t) => <li key={t}>{t}</li>)}
                   </ul>
                 </div>
@@ -161,8 +161,8 @@ export default function BookCompass() {
             </div>
 
             {chapters.length > 0 && (
-              <section className="mt-12 border-t border-white/10 pt-8">
-                <h2 className="mb-4 text-sm font-semibold uppercase tracking-widest text-white/70">
+              <section className="mt-14 border-t border-current/10 pt-8">
+                <h2 className="mb-6 text-[10px] font-semibold uppercase tracking-[0.35em] opacity-60">
                   Appears alongside chapters
                 </h2>
                 <div className="grid gap-3 sm:grid-cols-2">
@@ -170,10 +170,10 @@ export default function BookCompass() {
                     <Link
                       key={c.slug}
                       to={`/book/chapter/${c.slug}`}
-                      className="group rounded-xl border border-white/10 bg-white/[0.03] p-4 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
+                      className="group rounded-sm border border-current/15 bg-background/40 p-4 transition-colors hover:border-[hsl(345_65%_45%)]/50"
                     >
-                      <div className="text-[10px] uppercase tracking-wider text-white/40">{c.phase}</div>
-                      <div className="mt-1 text-sm font-semibold text-white group-hover:text-cyan-200">{c.title}</div>
+                      <div className="text-[10px] uppercase tracking-[0.3em] opacity-50">{c.phase}</div>
+                      <div className="mt-1 font-serif text-base group-hover:text-[hsl(345_65%_38%)]">{c.title}</div>
                     </Link>
                   ))}
                 </div>
@@ -184,6 +184,7 @@ export default function BookCompass() {
           </article>
         )}
       </main>
+
 
       <Footer />
     </div>

@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
-import { ArrowLeft, ArrowRight, Briefcase } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { OPERATOR_SYMPTOMS } from "@/data/operatorSymptoms";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
-import ScanlineOverlay from "@/components/aesthetic/ScanlineOverlay";
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
+import { EditorialPageHero } from "@/components/editorial";
 
 const PHASE_LABEL: Record<string, string> = {
   GLITCH: "GL!TCH",
@@ -28,37 +28,33 @@ export default function BookOperatorsIndex() {
   });
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
-      <header className="fixed z-50 w-full overflow-hidden border-b border-[hsl(var(--bloom-magenta)/0.25)] bg-[hsl(var(--bloom-ink)/0.85)] backdrop-blur-md">
-        <ScanlineOverlay />
+    <div className="flex min-h-screen flex-col bg-[hsl(230_35%_10%)] text-[hsl(35_20%_92%)]">
+      <header className="fixed z-50 w-full border-b border-white/10 bg-[hsl(230_35%_10%)]/85 backdrop-blur-md">
         <div className="container mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
           <Link to="/" className="flex items-center gap-2">
             <img src={logoParacosm} alt="Paracosm" className="h-8 w-8 rounded-lg bg-white p-1 object-contain" />
-            <span className="font-display text-sm text-[hsl(var(--bloom-cream))]">Paracosm</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.3em]">Paracosm</span>
           </Link>
-          <div className="flex items-center gap-3">
-            <Link to="/book" className="flex items-center gap-1 font-vhs text-xs uppercase tracking-widest text-white/60 hover:text-white">
-              <ArrowLeft className="h-3 w-3" /> Back to book
+          <div className="flex items-center gap-4">
+            <Link to="/book" className="flex items-center gap-1 text-[10px] uppercase tracking-[0.3em] opacity-70 hover:opacity-100">
+              <ArrowLeft className="h-3 w-3" /> Book
             </Link>
             <LanguageSwitcher />
           </div>
         </div>
       </header>
 
-      <main className="flex-1 pt-24">
-        <section className="container mx-auto max-w-3xl px-6 py-12">
-          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.04] px-3 py-1 text-[10px] uppercase tracking-wider text-white/70">
-            <Briefcase className="h-3 w-3" /> Operator's Cut · Symptom Index
-          </div>
-          <h1 className="font-display text-4xl leading-[1.02] tracking-tight text-[hsl(var(--bloom-cream))] md:text-5xl">
-            Pick the friction. Read the chapter you actually need.
-          </h1>
-          <p className="mt-4 max-w-2xl text-base text-white/70">
-            The Operator's Cut is the 90-minute field edition of Calm Magic — for the founder,
-            COO, or transformation lead who needs vocabulary for what they're feeling, one move
-            for next week, and a diagnostic to run with their team Monday. Start with the
-            symptom that sounds most like your week.
-          </p>
+      <EditorialPageHero
+        numeral="09"
+        kicker="Operator's Cut · Symptom Index"
+        title={<>Pick the friction. Read the chapter you <em className="italic font-light">actually</em> need.</>}
+        subtitle="The Operator's Cut is the 90-minute field edition of Calm Magic — for the founder, COO, or transformation lead who needs vocabulary for what they're feeling, one move for next week, and a diagnostic to run with their team Monday."
+        tone="night"
+      />
+
+      <main className="flex-1">
+        <section className="container mx-auto max-w-3xl px-6 py-16">
+
 
           <ul className="mt-10 space-y-3">
             {OPERATOR_SYMPTOMS.map((s) => (

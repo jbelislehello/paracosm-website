@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Compass, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { Badge } from "@/components/ui/badge";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
-import ChromaText from "@/components/aesthetic/ChromaText";
+import { EditorialPageHero } from "@/components/editorial";
 
 interface CompassRow {
   id: string;
@@ -44,9 +44,7 @@ export default function BookCompassesIndex() {
       setItems((data as CompassRow[]) ?? []);
       setLoading(false);
     })();
-    return () => {
-      alive = false;
-    };
+    return () => { alive = false; };
   }, []);
 
   const visible = useMemo(
@@ -55,43 +53,39 @@ export default function BookCompassesIndex() {
   );
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
-      <header className="fixed z-50 w-full border-b border-white/10 bg-slate-950/85 backdrop-blur-md">
+    <div className="flex min-h-screen flex-col bg-[hsl(15_35%_92%)] dark:bg-[hsl(15_15%_14%)] text-foreground">
+      <header className="fixed z-50 w-full border-b border-current/10 bg-[hsl(15_35%_92%)]/85 dark:bg-[hsl(15_15%_14%)]/85 backdrop-blur-md">
         <div className="container mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
           <Link to="/" className="flex items-center gap-2">
             <img src={logoParacosm} alt="Paracosm" className="h-8 w-8 rounded-lg bg-white p-1 object-contain" />
-            <span className="font-display text-sm">Paracosm</span>
+            <span className="text-xs font-semibold uppercase tracking-[0.3em]">Paracosm</span>
           </Link>
-          <div className="flex items-center gap-3">
-            <Link to="/book" className="flex items-center gap-1 text-xs uppercase tracking-widest text-white/60 hover:text-white">
-              <ArrowLeft className="h-3 w-3" /> Back to book
+          <div className="flex items-center gap-4">
+            <Link to="/book" className="flex items-center gap-1 text-[10px] uppercase tracking-[0.3em] opacity-70 hover:opacity-100">
+              <ArrowLeft className="h-3 w-3" /> Book
             </Link>
             <LanguageSwitcher />
           </div>
         </div>
       </header>
 
-      <main className="flex-1 pt-20">
-        <section className="container mx-auto max-w-5xl px-6 py-12">
-          <div className="mb-3 flex items-center gap-2 text-cyan-300">
-            <Compass className="h-4 w-4" />
-            <span className="text-xs uppercase tracking-widest">Part 1 — The Compasses</span>
-          </div>
-          <ChromaText as="h1" animated={false} className="font-display text-4xl leading-[0.95] md:text-6xl">
-            The Compasses
-          </ChromaText>
-          <p className="mt-4 max-w-2xl text-lg text-white/70">
-            An ensemble of visual maps exposing the bodies of knowledge and decision-making
-            skills required to thrive with imagination in the 21st century.
-          </p>
+      <EditorialPageHero
+        numeral="08"
+        kicker="Part I · The Compasses"
+        title={<>The <em className="italic font-light">Compasses</em>.</>}
+        subtitle="An ensemble of visual maps exposing the bodies of knowledge and decision-making skills required to thrive with imagination in the 21st century."
+        tone="clay"
+      />
 
-          <div className="mt-8 flex flex-wrap gap-2">
+      <main className="flex-1">
+        <section className="container mx-auto max-w-5xl px-6 py-16">
+          <div className="mt-2 flex flex-wrap gap-2">
             <button
               onClick={() => setFilter(null)}
-              className={`rounded-full border px-3 py-1 text-xs uppercase tracking-wider transition-colors ${
+              className={`rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.25em] transition-colors ${
                 filter === null
-                  ? "border-cyan-300 bg-cyan-300/10 text-cyan-200"
-                  : "border-white/15 bg-white/5 text-white/60 hover:text-white"
+                  ? "border-[hsl(345_65%_45%)] bg-[hsl(345_65%_45%)]/10 text-[hsl(345_65%_38%)]"
+                  : "border-current/20 bg-transparent opacity-60 hover:opacity-100"
               }`}
             >
               All
@@ -100,10 +94,10 @@ export default function BookCompassesIndex() {
               <button
                 key={p}
                 onClick={() => setFilter(p)}
-                className={`rounded-full border px-3 py-1 text-xs uppercase tracking-wider transition-colors ${
+                className={`rounded-full border px-3 py-1 text-[10px] uppercase tracking-[0.25em] transition-colors ${
                   filter === p
-                    ? "border-cyan-300 bg-cyan-300/10 text-cyan-200"
-                    : "border-white/15 bg-white/5 text-white/60 hover:text-white"
+                    ? "border-[hsl(345_65%_45%)] bg-[hsl(345_65%_45%)]/10 text-[hsl(345_65%_38%)]"
+                    : "border-current/20 bg-transparent opacity-60 hover:opacity-100"
                 }`}
               >
                 {p}
@@ -114,10 +108,10 @@ export default function BookCompassesIndex() {
           <div className="mt-10">
             {loading ? (
               <div className="flex justify-center py-20">
-                <Loader2 className="h-6 w-6 animate-spin text-white/40" />
+                <Loader2 className="h-6 w-6 animate-spin opacity-50" />
               </div>
             ) : visible.length === 0 ? (
-              <p className="py-20 text-center text-white/60">
+              <p className="py-20 text-center opacity-60">
                 No published compasses for this phase yet.
               </p>
             ) : (
@@ -126,16 +120,16 @@ export default function BookCompassesIndex() {
                   <Link
                     key={c.id}
                     to={`/book/compasses/${c.slug}`}
-                    className="group flex flex-col rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:border-cyan-300/40 hover:bg-white/[0.06]"
+                    className="group flex flex-col rounded-sm border border-current/15 bg-background/40 p-5 transition-colors hover:border-[hsl(345_65%_45%)]/50 hover:-translate-y-0.5"
                   >
-                    <h2 className="text-base font-semibold text-white group-hover:text-cyan-200">
+                    <h2 className="font-serif text-xl leading-tight group-hover:text-[hsl(345_65%_38%)]">
                       {c.name}
                     </h2>
                     {c.description && (
-                      <p className="mt-2 text-sm text-white/65">{c.description}</p>
+                      <p className="mt-2 text-sm opacity-70">{c.description}</p>
                     )}
                     {c.quote && (
-                      <p className="mt-3 text-xs italic text-white/50">
+                      <p className="mt-3 text-xs italic opacity-60">
                         "{c.quote}"
                         {c.quote_attribution && (
                           <span className="not-italic"> — {c.quote_attribution}</span>
@@ -147,7 +141,7 @@ export default function BookCompassesIndex() {
                         <Badge
                           key={p}
                           variant="outline"
-                          className="border-white/15 bg-white/5 text-[10px] uppercase tracking-wider"
+                          className="border-current/20 bg-transparent text-[10px] uppercase tracking-[0.2em]"
                         >
                           {p}
                         </Badge>

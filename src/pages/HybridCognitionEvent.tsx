@@ -112,53 +112,56 @@ export default function HybridCognitionEvent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 text-slate-900">
+    <div className="min-h-screen bg-[hsl(35_45%_96%)] dark:bg-[hsl(25_15%_12%)] text-foreground">
       <div className="container mx-auto px-4 py-6">
         <Link
           to="/"
-          className="inline-flex items-center gap-2 text-sm text-slate-600 hover:text-slate-900"
+          className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] opacity-70 hover:opacity-100"
         >
-          <ArrowLeft className="h-4 w-4" /> {copy.back}
+          <ArrowLeft className="h-3 w-3" /> {copy.back}
         </Link>
       </div>
 
-      <div className="container mx-auto grid gap-10 px-4 pb-20 pt-6 lg:grid-cols-2 lg:gap-16">
-        {/* Left: content */}
+      <div className="container mx-auto grid gap-10 px-4 pb-20 pt-4 lg:grid-cols-[3fr_2fr] lg:gap-16 max-w-6xl">
+        {/* Left: editorial content */}
         <div>
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-widest text-indigo-700">
-            <Sparkles className="h-3.5 w-3.5" />
-            {copy.tag}
+          <div className="flex items-baseline gap-6 border-b border-current/10 pb-8">
+            <span className="font-serif text-6xl md:text-7xl text-[hsl(15_75%_55%)] leading-none">13</span>
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.4em] font-semibold opacity-60 flex items-center gap-2">
+                <Sparkles className="h-3 w-3" /> {copy.tag}
+              </p>
+              <h1 className="mt-3 font-serif text-4xl md:text-5xl leading-[1.05]">
+                {copy.title1}{" "}
+                <em className="italic font-light text-[hsl(15_75%_55%)]">{copy.titleAccent}</em>.
+              </h1>
+            </div>
           </div>
-          <h1 className="text-4xl font-bold leading-tight sm:text-5xl">
-            {copy.title1}
-            <br />
-            <span className="bg-gradient-to-r from-indigo-600 via-violet-600 to-cyan-600 bg-clip-text text-transparent">
-              {copy.titleAccent}
-            </span>
-          </h1>
-          <p className="mt-5 max-w-xl text-lg text-slate-600">
+
+          <p className="mt-6 max-w-xl text-lg opacity-75 font-serif italic">
             {copy.subtitle}
           </p>
 
           <ul className="mt-8 space-y-3">
             {copy.bullets.map((b) => (
-              <li key={b} className="flex items-start gap-3 text-slate-700">
-                <CheckCircle2 className="mt-0.5 h-5 w-5 flex-none text-indigo-600" />
+              <li key={b} className="flex items-start gap-3 opacity-80">
+                <CheckCircle2 className="mt-0.5 h-5 w-5 flex-none text-[hsl(15_75%_55%)]" />
                 <span>{b}</span>
               </li>
             ))}
           </ul>
 
-          <div className="mt-10 flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 text-indigo-700">
+          <div className="mt-10 flex items-center gap-3 rounded-sm border border-current/15 bg-background/40 p-4">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[hsl(15_75%_55%)]/10 text-[hsl(15_75%_55%)]">
               <Brain className="h-5 w-5" />
             </div>
             <div>
-              <p className="font-semibold text-slate-900">{copy.host}</p>
-              <p className="text-sm text-slate-600">{copy.host_sub}</p>
+              <p className="font-serif text-base">{copy.host}</p>
+              <p className="text-[10px] uppercase tracking-[0.25em] opacity-60">{copy.host_sub}</p>
             </div>
           </div>
         </div>
+
 
         {/* Right: form */}
         <div className="lg:pl-4">
