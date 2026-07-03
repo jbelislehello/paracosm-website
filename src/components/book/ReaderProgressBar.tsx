@@ -1,5 +1,7 @@
 import { Check } from "lucide-react";
 import { useReaderProgress } from "@/hooks/useReaderProgress";
+import { cn } from "@/lib/utils";
+import { editorialTone, editorialType } from "@/components/editorial/editorialTokens";
 
 const PHASES = [
   { key: "GLITCH", label: "GL!TCH" },
@@ -21,16 +23,17 @@ export default function ReaderProgressBar({ compact = false, className = "" }: P
   const { readPhases } = useReaderProgress();
   const completed = readPhases.length;
   const pct = Math.round((completed / PHASES.length) * 100);
+  const t = editorialTone.warm;
 
   return (
-    <div className={`relative overflow-hidden rounded-2xl border border-[hsl(var(--bloom-magenta)/0.25)] bg-[hsl(var(--bloom-violet)/0.18)] p-4 ${className}`}>
-      <div className="mb-3 flex items-center justify-between gap-3">
+    <div className={cn("border-t border-b border-current/20 py-5", className)}>
+      <div className="mb-4 flex items-baseline justify-between gap-3">
         <div>
-          <div className="font-vhs text-xs uppercase tracking-[0.3em] text-[hsl(var(--bloom-amber))]">
-            ▶ Your reading journey
+          <div className={cn(editorialType.kicker, t.kicker)}>
+            Your reading journey
           </div>
           {!compact && (
-            <div className="mt-0.5 font-tight text-sm text-white/80">
+            <div className="mt-1 text-sm opacity-70">
               {completed === 0
                 ? "Begin with any phase below."
                 : completed === PHASES.length
@@ -39,36 +42,35 @@ export default function ReaderProgressBar({ compact = false, className = "" }: P
             </div>
           )}
         </div>
-        <div className="font-display text-base text-[hsl(var(--bloom-cream))]">{pct}%</div>
+        <div className={cn(editorialType.serif, "text-2xl leading-none tabular-nums", t.numeral)}>{pct}%</div>
       </div>
 
-      <div className="mb-3 h-1.5 w-full overflow-hidden rounded-full bg-white/5">
+      <div className="mb-4 h-px w-full bg-current/15 relative">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-[hsl(var(--bloom-magenta))] via-[hsl(var(--bloom-amber))] to-[hsl(var(--bloom-teal))] transition-all duration-500"
+          className={cn("absolute inset-y-0 left-0 h-px", "bg-current/70")}
           style={{ width: `${pct}%` }}
           aria-label={`${pct}% of phases read`}
         />
       </div>
 
-      <ol className="grid grid-cols-8 gap-1.5">
+      <ol className="grid grid-cols-8 gap-2">
         {PHASES.map((p) => {
           const done = readPhases.includes(p.key);
           return (
             <li
               key={p.key}
-              className={`flex flex-col items-center gap-1 rounded-md px-1 py-1.5 font-vhs text-[11px] uppercase tracking-widest transition-colors ${
-                done
-                  ? "bg-[hsl(var(--bloom-magenta)/0.2)] text-[hsl(var(--bloom-cream))]"
-                  : "bg-white/[0.02] text-white/40"
-              }`}
+              className={cn(
+                "flex flex-col items-center gap-1.5 py-1 transition-colors",
+                editorialType.caption,
+                done ? t.kicker : "opacity-40",
+              )}
               aria-current={done ? "step" : undefined}
             >
               <span
-                className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] ${
-                  done
-                    ? "bg-[hsl(var(--bloom-amber))] text-[hsl(var(--bloom-ink))]"
-                    : "border border-white/15 bg-transparent"
-                }`}
+                className={cn(
+                  "flex h-5 w-5 items-center justify-center rounded-full text-[10px]",
+                  done ? cn("border", t.accentBorder) : "border border-current/30",
+                )}
               >
                 {done ? <Check className="h-3 w-3" /> : null}
               </span>

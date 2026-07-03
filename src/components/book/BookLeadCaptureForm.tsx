@@ -104,7 +104,7 @@ export default function BookLeadCaptureForm({
           placeholder={placeholder}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="bg-white/5 border-white/15 text-white placeholder:text-white/40"
+          className="bg-background border-current/20 placeholder:opacity-50"
         />
         <input
           type="text"
@@ -115,7 +115,7 @@ export default function BookLeadCaptureForm({
           className="hidden"
           aria-hidden
         />
-        <Button type="submit" disabled={submitting} className="w-full bg-white text-slate-900 hover:bg-white/90">
+        <Button type="submit" disabled={submitting} className="w-full bg-foreground text-background hover:bg-foreground/90 text-xs font-semibold uppercase tracking-[0.2em] rounded-none">
           {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : cta}
         </Button>
       </form>
@@ -130,7 +130,7 @@ export default function BookLeadCaptureForm({
         placeholder={placeholder}
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="bg-white/5 border-white/15 text-white placeholder:text-white/40"
+        className="bg-background border-current/20 placeholder:opacity-50"
       />
       <input
         type="text"
@@ -144,7 +144,7 @@ export default function BookLeadCaptureForm({
       <Button
         type="submit"
         disabled={submitting}
-        className="bg-white font-semibold text-slate-900 hover:bg-white/90"
+        className="bg-foreground text-background hover:bg-foreground/90 text-xs font-semibold uppercase tracking-[0.2em] rounded-none"
       >
         {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : cta}
       </Button>

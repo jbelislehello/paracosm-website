@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, BookOpen, Loader2 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { articleSchema, CANONICAL_HOST } from "@/lib/structuredData";
@@ -12,11 +11,11 @@ import Footer from "@/components/Footer";
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import BookLeadCaptureForm from "@/components/book/BookLeadCaptureForm";
 import ReaderProgressBar from "@/components/book/ReaderProgressBar";
-import ChromaText from "@/components/aesthetic/ChromaText";
-import ScanlineOverlay from "@/components/aesthetic/ScanlineOverlay";
 
 import ChapterCompasses from "@/components/book/ChapterCompasses";
 import ReflectionNodes from "@/components/book/ReflectionNodes";
+import { editorialTone, editorialType } from "@/components/editorial/editorialTokens";
+import { cn } from "@/lib/utils";
 
 
 interface Chapter {
@@ -45,24 +44,30 @@ const PHASE_LABEL: Record<string, string> = {
 };
 
 // Tiny markdown → JSX renderer (headings, paragraphs, simple emphasis).
-// Avoids pulling in a heavy library for a single page.
 function renderMarkdown(md: string): JSX.Element[] {
   const blocks = md.split(/\n{2,}/);
   return blocks.map((block, i) => {
     const trimmed = block.trim();
     if (!trimmed) return <br key={i} />;
     if (trimmed.startsWith("### ")) {
-      return <h3 key={i} className="mt-8 text-lg font-semibold text-white">{inline(trimmed.slice(4))}</h3>;
+      return <h3 key={i} className={cn(editorialType.serif, "mt-10 text-xl md:text-2xl leading-tight tracking-tight")}>{inline(trimmed.slice(4))}</h3>;
     }
     if (trimmed.startsWith("## ")) {
-      return <h2 key={i} className="mt-10 text-2xl font-bold text-white">{inline(trimmed.slice(3))}</h2>;
+      return <h2 key={i} className={cn(editorialType.serif, "mt-12 text-2xl md:text-3xl leading-tight tracking-tight")}>{inline(trimmed.slice(3))}</h2>;
     }
     if (trimmed.startsWith("# ")) {
-      return <h1 key={i} className="mt-10 text-3xl font-bold text-white">{inline(trimmed.slice(2))}</h1>;
+      return <h1 key={i} className={cn(editorialType.serif, "mt-12 text-3xl md:text-4xl leading-tight tracking-tight")}>{inline(trimmed.slice(2))}</h1>;
     }
     if (trimmed.startsWith("> ")) {
       return (
-        <blockquote key={i} className="my-6 border-l-2 border-fuchsia-300/50 pl-4 italic text-white/70">
+        <blockquote
+          key={i}
+          className={cn(
+            editorialType.serif,
+            "my-8 border-l-2 pl-6 italic text-xl md:text-2xl leading-snug opacity-90",
+            editorialTone.warm.quoteBorder,
+          )}
+        >
           {inline(trimmed.slice(2))}
         </blockquote>
       );
@@ -70,13 +75,13 @@ function renderMarkdown(md: string): JSX.Element[] {
     if (/^[-*]\s/.test(trimmed)) {
       const items = trimmed.split(/\n/).map((l) => l.replace(/^[-*]\s/, ""));
       return (
-        <ul key={i} className="my-4 list-disc space-y-1 pl-5 text-white/80">
+        <ul key={i} className="my-5 list-disc space-y-1.5 pl-5 opacity-85">
           {items.map((it, j) => <li key={j}>{inline(it)}</li>)}
         </ul>
       );
     }
     return (
-      <p key={i} className="my-4 leading-relaxed text-white/85">
+      <p key={i} className="my-5 text-[17px] md:text-lg leading-[1.75] opacity-90">
         {inline(trimmed)}
       </p>
     );
@@ -84,7 +89,6 @@ function renderMarkdown(md: string): JSX.Element[] {
 }
 
 function inline(text: string): React.ReactNode {
-  // bold then italic
   const parts: React.ReactNode[] = [];
   const regex = /(\*\*[^*]+\*\*|\*[^*]+\*|_[^_]+_)/g;
   let lastIdx = 0;
@@ -94,7 +98,7 @@ function inline(text: string): React.ReactNode {
     if (m.index > lastIdx) parts.push(text.slice(lastIdx, m.index));
     const tok = m[0];
     if (tok.startsWith("**")) parts.push(<strong key={key++}>{tok.slice(2, -2)}</strong>);
-    else parts.push(<em key={key++}>{tok.slice(1, -1)}</em>);
+    else parts.push(<em key={key++} className="italic">{tok.slice(1, -1)}</em>);
     lastIdx = m.index + tok.length;
   }
   if (lastIdx < text.length) parts.push(text.slice(lastIdx));
@@ -118,6 +122,7 @@ export default function BookChapter() {
   const [visionaryBody, setVisionaryBody] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const { markRead } = useReaderProgress();
+  const warm = editorialTone.warm;
 
   const image =
     chapter?.og_image_url?.trim() ||
@@ -174,7 +179,6 @@ export default function BookChapter() {
       setChapter((ch as Chapter) ?? null);
       setSiblings((sibs as NavChapter[]) ?? []);
 
-      // Fetch both the visionary (general) and pragmatic (Operator's Cut) drafts
       if (ch?.id) {
         const { data: drafts } = await supabase
           .from("book_chapter_drafts")
@@ -187,7 +191,6 @@ export default function BookChapter() {
         const prag = list.find((d) => d.audience === "pragmatic");
         const vis = list.find((d) => d.audience === "visionary") ?? list.find((d) => d.audience === "general");
         setPragmaticBody(prag?.draft_md ?? null);
-        // Only override the excerpt when the draft is substantive (avoid 45-char stubs)
         setVisionaryBody(vis && (vis.draft_md?.length ?? 0) > 500 ? vis.draft_md : null);
       } else {
         setPragmaticBody(null);
@@ -200,7 +203,6 @@ export default function BookChapter() {
     };
   }, [slug]);
 
-  // Mark this chapter as read once it loads as published
   useEffect(() => {
     if (chapter?.status === "published" && chapter.published_excerpt) {
       markRead(chapter.slug, chapter.phase);
@@ -217,9 +219,8 @@ export default function BookChapter() {
   const next = idx >= 0 && idx < siblings.length - 1 ? siblings[idx + 1] : null;
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950 text-white">
-      <header className="fixed z-50 w-full overflow-hidden border-b border-[hsl(var(--bloom-magenta)/0.25)] bg-[hsl(var(--bloom-ink)/0.85)] backdrop-blur-md">
-        <ScanlineOverlay />
+    <div className={cn("flex min-h-screen flex-col", warm.section)}>
+      <header className="fixed z-50 w-full border-b border-current/10 bg-[hsl(35_45%_96%/0.9)] backdrop-blur-md">
         <div className="container mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
           <Link to="/" className="flex items-center gap-2">
             <img
@@ -227,10 +228,10 @@ export default function BookChapter() {
               alt="Paracosm"
               className="h-8 w-8 rounded-lg bg-white p-1 object-contain"
             />
-            <span className="font-display text-sm text-[hsl(var(--bloom-cream))]">Paracosm</span>
+            <span className={cn(editorialType.serif, "text-lg")}>Paracosm</span>
           </Link>
-          <div className="flex items-center gap-3">
-            <Link to="/book" className="flex items-center gap-1 font-vhs text-xs uppercase tracking-widest text-white/60 hover:text-white">
+          <div className={cn("flex items-center gap-4", editorialType.caption)}>
+            <Link to="/book" className="inline-flex items-center gap-1 opacity-70 transition-opacity hover:opacity-100">
               <ArrowLeft className="h-3 w-3" /> Back to book
             </Link>
             <LanguageSwitcher />
@@ -241,44 +242,45 @@ export default function BookChapter() {
       <main className="flex-1 pt-20">
         {loading ? (
           <div className="container mx-auto flex max-w-2xl justify-center py-32">
-            <Loader2 className="h-6 w-6 animate-spin text-white/40" />
+            <Loader2 className="h-6 w-6 animate-spin opacity-40" />
           </div>
         ) : !chapter ? (
           <NotFoundState />
         ) : (
           <article className="container mx-auto max-w-2xl px-6 py-12">
-            <ReaderProgressBar compact className="mb-8" />
+            <ReaderProgressBar compact className="mb-10" />
 
-            <div className="mb-6 flex flex-wrap items-center gap-2">
-              <Badge variant="outline" className="border-white/15 bg-white/5 text-[10px] uppercase tracking-wider">
-                Chapter {chapter.order_index}
-              </Badge>
-              <Badge variant="outline" className="border-white/15 bg-white/5 text-[10px] uppercase tracking-wider">
-                {PHASE_LABEL[chapter.phase] ?? chapter.phase}
-              </Badge>
-              {chapter.is_free_sample && (
-                <Badge className="bg-white text-slate-900 text-[10px] uppercase tracking-wider">
-                  Free sample
-                </Badge>
-              )}
+            <div className="flex items-baseline gap-6 mb-8 border-b border-current/15 pb-6">
+              <span className={cn(editorialType.serif, "text-5xl md:text-6xl leading-none tabular-nums", warm.numeral)}>
+                {String(chapter.order_index).padStart(2, "0")}
+              </span>
+              <div className={cn("flex flex-wrap items-baseline gap-x-4 gap-y-1", editorialType.caption)}>
+                <span className={warm.kicker}>Chapter {chapter.order_index}</span>
+                <span className="opacity-60">{PHASE_LABEL[chapter.phase] ?? chapter.phase}</span>
+                {chapter.is_free_sample && (
+                  <span className={cn("border-b", warm.accentBorder, warm.kicker)}>Free sample</span>
+                )}
+              </div>
             </div>
-            <ChromaText
-              as="h1"
-              animated={false}
-              className="font-display text-4xl leading-[0.95] tracking-tight text-[hsl(var(--bloom-cream))] md:text-6xl"
-            >
+
+            <h1 className={cn(editorialType.serif, "text-4xl md:text-6xl leading-[0.98] tracking-tight")}>
               {chapter.title}
-            </ChromaText>
+            </h1>
             {chapter.summary && (
-              <p className="mt-4 font-redacted text-lg italic text-white/70">{chapter.summary}</p>
+              <p className={cn(editorialType.serif, "mt-5 text-xl md:text-2xl italic font-light leading-tight opacity-80")}>
+                {chapter.summary}
+              </p>
             )}
 
             {/* Edition switch */}
-            <div className="mt-8 inline-flex rounded-full border border-white/15 bg-white/[0.03] p-1 text-xs">
+            <div className={cn("mt-10 inline-flex border border-current/25 rounded-sm overflow-hidden", editorialType.cta)}>
               <button
                 type="button"
                 onClick={() => { searchParams.delete("edition"); setSearchParams(searchParams, { replace: true }); }}
-                className={`rounded-full px-3 py-1 transition ${edition === "visionary" ? "bg-white text-slate-900" : "text-white/70 hover:text-white"}`}
+                className={cn(
+                  "px-4 py-2 transition-colors",
+                  edition === "visionary" ? warm.ctaPrimary : "opacity-70 hover:opacity-100",
+                )}
               >
                 Field Guide
               </button>
@@ -286,14 +288,18 @@ export default function BookChapter() {
                 type="button"
                 onClick={() => { searchParams.set("edition", "pragmatic"); setSearchParams(searchParams, { replace: true }); }}
                 disabled={!pragmaticBody}
-                className={`rounded-full px-3 py-1 transition ${edition === "pragmatic" ? "bg-white text-slate-900" : "text-white/70 hover:text-white"} ${!pragmaticBody ? "opacity-40 cursor-not-allowed" : ""}`}
+                className={cn(
+                  "px-4 py-2 border-l border-current/25 transition-colors",
+                  edition === "pragmatic" ? warm.ctaPrimary : "opacity-70 hover:opacity-100",
+                  !pragmaticBody && "opacity-30 cursor-not-allowed hover:opacity-30",
+                )}
                 title={pragmaticBody ? "Operator's Cut — 90-minute pragmatic edition" : "Operator's Cut not yet available for this chapter"}
               >
                 Operator's Cut
               </button>
             </div>
 
-            <div className="mt-6 border-t border-white/10 pt-8">
+            <div className="mt-10 border-t border-current/15 pt-10">
               {edition === "pragmatic" && pragmaticBody ? (
                 renderMarkdown(pragmaticBody)
               ) : visionaryBody ? (
@@ -309,38 +315,41 @@ export default function BookChapter() {
             <ReflectionNodes chapterSlug={chapter.slug} />
 
             {(prev || next) && (
-              <nav className="mt-12 grid gap-3 border-t border-white/10 pt-8 sm:grid-cols-2">
+              <nav className="mt-16 grid gap-0 border-t border-current/20 sm:grid-cols-2">
                 {prev ? (
                   <Link
                     to={`/book/chapter/${prev.slug}`}
-                    className="group rounded-xl border border-white/10 bg-white/[0.03] p-4 transition-colors hover:border-white/20 hover:bg-white/[0.06]"
+                    className="group flex flex-col gap-1 py-6 pr-6 sm:border-r border-current/20 hover:bg-current/[0.04] transition-colors"
                   >
-                    <div className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-white/40">
+                    <div className={cn("flex items-center gap-1", editorialType.caption, warm.kicker)}>
                       <ArrowLeft className="h-3 w-3" /> Previous · {PHASE_LABEL[prev.phase] ?? prev.phase}
                     </div>
-                    <div className="mt-1 text-sm font-semibold text-white">{prev.title}</div>
+                    <div className={cn(editorialType.serif, "text-lg md:text-xl leading-tight")}>{prev.title}</div>
                   </Link>
                 ) : <span />}
                 {next ? (
                   <Link
                     to={`/book/chapter/${next.slug}`}
-                    className="group rounded-xl border border-white/10 bg-white/[0.03] p-4 text-right transition-colors hover:border-white/20 hover:bg-white/[0.06] sm:text-right"
+                    className="group flex flex-col gap-1 py-6 pl-6 sm:text-right hover:bg-current/[0.04] transition-colors"
                   >
-                    <div className="flex items-center justify-end gap-1 text-[10px] uppercase tracking-wider text-white/40">
+                    <div className={cn("flex items-center sm:justify-end gap-1", editorialType.caption, warm.kicker)}>
                       Next · {PHASE_LABEL[next.phase] ?? next.phase} <ArrowRight className="h-3 w-3" />
                     </div>
-                    <div className="mt-1 text-sm font-semibold text-white">{next.title}</div>
+                    <div className={cn(editorialType.serif, "text-lg md:text-xl leading-tight")}>{next.title}</div>
                   </Link>
                 ) : <span />}
               </nav>
             )}
 
-            <aside className="mt-12 rounded-2xl border border-fuchsia-300/20 bg-gradient-to-br from-fuchsia-500/10 to-rose-500/5 p-6">
-              <div className="mb-3 flex items-center gap-2 text-sm font-semibold">
-                <BookOpen className="h-4 w-4 text-fuchsia-300" />
+            <aside className={cn("mt-16 border p-8", warm.calloutBox)}>
+              <p className={cn(editorialType.kicker, warm.kicker, "mb-3 inline-flex items-center gap-2")}>
+                <BookOpen className="h-3 w-3" />
                 Get the next chapter early
-              </div>
-              <p className="mb-4 text-sm text-white/70">
+              </p>
+              <h3 className={cn(editorialType.serif, "text-2xl md:text-3xl leading-tight italic font-light")}>
+                Send me what's next.
+              </h3>
+              <p className="mt-3 mb-5 text-sm opacity-75 leading-relaxed">
                 Drop your email and we'll send the next published chapter the moment it's ready.
               </p>
               <BookLeadCaptureForm
@@ -362,15 +371,15 @@ export default function BookChapter() {
 function NotFoundState() {
   return (
     <div className="container mx-auto max-w-xl px-6 py-24 text-center">
-      <h1 className="text-2xl font-bold">Chapter not yet available</h1>
-      <p className="mt-2 text-white/60">
+      <h1 className={cn(editorialType.serif, "text-3xl md:text-4xl leading-tight")}>Chapter not yet available</h1>
+      <p className="mt-3 opacity-70">
         This chapter is still being assembled. Join the waitlist and we'll send it
         the moment it's ready.
       </p>
       <div className="mt-6">
         <BookLeadCaptureForm source="book_chapter_not_found" interest="waitlist" />
       </div>
-      <Link to="/book" className="mt-8 inline-flex items-center gap-1 text-sm text-white/60 hover:text-white">
+      <Link to="/book" className={cn("mt-8 inline-flex items-center gap-1 opacity-70 hover:opacity-100", editorialType.caption)}>
         <ArrowLeft className="h-3 w-3" /> Back to all chapters
       </Link>
     </div>
@@ -378,8 +387,9 @@ function NotFoundState() {
 }
 
 function DraftPlaceholder({ slug }: { slug: string }) {
+  const warm = editorialTone.warm;
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-6 text-sm text-white/65">
+    <div className={cn("border p-6 text-sm opacity-85", warm.calloutBox)}>
       <p>
         This chapter is still being drafted from the site's living archive. We
         publish samples as drafts are reviewed.
