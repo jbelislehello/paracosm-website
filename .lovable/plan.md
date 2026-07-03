@@ -1,68 +1,67 @@
-## Goal
-Extend the editorial magazine art direction (used on `/` via `EditorialHome`) across the rest of the Paracosm site so every page reads as one continuous publication — same typographic system, same tonal palette (warm / night / clay), same chapter framing, same plate-style imagery.
+# Editorial Rebrand — Full Site + Home Callouts
 
-## Art direction to propagate
+Extend the editorial magazine art direction (already live on `/` and Tier 1 pages: Trainings, About, Case Studies, Footer) to **every remaining page** of calm-magic.com, and add **four promotional callouts** to the magazine home (`EditorialHome`).
 
-Codified from `EditorialHero`, `TriadChapter`, `PartnerInnovationPlaysSection`, `EditorialClosing`:
+## Part 1 — New callouts on the magazine home (`/`)
 
-- **Type**: serif display (large, tight leading, italic pull quotes) + small uppercase kickers with wide tracking (`tracking-[0.3em]–[0.4em]`), 10–12px, opacity 60–70.
-- **Numerals**: oversized serif chapter numerals (`01`, `02`, `03`) as section anchors.
-- **Palette rotation**: warm cream, night indigo, clay rose — sections alternate tones instead of one flat background.
-- **Layout**: 12-col grid, wide gutters, sticky plate image (4:5) with caption strip, two-column body prose, "woven in" bordered callouts.
-- **CTA**: pill button, uppercase, tracked, hover translate-y, tone-aware (gold-on-night vs foreground-on-warm).
-- **Motion**: restrained — fade/slide on scroll, no parallax tricks.
+Add a new editorial section between `PartnerInnovationPlaysSection` and `EditorialClosing`:
 
-## Approach
+**`EditorialDispatchesSection.tsx`** — a "Dispatches" chapter (numeral `04`, kicker "Dispatches", warm tone) presented as a 2×2 magazine grid of four plate-cards, each with kicker, serif headline, one-line dek, and a pill CTA:
 
-1. **Extract into a shared editorial kit** (`src/components/editorial/`):
-   - `EditorialSection.tsx` — tone-aware wrapper (warm/night/clay) with chapter-header slot.
-   - `EditorialChapterHeader.tsx` — numeral + kicker + italic subtitle.
-   - `EditorialPullQuote.tsx`, `EditorialWovenCallout.tsx`, `EditorialPlate.tsx`, `EditorialCTA.tsx`.
-   - `editorialTokens.ts` — tone → bg/text/accent class maps (single source of truth).
-2. **Global type + tokens** in `src/index.css` and `tailwind.config.ts`:
-   - Register the serif display + body pair used on the editorial home as `font-editorial` / `font-editorial-body`.
-   - Add semantic tokens `--editorial-warm`, `--editorial-night`, `--editorial-clay`, `--editorial-accent-gold`, `--editorial-accent-ember`, `--editorial-accent-rose`.
-3. **Retrofit each top-level page** to compose from the kit instead of its current ad-hoc styling. Each page becomes a sequence of tone-alternating chapters with numerals and plates.
+1. **Tonalli** — "Creative OS for voice and spatial work." → `/tonalli`  (clay tone card)
+2. **GL!TCH Session** — next live session, date + city → `/glitch-events`  (night tone card, gold accent)
+3. **Yutori Nights** — intimate evening series → `/events-and-retreats#yutori` (warm tone card)
+4. **Think Like a Forest — Retreat** → `/events-and-retreats#think-like-a-forest` (clay tone card, plate image = forest)
+5. **LinkedIn Newsletter invite** — full-width "colophon strip" under the 2×2 grid: serif pull-quote + CTA "Subscribe on LinkedIn" → opens the user's LinkedIn newsletter URL in a new tab.
 
-## Pages in scope (retrofit order)
+Copy will be short, editorial, bilingual-ready (EN default, FR keys registered in `src/i18n/{en,fr}/landing.json` under `dispatches.*`). Analytics: `editorial_dispatch_click` with `{ dispatch: 'tonalli' | 'glitch' | 'yutori' | 'forest' | 'linkedin' }`.
 
-Tier 1 — highest traffic, most visible:
-1. `LandingPage` (`/home`) — reframe hero, positioning, offering triad, summer deal as chapters 01–05.
-2. `TrainingsIndex` + `TrainingDetail` + `TrainingModule` — each training becomes a chapter; module = spread.
-3. `EventsAndRetreats` + `ParacosmRetreatLanding` + `HybridCognitionEvent` — retreat as night-tone editorial.
-4. `AboutUs` — long-form editorial with pull quotes and plates.
-5. `CaseStudies` — each case = one chapter with plate + woven callout for outcomes.
+**Two inputs needed from you before build** (I'll use sensible placeholders and you can swap after):
+- LinkedIn newsletter URL
+- Think Like a Forest retreat date/location + hero image (I'll reuse `assets/retreats/forest-circle.jpg` if none provided)
+- Next GL!TCH session date/city
+- Yutori Nights next date/city
 
-Tier 2:
-6. `Pricing`, `Tonalli`, `Origins`, `Lineage`, `RelationalHealing`.
-7. `BookChapter`, `BookCompass`, `BookCompassesIndex`, `BookOperatorsIndex`, `BookThanks`.
-8. `Drift`, `DriftLibrary`, `GlitchEvents`, `GlitchMethodology`, `GlitchInsights`, `HybridCognitionEvent`.
+## Part 2 — Editorial retrofit for every remaining page
 
-Tier 3 (light touch — mostly nav/footer + type):
-9. `EntrepreneurialTarot`, `PatternEncyclopedia`, `DesignSystemShowcase`, `NotFound`, auth pages, dashboards.
+Same kit as Tier 1 (`EditorialSection`, `EditorialChapterHeader`, `EditorialPullQuote`, `EditorialWovenCallout`, `EditorialPlate`, `EditorialCTA`, `editorialTokens`). Every page becomes a sequence of tone-alternating chapters (warm → night → clay → paper) with numerals, kickers, plates, and pill CTAs. No copy rewrites beyond kickers/numerals; no routing, data, or logic changes.
 
-Dashboards and tool-heavy pages (`ParacosmDashboard`, `PrdEditor`, `CalmMagicBoard`, `CalmMagicVisualization`, admin) keep their functional UI — only the chrome (header, section headers, footer) adopts editorial type + tokens, not the working surfaces.
+**Tier 1 remaining (public journey — ship first pass):**
+- `LandingPage` (`/home`) — hero, positioning, offering triad, summer deal, hybrid-cognition banner as chapters 01–05
+- `EventsAndRetreats`, `ParacosmRetreatLanding`, `HybridCognitionEvent` — night-tone retreat editorial; add `#yutori` and `#think-like-a-forest` anchors for the new callouts
 
-## Shared chrome
+**Tier 2 (content pages):**
+- `Pricing`, `Tonalli`, `Origins`, `Lineage`, `RelationalHealing`
+- `BookChapter`, `BookCompass`, `BookCompassesIndex`, `BookOperatorsIndex`, `BookThanks`
+- `Drift`, `DriftLibrary`, `GlitchEvents`, `GlitchMethodology`, `GlitchInsights`
 
-- Update `Footer` and site headers to editorial type + night tone.
-- Nav links: uppercase, tracked, small.
-- Preserve existing routes, i18n keys, analytics events, SEO hooks — this is a visual retrofit only.
+**Tier 3 (light touch — chrome + type only):**
+- `EntrepreneurialTarot`, `PatternEncyclopedia`, `DesignSystemShowcase`, `NotFound`, auth pages, subscription success/canceled, credits, dashboards (chrome only — inner tool surfaces of `ParacosmDashboard`, `PrdEditor`, `CalmMagicBoard`, `CalmMagicVisualization`, `PrdsDashboard`, admin views stay functional)
+
+**Shared chrome:** headers already partly editorial via footer; nav links on remaining pages get uppercase + tracked treatment to match.
 
 ## Out of scope
 
-- No copy rewrites (except section kickers/numerals needed to fit the chapter frame).
-- No routing changes.
-- No data model or backend changes.
-- No changes to interactive tool surfaces (board, editor, dashboards inner UI).
+- No copy rewrites beyond section kickers/numerals
+- No routing changes (except adding `#yutori` and `#think-like-a-forest` anchor targets)
+- No data model, RLS, or edge function changes
+- No changes to interactive tool surfaces (board, editor, dashboards inner UI) — only their chrome
+- Preserve every `usePageSeo`, JSON-LD, i18n key, and analytics event
 
-## Rollout
+## Rollout order
 
-Ship Tier 1 in one pass so the public journey is coherent, then Tier 2, then Tier 3. After each tier: quick visual pass on mobile (390px) + desktop.
+1. Home callouts (`EditorialDispatchesSection` + i18n + anchors on `EventsAndRetreats`)
+2. Tier 1 remaining (`LandingPage`, `EventsAndRetreats`, `ParacosmRetreatLanding`, `HybridCognitionEvent`)
+3. Tier 2 (content pages)
+4. Tier 3 (chrome only)
+
+After each tier: quick visual pass at 390px + 1280px.
 
 ## Technical notes
 
-- Keep colors as HSL tokens in `index.css`; never hardcode hex in components.
-- Tone-aware classes live in `editorialTokens.ts` — components consume via a `tone` prop just like `TriadChapter` today.
-- Fonts loaded once via existing font pipeline; no new network requests per page.
-- Preserve `usePageSeo` and JSON-LD on every retrofitted page.
+- All colors stay as HSL tokens in `index.css`; components consume tone via `tone` prop from `editorialTokens.ts`
+- Fonts already loaded — no new network requests
+- Preserve `usePageSeo` and JSON-LD on every retrofitted page
+- Analytics event names preserved; new events prefixed `editorial_dispatch_*`
+
+Please drop the four inputs (LinkedIn URL, forest retreat details, GL!TCH date, Yutori date) in your next message — or say "use placeholders" and I'll ship with sensible defaults you can edit.
