@@ -1,89 +1,40 @@
-## Goal
+## Status
 
-The `/agentic-ux` page (Resource · Agentic UX) currently lists three residencies as summary cards only:
+`src/pages/AgenticResidency.tsx` already calls `usePageSeo` with title/description/path — but it's placed **after** the `if (!residency) return <Navigate />` early return, which violates the Rules of Hooks (React will warn and behaviour is undefined on the redirect branch).
 
-1. Diagnostic Sprint (2 weeks)
-2. Prototype Residency (6–8 weeks)
-3. Ecosystem Build (3–6 months)
+The hook itself (`src/hooks/usePageSeo.ts`) already handles canonical + og:url + twitter tags correctly against `https://calm-magic.com`, and the route pattern `/agentic-ux/residencies/:slug` is registered so breadcrumb JSON-LD auto-injects.
 
-Each should become its own dedicated, shareable page — in the same editorial style as `/agentic-ux` — with the summary cards on `/agentic-ux` linking through.
+## Change
 
-Note: these are **distinct** from the 7 elemental residencies at `/residencies/:archetype` (forest, mountain, etc.). Those stay untouched.
+In `src/pages/AgenticResidency.tsx`:
 
-## New routes
+1. Move the `usePageSeo(...)` call **above** the early `Navigate` return so it runs unconditionally on every render (Rules of Hooks). For unknown slugs, feed the hook a safe fallback:
 
-```text
-/agentic-ux/residencies/diagnostic-sprint
-/agentic-ux/residencies/prototype-residency
-/agentic-ux/residencies/ecosystem-build
-```
+    ```text
+    title       "Agentic UX Residency — Paracosm"
+    description "Three ways to work with Paracosm on multi-agent surfaces."
+    path        "/agentic-ux/residencies/" + (slug || "")
+    ```
 
-Registered in `src/App.tsx` (lazy) and in `src/lib/routeRegistry.ts` with parent `/agentic-ux` so breadcrumbs read: Home › Agentic UX › {Residency name}.
+2. When the residency IS found, use its data:
 
-## Data
+    ```text
+    title       `${title} — Agentic UX Residency · Paracosm`
+    description tagline  (kept ≤160 chars; current taglines are well under)
+    path        `/agentic-ux/residencies/${slug}`
+    ```
 
-Extract the 3 residencies into `src/data/agenticResidencies.ts` as the single source of truth. Shape:
+3. Confirm the three canonical URLs resolve correctly:
 
-```ts
-{
-  slug, numeral, title, duration, tagline,
-  summary,                 // 1-line used on /agentic-ux card
-  overview,                // 2-3 paragraph intro
-  outcomes: string[],      // "What you leave with"
-  arc: { label, body }[],  // week-by-week / phase-by-phase
-  whoItsFor: string[],
-  whatWeNeed: string[],    // inputs from the client team
-  investment: string,      // qualitative (no hard price)
-  next: { slug, title }    // pointer to sibling residency
-}
-```
+    ```text
+    https://calm-magic.com/agentic-ux/residencies/diagnostic-sprint
+    https://calm-magic.com/agentic-ux/residencies/prototype-residency
+    https://calm-magic.com/agentic-ux/residencies/ecosystem-build
+    ```
 
-Copy is written fresh but consistent with the existing Agentic UX voice (consent-first, bias-aware, rehearse-before-ship, TOTEM references where relevant).
-
-## Page component
-
-One shared component `src/pages/AgenticResidency.tsx` that:
-
-- reads `useParams().slug`, looks up the record, 404s otherwise
-- uses `usePageSeo` with title/desc derived from the record
-- reuses existing editorial primitives (`EditorialSiteHeader`, `EditorialPageHero`, `EditorialSection`, `EditorialChapterHeader`, `EditorialCTA`, `editorialType`, `editorialTone`, `Footer`)
-
-Section order:
-
-```text
-01  Hero          — numeral, kicker "Residency · Agentic UX", title, tagline, duration chip
-02  Overview      — paragraphs + "What you leave with" list (paper tone)
-03  The arc       — numbered phases with kicker/body rows (warm tone)
-04  Who it's for  — two-column: "Right fit" / "What we need from you" (paper tone)
-05  Next step     — night tone, mailto CTA to jbelisle@helloarchitekt.com
-                    + ghost link to the next residency + back to /agentic-ux#residencies
-```
-
-Mailto subject encodes the residency name so leads route correctly (per core routing rule).
-
-## Changes to /agentic-ux
-
-In `src/pages/Index.tsx`:
-
-- Import the shared `agenticResidencies` data (remove the inline `residencies` array).
-- Wrap each residency card in `<Link to={/agentic-ux/residencies/${slug}}>` with a subtle "Read the residency →" affordance in the card footer.
-- Keep the existing "Begin a conversation" CTA unchanged.
-
-## Files
-
-Create:
-- `src/data/agenticResidencies.ts`
-- `src/pages/AgenticResidency.tsx`
-
-Edit:
-- `src/pages/Index.tsx` — use shared data, link cards
-- `src/App.tsx` — lazy route `/agentic-ux/residencies/:slug`
-- `src/lib/routeRegistry.ts` — register the pattern with parent `/agentic-ux` for breadcrumbs + sitemap
-
-No i18n, no DB, no backend changes.
+No other files change. No new data. Breadcrumb JSON-LD continues to derive from `routeRegistry` (Home › Agentic UX › {Residency name}).
 
 ## Out of scope
 
-- No changes to `/residencies/:archetype` (elemental) or `src/data/residencies.ts`.
-- No pricing pages, no Stripe.
-- No new imagery — pages stay typographic/editorial like `/agentic-ux`.
+- No sitemap edits (existing sitemap builder reads `ROUTE_REGISTRY`, but `:slug` patterns need enumerated slugs to emit URLs — if you want them added to `sitemap.xml`, say so and I'll extend the sitemap builder in a follow-up).
+- No og:image change; sitewide default is used.
