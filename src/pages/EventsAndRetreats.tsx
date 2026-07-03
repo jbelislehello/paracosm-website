@@ -1,12 +1,10 @@
 import { Link } from "react-router-dom";
-import { ArrowLeft, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import logoParacosm from "@/assets/logo-paracosm.jpeg";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { ArrowRight } from "lucide-react";
 import Footer from "@/components/Footer";
 import ParacosmEventsSection from "@/components/ParacosmEventsSection";
 import CaseStudiesSection from "@/components/case-studies/CaseStudiesSection";
 import {
+  EditorialSiteHeader,
   EditorialPageHero,
   EditorialSection,
   EditorialCTA,
@@ -42,27 +40,7 @@ const EventsAndRetreats = () => {
 
   return (
     <div className="min-h-screen bg-[hsl(35_45%_96%)] text-foreground">
-      {/* Editorial navigation */}
-      <header className="fixed w-full z-50 bg-[hsl(35_45%_96%/0.9)] backdrop-blur-md border-b border-current/10">
-        <div className="container max-w-6xl flex items-center justify-between py-3 px-6 mx-auto">
-          <div className="flex items-center gap-3">
-            <Link to="/">
-              <Button variant="ghost" size="sm" className="flex items-center gap-2">
-                <ArrowLeft className="w-4 h-4" />
-              </Button>
-            </Link>
-            <Link to="/" className="flex items-center gap-2">
-              <img src={logoParacosm} alt="Paracosm" className="bg-white rounded-lg p-1 w-8 h-8 object-contain" />
-              <span className={cn(editorialType.serif, "text-lg")}>Paracosm</span>
-            </Link>
-          </div>
-          <nav className={cn("hidden md:flex gap-8 items-center", editorialType.caption)}>
-            <Link to="/case-studies" className="hover:opacity-100 opacity-70 transition-opacity">Case Studies</Link>
-            <Link to="/paracosm-retreat" className="hover:opacity-100 opacity-70 transition-opacity">Azores 2026</Link>
-            <LanguageSwitcher />
-          </nav>
-        </div>
-      </header>
+      <EditorialSiteHeader />
 
       {/* Editorial hero */}
       <EditorialPageHero
