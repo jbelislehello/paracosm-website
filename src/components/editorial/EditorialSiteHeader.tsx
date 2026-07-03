@@ -33,7 +33,7 @@ const NAV: NavItem[] = [
     label: "Resources",
     children: [
       { label: "Drift", to: "/drift" },
-      { label: "Why It Works", to: "/resonance-demo" },
+      { label: "Why It Works", to: "/resonance" },
       { label: "Agentic UX", to: "/agentic-ux" },
       { label: "Calm Magic Assistant", to: "/calm-magic-assistant" },
     ],
