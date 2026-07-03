@@ -20,19 +20,19 @@ export default function SummerDealBanner() {
   };
 
   return (
-    <div className="relative z-40 w-full bg-gradient-to-r from-[hsl(var(--bloom-magenta))] via-fuchsia-600 to-[hsl(var(--bloom-amber))] text-white">
+    <div className="relative z-40 w-full border-b border-border/60 bg-[hsl(35_45%_96%)] text-foreground">
       <div className="container mx-auto flex items-center justify-between gap-3 px-4 py-2 text-sm">
         <div className="flex flex-1 items-center gap-2 min-w-0">
-          <Sparkles className="h-4 w-4 flex-none" />
-          <span className="font-vhs uppercase tracking-wider text-[11px] hidden sm:inline">
+          <Sparkles className="h-4 w-4 flex-none text-[hsl(15_75%_45%)]" />
+          <span className="uppercase tracking-[0.3em] text-[10px] font-semibold text-[hsl(15_75%_45%)] hidden sm:inline">
             {t("summer_deal.banner.tag")}
           </span>
-          <span className="truncate">{t("summer_deal.banner.message")}</span>
+          <span className="truncate opacity-80">{t("summer_deal.banner.message")}</span>
         </div>
         <a
           href="#summer-deal"
           onClick={scrollToOffer}
-          className="flex-none rounded-full bg-white/95 px-3 py-1 text-xs font-semibold text-slate-900 hover:bg-white transition-colors"
+          className="flex-none rounded-full bg-foreground text-background px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.15em] hover:opacity-90 transition-opacity"
         >
           {t("summer_deal.banner.cta")}
         </a>
@@ -43,7 +43,7 @@ export default function SummerDealBanner() {
             localStorage.setItem(DISMISS_KEY, "1");
             setVisible(false);
           }}
-          className="flex-none rounded-full p-1 hover:bg-white/20 transition-colors"
+          className="flex-none rounded-full p-1 hover:bg-current/10 transition-colors"
         >
           <X className="h-4 w-4" />
         </button>
