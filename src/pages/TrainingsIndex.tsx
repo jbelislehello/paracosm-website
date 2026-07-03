@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import EditorialSection from "@/components/editorial/EditorialSection";
 import EditorialChapterHeader from "@/components/editorial/EditorialChapterHeader";
 import EditorialCTA from "@/components/editorial/EditorialCTA";
+import EditorialSiteHeader from "@/components/editorial/EditorialSiteHeader";
 import { editorialTone, editorialType, type EditorialTone } from "@/components/editorial/editorialTokens";
 import { cn } from "@/lib/utils";
 
