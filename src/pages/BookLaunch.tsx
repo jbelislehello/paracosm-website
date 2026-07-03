@@ -187,28 +187,10 @@ const BookLaunch = () => {
 
   return (
     <div className="flex min-h-screen flex-col bg-[hsl(35_45%_96%)] text-foreground">
-      {/* Editorial navigation */}
-      <header className="fixed z-50 w-full border-b border-current/10 bg-[hsl(35_45%_96%/0.9)] backdrop-blur-md">
-        <div className="container mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
-          <Link to="/" className="flex items-center gap-2">
-            <img
-              src={logoParacosm}
-              alt="Paracosm"
-              className="h-8 w-8 rounded-lg bg-white p-1 object-contain"
-              loading="eager"
-            />
-            <span className={cn(editorialType.serif, "text-lg")}>Paracosm</span>
-          </Link>
-          <div className={cn("flex items-center gap-6", editorialType.caption)}>
-            <Link to="/" className="inline-flex items-center gap-1 opacity-70 transition-opacity hover:opacity-100">
-              <ArrowLeft className="h-3 w-3" /> {t("book.nav_book")}
-            </Link>
-            <LanguageSwitcher />
-          </div>
-        </div>
-      </header>
+      <EditorialSiteHeader />
 
-      <main className="flex-1 pt-16">
+      <main className="flex-1">
+
         {/* Editorial hero */}
         <section className={cn("relative overflow-hidden px-6 pt-20 pb-24 md:pt-32 md:pb-32 border-b border-current/10", warm.section)}>
           <div className="container mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-[1.2fr_1fr]">
