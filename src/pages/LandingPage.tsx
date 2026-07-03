@@ -201,19 +201,19 @@ const LandingPage = () => {
         <D3GallerySection />
       </Suspense>
 
-      {/* NEW BOOK Promo — editorial dispatch */}
-      <section className="py-16 px-6 bg-[hsl(230_35%_10%)] text-[hsl(35_20%_92%)]">
+      {/* NEW BOOK Promo — editorial dispatch (paper) */}
+      <section className="py-16 px-6 bg-[hsl(35_45%_96%)] text-foreground border-y border-current/10">
         <div className="container mx-auto max-w-5xl">
           <Link to="/book" className="block group">
-            <div className="relative border border-white/15 bg-white/5 p-8 md:p-12 hover:-translate-y-1 transition-transform">
+            <div className="relative border border-current/15 bg-background/60 p-8 md:p-12 hover:-translate-y-1 transition-transform">
               <div className="grid md:grid-cols-[auto_1fr_auto] gap-8 md:gap-12 items-center">
                 <div className="flex justify-center md:justify-start">
-                  <div className="w-24 md:w-32 aspect-[3/4] border border-[hsl(45_90%_65%)]/40 bg-[hsl(230_35%_14%)] flex items-center justify-center">
-                    <BookOpen className="w-8 h-8 md:w-10 md:h-10 text-[hsl(45_90%_65%)]" />
+                  <div className="w-24 md:w-32 aspect-[3/4] border border-[hsl(15_75%_55%)]/40 bg-background flex items-center justify-center">
+                    <BookOpen className="w-8 h-8 md:w-10 md:h-10 text-[hsl(15_75%_45%)]" />
                   </div>
                 </div>
                 <div className="text-center md:text-left space-y-3">
-                  <p className="text-[10px] uppercase tracking-[0.4em] font-semibold text-[hsl(45_90%_65%)] inline-flex items-center gap-2">
+                  <p className="text-[10px] uppercase tracking-[0.4em] font-semibold text-[hsl(15_75%_45%)] inline-flex items-center gap-2">
                     <Sparkles className="w-3 h-3" />
                     {t('book.banner_label')}
                   </p>
@@ -228,7 +228,7 @@ const LandingPage = () => {
                   </p>
                 </div>
                 <div className="flex justify-center md:justify-end">
-                  <span className="inline-flex items-center gap-2 px-6 py-3 bg-[hsl(45_90%_65%)] text-[hsl(230_35%_10%)] text-xs font-semibold uppercase tracking-[0.2em]">
+                  <span className="inline-flex items-center gap-2 px-6 py-3 bg-foreground text-background text-xs font-semibold uppercase tracking-[0.2em]">
                     {t('book.banner_cta')}
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </span>
@@ -238,6 +238,7 @@ const LandingPage = () => {
           </Link>
         </div>
       </section>
+
 
       {/* Spring 2026 Featured Offer — editorial column */}
       <section id="spring-offer-home" className="py-20 px-6 bg-[hsl(35_45%_96%)] dark:bg-[hsl(25_15%_12%)]">
