@@ -1,7 +1,12 @@
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { ArrowRight, Flame, Eye, Hammer, Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowUpRight, Flame, Eye, Hammer, Check } from "lucide-react";
+import {
+  EditorialSection,
+  EditorialChapterHeader,
+  editorialTone,
+  editorialType,
+} from "@/components/editorial";
+import { cn } from "@/lib/utils";
 import { trackEvent } from "@/lib/analytics";
 
 type Offering = {
@@ -12,8 +17,6 @@ type Offering = {
   promise: string;
   bullets: string[];
   cta: string;
-  accent: string; // tailwind classes using design tokens
-  ring: string;
 };
 
 const OFFERINGS: Offering[] = [
@@ -30,8 +33,6 @@ const OFFERINGS: Offering[] = [
       "Confidence before commitment",
     ],
     cta: "Browse trainings",
-    accent: "from-[hsl(var(--bloom-magenta))] to-[hsl(var(--bloom-amber))]",
-    ring: "hover:border-[hsl(var(--bloom-magenta)/0.6)]",
   },
   {
     fWord: "Foresight",
@@ -46,8 +47,6 @@ const OFFERINGS: Offering[] = [
       "A direction worth committing to",
     ],
     cta: "See retreats",
-    accent: "from-[hsl(var(--bloom-amber))] to-[hsl(var(--bloom-magenta))]",
-    ring: "hover:border-[hsl(var(--bloom-amber)/0.6)]",
   },
   {
     fWord: "Forecast",
@@ -62,123 +61,119 @@ const OFFERINGS: Offering[] = [
       "Evidence for the next decision",
     ],
     cta: "Explore residencies",
-    accent: "from-[hsl(var(--bloom-magenta))] via-[hsl(var(--bloom-amber))] to-[hsl(var(--bloom-magenta))]",
-    ring: "hover:border-[hsl(var(--bloom-magenta)/0.6)]",
   },
 ];
 
 export default function OfferingTriadSection() {
+  const tone = editorialTone.night;
+
   return (
-    <section
-      id="offering-triad"
-      className="relative py-20 md:py-28 px-4 bg-[hsl(var(--bloom-ink))] text-white overflow-hidden"
-    >
-      <div className="bloom-scanlines pointer-events-none absolute inset-0 opacity-[0.12]" />
-      <div className="pointer-events-none absolute -top-32 -left-32 w-[480px] h-[480px] rounded-full bg-[hsl(var(--bloom-magenta)/0.25)] blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-40 -right-40 w-[520px] h-[520px] rounded-full bg-[hsl(var(--bloom-amber)/0.2)] blur-3xl" />
+    <EditorialSection id="offering-triad" tone="night">
+      <EditorialChapterHeader
+        tone="night"
+        numeral="02"
+        kicker="The Arc"
+        subtitle="One practice, three intensities."
+      />
 
-      <div className="container relative max-w-6xl mx-auto">
-        {/* Section header */}
-        <div className="max-w-3xl mx-auto text-center mb-14 md:mb-20">
-          <p className="font-vhs uppercase tracking-[0.4em] text-xs text-[hsl(var(--bloom-amber))] mb-4">
-            // The Arc
-          </p>
-          <h2 className="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] bloom-chroma-static text-white">
-            One practice,
-            <br />
-            three intensities.
-          </h2>
-          <p className="mt-5 font-redacted italic text-base md:text-lg text-white/75 leading-relaxed">
-            From warm-up to evidence — the Paracosm path moves teams from{" "}
-            <span className="text-[hsl(var(--bloom-amber))]">attunement</span>{" "}
-            through{" "}
-            <span className="text-[hsl(var(--bloom-amber))]">vision</span> into{" "}
-            <span className="text-[hsl(var(--bloom-amber))]">built prototypes</span>.
-          </p>
-        </div>
+      <p
+        className={cn(
+          editorialType.serif,
+          "italic text-lg md:text-xl max-w-2xl opacity-80 mb-16 md:mb-20 leading-relaxed",
+        )}
+      >
+        From warm-up to evidence — the Paracosm path moves teams from{" "}
+        <span className={tone.kicker}>attunement</span> through{" "}
+        <span className={tone.kicker}>vision</span> into{" "}
+        <span className={tone.kicker}>built prototypes</span>.
+      </p>
 
-        {/* Triad */}
-        <div className="grid gap-6 md:gap-8 lg:grid-cols-3">
-          {OFFERINGS.map((o, i) => (
-            <motion.div
-              key={o.fWord}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.55, delay: i * 0.12, ease: "easeOut" }}
-              className="group relative"
+      <div className="grid gap-px bg-white/10 border border-white/10 md:grid-cols-3">
+        {OFFERINGS.map((o, i) => (
+          <article
+            key={o.fWord}
+            className="relative bg-[hsl(230_35%_10%)] p-8 md:p-10 flex flex-col"
+          >
+            {/* Index row */}
+            <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/10">
+              <span className={cn(editorialType.caption, tone.kicker)}>
+                № 0{i + 1} · {o.label}
+              </span>
+              <o.Icon className={cn("w-5 h-5", tone.numeral)} strokeWidth={1.25} />
+            </div>
+
+            {/* F-word — serif drop headline */}
+            <h3
+              className={cn(
+                editorialType.serif,
+                "text-5xl md:text-6xl leading-[0.95] tracking-tight",
+              )}
             >
-              {/* Gradient halo */}
-              <div
-                className={`absolute -inset-px rounded-2xl bg-gradient-to-br ${o.accent} opacity-30 blur-md group-hover:opacity-60 transition-opacity`}
-              />
-              <article
-                className={`relative h-full rounded-2xl border border-white/10 bg-[hsl(var(--bloom-ink)/0.85)] backdrop-blur p-7 md:p-8 flex flex-col ${o.ring} transition-colors`}
+              {o.fWord}
+            </h3>
+
+            {/* Promise — italic serif standfirst */}
+            <p
+              className={cn(
+                editorialType.serif,
+                "italic text-base md:text-lg mt-5 opacity-85 leading-relaxed",
+              )}
+            >
+              {o.promise}
+            </p>
+
+            {/* Bullets */}
+            <ul className="mt-8 space-y-3">
+              {o.bullets.map((b) => (
+                <li
+                  key={b}
+                  className="flex items-start gap-3 text-sm opacity-80 border-b border-white/5 pb-3 last:border-b-0"
+                >
+                  <Check
+                    className={cn("w-4 h-4 mt-0.5 flex-shrink-0", tone.numeral)}
+                    strokeWidth={1.5}
+                  />
+                  <span>{b}</span>
+                </li>
+              ))}
+            </ul>
+
+            {/* CTA */}
+            <div className="mt-auto pt-10">
+              <Link
+                to={o.route}
+                onClick={() =>
+                  trackEvent("offering_cta_click", {
+                    f_word: o.fWord,
+                    label: o.label,
+                    route: o.route,
+                    cta: o.cta,
+                    source: "offering_triad",
+                  })
+                }
+                className={cn(
+                  editorialType.cta,
+                  "inline-flex items-center gap-2 pb-1 border-b-2 transition-colors",
+                  tone.accentBorder,
+                  "hover:opacity-70",
+                )}
               >
-                {/* Index marker */}
-                <div className="flex items-center justify-between mb-6">
-                  <span className="font-vhs uppercase tracking-[0.3em] text-[10px] text-[hsl(var(--bloom-amber))]">
-                    0{i + 1} · {o.label}
-                  </span>
-                  <span
-                    className={`w-10 h-10 rounded-xl bg-gradient-to-br ${o.accent} flex items-center justify-center text-[hsl(var(--bloom-ink))] shadow-lg`}
-                  >
-                    <o.Icon className="w-5 h-5" />
-                  </span>
-                </div>
+                {o.cta}
+                <ArrowUpRight className="w-4 h-4" strokeWidth={1.5} />
+              </Link>
+            </div>
+          </article>
+        ))}
+      </div>
 
-                <h3 className="font-display text-5xl md:text-6xl leading-none bloom-chroma-static text-white">
-                  {o.fWord}
-                </h3>
-
-                <p className="mt-5 text-sm md:text-base text-white/80 leading-relaxed">
-                  {o.promise}
-                </p>
-
-                <ul className="mt-6 space-y-2.5">
-                  {o.bullets.map((b) => (
-                    <li
-                      key={b}
-                      className="flex items-start gap-2.5 text-sm text-white/70"
-                    >
-                      <Check className="w-4 h-4 mt-0.5 flex-shrink-0 text-[hsl(var(--bloom-amber))]" />
-                      <span>{b}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="mt-auto pt-7">
-                  <Link
-                    to={o.route}
-                    onClick={() =>
-                      trackEvent("offering_cta_click", {
-                        f_word: o.fWord,
-                        label: o.label,
-                        route: o.route,
-                        cta: o.cta,
-                        source: "offering_triad",
-                      })
-                    }
-                  >
-                    <Button
-                      variant="outline"
-                      className="w-full border-white/20 bg-transparent text-white hover:bg-white hover:text-[hsl(var(--bloom-ink))] font-vhs uppercase tracking-widest text-xs gap-2"
-                    >
-                      {o.cta}
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                  </Link>
-                </div>
-              </article>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Connective tissue */}
-        <p className="mt-10 text-center text-xs font-vhs uppercase tracking-[0.3em] text-white/50">
+      {/* Connective tissue */}
+      <div className="mt-14 flex items-center gap-4">
+        <span className={cn("h-px flex-1", tone.accentBorder, "border-t")} />
+        <p className={cn(editorialType.caption, "opacity-70")}>
           Foreplay → Foresight → Forecast · one continuous arc
         </p>
+        <span className={cn("h-px flex-1", tone.accentBorder, "border-t")} />
       </div>
-    </section>
+    </EditorialSection>
   );
 }
