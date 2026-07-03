@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
+import EditorialSiteHeader from "@/components/editorial/EditorialSiteHeader";
 import CoachingApproachSection from "@/components/CoachingApproachSection";
 import TransformationJourney from "@/components/TransformationJourney";
 import ContactSection from "@/components/ContactSection";
