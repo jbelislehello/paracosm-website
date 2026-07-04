@@ -56,6 +56,28 @@ const CaseStudyDetail: React.FC<CaseStudyDetailProps> = ({ caseStudy, onBack }) 
             <p className="text-lg leading-relaxed">{caseStudy.description}</p>
           </div>
 
+          {caseStudy.videos && caseStudy.videos.length > 0 && (
+            <div className={cn("grid gap-4", caseStudy.videos.length > 1 ? "md:grid-cols-2" : "grid-cols-1")}>
+              {caseStudy.videos.map((v) => (
+                <div key={`${v.provider}-${v.id}`} className="space-y-2">
+                  <div className="aspect-video overflow-hidden rounded-md bg-black">
+                    <iframe
+                      src={v.provider === 'vimeo'
+                        ? `https://player.vimeo.com/video/${v.id}`
+                        : `https://www.youtube-nocookie.com/embed/${v.id}`}
+                      title={v.title}
+                      className="w-full h-full"
+                      loading="lazy"
+                      allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+                      allowFullScreen
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground">{v.title}</p>
+                </div>
+              ))}
+            </div>
+          )}
+
           <Separator />
 
           <div className="grid md:grid-cols-2 gap-6">

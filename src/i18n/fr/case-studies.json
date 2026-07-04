@@ -128,22 +128,22 @@
       }
     },
     "naissance_du_monde": {
-      "title": "Naissance du Monde",
-      "subtitle": "Installation d'Art Public",
-      "description": "Installation d'art public à grande échelle explorant les thèmes de la création et de la transformation. Combine techniques artistiques traditionnelles avec technologie moderne pour créer une expérience publique immersive.",
-      "role": "Artiste principal et coordinateur technique, reliant vision artistique avec implémentation technique.",
+      "title": "La Naissance du Monde",
+      "subtitle": "Œuvre interactive parlée — Les Divertisseurs / Loto-Québec, avec Queen Ka & Ivy",
+      "description": "Œuvre de spoken word interactive coproduite pour Les Divertisseurs de Loto-Québec avec les artistes Queen Ka et Ivy. La voix — récitation, souffle, intonation — devient l'interface : c'est la parole des interprètes qui fait littéralement naître un monde visuel et sonore devant le public. Prototype précurseur de ce que Tonalli Voice explore aujourd'hui à plus grande échelle.",
+      "role": "Concepteur d'interaction vocale et direction créative interactive, en collaboration avec Les Divertisseurs et les artistes de scène — dramaturgie du souffle, mise en scène de la voix comme controller, et intégration technique temps réel.",
       "methods": {
-        "0": "Design d'art public",
-        "1": "Engagement communautaire",
-        "2": "Intégration environnementale",
-        "3": "Installation d'art technique"
+        "0": "Design d'interaction vocale",
+        "1": "Dramaturgie du souffle et de la parole",
+        "2": "Direction créative interactive",
+        "3": "Collaboration avec artistes de scène (spoken word)"
       },
-      "results": "Installation d'art public réussie devenue un point de repère, engageant des milliers de visiteurs et créant un impact culturel durable.",
-      "impact": "Transformé l'espace public en destination culturelle interactive, favorisant l'engagement communautaire et l'appréciation artistique.",
+      "results": "Œuvre diffusée dans le programme Les Divertisseurs de Loto-Québec, avec captation vidéo publique et couverture presse (La Bible Urbaine).",
+      "impact": "Preuve de concept fondatrice pour Tonalli Voice : la voix comme controller d'une narration générative, sans clavier, sans écran, sans manette — juste la présence parlée.",
       "technologies": {
-        "0": "Systèmes LED",
-        "1": "Capteurs Météo",
-        "2": "Contrôles Interactifs"
+        "0": "Reconnaissance vocale temps réel",
+        "1": "Moteur génératif visuel et sonore",
+        "2": "Projection scénographique"
       }
     },
     "lachine_passages": {

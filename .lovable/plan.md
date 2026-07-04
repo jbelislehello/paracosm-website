@@ -1,32 +1,35 @@
-# Update — Machine à Bienveillance case study
+# Add videos to Tonalli page + refresh "La Naissance du Monde" case study
 
-Rewrite the existing `machine-bienveillance` entry with facts sourced from the ONF blog, Le Soir, and the Communication (OpenEdition) academic article, and swap the placeholder Unsplash image for the uploaded photo.
+## 1. Tonalli page (`src/pages/Tonalli.tsx`)
 
-## Content changes (FR + EN, `src/i18n/{fr,en}/case-studies.json`)
+Insert a new editorial section between "Two branches" (01) and "Educational design platforms" (02), renumbering the rest:
 
-- **Year**: 2017 (correct from 2018).
-- **Title / subtitle**: "La Machine à Bienveillance" / "Installation interactive ONF/NFB — bienveillance vs. incivilité".
-- **Description** (FR/EN): Installation immersive coproduite avec l'Office national du film du Canada, présentée à MURAL (Montréal, 2017) puis en tournée en Europe dont Bruxelles (2019, festival "Brux'ils, Brux'elles" / Recyclart). Une sculpture monumentale en forme de caméra de surveillance rose renverse le dispositif: au lieu de surveiller, elle "surveille avec bienveillance" — dialogue, compliments et micro-gestes de civilité adressés aux passant·e·s.
-- **Role**: Concepteur d'expérience / design d'interaction conversationnelle (adapté au rôle réel de l'utilisateur — voir question ci-dessous).
-- **Methods**: Design d'interaction située, dramaturgie conversationnelle, art public participatif, recherche-création (référence article *Communication*).
-- **Results**: Milliers d'interactions publiques à Montréal et Bruxelles; couverture presse (Le Soir), diffusion ONF, étude académique publiée dans *Communication* (OpenEdition).
-- **Impact**: Reframe du regard technologique — la surveillance comme vecteur de lien social plutôt que de contrôle; contribution au discours sur les incivilités urbaines et l'IA relationnelle.
-- **Awards**: retirer le "Prix Arts Numériques 2018" (non vérifiable) — remplacer par "Sélection MURAL Festival 2017" et "Tournée européenne Brux'ils Brux'elles 2019".
-- **Technologies**: Dialogue scripté / IA conversationnelle, capteurs de présence, sculpture LED, structure acier — remplace les libellés génériques actuels.
-- **Sources**: ajouter un champ `sources` (array d'URLs) rendu comme liste de références sous la fiche.
+- **02 · In the wild** (tone `paper` or `warm`) — showcase of two field pieces of Tonalli Voice: *La Naissance du Monde* (Loto-Québec / Les Divertisseurs, with Queen Ka & Ivy).
+- Two responsive 16:9 embeds side-by-side on desktop, stacked on mobile:
+  - Vimeo: `https://player.vimeo.com/video/148532449`
+  - YouTube: `https://www.youtube-nocookie.com/embed/bNR2VXOer6A`
+- Below each embed: caption + outbound link (Vimeo original, La Bible Urbaine article) styled with `editorialType.caption`.
+- Bump "Educational design platforms" numeral to 03 and "Get in touch" to 04.
 
-## Data changes (`src/data/caseStudies.ts`)
+## 2. Case study — La Naissance du Monde
 
-- `year: '2017'`
-- `image`: nouvelle référence vers l'asset uploadé (via `lovable-assets` pointant sur l'image `10-la-machine-a-bienveillance-1080x560.jpg`) au lieu du photo-id Unsplash.
-- Ajouter `sources: [...]` avec les 5 URLs fournies (ONF, YouTube, Facebook, Le Soir, OpenEdition).
-- Ajuster `awards` array (2 entrées).
+### Data (`src/data/caseStudies.ts`)
+Add to the `naissance-du-monde` entry:
+- `links`: 3 entries (Vimeo, La Bible Urbaine article, YouTube).
+- New optional field `videos?: { provider: 'vimeo' | 'youtube'; id: string; title: string }[]` on the `CaseStudy` interface, populated with the two IDs (`148532449`, `bNR2VXOer6A`).
 
-## Rendering
+### Copy (`src/i18n/{fr,en}/case-studies.json`)
+Replace the current generic "large-scale public art" copy with real facts:
+- **Subtitle** FR: "Œuvre interactive parlée — Loto-Québec / Les Divertisseurs" · EN equivalent.
+- **Description**: pièce de spoken word interactive coproduite pour Les Divertisseurs de Loto-Québec, avec les artistes Queen Ka et Ivy — la voix (récitation, souffle, intonation) devient l'interface qui fait naître un monde visuel et sonore.
+- **Role**: TBD — voir question ci-dessous.
+- **Methods**: design d'interaction vocale, dramaturgie du souffle, direction créative interactive, collaboration avec artistes de scène.
+- **Results / Impact**: diffusion Les Divertisseurs, couverture La Bible Urbaine, référence pour les projets Tonalli Voice actuels.
+- **Technologies**: reconnaissance vocale, moteur temps réel, projection scénographique (remplace les LED/capteurs météo génériques actuels).
 
-- Case study detail component: ajouter le rendu d'une section "Références / Presse" si `sources?.length` (liste `<a target="_blank" rel="noopener">` avec libellés dérivés du hostname).
-- Aucun autre changement de layout.
+### Rendering (`src/components/case-studies/CaseStudyDetail.tsx`)
+Ajouter, sous l'image d'en-tête, un rendu conditionnel `caseStudy.videos?.map(...)` : grille responsive avec `<iframe>` (Vimeo `player.vimeo.com/video/{id}`, YouTube `youtube-nocookie.com/embed/{id}`), `aspect-video`, `allowFullScreen`, `loading="lazy"`.
 
-## Question ouverte
+## Question
 
-Un point à confirmer avant d'écrire les copies finales: **quel a été ton rôle exact** sur *La Machine à Bienveillance*? (concepteur UX conversationnel, collaborateur ONF, dramaturge d'interaction, autre) — pour éviter d'inventer un crédit.
+Quel a été **ton rôle exact** sur *La Naissance du Monde* (Les Divertisseurs / Loto-Québec, avec Queen Ka & Ivy) ? Design d'interaction vocale, direction créative, développement interactif — pour ne pas inventer un crédit.
