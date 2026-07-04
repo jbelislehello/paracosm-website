@@ -16,6 +16,7 @@ import EditorialChapterHeader from "@/components/editorial/EditorialChapterHeade
 import EditorialSiteHeader from "@/components/editorial/EditorialSiteHeader";
 import EditorialCTA from "@/components/editorial/EditorialCTA";
 import EditorialPullQuote from "@/components/editorial/EditorialPullQuote";
+import GatedDownloadButton from "@/components/rehearsal/GatedDownloadButton";
 import { editorialTone, editorialType } from "@/components/editorial/editorialTokens";
 import { cn } from "@/lib/utils";
 

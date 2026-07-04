@@ -9,6 +9,7 @@ import EditorialSection from "@/components/editorial/EditorialSection";
 import EditorialChapterHeader from "@/components/editorial/EditorialChapterHeader";
 import EditorialSiteHeader from "@/components/editorial/EditorialSiteHeader";
 import EditorialCTA from "@/components/editorial/EditorialCTA";
+import GatedDownloadButton from "@/components/rehearsal/GatedDownloadButton";
 import { editorialTone, editorialType } from "@/components/editorial/editorialTokens";
 import { cn } from "@/lib/utils";
 
@@ -168,6 +169,33 @@ export default function RehearsalArc() {
           </section>
         );
       })}
+
+      <EditorialSection tone="paper">
+        <EditorialChapterHeader
+          numeral="VI"
+          kicker="Downloads"
+          subtitle="Print-ready facilitator materials — free with an account."
+          tone="paper"
+        />
+        <div className="grid md:grid-cols-2 gap-5 max-w-4xl">
+          <GatedDownloadButton
+            href="/downloads/rehearsal-arc-facilitator-deck.pdf"
+            filename="rehearsal-arc-facilitator-deck.pdf"
+            label="Facilitator deck"
+            sublabel="32 slides · state-scored · read-aloud cues"
+          />
+          <GatedDownloadButton
+            href="/downloads/rehearsal-arc-workbook.pdf"
+            filename="rehearsal-arc-workbook.pdf"
+            label="Facilitator workbook"
+            sublabel="9 offerings · exercises, roadmaps, contracts"
+          />
+        </div>
+        <p className="text-xs opacity-60 mt-6 max-w-2xl">
+          Free with any Paracosm account. The same login unlocks the Calm Magic
+          Board and your personal Rehearsal Arc dashboard.
+        </p>
+      </EditorialSection>
 
       <EditorialSection tone="warm">
         <div className="max-w-3xl mx-auto text-center space-y-6">
