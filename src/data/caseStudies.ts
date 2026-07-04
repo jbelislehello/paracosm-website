@@ -46,8 +46,23 @@ export const caseStudies: CaseStudy[] = [
     methods: ['case_studies.projects.wuxia_the_fox.methods.0', 'case_studies.projects.wuxia_the_fox.methods.1', 'case_studies.projects.wuxia_the_fox.methods.2', 'case_studies.projects.wuxia_the_fox.methods.3'],
     results: 'case_studies.projects.wuxia_the_fox.results',
     impact: 'case_studies.projects.wuxia_the_fox.impact',
-    awards: ['case_studies.projects.wuxia_the_fox.awards.0'],
-    technologies: ['case_studies.projects.wuxia_the_fox.technologies.0', 'case_studies.projects.wuxia_the_fox.technologies.1', 'case_studies.projects.wuxia_the_fox.technologies.2', 'case_studies.projects.wuxia_the_fox.technologies.3'],
+    awards: ['case_studies.projects.wuxia_the_fox.awards.0', 'case_studies.projects.wuxia_the_fox.awards.1', 'case_studies.projects.wuxia_the_fox.awards.2'],
+    technologies: ['case_studies.projects.wuxia_the_fox.technologies.0', 'case_studies.projects.wuxia_the_fox.technologies.1', 'case_studies.projects.wuxia_the_fox.technologies.2', 'case_studies.projects.wuxia_the_fox.technologies.3', 'case_studies.projects.wuxia_the_fox.technologies.4'],
+    videos: [
+      { provider: 'youtube', id: 'dd8DISjnSfQ', title: 'Wuxia le renard — trailer' },
+      { provider: 'youtube', id: 'AXmwf5Fo-84', title: 'Wuxia le renard — captation' }
+    ],
+    links: [
+      { title: 'École branchée — livre papier & app numérique', url: 'https://ecolebranchee.com/wuxia-le-renard-quand-le-livre-papier-et-lapplication-numerique-se-rencontrent/' },
+      { title: 'Le Soleil — la magie de la technologie appliquée à la lecture', url: 'https://www.lesoleil.com/2015/12/15/la-magie-de-la-technologie-appliquee-a-la-lecture-36b66d742fd8ee8f40d97518f68d5a92/' },
+      { title: 'Baron Mag — portrait Jonathan Bélisle / Hello Architekt', url: 'https://baronmag.com/2017/02/jonathan-belisle-hello-architekt/' },
+      { title: 'Lien Multimédia', url: 'https://lienmultimedia.com/spip.php?article22075' },
+      { title: 'Mémoire UQAM (Archipel D4233)', url: 'https://archipel.uqam.ca/15812/1/D4233.pdf' },
+      { title: 'Colin / Ex-Situ — archives', url: 'https://colin.ex-situ.info/s/colin/item/997' },
+      { title: 'Livre papier — Blurb', url: 'https://www.blurb.ca/b/8735793-wuxia-le-renard' },
+      { title: 'Édition française — Renaud-Bray', url: 'https://www.renaud-bray.com/Livres_Produit.aspx?id=1798750&def=Wuxia+le+renard+%3a+%c3%a0+la+recherche+des+r%c3%aaves+perdus%2cB%c3%89LISLE%2c+JONATHAN%2c9780993973604' },
+      { title: 'Campagne Kickstarter (2014)', url: 'https://www.kickstarter.com/projects/jonathanbelisle/wuxia-the-fox-augmented-book-and-ipad-app' }
+    ],
     relatedProjects: ['oaciq-elise', 'calm-magic-methodology']
   },
   {
