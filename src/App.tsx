@@ -157,6 +157,7 @@ function App() {
                     <Route path="/trainings/:slug/modules/:order" element={<TrainingModule />} />
                     <Route path="/programs/rehearsal-arc" element={<RehearsalArc />} />
                     <Route path="/programs/rehearsal-arc/:slug" element={<RehearsalArcOffering />} />
+                    <Route path="/programs/rehearsal-arc/:slug/modules/:order" element={<TrainingModule />} />
                     <Route path="/dashboard/rehearsal-arc" element={<MyRehearsalArc />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/agentic-demo" element={<AgenticDemo />} />
