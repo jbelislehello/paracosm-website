@@ -48,25 +48,28 @@
     },
     "wuxia_the_fox": {
       "title": "Wuxia le renard",
-      "subtitle": "Livre Interactif pour Enfants & Plateforme RA",
-      "description": "Projet éducatif transmédia lancé au Québec, coproduit avec SAGA et le diffuseur public TFO. L'œuvre prend la forme d'un conte illustré associé à une application iPad interactive, alliant mythologie traditionnelle et technologies modernes.",
-      "role": "Créateur et directeur du projet, développant une narration augmentée qui mobilise la lecture orale et la reconnaissance vocale.",
+      "subtitle": "Livre-univers augmenté & app iPad — SAGA / TFO",
+      "description": "Conte transmédia de 200 pages, Wuxia le renard — à la recherche des rêves perdus, publié en français et en anglais, accompagné d'une application iPad qui reconnaît images, masques et blocs de bois du livre pour déclencher des scènes audiovisuelles. Coproduit avec SAGA et diffusé avec TFO, l'œuvre marie mythologie originale, illustration grand format et interactivité pour enfants.",
+      "role": "Auteur, illustrateur et directeur créatif du transmédia (livre + app) — design de la reconnaissance visuelle et vocale, direction artistique, orchestration de la première itération publique de la méthodologie Calm Magic.",
       "methods": {
-        "0": "Méthodologie Calm Magic",
-        "1": "Interactivité multisensorielle",
-        "2": "Technologie de reconnaissance vocale",
-        "3": "Réalité augmentée"
+        "0": "Écriture jeunesse et direction artistique illustrée",
+        "1": "Design d'interaction multi-support (papier ↔ tablette)",
+        "2": "Reconnaissance d'images, d'objets et vocale",
+        "3": "Méthodologie Calm Magic (première itération publique)"
       },
-      "results": "Un livre illustré de 200 pages avec modules physiques (masques, blocs de bois à scanner) et une app iPad en réalité augmentée. La caméra de l'appareil reconnaît images et symboles du livre pour déclencher des animations audiovisuelles complémentaires.",
-      "impact": "Financé via campagne Kickstarter réussie et publié en français et anglais. A remporté une mention spéciale au Grand Prix Numix 2015 pour l'innovation.",
+      "results": "Campagne Kickstarter financée avec succès en 2014, livre imprimé (Blurb) distribué chez Renaud-Bray, application iPad publiée, tournée médiatique nationale (Le Soleil, École branchée, Lien Multimédia, Baron Mag).",
+      "impact": "Pièce fondatrice du paracosme Wuxia et ancre de la méthodologie Calm Magic. Référencée dans un mémoire académique de l'UQAM (Archipel D4233), archivée par Colin / Ex-Situ, et point de départ de la posture publique Jonathan Bélisle / Hello Architekt (portrait Baron Mag).",
       "awards": {
-        "0": "Grand Prix Numix 2015 - Mention Spéciale"
+        "0": "Grand Prix Numix 2015 — Mention Spéciale",
+        "1": "Campagne Kickstarter financée (2014)",
+        "2": "Référencé dans un mémoire académique UQAM (Archipel)"
       },
       "technologies": {
-        "0": "RA iPad",
-        "1": "Reconnaissance Vocale",
-        "2": "Vision par Ordinateur",
-        "3": "Synthèse Audio"
+        "0": "Réalité augmentée iPad",
+        "1": "Vision par ordinateur (reconnaissance d'images et d'objets)",
+        "2": "Reconnaissance vocale",
+        "3": "Synthèse audio",
+        "4": "Illustration et impression grand format"
       }
     },
     "calm_magic_methodology": {
