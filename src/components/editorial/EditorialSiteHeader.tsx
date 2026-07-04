@@ -24,19 +24,19 @@ const NAV: NavItem[] = [
     label: "Retreats",
     children: [
       { label: "Paracosm Summit — Azores 2026", to: "/paracosm-retreat" },
-      { label: "GL!TCH — Learning Organizations", to: "/events-and-retreats#glitch-learning-orgs" },
-      { label: "Drift — Co-Assisted Exploration", to: "/events-and-retreats#drift-co-assisted" },
-      { label: "Tune — Relational Intelligence Summit", to: "/events-and-retreats#relational-intelligence-summit" },
-      { label: "Stories of a Near Future", to: "/events-and-retreats#stories-near-future" },
+      { label: "GL!TCH — Learning Organizations", to: "/programs/rehearsal-arc/glitch" },
+      { label: "Drift — Co-Assisted Exploration", to: "/programs/rehearsal-arc/drift" },
+      { label: "Tune — Relational Intelligence Summit", to: "/programs/rehearsal-arc/relational-intelligence-summit" },
+      { label: "Stories of a Near Future", to: "/programs/rehearsal-arc/stories-of-a-near-future" },
       { label: "Think Like a Forest", to: "/events-and-retreats#think-like-a-forest" },
     ],
   },
   {
     label: "Residencies",
     children: [
-      { label: "GL!TCH — Diagnostic Sprint", to: "/agentic-ux#glitch-diagnostic" },
-      { label: "Drift — Prototype Residency", to: "/agentic-ux#drift-prototype" },
-      { label: "Tune — Ecosystem Build", to: "/agentic-ux#tune-ecosystem" },
+      { label: "GL!TCH — Diagnostic Sprint", to: "/agentic-ux/residencies/diagnostic-sprint" },
+      { label: "Drift — Prototype Residency", to: "/agentic-ux/residencies/prototype-residency" },
+      { label: "Tune — Ecosystem Build", to: "/agentic-ux/residencies/ecosystem-build" },
     ],
   },
   {
