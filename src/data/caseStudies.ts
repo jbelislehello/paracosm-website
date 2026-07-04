@@ -14,7 +14,7 @@ export interface CaseStudy {
   awards?: string[];
   technologies?: string[];
   links?: { title: string; url: string }[];
-  videos?: { provider: 'vimeo' | 'youtube'; id: string; title: string }[];
+  videos?: { provider: 'vimeo' | 'youtube'; id: string; title: string; thumbnail?: string }[];
   relatedProjects?: string[];
 }
 
