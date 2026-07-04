@@ -253,19 +253,26 @@ export default function RehearsalArcOffering() {
           subtitle="Full facilitator materials — free with an account."
           tone={tone === "night" ? "paper" : "night"}
         />
-        <div className="grid md:grid-cols-2 gap-5 max-w-4xl">
+        <div className="grid md:grid-cols-3 gap-5 max-w-5xl">
           <GatedDownloadButton
-            href="/downloads/rehearsal-arc-facilitator-deck.pdf"
-            filename="rehearsal-arc-facilitator-deck.pdf"
-            label="Facilitator deck (PDF)"
-            sublabel="Full 32-slide deck across all 9 offerings"
+            href={`/downloads/${offering.slug}-roadmap.pdf`}
+            filename={`${offering.slug}-roadmap.pdf`}
+            label="Roadmap (PDF)"
+            sublabel="1-page state-scored arc for this offering"
             offeringSlug={offering.slug}
           />
           <GatedDownloadButton
-            href="/downloads/rehearsal-arc-workbook.pdf"
-            filename="rehearsal-arc-workbook.pdf"
-            label="Facilitator workbook (PDF)"
-            sublabel="All exercises, roadmaps and commitment contracts"
+            href={`/downloads/${offering.slug}-facilitator-playbook.pdf`}
+            filename={`${offering.slug}-facilitator-playbook.pdf`}
+            label="Facilitator Playbook (PDF)"
+            sublabel="Full state-by-state facilitator deck"
+            offeringSlug={offering.slug}
+          />
+          <GatedDownloadButton
+            href={`/downloads/${offering.slug}-program-doc.pdf`}
+            filename={`${offering.slug}-program-doc.pdf`}
+            label="Program Doc (PDF)"
+            sublabel="Curriculum, exercises, roadmap, contract"
             offeringSlug={offering.slug}
           />
         </div>
