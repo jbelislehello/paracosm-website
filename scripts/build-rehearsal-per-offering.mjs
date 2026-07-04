@@ -7,7 +7,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import PptxGenJS from "pptxgenjs";
+import PptxGenJSMod from "pptxgenjs";
+const PptxGenJS = PptxGenJSMod.default || PptxGenJSMod;
 import {
   Document,
   Packer,
