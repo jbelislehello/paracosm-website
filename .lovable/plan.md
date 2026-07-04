@@ -1,40 +1,35 @@
-## Status
-
-`src/pages/AgenticResidency.tsx` already calls `usePageSeo` with title/description/path — but it's placed **after** the `if (!residency) return <Navigate />` early return, which violates the Rules of Hooks (React will warn and behaviour is undefined on the redirect branch).
-
-The hook itself (`src/hooks/usePageSeo.ts`) already handles canonical + og:url + twitter tags correctly against `https://calm-magic.com`, and the route pattern `/agentic-ux/residencies/:slug` is registered so breadcrumb JSON-LD auto-injects.
-
 ## Change
 
-In `src/pages/AgenticResidency.tsx`:
+Extend `src/lib/sitemap.ts`'s `expandDynamic` switch to enumerate the three agentic residency slugs so they emit as concrete URLs in `sitemap.xml`.
 
-1. Move the `usePageSeo(...)` call **above** the early `Navigate` return so it runs unconditionally on every render (Rules of Hooks). For unknown slugs, feed the hook a safe fallback:
+Add to the switch:
 
-    ```text
-    title       "Agentic UX Residency — Paracosm"
-    description "Three ways to work with Paracosm on multi-agent surfaces."
-    path        "/agentic-ux/residencies/" + (slug || "")
-    ```
+```ts
+case "/agentic-ux/residencies/:slug": {
+  return agenticResidencies.map((r) => `/agentic-ux/residencies/${r.slug}`);
+}
+```
 
-2. When the residency IS found, use its data:
+Plus a top-of-file import from `@/data/agenticResidencies`.
 
-    ```text
-    title       `${title} — Agentic UX Residency · Paracosm`
-    description tagline  (kept ≤160 chars; current taglines are well under)
-    path        `/agentic-ux/residencies/${slug}`
-    ```
+Result — three new sitemap entries:
 
-3. Confirm the three canonical URLs resolve correctly:
+```
+https://calm-magic.com/agentic-ux/residencies/diagnostic-sprint
+https://calm-magic.com/agentic-ux/residencies/prototype-residency
+https://calm-magic.com/agentic-ux/residencies/ecosystem-build
+```
 
-    ```text
-    https://calm-magic.com/agentic-ux/residencies/diagnostic-sprint
-    https://calm-magic.com/agentic-ux/residencies/prototype-residency
-    https://calm-magic.com/agentic-ux/residencies/ecosystem-build
-    ```
+All other public routes in `ROUTE_REGISTRY` (About, Case Studies, Pricing, Book, GL!TCH, Calm Magic, Dream & Learn, Retreat, Wuxia, Tonalli, Tarot, Pattern Encyclopedia, Agentic UX, Design System, Lineage, Origins, Credits, Events & Retreats, Contact, Agentic Demo, Residencies + archetypes, Drift + library/year-month, Calm Magic Board sections, Trainings + slug) are already emitted by the existing sitemap builder — verified against the registry. No-index routes (auth, admin dashboards, PRD editor, training modules, agentic ecosystem deck) stay excluded, which is correct.
 
-No other files change. No new data. Breadcrumb JSON-LD continues to derive from `routeRegistry` (Home › Agentic UX › {Residency name}).
+## robots.txt
+
+Already correct — allows all crawlers and points to `https://calm-magic.com/sitemap.xml`. No change needed.
+
+## Verification
+
+After the edit, hit `/sitemap.xml` in the preview and confirm the three residency URLs appear alongside the existing entries.
 
 ## Out of scope
 
-- No sitemap edits (existing sitemap builder reads `ROUTE_REGISTRY`, but `:slug` patterns need enumerated slugs to emit URLs — if you want them added to `sitemap.xml`, say so and I'll extend the sitemap builder in a follow-up).
-- No og:image change; sitewide default is used.
+- No new routes, no OG image generation, no per-page priority tuning.

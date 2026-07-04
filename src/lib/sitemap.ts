@@ -13,6 +13,7 @@
 import { ROUTE_REGISTRY, type RouteMeta } from "./routeRegistry";
 import { CANONICAL_HOST } from "./structuredData";
 import { driftTools, type DriftToolAxis } from "@/data/driftTools";
+import { agenticResidencies } from "@/data/agenticResidencies";
 
 interface SitemapUrl {
   loc: string;
@@ -48,6 +49,9 @@ const expandDynamic = (meta: RouteMeta): string[] => {
     }
     case "/trainings/:slug": {
       return ["glitch", "drift", "tune"].map((s) => `/trainings/${s}`);
+    }
+    case "/agentic-ux/residencies/:slug": {
+      return agenticResidencies.map((r) => `/agentic-ux/residencies/${r.slug}`);
     }
     default:
       return [];
