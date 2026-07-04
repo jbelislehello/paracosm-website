@@ -116,10 +116,73 @@ const Tonalli = () => {
         </div>
       </EditorialSection>
 
+      {/* In the wild — field pieces */}
+      <EditorialSection tone="warm" id="in-the-wild">
+        <div className="flex items-baseline gap-6 mb-10">
+          <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", warm.numeral)}>02</span>
+          <p className={cn(editorialType.kicker, warm.kicker)}>In the wild</p>
+        </div>
+        <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-tight tracking-tight max-w-3xl mb-6")}>
+          <em className="italic font-light">La Naissance du Monde</em> — voice as controller.
+        </h2>
+        <p className="opacity-80 max-w-2xl leading-relaxed mb-10">
+          A founding field piece of Tonalli Voice, co-produced for Loto-Québec's <em>Les Divertisseurs</em> with spoken-word artists Queen Ka &amp; Ivy. Recitation, breath and intonation give birth to a visual and sonic world in real time.
+        </p>
+
+        <div className="grid md:grid-cols-2 gap-8">
+          <figure className="space-y-3">
+            <div className="aspect-video overflow-hidden rounded-sm bg-black">
+              <iframe
+                src="https://player.vimeo.com/video/148532449"
+                title="La Naissance du Monde — captation Vimeo"
+                className="w-full h-full"
+                loading="lazy"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+            <figcaption className={cn(editorialType.caption, "opacity-70 flex items-center gap-2")}>
+              Captation Vimeo ·{" "}
+              <a href="https://vimeo.com/148532449" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 border-b border-current pb-0.5">
+                open <ExternalLink className="w-3 h-3" />
+              </a>
+            </figcaption>
+          </figure>
+
+          <figure className="space-y-3">
+            <div className="aspect-video overflow-hidden rounded-sm bg-black">
+              <iframe
+                src="https://www.youtube-nocookie.com/embed/bNR2VXOer6A"
+                title="Queen Ka & Ivy — La Naissance du Monde"
+                className="w-full h-full"
+                loading="lazy"
+                allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+                allowFullScreen
+              />
+            </div>
+            <figcaption className={cn(editorialType.caption, "opacity-70 flex items-center gap-2")}>
+              Queen Ka &amp; Ivy · YouTube ·{" "}
+              <a href="https://labibleurbaine.com/litterature/queen-ka-et-ivy-se-pretent-au-jeu-la-naissance-du-monde-de-lesdivertisseurs-de-loto-quebec/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 border-b border-current pb-0.5">
+                read La Bible Urbaine <ExternalLink className="w-3 h-3" />
+              </a>
+            </figcaption>
+          </figure>
+        </div>
+
+        <div className="mt-8">
+          <Link
+            to="/case-studies"
+            className={cn(editorialType.cta, "inline-flex items-center gap-2 border-b border-current pb-1")}
+          >
+            Read the full case study <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+      </EditorialSection>
+
       {/* Educational design platforms */}
       <EditorialSection tone="clay" id="platforms">
         <div className="flex items-baseline gap-6 mb-10">
-          <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", clay.numeral)}>02</span>
+          <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", clay.numeral)}>03</span>
           <p className={cn(editorialType.kicker, clay.kicker)}>Educational design platforms</p>
         </div>
         <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-tight tracking-tight max-w-3xl mb-12")}>
