@@ -50,6 +50,9 @@ const expandDynamic = (meta: RouteMeta): string[] => {
     case "/trainings/:slug": {
       return ["glitch", "drift", "tune"].map((s) => `/trainings/${s}`);
     }
+    case "/agentic-ux/residencies/:slug": {
+      return agenticResidencies.map((r) => `/agentic-ux/residencies/${r.slug}`);
+    }
     default:
       return [];
   }
