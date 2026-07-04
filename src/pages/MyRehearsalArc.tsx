@@ -34,8 +34,15 @@ export default function MyRehearsalArc() {
     title: "My Rehearsal Arc — Trainings, Retreats & Residencies | Paracosm",
     description: "Your personal dashboard for the Rehearsal Arc — enrollments, roadmaps, playbooks and learning tracks.",
     path: "/dashboard/rehearsal-arc",
-    noIndex: true,
   });
+
+  useEffect(() => {
+    const meta = document.createElement("meta");
+    meta.name = "robots";
+    meta.content = "noindex, nofollow";
+    document.head.appendChild(meta);
+    return () => { document.head.removeChild(meta); };
+  }, []);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
