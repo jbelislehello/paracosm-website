@@ -218,7 +218,7 @@ const Tonalli = () => {
         <div className="grid md:grid-cols-12 gap-8 items-end">
           <div className="md:col-span-8">
             <div className="flex items-baseline gap-6 mb-6">
-              <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", night.numeral)}>03</span>
+              <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", night.numeral)}>04</span>
               <p className={cn(editorialType.kicker, night.kicker)}>Get in touch</p>
             </div>
             <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-tight tracking-tight max-w-2xl")}>
