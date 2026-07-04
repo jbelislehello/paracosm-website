@@ -98,7 +98,7 @@ export default function EditorialBulletinsSection() {
   return (
     <EditorialSection tone="paper" id="bulletins">
       <EditorialChapterHeader
-        numeral="05"
+        numeral="04"
         kicker="Bulletins"
         subtitle="What's opening, what's shipping, what's being made."
         tone="paper"
