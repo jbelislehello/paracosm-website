@@ -133,7 +133,7 @@ export default function EditorialDispatchesSection() {
   return (
     <EditorialSection tone="warm" id="dispatches">
       <EditorialChapterHeader
-        numeral="04"
+        numeral="05"
         kicker="Dispatches"
         subtitle="What's opening this season — in the studio, in the field, on the page."
         tone="warm"
