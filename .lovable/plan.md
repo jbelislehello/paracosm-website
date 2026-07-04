@@ -1,34 +1,37 @@
-# Real cover images for case studies
+# Wuxia video gallery with thumbnails + clear playback order
 
-Right now most case studies use generic Unsplash IDs (`photo-xxxx`). Only `machine-bienveillance` has a real, project-specific image. This plan sources authentic cover images from the URLs already listed in each case study's `links` / `videos` and wires them through the CDN asset pipeline.
+Replace the current 2-up iframe grid (in `CaseStudyDetail.tsx`) with a **VideoGallery** component: one large "now playing" player, a numbered thumbnail strip below acting as a playlist, and prev/next controls. Applies to any case study with `videos[]`, so Wuxia and *Naissance du Monde* both benefit.
 
-## Scope (case studies with usable sources)
+## Component: `src/components/case-studies/VideoGallery.tsx` (new)
 
-| Case study | Source strategy |
-|---|---|
-| `wuxia-the-fox` | Scrape hero/cover from Le Soleil, École branchée, Baron Mag, Blurb, or Kickstarter. Prefer the book cover (Blurb / Renaud-Bray) or the iPad+book press photo (Le Soleil / École branchée). |
-| `naissance-du-monde` | Use Vimeo `148532449` thumbnail (`vumbnail.com` or Vimeo oEmbed) or YouTube `bNR2VXOer6A` `maxresdefault.jpg`, or scrape La Bible Urbaine hero. |
-| `machine-bienveillance` | Already custom — leave as is. |
-| `oaciq-elise`, `calm-magic-methodology`, `io-theatre`, `simulateur-genial`, `lachine-passages`, `banff-residence`, `tedx-montreal` | **No URLs provided in prior turns.** Leave Unsplash placeholders and flag in the final summary. |
+- Props: `videos: { provider, id, title }[]`.
+- State: `activeIndex` (default 0), `hasStarted` (defer iframe creation until user clicks, so YouTube/Vimeo don't autoload 2+ players at once).
+- Layout:
+  - **Featured player** (top): `aspect-video`, rounded, shows the active video. Before first play, renders the thumbnail with a large play button overlay + video title + "1 / N" counter.
+  - **Thumbnail strip** (below): horizontal scroll (mobile) / flex-wrap (desktop). Each item = 16:9 thumbnail with:
+    - Numbered order badge (`1`, `2`, …) top-left
+    - "▶ Now playing" ring / accent border on the active one
+    - Title underneath, truncated
+  - **Prev / Next buttons** on the featured player (bottom-right), disabled at boundaries.
+- Thumbnails resolved client-side, no extra fetches:
+  - YouTube: `https://i.ytimg.com/vi/{id}/hqdefault.jpg`
+  - Vimeo: use a static override map keyed by video id (Vimeo requires an API call for thumbnails). Extend `CaseStudy.videos[]` type with an optional `thumbnail?: string` field so Vimeo entries can provide the CDN thumbnail URL we already have from oEmbed. YouTube entries can omit it.
+- Keyboard: `←` / `→` on the gallery container step through videos.
+- A11y: buttons have `aria-label`, thumbnails are `<button>` with `aria-current="true"` for active.
 
-## Steps
+## Data update: `src/data/caseStudies.ts`
 
-1. **Fetch candidate images** for `wuxia-the-fox` and `naissance-du-monde`:
-   - `fetch_website` on Le Soleil, École branchée, Baron Mag, La Bible Urbaine, Blurb pages → pick 1st-party hero/product image URL.
-   - For YouTube: `https://i.ytimg.com/vi/{id}/maxresdefault.jpg`. For Vimeo: fetch oEmbed `https://vimeo.com/api/oembed.json?url=...` to get `thumbnail_url` (grab the largest size by stripping `_295x166` suffix).
-2. **Download** the chosen image per case study to `/tmp/`.
-3. **Upload via `lovable-assets create`** and write pointer to `src/assets/{slug}-cover.{ext}.asset.json`.
-4. **Update `src/data/caseStudies.ts`** — replace the `image:` field for each migrated case study with the CDN URL from the pointer (matching the pattern already used for `machine-bienveillance`).
-5. **Verify** `CaseStudyCard` renders correctly (its existing regex `/^(https?:)?\//.test(caseStudy.image)` already routes absolute/CDN paths through `<img src>` directly, so no component change needed).
+- Extend `videos` type: `{ provider: 'vimeo' | 'youtube'; id: string; title: string; thumbnail?: string }`.
+- On the *Naissance du Monde* Vimeo entry, add `thumbnail: 'https://i.vimeocdn.com/video/547498526-b1811c16ff9fab209ed2c7c17b7e9d3ef2fcd97a5385539774d64cd5f86c4673-d_640'` (already fetched from oEmbed).
+- Wuxia has 2 YouTube videos → no thumbnail field needed; YouTube URL pattern used automatically.
+- Confirm playback order: for Wuxia, keep **1) Trailer (`dd8DISjnSfQ`)** then **2) Captation (`AXmwf5Fo-84`)**. For Naissance du Monde, keep **1) Vimeo captation** then **2) Queen Ka & Ivy YouTube**.
+
+## Wiring: `src/components/case-studies/CaseStudyDetail.tsx`
+
+- Replace lines 59–79 (the grid of iframes) with `<VideoGallery videos={caseStudy.videos} />`.
+- No other changes.
 
 ## Out of scope
-- No changes to i18n copy, video embeds, or link lists.
-- No image generation — only real sourced images.
-- Case studies with no user-provided URLs stay on Unsplash placeholders; I'll list them at the end so you can drop URLs later.
-
-## Question before I build
-Two viable Wuxia covers exist:
-- **A — Book cover** (Blurb/Renaud-Bray product shot): most iconic, brand-consistent, timeless.
-- **B — Press photo** (Le Soleil / École branchée: iPad + open book together): shows the augmented-book concept in action.
-
-Reply "A", "B", or "you pick" and I'll proceed.
+- No autoplay, no i18n string changes (component labels stay minimal: numeric badges + "Now playing" — small text, add EN string via inline literal like the existing "Back to Case Studies" button which is already hard-coded English).
+- No changes to the Tonalli page video block (that's a separate curated section, not a case-study gallery).
+- No image uploads — thumbnails come straight from YouTube's CDN and the existing Vimeo CDN URL.
