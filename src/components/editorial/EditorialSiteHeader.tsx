@@ -151,6 +151,14 @@ export default function EditorialSiteHeader() {
               </div>
             );
           })}
+          {signedIn && (
+            <Link
+              to="/dashboard/rehearsal-arc"
+              className="text-[10px] uppercase tracking-[0.25em] font-semibold px-3 py-1.5 rounded-full border border-current/30 hover:bg-current/10 transition-colors"
+            >
+              My Arc
+            </Link>
+          )}
         </nav>
 
         <button
