@@ -128,22 +128,22 @@
       }
     },
     "naissance_du_monde": {
-      "title": "Naissance du Monde",
-      "subtitle": "Public Art Installation",
-      "description": "Large-scale public art installation exploring themes of creation and transformation. Combined traditional artistic techniques with modern technology to create an immersive public experience.",
-      "role": "Lead artist and technical coordinator, bridging artistic vision with technical implementation.",
+      "title": "La Naissance du Monde",
+      "subtitle": "Interactive spoken-word piece — Les Divertisseurs / Loto-Québec, with Queen Ka & Ivy",
+      "description": "Interactive spoken-word piece co-produced for Loto-Québec's Les Divertisseurs program with artists Queen Ka and Ivy. Voice — recitation, breath, intonation — becomes the interface: the performers' words literally give birth to a visual and sonic world in front of the audience. An early prototype of what Tonalli Voice now explores at larger scale.",
+      "role": "Voice interaction designer and interactive creative direction, working with Les Divertisseurs and the performing artists — dramaturgy of breath, staging voice as controller, and real-time technical integration.",
       "methods": {
-        "0": "Public art design",
-        "1": "Community engagement",
-        "2": "Environmental integration",
-        "3": "Technical art installation"
+        "0": "Voice interaction design",
+        "1": "Dramaturgy of breath and speech",
+        "2": "Interactive creative direction",
+        "3": "Collaboration with spoken-word artists"
       },
-      "results": "Successful public art installation that became a landmark, engaging thousands of visitors and creating lasting cultural impact.",
-      "impact": "Transformed public space into interactive cultural destination, fostering community engagement and artistic appreciation.",
+      "results": "Piece featured in Loto-Québec's Les Divertisseurs program, with public video capture and press coverage (La Bible Urbaine).",
+      "impact": "Founding proof-of-concept for Tonalli Voice: the voice as controller of a generative narrative — no keyboard, no screen, no gamepad, only spoken presence.",
       "technologies": {
-        "0": "LED Systems",
-        "1": "Weather Sensors",
-        "2": "Interactive Controls"
+        "0": "Real-time voice recognition",
+        "1": "Generative visual and audio engine",
+        "2": "Scenographic projection"
       }
     },
     "lachine_passages": {
