@@ -241,6 +241,31 @@ export default function RehearsalArcOffering() {
         </div>
       </EditorialSection>
 
+      <EditorialSection tone={tone === "night" ? "paper" : "night"}>
+        <EditorialChapterHeader
+          numeral="VIII"
+          kicker="Take it with you"
+          subtitle="Full facilitator materials — free with an account."
+          tone={tone === "night" ? "paper" : "night"}
+        />
+        <div className="grid md:grid-cols-2 gap-5 max-w-4xl">
+          <GatedDownloadButton
+            href="/downloads/rehearsal-arc-facilitator-deck.pdf"
+            filename="rehearsal-arc-facilitator-deck.pdf"
+            label="Facilitator deck (PDF)"
+            sublabel="Full 32-slide deck across all 9 offerings"
+            offeringSlug={offering.slug}
+          />
+          <GatedDownloadButton
+            href="/downloads/rehearsal-arc-workbook.pdf"
+            filename="rehearsal-arc-workbook.pdf"
+            label="Facilitator workbook (PDF)"
+            sublabel="All exercises, roadmaps and commitment contracts"
+            offeringSlug={offering.slug}
+          />
+        </div>
+      </EditorialSection>
+
       <Footer />
     </main>
   );

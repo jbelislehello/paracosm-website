@@ -68,6 +68,7 @@ const TrainingDetail = lazy(() => import("./pages/TrainingDetail"));
 const TrainingModule = lazy(() => import("./pages/TrainingModule"));
 const RehearsalArc = lazy(() => import("./pages/RehearsalArc"));
 const RehearsalArcOffering = lazy(() => import("./pages/RehearsalArcOffering"));
+const MyRehearsalArc = lazy(() => import("./pages/MyRehearsalArc"));
 
 const Contact = lazy(() => import("./pages/Contact"));
 const AgenticDemo = lazy(() => import("./pages/AgenticDemo"));
@@ -156,6 +157,7 @@ function App() {
                     <Route path="/trainings/:slug/modules/:order" element={<TrainingModule />} />
                     <Route path="/programs/rehearsal-arc" element={<RehearsalArc />} />
                     <Route path="/programs/rehearsal-arc/:slug" element={<RehearsalArcOffering />} />
+                    <Route path="/dashboard/rehearsal-arc" element={<MyRehearsalArc />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/agentic-demo" element={<AgenticDemo />} />
                     <Route path="*" element={<NotFound />} />
