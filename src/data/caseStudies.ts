@@ -14,7 +14,7 @@ export interface CaseStudy {
   awards?: string[];
   technologies?: string[];
   links?: { title: string; url: string }[];
-  videos?: { provider: 'vimeo' | 'youtube'; id: string; title: string }[];
+  videos?: { provider: 'vimeo' | 'youtube'; id: string; title: string; thumbnail?: string }[];
   relatedProjects?: string[];
 }
 
@@ -124,7 +124,7 @@ export const caseStudies: CaseStudy[] = [
     impact: 'case_studies.projects.naissance_du_monde.impact',
     technologies: ['case_studies.projects.naissance_du_monde.technologies.0', 'case_studies.projects.naissance_du_monde.technologies.1', 'case_studies.projects.naissance_du_monde.technologies.2'],
     videos: [
-      { provider: 'vimeo', id: '148532449', title: 'La Naissance du Monde — captation' },
+      { provider: 'vimeo', id: '148532449', title: 'La Naissance du Monde — captation', thumbnail: 'https://i.vimeocdn.com/video/547498526-b1811c16ff9fab209ed2c7c17b7e9d3ef2fcd97a5385539774d64cd5f86c4673-d_640' },
       { provider: 'youtube', id: 'bNR2VXOer6A', title: 'Queen Ka & Ivy — La Naissance du Monde' }
     ],
     links: [
