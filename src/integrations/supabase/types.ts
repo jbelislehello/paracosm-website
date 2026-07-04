@@ -2341,12 +2341,17 @@ export type Database = {
       }
       training_modules: {
         Row: {
+          artifact: string | null
           content_md: string | null
           created_at: string
+          exercises_json: Json | null
+          focus_state: string | null
           hands_on_md: string | null
           hours: number | null
           id: string
+          journeys_json: Json | null
           order_index: number
+          outcome: string | null
           summary: string | null
           title: string
           training_id: string
@@ -2355,14 +2360,20 @@ export type Database = {
           video_placeholder_url: string | null
           video_theme: string | null
           video_title: string | null
+          when_label: string | null
         }
         Insert: {
+          artifact?: string | null
           content_md?: string | null
           created_at?: string
+          exercises_json?: Json | null
+          focus_state?: string | null
           hands_on_md?: string | null
           hours?: number | null
           id?: string
+          journeys_json?: Json | null
           order_index?: number
+          outcome?: string | null
           summary?: string | null
           title: string
           training_id: string
@@ -2371,14 +2382,20 @@ export type Database = {
           video_placeholder_url?: string | null
           video_theme?: string | null
           video_title?: string | null
+          when_label?: string | null
         }
         Update: {
+          artifact?: string | null
           content_md?: string | null
           created_at?: string
+          exercises_json?: Json | null
+          focus_state?: string | null
           hands_on_md?: string | null
           hours?: number | null
           id?: string
+          journeys_json?: Json | null
           order_index?: number
+          outcome?: string | null
           summary?: string | null
           title?: string
           training_id?: string
@@ -2387,6 +2404,7 @@ export type Database = {
           video_placeholder_url?: string | null
           video_theme?: string | null
           video_title?: string | null
+          when_label?: string | null
         }
         Relationships: [
           {
@@ -2449,58 +2467,94 @@ export type Database = {
         Row: {
           audience_md: string | null
           big_picture_md: string | null
+          cognitive_model: string | null
+          commitment_prompt: string | null
+          commitment_template: string | null
+          commitment_witness: string | null
           created_at: string
           crewdle_focus: string | null
           cta_label: string
           delivery_breakdown: Json | null
+          duration_label: string | null
           hero_quote: string | null
           hours: number
           id: string
+          identity_shift: string | null
+          narrative_premise: string | null
           og_image_url: string | null
           order_index: number
           outcomes: Json
+          playbook_pdf_url: string | null
+          program_doc_pdf_url: string | null
+          roadmap_pdf_url: string | null
           slug: string
           status: string
           tagline: string | null
+          tier: string | null
           title: string
+          tone: string | null
           updated_at: string
         }
         Insert: {
           audience_md?: string | null
           big_picture_md?: string | null
+          cognitive_model?: string | null
+          commitment_prompt?: string | null
+          commitment_template?: string | null
+          commitment_witness?: string | null
           created_at?: string
           crewdle_focus?: string | null
           cta_label?: string
           delivery_breakdown?: Json | null
+          duration_label?: string | null
           hero_quote?: string | null
           hours?: number
           id?: string
+          identity_shift?: string | null
+          narrative_premise?: string | null
           og_image_url?: string | null
           order_index?: number
           outcomes?: Json
+          playbook_pdf_url?: string | null
+          program_doc_pdf_url?: string | null
+          roadmap_pdf_url?: string | null
           slug: string
           status?: string
           tagline?: string | null
+          tier?: string | null
           title: string
+          tone?: string | null
           updated_at?: string
         }
         Update: {
           audience_md?: string | null
           big_picture_md?: string | null
+          cognitive_model?: string | null
+          commitment_prompt?: string | null
+          commitment_template?: string | null
+          commitment_witness?: string | null
           created_at?: string
           crewdle_focus?: string | null
           cta_label?: string
           delivery_breakdown?: Json | null
+          duration_label?: string | null
           hero_quote?: string | null
           hours?: number
           id?: string
+          identity_shift?: string | null
+          narrative_premise?: string | null
           og_image_url?: string | null
           order_index?: number
           outcomes?: Json
+          playbook_pdf_url?: string | null
+          program_doc_pdf_url?: string | null
+          roadmap_pdf_url?: string | null
           slug?: string
           status?: string
           tagline?: string | null
+          tier?: string | null
           title?: string
+          tone?: string | null
           updated_at?: string
         }
         Relationships: []
