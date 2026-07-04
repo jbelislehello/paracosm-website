@@ -16,6 +16,7 @@ import EditorialChapterHeader from "@/components/editorial/EditorialChapterHeade
 import EditorialSiteHeader from "@/components/editorial/EditorialSiteHeader";
 import EditorialCTA from "@/components/editorial/EditorialCTA";
 import EditorialPullQuote from "@/components/editorial/EditorialPullQuote";
+import GatedDownloadButton from "@/components/rehearsal/GatedDownloadButton";
 import { editorialTone, editorialType } from "@/components/editorial/editorialTokens";
 import { cn } from "@/lib/utils";
 
@@ -237,6 +238,31 @@ export default function RehearsalArcOffering() {
           <EditorialCTA href="mailto:jbelisle@helloarchitekt.com" tone={tone}>
             Begin this arc
           </EditorialCTA>
+        </div>
+      </EditorialSection>
+
+      <EditorialSection tone={tone === "night" ? "paper" : "night"}>
+        <EditorialChapterHeader
+          numeral="VIII"
+          kicker="Take it with you"
+          subtitle="Full facilitator materials — free with an account."
+          tone={tone === "night" ? "paper" : "night"}
+        />
+        <div className="grid md:grid-cols-2 gap-5 max-w-4xl">
+          <GatedDownloadButton
+            href="/downloads/rehearsal-arc-facilitator-deck.pdf"
+            filename="rehearsal-arc-facilitator-deck.pdf"
+            label="Facilitator deck (PDF)"
+            sublabel="Full 32-slide deck across all 9 offerings"
+            offeringSlug={offering.slug}
+          />
+          <GatedDownloadButton
+            href="/downloads/rehearsal-arc-workbook.pdf"
+            filename="rehearsal-arc-workbook.pdf"
+            label="Facilitator workbook (PDF)"
+            sublabel="All exercises, roadmaps and commitment contracts"
+            offeringSlug={offering.slug}
+          />
         </div>
       </EditorialSection>
 

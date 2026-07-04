@@ -14,7 +14,7 @@ import { Cloud, UserPlus, X } from 'lucide-react';
 interface SignupPromptModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  context?: 'second-project' | 'season-complete' | 'save-progress';
+  context?: 'second-project' | 'season-complete' | 'save-progress' | 'rehearsal-download';
 }
 
 const contextMessages = {
@@ -29,6 +29,10 @@ const contextMessages = {
   'save-progress': {
     title: 'Your Progress is Saved Locally',
     description: 'Sign in to sync your work across devices and ensure you never lose your progress.',
+  },
+  'rehearsal-download': {
+    title: 'Create a Free Account to Download',
+    description: 'The facilitator deck and workbook are free — the same account unlocks the Calm Magic Board and your personal Rehearsal Arc dashboard.',
   },
 };
 

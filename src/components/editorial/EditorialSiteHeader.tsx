@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import { cn } from "@/lib/utils";
 
@@ -73,6 +74,15 @@ export default function EditorialSiteHeader() {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [signedIn, setSignedIn] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => setSignedIn(!!session?.user));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) =>
+      setSignedIn(!!session?.user),
+    );
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     setMobileOpen(false);
@@ -141,6 +151,14 @@ export default function EditorialSiteHeader() {
               </div>
             );
           })}
+          {signedIn && (
+            <Link
+              to="/dashboard/rehearsal-arc"
+              className="text-[10px] uppercase tracking-[0.25em] font-semibold px-3 py-1.5 rounded-full border border-current/30 hover:bg-current/10 transition-colors"
+            >
+              My Arc
+            </Link>
+          )}
         </nav>
 
         <button
