@@ -1,35 +1,24 @@
-## Change
+## Verification plan
 
-Extend `src/lib/sitemap.ts`'s `expandDynamic` switch to enumerate the three agentic residency slugs so they emit as concrete URLs in `sitemap.xml`.
+Fetch the running dev server's `/sitemap.xml` and inspect it directly, then cross-check against `ROUTE_REGISTRY` and the residency data.
 
-Add to the switch:
+### Steps
 
-```ts
-case "/agentic-ux/residencies/:slug": {
-  return agenticResidencies.map((r) => `/agentic-ux/residencies/${r.slug}`);
-}
-```
+1. `curl -s http://localhost:8080/sitemap.xml` and save to `/tmp/sitemap.xml`.
+2. Confirm the three residency URLs are present with correct `<loc>`:
+   - `https://calm-magic.com/agentic-ux/residencies/diagnostic-sprint`
+   - `https://calm-magic.com/agentic-ux/residencies/prototype-residency`
+   - `https://calm-magic.com/agentic-ux/residencies/ecosystem-build`
+3. Confirm every non-`noindex` entry in `ROUTE_REGISTRY` appears once (static + expanded dynamic: drift axes, drift year/month, trainings slugs, residency archetypes, agentic residency slugs).
+4. Confirm `<lastmod>` on every entry equals today's date (the builder uses `new Date().toISOString().slice(0,10)` — no per-entry override exists in code, so all rows share the build date; this is expected).
+5. Confirm each residency's canonical URL matches what `usePageSeo` emits on the page (`/agentic-ux/residencies/${slug}` against host `https://calm-magic.com`) — a quick read of `src/pages/AgenticResidency.tsx` is enough; no need to boot the page.
+6. Report the full URL count, any missing routes, and any drift between sitemap `<loc>` and page canonical.
 
-Plus a top-of-file import from `@/data/agenticResidencies`.
+### Notes on `lastmod`
 
-Result — three new sitemap entries:
+The current builder has no per-route `lastmod` — every URL gets today's date. That's valid per the sitemap spec and fine for search engines, but if you want per-residency `lastmod` (e.g. tied to a `updatedAt` field on each residency), that's a separate feature — flag it and I'll plan it.
 
-```
-https://calm-magic.com/agentic-ux/residencies/diagnostic-sprint
-https://calm-magic.com/agentic-ux/residencies/prototype-residency
-https://calm-magic.com/agentic-ux/residencies/ecosystem-build
-```
+### Out of scope
 
-All other public routes in `ROUTE_REGISTRY` (About, Case Studies, Pricing, Book, GL!TCH, Calm Magic, Dream & Learn, Retreat, Wuxia, Tonalli, Tarot, Pattern Encyclopedia, Agentic UX, Design System, Lineage, Origins, Credits, Events & Retreats, Contact, Agentic Demo, Residencies + archetypes, Drift + library/year-month, Calm Magic Board sections, Trainings + slug) are already emitted by the existing sitemap builder — verified against the registry. No-index routes (auth, admin dashboards, PRD editor, training modules, agentic ecosystem deck) stay excluded, which is correct.
-
-## robots.txt
-
-Already correct — allows all crawlers and points to `https://calm-magic.com/sitemap.xml`. No change needed.
-
-## Verification
-
-After the edit, hit `/sitemap.xml` in the preview and confirm the three residency URLs appear alongside the existing entries.
-
-## Out of scope
-
-- No new routes, no OG image generation, no per-page priority tuning.
+- No code changes; verification only.
+- No live crawler / Search Console submission (that's a publish-time step).
