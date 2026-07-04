@@ -13,6 +13,7 @@
 import { ROUTE_REGISTRY, type RouteMeta } from "./routeRegistry";
 import { CANONICAL_HOST } from "./structuredData";
 import { driftTools, type DriftToolAxis } from "@/data/driftTools";
+import { agenticResidencies } from "@/data/agenticResidencies";
 
 interface SitemapUrl {
   loc: string;
