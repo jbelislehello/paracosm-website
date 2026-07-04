@@ -128,16 +128,23 @@ export const caseStudies: CaseStudy[] = [
     id: 'machine-bienveillance',
     title: 'case_studies.projects.machine_bienveillance.title',
     subtitle: 'case_studies.projects.machine_bienveillance.subtitle',
-    year: '2018',
+    year: '2017',
     category: 'public-art',
-    image: 'photo-1518709268805-4e9042af2ac5',
+    image: '/__l5e/assets-v1/086e6815-955f-456a-bb7d-df4dde5253b3/machine-bienveillance.jpg',
     description: 'case_studies.projects.machine_bienveillance.description',
     role: 'case_studies.projects.machine_bienveillance.role',
     methods: ['case_studies.projects.machine_bienveillance.methods.0', 'case_studies.projects.machine_bienveillance.methods.1', 'case_studies.projects.machine_bienveillance.methods.2', 'case_studies.projects.machine_bienveillance.methods.3'],
     results: 'case_studies.projects.machine_bienveillance.results',
     impact: 'case_studies.projects.machine_bienveillance.impact',
-    awards: ['case_studies.projects.machine_bienveillance.awards.0'],
-    technologies: ['case_studies.projects.machine_bienveillance.technologies.0', 'case_studies.projects.machine_bienveillance.technologies.1', 'case_studies.projects.machine_bienveillance.technologies.2'],
+    awards: ['case_studies.projects.machine_bienveillance.awards.0', 'case_studies.projects.machine_bienveillance.awards.1'],
+    technologies: ['case_studies.projects.machine_bienveillance.technologies.0', 'case_studies.projects.machine_bienveillance.technologies.1', 'case_studies.projects.machine_bienveillance.technologies.2', 'case_studies.projects.machine_bienveillance.technologies.3'],
+    links: [
+      { title: 'Blogue ONF/NFB', url: 'https://blogue.onf.ca/blogue/2017/09/25/machine-a-bienveillance/' },
+      { title: 'Vidéo YouTube', url: 'https://www.youtube.com/watch?v=OkHQg18SF24' },
+      { title: 'Facebook ONF', url: 'https://www.facebook.com/onf.ca/videos/la-machine-%C3%A0-bienveillance/10155970233169728/' },
+      { title: 'Le Soir — Brux\'ils Brux\'elles', url: 'https://www.lesoir.be/267241/article/2019-12-16/brux-ils-brux-elles-la-civilite-pour-lutter-contre-lincivilite' },
+      { title: 'Revue Communication (OpenEdition)', url: 'https://journals.openedition.org/communication/21234' }
+    ],
     relatedProjects: ['naissance-du-monde', 'io-theatre']
   },
   {

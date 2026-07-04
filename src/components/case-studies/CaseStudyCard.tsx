@@ -19,7 +19,7 @@ const CaseStudyCard: React.FC<CaseStudyCardProps> = ({ caseStudy, onViewDetails 
       <div className="relative">
         <div className="aspect-video bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-900">
           <img
-            src={`https://images.unsplash.com/${caseStudy.image}?auto=format&fit=crop&w=800&q=80`}
+            src={/^(https?:)?\//.test(caseStudy.image) ? caseStudy.image : `https://images.unsplash.com/${caseStudy.image}?auto=format&fit=crop&w=800&q=80`}
             alt={caseStudy.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />

@@ -166,25 +166,27 @@
       }
     },
     "machine_bienveillance": {
-      "title": "Machine Bienveillance",
-      "subtitle": "Installation d'Art sur l'Éthique IA",
-      "description": "Installation artistique provocante explorant la relation entre intelligence artificielle et bienveillance humaine. Invité les visiteurs à réfléchir sur le rôle de la technologie dans la société.",
-      "role": "Artiste conceptuel et concepteur d'interaction IA, créant dialogue significatif entre humains et intelligence artificielle.",
+      "title": "La Machine à Bienveillance",
+      "subtitle": "Installation interactive ONF/NFB — bienveillance vs. incivilité",
+      "description": "Installation immersive coproduite avec l'Office national du film du Canada, présentée à MURAL (Montréal, 2017) puis en tournée européenne, notamment à Bruxelles en 2019 dans le cadre du festival Brux'ils Brux'elles (Recyclart). Une sculpture monumentale en forme de caméra de surveillance rose renverse le dispositif du contrôle : au lieu de surveiller, elle « surveille avec bienveillance » — dialogue, compliments et micro-gestes de civilité offerts aux passant·e·s.",
+      "role": "Concepteur d'expérience et design d'interaction conversationnelle, en collaboration avec l'équipe interactive de l'ONF — dramaturgie du dialogue, orchestration des micro-gestes de bienveillance et scénarisation des rencontres publiques.",
       "methods": {
-        "0": "Design d'interaction IA",
-        "1": "Exploration technologie éthique",
-        "2": "Enquête philosophique",
-        "3": "Engagement public"
+        "0": "Design d'interaction située en espace public",
+        "1": "Dramaturgie conversationnelle",
+        "2": "Art public participatif",
+        "3": "Recherche-création (voir article Communication)"
       },
-      "results": "Installation artistique acclamée qui a suscité des conversations importantes sur l'éthique de l'IA et les relations humain-machine.",
-      "impact": "Contribué au discours public sur l'éthique de l'IA et démontré le rôle de l'art dans l'exploration de questions technologiques complexes.",
+      "results": "Des milliers d'interactions publiques à Montréal et Bruxelles, couverture presse (Le Soir), diffusion et documentation par l'ONF, et étude académique publiée dans la revue Communication (OpenEdition).",
+      "impact": "Renverse le regard technologique : la surveillance devient vecteur de lien social plutôt que de contrôle. L'œuvre a nourri le débat public sur les incivilités urbaines et sur ce que peut être une intelligence relationnelle en espace public.",
       "awards": {
-        "0": "Prix Arts Numériques 2018"
+        "0": "Sélection MURAL Festival — Montréal 2017",
+        "1": "Tournée européenne Brux'ils Brux'elles — Bruxelles 2019"
       },
       "technologies": {
-        "0": "Apprentissage Automatique",
-        "1": "Traitement Langage Naturel",
-        "2": "Affichages Interactifs"
+        "0": "Dialogue scripté / IA conversationnelle",
+        "1": "Capteurs de présence",
+        "2": "Sculpture LED",
+        "3": "Structure acier grand format"
       }
     },
     "banff_residence": {

@@ -166,25 +166,27 @@
       }
     },
     "machine_bienveillance": {
-      "title": "Machine Bienveillance",
-      "subtitle": "AI Ethics Art Installation",
-      "description": "Thought-provoking art installation exploring the relationship between artificial intelligence and human kindness. Invited visitors to reflect on technology's role in society.",
-      "role": "Conceptual artist and AI interaction designer, creating meaningful dialogue between humans and artificial intelligence.",
+      "title": "La Machine à Bienveillance",
+      "subtitle": "NFB interactive installation — kindness vs. incivility",
+      "description": "Immersive installation co-produced with the National Film Board of Canada, presented at MURAL (Montréal, 2017) and toured to Europe, notably Brussels in 2019 as part of the Brux'ils Brux'elles festival (Recyclart). A monumental pink surveillance-camera sculpture flips the script of control: instead of watching over people, it 'watches over them with kindness' — dialogue, compliments and micro-gestures of civility offered to passers-by.",
+      "role": "Experience designer and conversational interaction designer, working with the NFB interactive team on the dialogue dramaturgy, the choreography of kindness gestures and the scripting of public encounters.",
       "methods": {
-        "0": "AI interaction design",
-        "1": "Ethical technology exploration",
-        "2": "Philosophical inquiry",
-        "3": "Public engagement"
+        "0": "Situated interaction design in public space",
+        "1": "Conversational dramaturgy",
+        "2": "Participatory public art",
+        "3": "Research-creation (see Communication article)"
       },
-      "results": "Acclaimed art installation that sparked important conversations about AI ethics and human-machine relationships.",
-      "impact": "Contributed to public discourse on AI ethics and demonstrated art's role in exploring complex technological questions.",
+      "results": "Thousands of public interactions in Montréal and Brussels, press coverage (Le Soir), documentation and distribution by the NFB, and an academic study published in the journal Communication (OpenEdition).",
+      "impact": "Reframes the technological gaze: surveillance becomes a vector of social connection rather than control. The work fed public debate on urban incivility and on what a relational intelligence could look like in public space.",
       "awards": {
-        "0": "Digital Arts Award 2018"
+        "0": "MURAL Festival selection — Montréal 2017",
+        "1": "Brux'ils Brux'elles European tour — Brussels 2019"
       },
       "technologies": {
-        "0": "Machine Learning",
-        "1": "Natural Language Processing",
-        "2": "Interactive Displays"
+        "0": "Scripted dialogue / conversational AI",
+        "1": "Presence sensors",
+        "2": "LED sculpture",
+        "3": "Large-format steel structure"
       }
     },
     "banff_residence": {
