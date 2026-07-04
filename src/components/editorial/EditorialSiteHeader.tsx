@@ -63,6 +63,7 @@ const NAV: NavItem[] = [
       { label: "GL!TCH", to: "/glitch-methodology" },
     ],
   },
+  { label: "Program", to: "/programs/rehearsal-arc" },
   { label: "Book", to: "/book" },
   { label: "Case Studies", to: "/case-studies" },
   { label: "Contact", to: "/contact" },
