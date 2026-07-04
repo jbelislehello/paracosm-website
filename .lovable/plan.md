@@ -1,35 +1,32 @@
-# Add videos to Tonalli page + refresh "La Naissance du Monde" case study
+# Update — Wuxia le renard case study
 
-## 1. Tonalli page (`src/pages/Tonalli.tsx`)
+Enrich the existing `wuxia-the-fox` entry with the videos, links, and factual polish sourced from École branchée, Le Soleil, Blurb, l'UQAM (Archipel), Baron Mag, Lien Multimédia, Colin/Ex-Situ, Kickstarter and Renaud-Bray.
 
-Insert a new editorial section between "Two branches" (01) and "Educational design platforms" (02), renumbering the rest:
+## Data (`src/data/caseStudies.ts`)
+Add to the `wuxia-the-fox` entry:
+- `videos`: two YouTube embeds — `dd8DISjnSfQ` (trailer/gameplay) and `AXmwf5Fo-84` (secondary capture).
+- `links`: 9 press / academic / commerce references, each with a clean French title:
+  - École branchée, Le Soleil, Baron Mag (portrait Jonathan Bélisle / Hello Architekt), Lien Multimédia
+  - Mémoire UQAM (Archipel PDF, D4233)
+  - Colin / Ex-Situ (documentation d'archives)
+  - Blurb (livre papier), Renaud-Bray (édition FR), Kickstarter (campagne)
 
-- **02 · In the wild** (tone `paper` or `warm`) — showcase of two field pieces of Tonalli Voice: *La Naissance du Monde* (Loto-Québec / Les Divertisseurs, with Queen Ka & Ivy).
-- Two responsive 16:9 embeds side-by-side on desktop, stacked on mobile:
-  - Vimeo: `https://player.vimeo.com/video/148532449`
-  - YouTube: `https://www.youtube-nocookie.com/embed/bNR2VXOer6A`
-- Below each embed: caption + outbound link (Vimeo original, La Bible Urbaine article) styled with `editorialType.caption`.
-- Bump "Educational design platforms" numeral to 03 and "Get in touch" to 04.
+## Copy (`src/i18n/{fr,en}/case-studies.json`)
+Refresh the current copy so it reflects the documented facts:
+- **Subtitle** FR: "Livre-univers augmenté & app iPad — SAGA / TFO" · EN equivalent.
+- **Description**: conte transmédia de 200 pages (Wuxia le renard — à la recherche des rêves perdus) publié en FR et EN, accompagné d'une application iPad qui reconnaît images, masques et blocs de bois du livre pour déclencher des scènes audiovisuelles ; coproduit avec SAGA et diffusé avec TFO.
+- **Role**: auteur, illustrateur et directeur créatif du transmédia (livre + app), design de la reconnaissance visuelle/vocale — chef d'orchestre du dispositif Calm Magic à ses débuts.
+- **Methods**: écriture jeunesse, direction artistique illustrée, design d'interaction multi-support (papier ↔ tablette), reconnaissance image + voix, méthodologie Calm Magic (première itération publique).
+- **Results**: campagne Kickstarter financée avec succès (2014), livre imprimé (Blurb) distribué chez Renaud-Bray, app iPad publiée, tournée médiatique (Le Soleil, École branchée, Lien Multimédia, Baron Mag).
+- **Impact**: pièce fondatrice du paracosme Wuxia — ancre pour la méthodologie Calm Magic ; référencée dans un mémoire universitaire de l'UQAM (Archipel D4233) et archivée par Colin / Ex-Situ ; posture publique de Jonathan Bélisle / Hello Architekt cimentée par Baron Mag.
+- **Awards** (garder l'existant + ajouter):
+  - Grand Prix Numix 2015 — Mention Spéciale
+  - Campagne Kickstarter financée (2014)
+  - Référencé dans mémoire académique UQAM (Archipel)
+- **Technologies**: réalité augmentée iPad, vision par ordinateur (reconnaissance d'images/objets), reconnaissance vocale, synthèse audio, illustration + impression grand format.
 
-## 2. Case study — La Naissance du Monde
+## Rendering
+Aucune modif de composant : `CaseStudyDetail` sait déjà rendre `videos` (ajouté à l'itération précédente) et `links`. Aucun changement de `CaseStudyCard`.
 
-### Data (`src/data/caseStudies.ts`)
-Add to the `naissance-du-monde` entry:
-- `links`: 3 entries (Vimeo, La Bible Urbaine article, YouTube).
-- New optional field `videos?: { provider: 'vimeo' | 'youtube'; id: string; title: string }[]` on the `CaseStudy` interface, populated with the two IDs (`148532449`, `bNR2VXOer6A`).
-
-### Copy (`src/i18n/{fr,en}/case-studies.json`)
-Replace the current generic "large-scale public art" copy with real facts:
-- **Subtitle** FR: "Œuvre interactive parlée — Loto-Québec / Les Divertisseurs" · EN equivalent.
-- **Description**: pièce de spoken word interactive coproduite pour Les Divertisseurs de Loto-Québec, avec les artistes Queen Ka et Ivy — la voix (récitation, souffle, intonation) devient l'interface qui fait naître un monde visuel et sonore.
-- **Role**: TBD — voir question ci-dessous.
-- **Methods**: design d'interaction vocale, dramaturgie du souffle, direction créative interactive, collaboration avec artistes de scène.
-- **Results / Impact**: diffusion Les Divertisseurs, couverture La Bible Urbaine, référence pour les projets Tonalli Voice actuels.
-- **Technologies**: reconnaissance vocale, moteur temps réel, projection scénographique (remplace les LED/capteurs météo génériques actuels).
-
-### Rendering (`src/components/case-studies/CaseStudyDetail.tsx`)
-Ajouter, sous l'image d'en-tête, un rendu conditionnel `caseStudy.videos?.map(...)` : grille responsive avec `<iframe>` (Vimeo `player.vimeo.com/video/{id}`, YouTube `youtube-nocookie.com/embed/{id}`), `aspect-video`, `allowFullScreen`, `loading="lazy"`.
-
-## Question
-
-Quel a été **ton rôle exact** sur *La Naissance du Monde* (Les Divertisseurs / Loto-Québec, avec Queen Ka & Ivy) ? Design d'interaction vocale, direction créative, développement interactif — pour ne pas inventer un crédit.
+## Hors scope
+Pas de nouvelle image d'en-tête — l'image Unsplash actuelle reste jusqu'à ce que tu m'envoies une image officielle Wuxia à uploader comme asset.
