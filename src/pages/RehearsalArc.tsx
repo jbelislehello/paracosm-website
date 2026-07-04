@@ -174,22 +174,39 @@ export default function RehearsalArc() {
         <EditorialChapterHeader
           numeral="VI"
           kicker="Downloads"
-          subtitle="Print-ready facilitator materials — free with an account."
+          subtitle="Each offering ships its own roadmap, facilitator playbook and program doc — free with an account."
           tone="paper"
         />
-        <div className="grid md:grid-cols-2 gap-5 max-w-4xl">
-          <GatedDownloadButton
-            href="/downloads/rehearsal-arc-facilitator-deck.pdf"
-            filename="rehearsal-arc-facilitator-deck.pdf"
-            label="Facilitator deck"
-            sublabel="32 slides · state-scored · read-aloud cues"
-          />
-          <GatedDownloadButton
-            href="/downloads/rehearsal-arc-workbook.pdf"
-            filename="rehearsal-arc-workbook.pdf"
-            label="Facilitator workbook"
-            sublabel="9 offerings · exercises, roadmaps, contracts"
-          />
+        <div className="grid md:grid-cols-3 gap-5 max-w-5xl">
+          {REHEARSAL_ARC_PROGRAM.map((o) => (
+            <div key={o.slug} className="rounded-2xl border border-border bg-muted/40 p-6 space-y-3">
+              <p className={editorialType.caption}>{TIER_META[o.tier].label}</p>
+              <p className={cn(editorialType.serif, "text-lg leading-tight")}>{o.title}</p>
+              <div className="space-y-1.5 pt-2">
+                <GatedDownloadButton
+                  href={`/downloads/${o.slug}-roadmap.pdf`}
+                  filename={`${o.slug}-roadmap.pdf`}
+                  label="Roadmap"
+                  sublabel="1-page state arc"
+                  offeringSlug={o.slug}
+                />
+                <GatedDownloadButton
+                  href={`/downloads/${o.slug}-facilitator-playbook.pdf`}
+                  filename={`${o.slug}-facilitator-playbook.pdf`}
+                  label="Facilitator Playbook"
+                  sublabel="Full state-by-state deck"
+                  offeringSlug={o.slug}
+                />
+                <GatedDownloadButton
+                  href={`/downloads/${o.slug}-program-doc.pdf`}
+                  filename={`${o.slug}-program-doc.pdf`}
+                  label="Program Doc"
+                  sublabel="Curriculum + contract"
+                  offeringSlug={o.slug}
+                />
+              </div>
+            </div>
+          ))}
         </div>
         <p className="text-xs opacity-60 mt-6 max-w-2xl">
           Free with any Paracosm account. The same login unlocks the Calm Magic
