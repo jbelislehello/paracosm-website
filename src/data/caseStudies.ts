@@ -99,8 +99,8 @@ export const caseStudies: CaseStudy[] = [
     id: 'naissance-du-monde',
     title: 'case_studies.projects.naissance_du_monde.title',
     subtitle: 'case_studies.projects.naissance_du_monde.subtitle',
-    year: '2016',
-    category: 'public-art',
+    year: '2015',
+    category: 'interactive-storytelling',
     image: 'photo-1506905925346-21bda4d32df4',
     description: 'case_studies.projects.naissance_du_monde.description',
     role: 'case_studies.projects.naissance_du_monde.role',
@@ -108,6 +108,15 @@ export const caseStudies: CaseStudy[] = [
     results: 'case_studies.projects.naissance_du_monde.results',
     impact: 'case_studies.projects.naissance_du_monde.impact',
     technologies: ['case_studies.projects.naissance_du_monde.technologies.0', 'case_studies.projects.naissance_du_monde.technologies.1', 'case_studies.projects.naissance_du_monde.technologies.2'],
+    videos: [
+      { provider: 'vimeo', id: '148532449', title: 'La Naissance du Monde — captation' },
+      { provider: 'youtube', id: 'bNR2VXOer6A', title: 'Queen Ka & Ivy — La Naissance du Monde' }
+    ],
+    links: [
+      { title: 'Vimeo — captation', url: 'https://vimeo.com/148532449' },
+      { title: 'La Bible Urbaine — article', url: 'https://labibleurbaine.com/litterature/queen-ka-et-ivy-se-pretent-au-jeu-la-naissance-du-monde-de-lesdivertisseurs-de-loto-quebec/' },
+      { title: 'YouTube — Queen Ka & Ivy', url: 'https://www.youtube.com/watch?v=bNR2VXOer6A' }
+    ],
     relatedProjects: ['machine-bienveillance', 'io-theatre']
   },
   {
