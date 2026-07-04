@@ -14,6 +14,7 @@ import { ROUTE_REGISTRY, type RouteMeta } from "./routeRegistry";
 import { CANONICAL_HOST } from "./structuredData";
 import { driftTools, type DriftToolAxis } from "@/data/driftTools";
 import { agenticResidencies } from "@/data/agenticResidencies";
+import { REHEARSAL_ARC_PROGRAM } from "@/data/rehearsalArcProgram";
 
 interface SitemapUrl {
   loc: string;
@@ -52,6 +53,9 @@ const expandDynamic = (meta: RouteMeta): string[] => {
     }
     case "/agentic-ux/residencies/:slug": {
       return agenticResidencies.map((r) => `/agentic-ux/residencies/${r.slug}`);
+    }
+    case "/programs/rehearsal-arc/:slug": {
+      return REHEARSAL_ARC_PROGRAM.map((o) => `/programs/rehearsal-arc/${o.slug}`);
     }
     default:
       return [];

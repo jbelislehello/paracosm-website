@@ -117,6 +117,19 @@ export const ROUTE_REGISTRY: RouteMeta[] = [
     parent: "/trainings/:slug",
     noindex: true,
   },
+
+  // Rehearsal Arc program
+  { path: "/programs/rehearsal-arc", label: "The Rehearsal Arc" },
+  {
+    path: "/programs/rehearsal-arc/:slug",
+    label: (p) => {
+      const s = p.slug ?? "";
+      return s
+        ? s.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ")
+        : "Offering";
+    },
+    parent: "/programs/rehearsal-arc",
+  },
 ];
 
 
