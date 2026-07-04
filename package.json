@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
+    "build:rehearsal-artifacts": "bunx tsx scripts/build-rehearsal-per-offering.mjs && node scripts/build-rehearsal-pdfs.mjs",
     "build:rehearsal-pdfs": "node scripts/build-rehearsal-pdfs.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
