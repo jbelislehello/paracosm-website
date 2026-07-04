@@ -187,26 +187,31 @@ export default function RehearsalArcOffering() {
           {offering.roadmap.map((r, i) => {
             const meta = STATE_META[r.focus];
             return (
-              <li
-                key={i}
-                className="flex items-start gap-6 rounded-2xl border border-border bg-muted/40 p-6"
-              >
-                <div className={cn(editorialType.serif, "text-3xl opacity-50 w-12 shrink-0")}>
-                  {String(i + 1).padStart(2, "0")}
-                </div>
-                <div className="flex-1">
-                  <div className={cn(editorialType.caption, "flex items-center gap-3")}>
-                    <span>{r.when}</span>
-                    <span
-                      className="px-2 py-0.5 rounded-full text-[9px] font-semibold text-white"
-                      style={{ background: meta.accent }}
-                    >
-                      {meta.label}
-                    </span>
+              <li key={i}>
+                <Link
+                  to={`/trainings/${offering.slug}/modules/${i + 1}`}
+                  className="group flex items-start gap-6 rounded-2xl border border-border bg-muted/40 p-6 hover:bg-muted transition-colors"
+                >
+                  <div className={cn(editorialType.serif, "text-3xl opacity-50 w-12 shrink-0")}>
+                    {String(i + 1).padStart(2, "0")}
                   </div>
-                  <div className={cn(editorialType.serif, "text-lg mt-1")}>{r.label}</div>
-                  <p className="text-sm opacity-70 mt-1">{r.outcome}</p>
-                </div>
+                  <div className="flex-1">
+                    <div className={cn(editorialType.caption, "flex items-center gap-3")}>
+                      <span>{r.when}</span>
+                      <span
+                        className="px-2 py-0.5 rounded-full text-[9px] font-semibold text-white"
+                        style={{ background: meta.accent }}
+                      >
+                        {meta.label}
+                      </span>
+                    </div>
+                    <div className={cn(editorialType.serif, "text-lg mt-1")}>{r.label}</div>
+                    <p className="text-sm opacity-70 mt-1">{r.outcome}</p>
+                  </div>
+                  <span className="text-xs opacity-60 self-center group-hover:opacity-100 group-hover:translate-x-1 transition-all">
+                    Open module →
+                  </span>
+                </Link>
               </li>
             );
           })}
