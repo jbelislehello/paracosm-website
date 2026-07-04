@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { CaseStudy, categories, caseStudies } from '@/data/caseStudies';
 import { cn } from '@/lib/utils';
 import { ArrowLeft, ExternalLink, Award, Users, Target, Lightbulb } from 'lucide-react';
+import VideoGallery from './VideoGallery';
 
 interface CaseStudyDetailProps {
   caseStudy: CaseStudy;
