@@ -45,9 +45,9 @@ export default function EditorialHome() {
         kicker="Foreplay"
         offering="Trainings"
         headline="Rehearse the moves before the stakes get real."
-        pullQuote="Imagination is a skill. Trainings make it a shared muscle."
+        pullQuote="Imagination is a skill. Trainings make the inventive muscle shared."
         body={[
-          "Foreplay is where curiosity gets structured. Cohort-based programs and self-paced modules that teach entrepreneurs, executives, and creative teams to think alongside AI without outsourcing judgment.",
+          "Foreplay is where curiosity gets structured. Cohort-based programs and self-paced modules that teach SMB founders, executives, and creative teams to think alongside AI without outsourcing judgment — the inventive half of the practice, before it becomes expressive product.",
           "The Crewdle × Paracosm Formation is the flagship: 65 hours across foundations, prompt art, agents, admin, and Loi 25 compliance — designed so the practice sticks after the last session.",
         ]}
         image={atelier}
@@ -65,9 +65,9 @@ export default function EditorialHome() {
         kicker="Foresight"
         offering="Vision Retreats"
         headline="Slow down long enough to see what wants to happen."
-        pullQuote="A relational place to hold the ideas your calendar is squeezing out."
+        pullQuote="A relational place to hold the inventive ideas your calendar is squeezing out."
         body={[
-          "Foresight is where leadership steps out of the machine to sense what the machine is actually asking for. Multi-day retreats designed for founders, executives, and creative partners who need a strategic reset — not a workshop.",
+          "Foresight is where leadership steps out of the machine to sense what the machine is actually asking for. Multi-day retreats designed for founders, executives, growing SMBs, and creative partners who need a strategic reset — not a workshop.",
           "The Calm Magic framework is the instrument: a 5-axis compass (Love · Magic · Calm · Open · Free) that turns intuition into a legible map you can share with your team on Monday.",
         ]}
         woven={{
@@ -97,9 +97,9 @@ export default function EditorialHome() {
         kicker="Forecast"
         offering="Prototype Residencies"
         headline="Turn the vision into measurable, working evidence."
-        pullQuote="Engineering-grade transformation. Not slideware, not vibes — shipped surfaces."
+        pullQuote="Where inventive intent becomes expressive infrastructure — not slideware, not vibes."
         body={[
-          "Forecast is where imagination becomes infrastructure. Multi-week residencies where Paracosm embeds with your team to build the prototype that proves — or breaks — the hypothesis.",
+          "Forecast is where imagination becomes expressive infrastructure. Multi-week residencies where Paracosm embeds with your team to build the prototype that proves — or breaks — the hypothesis.",
           "Every residency uses the Prototypes Garden: structured foresight scenarios wired to real data, real users, and a real ROI thesis. You leave with a working artifact and the practice to keep building without us.",
         ]}
         woven={{

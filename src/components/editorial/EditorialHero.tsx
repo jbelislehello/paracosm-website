@@ -34,17 +34,20 @@ export default function EditorialHero() {
             Issue 01 · The Imagination Practice
           </p>
           <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight">
-            Three ways to <em className="italic font-light">rehearse</em> the future
+            Outiller l'<em className="italic font-light">inventivité</em>
             <span className="block mt-2">
-              before you <span className="underline decoration-primary decoration-4 underline-offset-8">build</span> it.
+              et l'<span className="underline decoration-primary decoration-4 underline-offset-8">expressivité</span>.
             </span>
           </h1>
           <p className="max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed">
-            Paracosm turns emerging AI questions into felt, tested, and shipped evidence — through
-            a single arc of <b className="text-foreground">Foreplay</b>, <b className="text-foreground">Foresight</b>,
-            and <b className="text-foreground">Forecast</b>. This is a walk-through of what your
-            organization can do with us.
+            Paracosm outille l'<b className="text-foreground">inventivité</b> (les Dreams) et
+            l'<b className="text-foreground">expressivité</b> (le Learn) des dirigeants, équipes
+            créatives et <b className="text-foreground">PME ambitieuses</b> — un même arc de{" "}
+            <b className="text-foreground">Foreplay</b>, <b className="text-foreground">Foresight</b>,
+            et <b className="text-foreground">Forecast</b> pour transformer les questions IA en
+            évidences vécues, testées et livrées.
           </p>
+
         </div>
 
         <aside className="md:col-span-4 border-l border-border/60 pl-6 space-y-4">
