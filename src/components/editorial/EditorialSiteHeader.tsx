@@ -180,7 +180,19 @@ export default function EditorialSiteHeader() {
               My Arc
             </Link>
           )}
+          <LanguageToggle />
         </nav>
+
+        <div className="lg:hidden flex items-center gap-2">
+          <LanguageToggle />
+          <button
+            className="p-1.5 opacity-70 hover:opacity-100"
+            onClick={() => setMobileOpen((v) => !v)}
+            aria-label="Toggle menu"
+          >
+            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+        </div>
 
         <button
           className="lg:hidden p-1.5 opacity-70 hover:opacity-100"
