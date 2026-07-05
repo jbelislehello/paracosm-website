@@ -1,37 +1,27 @@
-# Wuxia video gallery with thumbnails + clear playback order
+## Objectif
 
-Replace the current 2-up iframe grid (in `CaseStudyDetail.tsx`) with a **VideoGallery** component: one large "now playing" player, a numbered thumbnail strip below acting as a playlist, and prev/next controls. Applies to any case study with `videos[]`, so Wuxia and *Naissance du Monde* both benefit.
+Remplacer les placeholders Unsplash pour 3 case studies. Les 4 autres (`oaciq-elise`, `calm-magic-methodology`, `simulateur-genial`, `tedx-montreal`) restent tels quels — l'utilisateur fournira les URLs plus tard.
 
-## Component: `src/components/case-studies/VideoGallery.tsx` (new)
+## Sources
 
-- Props: `videos: { provider, id, title }[]`.
-- State: `activeIndex` (default 0), `hasStarted` (defer iframe creation until user clicks, so YouTube/Vimeo don't autoload 2+ players at once).
-- Layout:
-  - **Featured player** (top): `aspect-video`, rounded, shows the active video. Before first play, renders the thumbnail with a large play button overlay + video title + "1 / N" counter.
-  - **Thumbnail strip** (below): horizontal scroll (mobile) / flex-wrap (desktop). Each item = 16:9 thumbnail with:
-    - Numbered order badge (`1`, `2`, …) top-left
-    - "▶ Now playing" ring / accent border on the active one
-    - Title underneath, truncated
-  - **Prev / Next buttons** on the featured player (bottom-right), disabled at boundaries.
-- Thumbnails resolved client-side, no extra fetches:
-  - YouTube: `https://i.ytimg.com/vi/{id}/hqdefault.jpg`
-  - Vimeo: use a static override map keyed by video id (Vimeo requires an API call for thumbnails). Extend `CaseStudy.videos[]` type with an optional `thumbnail?: string` field so Vimeo entries can provide the CDN thumbnail URL we already have from oEmbed. YouTube entries can omit it.
-- Keyboard: `←` / `→` on the gallery container step through videos.
-- A11y: buttons have `aria-label`, thumbnails are `<button>` with `aria-current="true"` for active.
+- **io-theatre** — je scrape `zonesismique.com/portfolio/portfolio/boutique-interactive-saga-world/` et `share.google/CfawAptIYsnQ8luyx`, puis je choisis le visuel le plus fort éditorialement (photo d'installation, pas un logo/portrait).
+- **lachine-passages** — visuel du Canal Lachine / installation Parcs Canada. Aucune URL image directe fournie ; je cherche sur le web (Firecrawl/web_search) une photo libre de droits ou d'archive Parcs Canada représentant le site. Si rien de crédible ne sort, je vous propose 2-3 candidats avant upload.
+- **banff-residence** — reste un case study distinct de Paspébiac (confirmé). Aucune URL fournie ici ; je cherche une photo du Banff Centre / résidence. Même logique : je propose des candidats si l'automatique est faible.
 
-## Data update: `src/data/caseStudies.ts`
+## Étapes
 
-- Extend `videos` type: `{ provider: 'vimeo' | 'youtube'; id: string; title: string; thumbnail?: string }`.
-- On the *Naissance du Monde* Vimeo entry, add `thumbnail: 'https://i.vimeocdn.com/video/547498526-b1811c16ff9fab209ed2c7c17b7e9d3ef2fcd97a5385539774d64cd5f86c4673-d_640'` (already fetched from oEmbed).
-- Wuxia has 2 YouTube videos → no thumbnail field needed; YouTube URL pattern used automatically.
-- Confirm playback order: for Wuxia, keep **1) Trailer (`dd8DISjnSfQ`)** then **2) Captation (`AXmwf5Fo-84`)**. For Naissance du Monde, keep **1) Vimeo captation** then **2) Queen Ka & Ivy YouTube**.
+1. `fetch_website` sur les 2 URLs io-theatre → extraire le meilleur visuel → `curl` vers `/tmp/`.
+2. `web_search` pour lachine-passages (Canal Lachine, écluses, passages sonores) et banff-residence (Banff Centre residency). Si visuel évident, télécharger. Sinon, revenir avec 2-3 propositions.
+3. Upload via `lovable-assets create --file …` pour chaque image retenue → écrire `src/assets/<slug>-cover.jpg.asset.json`.
+4. Mettre à jour `src/data/caseStudies.ts` : remplacer le champ `image` (photo Unsplash id) par l'URL CDN du `.asset.json` pour les 3 cases.
+5. Vérification : build passe, pas d'imports orphelins.
 
-## Wiring: `src/components/case-studies/CaseStudyDetail.tsx`
+## Hors scope
 
-- Replace lines 59–79 (the grid of iframes) with `<VideoGallery videos={caseStudy.videos} />`.
-- No other changes.
+- Les 4 autres case studies.
+- Renommage `banff-residence` → `paspebiac-museum` (confirmé : on garde séparé).
+- Modifications de copy/i18n — uniquement le champ `image`.
 
-## Out of scope
-- No autoplay, no i18n string changes (component labels stay minimal: numeric badges + "Now playing" — small text, add EN string via inline literal like the existing "Back to Case Studies" button which is already hard-coded English).
-- No changes to the Tonalli page video block (that's a separate curated section, not a case-study gallery).
-- No image uploads — thumbnails come straight from YouTube's CDN and the existing Vimeo CDN URL.
+## Détails techniques
+
+Fichier ciblé : `src/data/caseStudies.ts`. Le pattern est déjà établi par `wuxia-the-fox` et `naissance-du-monde` (URL `/__l5e/assets-v1/…` en dur dans `image:`). Aucun changement de type/schema requis.
