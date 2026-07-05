@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
-import { ArrowDown, ArrowRight } from "lucide-react";
+import { ArrowDown, ArrowRight, Globe } from "lucide-react";
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function EditorialHero() {
+  const { language, setLanguage } = useLanguage();
+  const isFr = language === "fr";
   return (
     <section className="relative min-h-screen flex flex-col bg-gradient-to-b from-background via-background to-muted/40 overflow-hidden">
       {/* decorative texture */}
