@@ -33,25 +33,58 @@ export default function EditorialHero() {
       {/* Spread */}
       <div className="relative z-10 flex-1 container max-w-7xl mx-auto px-6 py-16 md:py-24 grid md:grid-cols-12 gap-8 items-center">
         <div className="md:col-span-8 space-y-8">
-          <p className="text-xs font-bold uppercase tracking-[0.4em] text-primary">
-            Issue 01 · The Imagination Practice
-          </p>
-          <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight">
-            Outiller l'<em className="italic font-light">inventivité</em>
-            <span className="block mt-2">
-              et l'<span className="underline decoration-primary decoration-4 underline-offset-8">expressivité</span>.
-            </span>
-          </h1>
-          <p className="max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed">
-            Paracosm outille l'<b className="text-foreground">inventivité</b> (les Dreams) et
-            l'<b className="text-foreground">expressivité</b> (le Learn) des dirigeants, équipes
-            créatives et <b className="text-foreground">PME ambitieuses</b> — un même arc de{" "}
-            <b className="text-foreground">Foreplay</b>, <b className="text-foreground">Foresight</b>,
-            et <b className="text-foreground">Forecast</b> pour transformer les questions IA en
-            évidences vécues, testées et livrées.
-          </p>
+          <div className="flex items-center gap-3 flex-wrap">
+            <p className="text-xs font-bold uppercase tracking-[0.4em] text-primary">
+              {isFr ? "Numéro 01 · La pratique de l'imagination" : "Issue 01 · The Imagination Practice"}
+            </p>
+            <button
+              type="button"
+              onClick={() => setLanguage(isFr ? "en" : "fr")}
+              className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.25em] text-muted-foreground hover:text-foreground transition-colors border border-border/60 rounded-full px-2.5 py-1"
+              aria-label={isFr ? "Read in English" : "Lire en français"}
+            >
+              <Globe className="w-3 h-3" />
+              {isFr ? "Read in English" : "Lire en français"}
+            </button>
+          </div>
+          {isFr ? (
+            <>
+              <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight">
+                Outiller l'<em className="italic font-light">inventivité</em>
+                <span className="block mt-2">
+                  et l'<span className="underline decoration-primary decoration-4 underline-offset-8">expressivité</span>.
+                </span>
+              </h1>
+              <p className="max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed">
+                Paracosm outille l'<b className="text-foreground">inventivité</b> (les Dreams) et
+                l'<b className="text-foreground">expressivité</b> (le Learn) des dirigeants, équipes
+                créatives et <b className="text-foreground">PME ambitieuses</b> — un même arc de{" "}
+                <b className="text-foreground">Foreplay</b>, <b className="text-foreground">Foresight</b>,
+                et <b className="text-foreground">Forecast</b> pour transformer les questions IA en
+                évidences vécues, testées et livrées.
+              </p>
+            </>
+          ) : (
+            <>
+              <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight">
+                Tooling <em className="italic font-light">inventiveness</em>
+                <span className="block mt-2">
+                  and <span className="underline decoration-primary decoration-4 underline-offset-8">expressiveness</span>.
+                </span>
+              </h1>
+              <p className="max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed">
+                Paracosm tools the <b className="text-foreground">inventiveness</b> (the Dreams) and
+                the <b className="text-foreground">expressiveness</b> (the Learn) of executives, creative
+                teams and <b className="text-foreground">ambitious SMBs</b> — one continuous arc of{" "}
+                <b className="text-foreground">Foreplay</b>, <b className="text-foreground">Foresight</b>,
+                and <b className="text-foreground">Forecast</b> that turns AI questions into lived,
+                tested, and delivered evidence.
+              </p>
+            </>
+          )}
 
         </div>
+
 
         <aside className="md:col-span-4 border-l border-border/60 pl-6 space-y-4">
           <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">In this issue</p>
