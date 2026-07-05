@@ -193,13 +193,19 @@ export const caseStudies: CaseStudy[] = [
     subtitle: 'case_studies.projects.tedx_montreal.subtitle',
     year: '2021',
     category: 'speaking',
-    image: 'photo-1475721027785-f74eccf877e2',
+    image: '/__l5e/assets-v1/42c433eb-c2db-4803-a581-a13acb98f360/tedx-montreal.jpg',
     description: 'case_studies.projects.tedx_montreal.description',
     role: 'case_studies.projects.tedx_montreal.role',
     methods: ['case_studies.projects.tedx_montreal.methods.0', 'case_studies.projects.tedx_montreal.methods.1', 'case_studies.projects.tedx_montreal.methods.2', 'case_studies.projects.tedx_montreal.methods.3'],
     results: 'case_studies.projects.tedx_montreal.results',
     impact: 'case_studies.projects.tedx_montreal.impact',
     technologies: ['case_studies.projects.tedx_montreal.technologies.0', 'case_studies.projects.tedx_montreal.technologies.1', 'case_studies.projects.tedx_montreal.technologies.2'],
+    videos: [
+      { provider: 'youtube', id: 'swgfAfaEsdw', title: 'TEDxMontréal — Jonathan Bélisle' }
+    ],
+    links: [
+      { title: 'TEDxMontréal — Speaker Spotlight', url: 'https://tedxmontreal.com/en/tedxmontreal-jonathan-belisle/' }
+    ],
     relatedProjects: ['banff-residence', 'calm-magic-methodology']
   }
 ];
