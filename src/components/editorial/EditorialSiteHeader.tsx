@@ -1,9 +1,30 @@
 import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X, Globe } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
+
+function LanguageToggle({ className }: { className?: string }) {
+  const { language, setLanguage } = useLanguage();
+  const isFr = language === "fr";
+  return (
+    <button
+      type="button"
+      onClick={() => setLanguage(isFr ? "en" : "fr")}
+      aria-label={isFr ? "Switch to English" : "Passer en français"}
+      title={isFr ? "Read in English" : "Lire en français"}
+      className={cn(
+        "inline-flex items-center gap-1.5 text-[10px] uppercase tracking-[0.25em] font-semibold opacity-70 hover:opacity-100 transition-opacity border border-border/60 rounded-full px-2.5 py-1",
+        className,
+      )}
+    >
+      <Globe className="w-3 h-3" />
+      {isFr ? "EN" : "FR"}
+    </button>
+  );
+}
 
 type SubLink = { label: string; to: string; note?: string };
 type NavItem =
