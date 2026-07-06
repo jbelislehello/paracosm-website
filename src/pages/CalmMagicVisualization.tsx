@@ -3,8 +3,12 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import CalmMagic25DVisualization from '@/components/calm-magic/CalmMagic25DVisualization';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const CalmMagicVisualization: React.FC = () => {
+  const { language } = useLanguage();
+  const isFr = language === 'fr';
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-6">
@@ -12,7 +16,7 @@ const CalmMagicVisualization: React.FC = () => {
           <Button variant="ghost" size="sm" asChild>
             <Link to="/">
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Retour
+              {isFr ? 'Retour' : 'Back'}
             </Link>
           </Button>
           <div>
@@ -20,7 +24,9 @@ const CalmMagicVisualization: React.FC = () => {
               Calm Magic Process
             </h1>
             <p className="text-muted-foreground">
-              Exploration visuelle 2.5D du processus de transformation
+              {isFr
+                ? 'Exploration visuelle 2.5D du processus de transformation'
+                : '2.5D visual exploration of the transformation process'}
             </p>
           </div>
         </div>
@@ -29,20 +35,35 @@ const CalmMagicVisualization: React.FC = () => {
 
         <div className="grid md:grid-cols-2 gap-6">
           <div className="p-4 rounded-lg bg-card border border-border/50">
-            <h3 className="font-semibold text-foreground mb-2">À propos de cette visualisation</h3>
+            <h3 className="font-semibold text-foreground mb-2">
+              {isFr ? 'À propos de cette visualisation' : 'About this visualization'}
+            </h3>
             <p className="text-sm text-muted-foreground">
-              Cette représentation 2.5D utilise p5.js en mode WEBGL pour créer une vue isométrique 
-              du processus Calm Magic. Les cinq phases (LOVE → MAGIC → CALM → OPEN → FREE) sont 
-              représentées comme des plateformes hexagonales connectées par des spirales énergétiques.
+              {isFr
+                ? "Cette représentation 2.5D utilise p5.js en mode WEBGL pour créer une vue isométrique du processus Calm Magic. Les cinq phases (LOVE → MAGIC → CALM → OPEN → FREE) sont représentées comme des plateformes hexagonales connectées par des spirales énergétiques."
+                : "This 2.5D representation uses p5.js in WEBGL mode to create an isometric view of the Calm Magic process. The five phases (LOVE → MAGIC → CALM → OPEN → FREE) are rendered as hexagonal platforms connected by energetic spirals."}
             </p>
           </div>
           <div className="p-4 rounded-lg bg-card border border-border/50">
-            <h3 className="font-semibold text-foreground mb-2">Interactions</h3>
+            <h3 className="font-semibold text-foreground mb-2">
+              {isFr ? 'Interactions' : 'Interactions'}
+            </h3>
             <ul className="text-sm text-muted-foreground space-y-1">
-              <li>• La rotation automatique révèle chaque phase en séquence</li>
-              <li>• Les particules d'énergie illustrent le flux entre les phases</li>
-              <li>• Les spirales connectent les étapes de transformation</li>
-              <li>• Chaque orbe pulse selon son propre rythme</li>
+              {isFr ? (
+                <>
+                  <li>• La rotation automatique révèle chaque phase en séquence</li>
+                  <li>• Les particules d'énergie illustrent le flux entre les phases</li>
+                  <li>• Les spirales connectent les étapes de transformation</li>
+                  <li>• Chaque orbe pulse selon son propre rythme</li>
+                </>
+              ) : (
+                <>
+                  <li>• Automatic rotation reveals each phase in sequence</li>
+                  <li>• Energy particles illustrate the flow between phases</li>
+                  <li>• Spirals connect the transformation stages</li>
+                  <li>• Each orb pulses to its own rhythm</li>
+                </>
+              )}
             </ul>
           </div>
         </div>

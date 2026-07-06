@@ -16,6 +16,8 @@ import EnhancedCardDisplay from "@/components/tarot/EnhancedCardDisplay";
 import ConstellationView from "@/components/tarot/ConstellationView";
 import MatrixLegend from "@/components/tarot/MatrixLegend";
 import GenerativeCardArt from "@/components/tarot/GenerativeCardArt";
+import { useLanguage } from "@/contexts/LanguageContext";
+
 
 // ─── Ambient floating particles ───
 const AmbientParticles = () => (
@@ -82,7 +84,7 @@ const MiniCard = ({ card, onClick }: { card: TarotCard; onClick: () => void }) =
 };
 
 // ─── Detail modal ───
-const CardDetail = ({ card, onClose }: { card: TarotCard; onClose: () => void }) => {
+const CardDetail = ({ card, onClose, isFr }: { card: TarotCard; onClose: () => void; isFr: boolean }) => {
   const isMajor = card.arcana === 'major';
   const accentColor = isMajor
     ? suitColors[(card as MajorArcanaCard).suit]
@@ -95,7 +97,6 @@ const CardDetail = ({ card, onClose }: { card: TarotCard; onClose: () => void })
         style={{ boxShadow: `0 0 50px ${accentColor}20` }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Background generative art */}
         <div className="absolute inset-0 opacity-15">
           <GenerativeCardArt
             matrixPosition={card.matrixPosition}
@@ -117,37 +118,41 @@ const CardDetail = ({ card, onClose }: { card: TarotCard; onClose: () => void })
               <h3 className="font-bold text-lg text-white">{card.name}</h3>
               <p className="text-xs text-slate-400">
                 {isMajor
-                  ? `${(card as MajorArcanaCard).suit.toUpperCase()} · Major Arcana`
+                  ? `${(card as MajorArcanaCard).suit.toUpperCase()} · ${isFr ? 'Arcane majeur' : 'Major Arcana'}`
                   : `${(card as MinorArcanaCard).dimensionName} · ${(card as MinorArcanaCard).stage}`}
                 <span className="ml-2 font-mono opacity-50">{card.matrixPosition.address}</span>
               </p>
             </div>
           </div>
 
-          {/* Frosted question panel */}
           <div className="bg-white/5 backdrop-blur-md rounded-lg p-3 border border-white/10 mb-4">
             <p className="text-sm italic text-slate-300">"{card.question}"</p>
           </div>
 
           <div className="space-y-3">
             <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3">
-              <p className="text-xs font-semibold text-emerald-400 mb-1">↑ Upright</p>
+              <p className="text-xs font-semibold text-emerald-400 mb-1">↑ {isFr ? 'Droite' : 'Upright'}</p>
               <p className="text-sm text-slate-200">{card.upright}</p>
             </div>
             <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
-              <p className="text-xs font-semibold text-red-400 mb-1">↓ Reversed</p>
+              <p className="text-xs font-semibold text-red-400 mb-1">↓ {isFr ? 'Renversée' : 'Reversed'}</p>
               <p className="text-sm text-slate-200">{card.reversed}</p>
             </div>
           </div>
-          <Button onClick={onClose} variant="outline" className="w-full mt-4 border-white/20 text-white hover:bg-white/10">Close</Button>
+          <Button onClick={onClose} variant="outline" className="w-full mt-4 border-white/20 text-white hover:bg-white/10">
+            {isFr ? 'Fermer' : 'Close'}
+          </Button>
         </div>
       </div>
     </div>
   );
 };
 
+
 // ─── Main Page ───
 const EntrepreneurialTarot = () => {
+  const { language } = useLanguage();
+  const isFr = language === 'fr';
   const [drawnCards, setDrawnCards] = useState<TarotCard[]>([]);
   const [flippedCards, setFlippedCards] = useState<Set<number>>(new Set());
   const [reversedCards, setReversedCards] = useState<Set<number>>(new Set());
@@ -177,9 +182,12 @@ const EntrepreneurialTarot = () => {
     });
   };
 
-  const spreadLabels = ['Past Tension (GL!TCH)', 'Present Drift', 'Future Tune'];
+  const spreadLabels = isFr
+    ? ['Tension passée (GL!TCH)', 'Dérive présente', 'Accord futur']
+    : ['Past Tension (GL!TCH)', 'Present Drift', 'Future Tune'];
   const suits: TarotSuit[] = ['love', 'magic', 'calm', 'open', 'free'];
   const dimensions: ChordsDimension[] = ['C', 'H', 'O', 'R', 'D', 'S'];
+
 
   return (
     <div className="min-h-screen bg-white text-slate-900 relative">
@@ -189,15 +197,14 @@ const EntrepreneurialTarot = () => {
       <header className="fixed w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-purple-900/30">
         <div className="container flex items-center justify-between py-3 px-4">
           <Link to="/" className="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-purple-400 transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Back
+            <ArrowLeft className="w-4 h-4" /> {isFr ? 'Retour' : 'Back'}
           </Link>
           <Link to="/paracosm-retreat" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">
-            Summer Retreat →
+            {isFr ? "Retraite d'été →" : 'Summer Retreat →'}
           </Link>
         </div>
       </header>
 
-      {/* Hero */}
       <section ref={heroReveal.ref} className="pt-24 pb-12 px-4 text-center relative overflow-hidden">
         <div className="container max-w-3xl mx-auto relative z-10">
           <div className={`relative inline-block mb-4 ${heroReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}`}>
@@ -206,19 +213,21 @@ const EntrepreneurialTarot = () => {
           </div>
           <h1 className={`text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-amber-400 to-rose-400 mb-4 ${heroReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}`}
               style={{ animationDelay: '150ms' }}>
-            The Calm Magic Tarot
+            {isFr ? 'Le Tarot Calm Magic' : 'The Calm Magic Tarot'}
           </h1>
           <p className={`text-sm md:text-base text-slate-400 max-w-2xl mx-auto mb-2 ${heroReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}`}
              style={{ animationDelay: '300ms' }}>
-            70 entrepreneurial archetypes drawn from the LOVE · MAGIC · CALM · OPEN · FREE quadrants
-            and the CHORDS dimensions. A reflective tool for relational intelligence and conscious leadership.
+            {isFr
+              ? "70 archétypes entrepreneuriaux tirés des quadrants LOVE · MAGIC · CALM · OPEN · FREE et des dimensions CHORDS. Un outil réflexif pour l'intelligence relationnelle et le leadership conscient."
+              : "70 entrepreneurial archetypes drawn from the LOVE · MAGIC · CALM · OPEN · FREE quadrants and the CHORDS dimensions. A reflective tool for relational intelligence and conscious leadership."}
           </p>
           <p className={`text-xs text-slate-500 ${heroReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}`}
              style={{ animationDelay: '450ms' }}>
-            Every card maps to the 8×8 Calm Magic matrix — your constellation of entrepreneurial consciousness.
+            {isFr
+              ? "Chaque carte se cartographie dans la matrice 8×8 Calm Magic — votre constellation de conscience entrepreneuriale."
+              : "Every card maps to the 8×8 Calm Magic matrix — your constellation of entrepreneurial consciousness."}
           </p>
         </div>
-        {/* Sacred geometry background */}
         <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
           <svg viewBox="0 0 200 200" className="w-[600px] h-[600px] animate-tarot-rotate-slow">
             <circle cx="100" cy="100" r="80" fill="none" stroke="white" strokeWidth="0.3" />
@@ -230,19 +239,18 @@ const EntrepreneurialTarot = () => {
         </div>
       </section>
 
-      {/* Draw Section */}
       <section ref={drawReveal.ref} className={`pb-12 px-4 relative z-10 ${drawReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}`}>
         <div className="container max-w-4xl mx-auto text-center">
           <div className="flex flex-wrap gap-3 justify-center mb-8">
             <Button onClick={() => handleDraw(1)} variant="outline" className="border-purple-600 text-purple-300 hover:bg-purple-900/30 hover:shadow-[0_0_15px_rgba(139,92,246,0.3)] transition-shadow">
-              Draw 1 Card
+              {isFr ? 'Tirer 1 carte' : 'Draw 1 Card'}
             </Button>
             <Button onClick={() => handleDraw(3)} variant="outline" className="border-amber-600 text-amber-300 hover:bg-amber-900/30 hover:shadow-[0_0_15px_rgba(245,158,11,0.3)] transition-shadow">
-              3-Card Spread
+              {isFr ? 'Tirage à 3 cartes' : '3-Card Spread'}
             </Button>
             {drawnCards.length > 0 && (
               <Button onClick={() => { setDrawnCards([]); setFlippedCards(new Set()); }} variant="ghost" className="text-slate-400">
-                <RotateCcw className="w-4 h-4 mr-1" /> Reset
+                <RotateCcw className="w-4 h-4 mr-1" /> {isFr ? 'Réinitialiser' : 'Reset'}
               </Button>
             )}
           </div>
@@ -268,12 +276,15 @@ const EntrepreneurialTarot = () => {
           )}
 
           {drawnCards.length === 0 && (
-            <p className="text-xs text-slate-600">Click a button above to draw from the deck. Tap a card to reveal.</p>
+            <p className="text-xs text-slate-600">
+              {isFr
+                ? 'Cliquez sur un bouton ci-dessus pour tirer du jeu. Touchez une carte pour la révéler.'
+                : 'Click a button above to draw from the deck. Tap a card to reveal.'}
+            </p>
           )}
         </div>
       </section>
 
-      {/* Constellation + Browser + Legend */}
       <section ref={tabsReveal.ref} className={`pb-20 px-4 relative z-10 ${tabsReveal.isVisible ? 'animate-scroll-slide-up' : 'opacity-0'}`}>
         <div className="container max-w-5xl mx-auto">
           <Tabs defaultValue="constellation" className="w-full">
@@ -295,9 +306,10 @@ const EntrepreneurialTarot = () => {
                 CHORDS
               </TabsTrigger>
               <TabsTrigger value="legend" className="text-xs uppercase tracking-wider">
-                Legend
+                {isFr ? 'Légende' : 'Legend'}
               </TabsTrigger>
             </TabsList>
+
 
             {/* Constellation View */}
             <TabsContent value="constellation">
@@ -339,7 +351,7 @@ const EntrepreneurialTarot = () => {
         </div>
       </section>
 
-      {selectedCard && <CardDetail card={selectedCard} onClose={() => setSelectedCard(null)} />}
+      {selectedCard && <CardDetail card={selectedCard} onClose={() => setSelectedCard(null)} isFr={isFr} />}
       <div ref={footerReveal.ref} className={footerReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}>
         <Footer />
       </div>

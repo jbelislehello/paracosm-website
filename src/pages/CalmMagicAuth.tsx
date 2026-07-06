@@ -8,6 +8,9 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Loader2, ArrowLeft, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '@/contexts/LanguageContext';
+
+
 
 type AuthMode = 'signin' | 'signup' | 'forgot' | 'reset';
 
@@ -20,6 +23,51 @@ const CalmMagicAuth: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
   const navigate = useNavigate();
+  const { language } = useLanguage();
+  const isFr = language === 'fr';
+
+  const t = {
+    kicker: isFr ? 'Vol. 01 · Passage' : 'Vol. 01 · Passage',
+    tagline: isFr
+      ? "Votre espace pour l'intelligence relationnelle et les PRD vivants."
+      : 'Your space for relational intelligence and living PRDs.',
+    resetTitle: isFr ? 'Réinitialiser votre mot de passe' : 'Reset your password',
+    resetDesc: isFr ? 'Entrez votre courriel et nous vous enverrons un lien.' : "Enter your email and we'll send you a reset link",
+    email: isFr ? 'Courriel' : 'Email',
+    sendLink: isFr ? 'Envoyer le lien' : 'Send Reset Link',
+    backToSignIn: isFr ? 'Retour à la connexion' : 'Back to sign in',
+    setNewTitle: isFr ? 'Nouveau mot de passe' : 'Set new password',
+    setNewDesc: isFr ? 'Entrez votre nouveau mot de passe ci-dessous' : 'Enter your new password below',
+    newPassword: isFr ? 'Nouveau mot de passe' : 'New Password',
+    confirmPassword: isFr ? 'Confirmer le mot de passe' : 'Confirm Password',
+    updatePassword: isFr ? 'Mettre à jour' : 'Update Password',
+    welcomeBack: isFr ? 'Bon retour' : 'Welcome back',
+    createAccount: isFr ? 'Créer un compte' : 'Create an account',
+    signinDesc: isFr ? 'Connectez-vous pour continuer votre parcours' : 'Sign in to continue your journey',
+    signupDesc: isFr ? 'Commencez votre parcours de transformation' : 'Start your transformation journey',
+    password: isFr ? 'Mot de passe' : 'Password',
+    forgot: isFr ? 'Mot de passe oublié ?' : 'Forgot password?',
+    signIn: isFr ? 'Se connecter' : 'Sign In',
+    createBtn: isFr ? 'Créer un compte' : 'Create Account',
+    noAccount: isFr ? "Pas encore de compte ? " : "Don't have an account? ",
+    hasAccount: isFr ? 'Déjà un compte ? ' : 'Already have an account? ',
+    signUpLink: isFr ? "S'inscrire" : 'Sign up',
+    signInLink: isFr ? 'Se connecter' : 'Sign in',
+    backFront: isFr ? "Retour à la page d'accueil" : 'Back to the front page',
+    errEmailPass: isFr ? 'Veuillez entrer un courriel et un mot de passe' : 'Please enter email and password',
+    errPwLength: isFr ? 'Le mot de passe doit contenir au moins 6 caractères' : 'Password must be at least 6 characters',
+    errInvalid: isFr ? 'Courriel ou mot de passe invalide' : 'Invalid email or password',
+    okWelcome: isFr ? 'Bon retour !' : 'Welcome back!',
+    errRegistered: isFr ? 'Ce courriel est déjà enregistré. Veuillez vous connecter.' : 'This email is already registered. Please sign in.',
+    okCreated: isFr ? 'Compte créé ! Vérifiez votre courriel pour confirmer.' : 'Account created! Check your email to confirm.',
+    errUnknown: isFr ? "Une erreur inattendue s'est produite" : 'An unexpected error occurred',
+    errEmailRequired: isFr ? 'Veuillez entrer votre adresse courriel' : 'Please enter your email address',
+    okResetSent: isFr ? 'Lien de réinitialisation envoyé ! Vérifiez votre courriel.' : 'Password reset link sent! Check your email.',
+    errPwMatch: isFr ? 'Les mots de passe ne correspondent pas' : 'Passwords do not match',
+    okPwUpdated: isFr ? 'Mot de passe mis à jour !' : 'Password updated successfully!',
+  };
+
+
 
   useEffect(() => {
     // Check for recovery hash fragment FIRST before any session checks
@@ -59,12 +107,12 @@ const CalmMagicAuth: React.FC = () => {
     e.preventDefault();
     
     if (!email || !password) {
-      toast.error('Please enter email and password');
+      toast.error(t.errEmailPass);
       return;
     }
 
     if (password.length < 6) {
-      toast.error('Password must be at least 6 characters');
+      toast.error(t.errPwLength);
       return;
     }
 
@@ -75,12 +123,12 @@ const CalmMagicAuth: React.FC = () => {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) {
           if (error.message.includes('Invalid login credentials')) {
-            toast.error('Invalid email or password');
+            toast.error(t.errInvalid);
           } else {
             toast.error(error.message);
           }
         } else {
-          toast.success('Welcome back!');
+          toast.success(t.okWelcome);
           navigate('/projects');
         }
       } else if (authMode === 'signup') {
@@ -94,16 +142,16 @@ const CalmMagicAuth: React.FC = () => {
         });
         if (error) {
           if (error.message.includes('already registered')) {
-            toast.error('This email is already registered. Please sign in.');
+            toast.error(t.errRegistered);
           } else {
             toast.error(error.message);
           }
         } else {
-          toast.success('Account created! Check your email to confirm.');
+          toast.success(t.okCreated);
         }
       }
     } catch (error) {
-      toast.error('An unexpected error occurred');
+      toast.error(t.errUnknown);
     } finally {
       setLoading(false);
     }
@@ -113,7 +161,7 @@ const CalmMagicAuth: React.FC = () => {
     e.preventDefault();
     
     if (!email) {
-      toast.error('Please enter your email address');
+      toast.error(t.errEmailRequired);
       return;
     }
 
@@ -126,11 +174,11 @@ const CalmMagicAuth: React.FC = () => {
       if (error) {
         toast.error(error.message);
       } else {
-        toast.success('Password reset link sent! Check your email.');
+        toast.success(t.okResetSent);
         setAuthMode('signin');
       }
     } catch (error) {
-      toast.error('An unexpected error occurred');
+      toast.error(t.errUnknown);
     } finally {
       setLoading(false);
     }
@@ -140,12 +188,12 @@ const CalmMagicAuth: React.FC = () => {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
-      toast.error('Passwords do not match');
+      toast.error(t.errPwMatch);
       return;
     }
 
     if (newPassword.length < 6) {
-      toast.error('Password must be at least 6 characters');
+      toast.error(t.errPwLength);
       return;
     }
 
@@ -158,15 +206,16 @@ const CalmMagicAuth: React.FC = () => {
       if (error) {
         toast.error(error.message);
       } else {
-        toast.success('Password updated successfully!');
+        toast.success(t.okPwUpdated);
         navigate('/projects');
       }
     } catch (error) {
-      toast.error('An unexpected error occurred');
+      toast.error(t.errUnknown);
     } finally {
       setLoading(false);
     }
   };
+
 
   if (checkingSession) {
     return (
@@ -182,43 +231,24 @@ const CalmMagicAuth: React.FC = () => {
       return (
         <>
           <CardHeader className="space-y-1">
-            <CardTitle className="text-xl text-center">Reset your password</CardTitle>
-            <CardDescription className="text-center">
-              Enter your email and we'll send you a reset link
-            </CardDescription>
+            <CardTitle className="text-xl text-center">{t.resetTitle}</CardTitle>
+            <CardDescription className="text-center">{t.resetDesc}</CardDescription>
           </CardHeader>
           <form onSubmit={handleForgotPassword}>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={loading}
-                  required
-                />
+                <Label htmlFor="email">{t.email}</Label>
+                <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} disabled={loading} required />
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-4">
-              <Button 
-                type="submit" 
-                className="w-full bg-gradient-to-r from-rose-500 to-purple-500 hover:from-rose-600 hover:to-purple-600"
-                disabled={loading}
-              >
+              <Button type="submit" className="w-full bg-gradient-to-r from-rose-500 to-purple-500 hover:from-rose-600 hover:to-purple-600" disabled={loading}>
                 {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-                Send Reset Link
+                {t.sendLink}
               </Button>
-              
-              <button
-                type="button"
-                onClick={() => setAuthMode('signin')}
-                className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
+              <button type="button" onClick={() => setAuthMode('signin')} className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
                 <ArrowLeft className="h-4 w-4" />
-                Back to sign in
+                {t.backToSignIn}
               </button>
             </CardFooter>
           </form>
@@ -231,48 +261,24 @@ const CalmMagicAuth: React.FC = () => {
       return (
         <>
           <CardHeader className="space-y-1">
-            <CardTitle className="text-xl text-center">Set new password</CardTitle>
-            <CardDescription className="text-center">
-              Enter your new password below
-            </CardDescription>
+            <CardTitle className="text-xl text-center">{t.setNewTitle}</CardTitle>
+            <CardDescription className="text-center">{t.setNewDesc}</CardDescription>
           </CardHeader>
           <form onSubmit={handlePasswordReset}>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="newPassword">New Password</Label>
-                <Input
-                  id="newPassword"
-                  type="password"
-                  placeholder="••••••••"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  disabled={loading}
-                  required
-                  minLength={6}
-                />
+                <Label htmlFor="newPassword">{t.newPassword}</Label>
+                <Input id="newPassword" type="password" placeholder="••••••••" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} disabled={loading} required minLength={6} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  placeholder="••••••••"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  disabled={loading}
-                  required
-                  minLength={6}
-                />
+                <Label htmlFor="confirmPassword">{t.confirmPassword}</Label>
+                <Input id="confirmPassword" type="password" placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} disabled={loading} required minLength={6} />
               </div>
             </CardContent>
             <CardFooter>
-              <Button 
-                type="submit" 
-                className="w-full bg-gradient-to-r from-rose-500 to-purple-500 hover:from-rose-600 hover:to-purple-600"
-                disabled={loading}
-              >
+              <Button type="submit" className="w-full bg-gradient-to-r from-rose-500 to-purple-500 hover:from-rose-600 hover:to-purple-600" disabled={loading}>
                 {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-                Update Password
+                {t.updatePassword}
               </Button>
             </CardFooter>
           </form>
@@ -280,78 +286,47 @@ const CalmMagicAuth: React.FC = () => {
       );
     }
 
+
     // Sign In / Sign Up Mode
     return (
       <>
         <CardHeader className="space-y-1">
           <CardTitle className="text-xl text-center">
-            {authMode === 'signin' ? 'Welcome back' : 'Create an account'}
+            {authMode === 'signin' ? t.welcomeBack : t.createAccount}
           </CardTitle>
           <CardDescription className="text-center">
-            {authMode === 'signin' 
-              ? 'Sign in to continue your journey' 
-              : 'Start your transformation journey'}
+            {authMode === 'signin' ? t.signinDesc : t.signupDesc}
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleAuth}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={loading}
-                required
-              />
+              <Label htmlFor="email">{t.email}</Label>
+              <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} disabled={loading} required />
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t.password}</Label>
                 {authMode === 'signin' && (
-                  <button
-                    type="button"
-                    onClick={() => setAuthMode('forgot')}
-                    className="text-xs text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    Forgot password?
+                  <button type="button" onClick={() => setAuthMode('forgot')} className="text-xs text-muted-foreground hover:text-primary transition-colors">
+                    {t.forgot}
                   </button>
                 )}
               </div>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={loading}
-                required
-                minLength={6}
-              />
+              <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} disabled={loading} required minLength={6} />
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
-            <Button 
-              type="submit" 
-              className="w-full bg-gradient-to-r from-rose-500 to-purple-500 hover:from-rose-600 hover:to-purple-600"
-              disabled={loading}
-            >
+            <Button type="submit" className="w-full bg-gradient-to-r from-rose-500 to-purple-500 hover:from-rose-600 hover:to-purple-600" disabled={loading}>
               {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-              {authMode === 'signin' ? 'Sign In' : 'Create Account'}
+              {authMode === 'signin' ? t.signIn : t.createBtn}
             </Button>
-            
             <div className="text-center text-sm">
               <span className="text-muted-foreground">
-                {authMode === 'signin' ? "Don't have an account? " : "Already have an account? "}
+                {authMode === 'signin' ? t.noAccount : t.hasAccount}
               </span>
-              <button
-                type="button"
-                onClick={() => setAuthMode(authMode === 'signin' ? 'signup' : 'signin')}
-                className="text-primary hover:underline font-medium"
-              >
-                {authMode === 'signin' ? 'Sign up' : 'Sign in'}
+              <button type="button" onClick={() => setAuthMode(authMode === 'signin' ? 'signup' : 'signin')} className="text-primary hover:underline font-medium">
+                {authMode === 'signin' ? t.signUpLink : t.signInLink}
               </button>
             </div>
           </CardFooter>
@@ -360,18 +335,19 @@ const CalmMagicAuth: React.FC = () => {
     );
   };
 
+
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-[hsl(35_45%_96%)] dark:bg-[hsl(25_15%_12%)]">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-3">
           <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] font-semibold text-[hsl(15_75%_45%)]">
-            Vol. 01 · Passage
+            {t.kicker}
           </p>
           <h1 className="font-serif text-4xl md:text-5xl leading-[1.05] tracking-tight text-foreground">
             Calm Magic Board
           </h1>
           <p className="text-sm text-foreground/70 max-w-sm mx-auto">
-            Your space for relational intelligence and living PRDs.
+            {t.tagline}
           </p>
         </div>
 
@@ -386,10 +362,11 @@ const CalmMagicAuth: React.FC = () => {
               className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] text-foreground/60 hover:text-foreground transition-colors"
             >
               <ArrowLeft className="h-3 w-3" />
-              Back to the front page
+              {t.backFront}
             </Link>
           </div>
         )}
+
       </div>
     </div>
   );
