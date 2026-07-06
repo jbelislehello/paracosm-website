@@ -11,12 +11,19 @@ import GradientDivider from "@/components/GradientDivider";
 import { EditorialPageHero, EditorialCTA } from "@/components/editorial";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { ORIGIN_METHODS } from "@/data/origins";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const Origins = () => {
+  const { language } = useLanguage();
+  const isFr = language === 'fr';
+
   usePageSeo({
-    title: "Origins — The methods that became Calm Magic (2013–2018)",
-    description:
-      "Ten original methods sketched between 2013 and 2018 by Jonathan Bélisle — the methodological lineage that became Calm Magic, GL!TCH, Drift, and the Paracosm Retreat.",
+    title: isFr
+      ? "Origines — Les méthodes qui sont devenues Calm Magic (2013–2018)"
+      : "Origins — The methods that became Calm Magic (2013–2018)",
+    description: isFr
+      ? "Dix méthodes originales esquissées entre 2013 et 2018 par Jonathan Bélisle — la lignée méthodologique qui est devenue Calm Magic, GL!TCH, Drift et la Retraite Paracosm."
+      : "Ten original methods sketched between 2013 and 2018 by Jonathan Bélisle — the methodological lineage that became Calm Magic, GL!TCH, Drift, and the Paracosm Retreat.",
     path: "/origins",
   });
 
@@ -29,7 +36,7 @@ const Origins = () => {
             className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] font-semibold opacity-70 hover:opacity-100"
           >
             <ArrowLeft className="h-3 w-3" />
-            Lineage
+            {isFr ? 'Lignée' : 'Lineage'}
           </Link>
           <LanguageSwitcher />
         </div>
@@ -37,12 +44,17 @@ const Origins = () => {
 
       <EditorialPageHero
         numeral="07"
-        kicker="Origins · 2013 – 2018"
-        title={<>The methods that became <em className="italic font-light">Calm Magic</em>.</>}
-        subtitle="Calm Magic didn't appear in 2024. These ten methods, sketched by Jonathan Bélisle between 2013 and 2018, are its bones — relational intelligence, programmable environments, the five-season descent, the consciousness manifold."
-        meta="A 13-year continuum, drawn by hand, then made operational."
+        kicker={isFr ? "Origines · 2013 – 2018" : "Origins · 2013 – 2018"}
+        title={isFr
+          ? (<>Les méthodes qui sont devenues <em className="italic font-light">Calm Magic</em>.</>)
+          : (<>The methods that became <em className="italic font-light">Calm Magic</em>.</>)}
+        subtitle={isFr
+          ? "Calm Magic n'est pas apparu en 2024. Ces dix méthodes, esquissées par Jonathan Bélisle entre 2013 et 2018, en sont l'ossature — intelligence relationnelle, environnements programmables, la descente en cinq saisons, la variété de conscience."
+          : "Calm Magic didn't appear in 2024. These ten methods, sketched by Jonathan Bélisle between 2013 and 2018, are its bones — relational intelligence, programmable environments, the five-season descent, the consciousness manifold."}
+        meta={isFr ? "Un continuum de 13 ans, dessiné à la main, puis mis en opération." : "A 13-year continuum, drawn by hand, then made operational."}
         tone="warm"
       />
+
 
       <main className="container mx-auto px-4">
 
@@ -66,12 +78,12 @@ const Origins = () => {
                   >
                     <img
                       src={m.image}
-                      alt={`${m.title} — original sketch by Jonathan Bélisle, ${m.year}`}
+                      alt={`${m.title} — ${isFr ? 'esquisse originale de Jonathan Bélisle,' : 'original sketch by Jonathan Bélisle,'} ${m.year}`}
                       loading="lazy"
                       className="h-full max-h-[480px] w-full object-cover object-center"
                     />
                     <figcaption className="absolute bottom-2 right-2 rounded-full bg-background/85 px-2.5 py-1 text-xs text-muted-foreground backdrop-blur">
-                      Sketch — Jonathan Bélisle, {m.year}
+                      {isFr ? 'Esquisse' : 'Sketch'} — Jonathan Bélisle, {m.year}
                     </figcaption>
                   </figure>
 
@@ -80,7 +92,7 @@ const Origins = () => {
                     <div className="flex flex-wrap items-center gap-2">
                       <Badge variant="secondary">{m.year}</Badge>
                       <Badge variant="outline" className="text-[10px]">
-                        Original language: {m.language}
+                        {isFr ? 'Langue originale' : 'Original language'}: {m.language}
                       </Badge>
                     </div>
 
@@ -114,7 +126,7 @@ const Origins = () => {
 
                     <div className="border-t border-border/60 pt-4">
                       <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                        Became →
+                        {isFr ? 'Devenu →' : 'Became →'}
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {m.became.map((b) => (
@@ -141,17 +153,18 @@ const Origins = () => {
         {/* Closing */}
         <section className="py-16 md:py-24">
           <div className="mx-auto max-w-2xl text-center space-y-6">
-            <p className="text-xs font-semibold uppercase tracking-[0.4em] opacity-60">End of chapter</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.4em] opacity-60">{isFr ? 'Fin du chapitre' : 'End of chapter'}</p>
             <h2 className="font-serif text-3xl md:text-5xl tracking-tight">
-              See where this <em className="italic font-light">goes</em>.
+              {isFr ? (<>Voyez où cela <em className="italic font-light">mène</em>.</>) : (<>See where this <em className="italic font-light">goes</em>.</>)}
             </h2>
             <p className="text-base opacity-70">
-              Origins shows the internal lineage. Lineage shows where Calm Magic
-              sits next to the frameworks you already know. The board shows it running.
+              {isFr
+                ? "Origines montre la lignée interne. Lignée montre où Calm Magic se situe à côté des cadres que vous connaissez déjà. Le board le montre en action."
+                : "Origins shows the internal lineage. Lineage shows where Calm Magic sits next to the frameworks you already know. The board shows it running."}
             </p>
             <div className="flex flex-wrap items-center justify-center gap-3 pt-4">
-              <EditorialCTA to="/lineage" tone="warm" variant="ghost">External lineage</EditorialCTA>
-              <EditorialCTA to="/calm-magic-board" tone="warm">The live system</EditorialCTA>
+              <EditorialCTA to="/lineage" tone="warm" variant="ghost">{isFr ? 'Lignée externe' : 'External lineage'}</EditorialCTA>
+              <EditorialCTA to="/calm-magic-board" tone="warm">{isFr ? 'Le système vivant' : 'The live system'}</EditorialCTA>
             </div>
           </div>
         </section>
