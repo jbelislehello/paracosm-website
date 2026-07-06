@@ -107,12 +107,12 @@ const CalmMagicAuth: React.FC = () => {
     e.preventDefault();
     
     if (!email || !password) {
-      toast.error('Please enter email and password');
+      toast.error(t.errEmailPass);
       return;
     }
 
     if (password.length < 6) {
-      toast.error('Password must be at least 6 characters');
+      toast.error(t.errPwLength);
       return;
     }
 
@@ -123,12 +123,12 @@ const CalmMagicAuth: React.FC = () => {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) {
           if (error.message.includes('Invalid login credentials')) {
-            toast.error('Invalid email or password');
+            toast.error(t.errInvalid);
           } else {
             toast.error(error.message);
           }
         } else {
-          toast.success('Welcome back!');
+          toast.success(t.okWelcome);
           navigate('/projects');
         }
       } else if (authMode === 'signup') {
@@ -142,16 +142,16 @@ const CalmMagicAuth: React.FC = () => {
         });
         if (error) {
           if (error.message.includes('already registered')) {
-            toast.error('This email is already registered. Please sign in.');
+            toast.error(t.errRegistered);
           } else {
             toast.error(error.message);
           }
         } else {
-          toast.success('Account created! Check your email to confirm.');
+          toast.success(t.okCreated);
         }
       }
     } catch (error) {
-      toast.error('An unexpected error occurred');
+      toast.error(t.errUnknown);
     } finally {
       setLoading(false);
     }
@@ -161,7 +161,7 @@ const CalmMagicAuth: React.FC = () => {
     e.preventDefault();
     
     if (!email) {
-      toast.error('Please enter your email address');
+      toast.error(t.errEmailRequired);
       return;
     }
 
@@ -174,11 +174,11 @@ const CalmMagicAuth: React.FC = () => {
       if (error) {
         toast.error(error.message);
       } else {
-        toast.success('Password reset link sent! Check your email.');
+        toast.success(t.okResetSent);
         setAuthMode('signin');
       }
     } catch (error) {
-      toast.error('An unexpected error occurred');
+      toast.error(t.errUnknown);
     } finally {
       setLoading(false);
     }
@@ -188,12 +188,12 @@ const CalmMagicAuth: React.FC = () => {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
-      toast.error('Passwords do not match');
+      toast.error(t.errPwMatch);
       return;
     }
 
     if (newPassword.length < 6) {
-      toast.error('Password must be at least 6 characters');
+      toast.error(t.errPwLength);
       return;
     }
 
@@ -206,15 +206,16 @@ const CalmMagicAuth: React.FC = () => {
       if (error) {
         toast.error(error.message);
       } else {
-        toast.success('Password updated successfully!');
+        toast.success(t.okPwUpdated);
         navigate('/projects');
       }
     } catch (error) {
-      toast.error('An unexpected error occurred');
+      toast.error(t.errUnknown);
     } finally {
       setLoading(false);
     }
   };
+
 
   if (checkingSession) {
     return (
