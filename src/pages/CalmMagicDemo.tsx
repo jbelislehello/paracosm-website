@@ -16,14 +16,20 @@ import Footer from "@/components/Footer";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import WhyItWorksRecap from "@/components/resonance/WhyItWorksRecap";
 import { productSchema } from "@/lib/structuredData";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const CalmMagicDemo = () => {
   const [demoOpen, setDemoOpen] = useState(false);
+  const { language } = useLanguage();
+  const isFr = language === 'fr';
 
   usePageSeo({
-    title: "Calm Magic — A Relational Intelligence Methodology | Paracosm",
-    description:
-      "Calm Magic is a relational intelligence methodology for organizational transformation — an 8×8 board that turns conversation into a living product nervous system.",
+    title: isFr
+      ? "Calm Magic — Une méthodologie d'intelligence relationnelle | Paracosm"
+      : "Calm Magic — A Relational Intelligence Methodology | Paracosm",
+    description: isFr
+      ? "Calm Magic est une méthodologie d'intelligence relationnelle pour la transformation organisationnelle — un tableau 8×8 qui transforme la conversation en système nerveux produit vivant."
+      : "Calm Magic is a relational intelligence methodology for organizational transformation — an 8×8 board that turns conversation into a living product nervous system.",
     path: "/calm-magic-demo",
     jsonLd: [
       productSchema({
@@ -35,6 +41,7 @@ const CalmMagicDemo = () => {
       }),
     ],
   });
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
