@@ -84,7 +84,7 @@ const MiniCard = ({ card, onClick }: { card: TarotCard; onClick: () => void }) =
 };
 
 // ─── Detail modal ───
-const CardDetail = ({ card, onClose }: { card: TarotCard; onClose: () => void }) => {
+const CardDetail = ({ card, onClose, isFr }: { card: TarotCard; onClose: () => void; isFr: boolean }) => {
   const isMajor = card.arcana === 'major';
   const accentColor = isMajor
     ? suitColors[(card as MajorArcanaCard).suit]
@@ -97,7 +97,6 @@ const CardDetail = ({ card, onClose }: { card: TarotCard; onClose: () => void })
         style={{ boxShadow: `0 0 50px ${accentColor}20` }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Background generative art */}
         <div className="absolute inset-0 opacity-15">
           <GenerativeCardArt
             matrixPosition={card.matrixPosition}
@@ -119,34 +118,36 @@ const CardDetail = ({ card, onClose }: { card: TarotCard; onClose: () => void })
               <h3 className="font-bold text-lg text-white">{card.name}</h3>
               <p className="text-xs text-slate-400">
                 {isMajor
-                  ? `${(card as MajorArcanaCard).suit.toUpperCase()} · Major Arcana`
+                  ? `${(card as MajorArcanaCard).suit.toUpperCase()} · ${isFr ? 'Arcane majeur' : 'Major Arcana'}`
                   : `${(card as MinorArcanaCard).dimensionName} · ${(card as MinorArcanaCard).stage}`}
                 <span className="ml-2 font-mono opacity-50">{card.matrixPosition.address}</span>
               </p>
             </div>
           </div>
 
-          {/* Frosted question panel */}
           <div className="bg-white/5 backdrop-blur-md rounded-lg p-3 border border-white/10 mb-4">
             <p className="text-sm italic text-slate-300">"{card.question}"</p>
           </div>
 
           <div className="space-y-3">
             <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-3">
-              <p className="text-xs font-semibold text-emerald-400 mb-1">↑ Upright</p>
+              <p className="text-xs font-semibold text-emerald-400 mb-1">↑ {isFr ? 'Droite' : 'Upright'}</p>
               <p className="text-sm text-slate-200">{card.upright}</p>
             </div>
             <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
-              <p className="text-xs font-semibold text-red-400 mb-1">↓ Reversed</p>
+              <p className="text-xs font-semibold text-red-400 mb-1">↓ {isFr ? 'Renversée' : 'Reversed'}</p>
               <p className="text-sm text-slate-200">{card.reversed}</p>
             </div>
           </div>
-          <Button onClick={onClose} variant="outline" className="w-full mt-4 border-white/20 text-white hover:bg-white/10">Close</Button>
+          <Button onClick={onClose} variant="outline" className="w-full mt-4 border-white/20 text-white hover:bg-white/10">
+            {isFr ? 'Fermer' : 'Close'}
+          </Button>
         </div>
       </div>
     </div>
   );
 };
+
 
 // ─── Main Page ───
 const EntrepreneurialTarot = () => {
