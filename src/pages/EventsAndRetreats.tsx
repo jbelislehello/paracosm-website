@@ -129,20 +129,22 @@ const EventsAndRetreats = () => {
                 <div className="md:col-span-8">
                   <div className="flex items-baseline gap-6 mb-6">
                     <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", night.numeral)}>03</span>
-                    <p className={cn(editorialType.kicker, night.kicker)}>Flagship retreat</p>
+                    <p className={cn(editorialType.kicker, night.kicker)}>{isFr ? 'Retraite phare' : 'Flagship retreat'}</p>
                   </div>
                   <h2 className={cn(editorialType.serif, "text-4xl md:text-6xl leading-[1.05] tracking-tight mb-6")}>
                     Think Like a <em className="italic font-light">Forest.</em>
                   </h2>
                   <p className="text-lg md:text-xl leading-relaxed opacity-85 mb-4 max-w-2xl">
-                    In collaboration with <em className="italic">Les Hédonistes</em> and <em className="italic">Create Yourself</em>, Paracosm holds this bi-annual multi-day retreat for leaders and visionaries to sense the whole system before intervening in it. Mycelium, roots, canopy, understory — an embodied lesson in complexity.
+                    {isFr
+                      ? (<>En collaboration avec <em className="italic">Les Hédonistes</em> et <em className="italic">Create Yourself</em>, Paracosm organise cette retraite semestrielle de plusieurs jours pour dirigeant·e·s et visionnaires afin de sentir le système entier avant d'y intervenir. Mycélium, racines, canopée, sous-bois — une leçon incarnée de complexité.</>)
+                      : (<>In collaboration with <em className="italic">Les Hédonistes</em> and <em className="italic">Create Yourself</em>, Paracosm holds this bi-annual multi-day retreat for leaders and visionaries to sense the whole system before intervening in it. Mycelium, roots, canopy, understory — an embodied lesson in complexity.</>)}
                   </p>
                   <p className={cn(editorialType.caption, "opacity-70")}>
-                    {forest.tagline} · Dates &amp; location — TBA
+                    {forest.tagline} · {isFr ? 'Dates et lieu — à venir' : 'Dates & location — TBA'}
                   </p>
                 </div>
                 <div className="md:col-span-4 md:text-right">
-                  <p className={cn(editorialType.kicker, night.kicker, "mb-2")}>For leaders</p>
+                  <p className={cn(editorialType.kicker, night.kicker, "mb-2")}>{isFr ? 'Pour les dirigeant·e·s' : 'For leaders'}</p>
                   <p className="text-sm md:text-base opacity-80 leading-relaxed">{forest.forLeaders}</p>
                 </div>
               </div>
@@ -151,7 +153,7 @@ const EventsAndRetreats = () => {
               <figure className="mb-16">
                 <img
                   src={residencyImage.forest}
-                  alt="Cohort circle under the forest canopy at a Paracosm retreat"
+                  alt={isFr ? "Cercle de cohorte sous la canopée forestière d'une retraite Paracosm" : "Cohort circle under the forest canopy at a Paracosm retreat"}
                   className="w-full h-auto object-cover aspect-[16/9] md:aspect-[21/9]"
                   loading="lazy"
                 />
@@ -163,7 +165,7 @@ const EventsAndRetreats = () => {
 
               {/* Manifesto */}
               <div className="mb-16 max-w-4xl">
-                <p className={cn(editorialType.kicker, night.kicker, "mb-6")}>Manifesto</p>
+                <p className={cn(editorialType.kicker, night.kicker, "mb-6")}>{isFr ? 'Manifeste' : 'Manifesto'}</p>
                 <div className="divide-y divide-foreground/15">
                   {forest.manifesto.map((line, i) => (
                     <p
@@ -179,9 +181,9 @@ const EventsAndRetreats = () => {
               {/* Meta strip */}
               <div className="grid md:grid-cols-3 gap-8 md:gap-12 mb-16 border-t border-foreground/20 pt-8">
                 {[
-                  { label: "Teacher", value: forest.teacher },
-                  { label: "Duration", value: forest.duration },
-                  { label: "Format", value: forest.format },
+                  { label: isFr ? 'Enseignant·e' : 'Teacher', value: forest.teacher },
+                  { label: isFr ? 'Durée' : 'Duration', value: forest.duration },
+                  { label: isFr ? 'Format' : 'Format', value: forest.format },
                 ].map((meta) => (
                   <div key={meta.label}>
                     <p className={cn(editorialType.kicker, night.kicker, "mb-2")}>{meta.label}</p>
@@ -193,9 +195,9 @@ const EventsAndRetreats = () => {
               {/* Practices */}
               <div className="mb-16">
                 <div className="flex items-baseline gap-6 mb-8">
-                  <p className={cn(editorialType.kicker, night.kicker)}>Practices</p>
+                  <p className={cn(editorialType.kicker, night.kicker)}>{isFr ? 'Pratiques' : 'Practices'}</p>
                   <h3 className={cn(editorialType.serif, "text-2xl md:text-3xl italic font-light")}>
-                    What we do together.
+                    {isFr ? 'Ce que nous faisons ensemble.' : 'What we do together.'}
                   </h3>
                 </div>
                 <div className="grid md:grid-cols-3 gap-8 md:gap-10">
@@ -211,13 +213,13 @@ const EventsAndRetreats = () => {
               {/* Threshold + Artifact */}
               <div className="grid md:grid-cols-2 gap-10 md:gap-16 mb-16">
                 <div>
-                  <p className={cn(editorialType.kicker, night.kicker, "mb-3")}>The threshold</p>
+                  <p className={cn(editorialType.kicker, night.kicker, "mb-3")}>{isFr ? 'Le seuil' : 'The threshold'}</p>
                   <p className={cn(editorialType.serif, "text-xl md:text-2xl leading-snug italic font-light")}>
                     {forest.threshold}
                   </p>
                 </div>
                 <div>
-                  <p className={cn(editorialType.kicker, night.kicker, "mb-3")}>What you leave with</p>
+                  <p className={cn(editorialType.kicker, night.kicker, "mb-3")}>{isFr ? 'Ce que vous emportez' : 'What you leave with'}</p>
                   <p className="text-base md:text-lg opacity-85 leading-relaxed">{forest.artifact}</p>
                 </div>
               </div>
@@ -228,10 +230,10 @@ const EventsAndRetreats = () => {
                   href="mailto:jbelisle@helloarchitekt.com?subject=Think%20Like%20a%20Forest%20—%20invitation"
                   tone="night"
                 >
-                  Read the invitation
+                  {isFr ? "Lire l'invitation" : 'Read the invitation'}
                 </EditorialCTA>
                 <EditorialCTA to="/residencies/forest" tone="night" variant="ghost">
-                  Explore the full residency
+                  {isFr ? 'Explorer la résidence complète' : 'Explore the full residency'}
                 </EditorialCTA>
               </div>
             </>
@@ -246,14 +248,14 @@ const EventsAndRetreats = () => {
           <div className="flex items-baseline gap-6">
             <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none text-primary")}>04</span>
             <div>
-              <p className={cn(editorialType.kicker, "text-primary")}>Field notes</p>
+              <p className={cn(editorialType.kicker, "text-primary")}>{isFr ? 'Notes de terrain' : 'Field notes'}</p>
               <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-tight tracking-tight mt-2")}>
-                Case <em className="italic font-light">studies.</em>
+                {isFr ? (<>Études <em className="italic font-light">de cas.</em></>) : (<>Case <em className="italic font-light">studies.</em></>)}
               </h2>
             </div>
           </div>
           <Link to="/case-studies" className={cn(editorialType.cta, "inline-flex items-center gap-1.5 border-b border-primary text-primary pb-1 hover:translate-x-0.5 transition-transform")}>
-            View all <ArrowRight className="w-4 h-4" />
+            {isFr ? 'Voir toutes' : 'View all'} <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
         <CaseStudiesSection />

@@ -17,15 +17,19 @@ import { editorialType, editorialTone } from "@/components/editorial/editorialTo
 import { cn } from "@/lib/utils";
 
 const ParacosmRetreatLanding = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isFr = language === 'fr';
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
   usePageSeo({
-    title: "Paracosm Summit — Azores 2026 | Leadership, AI & Relational Intelligence",
-    description:
-      "Our 2026 flagship summit in the Azores: an immersive experience for executives and innovators integrating AI systems mastery, somatic practice, and the Calm Magic methodology.",
+    title: isFr
+      ? "Sommet Paracosm — Açores 2026 | Leadership, IA et intelligence relationnelle"
+      : "Paracosm Summit — Azores 2026 | Leadership, AI & Relational Intelligence",
+    description: isFr
+      ? "Notre sommet phare 2026 aux Açores : une expérience immersive pour dirigeant·e·s et innovateur·rice·s intégrant la maîtrise des systèmes IA, la pratique somatique et la méthodologie Calm Magic."
+      : "Our 2026 flagship summit in the Azores: an immersive experience for executives and innovators integrating AI systems mastery, somatic practice, and the Calm Magic methodology.",
     path: "/paracosm-retreat",
     jsonLd: [
       eventSchema({
@@ -43,16 +47,18 @@ const ParacosmRetreatLanding = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim()) {
-      toast.error("Please fill in both fields.");
+      toast.error(isFr ? 'Veuillez remplir les deux champs.' : 'Please fill in both fields.');
       return;
     }
-    const subject = encodeURIComponent("Paracosm Summit — Invitation Request");
+    const subject = encodeURIComponent(isFr ? "Sommet Paracosm — Demande d'invitation" : "Paracosm Summit — Invitation Request");
     const body = encodeURIComponent(
-      `New invitation request for the Paracosm Summit:\n\nName: ${name}\nEmail: ${email}`,
+      isFr
+        ? `Nouvelle demande d'invitation pour le Sommet Paracosm :\n\nNom : ${name}\nCourriel : ${email}`
+        : `New invitation request for the Paracosm Summit:\n\nName: ${name}\nEmail: ${email}`,
     );
     window.location.href = `mailto:jbelisle@helloarchitekt.com?subject=${subject}&body=${body}`;
     setSubmitted(true);
-    toast.success("You've been added to the invitation list!");
+    toast.success(isFr ? 'Vous avez été ajouté·e à la liste des invité·e·s !' : "You've been added to the invitation list!");
   };
 
   const highlights = [
@@ -74,8 +80,8 @@ const ParacosmRetreatLanding = () => {
 
       <EditorialPageHero
         numeral="09"
-        kicker="Volume 09 · Azores · September 2026"
-        title={<>Paracosm <em className="italic font-light">Summit.</em></>}
+        kicker={isFr ? "Volume 09 · Açores · Septembre 2026" : "Volume 09 · Azores · September 2026"}
+        title={isFr ? (<>Sommet <em className="italic font-light">Paracosm.</em></>) : (<>Paracosm <em className="italic font-light">Summit.</em></>)}
         subtitle={t("retreat.section_description")}
         tone="warm"
       />
@@ -102,10 +108,10 @@ const ParacosmRetreatLanding = () => {
       <EditorialSection tone="paper" id="highlights">
         <div className="flex items-baseline gap-6 mb-10">
           <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", paper.numeral)}>01</span>
-          <p className={cn(editorialType.kicker, paper.kicker)}>Three threads</p>
+          <p className={cn(editorialType.kicker, paper.kicker)}>{isFr ? 'Trois fils' : 'Three threads'}</p>
         </div>
         <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-tight tracking-tight max-w-3xl mb-12")}>
-          What this summit <em className="italic font-light">weaves.</em>
+          {isFr ? (<>Ce que ce sommet <em className="italic font-light">tisse.</em></>) : (<>What this summit <em className="italic font-light">weaves.</em></>)}
         </h2>
         <div className="grid md:grid-cols-3 gap-10 md:gap-12">
           {highlights.map((h, i) => (
@@ -122,15 +128,15 @@ const ParacosmRetreatLanding = () => {
       <EditorialSection tone="clay" id="itinerary">
         <div className="flex items-baseline gap-6 mb-10">
           <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", clay.numeral)}>02</span>
-          <p className={cn(editorialType.kicker, clay.kicker)}>Itinerary</p>
+          <p className={cn(editorialType.kicker, clay.kicker)}>{isFr ? 'Itinéraire' : 'Itinerary'}</p>
         </div>
         <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-tight tracking-tight max-w-3xl mb-12")}>
-          A three-day <em className="italic font-light">journey.</em>
+          {isFr ? (<>Un <em className="italic font-light">voyage</em> de trois jours.</>) : (<>A three-day <em className="italic font-light">journey.</em></>)}
         </h2>
         <div className="grid md:grid-cols-3 gap-8 md:gap-10">
           {days.map((day, i) => (
             <article key={day.key} className="border-t border-foreground/25 pt-6">
-              <p className={cn(editorialType.kicker, clay.kicker, "mb-2")}>Day 0{i + 1}</p>
+              <p className={cn(editorialType.kicker, clay.kicker, "mb-2")}>{isFr ? `Jour 0${i + 1}` : `Day 0${i + 1}`}</p>
               <h3 className={cn(editorialType.serif, "text-2xl md:text-3xl leading-tight mb-2")}>{t(`retreat.${day.key}.title`)}</h3>
               <p className="text-xs uppercase tracking-[0.2em] opacity-60 mb-4">{t(`retreat.${day.key}.subtitle`)}</p>
               <p className="text-sm md:text-base opacity-85 leading-relaxed mb-6">{t(`retreat.${day.key}.description`)}</p>
@@ -152,7 +158,7 @@ const ParacosmRetreatLanding = () => {
       <EditorialSection tone="paper" id="audience">
         <div className="grid md:grid-cols-2 gap-12 md:gap-16">
           <div>
-            <p className={cn(editorialType.kicker, paper.kicker, "mb-3")}>Who it's for</p>
+            <p className={cn(editorialType.kicker, paper.kicker, "mb-3")}>{isFr ? "Pour qui" : "Who it's for"}</p>
             <h3 className={cn(editorialType.serif, "text-2xl md:text-3xl leading-tight mb-4")}>{t("retreat.audience.title")}</h3>
             <p className="text-base opacity-80 leading-relaxed mb-6">{t("retreat.audience.description")}</p>
             <ul className="space-y-3">
@@ -165,7 +171,7 @@ const ParacosmRetreatLanding = () => {
             </ul>
           </div>
           <div>
-            <p className={cn(editorialType.kicker, paper.kicker, "mb-3")}>What you leave with</p>
+            <p className={cn(editorialType.kicker, paper.kicker, "mb-3")}>{isFr ? 'Ce que vous emportez' : 'What you leave with'}</p>
             <h3 className={cn(editorialType.serif, "text-2xl md:text-3xl leading-tight mb-4")}>{t("retreat.outcomes.title")}</h3>
             <p className="text-base opacity-80 leading-relaxed mb-6">{t("retreat.outcomes.description")}</p>
             <ul className="space-y-3">
@@ -183,7 +189,7 @@ const ParacosmRetreatLanding = () => {
       {/* Invitation */}
       <EditorialSection tone="night" id="rsvp" containerClassName="max-w-3xl">
         <div className="text-center">
-          <p className={cn(editorialType.kicker, night.kicker, "mb-4")}>RSVP · By invitation</p>
+          <p className={cn(editorialType.kicker, night.kicker, "mb-4")}>{isFr ? 'RSVP · Sur invitation' : 'RSVP · By invitation'}</p>
           <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-tight tracking-tight mb-4")}>
             {t("retreat.invitation.title")}
           </h2>
@@ -224,7 +230,7 @@ const ParacosmRetreatLanding = () => {
               tone="night"
               variant="ghost"
             >
-              Book a private conversation
+              {isFr ? 'Réserver une conversation privée' : 'Book a private conversation'}
             </EditorialCTA>
           </div>
         </div>
