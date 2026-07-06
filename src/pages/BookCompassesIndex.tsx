@@ -8,6 +8,7 @@ import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import { EditorialPageHero } from "@/components/editorial";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface CompassRow {
   id: string;
@@ -25,10 +26,14 @@ export default function BookCompassesIndex() {
   const [items, setItems] = useState<CompassRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<string | null>(null);
+  const { language } = useLanguage();
+  const isFr = language === 'fr';
 
   usePageSeo({
-    title: "Compasses — Calm Magic",
-    description: "Visual maps and decision-making lenses for thriving with imagination in the 21st century.",
+    title: isFr ? "Boussoles — Calm Magic" : "Compasses — Calm Magic",
+    description: isFr
+      ? "Cartes visuelles et lentilles de prise de décision pour prospérer avec l'imagination au 21e siècle."
+      : "Visual maps and decision-making lenses for thriving with imagination in the 21st century.",
     path: "/book/compasses",
   });
 
@@ -62,7 +67,7 @@ export default function BookCompassesIndex() {
           </Link>
           <div className="flex items-center gap-4">
             <Link to="/book" className="flex items-center gap-1 text-[10px] uppercase tracking-[0.3em] opacity-70 hover:opacity-100">
-              <ArrowLeft className="h-3 w-3" /> Book
+              <ArrowLeft className="h-3 w-3" /> {isFr ? 'Livre' : 'Book'}
             </Link>
             <LanguageSwitcher />
           </div>
@@ -71,9 +76,13 @@ export default function BookCompassesIndex() {
 
       <EditorialPageHero
         numeral="08"
-        kicker="Part I · The Compasses"
-        title={<>The <em className="italic font-light">Compasses</em>.</>}
-        subtitle="An ensemble of visual maps exposing the bodies of knowledge and decision-making skills required to thrive with imagination in the 21st century."
+        kicker={isFr ? "Partie I · Les boussoles" : "Part I · The Compasses"}
+        title={isFr
+          ? (<>Les <em className="italic font-light">boussoles</em>.</>)
+          : (<>The <em className="italic font-light">Compasses</em>.</>)}
+        subtitle={isFr
+          ? "Un ensemble de cartes visuelles exposant les corps de connaissance et les compétences décisionnelles nécessaires pour prospérer avec l'imagination au 21e siècle."
+          : "An ensemble of visual maps exposing the bodies of knowledge and decision-making skills required to thrive with imagination in the 21st century."}
         tone="clay"
       />
 
@@ -88,7 +97,7 @@ export default function BookCompassesIndex() {
                   : "border-current/20 bg-transparent opacity-60 hover:opacity-100"
               }`}
             >
-              All
+              {isFr ? 'Tous' : 'All'}
             </button>
             {PHASES.map((p) => (
               <button
@@ -112,7 +121,7 @@ export default function BookCompassesIndex() {
               </div>
             ) : visible.length === 0 ? (
               <p className="py-20 text-center opacity-60">
-                No published compasses for this phase yet.
+                {isFr ? 'Aucune boussole publiée pour cette phase.' : 'No published compasses for this phase yet.'}
               </p>
             ) : (
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
