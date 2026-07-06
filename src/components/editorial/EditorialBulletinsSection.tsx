@@ -140,15 +140,24 @@ function BulletinCard({ b, tone }: { b: Bulletin; tone: "warm" | "night" | "clay
 }
 
 export default function EditorialBulletinsSection() {
+  const { language } = useLanguage();
+  const isFr = language === "fr";
+  const workshop = isFr ? workshopFr : workshopEn;
+  const drift = isFr ? driftFr : driftEn;
+  const releases = isFr ? releasesFr : releasesEn;
+  const sanctum = isFr ? sanctumFr : sanctumEn;
   const clay = editorialTone.clay;
   return (
     <EditorialSection tone="paper" id="bulletins">
       <EditorialChapterHeader
         numeral="04"
-        kicker="Bulletins"
-        subtitle="What's opening, what's shipping, what's being made."
+        kicker={isFr ? "Bulletins" : "Bulletins"}
+        subtitle={isFr
+          ? "Ce qui s'ouvre, ce qui se livre, ce qui se fabrique."
+          : "What's opening, what's shipping, what's being made."}
         tone="paper"
       />
+
 
       {/* Row 1 — Workshop + The Drift */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
