@@ -8,6 +8,9 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { Loader2, ArrowLeft, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '@/contexts/LanguageContext';
+
+
 
 type AuthMode = 'signin' | 'signup' | 'forgot' | 'reset';
 
