@@ -7,7 +7,8 @@ import { editorialType } from "@/components/editorial/editorialTokens";
 import EditorialCTA from "@/components/editorial/EditorialCTA";
 
 const Footer: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isFr = language === "fr";
 
   return (
     <footer className="relative overflow-hidden bg-[hsl(230_35%_10%)] text-[hsl(35_20%_92%)]">
@@ -17,24 +18,33 @@ const Footer: React.FC = () => {
         <div className="mb-14 pb-10 border-b border-white/10 grid md:grid-cols-12 gap-8 items-end">
           <div className="md:col-span-8">
             <p className={editorialType.eyebrow + " text-[hsl(45_90%_65%)]"}>
-              Colophon
+              {isFr ? "Colophon" : "Colophon"}
             </p>
             <p
               className={
                 editorialType.serif + " text-3xl md:text-5xl leading-[1.05] mt-3 max-w-2xl"
               }
             >
-              <em className="italic font-light">Imagination as</em> infrastructure —
-              published continuously by HA Labs & Paracosm.
+              {isFr ? (
+                <>
+                  <em className="italic font-light">L'imagination comme</em> infrastructure —
+                  publiée en continu par HA Labs & Paracosm.
+                </>
+              ) : (
+                <>
+                  <em className="italic font-light">Imagination as</em> infrastructure —
+                  published continuously by HA Labs & Paracosm.
+                </>
+              )}
             </p>
           </div>
           <div className="md:col-span-4 md:text-right">
             <EditorialCTA
               tone="night"
-              href="mailto:jbelisle@helloarchitekt.com?subject=Discovery%20call%20—%20Paracosm"
+              href={`mailto:jbelisle@helloarchitekt.com?subject=${encodeURIComponent(isFr ? "Appel de découverte — Paracosm" : "Discovery call — Paracosm")}`}
               variant="primary"
             >
-              <Mail className="w-4 h-4" /> Book a discovery call
+              <Mail className="w-4 h-4" /> {isFr ? "Réserver un appel de découverte" : "Book a discovery call"}
             </EditorialCTA>
           </div>
         </div>
@@ -47,8 +57,9 @@ const Footer: React.FC = () => {
               <span className={editorialType.serif + " text-lg"}>HA Labs</span>
             </div>
             <p className="text-sm opacity-70 leading-relaxed mb-4">
-              Creative technology studio — performance arts, interactive storytelling, AI
-              & IoT software, and innovation frameworks.
+              {isFr
+                ? "Studio de technologie créative — arts vivants, narration interactive, logiciels IA & IoT, et cadres d'innovation."
+                : "Creative technology studio — performance arts, interactive storytelling, AI & IoT software, and innovation frameworks."}
             </p>
             <a
               href="mailto:jbelisle@helloarchitekt.com"
@@ -59,7 +70,7 @@ const Footer: React.FC = () => {
           </div>
 
           <div>
-            <h3 className={editorialType.caption + " mb-4"}>HA Labs Projects</h3>
+            <h3 className={editorialType.caption + " mb-4"}>{isFr ? "Projets HA Labs" : "HA Labs Projects"}</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/calm-magic-board" className="opacity-80 hover:opacity-100">
@@ -77,7 +88,7 @@ const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <span className="opacity-50 italic">IoTheatre — coming soon</span>
+                <span className="opacity-50 italic">{isFr ? "IoTheatre — bientôt" : "IoTheatre — coming soon"}</span>
               </li>
               <li>
                 <a
@@ -97,17 +108,17 @@ const Footer: React.FC = () => {
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/trainings" className="opacity-80 hover:opacity-100">
-                  Trainings — Foreplay
+                  {isFr ? "Formations — Foreplay" : "Trainings — Foreplay"}
                 </Link>
               </li>
               <li>
                 <Link to="/events-and-retreats" className="opacity-80 hover:opacity-100">
-                  Retreats — Foresight
+                  {isFr ? "Retraites — Foresight" : "Retreats — Foresight"}
                 </Link>
               </li>
               <li>
                 <Link to="/agentic-ux#residencies" className="opacity-80 hover:opacity-100">
-                  Residencies — Forecast
+                  {isFr ? "Résidences — Forecast" : "Residencies — Forecast"}
                 </Link>
               </li>
               <li>
@@ -122,28 +133,28 @@ const Footer: React.FC = () => {
               </li>
               <li>
                 <Link to="/glitch-methodology" className="opacity-80 hover:opacity-100">
-                  Gl!tch Sessions
+                  {isFr ? "Sessions Gl!tch" : "Gl!tch Sessions"}
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className={editorialType.caption + " mb-4"}>Elsewhere</h3>
+            <h3 className={editorialType.caption + " mb-4"}>{isFr ? "Ailleurs" : "Elsewhere"}</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link to="/about-us" className="opacity-80 hover:opacity-100">
-                  About
+                  {isFr ? "À propos" : "About"}
                 </Link>
               </li>
               <li>
                 <Link to="/case-studies" className="opacity-80 hover:opacity-100">
-                  Case studies
+                  {isFr ? "Études de cas" : "Case studies"}
                 </Link>
               </li>
               <li>
                 <Link to="/book" className="opacity-80 hover:opacity-100">
-                  Book
+                  {isFr ? "Livre" : "Book"}
                 </Link>
               </li>
               <li>
@@ -187,10 +198,10 @@ const Footer: React.FC = () => {
           </p>
           <div className="flex gap-6">
             <Link to="/origins" className={editorialType.caption + " hover:opacity-100"}>
-              Origins
+              {isFr ? "Origines" : "Origins"}
             </Link>
             <Link to="/credits" className={editorialType.caption + " hover:opacity-100"}>
-              Credits
+              {isFr ? "Crédits" : "Credits"}
             </Link>
           </div>
         </div>
