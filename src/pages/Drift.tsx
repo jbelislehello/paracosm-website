@@ -7,9 +7,12 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import { GlitchEvent } from '@/types/glitch';
 import { toast } from 'sonner';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Drift = () => {
   const navigate = useNavigate();
+  const { language } = useLanguage();
+  const isFr = language === 'fr';
   const [events, setEvents] = useState<GlitchEvent[]>([]);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -46,7 +49,7 @@ const Drift = () => {
 
   const createPrd = async () => {
     if (selectedIds.length === 0) {
-      toast.error('Please select at least one event');
+      toast.error(isFr ? 'Veuillez sélectionner au moins un événement' : 'Please select at least one event');
       return;
     }
 
@@ -58,11 +61,11 @@ const Drift = () => {
 
       if (error) throw error;
 
-      toast.success('PRD created successfully');
+      toast.success(isFr ? 'PRD créé avec succès' : 'PRD created successfully');
       navigate(`/calm-magic-board/prds/${data.prd.id}`);
     } catch (error) {
       console.error('Error creating PRD:', error);
-      toast.error('Failed to create PRD');
+      toast.error(isFr ? 'Échec de la création du PRD' : 'Failed to create PRD');
     } finally {
       setCreating(false);
     }
@@ -93,16 +96,16 @@ const Drift = () => {
           <div className="flex items-baseline gap-6">
             <span className="font-serif text-5xl md:text-6xl text-[hsl(15_75%_55%)] leading-none">02</span>
             <div>
-              <p className="text-[10px] uppercase tracking-[0.4em] font-semibold opacity-60">Drift · Synthesis</p>
+              <p className="text-[10px] uppercase tracking-[0.4em] font-semibold opacity-60">{isFr ? 'Drift · Synthèse' : 'Drift · Synthesis'}</p>
               <h1 className="font-serif text-3xl md:text-4xl mt-1"><em className="italic font-light">Drift</em> → PRD</h1>
               <p className="text-sm opacity-70 mt-1">
-                Select glitches to synthesize into a 5-layer PRD.
+                {isFr ? 'Sélectionnez des glitches à synthétiser en un PRD à 5 couches.' : 'Select glitches to synthesize into a 5-layer PRD.'}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <Button variant="ghost" onClick={() => navigate('/calm-magic-board')}>
-              <ArrowLeft className="mr-2 h-4 w-4" /> Back
+              <ArrowLeft className="mr-2 h-4 w-4" /> {isFr ? 'Retour' : 'Back'}
             </Button>
             <Button
               onClick={createPrd}
@@ -110,7 +113,7 @@ const Drift = () => {
               className="rounded-full text-xs uppercase tracking-[0.2em]"
             >
               {creating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Create PRD ({selectedIds.length})
+              {isFr ? 'Créer PRD' : 'Create PRD'} ({selectedIds.length})
             </Button>
           </div>
         </div>
@@ -119,10 +122,12 @@ const Drift = () => {
         {events.length === 0 ? (
           <Card className="p-8 text-center">
             <p className="text-lg text-muted-foreground">
-              No events logged yet. Log some glitches first to create a PRD.
+              {isFr
+                ? 'Aucun événement enregistré. Consignez d\'abord quelques glitches pour créer un PRD.'
+                : 'No events logged yet. Log some glitches first to create a PRD.'}
             </p>
             <Button onClick={() => navigate('/calm-magic-board')} className="mt-4">
-              Go to Calm Magic Board
+              {isFr ? 'Aller au Calm Magic Board' : 'Go to Calm Magic Board'}
             </Button>
           </Card>
         ) : (

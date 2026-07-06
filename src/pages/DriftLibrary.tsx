@@ -8,11 +8,14 @@ import { energeticAxes } from "@/data/gardens";
 import { driftMonthlyDiscoveries, driftLibraryExtras, driftLibraryArtefacts, DriftAxis, axisColors } from "@/data/driftMonthlyDiscoveries";
 import { driftTools } from "@/data/driftTools";
 import Footer from "@/components/Footer";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const DriftLibrary = () => {
   const { axis } = useParams<{ axis: string }>();
   const axisKey = axis as DriftAxis;
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
+  const { language } = useLanguage();
+  const isFr = language === 'fr';
 
   const axisInfo = energeticAxes.find(a => a.key === axisKey);
 
@@ -20,8 +23,8 @@ const DriftLibrary = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center space-y-4">
-          <h1 className="text-2xl font-bold">Axis not found</h1>
-          <Link to="/drift"><Button variant="outline"><ArrowLeft className="w-4 h-4 mr-2" />Back to Drift</Button></Link>
+          <h1 className="text-2xl font-bold">{isFr ? 'Axe introuvable' : 'Axis not found'}</h1>
+          <Link to="/drift"><Button variant="outline"><ArrowLeft className="w-4 h-4 mr-2" />{isFr ? 'Retour à Drift' : 'Back to Drift'}</Button></Link>
         </div>
       </div>
     );
@@ -94,7 +97,7 @@ const DriftLibrary = () => {
         <div className="container max-w-5xl mx-auto">
           <Link to="/drift">
             <Button variant="ghost" size="sm" className="mb-8 text-[10px] uppercase tracking-[0.3em]">
-              <ArrowLeft className="w-3 h-3 mr-2" />Back to Drift
+              <ArrowLeft className="w-3 h-3 mr-2" />{isFr ? 'Retour à Drift' : 'Back to Drift'}
             </Button>
           </Link>
           <div className="flex items-baseline gap-8">
@@ -107,7 +110,9 @@ const DriftLibrary = () => {
                 <em className="italic font-light">{axisInfo.subtitle}</em>
               </h1>
               <p className="mt-4 text-base opacity-70 max-w-2xl font-serif italic">{axisInfo.description}</p>
-              <p className="mt-3 text-[10px] uppercase tracking-[0.3em] opacity-50">{totalResources} resources curated across the archive</p>
+              <p className="mt-3 text-[10px] uppercase tracking-[0.3em] opacity-50">
+                {isFr ? `${totalResources} ressources curées dans les archives` : `${totalResources} resources curated across the archive`}
+              </p>
             </div>
           </div>
         </div>
@@ -120,7 +125,7 @@ const DriftLibrary = () => {
           <div className="container max-w-5xl mx-auto">
             <h2 className="text-2xl font-bold mb-8 flex items-center gap-2">
               <BookOpen className="w-6 h-6" style={{ color }} />
-              Books ({allBooks.length})
+              {isFr ? 'Livres' : 'Books'} ({allBooks.length})
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {allBooks.map((book, i) => (
@@ -128,7 +133,7 @@ const DriftLibrary = () => {
                   <CardContent className="p-6 space-y-3">
                     <div className="flex items-start justify-between">
                       <Badge variant="outline" className="text-xs">{book.category}</Badge>
-                      <span className="text-xs text-muted-foreground">{book.isExtra ? 'Library' : `${book.month}/${book.year}`}</span>
+                      <span className="text-xs text-muted-foreground">{book.isExtra ? (isFr ? 'Bibliothèque' : 'Library') : `${book.month}/${book.year}`}</span>
                     </div>
                     <h3 className="font-bold text-lg leading-tight">{book.title}</h3>
                     <p className="text-sm text-muted-foreground">{book.author}</p>
@@ -150,7 +155,7 @@ const DriftLibrary = () => {
       {allVideos.length > 0 && (
         <section className="py-12 px-4 bg-muted/30">
           <div className="container max-w-5xl mx-auto">
-            <h2 className="text-2xl font-bold mb-8">Videos ({allVideos.length})</h2>
+            <h2 className="text-2xl font-bold mb-8">{isFr ? 'Vidéos' : 'Videos'} ({allVideos.length})</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {allVideos.map((video, i) => (
                 <Card key={i} className="overflow-hidden">
@@ -175,7 +180,7 @@ const DriftLibrary = () => {
           <div className="container max-w-5xl mx-auto">
             <h2 className="text-2xl font-bold mb-8 flex items-center gap-2">
               <Wrench className="w-6 h-6" style={{ color }} />
-              Tools ({allTools.length})
+              {isFr ? 'Outils' : 'Tools'} ({allTools.length})
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {allTools.map((tool, i) => (
@@ -188,7 +193,7 @@ const DriftLibrary = () => {
                     <h3 className="font-bold text-lg leading-tight">{tool.name}</h3>
                     <p className="text-sm text-muted-foreground/80 leading-relaxed">{tool.description}</p>
                     <a href={tool.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm font-medium hover:underline" style={{ color }}>
-                      Visit <ExternalLink className="w-3 h-3" />
+                      {isFr ? 'Visiter' : 'Visit'} <ExternalLink className="w-3 h-3" />
                     </a>
                   </CardContent>
                 </Card>
@@ -204,7 +209,7 @@ const DriftLibrary = () => {
           <div className="container max-w-5xl mx-auto">
             <h2 className="text-2xl font-bold mb-8 flex items-center gap-2">
               <Image className="w-6 h-6" style={{ color }} />
-              Artefacts ({allArtefacts.length})
+              {isFr ? 'Artéfacts' : 'Artefacts'} ({allArtefacts.length})
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {allArtefacts.map((artefact, i) => (
@@ -235,7 +240,7 @@ const DriftLibrary = () => {
                     <p className="text-sm text-muted-foreground/80 leading-relaxed">{artefact.description}</p>
                     {artefact.filePath && (
                       <a href={artefact.filePath} download className="inline-flex items-center gap-1 text-sm font-medium hover:underline" style={{ color }}>
-                        <Download className="w-3 h-3" /> Télécharger
+                        <Download className="w-3 h-3" /> {isFr ? 'Télécharger' : 'Download'}
                       </a>
                     )}
                   </CardContent>
