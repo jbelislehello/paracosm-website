@@ -151,6 +151,8 @@ const CardDetail = ({ card, onClose, isFr }: { card: TarotCard; onClose: () => v
 
 // ─── Main Page ───
 const EntrepreneurialTarot = () => {
+  const { language } = useLanguage();
+  const isFr = language === 'fr';
   const [drawnCards, setDrawnCards] = useState<TarotCard[]>([]);
   const [flippedCards, setFlippedCards] = useState<Set<number>>(new Set());
   const [reversedCards, setReversedCards] = useState<Set<number>>(new Set());
@@ -180,9 +182,12 @@ const EntrepreneurialTarot = () => {
     });
   };
 
-  const spreadLabels = ['Past Tension (GL!TCH)', 'Present Drift', 'Future Tune'];
+  const spreadLabels = isFr
+    ? ['Tension passée (GL!TCH)', 'Dérive présente', 'Accord futur']
+    : ['Past Tension (GL!TCH)', 'Present Drift', 'Future Tune'];
   const suits: TarotSuit[] = ['love', 'magic', 'calm', 'open', 'free'];
   const dimensions: ChordsDimension[] = ['C', 'H', 'O', 'R', 'D', 'S'];
+
 
   return (
     <div className="min-h-screen bg-white text-slate-900 relative">
