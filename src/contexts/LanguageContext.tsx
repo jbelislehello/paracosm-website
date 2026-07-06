@@ -38,16 +38,22 @@ const TRANSLATION_MODULES = [
 ] as const;
 
 
+const getInitialLanguage = (): Language => {
+  if (typeof window === 'undefined') return 'en';
+  try {
+    const saved = window.localStorage.getItem('language');
+    if (saved === 'en' || saved === 'fr') return saved;
+  } catch {
+    // localStorage unavailable (private mode, etc.)
+  }
+  const nav = typeof navigator !== 'undefined' ? navigator.language : '';
+  return nav.toLowerCase().startsWith('fr') ? 'fr' : 'en';
+};
+
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>('en');
+  const [language, setLanguage] = useState<Language>(getInitialLanguage);
   const [translations, setTranslations] = useState<Record<string, any>>({});
 
-  useEffect(() => {
-    const savedLanguage = localStorage.getItem('language') as Language;
-    if (savedLanguage && (savedLanguage === 'en' || savedLanguage === 'fr')) {
-      setLanguage(savedLanguage);
-    }
-  }, []);
 
   useEffect(() => {
     const loadTranslations = async () => {
