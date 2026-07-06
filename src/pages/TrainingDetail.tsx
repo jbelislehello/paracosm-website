@@ -52,6 +52,8 @@ export default function TrainingDetail() {
   const [modules, setModules] = useState<ModuleRow[]>([]);
   const tone: EditorialTone = slugTone[slug] ?? "warm";
   const styles = editorialTone[tone];
+  const { language } = useLanguage();
+  const isFr = language === 'fr';
 
   const image =
     training?.og_image_url?.trim() ||
@@ -74,8 +76,10 @@ export default function TrainingDetail() {
   }, [training, modules, image]);
 
   usePageSeo({
-    title: training ? `${training.title} | Paracosm Trainings` : "Training | Paracosm",
-    description: training?.tagline ?? "Paracosm Crewdle-bound training.",
+    title: training
+      ? (isFr ? `${training.title} | Formations Paracosm` : `${training.title} | Paracosm Trainings`)
+      : (isFr ? "Formation | Paracosm" : "Training | Paracosm"),
+    description: training?.tagline ?? (isFr ? "Formation Paracosm liée à Crewdle." : "Paracosm Crewdle-bound training."),
     path: `/trainings/${slug}`,
     image,
     ogType: "article",
@@ -105,7 +109,7 @@ export default function TrainingDetail() {
   if (!training) {
     return (
       <div className={cn("min-h-screen flex items-center justify-center", styles.section)}>
-        <p className="opacity-60">Loading…</p>
+        <p className="opacity-60">{isFr ? 'Chargement…' : 'Loading…'}</p>
       </div>
     );
   }
@@ -121,7 +125,7 @@ export default function TrainingDetail() {
             to="/trainings"
             className={cn(editorialType.cta, "inline-flex items-center gap-2 opacity-70 hover:opacity-100")}
           >
-            <ArrowLeft className="w-4 h-4" /> All trainings
+            <ArrowLeft className="w-4 h-4" /> {isFr ? 'Toutes les formations' : 'All trainings'}
           </Link>
           <EnrollDialog
             trainingSlug={training.slug}
@@ -133,7 +137,7 @@ export default function TrainingDetail() {
         <div className="container max-w-7xl mx-auto px-6 py-20 md:py-28 grid md:grid-cols-12 gap-10 items-end">
           <div className="md:col-span-9 space-y-6">
             <p className={cn(editorialType.eyebrow, styles.kicker)}>
-              Foreplay · {training.crewdle_focus}
+              {isFr ? 'Préambule' : 'Foreplay'} · {training.crewdle_focus}
             </p>
             <h1 className={cn(editorialType.serif, "text-5xl md:text-7xl leading-[0.98] tracking-tight")}>
               {training.title}
@@ -144,7 +148,7 @@ export default function TrainingDetail() {
               </p>
             )}
             <div className="inline-flex items-center gap-2 text-sm opacity-70">
-              <Clock className="w-4 h-4" /> {training.hours} hours total
+              <Clock className="w-4 h-4" /> {isFr ? `${training.hours} heures au total` : `${training.hours} hours total`}
             </div>
           </div>
         </div>
@@ -162,7 +166,7 @@ export default function TrainingDetail() {
         <EditorialSection tone="paper">
           <EditorialChapterHeader
             numeral="I"
-            kicker="The big picture"
+            kicker={isFr ? "La vue d'ensemble" : "The big picture"}
             tone="paper"
           />
           <div className="prose prose-lg max-w-3xl dark:prose-invert">
@@ -175,7 +179,7 @@ export default function TrainingDetail() {
         <EditorialSection tone={tone === "night" ? "warm" : "night"}>
           <EditorialChapterHeader
             numeral="II"
-            kicker="What you'll walk away with"
+            kicker={isFr ? "Ce que vous emportez" : "What you'll walk away with"}
             tone={tone === "night" ? "warm" : "night"}
           />
           <ul className="grid md:grid-cols-2 gap-x-10 gap-y-4 max-w-4xl">
@@ -191,7 +195,7 @@ export default function TrainingDetail() {
 
       {breakdown && (
         <EditorialSection tone="paper">
-          <EditorialChapterHeader numeral="III" kicker="Delivery breakdown" tone="paper" />
+          <EditorialChapterHeader numeral="III" kicker={isFr ? "Détail de livraison" : "Delivery breakdown"} tone="paper" />
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl">
             {Object.entries(breakdown).map(([k, v]) => (
               <div key={k} className="rounded-xl border border-border bg-muted/40 p-5">
@@ -204,7 +208,7 @@ export default function TrainingDetail() {
       )}
 
       <EditorialSection tone={tone}>
-        <EditorialChapterHeader numeral="IV" kicker="Curriculum" tone={tone} />
+        <EditorialChapterHeader numeral="IV" kicker={isFr ? "Programme" : "Curriculum"} tone={tone} />
         <ol className="space-y-3 max-w-4xl">
           {modules.map((m) => (
             <li key={m.id}>
