@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import EditorialSection from "./EditorialSection";
 import EditorialChapterHeader from "./EditorialChapterHeader";
 import { editorialTone, editorialType } from "./editorialTokens";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type Bulletin = {
   kicker: string;
@@ -15,7 +16,7 @@ type Bulletin = {
   href?: string;
 };
 
-const workshop: Bulletin = {
+const workshopEn: Bulletin = {
   kicker: "Upcoming workshop",
   headline: "GL!TCH Workshop — break the pattern, on purpose.",
   dek: "A hands-on cycle to interrupt inherited scripts, widen the window of tolerance, and rehearse a new move before the stakes get real.",
@@ -24,7 +25,16 @@ const workshop: Bulletin = {
   to: "/glitch-events",
 };
 
-const drift = {
+const workshopFr: Bulletin = {
+  kicker: "Prochain atelier",
+  headline: "Atelier GL!TCH — casser le pattern, à dessein.",
+  dek: "Un cycle pratique pour interrompre les scripts hérités, élargir la fenêtre de tolérance et répéter un nouveau geste avant que les enjeux ne deviennent réels.",
+  meta: "Prochaine cohorte — dates à venir",
+  cta: "Réserver une place",
+  to: "/glitch-events",
+};
+
+const driftEn = {
   kicker: "The Drift — Latest edition",
   currentTitle: "Queer AI",
   currentTag: "July 2026 · Now reading",
@@ -35,12 +45,18 @@ const drift = {
   to: "/drift",
 };
 
-const releases: {
-  title: string;
-  status: string;
-  dek: string;
-  icon: typeof Music;
-}[] = [
+const driftFr = {
+  kicker: "The Drift — Dernière édition",
+  currentTitle: "Queer AI",
+  currentTag: "Juillet 2026 · À lire maintenant",
+  nextTitle: "En préparation",
+  nextTag: "Prochaine édition · à venir",
+  dek: "Notes de terrain qui suivent ce qui veut penser ensuite — une impulsion mensuelle sur les cinq axes Calm Magic.",
+  cta: "Entrer dans The Drift",
+  to: "/drift",
+};
+
+const releasesEn: { title: string; status: string; dek: string; icon: typeof Music }[] = [
   {
     title: "Satori & Kensho — Album Launch",
     status: "Releasing",
@@ -61,12 +77,42 @@ const releases: {
   },
 ];
 
-const sanctum: Bulletin = {
+const releasesFr: { title: string; status: string; dek: string; icon: typeof Music }[] = [
+  {
+    title: "Satori & Kensho — Lancement d'album",
+    status: "En sortie",
+    dek: "Deux disques, un arc : la vision soudaine (Satori) et l'approfondissement qui suit (Kensho). Salles d'écoute ouvertes cette saison.",
+    icon: Music,
+  },
+  {
+    title: "The Relational Manifold",
+    status: "Publié",
+    dek: "Un guide de terrain sur la géométrie de la relation — comment le soin, l'attention et la différence courbent l'espace que nous construisons ensemble.",
+    icon: Sparkles,
+  },
+  {
+    title: "Wuxia the Fox — Film d'animation",
+    status: "Pré-production",
+    dek: "Notre guide de récits transmédia passe à l'écran. Le développement commence par la writers' room et une première passe sur le langage visuel.",
+    icon: Film,
+  },
+];
+
+const sanctumEn: Bulletin = {
   kicker: "New live event",
   headline: "The Tuner's Sanctum — off the street, into the workshop.",
   dek: "A community-driven sanctuary for AI & philosophy enthusiasts, artists, mathematicians and engineers to build, learn, and wrench on their projects together.",
   meta: "Recurring · invitation only",
   cta: "Request an invitation",
+  to: "/events-and-retreats",
+};
+
+const sanctumFr: Bulletin = {
+  kicker: "Nouvel événement en direct",
+  headline: "The Tuner's Sanctum — de la rue à l'atelier.",
+  dek: "Un sanctuaire porté par la communauté pour passionné·e·s d'IA et de philosophie, artistes, mathématicien·ne·s et ingénieur·e·s qui construisent, apprennent et bricolent leurs projets ensemble.",
+  meta: "Récurrent · sur invitation",
+  cta: "Demander une invitation",
   to: "/events-and-retreats",
 };
 
