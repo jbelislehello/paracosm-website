@@ -1,15 +1,14 @@
-## Finding
-This is already implemented. `src/contexts/LanguageContext.tsx` persists the selection:
+## Already implemented
 
-- On mount, it reads `localStorage.getItem('language')` and restores `'en'` or `'fr'` if present (lines 45–50).
-- Every time `language` changes, it calls `localStorage.setItem('language', language)` (line 86).
+Saving your EN/FR choice across reloads and future visits is already working in `src/contexts/LanguageContext.tsx`:
 
-Because the header toggle calls `setLanguage(...)` from this same context, choosing FR (or EN) is already saved and re-applied on subsequent visits.
+1. **Initial render uses saved language** — `getInitialLanguage()` reads `localStorage.getItem('language')` synchronously before the first paint, so FR users no longer see an English flash.
+2. **Fallback to browser language** — if nothing is stored, it uses `navigator.language` (FR browsers land on FR, everyone else on EN).
+3. **Writes on every change** — an effect calls `localStorage.setItem('language', language)` whenever you toggle, wrapped in `try/catch` for private-mode safety.
+4. **Keeps `<html lang>` in sync** — same effect sets `document.documentElement.lang` for SEO and assistive tech.
 
-## Optional hardening (only if you want it)
-- **Flash of English on first paint for FR users:** the initial state is `'en'` and switches after the mount effect runs, which can cause a brief EN flash. Fix by initializing `useState` lazily from `localStorage` so the first render already uses the saved language.
-- **Respect browser language on first-ever visit:** if no value is stored, fall back to `navigator.language.startsWith('fr') ? 'fr' : 'en'` before defaulting to EN.
-- **`<html lang>` attribute:** update `document.documentElement.lang` in the same effect so assistive tech and SEO reflect the active language.
+The site-wide toggle in `EditorialSiteHeader` (desktop nav + mobile bar) calls `setLanguage(...)` from this same context, so switching anywhere persists everywhere.
 
 ## Recommendation
-Persistence already works — no action required unless you want one or more of the three enhancements above. Tell me which (if any) to apply and I'll switch to build mode.
+
+No code changes required. If you're still seeing the language reset, tell me the exact steps (browser, incognito?, which page) and I'll investigate — otherwise we're done.
