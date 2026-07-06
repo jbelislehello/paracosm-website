@@ -1,64 +1,45 @@
-# Full Site EN/FR Translation
+## Phase 2 (continued): Remaining Tier-1 Marketing Pages
 
-Goal: every user-visible string across all 62 pages and shared components exists in both `src/i18n/en/*.json` and `src/i18n/fr/*.json`, rendered via `useLanguage()`.
+Localize the remaining marketing pages to EN/FR using the established `useLanguage()` + inline `isFr` pattern (plus new i18n JSON namespaces where content is substantial).
 
-Current state: only 6 pages (`LandingPage`, `EditorialHome`?, `CaseStudies`, `BookLaunch`, `AboutUs`, `EventsAndRetreats`, `ParacosmRetreatLanding`) use the translation system. ~56 pages and most shared components contain hardcoded English.
+### Pages in scope
+1. `Pricing.tsx` — hero, plan cards (via `subscriptionTiers.ts`), CTA states, contact footer.
+2. `Drift.tsx` + `DriftLibrary.tsx` — headings, filters, resource cards, empty states.
+3. `Origins.tsx` — chapter headers, narrative blocks, CTAs.
+4. `WuxiaTheFox.tsx` — hero, story sections, transmedia CTAs.
+5. `RelationalHealing.tsx` — hero, offering blocks, CTAs.
+6. `Tonalli.tsx` — Voice/Spatial branch descriptions, CTAs.
+7. `BookChapter.tsx` / `BookCompass.tsx` / `BookCompassesIndex.tsx` / `BookOperatorsIndex.tsx` / `BookThanks.tsx` — reuse existing `book.json`; fill gaps.
+8. `TrainingsIndex.tsx` + `TrainingDetail.tsx` + `TrainingModule.tsx` — static chrome (labels like "All trainings", "hours total", "Curriculum", chapter kickers). DB-driven training content stays as-is (single-language content owned by DB).
+9. `CaseStudies.tsx` — reuse `case-studies.json`; fill gaps for chrome.
+10. `EventsAndRetreats.tsx` + `ParacosmRetreatLanding.tsx` — reuse `retreat.json`; localize surrounding chrome.
 
-Because the surface is very large, work is split into phases. Each phase is one implementation turn ending in a completed, buildable slice. You approve, I move to the next.
+### Approach per page
+- Add a new i18n namespace file only when the page has >~15 strings or when strings recur; otherwise inline `isFr ? "…" : "…"`.
+- Update `usePageSeo({ title, description })` per page with FR variants.
+- Preserve all editorial component structure and styling (magazine aesthetic). No design changes.
+- Keep DB-sourced strings (trainings, retreats loaded via Supabase) untouched — those are content ops, not chrome.
 
-## Phase 0 — Audit report (this plan's first deliverable)
+### New i18n namespaces to add
+- `pricing.json` (EN/FR) — hero, CTA labels, contact footer.
+- `drift.json` (EN/FR) — page/library chrome, filter labels, empty states.
+- `origins.json` (EN/FR) — chapter kickers + long narrative blocks.
+- `wuxia.json` (EN/FR) — narrative sections.
+- `relational-healing.json` (EN/FR).
+- `tonalli.json` (EN/FR).
+- `trainings.json` (EN/FR) — index + detail + module chrome.
+- `events.json` (EN/FR) — events + retreat landing chrome (or extend `retreat.json`).
 
-Produce `.lovable/i18n-audit.md` enumerating, per file:
-- Hardcoded English string count (approx)
-- Existing i18n namespace if any
-- Proposed namespace + key prefix
-- Priority tier (1 marketing / 2 product surfaces / 3 auth+dashboards / 4 admin)
+Register each new namespace in `LanguageContext.tsx`.
 
-No code changes in Phase 0.
+### Out of scope for this phase
+- Tier-2 product surfaces (CalmMagicBoard, GlitchAuth, EntrepreneurialTarot, AgenticDemo).
+- Tier-3 auth/dashboards.
+- Tier-4 admin.
+- DB content translations (trainings, retreats, case studies bodies).
 
-## Phase 1 — Shared shell (site-wide impact)
+### Verification
+After edits, run `tsgo` (auto) and spot-check with Playwright by toggling `language` state on `/pricing`, `/drift`, `/origins`, `/wuxia`, `/trainings` to confirm FR strings render and layout is intact.
 
-Files: `Footer.tsx`, `HeroSection.tsx`, `ContactSection.tsx`, `FAQSection.tsx`, `SocialProofSection.tsx`, `WhoWeServeSection.tsx`, `ServicesShowcase.tsx`, `CoachingApproachSection.tsx`, `BookAnnouncementBanner.tsx`, `MobileSectionNav.tsx`, `OnboardingGuide.tsx`, all `components/editorial/*`, all `components/ui/*` user-visible labels, dialog components (`GetDemoDialog`, `ShareProjectDialog`, `SignupPromptModal`, `UpgradePromptModal`, `ProfileEditModal`).
-
-Adds namespaces: `footer`, `contact`, `faq`, `dialogs`, `shell`.
-
-## Phase 2 — Tier-1 marketing pages
-
-`EditorialHome`, `Contact`, `Pricing`, `TrainingsIndex`, `TrainingDetail`, `TrainingModule`, `DriftLanding`, `DriftLibrary`, `DriftMonthlyDiscovery`, `Drift`, `Origins`, `Lineage`, `WuxiaTheFox`, `RelationalHealing`, `Tonalli`, `RehearsalArcOffering`, `ResidencyDetail`, `AgenticResidency`, `BookChapter`, `BookCompass`, `BookCompassesIndex`, `BookOperatorsIndex`, `BookThanks`, `DreamAndLearn`, `DreamShare`.
-
-New namespaces: `pricing`, `trainings`, `drift`, `origins`, `lineage`, `wuxia`, `relational-healing`, `tonalli`, `rehearsal`, `residency`, `book`, `dreams`.
-
-## Phase 3 — Product / feature surfaces
-
-`CalmMagicBoard`, `CalmMagicDemo`, `CalmMagicJournal`, `CalmMagicVisualization`, `CalmMagicAuth`, `GlitchAuth`, `GlitchEvents`, `GlitchInsights`, `GlitchLog`, `GlitchMethodology`, `EntrepreneurialTarot`, `PatternEncyclopedia`, `GardenExpansionMode`, `MyRehearsalArc`, `RehearsalArc`, `AgenticDemo`, `AgenticEcosystemDeck`, `ResonanceDemo`, `DesignSystemShowcase`, plus their component trees (`calm-magic/*`, `tarot/*`, `rehearsal/*`, `agentic-demo/*`, `agent-demo/*`, `resonance/*`, `board/*`, `d3/*` user-visible copy, `journal/*`, `lineage/*`, `paracosm/*`, `product-development/*`, `prd-generator/*`, `trainings/*`, `book/*`, `tonalli/*`, `case-studies/*`, `hero/*`, `landing/*`, `design-system/*`, `aesthetic/*`, `auth/*`).
-
-New namespaces per feature area.
-
-## Phase 4 — Dashboards, admin, auxiliary
-
-`Index`, `ParacosmDashboard`, `ProjectsDashboard`, `PrdsDashboard`, `PrdEditor`, `Settings`, `Credits`, `AdminSubscriptions`, `BookManuscriptAdmin`, `SubscriptionSuccess`, `SubscriptionCanceled`, `NotFound`, related components (`UserProfileMenu`, `SubscriptionStatusIndicator`, `PremiumBadge`, `FeatureGate`, `MyInvitations`).
-
-## Translation approach
-
-- Keys are semantic (`hero.cta.primary`), not English snippets.
-- French copy: professional native-quality translation matching brand voice (editorial, magazine tone). Where a term is a proper noun / product name (Paracosm, Calm Magic, GL!TCH, Drift, Tonalli, Wuxia), keep untranslated.
-- Toast messages, aria-labels, alt text, meta tags all included.
-- Numbers/dates use locale-aware formatting where user-visible.
-- Zod validation messages routed through translation helper.
-
-## Technical section
-
-- Loader: `src/contexts/LanguageContext.tsx` already lazy-loads namespaces via dynamic `import()` of `src/i18n/{lang}/{ns}.json`. New namespaces added by dropping matching `en/x.json` + `fr/x.json` pairs and calling `t('x.key')` after `useLanguage()` registers the namespace.
-- Missing-key fallback: keep existing behavior (returns key). Add dev-only `console.warn` for missing keys during audit phases to catch regressions.
-- No changes to persistence, `<html lang>` sync, or `LanguageSwitcher` — those are done.
-- Type safety: keep JSON as source of truth; no generated types unless you want them.
-
-## Deliverable cadence
-
-Turn 1 (after approval): Phase 0 audit file only.
-Turn 2: Phase 1.
-Turn 3–5: Phase 2 (split by page group if a single turn is too large).
-Turn 6–8: Phase 3.
-Turn 9: Phase 4 + final sweep verifying `rg` finds no user-visible hardcoded English in `.tsx` files outside allowlist (code identifiers, product names, dev-only strings).
-
-Approve to start with Phase 0 (audit report, no code changes).
+### Next after this
+Phase 3 = Tier-2 product surfaces.
