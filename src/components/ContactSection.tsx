@@ -121,10 +121,16 @@ Contact Form System
 
   const relevantCaseStudies = getRelevantCaseStudies(selectedClientType);
 
-  const individualItems = (t('contact.audience.individual_items') as unknown) as string[];
-  const orgItems = (t('contact.audience.org_items') as unknown) as string[];
-  const individualList = Array.isArray(individualItems) ? individualItems : [];
-  const orgList = Array.isArray(orgItems) ? orgItems : [];
+  const individualList = [
+    t('contact.audience.individual_item_1'),
+    t('contact.audience.individual_item_2'),
+    t('contact.audience.individual_item_3'),
+  ];
+  const orgList = [
+    t('contact.audience.org_item_1'),
+    t('contact.audience.org_item_2'),
+    t('contact.audience.org_item_3'),
+  ];
 
   return (
     <section id="contact" className="py-20 px-4 bg-gradient-to-b from-slate-50 to-white dark:from-slate-800 dark:to-slate-900">

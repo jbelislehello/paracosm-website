@@ -56,16 +56,12 @@
   },
   "audience": {
     "individual_title": "Individual Leaders",
-    "individual_items": [
-      "Executive coaching & development",
-      "AI leadership strategy",
-      "Personal transformation"
-    ],
+    "individual_item_1": "Executive coaching & development",
+    "individual_item_2": "AI leadership strategy",
+    "individual_item_3": "Personal transformation",
     "org_title": "Teams & Organizations",
-    "org_items": [
-      "Team coaching & culture change",
-      "Innovation frameworks",
-      "Organizational transformation"
-    ]
+    "org_item_1": "Team coaching & culture change",
+    "org_item_2": "Innovation frameworks",
+    "org_item_3": "Organizational transformation"
   }
 }

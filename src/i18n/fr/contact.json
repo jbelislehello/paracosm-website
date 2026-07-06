@@ -56,16 +56,12 @@
   },
   "audience": {
     "individual_title": "Leaders individuel·les",
-    "individual_items": [
-      "Coaching et développement exécutif",
-      "Stratégie de leadership IA",
-      "Transformation personnelle"
-    ],
+    "individual_item_1": "Coaching et développement exécutif",
+    "individual_item_2": "Stratégie de leadership IA",
+    "individual_item_3": "Transformation personnelle",
     "org_title": "Équipes & organisations",
-    "org_items": [
-      "Coaching d'équipe et changement culturel",
-      "Cadres d'innovation",
-      "Transformation organisationnelle"
-    ]
+    "org_item_1": "Coaching d'équipe et changement culturel",
+    "org_item_2": "Cadres d'innovation",
+    "org_item_3": "Transformation organisationnelle"
   }
 }
