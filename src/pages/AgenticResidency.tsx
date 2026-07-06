@@ -62,10 +62,11 @@ const AgenticResidency = () => {
       <EditorialPageHero
         tone="warm"
         numeral={numeral}
-        kicker={`Residency · Agentic UX · ${duration}`}
+        kicker={`${isFr ? 'Résidence' : 'Residency'} · Agentic UX · ${duration}`}
         title={<>{title}.</>}
         subtitle={tagline}
       />
+
 
       <EditorialSection tone="paper" id="overview">
         <EditorialChapterHeader
