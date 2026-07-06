@@ -184,7 +184,7 @@ export default function EditorialSiteHeader() {
               to="/dashboard/rehearsal-arc"
               className="text-[10px] uppercase tracking-[0.25em] font-semibold px-3 py-1.5 rounded-full border border-current/30 hover:bg-current/10 transition-colors"
             >
-              My Arc
+              {isFr ? "Mon Arc" : "My Arc"}
             </Link>
           )}
           <LanguageToggle />
@@ -195,7 +195,7 @@ export default function EditorialSiteHeader() {
           <button
             className="p-1.5 opacity-70 hover:opacity-100"
             onClick={() => setMobileOpen((v) => !v)}
-            aria-label="Toggle menu"
+            aria-label={isFr ? "Ouvrir le menu" : "Toggle menu"}
           >
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
