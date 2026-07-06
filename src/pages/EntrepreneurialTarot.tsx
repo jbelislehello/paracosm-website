@@ -16,6 +16,8 @@ import EnhancedCardDisplay from "@/components/tarot/EnhancedCardDisplay";
 import ConstellationView from "@/components/tarot/ConstellationView";
 import MatrixLegend from "@/components/tarot/MatrixLegend";
 import GenerativeCardArt from "@/components/tarot/GenerativeCardArt";
+import { useLanguage } from "@/contexts/LanguageContext";
+
 
 // ─── Ambient floating particles ───
 const AmbientParticles = () => (
