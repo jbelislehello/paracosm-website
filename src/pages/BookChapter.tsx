@@ -16,6 +16,7 @@ import ChapterCompasses from "@/components/book/ChapterCompasses";
 import ReflectionNodes from "@/components/book/ReflectionNodes";
 import { editorialTone, editorialType } from "@/components/editorial/editorialTokens";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 
 interface Chapter {
@@ -123,6 +124,8 @@ export default function BookChapter() {
   const [loading, setLoading] = useState(true);
   const { markRead } = useReaderProgress();
   const warm = editorialTone.warm;
+  const { language } = useLanguage();
+  const isFr = language === 'fr';
 
   const image =
     chapter?.og_image_url?.trim() ||
@@ -130,8 +133,8 @@ export default function BookChapter() {
 
   const chapterTitle = chapter
     ? `${chapter.title} — Calm Magic${edition === "pragmatic" ? " · Operator's Cut" : ""}`
-    : "Chapter — Calm Magic";
-  const chapterDesc = chapter?.summary ?? "A free chapter from the Calm Magic book.";
+    : (isFr ? "Chapitre — Calm Magic" : "Chapter — Calm Magic");
+  const chapterDesc = chapter?.summary ?? (isFr ? "Un chapitre gratuit du livre Calm Magic." : "A free chapter from the Calm Magic book.");
 
   const jsonLd = useMemo(() => {
     if (!chapter) return undefined;
@@ -232,7 +235,7 @@ export default function BookChapter() {
           </Link>
           <div className={cn("flex items-center gap-4", editorialType.caption)}>
             <Link to="/book" className="inline-flex items-center gap-1 opacity-70 transition-opacity hover:opacity-100">
-              <ArrowLeft className="h-3 w-3" /> Back to book
+              <ArrowLeft className="h-3 w-3" /> {isFr ? 'Retour au livre' : 'Back to book'}
             </Link>
             <LanguageSwitcher />
           </div>
@@ -255,10 +258,10 @@ export default function BookChapter() {
                 {String(chapter.order_index).padStart(2, "0")}
               </span>
               <div className={cn("flex flex-wrap items-baseline gap-x-4 gap-y-1", editorialType.caption)}>
-                <span className={warm.kicker}>Chapter {chapter.order_index}</span>
+                <span className={warm.kicker}>{isFr ? `Chapitre ${chapter.order_index}` : `Chapter ${chapter.order_index}`}</span>
                 <span className="opacity-60">{PHASE_LABEL[chapter.phase] ?? chapter.phase}</span>
                 {chapter.is_free_sample && (
-                  <span className={cn("border-b", warm.accentBorder, warm.kicker)}>Free sample</span>
+                  <span className={cn("border-b", warm.accentBorder, warm.kicker)}>{isFr ? 'Extrait gratuit' : 'Free sample'}</span>
                 )}
               </div>
             </div>
@@ -282,7 +285,7 @@ export default function BookChapter() {
                   edition === "visionary" ? warm.ctaPrimary : "opacity-70 hover:opacity-100",
                 )}
               >
-                Field Guide
+                {isFr ? 'Guide de terrain' : 'Field Guide'}
               </button>
               <button
                 type="button"
@@ -293,9 +296,9 @@ export default function BookChapter() {
                   edition === "pragmatic" ? warm.ctaPrimary : "opacity-70 hover:opacity-100",
                   !pragmaticBody && "opacity-30 cursor-not-allowed hover:opacity-30",
                 )}
-                title={pragmaticBody ? "Operator's Cut — 90-minute pragmatic edition" : "Operator's Cut not yet available for this chapter"}
+                title={pragmaticBody ? (isFr ? "Édition Opérateur — 90 minutes, pragmatique" : "Operator's Cut — 90-minute pragmatic edition") : (isFr ? "Édition Opérateur non disponible pour ce chapitre" : "Operator's Cut not yet available for this chapter")}
               >
-                Operator's Cut
+                {isFr ? 'Édition Opérateur' : "Operator's Cut"}
               </button>
             </div>
 
@@ -322,7 +325,7 @@ export default function BookChapter() {
                     className="group flex flex-col gap-1 py-6 pr-6 sm:border-r border-current/20 hover:bg-current/[0.04] transition-colors"
                   >
                     <div className={cn("flex items-center gap-1", editorialType.caption, warm.kicker)}>
-                      <ArrowLeft className="h-3 w-3" /> Previous · {PHASE_LABEL[prev.phase] ?? prev.phase}
+                      <ArrowLeft className="h-3 w-3" /> {isFr ? 'Précédent' : 'Previous'} · {PHASE_LABEL[prev.phase] ?? prev.phase}
                     </div>
                     <div className={cn(editorialType.serif, "text-lg md:text-xl leading-tight")}>{prev.title}</div>
                   </Link>
@@ -333,7 +336,7 @@ export default function BookChapter() {
                     className="group flex flex-col gap-1 py-6 pl-6 sm:text-right hover:bg-current/[0.04] transition-colors"
                   >
                     <div className={cn("flex items-center sm:justify-end gap-1", editorialType.caption, warm.kicker)}>
-                      Next · {PHASE_LABEL[next.phase] ?? next.phase} <ArrowRight className="h-3 w-3" />
+                      {isFr ? 'Suivant' : 'Next'} · {PHASE_LABEL[next.phase] ?? next.phase} <ArrowRight className="h-3 w-3" />
                     </div>
                     <div className={cn(editorialType.serif, "text-lg md:text-xl leading-tight")}>{next.title}</div>
                   </Link>
@@ -344,19 +347,21 @@ export default function BookChapter() {
             <aside className={cn("mt-16 border p-8", warm.calloutBox)}>
               <p className={cn(editorialType.kicker, warm.kicker, "mb-3 inline-flex items-center gap-2")}>
                 <BookOpen className="h-3 w-3" />
-                Get the next chapter early
+                {isFr ? 'Recevez le prochain chapitre en avant-première' : 'Get the next chapter early'}
               </p>
               <h3 className={cn(editorialType.serif, "text-2xl md:text-3xl leading-tight italic font-light")}>
-                Send me what's next.
+                {isFr ? "Envoyez-moi la suite." : "Send me what's next."}
               </h3>
               <p className="mt-3 mb-5 text-sm opacity-75 leading-relaxed">
-                Drop your email and we'll send the next published chapter the moment it's ready.
+                {isFr
+                  ? "Laissez votre courriel et nous enverrons le prochain chapitre publié dès qu'il est prêt."
+                  : "Drop your email and we'll send the next published chapter the moment it's ready."}
               </p>
               <BookLeadCaptureForm
                 source={`book_chapter_${chapter.slug}`}
                 interest="waitlist"
                 chapterSlug={chapter.slug}
-                cta="Send me the next chapter"
+                cta={isFr ? "Envoyez-moi le prochain chapitre" : "Send me the next chapter"}
               />
             </aside>
           </article>

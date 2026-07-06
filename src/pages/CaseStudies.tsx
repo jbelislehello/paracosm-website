@@ -9,19 +9,25 @@ import { caseStudies } from "@/data/caseStudies";
 
 
 const CaseStudies: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isFr = language === 'fr';
+
+  const seoTitle = isFr
+    ? "Études de cas — Organisations apprenantes en pratique | Paracosm"
+    : "Case Studies — Learning Organizations in practice | Paracosm";
+  const seoDescription = isFr
+    ? "Engagements réels où Paracosm a aidé des dirigeant·e·s et des innovateur·rice·s à bâtir des organisations apprenantes à l'aide de systèmes IA et d'intelligence relationnelle."
+    : "Real engagements where Paracosm helped executives and innovators build Learning Organizations using AI systems and relational intelligence.";
 
   usePageSeo({
-    title: "Case Studies — Learning Organizations in practice | Paracosm",
-    description:
-      "Real engagements where Paracosm helped executives and innovators build Learning Organizations using AI systems and relational intelligence.",
+    title: seoTitle,
+    description: seoDescription,
     path: "/case-studies",
     jsonLd: [
       webPageSchema({
         type: "CollectionPage",
-        title: "Case Studies — Learning Organizations in practice | Paracosm",
-        description:
-          "Real engagements where Paracosm helped executives and innovators build Learning Organizations using AI systems and relational intelligence.",
+        title: seoTitle,
+        description: seoDescription,
         url: "/case-studies",
       }),
       itemListSchema({

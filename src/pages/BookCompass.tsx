@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import Footer from "@/components/Footer";
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 import ReflectionNodes from "@/components/book/ReflectionNodes";
 
@@ -34,10 +35,12 @@ export default function BookCompass() {
   const [item, setItem] = useState<CompassDetail | null>(null);
   const [chapters, setChapters] = useState<ChapterRef[]>([]);
   const [loading, setLoading] = useState(true);
+  const { language } = useLanguage();
+  const isFr = language === 'fr';
 
   usePageSeo({
-    title: item ? `${item.name} — Compass — Calm Magic` : "Compass — Calm Magic",
-    description: item?.description ?? "A compass from the Calm Magic book.",
+    title: item ? `${item.name} — ${isFr ? 'Boussole' : 'Compass'} — Calm Magic` : (isFr ? "Boussole — Calm Magic" : "Compass — Calm Magic"),
+    description: item?.description ?? (isFr ? "Une boussole du livre Calm Magic." : "A compass from the Calm Magic book."),
     path: `/book/compasses/${slug ?? ""}`,
   });
 
@@ -80,7 +83,7 @@ export default function BookCompass() {
           </Link>
           <div className="flex items-center gap-3">
             <Link to="/book/compasses" className="flex items-center gap-1 text-[10px] uppercase tracking-[0.3em] opacity-70 hover:opacity-100">
-              <ArrowLeft className="h-3 w-3" /> All compasses
+              <ArrowLeft className="h-3 w-3" /> {isFr ? 'Toutes les boussoles' : 'All compasses'}
             </Link>
             <LanguageSwitcher />
           </div>
@@ -94,16 +97,16 @@ export default function BookCompass() {
           </div>
         ) : !item ? (
           <div className="container mx-auto max-w-xl px-6 py-24 text-center">
-            <h1 className="font-serif text-2xl">Compass not yet published</h1>
+            <h1 className="font-serif text-2xl">{isFr ? 'Boussole non publiée' : 'Compass not yet published'}</h1>
             <Link to="/book/compasses" className="mt-6 inline-flex items-center gap-1 text-[10px] uppercase tracking-[0.3em] opacity-70 hover:opacity-100">
-              <ArrowLeft className="h-3 w-3" /> Back to compasses
+              <ArrowLeft className="h-3 w-3" /> {isFr ? 'Retour aux boussoles' : 'Back to compasses'}
             </Link>
           </div>
         ) : (
           <article className="container mx-auto max-w-3xl px-6 py-16">
             <div className="mb-4 flex items-center gap-2 text-[hsl(345_65%_45%)]">
               <Compass className="h-4 w-4" />
-              <span className="text-[10px] uppercase tracking-[0.35em] font-semibold">Compass</span>
+              <span className="text-[10px] uppercase tracking-[0.35em] font-semibold">{isFr ? 'Boussole' : 'Compass'}</span>
             </div>
             <h1 className="font-serif text-4xl md:text-5xl leading-[1.05]">
               {item.name}
@@ -126,13 +129,13 @@ export default function BookCompass() {
             <div className="mt-10 grid gap-6 sm:grid-cols-2">
               {item.timing && (
                 <div>
-                  <div className="mb-2 text-[10px] uppercase tracking-[0.3em] opacity-50">When</div>
+                  <div className="mb-2 text-[10px] uppercase tracking-[0.3em] opacity-50">{isFr ? 'Quand' : 'When'}</div>
                   <p className="text-sm opacity-80">{item.timing}</p>
                 </div>
               )}
               {item.phase_affinity.length > 0 && (
                 <div>
-                  <div className="mb-2 text-[10px] uppercase tracking-[0.3em] opacity-50">Phases</div>
+                  <div className="mb-2 text-[10px] uppercase tracking-[0.3em] opacity-50">{isFr ? 'Phases' : 'Phases'}</div>
                   <div className="flex flex-wrap gap-1">
                     {item.phase_affinity.map((p) => (
                       <Badge key={p} variant="outline" className="border-current/20 bg-transparent text-[10px] uppercase tracking-[0.2em]">
@@ -144,7 +147,7 @@ export default function BookCompass() {
               )}
               {item.tools.length > 0 && (
                 <div>
-                  <div className="mb-2 text-[10px] uppercase tracking-[0.3em] opacity-50">Tools / prototypes</div>
+                  <div className="mb-2 text-[10px] uppercase tracking-[0.3em] opacity-50">{isFr ? 'Outils / prototypes' : 'Tools / prototypes'}</div>
                   <ul className="list-disc space-y-1 pl-5 text-sm opacity-80">
                     {item.tools.map((t) => <li key={t}>{t}</li>)}
                   </ul>
@@ -152,7 +155,7 @@ export default function BookCompass() {
               )}
               {item.practices.length > 0 && (
                 <div>
-                  <div className="mb-2 text-[10px] uppercase tracking-[0.3em] opacity-50">Practices</div>
+                  <div className="mb-2 text-[10px] uppercase tracking-[0.3em] opacity-50">{isFr ? 'Pratiques' : 'Practices'}</div>
                   <ul className="list-disc space-y-1 pl-5 text-sm opacity-80">
                     {item.practices.map((t) => <li key={t}>{t}</li>)}
                   </ul>
@@ -163,7 +166,7 @@ export default function BookCompass() {
             {chapters.length > 0 && (
               <section className="mt-14 border-t border-current/10 pt-8">
                 <h2 className="mb-6 text-[10px] font-semibold uppercase tracking-[0.35em] opacity-60">
-                  Appears alongside chapters
+                  {isFr ? 'Apparaît à côté des chapitres' : 'Appears alongside chapters'}
                 </h2>
                 <div className="grid gap-3 sm:grid-cols-2">
                   {chapters.map((c) => (

@@ -11,6 +11,7 @@ import EditorialSiteHeader from "@/components/editorial/EditorialSiteHeader";
 import { editorialTone, editorialType, type EditorialTone } from "@/components/editorial/editorialTokens";
 import { STATE_META, type CalmMagicState } from "@/data/rehearsalArcMeta";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type Training = {
   id: string;
@@ -56,6 +57,8 @@ type GradedResult = { id: string; correct: boolean; correct_answer: number; expl
 export default function TrainingModule() {
   const { slug = "", order = "1" } = useParams();
   const nav = useNavigate();
+  const { language } = useLanguage();
+  const isFr = language === 'fr';
   const [training, setTraining] = useState<Training | null>(null);
   const [modules, setModules] = useState<ModuleRow[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -77,7 +80,7 @@ export default function TrainingModule() {
   const stateMeta = current?.focus_state ? STATE_META[current.focus_state] : null;
 
   usePageSeo({
-    title: current ? `${current.title} — ${training?.title ?? "Training"} | Paracosm` : "Module",
+    title: current ? `${current.title} — ${training?.title ?? (isFr ? 'Formation' : 'Training')} | Paracosm` : (isFr ? 'Module' : 'Module'),
     description: current?.summary ?? current?.outcome ?? "",
     path: `/trainings/${slug}/modules/${order}`,
   });
@@ -127,14 +130,14 @@ export default function TrainingModule() {
     setGraded(map);
     setScore(payload.score);
     setSubmitted(true);
-    if (payload.passed) toast.success(`Passed — ${payload.score}%`);
-    else toast.error(`Keep going — ${payload.score}%`);
+    if (payload.passed) toast.success(`${isFr ? 'Réussi' : 'Passed'} — ${payload.score}%`);
+    else toast.error(`${isFr ? 'Continuez' : 'Keep going'} — ${payload.score}%`);
   };
 
   if (!training || !current) {
     return (
       <div className={cn("min-h-screen flex items-center justify-center", styles.section)}>
-        <p className="opacity-60">Loading…</p>
+        <p className="opacity-60">{isFr ? 'Chargement…' : 'Loading…'}</p>
       </div>
     );
   }
@@ -154,7 +157,7 @@ export default function TrainingModule() {
           <ArrowLeft className="h-4 w-4" /> {training.title}
         </Link>
         <div className={cn(editorialType.caption)}>
-          Module {current.order_index} / {modules.length}
+          {isFr ? `Module ${current.order_index} / ${modules.length}` : `Module ${current.order_index} / ${modules.length}`}
         </div>
       </header>
 
@@ -187,14 +190,14 @@ export default function TrainingModule() {
           <PlayCircle className="h-12 w-12 opacity-40 mb-3" />
           <div className={cn(editorialType.serif, "text-xl mb-1")}>{current.video_title}</div>
           <div className="text-xs opacity-60">
-            {current.video_duration_min ? `${current.video_duration_min} min · ` : ""}placeholder — video shipping with the cohort
+            {current.video_duration_min ? `${current.video_duration_min} min · ` : ""}{isFr ? 'espace réservé — la vidéo arrive avec la cohorte' : 'placeholder — video shipping with the cohort'}
           </div>
         </div>
 
         {/* Three simultaneous journeys */}
         {(journeys.narrative || journeys.cognitive || journeys.identity) && (
           <section className="mb-16">
-            <p className={cn(editorialType.eyebrow, styles.kicker, "mb-6")}>Three journeys, this module</p>
+            <p className={cn(editorialType.eyebrow, styles.kicker, "mb-6")}>{isFr ? 'Trois parcours dans ce module' : 'Three journeys, this module'}</p>
             <div className="grid md:grid-cols-3 gap-5">
               {(["narrative", "cognitive", "identity"] as const).map((k) =>
                 journeys[k] ? (
@@ -211,7 +214,7 @@ export default function TrainingModule() {
         {/* Exercises */}
         {exercises.length > 0 && (
           <section className="mb-16">
-            <p className={cn(editorialType.eyebrow, styles.kicker, "mb-6")}>Exercises</p>
+            <p className={cn(editorialType.eyebrow, styles.kicker, "mb-6")}>{isFr ? 'Exercices' : 'Exercises'}</p>
             <div className="space-y-4">
               {exercises.map((e, i) => (
                 <div key={i} className={cn("rounded-2xl border p-6", styles.calloutBox)}>
@@ -221,17 +224,17 @@ export default function TrainingModule() {
                     </h3>
                     <span className="text-xs opacity-60 shrink-0">{e.timingMin} min</span>
                   </div>
-                  <p className={cn(editorialType.caption, "mb-1")}>Intent</p>
+                  <p className={cn(editorialType.caption, "mb-1")}>{isFr ? 'Intention' : 'Intent'}</p>
                   <p className="text-sm mb-4 opacity-90">{e.intent}</p>
-                  <p className={cn(editorialType.caption, "mb-1")}>Prompt</p>
+                  <p className={cn(editorialType.caption, "mb-1")}>{isFr ? 'Consigne' : 'Prompt'}</p>
                   <p className="text-sm mb-4 italic opacity-90">"{e.prompt}"</p>
                   <div className="grid md:grid-cols-2 gap-4 text-sm">
                     <div>
-                      <p className={editorialType.caption}>Materials</p>
+                      <p className={editorialType.caption}>{isFr ? 'Matériel' : 'Materials'}</p>
                       <p className="opacity-80 mt-1">{e.materials}</p>
                     </div>
                     <div>
-                      <p className={editorialType.caption}>Debrief</p>
+                      <p className={editorialType.caption}>{isFr ? 'Debrief' : 'Debrief'}</p>
                       <p className="opacity-80 mt-1">{e.debrief}</p>
                     </div>
                   </div>
@@ -244,7 +247,7 @@ export default function TrainingModule() {
         {/* Artifact */}
         {current.artifact && (
           <div className={cn("rounded-2xl border p-6 mb-16", styles.calloutBox)}>
-            <p className={editorialType.caption}>Artifact you leave with</p>
+            <p className={editorialType.caption}>{isFr ? 'Artefact que vous emportez' : 'Artifact you leave with'}</p>
             <p className={cn(editorialType.serif, "italic text-lg mt-2")}>{current.artifact}</p>
           </div>
         )}
@@ -257,7 +260,7 @@ export default function TrainingModule() {
         )}
         {current.hands_on_md && (
           <div className={cn("rounded-2xl border p-6 mb-10", styles.calloutBox)}>
-            <p className={cn(editorialType.caption, "mb-2")}>Hands-on</p>
+            <p className={cn(editorialType.caption, "mb-2")}>{isFr ? 'Pratique' : 'Hands-on'}</p>
             <div className="prose max-w-none dark:prose-invert">
               <ReactMarkdown>{current.hands_on_md}</ReactMarkdown>
             </div>
@@ -267,8 +270,8 @@ export default function TrainingModule() {
         {/* Quiz */}
         {questions.length > 0 && (
           <div className={cn("rounded-2xl border p-6 mb-10", styles.calloutBox)}>
-            <h2 className={cn(editorialType.serif, "text-2xl mb-1")}>Knowledge check</h2>
-            <p className="text-sm opacity-60 mb-6">{questions.length} questions. 66% to pass.</p>
+            <h2 className={cn(editorialType.serif, "text-2xl mb-1")}>{isFr ? 'Vérification des connaissances' : 'Knowledge check'}</h2>
+            <p className="text-sm opacity-60 mb-6">{isFr ? `${questions.length} questions. 66 % pour réussir.` : `${questions.length} questions. 66% to pass.`}</p>
             <div className="space-y-6">
               {questions.map((q, qi) => (
                 <div key={q.id}>
@@ -317,15 +320,17 @@ export default function TrainingModule() {
             </div>
             <div className="mt-6 flex items-center justify-between">
               <div className="text-sm opacity-60">
-                {submitted ? `Score: ${score}%` : `${Object.keys(answers).length}/${questions.length} answered`}
+                {submitted
+                  ? (isFr ? `Score : ${score}%` : `Score: ${score}%`)
+                  : (isFr ? `${Object.keys(answers).length}/${questions.length} répondues` : `${Object.keys(answers).length}/${questions.length} answered`)}
               </div>
               {!submitted ? (
                 <Button onClick={submitQuiz} disabled={Object.keys(answers).length < questions.length}>
-                  Submit
+                  {isFr ? 'Soumettre' : 'Submit'}
                 </Button>
               ) : (
                 <Button variant="outline" onClick={() => { setSubmitted(false); setAnswers({}); }}>
-                  Retry
+                  {isFr ? 'Reprendre' : 'Retry'}
                 </Button>
               )}
             </div>
@@ -339,13 +344,13 @@ export default function TrainingModule() {
             disabled={!prev}
             onClick={() => prev && nav(`/trainings/${slug}/modules/${prev.order_index}`)}
           >
-            <ArrowLeft className="h-4 w-4 mr-2" /> {prev ? prev.title : "Previous"}
+            <ArrowLeft className="h-4 w-4 mr-2" /> {prev ? prev.title : (isFr ? 'Précédent' : 'Previous')}
           </Button>
           <Button
             disabled={!next}
             onClick={() => next && nav(`/trainings/${slug}/modules/${next.order_index}`)}
           >
-            {next ? next.title : "Next"} <ArrowRight className="h-4 w-4 ml-2" />
+            {next ? next.title : (isFr ? 'Suivant' : 'Next')} <ArrowRight className="h-4 w-4 ml-2" />
           </Button>
         </div>
       </section>

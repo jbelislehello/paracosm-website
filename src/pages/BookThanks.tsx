@@ -5,11 +5,23 @@ import Footer from "@/components/Footer";
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import { EditorialCTA } from "@/components/editorial";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function BookThanks() {
   const [params] = useSearchParams();
   const tier = params.get("tier") ?? "cohort";
-  usePageSeo({ title: "Thank you — Calm Magic", description: "Order received.", path: "/book/thanks" });
+  const { language } = useLanguage();
+  const isFr = language === 'fr';
+
+  usePageSeo({
+    title: isFr ? "Merci — Calm Magic" : "Thank you — Calm Magic",
+    description: isFr ? "Commande reçue." : "Order received.",
+    path: "/book/thanks",
+  });
+
+  const tierLabel = tier === "org"
+    ? (isFr ? "la licence organisationnelle" : "the org license")
+    : (isFr ? "la cohorte de praticien·ne·s" : "the practitioner cohort");
 
   return (
     <div className="flex min-h-screen flex-col bg-[hsl(230_35%_10%)] text-[hsl(35_20%_92%)]">
@@ -26,19 +38,19 @@ export default function BookThanks() {
         <div className="max-w-xl text-center space-y-6">
           <CheckCircle2 className="mx-auto h-12 w-12 text-[hsl(45_90%_65%)]" />
           <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] font-semibold text-[hsl(45_90%_65%)]">
-            Colophon · Confirmation
+            {isFr ? 'Colophon · Confirmation' : 'Colophon · Confirmation'}
           </p>
           <h1 className="font-serif text-4xl md:text-6xl leading-[1.05] tracking-tight">
-            You&rsquo;re in.
+            {isFr ? "C'est fait." : "You\u2019re in."}
           </h1>
           <p className="text-base md:text-lg opacity-80 leading-relaxed">
-            Thanks for reserving the {tier === "org" ? "org license" : "practitioner cohort"}.
-            We&rsquo;ll be in touch from <span className="text-[hsl(45_90%_65%)]">jbelisle@helloarchitekt.com</span> with
-            next steps, signed-edition shipping, and your cohort welcome.
+            {isFr
+              ? (<>Merci d'avoir réservé {tierLabel}. Nous vous contacterons depuis <span className="text-[hsl(45_90%_65%)]">jbelisle@helloarchitekt.com</span> avec les prochaines étapes, l'expédition de l'édition signée et votre accueil de cohorte.</>)
+              : (<>Thanks for reserving {tierLabel}. We&rsquo;ll be in touch from <span className="text-[hsl(45_90%_65%)]">jbelisle@helloarchitekt.com</span> with next steps, signed-edition shipping, and your cohort welcome.</>)}
           </p>
           <div className="pt-4 flex justify-center">
             <EditorialCTA to="/book" tone="night" variant="ghost" showArrow={false}>
-              <ArrowLeft className="w-4 h-4" /> Back to book
+              <ArrowLeft className="w-4 h-4" /> {isFr ? 'Retour au livre' : 'Back to book'}
             </EditorialCTA>
           </div>
         </div>

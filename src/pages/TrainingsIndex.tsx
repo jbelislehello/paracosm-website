@@ -11,6 +11,7 @@ import EditorialCTA from "@/components/editorial/EditorialCTA";
 import EditorialSiteHeader from "@/components/editorial/EditorialSiteHeader";
 import { editorialTone, editorialType, type EditorialTone } from "@/components/editorial/editorialTokens";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type Training = {
   id: string;
@@ -32,6 +33,8 @@ const slugTone: Record<string, EditorialTone> = {
 
 export default function TrainingsIndex() {
   const [trainings, setTrainings] = useState<Training[]>([]);
+  const { language } = useLanguage();
+  const isFr = language === 'fr';
 
   const jsonLd = useMemo(() => {
     if (!trainings.length) return undefined;
@@ -47,9 +50,12 @@ export default function TrainingsIndex() {
   }, [trainings]);
 
   usePageSeo({
-    title: "Trainings — GL!TCH, Drift & Tune | Paracosm × Crewdle",
-    description:
-      "Three Crewdle-bound trainings by Paracosm: GL!TCH (official 65h Crewdle AI Formation), Drift (60h co-assisted development) and Tune (60h orchestrated autonomy).",
+    title: isFr
+      ? "Formations — GL!TCH, Drift et Tune | Paracosm × Crewdle"
+      : "Trainings — GL!TCH, Drift & Tune | Paracosm × Crewdle",
+    description: isFr
+      ? "Trois formations Crewdle par Paracosm : GL!TCH (Formation IA officielle Crewdle 65 h), Drift (60 h de développement co-assisté) et Tune (60 h d'autonomie orchestrée)."
+      : "Three Crewdle-bound trainings by Paracosm: GL!TCH (official 65h Crewdle AI Formation), Drift (60h co-assisted development) and Tune (60h orchestrated autonomy).",
     path: "/trainings",
     jsonLd,
   });
@@ -71,36 +77,40 @@ export default function TrainingsIndex() {
       <EditorialSection tone="warm" className="pt-14 pb-16 md:pt-20 md:pb-24">
         <div className="mb-10">
           <p className={cn(editorialType.eyebrow, editorialTone.warm.kicker)}>
-            Volume I · The rehearsal arc
+            {isFr ? "Volume I · L'arc de répétition" : "Volume I · The rehearsal arc"}
           </p>
         </div>
 
         <div className="grid md:grid-cols-12 gap-10 items-end">
           <div className="md:col-span-8 space-y-6">
             <p className={cn(editorialType.eyebrow, editorialTone.warm.kicker)}>
-              Volume I · The rehearsal arc
+              {isFr ? "Volume I · L'arc de répétition" : "Volume I · The rehearsal arc"}
             </p>
             <h1 className={cn(editorialType.serif, "text-5xl md:text-7xl leading-[0.98] tracking-tight")}>
-              Foreplay, Foresight, Forecast — <em className="italic font-light">rehearse</em> the AI shift.
+              {isFr
+                ? (<>Préambule, Prévoyance, Prévision — <em className="italic font-light">répétez</em> le virage IA.</>)
+                : (<>Foreplay, Foresight, Forecast — <em className="italic font-light">rehearse</em> the AI shift.</>)}
             </h1>
             <p className="text-lg md:text-xl opacity-80 max-w-2xl leading-relaxed">
-              A three-phase arc. Trainings build the muscle. Retreats sharpen the sight. Residencies ship the evidence.
+              {isFr
+                ? "Un arc en trois phases. Les formations développent le muscle. Les retraites affinent la vision. Les résidences livrent les preuves."
+                : "A three-phase arc. Trainings build the muscle. Retreats sharpen the sight. Residencies ship the evidence."}
             </p>
           </div>
           <aside className="md:col-span-4 border-l border-current/20 pl-6 space-y-3">
-            <p className={editorialType.caption}>In this issue</p>
+            <p className={editorialType.caption}>{isFr ? 'Dans ce numéro' : 'In this issue'}</p>
             <ol className="space-y-2 text-sm">
               <li className="flex gap-3">
                 <span className={cn(editorialType.serif, editorialTone.warm.numeral)}>01</span>
-                <span>Foreplay — Trainings</span>
+                <span>{isFr ? 'Préambule — Formations' : 'Foreplay — Trainings'}</span>
               </li>
               <li className="flex gap-3">
                 <span className={cn(editorialType.serif, editorialTone.warm.numeral)}>02</span>
-                <span>Foresight — Vision Retreats</span>
+                <span>{isFr ? 'Prévoyance — Retraites de vision' : 'Foresight — Vision Retreats'}</span>
               </li>
               <li className="flex gap-3">
                 <span className={cn(editorialType.serif, editorialTone.warm.numeral)}>03</span>
-                <span>Forecast — Prototype Residencies</span>
+                <span>{isFr ? 'Prévision — Résidences de prototypage' : 'Forecast — Prototype Residencies'}</span>
               </li>
             </ol>
           </aside>
@@ -111,13 +121,14 @@ export default function TrainingsIndex() {
       <EditorialSection tone="paper" id="foreplay">
         <EditorialChapterHeader
           numeral="01"
-          kicker="Foreplay · Trainings"
-          subtitle="Rehearse the moves before the stakes get real."
+          kicker={isFr ? "Préambule · Formations" : "Foreplay · Trainings"}
+          subtitle={isFr ? "Répétez les gestes avant que les enjeux ne deviennent réels." : "Rehearse the moves before the stakes get real."}
           tone="paper"
         />
         <p className="mt-6 max-w-3xl text-lg opacity-80">
-          GL!TCH is the official Crewdle AI Formation. Drift and Tune extend the journey from co-assisted
-          exploration into orchestrated autonomy.
+          {isFr
+            ? "GL!TCH est la Formation IA officielle Crewdle. Drift et Tune étendent le parcours de l'exploration co-assistée à l'autonomie orchestrée."
+            : "GL!TCH is the official Crewdle AI Formation. Drift and Tune extend the journey from co-assisted exploration into orchestrated autonomy."}
         </p>
       </EditorialSection>
 
@@ -133,7 +144,7 @@ export default function TrainingsIndex() {
             <div className="container max-w-7xl mx-auto">
               <EditorialChapterHeader
                 numeral={`01·${numeral}`}
-                kicker={t.crewdle_focus ?? "Training"}
+                kicker={t.crewdle_focus ?? (isFr ? "Formation" : "Training")}
                 subtitle={t.tagline ?? undefined}
                 tone={tone}
               />
@@ -150,12 +161,12 @@ export default function TrainingsIndex() {
                         styles.quoteBorder,
                       )}
                     >
-                      “{t.hero_quote}”
+                      "{t.hero_quote}"
                     </blockquote>
                   )}
                   <div className="pt-2">
                     <EditorialCTA to={`/trainings/${t.slug}`} tone={tone}>
-                      {t.cta_label || "Read the chapter"}
+                      {t.cta_label || (isFr ? "Lire le chapitre" : "Read the chapter")}
                     </EditorialCTA>
                   </div>
                 </div>
@@ -163,16 +174,16 @@ export default function TrainingsIndex() {
                   <div className={cn("rounded-2xl border p-6", styles.calloutBox)}>
                     <div className="flex items-center gap-2 mb-3">
                       <Clock className="w-4 h-4" />
-                      <span className={editorialType.caption}>Duration</span>
+                      <span className={editorialType.caption}>{isFr ? 'Durée' : 'Duration'}</span>
                     </div>
                     <p className={cn(editorialType.serif, "text-3xl")}>{t.hours}h</p>
-                    <p className="text-xs opacity-70 mt-1">Total contact + self-paced</p>
+                    <p className="text-xs opacity-70 mt-1">{isFr ? 'Contact total + rythme libre' : 'Total contact + self-paced'}</p>
                   </div>
                   <Link
                     to={`/trainings/${t.slug}`}
                     className="group inline-flex items-center gap-2 text-sm opacity-80 hover:opacity-100"
                   >
-                    <Sparkles className="w-3.5 h-3.5" /> See full syllabus
+                    <Sparkles className="w-3.5 h-3.5" /> {isFr ? 'Voir le syllabus complet' : 'See full syllabus'}
                     <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                   </Link>
                 </aside>
@@ -186,19 +197,21 @@ export default function TrainingsIndex() {
       <EditorialSection tone="night" id="foresight">
         <EditorialChapterHeader
           numeral="02"
-          kicker="Foresight · Vision Retreats"
-          subtitle="Slow down long enough to see what wants to happen."
+          kicker={isFr ? "Prévoyance · Retraites de vision" : "Foresight · Vision Retreats"}
+          subtitle={isFr ? "Ralentissez assez pour voir ce qui veut advenir." : "Slow down long enough to see what wants to happen."}
           tone="night"
         />
         <div className="mt-10 grid md:grid-cols-12 gap-10 items-end">
           <div className="md:col-span-8 space-y-6">
             <p className={cn(editorialType.serif, "text-3xl md:text-4xl leading-tight")}>
-              After the training muscle, the retreat is where leadership steps out of the machine to sense what the
-              machine is actually asking for.
+              {isFr
+                ? "Après le muscle de la formation, la retraite est l'endroit où le leadership sort de la machine pour sentir ce que la machine demande réellement."
+                : "After the training muscle, the retreat is where leadership steps out of the machine to sense what the machine is actually asking for."}
             </p>
             <p className="opacity-80 max-w-2xl">
-              Think Like a Forest, Stories of a Near Future, and the Relational Intelligence Summit turn intuition
-              into a legible map you can share with your team on Monday.
+              {isFr
+                ? "Think Like a Forest, Stories of a Near Future et le Relational Intelligence Summit transforment l'intuition en une carte lisible à partager avec votre équipe dès lundi."
+                : "Think Like a Forest, Stories of a Near Future, and the Relational Intelligence Summit turn intuition into a legible map you can share with your team on Monday."}
             </p>
           </div>
           <div className="md:col-span-4 md:text-right">
@@ -209,7 +222,7 @@ export default function TrainingsIndex() {
                 editorialTone.night.ctaPrimary,
               )}
             >
-              See upcoming retreats <ArrowRight className="w-3.5 h-3.5" />
+              {isFr ? 'Voir les retraites à venir' : 'See upcoming retreats'} <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>
@@ -219,19 +232,21 @@ export default function TrainingsIndex() {
       <EditorialSection tone="clay" id="forecast">
         <EditorialChapterHeader
           numeral="03"
-          kicker="Forecast · Prototype Residencies"
-          subtitle="Turn the vision into measurable, working evidence."
+          kicker={isFr ? "Prévision · Résidences de prototypage" : "Forecast · Prototype Residencies"}
+          subtitle={isFr ? "Transformez la vision en preuves fonctionnelles et mesurables." : "Turn the vision into measurable, working evidence."}
           tone="clay"
         />
         <div className="mt-10 grid md:grid-cols-12 gap-10 items-end">
           <div className="md:col-span-8 space-y-6">
             <p className={cn(editorialType.serif, "text-3xl md:text-4xl leading-tight")}>
-              Multi-week residencies where Paracosm embeds with your team to build the prototype that proves — or
-              breaks — the hypothesis.
+              {isFr
+                ? "Des résidences de plusieurs semaines où Paracosm s'intègre à votre équipe pour construire le prototype qui prouve — ou qui invalide — l'hypothèse."
+                : "Multi-week residencies where Paracosm embeds with your team to build the prototype that proves — or breaks — the hypothesis."}
             </p>
             <p className="opacity-80 max-w-2xl">
-              Every residency uses the Prototypes Garden: structured foresight scenarios wired to real data, real
-              users and a real ROI thesis.
+              {isFr
+                ? "Chaque résidence utilise le Prototypes Garden : des scénarios de prévoyance structurés reliés à de vraies données, de vrai·e·s utilisateur·rice·s et une vraie thèse de ROI."
+                : "Every residency uses the Prototypes Garden: structured foresight scenarios wired to real data, real users and a real ROI thesis."}
             </p>
           </div>
           <div className="md:col-span-4 md:text-right">
@@ -242,7 +257,7 @@ export default function TrainingsIndex() {
                 editorialTone.clay.ctaPrimary,
               )}
             >
-              Begin a residency <ArrowRight className="w-3.5 h-3.5" />
+              {isFr ? 'Commencer une résidence' : 'Begin a residency'} <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>
