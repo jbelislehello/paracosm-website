@@ -12,6 +12,7 @@ import EditorialChapterHeader from "@/components/editorial/EditorialChapterHeade
 import EditorialPullQuote from "@/components/editorial/EditorialPullQuote";
 import { editorialTone, editorialType, type EditorialTone } from "@/components/editorial/editorialTokens";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type Training = {
   id: string;
