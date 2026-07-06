@@ -11,9 +11,10 @@ import {
 } from "@/components/editorial";
 import { cn } from "@/lib/utils";
 import { usePageSeo } from "@/hooks/usePageSeo";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { agenticResidencies } from "@/data/agenticResidencies";
 
-const principles = [
+const principlesEn = [
   {
     n: "01",
     title: "Agents as relations, not features",
@@ -40,11 +41,45 @@ const principles = [
   },
 ];
 
+const principlesFr = [
+  {
+    n: "01",
+    title: "Les agents comme relations, pas comme fonctionnalités",
+    body:
+      "L'Agentic UX n'est pas un chatbot greffé sur un produit — c'est l'interface qu'un réseau d'acteurs IA utilise pour entrer en relation avec un humain et entre eux. Nous concevons d'abord la relation, ensuite la surface.",
+  },
+  {
+    n: "02",
+    title: "Le consentement comme interaction primaire",
+    body:
+      "Le cadre de consentement TOTEM traite chaque escalade, délégation et extraction de données comme un acte explicite. Les utilisateur·rice·s restent souverain·e·s ; les agents gagnent la confiance par une autorité lisible et révocable.",
+  },
+  {
+    n: "03",
+    title: "Compenser les biais cognitifs",
+    body:
+      "L'écosystème met en lumière les biais que chaque agent est conçu pour contrer. Les utilisateur·rice·s voient pourquoi une suggestion a été faite — pas seulement ce qu'elle recommande.",
+  },
+  {
+    n: "04",
+    title: "Orchestration vivante",
+    body:
+      "Les agents se coordonnent via une ontologie partagée. Les passations sont narrées. Le système pense à voix haute pour que les équipes puissent auditer, ajuster et reprendre la main.",
+  },
+];
+
 const Index = () => {
+  const { language } = useLanguage();
+  const isFr = language === "fr";
+  const principles = isFr ? principlesFr : principlesEn;
+
   usePageSeo({
-    title: "Agentic UX — A Paracosm resource on multi-agent interface design",
-    description:
-      "Agentic UX is Paracosm's resource on designing multi-agent interfaces — consent-first orchestration, bias-aware handoffs, and residencies that ship working evidence.",
+    title: isFr
+      ? "Agentic UX — Ressource Paracosm sur la conception d'interfaces multi-agents"
+      : "Agentic UX — A Paracosm resource on multi-agent interface design",
+    description: isFr
+      ? "Agentic UX est la ressource de Paracosm sur la conception d'interfaces multi-agents — orchestration axée sur le consentement, passations conscientes des biais, et résidences qui livrent des preuves fonctionnelles."
+      : "Agentic UX is Paracosm's resource on designing multi-agent interfaces — consent-first orchestration, bias-aware handoffs, and residencies that ship working evidence.",
     path: "/agentic-ux",
   });
 
@@ -55,20 +90,34 @@ const Index = () => {
       <EditorialPageHero
         tone="warm"
         numeral="00"
-        kicker="Resource · Agentic UX"
+        kicker={isFr ? "Ressource · Agentic UX" : "Resource · Agentic UX"}
         title={
-          <>
-            Designing the surface where <em className="italic font-light">agents relate</em>.
-          </>
+          isFr ? (
+            <>
+              Concevoir la surface où <em className="italic font-light">les agents entrent en relation</em>.
+            </>
+          ) : (
+            <>
+              Designing the surface where <em className="italic font-light">agents relate</em>.
+            </>
+          )
         }
-        subtitle="Agentic UX is Paracosm's working resource for teams building with multiple AI agents. Consent-first, bias-aware, and rehearsed with your people before it ships."
+        subtitle={
+          isFr
+            ? "Agentic UX est la ressource vivante de Paracosm pour les équipes qui construisent avec plusieurs agents IA. Axée sur le consentement, consciente des biais, et répétée avec vos gens avant d'être livrée."
+            : "Agentic UX is Paracosm's working resource for teams building with multiple AI agents. Consent-first, bias-aware, and rehearsed with your people before it ships."
+        }
       />
 
       <EditorialSection tone="paper" id="principles">
         <EditorialChapterHeader
           numeral="01"
-          kicker="Four working principles"
-          subtitle="How we approach agentic surfaces before writing a line of code."
+          kicker={isFr ? "Quatre principes de travail" : "Four working principles"}
+          subtitle={
+            isFr
+              ? "Comment nous abordons les surfaces agentiques avant d'écrire une ligne de code."
+              : "How we approach agentic surfaces before writing a line of code."
+          }
           tone="paper"
         />
         <div className="mt-12 grid md:grid-cols-2 gap-x-12 gap-y-10">
@@ -76,7 +125,7 @@ const Index = () => {
             <article key={p.n} className="border-t-2 border-current/70 pt-5">
               <div className="flex items-baseline justify-between mb-3">
                 <span className={cn(editorialType.serif, "text-3xl", editorialTone.paper.numeral)}>{p.n}</span>
-                <span className={editorialType.caption}>Principle</span>
+                <span className={editorialType.caption}>{isFr ? "Principe" : "Principle"}</span>
               </div>
               <h3 className={cn(editorialType.serif, "text-2xl leading-tight mb-3")}>{p.title}</h3>
               <p className="opacity-80 leading-relaxed">{p.body}</p>
@@ -88,18 +137,25 @@ const Index = () => {
       <EditorialSection tone="warm">
         <EditorialChapterHeader
           numeral="02"
-          kicker="See it in motion"
-          subtitle="A live walk-through of the ecosystem thinking out loud."
+          kicker={isFr ? "Voir en action" : "See it in motion"}
+          subtitle={
+            isFr
+              ? "Un parcours en direct de l'écosystème pensant à voix haute."
+              : "A live walk-through of the ecosystem thinking out loud."
+          }
           tone="warm"
         />
         <div className="mt-10 grid md:grid-cols-12 gap-10 items-end">
           <div className="md:col-span-8 space-y-5">
             <p className={cn(editorialType.serif, "text-3xl md:text-4xl leading-tight")}>
-              Pick a scenario. Step through the reasoning. Read the biases the ecosystem is compensating for.
+              {isFr
+                ? "Choisissez un scénario. Parcourez le raisonnement. Lisez les biais que l'écosystème compense."
+                : "Pick a scenario. Step through the reasoning. Read the biases the ecosystem is compensating for."}
             </p>
             <p className="opacity-80 max-w-2xl">
-              The Agentic Demo is a rehearsal room, not a marketing reel. It shows the seams — where agents disagree,
-              defer, and hand off.
+              {isFr
+                ? "La démo Agentic est une salle de répétition, pas une bande promo. Elle montre les coutures — là où les agents divergent, cèdent et se passent la main."
+                : "The Agentic Demo is a rehearsal room, not a marketing reel. It shows the seams — where agents disagree, defer, and hand off."}
             </p>
           </div>
           <div className="md:col-span-4 md:text-right">
@@ -107,7 +163,7 @@ const Index = () => {
               to="/agentic-demo"
               className="inline-flex items-center gap-2 bg-foreground text-background px-6 py-3 text-xs uppercase tracking-[0.25em] font-semibold hover:opacity-90"
             >
-              Open the demo <ArrowRight className="w-3.5 h-3.5" />
+              {isFr ? "Ouvrir la démo" : "Open the demo"} <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>
@@ -116,8 +172,12 @@ const Index = () => {
       <EditorialSection tone="night" id="residencies">
         <EditorialChapterHeader
           numeral="03"
-          kicker="Prototype Residencies · Forecast"
-          subtitle="Three ways to work with Paracosm on your agentic surface."
+          kicker={isFr ? "Résidences prototype · Forecast" : "Prototype Residencies · Forecast"}
+          subtitle={
+            isFr
+              ? "Trois façons de travailler avec Paracosm sur votre surface agentique."
+              : "Three ways to work with Paracosm on your agentic surface."
+          }
           tone="night"
         />
         <div className="mt-12 divide-y divide-current/20 border-t-2 border-current/60">
@@ -136,7 +196,7 @@ const Index = () => {
                 </h3>
                 <p className="italic font-light opacity-80 max-w-2xl leading-relaxed mb-3">{r.summary}</p>
                 <span className={cn(editorialType.caption, "inline-flex items-center gap-2 opacity-70 group-hover:opacity-100")}>
-                  Read the residency <ArrowRight className="w-3.5 h-3.5" />
+                  {isFr ? "Lire la résidence" : "Read the residency"} <ArrowRight className="w-3.5 h-3.5" />
                 </span>
               </div>
               <span className={cn(editorialType.caption, "hidden md:block")}>{r.duration}</span>
@@ -145,7 +205,9 @@ const Index = () => {
         </div>
         <div className="mt-12 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
           <p className={cn(editorialType.serif, "text-2xl md:text-3xl max-w-xl leading-tight")}>
-            Ready to rehearse the future before you build it?
+            {isFr
+              ? "Prêt·e à répéter le futur avant de le construire ?"
+              : "Ready to rehearse the future before you build it?"}
           </p>
           <Link
             to="/contact"
@@ -154,7 +216,7 @@ const Index = () => {
               editorialTone.night.ctaPrimary,
             )}
           >
-            Begin a conversation <ArrowRight className="w-3.5 h-3.5" />
+            {isFr ? "Ouvrir une conversation" : "Begin a conversation"} <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
       </EditorialSection>
