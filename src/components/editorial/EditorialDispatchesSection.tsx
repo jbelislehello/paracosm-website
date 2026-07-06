@@ -181,12 +181,17 @@ function DispatchCard({ d }: { d: Dispatch }) {
 }
 
 export default function EditorialDispatchesSection() {
+  const { language } = useLanguage();
+  const isFr = language === "fr";
+  const dispatches = isFr ? dispatchesFr : dispatchesEn;
   return (
     <EditorialSection tone="warm" id="dispatches">
       <EditorialChapterHeader
         numeral="05"
-        kicker="Dispatches"
-        subtitle="What's opening this season — in the studio, in the field, on the page."
+        kicker={isFr ? "Dispatches" : "Dispatches"}
+        subtitle={isFr
+          ? "Ce qui s'ouvre cette saison — au studio, sur le terrain, sur la page."
+          : "What's opening this season — in the studio, in the field, on the page."}
         tone="warm"
       />
 
@@ -199,14 +204,16 @@ export default function EditorialDispatchesSection() {
       {/* LinkedIn newsletter colophon */}
       <div className="mt-16 md:mt-24 border-t border-current/15 pt-10 md:pt-14 grid md:grid-cols-[1fr_auto] gap-8 md:gap-12 items-center">
         <div className="space-y-3">
-          <p className={editorialType.kicker}>The Newsletter</p>
+          <p className={editorialType.kicker}>{isFr ? "L'infolettre" : "The Newsletter"}</p>
           <p className="font-serif text-2xl md:text-4xl leading-tight italic">
-            &ldquo;Field notes from the edge of imagination and AI — delivered
-            straight to your feed.&rdquo;
+            {isFr
+              ? "« Notes de terrain à la lisière de l'imagination et de l'IA — livrées directement dans votre feed. »"
+              : "\u201CField notes from the edge of imagination and AI — delivered straight to your feed.\u201D"}
           </p>
           <p className="text-sm opacity-70">
-            Monthly dispatches on Calm Magic, agentic practice, and the
-            innovation plays our partners are running.
+            {isFr
+              ? "Dispatches mensuels sur Calm Magic, la pratique agentique et les stratégies d'innovation que mènent nos partenaires."
+              : "Monthly dispatches on Calm Magic, agentic practice, and the innovation plays our partners are running."}
           </p>
         </div>
         <a
@@ -223,7 +230,7 @@ export default function EditorialDispatchesSection() {
           )}
         >
           <Linkedin className="w-4 h-4" />
-          Subscribe on LinkedIn
+          {isFr ? "S'abonner sur LinkedIn" : "Subscribe on LinkedIn"}
           <ArrowRight className="w-4 h-4" />
         </a>
       </div>
