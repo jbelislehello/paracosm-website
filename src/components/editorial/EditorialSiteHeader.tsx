@@ -97,6 +97,9 @@ function useNav(): NavItem[] {
 
 export default function EditorialSiteHeader() {
   const location = useLocation();
+  const { language } = useLanguage();
+  const isFr = language === "fr";
+  const NAV = useNav();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [signedIn, setSignedIn] = useState(false);
