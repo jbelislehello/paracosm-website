@@ -351,7 +351,7 @@ const EntrepreneurialTarot = () => {
         </div>
       </section>
 
-      {selectedCard && <CardDetail card={selectedCard} onClose={() => setSelectedCard(null)} />}
+      {selectedCard && <CardDetail card={selectedCard} onClose={() => setSelectedCard(null)} isFr={isFr} />}
       <div ref={footerReveal.ref} className={footerReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}>
         <Footer />
       </div>
