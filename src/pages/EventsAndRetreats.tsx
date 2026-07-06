@@ -23,19 +23,22 @@ import {
 } from "@/assets/retreats";
 
 const EventsAndRetreats = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isFr = language === 'fr';
 
   usePageSeo({
-    title: "Events & Retreats — Paracosm",
-    description:
-      "Live programming, retreats, and field-tested case studies from Paracosm — where executives and innovators practice AI systems mastery and relational intelligence.",
+    title: isFr ? "Événements et retraites — Paracosm" : "Events & Retreats — Paracosm",
+    description: isFr
+      ? "Programmation en direct, retraites et études de cas terrain de Paracosm — où dirigeant·e·s et innovateur·rice·s pratiquent la maîtrise des systèmes IA et l'intelligence relationnelle."
+      : "Live programming, retreats, and field-tested case studies from Paracosm — where executives and innovators practice AI systems mastery and relational intelligence.",
     path: "/events-and-retreats",
     jsonLd: [
       webPageSchema({
         type: "CollectionPage",
-        title: "Events & Retreats — Paracosm",
-        description:
-          "Live programming, retreats, and case studies from the Paracosm ecosystem.",
+        title: isFr ? "Événements et retraites — Paracosm" : "Events & Retreats — Paracosm",
+        description: isFr
+          ? "Programmation en direct, retraites et études de cas de l'écosystème Paracosm."
+          : "Live programming, retreats, and case studies from the Paracosm ecosystem.",
         url: "/events-and-retreats",
       }),
     ],
@@ -52,9 +55,13 @@ const EventsAndRetreats = () => {
       {/* Editorial hero */}
       <EditorialPageHero
         numeral="07"
-        kicker="Volume 07 · Live Programming & Field Notes"
-        title={<>Events <em className="italic font-light">&amp;</em> Retreats.</>}
-        subtitle="Where the methodology meets the room. Live sessions, immersive retreats, and case studies from Paracosm engagements."
+        kicker={isFr ? "Volume 07 · Programmation en direct et notes de terrain" : "Volume 07 · Live Programming & Field Notes"}
+        title={isFr
+          ? (<>Événements <em className="italic font-light">&amp;</em> retraites.</>)
+          : (<>Events <em className="italic font-light">&amp;</em> Retreats.</>)}
+        subtitle={isFr
+          ? "Où la méthodologie rencontre la salle. Sessions en direct, retraites immersives et études de cas des engagements Paracosm."
+          : "Where the methodology meets the room. Live sessions, immersive retreats, and case studies from Paracosm engagements."}
         tone="warm"
       />
 
@@ -65,7 +72,9 @@ const EventsAndRetreats = () => {
           <p className={cn(editorialType.kicker, warm.kicker)}>{t("landing.section_events")}</p>
         </div>
         <h2 className={cn(editorialType.serif, "text-3xl md:text-5xl leading-tight tracking-tight max-w-3xl mb-6")}>
-          Upcoming <em className="italic font-light">learning</em> events.
+          {isFr
+            ? (<>Événements d'<em className="italic font-light">apprentissage</em> à venir.</>)
+            : (<>Upcoming <em className="italic font-light">learning</em> events.</>)}
         </h2>
         <p className="text-base md:text-lg opacity-80 max-w-2xl mb-12">
           {t("landing.section_events_sub")}
@@ -73,7 +82,7 @@ const EventsAndRetreats = () => {
         <ParacosmEventsSection tone="warm" />
         <div className="mt-12">
           <EditorialCTA to="/paracosm-retreat" tone="warm" variant="ghost">
-            Azores 2026 Retreat
+            {isFr ? 'Retraite Açores 2026' : 'Azores 2026 Retreat'}
           </EditorialCTA>
         </div>
       </EditorialSection>
