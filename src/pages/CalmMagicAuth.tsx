@@ -292,73 +292,41 @@ const CalmMagicAuth: React.FC = () => {
       <>
         <CardHeader className="space-y-1">
           <CardTitle className="text-xl text-center">
-            {authMode === 'signin' ? 'Welcome back' : 'Create an account'}
+            {authMode === 'signin' ? t.welcomeBack : t.createAccount}
           </CardTitle>
           <CardDescription className="text-center">
-            {authMode === 'signin' 
-              ? 'Sign in to continue your journey' 
-              : 'Start your transformation journey'}
+            {authMode === 'signin' ? t.signinDesc : t.signupDesc}
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleAuth}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                disabled={loading}
-                required
-              />
+              <Label htmlFor="email">{t.email}</Label>
+              <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} disabled={loading} required />
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t.password}</Label>
                 {authMode === 'signin' && (
-                  <button
-                    type="button"
-                    onClick={() => setAuthMode('forgot')}
-                    className="text-xs text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    Forgot password?
+                  <button type="button" onClick={() => setAuthMode('forgot')} className="text-xs text-muted-foreground hover:text-primary transition-colors">
+                    {t.forgot}
                   </button>
                 )}
               </div>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                disabled={loading}
-                required
-                minLength={6}
-              />
+              <Input id="password" type="password" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)} disabled={loading} required minLength={6} />
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
-            <Button 
-              type="submit" 
-              className="w-full bg-gradient-to-r from-rose-500 to-purple-500 hover:from-rose-600 hover:to-purple-600"
-              disabled={loading}
-            >
+            <Button type="submit" className="w-full bg-gradient-to-r from-rose-500 to-purple-500 hover:from-rose-600 hover:to-purple-600" disabled={loading}>
               {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-              {authMode === 'signin' ? 'Sign In' : 'Create Account'}
+              {authMode === 'signin' ? t.signIn : t.createBtn}
             </Button>
-            
             <div className="text-center text-sm">
               <span className="text-muted-foreground">
-                {authMode === 'signin' ? "Don't have an account? " : "Already have an account? "}
+                {authMode === 'signin' ? t.noAccount : t.hasAccount}
               </span>
-              <button
-                type="button"
-                onClick={() => setAuthMode(authMode === 'signin' ? 'signup' : 'signin')}
-                className="text-primary hover:underline font-medium"
-              >
-                {authMode === 'signin' ? 'Sign up' : 'Sign in'}
+              <button type="button" onClick={() => setAuthMode(authMode === 'signin' ? 'signup' : 'signin')} className="text-primary hover:underline font-medium">
+                {authMode === 'signin' ? t.signUpLink : t.signInLink}
               </button>
             </div>
           </CardFooter>
@@ -366,6 +334,7 @@ const CalmMagicAuth: React.FC = () => {
       </>
     );
   };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-[hsl(35_45%_96%)] dark:bg-[hsl(25_15%_12%)]">
