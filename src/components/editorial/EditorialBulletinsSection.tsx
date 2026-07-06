@@ -191,8 +191,8 @@ export default function EditorialBulletinsSection() {
       <div className="mt-16 md:mt-20">
         <div className={cn("flex items-baseline justify-between border-b border-current/15 pb-4 mb-10")}>
           <div>
-            <p className={cn(editorialType.kicker, clay.kicker)}>HA Labs — Creative Releases</p>
-            <h3 className={cn(editorialType.serif, "text-3xl md:text-4xl italic mt-2")}>From the studio floor.</h3>
+            <p className={cn(editorialType.kicker, clay.kicker)}>{isFr ? "HA Labs — Sorties créatives" : "HA Labs — Creative Releases"}</p>
+            <h3 className={cn(editorialType.serif, "text-3xl md:text-4xl italic mt-2")}>{isFr ? "Depuis le plancher du studio." : "From the studio floor."}</h3>
           </div>
           <span className={cn(editorialType.caption, "tabular-nums opacity-60")}>03 / 03</span>
         </div>
