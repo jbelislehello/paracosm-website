@@ -31,68 +31,75 @@ type NavItem =
   | { label: string; to: string }
   | { label: string; children: SubLink[] };
 
-const NAV: NavItem[] = [
-  {
-    label: "Trainings",
-    children: [
-      { label: "Crewdle Connect", to: "/trainings#crewdle-connect" },
-      { label: "Crewdle Forge", to: "/trainings#crewdle-forge" },
-      { label: "GL!TCH — Clarity Reset", to: "/trainings/glitch" },
-      { label: "Drift — Decision Sprint", to: "/trainings/drift" },
-      { label: "Tune — Founder Companion", to: "/trainings/tune" },
-    ],
-  },
-  {
-    label: "Retreats",
-    children: [
-      { label: "Paracosm Summit — Azores 2026", to: "/paracosm-retreat" },
-      { label: "GL!TCH — Learning Organizations", to: "/programs/rehearsal-arc/glitch" },
-      { label: "Drift — Co-Assisted Exploration", to: "/programs/rehearsal-arc/drift" },
-      { label: "Tune — Relational Intelligence Summit", to: "/programs/rehearsal-arc/relational-intelligence-summit" },
-      { label: "Stories of a Near Future", to: "/programs/rehearsal-arc/stories-of-a-near-future" },
-      { label: "Think Like a Forest", to: "/events-and-retreats#think-like-a-forest" },
-    ],
-  },
-  {
-    label: "Residencies",
-    children: [
-      { label: "GL!TCH — Diagnostic Sprint", to: "/agentic-ux/residencies/diagnostic-sprint" },
-      { label: "Drift — Prototype Residency", to: "/agentic-ux/residencies/prototype-residency" },
-      { label: "Tune — Ecosystem Build", to: "/agentic-ux/residencies/ecosystem-build" },
-    ],
-  },
-  {
-    label: "Products",
-    children: [
-      { label: "Tonalli", to: "/tonalli" },
-      { label: "Wuxia", to: "/wuxia" },
-      { label: "Satori & Kensho", to: "/paracosm-retreat" },
-    ],
-  },
-  {
-    label: "Resources",
-    children: [
-      { label: "Drift", to: "/drift" },
-      { label: "How It Works", to: "/design-system" },
-      { label: "Agentic UX", to: "/agentic-ux" },
-      { label: "Calm Magic Assistant", to: "/calm-magic-assistant" },
-    ],
-  },
-  {
-    label: "Methods",
-    children: [
-      { label: "Calm Magic", to: "/calm-magic-demo" },
-      { label: "GL!TCH", to: "/glitch-methodology" },
-    ],
-  },
-  { label: "Program", to: "/programs/rehearsal-arc" },
-  { label: "Book", to: "/book" },
-  { label: "Case Studies", to: "/case-studies" },
-  { label: "Contact", to: "/contact" },
-];
+function useNav(): NavItem[] {
+  const { language } = useLanguage();
+  const isFr = language === "fr";
+  return [
+    {
+      label: isFr ? "Formations" : "Trainings",
+      children: [
+        { label: "Crewdle Connect", to: "/trainings#crewdle-connect" },
+        { label: "Crewdle Forge", to: "/trainings#crewdle-forge" },
+        { label: isFr ? "GL!TCH — Remise à zéro" : "GL!TCH — Clarity Reset", to: "/trainings/glitch" },
+        { label: isFr ? "Drift — Sprint de décision" : "Drift — Decision Sprint", to: "/trainings/drift" },
+        { label: isFr ? "Tune — Compagnon du fondateur" : "Tune — Founder Companion", to: "/trainings/tune" },
+      ],
+    },
+    {
+      label: isFr ? "Retraites" : "Retreats",
+      children: [
+        { label: isFr ? "Sommet Paracosm — Açores 2026" : "Paracosm Summit — Azores 2026", to: "/paracosm-retreat" },
+        { label: isFr ? "GL!TCH — Organisations apprenantes" : "GL!TCH — Learning Organizations", to: "/programs/rehearsal-arc/glitch" },
+        { label: isFr ? "Drift — Exploration co-assistée" : "Drift — Co-Assisted Exploration", to: "/programs/rehearsal-arc/drift" },
+        { label: isFr ? "Tune — Sommet d'intelligence relationnelle" : "Tune — Relational Intelligence Summit", to: "/programs/rehearsal-arc/relational-intelligence-summit" },
+        { label: isFr ? "Récits d'un futur proche" : "Stories of a Near Future", to: "/programs/rehearsal-arc/stories-of-a-near-future" },
+        { label: isFr ? "Penser comme une forêt" : "Think Like a Forest", to: "/events-and-retreats#think-like-a-forest" },
+      ],
+    },
+    {
+      label: isFr ? "Résidences" : "Residencies",
+      children: [
+        { label: isFr ? "GL!TCH — Sprint diagnostic" : "GL!TCH — Diagnostic Sprint", to: "/agentic-ux/residencies/diagnostic-sprint" },
+        { label: isFr ? "Drift — Résidence prototype" : "Drift — Prototype Residency", to: "/agentic-ux/residencies/prototype-residency" },
+        { label: isFr ? "Tune — Construction d'écosystème" : "Tune — Ecosystem Build", to: "/agentic-ux/residencies/ecosystem-build" },
+      ],
+    },
+    {
+      label: isFr ? "Produits" : "Products",
+      children: [
+        { label: "Tonalli", to: "/tonalli" },
+        { label: "Wuxia", to: "/wuxia" },
+        { label: "Satori & Kensho", to: "/paracosm-retreat" },
+      ],
+    },
+    {
+      label: isFr ? "Ressources" : "Resources",
+      children: [
+        { label: "Drift", to: "/drift" },
+        { label: isFr ? "Comment ça marche" : "How It Works", to: "/design-system" },
+        { label: "Agentic UX", to: "/agentic-ux" },
+        { label: isFr ? "Assistant Calm Magic" : "Calm Magic Assistant", to: "/calm-magic-assistant" },
+      ],
+    },
+    {
+      label: isFr ? "Méthodes" : "Methods",
+      children: [
+        { label: "Calm Magic", to: "/calm-magic-demo" },
+        { label: "GL!TCH", to: "/glitch-methodology" },
+      ],
+    },
+    { label: isFr ? "Programme" : "Program", to: "/programs/rehearsal-arc" },
+    { label: isFr ? "Livre" : "Book", to: "/book" },
+    { label: isFr ? "Études de cas" : "Case Studies", to: "/case-studies" },
+    { label: "Contact", to: "/contact" },
+  ];
+}
 
 export default function EditorialSiteHeader() {
   const location = useLocation();
+  const { language } = useLanguage();
+  const isFr = language === "fr";
+  const NAV = useNav();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [signedIn, setSignedIn] = useState(false);
@@ -177,7 +184,7 @@ export default function EditorialSiteHeader() {
               to="/dashboard/rehearsal-arc"
               className="text-[10px] uppercase tracking-[0.25em] font-semibold px-3 py-1.5 rounded-full border border-current/30 hover:bg-current/10 transition-colors"
             >
-              My Arc
+              {isFr ? "Mon Arc" : "My Arc"}
             </Link>
           )}
           <LanguageToggle />
@@ -188,7 +195,7 @@ export default function EditorialSiteHeader() {
           <button
             className="p-1.5 opacity-70 hover:opacity-100"
             onClick={() => setMobileOpen((v) => !v)}
-            aria-label="Toggle menu"
+            aria-label={isFr ? "Ouvrir le menu" : "Toggle menu"}
           >
             {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>

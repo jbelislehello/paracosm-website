@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export interface TriadChapterProps {
   numeral: string;
@@ -44,6 +45,8 @@ export default function TriadChapter({
   reverse = false,
   tone,
 }: TriadChapterProps) {
+  const { language } = useLanguage();
+  const isFr = language === "fr";
   return (
     <section className={cn("py-20 md:py-32 px-6 relative", toneStyles[tone])}>
       <div className="container max-w-7xl mx-auto">
@@ -54,7 +57,7 @@ export default function TriadChapter({
           </span>
           <div>
             <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] opacity-60">
-              Chapter {numeral} · {offering}
+              {isFr ? "Chapitre" : "Chapter"} {numeral} · {offering}
             </p>
             <p className="mt-1 font-serif italic text-2xl md:text-3xl">{kicker}</p>
           </div>
@@ -80,7 +83,7 @@ export default function TriadChapter({
             {woven && (
               <div className={cn("mt-4 rounded-2xl p-6 border", tone === "night" ? "border-white/15 bg-white/5" : "border-current/15 bg-current/5")}>
                 <p className="text-[10px] uppercase tracking-[0.3em] opacity-70 mb-2">
-                  Calm Magic woven in
+                  {isFr ? "Calm Magic tissé dans" : "Calm Magic woven in"}
                 </p>
                 <p className="font-serif text-lg mb-3">{woven.title}</p>
                 <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-1.5 text-sm opacity-90">
@@ -117,7 +120,7 @@ export default function TriadChapter({
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-5">
-                <p className="text-[10px] uppercase tracking-[0.3em] text-white/80">Plate {numeral}</p>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-white/80">{isFr ? "Planche" : "Plate"} {numeral}</p>
                 <p className="text-white text-sm">{imageAlt}</p>
               </div>
             </div>

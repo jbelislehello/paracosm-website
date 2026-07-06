@@ -18,15 +18,17 @@ export default function EditorialHero() {
       <div className="relative z-10 container max-w-7xl mx-auto px-6 pt-8 pb-6 flex items-center justify-between border-b border-border/40">
         <div className="leading-tight">
           <div className="text-[10px] uppercase tracking-[0.35em] text-muted-foreground">
-            An Editorial
+            {isFr ? "Un éditorial" : "An Editorial"}
           </div>
-          <div className="text-sm font-semibold">Vol. I · Imagination as Infrastructure</div>
+          <div className="text-sm font-semibold">
+            {isFr ? "Vol. I · L'imagination comme infrastructure" : "Vol. I · Imagination as Infrastructure"}
+          </div>
         </div>
         <Link
           to="/home"
           className="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground transition-colors"
         >
-          Enter the site <ArrowRight className="w-3.5 h-3.5" />
+          {isFr ? "Entrer dans le site" : "Enter the site"} <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>
 
@@ -87,14 +89,24 @@ export default function EditorialHero() {
 
 
         <aside className="md:col-span-4 border-l border-border/60 pl-6 space-y-4">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">In this issue</p>
+          <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+            {isFr ? "Dans ce numéro" : "In this issue"}
+          </p>
           <ol className="space-y-3 text-sm">
-            {[
-              ["01", "Foreplay — Trainings"],
-              ["02", "Foresight — Vision Retreats"],
-              ["03", "Forecast — Prototype Residencies"],
-              ["04", "Innovation plays with partners"],
-            ].map(([n, t]) => (
+            {(isFr
+              ? [
+                  ["01", "Foreplay — Formations"],
+                  ["02", "Foresight — Retraites de vision"],
+                  ["03", "Forecast — Résidences prototype"],
+                  ["04", "Stratégies d'innovation avec nos partenaires"],
+                ]
+              : [
+                  ["01", "Foreplay — Trainings"],
+                  ["02", "Foresight — Vision Retreats"],
+                  ["03", "Forecast — Prototype Residencies"],
+                  ["04", "Innovation plays with partners"],
+                ]
+            ).map(([n, t]) => (
               <li key={n} className="flex gap-3">
                 <span className="font-serif text-primary">{n}</span>
                 <span>{t}</span>
@@ -105,7 +117,7 @@ export default function EditorialHero() {
       </div>
 
       <div className="relative z-10 container max-w-7xl mx-auto px-6 pb-10 flex items-center justify-between text-xs uppercase tracking-[0.25em] text-muted-foreground">
-        <span>Scroll to begin</span>
+        <span>{isFr ? "Défiler pour commencer" : "Scroll to begin"}</span>
         <ArrowDown className="w-4 h-4 animate-bounce" />
         <span className="hidden sm:inline">Paracosm × Calm Magic</span>
       </div>

@@ -5,6 +5,7 @@ import EditorialSection from "./EditorialSection";
 import EditorialChapterHeader from "./EditorialChapterHeader";
 import { editorialTone, editorialType, type EditorialTone } from "./editorialTokens";
 import { trackEvent } from "@/lib/analytics";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 import atelier from "@/assets/retreats/atelier-circle.jpg";
 import forest from "@/assets/retreats/forest-circle.jpg";
@@ -28,7 +29,7 @@ type Dispatch = {
   cta: string;
 };
 
-const dispatches: Dispatch[] = [
+const dispatchesEn: Dispatch[] = [
   {
     id: "tonalli",
     kicker: "Now shipping",
@@ -75,6 +76,56 @@ const dispatches: Dispatch[] = [
     to: "/events-and-retreats#think-like-a-forest",
     tone: "clay",
     cta: "Read the invitation",
+  },
+];
+
+const dispatchesFr: Dispatch[] = [
+  {
+    id: "tonalli",
+    kicker: "En livraison",
+    headline: "Tonalli — un OS créatif pour la voix et le spatial.",
+    dek: "Deux branches d'un même instrument : voice computing et cognition spatiale, toutes deux accordées au cadre Calm Magic.",
+    image: lake,
+    alt: "Tonalli — système d'exploitation créatif",
+    to: "/tonalli",
+    tone: "clay",
+    cta: "Entrer dans Tonalli",
+  },
+  {
+    id: "glitch",
+    kicker: "Prochaine session live",
+    headline: "Session GL!TCH — 25 minutes pour casser le pattern.",
+    dek: "Un cycle live pour interrompre les scripts hérités et élargir la fenêtre de tolérance. Petite salle, vraie pratique.",
+    meta: "Prochaine date et ville — à venir",
+    image: storm,
+    alt: "Session GL!TCH en direct",
+    to: "/glitch-events",
+    tone: "night",
+    cta: "Réserver une place",
+  },
+  {
+    id: "yutori",
+    kicker: "Série du soir",
+    headline: "Yutori Nights — la pause intentionnelle.",
+    dek: "Soirées intimes pour fondateur·rice·s et créatif·ve·s. De l'espace, du thé, et une conversation lente sur ce qui veut advenir.",
+    meta: "Prochaine date et ville — à venir",
+    image: atelier,
+    alt: "Yutori Nights — rassemblement en soirée",
+    to: "/events-and-retreats#yutori",
+    tone: "warm",
+    cta: "Réserver ma chaise",
+  },
+  {
+    id: "forest",
+    kicker: "Retraite phare",
+    headline: "Penser comme une forêt.",
+    dek: "Une retraite de plusieurs jours pour dirigeant·e·s apprenant à sentir le système entier avant d'intervenir. Racine, canopée, sous-bois.",
+    meta: "Dates et lieu — à venir",
+    image: forest,
+    alt: "Retraite Penser comme une forêt",
+    to: "/events-and-retreats#think-like-a-forest",
+    tone: "clay",
+    cta: "Lire l'invitation",
   },
 ];
 
@@ -130,12 +181,17 @@ function DispatchCard({ d }: { d: Dispatch }) {
 }
 
 export default function EditorialDispatchesSection() {
+  const { language } = useLanguage();
+  const isFr = language === "fr";
+  const dispatches = isFr ? dispatchesFr : dispatchesEn;
   return (
     <EditorialSection tone="warm" id="dispatches">
       <EditorialChapterHeader
         numeral="05"
-        kicker="Dispatches"
-        subtitle="What's opening this season — in the studio, in the field, on the page."
+        kicker={isFr ? "Dispatches" : "Dispatches"}
+        subtitle={isFr
+          ? "Ce qui s'ouvre cette saison — au studio, sur le terrain, sur la page."
+          : "What's opening this season — in the studio, in the field, on the page."}
         tone="warm"
       />
 
@@ -148,14 +204,16 @@ export default function EditorialDispatchesSection() {
       {/* LinkedIn newsletter colophon */}
       <div className="mt-16 md:mt-24 border-t border-current/15 pt-10 md:pt-14 grid md:grid-cols-[1fr_auto] gap-8 md:gap-12 items-center">
         <div className="space-y-3">
-          <p className={editorialType.kicker}>The Newsletter</p>
+          <p className={editorialType.kicker}>{isFr ? "L'infolettre" : "The Newsletter"}</p>
           <p className="font-serif text-2xl md:text-4xl leading-tight italic">
-            &ldquo;Field notes from the edge of imagination and AI — delivered
-            straight to your feed.&rdquo;
+            {isFr
+              ? "« Notes de terrain à la lisière de l'imagination et de l'IA — livrées directement dans votre feed. »"
+              : "\u201CField notes from the edge of imagination and AI — delivered straight to your feed.\u201D"}
           </p>
           <p className="text-sm opacity-70">
-            Monthly dispatches on Calm Magic, agentic practice, and the
-            innovation plays our partners are running.
+            {isFr
+              ? "Dispatches mensuels sur Calm Magic, la pratique agentique et les stratégies d'innovation que mènent nos partenaires."
+              : "Monthly dispatches on Calm Magic, agentic practice, and the innovation plays our partners are running."}
           </p>
         </div>
         <a
@@ -172,7 +230,7 @@ export default function EditorialDispatchesSection() {
           )}
         >
           <Linkedin className="w-4 h-4" />
-          Subscribe on LinkedIn
+          {isFr ? "S'abonner sur LinkedIn" : "Subscribe on LinkedIn"}
           <ArrowRight className="w-4 h-4" />
         </a>
       </div>
