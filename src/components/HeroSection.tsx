@@ -10,7 +10,7 @@ interface HeroSectionProps {
   onDiscoverFramework?: () => void;
 }
 
-const ROTATING_WORDS = ["Design", "Deploy", "Scale", "Govern"];
+const ROTATING_KEYS = ["design", "deploy", "scale", "govern"] as const;
 
 const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
   const { t } = useLanguage();
@@ -21,7 +21,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
     const interval = setInterval(() => {
       setAnimating(true);
       setTimeout(() => {
-        setWordIndex((prev) => (prev + 1) % ROTATING_WORDS.length);
+        setWordIndex((prev) => (prev + 1) % ROTATING_KEYS.length);
         setAnimating(false);
       }, 300);
     }, 3000);
@@ -49,7 +49,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
             </Button>
             
             <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-4 md:mb-6 leading-[0.95] text-foreground bloom-chroma-static">
-              <span className="inline-block overflow-hidden h-[1.1em] align-bottom relative w-[3.5ch] sm:w-[4ch] text-[hsl(var(--bloom-magenta))]">
+              <span className="inline-block overflow-hidden h-[1.1em] align-bottom relative w-[4ch] sm:w-[5ch] text-[hsl(var(--bloom-magenta))]">
                 <span
                   className={`inline-block transition-all duration-300 ${
                     animating
@@ -57,10 +57,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onDiscoverFramework }) => {
                       : "translate-y-0 opacity-100"
                   }`}
                 >
-                  {ROTATING_WORDS[wordIndex]}
+                  {t(`hero.rotating_words.${ROTATING_KEYS[wordIndex]}`)}
                 </span>
               </span>{" "}
-              <span className="bloom-marker">Your Agentic Ecosystem</span>
+              <span className="bloom-marker">{t("hero.your_agentic_ecosystem")}</span>
             </h1>
             <p className="font-redacted italic text-lg md:text-xl lg:text-2xl mb-6 md:mb-8 text-foreground/80 leading-relaxed">
               {t("hero.design_deploy_manage")}
