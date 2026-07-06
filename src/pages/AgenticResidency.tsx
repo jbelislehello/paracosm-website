@@ -13,8 +13,12 @@ import {
 import { cn } from "@/lib/utils";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { agenticResidencyBySlug } from "@/data/agenticResidencies";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const AgenticResidency = () => {
+  const { language } = useLanguage();
+  const isFr = language === 'fr';
+
   const { slug = "" } = useParams<{ slug: string }>();
   const residency = agenticResidencyBySlug(slug);
 
