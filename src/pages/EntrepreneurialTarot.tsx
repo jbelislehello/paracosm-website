@@ -197,15 +197,14 @@ const EntrepreneurialTarot = () => {
       <header className="fixed w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-purple-900/30">
         <div className="container flex items-center justify-between py-3 px-4">
           <Link to="/" className="flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-purple-400 transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Back
+            <ArrowLeft className="w-4 h-4" /> {isFr ? 'Retour' : 'Back'}
           </Link>
           <Link to="/paracosm-retreat" className="text-xs text-purple-400 hover:text-purple-300 transition-colors">
-            Summer Retreat →
+            {isFr ? "Retraite d'été →" : 'Summer Retreat →'}
           </Link>
         </div>
       </header>
 
-      {/* Hero */}
       <section ref={heroReveal.ref} className="pt-24 pb-12 px-4 text-center relative overflow-hidden">
         <div className="container max-w-3xl mx-auto relative z-10">
           <div className={`relative inline-block mb-4 ${heroReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}`}>
@@ -214,19 +213,21 @@ const EntrepreneurialTarot = () => {
           </div>
           <h1 className={`text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-amber-400 to-rose-400 mb-4 ${heroReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}`}
               style={{ animationDelay: '150ms' }}>
-            The Calm Magic Tarot
+            {isFr ? 'Le Tarot Calm Magic' : 'The Calm Magic Tarot'}
           </h1>
           <p className={`text-sm md:text-base text-slate-400 max-w-2xl mx-auto mb-2 ${heroReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}`}
              style={{ animationDelay: '300ms' }}>
-            70 entrepreneurial archetypes drawn from the LOVE · MAGIC · CALM · OPEN · FREE quadrants
-            and the CHORDS dimensions. A reflective tool for relational intelligence and conscious leadership.
+            {isFr
+              ? "70 archétypes entrepreneuriaux tirés des quadrants LOVE · MAGIC · CALM · OPEN · FREE et des dimensions CHORDS. Un outil réflexif pour l'intelligence relationnelle et le leadership conscient."
+              : "70 entrepreneurial archetypes drawn from the LOVE · MAGIC · CALM · OPEN · FREE quadrants and the CHORDS dimensions. A reflective tool for relational intelligence and conscious leadership."}
           </p>
           <p className={`text-xs text-slate-500 ${heroReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}`}
              style={{ animationDelay: '450ms' }}>
-            Every card maps to the 8×8 Calm Magic matrix — your constellation of entrepreneurial consciousness.
+            {isFr
+              ? "Chaque carte se cartographie dans la matrice 8×8 Calm Magic — votre constellation de conscience entrepreneuriale."
+              : "Every card maps to the 8×8 Calm Magic matrix — your constellation of entrepreneurial consciousness."}
           </p>
         </div>
-        {/* Sacred geometry background */}
         <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
           <svg viewBox="0 0 200 200" className="w-[600px] h-[600px] animate-tarot-rotate-slow">
             <circle cx="100" cy="100" r="80" fill="none" stroke="white" strokeWidth="0.3" />
@@ -238,19 +239,18 @@ const EntrepreneurialTarot = () => {
         </div>
       </section>
 
-      {/* Draw Section */}
       <section ref={drawReveal.ref} className={`pb-12 px-4 relative z-10 ${drawReveal.isVisible ? 'animate-scroll-fade-up' : 'opacity-0'}`}>
         <div className="container max-w-4xl mx-auto text-center">
           <div className="flex flex-wrap gap-3 justify-center mb-8">
             <Button onClick={() => handleDraw(1)} variant="outline" className="border-purple-600 text-purple-300 hover:bg-purple-900/30 hover:shadow-[0_0_15px_rgba(139,92,246,0.3)] transition-shadow">
-              Draw 1 Card
+              {isFr ? 'Tirer 1 carte' : 'Draw 1 Card'}
             </Button>
             <Button onClick={() => handleDraw(3)} variant="outline" className="border-amber-600 text-amber-300 hover:bg-amber-900/30 hover:shadow-[0_0_15px_rgba(245,158,11,0.3)] transition-shadow">
-              3-Card Spread
+              {isFr ? 'Tirage à 3 cartes' : '3-Card Spread'}
             </Button>
             {drawnCards.length > 0 && (
               <Button onClick={() => { setDrawnCards([]); setFlippedCards(new Set()); }} variant="ghost" className="text-slate-400">
-                <RotateCcw className="w-4 h-4 mr-1" /> Reset
+                <RotateCcw className="w-4 h-4 mr-1" /> {isFr ? 'Réinitialiser' : 'Reset'}
               </Button>
             )}
           </div>
@@ -276,12 +276,15 @@ const EntrepreneurialTarot = () => {
           )}
 
           {drawnCards.length === 0 && (
-            <p className="text-xs text-slate-600">Click a button above to draw from the deck. Tap a card to reveal.</p>
+            <p className="text-xs text-slate-600">
+              {isFr
+                ? 'Cliquez sur un bouton ci-dessus pour tirer du jeu. Touchez une carte pour la révéler.'
+                : 'Click a button above to draw from the deck. Tap a card to reveal.'}
+            </p>
           )}
         </div>
       </section>
 
-      {/* Constellation + Browser + Legend */}
       <section ref={tabsReveal.ref} className={`pb-20 px-4 relative z-10 ${tabsReveal.isVisible ? 'animate-scroll-slide-up' : 'opacity-0'}`}>
         <div className="container max-w-5xl mx-auto">
           <Tabs defaultValue="constellation" className="w-full">
@@ -303,9 +306,10 @@ const EntrepreneurialTarot = () => {
                 CHORDS
               </TabsTrigger>
               <TabsTrigger value="legend" className="text-xs uppercase tracking-wider">
-                Legend
+                {isFr ? 'Légende' : 'Legend'}
               </TabsTrigger>
             </TabsList>
+
 
             {/* Constellation View */}
             <TabsContent value="constellation">
