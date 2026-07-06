@@ -89,8 +89,16 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
     };
 
     loadTranslations();
-    localStorage.setItem('language', language);
+    try {
+      localStorage.setItem('language', language);
+    } catch {
+      // ignore
+    }
+    if (typeof document !== 'undefined') {
+      document.documentElement.lang = language;
+    }
   }, [language]);
+
 
   const t = (key: string): string => {
     const keys = key.split('.');
