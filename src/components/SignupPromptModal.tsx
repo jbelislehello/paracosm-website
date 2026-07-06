@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Cloud, UserPlus, X } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface SignupPromptModalProps {
   open: boolean;
@@ -17,23 +18,11 @@ interface SignupPromptModalProps {
   context?: 'second-project' | 'season-complete' | 'save-progress' | 'rehearsal-download';
 }
 
-const contextMessages = {
-  'second-project': {
-    title: 'Save Your Projects',
-    description: 'You have multiple projects now! Sign in to sync them across all your devices and never lose your work.',
-  },
-  'season-complete': {
-    title: 'Congratulations on Completing a Season!',
-    description: 'Great progress! Sign in to save your journey and continue from any device.',
-  },
-  'save-progress': {
-    title: 'Your Progress is Saved Locally',
-    description: 'Sign in to sync your work across devices and ensure you never lose your progress.',
-  },
-  'rehearsal-download': {
-    title: 'Create a Free Account to Download',
-    description: 'The facilitator deck and workbook are free — the same account unlocks the Calm Magic Board and your personal Rehearsal Arc dashboard.',
-  },
+const CONTEXT_KEYS: Record<NonNullable<SignupPromptModalProps['context']>, string> = {
+  'second-project': 'second_project',
+  'season-complete': 'season_complete',
+  'save-progress': 'save_progress',
+  'rehearsal-download': 'rehearsal_download',
 };
 
 const SignupPromptModal: React.FC<SignupPromptModalProps> = ({
@@ -42,7 +31,10 @@ const SignupPromptModal: React.FC<SignupPromptModalProps> = ({
   context = 'save-progress',
 }) => {
   const navigate = useNavigate();
-  const { title, description } = contextMessages[context];
+  const { t } = useLanguage();
+  const ctxKey = CONTEXT_KEYS[context];
+  const title = t(`auth_modal.contexts.${ctxKey}.title`);
+  const description = t(`auth_modal.contexts.${ctxKey}.description`);
 
   const handleSignIn = () => {
     onOpenChange(false);
@@ -73,15 +65,15 @@ const SignupPromptModal: React.FC<SignupPromptModalProps> = ({
             className="w-full bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90"
           >
             <UserPlus className="w-4 h-4 mr-2" />
-            Create Free Account
+            {t('auth_modal.create_account')}
           </Button>
-          
+
           <Button
             variant="outline"
             onClick={handleSignIn}
             className="w-full"
           >
-            Sign In to Existing Account
+            {t('auth_modal.sign_in')}
           </Button>
         </div>
 
@@ -93,7 +85,7 @@ const SignupPromptModal: React.FC<SignupPromptModalProps> = ({
             className="text-muted-foreground hover:text-foreground"
           >
             <X className="w-4 h-4 mr-1" />
-            Continue as Guest
+            {t('auth_modal.continue_guest')}
           </Button>
         </DialogFooter>
       </DialogContent>

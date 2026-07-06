@@ -1,0 +1,67 @@
+{
+  "heading": "Ready to Transform Your Leadership?",
+  "subheading": "Whether you're an executive seeking strategic development or a team looking to accelerate innovation, let's discuss how our proven methodologies can create breakthrough results for your organization.",
+  "sessions": {
+    "title": "Choose Your Session Type",
+    "subtitle": "Based on the GL!TCH → DRIFT → TUNE transformation framework",
+    "book_now": "Book Now →",
+    "glitch": {
+      "name": "Gl!tch Session",
+      "duration": "45-60 min",
+      "purpose": "Initial discovery & deep exploration",
+      "best_for": "First contact, strategic consultation, exploring what feels 'off' or alive in your organization"
+    },
+    "drift": {
+      "name": "Drift Session",
+      "duration": "30 min",
+      "purpose": "Relational exploration & flexible discovery",
+      "best_for": "Ongoing transformation work, relational coaching, brainstorming possibilities"
+    },
+    "tune": {
+      "name": "Tune Session",
+      "duration": "15-20 min",
+      "purpose": "Focused action & tactical check-ins",
+      "best_for": "Quick implementation questions, specific deliverable review, workshop scheduling"
+    }
+  },
+  "form": {
+    "title": "Send us a message",
+    "name": "Name",
+    "email": "Email",
+    "interest_label": "I'm interested in...",
+    "interest_placeholder": "Select your focus area",
+    "options": {
+      "ai_leadership": "AI Leadership & Strategic Implementation",
+      "team_coaching": "Team Coaching & Culture Transformation",
+      "executive_coaching": "Executive Development & Leadership",
+      "org_transformation": "Organizational Transformation",
+      "innovation_frameworks": "Innovation Frameworks & Methodologies",
+      "other": "Other"
+    },
+    "related_work": "Related Work:",
+    "message": "Message",
+    "message_placeholder": "Tell us about your goals, challenges, or how we can help...",
+    "submit": "Send Message",
+    "toast_title": "Opening Email Client",
+    "toast_description": "Your email client should open with the message pre-filled. If it doesn't open, please email jbelisle@helloarchitekt.com directly.",
+    "mail_subject": "Contact Form Submission from {name}"
+  },
+  "info": {
+    "title": "Let's Connect",
+    "discovery_title": "Free Discovery Call",
+    "discovery_desc": "30-minute consultation to explore your needs",
+    "response_title": "Response Time",
+    "response_desc": "We typically respond within 24 hours",
+    "direct_title": "Direct Contact"
+  },
+  "audience": {
+    "individual_title": "Individual Leaders",
+    "individual_item_1": "Executive coaching & development",
+    "individual_item_2": "AI leadership strategy",
+    "individual_item_3": "Personal transformation",
+    "org_title": "Teams & Organizations",
+    "org_item_1": "Team coaching & culture change",
+    "org_item_2": "Innovation frameworks",
+    "org_item_3": "Organizational transformation"
+  }
+}

@@ -9,5 +9,12 @@
   "explore_inner_landscape": "Explorez Votre Paysage Intérieur",
   "book_discovery": "Réserver un Appel Découverte",
   "build_agentic_ecosystem": "Construisez Votre Écosystème Agentique",
-  "design_deploy_manage": "Concevez, déployez et gérez des agents IA interconnectés qui travaillent ensemble pour résoudre des problèmes complexes"
+  "design_deploy_manage": "Concevez, déployez et gérez des agents IA interconnectés qui travaillent ensemble pour résoudre des problèmes complexes",
+  "your_agentic_ecosystem": "Votre Écosystème Agentique",
+  "rotating_words": {
+    "design": "Concevez",
+    "deploy": "Déployez",
+    "scale": "Adaptez",
+    "govern": "Gouvernez"
+  }
 }

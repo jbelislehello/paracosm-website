@@ -1,0 +1,23 @@
+{
+  "contexts": {
+    "second_project": {
+      "title": "Sauvegardez vos projets",
+      "description": "Vous avez maintenant plusieurs projets ! Connectez-vous pour les synchroniser sur tous vos appareils et ne jamais perdre votre travail."
+    },
+    "season_complete": {
+      "title": "Félicitations pour avoir complété une saison !",
+      "description": "Belle progression ! Connectez-vous pour sauvegarder votre parcours et le poursuivre depuis n'importe quel appareil."
+    },
+    "save_progress": {
+      "title": "Votre progression est sauvegardée localement",
+      "description": "Connectez-vous pour synchroniser votre travail entre vos appareils et ne jamais perdre votre progression."
+    },
+    "rehearsal_download": {
+      "title": "Créez un compte gratuit pour télécharger",
+      "description": "Le deck du facilitateur et le cahier sont gratuits — le même compte débloque le Calm Magic Board et votre tableau de bord Rehearsal Arc."
+    }
+  },
+  "create_account": "Créer un compte gratuit",
+  "sign_in": "Se connecter à un compte existant",
+  "continue_guest": "Continuer sans compte"
+}

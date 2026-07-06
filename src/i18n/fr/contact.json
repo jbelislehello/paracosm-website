@@ -1,0 +1,67 @@
+{
+  "heading": "Prêt·e à transformer votre leadership ?",
+  "subheading": "Que vous soyez un·e dirigeant·e à la recherche d'un développement stratégique ou une équipe qui souhaite accélérer l'innovation, discutons de la façon dont nos méthodologies éprouvées peuvent générer des résultats décisifs pour votre organisation.",
+  "sessions": {
+    "title": "Choisissez votre type de session",
+    "subtitle": "Basé sur le cadre de transformation GL!TCH → DRIFT → TUNE",
+    "book_now": "Réserver →",
+    "glitch": {
+      "name": "Session Gl!tch",
+      "duration": "45-60 min",
+      "purpose": "Découverte initiale et exploration profonde",
+      "best_for": "Premier contact, consultation stratégique, exploration de ce qui semble « décalé » ou vivant dans votre organisation"
+    },
+    "drift": {
+      "name": "Session Drift",
+      "duration": "30 min",
+      "purpose": "Exploration relationnelle et découverte flexible",
+      "best_for": "Travail de transformation continu, coaching relationnel, exploration de possibilités"
+    },
+    "tune": {
+      "name": "Session Tune",
+      "duration": "15-20 min",
+      "purpose": "Action ciblée et suivis tactiques",
+      "best_for": "Questions rapides de mise en œuvre, revue de livrables spécifiques, planification d'ateliers"
+    }
+  },
+  "form": {
+    "title": "Envoyez-nous un message",
+    "name": "Nom",
+    "email": "Courriel",
+    "interest_label": "Je m'intéresse à…",
+    "interest_placeholder": "Sélectionnez votre domaine",
+    "options": {
+      "ai_leadership": "Leadership IA & mise en œuvre stratégique",
+      "team_coaching": "Coaching d'équipe & transformation culturelle",
+      "executive_coaching": "Développement exécutif & leadership",
+      "org_transformation": "Transformation organisationnelle",
+      "innovation_frameworks": "Cadres et méthodologies d'innovation",
+      "other": "Autre"
+    },
+    "related_work": "Travaux connexes :",
+    "message": "Message",
+    "message_placeholder": "Parlez-nous de vos objectifs, défis, ou de la façon dont nous pouvons vous aider…",
+    "submit": "Envoyer le message",
+    "toast_title": "Ouverture du client de messagerie",
+    "toast_description": "Votre client courriel devrait s'ouvrir avec le message pré-rempli. S'il ne s'ouvre pas, écrivez directement à jbelisle@helloarchitekt.com.",
+    "mail_subject": "Formulaire de contact soumis par {name}"
+  },
+  "info": {
+    "title": "Restons en contact",
+    "discovery_title": "Appel découverte gratuit",
+    "discovery_desc": "Consultation de 30 minutes pour explorer vos besoins",
+    "response_title": "Temps de réponse",
+    "response_desc": "Nous répondons généralement sous 24 heures",
+    "direct_title": "Contact direct"
+  },
+  "audience": {
+    "individual_title": "Leaders individuel·les",
+    "individual_item_1": "Coaching et développement exécutif",
+    "individual_item_2": "Stratégie de leadership IA",
+    "individual_item_3": "Transformation personnelle",
+    "org_title": "Équipes & organisations",
+    "org_item_1": "Coaching d'équipe et changement culturel",
+    "org_item_2": "Cadres d'innovation",
+    "org_item_3": "Transformation organisationnelle"
+  }
+}
