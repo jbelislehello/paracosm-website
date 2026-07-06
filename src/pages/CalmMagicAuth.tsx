@@ -23,6 +23,51 @@ const CalmMagicAuth: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
   const navigate = useNavigate();
+  const { language } = useLanguage();
+  const isFr = language === 'fr';
+
+  const t = {
+    kicker: isFr ? 'Vol. 01 · Passage' : 'Vol. 01 · Passage',
+    tagline: isFr
+      ? "Votre espace pour l'intelligence relationnelle et les PRD vivants."
+      : 'Your space for relational intelligence and living PRDs.',
+    resetTitle: isFr ? 'Réinitialiser votre mot de passe' : 'Reset your password',
+    resetDesc: isFr ? 'Entrez votre courriel et nous vous enverrons un lien.' : "Enter your email and we'll send you a reset link",
+    email: isFr ? 'Courriel' : 'Email',
+    sendLink: isFr ? 'Envoyer le lien' : 'Send Reset Link',
+    backToSignIn: isFr ? 'Retour à la connexion' : 'Back to sign in',
+    setNewTitle: isFr ? 'Nouveau mot de passe' : 'Set new password',
+    setNewDesc: isFr ? 'Entrez votre nouveau mot de passe ci-dessous' : 'Enter your new password below',
+    newPassword: isFr ? 'Nouveau mot de passe' : 'New Password',
+    confirmPassword: isFr ? 'Confirmer le mot de passe' : 'Confirm Password',
+    updatePassword: isFr ? 'Mettre à jour' : 'Update Password',
+    welcomeBack: isFr ? 'Bon retour' : 'Welcome back',
+    createAccount: isFr ? 'Créer un compte' : 'Create an account',
+    signinDesc: isFr ? 'Connectez-vous pour continuer votre parcours' : 'Sign in to continue your journey',
+    signupDesc: isFr ? 'Commencez votre parcours de transformation' : 'Start your transformation journey',
+    password: isFr ? 'Mot de passe' : 'Password',
+    forgot: isFr ? 'Mot de passe oublié ?' : 'Forgot password?',
+    signIn: isFr ? 'Se connecter' : 'Sign In',
+    createBtn: isFr ? 'Créer un compte' : 'Create Account',
+    noAccount: isFr ? "Pas encore de compte ? " : "Don't have an account? ",
+    hasAccount: isFr ? 'Déjà un compte ? ' : 'Already have an account? ',
+    signUpLink: isFr ? "S'inscrire" : 'Sign up',
+    signInLink: isFr ? 'Se connecter' : 'Sign in',
+    backFront: isFr ? "Retour à la page d'accueil" : 'Back to the front page',
+    errEmailPass: isFr ? 'Veuillez entrer un courriel et un mot de passe' : 'Please enter email and password',
+    errPwLength: isFr ? 'Le mot de passe doit contenir au moins 6 caractères' : 'Password must be at least 6 characters',
+    errInvalid: isFr ? 'Courriel ou mot de passe invalide' : 'Invalid email or password',
+    okWelcome: isFr ? 'Bon retour !' : 'Welcome back!',
+    errRegistered: isFr ? 'Ce courriel est déjà enregistré. Veuillez vous connecter.' : 'This email is already registered. Please sign in.',
+    okCreated: isFr ? 'Compte créé ! Vérifiez votre courriel pour confirmer.' : 'Account created! Check your email to confirm.',
+    errUnknown: isFr ? "Une erreur inattendue s'est produite" : 'An unexpected error occurred',
+    errEmailRequired: isFr ? 'Veuillez entrer votre adresse courriel' : 'Please enter your email address',
+    okResetSent: isFr ? 'Lien de réinitialisation envoyé ! Vérifiez votre courriel.' : 'Password reset link sent! Check your email.',
+    errPwMatch: isFr ? 'Les mots de passe ne correspondent pas' : 'Passwords do not match',
+    okPwUpdated: isFr ? 'Mot de passe mis à jour !' : 'Password updated successfully!',
+  };
+
+
 
   useEffect(() => {
     // Check for recovery hash fragment FIRST before any session checks
