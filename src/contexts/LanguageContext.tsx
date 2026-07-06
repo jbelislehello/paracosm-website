@@ -35,6 +35,8 @@ const TRANSLATION_MODULES = [
   'landing',
   'book',
   'summer-deal',
+  'contact',
+  'auth-modal',
 ] as const;
 
 

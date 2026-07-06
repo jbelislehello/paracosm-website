@@ -1,0 +1,23 @@
+{
+  "contexts": {
+    "second_project": {
+      "title": "Save Your Projects",
+      "description": "You have multiple projects now! Sign in to sync them across all your devices and never lose your work."
+    },
+    "season_complete": {
+      "title": "Congratulations on Completing a Season!",
+      "description": "Great progress! Sign in to save your journey and continue from any device."
+    },
+    "save_progress": {
+      "title": "Your Progress is Saved Locally",
+      "description": "Sign in to sync your work across devices and ensure you never lose your progress."
+    },
+    "rehearsal_download": {
+      "title": "Create a Free Account to Download",
+      "description": "The facilitator deck and workbook are free — the same account unlocks the Calm Magic Board and your personal Rehearsal Arc dashboard."
+    }
+  },
+  "create_account": "Create Free Account",
+  "sign_in": "Sign In to Existing Account",
+  "continue_guest": "Continue as Guest"
+}

@@ -9,5 +9,12 @@
   "explore_inner_landscape": "Explore Your Inner Landscape",
   "book_discovery": "Book Discovery Call",
   "build_agentic_ecosystem": "Build Your Agentic Ecosystem",
-  "design_deploy_manage": "Design, deploy, and manage interconnected AI agents that work together to solve complex problems"
+  "design_deploy_manage": "Design, deploy, and manage interconnected AI agents that work together to solve complex problems",
+  "your_agentic_ecosystem": "Your Agentic Ecosystem",
+  "rotating_words": {
+    "design": "Design",
+    "deploy": "Deploy",
+    "scale": "Scale",
+    "govern": "Govern"
+  }
 }
