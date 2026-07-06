@@ -231,43 +231,24 @@ const CalmMagicAuth: React.FC = () => {
       return (
         <>
           <CardHeader className="space-y-1">
-            <CardTitle className="text-xl text-center">Reset your password</CardTitle>
-            <CardDescription className="text-center">
-              Enter your email and we'll send you a reset link
-            </CardDescription>
+            <CardTitle className="text-xl text-center">{t.resetTitle}</CardTitle>
+            <CardDescription className="text-center">{t.resetDesc}</CardDescription>
           </CardHeader>
           <form onSubmit={handleForgotPassword}>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={loading}
-                  required
-                />
+                <Label htmlFor="email">{t.email}</Label>
+                <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} disabled={loading} required />
               </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-4">
-              <Button 
-                type="submit" 
-                className="w-full bg-gradient-to-r from-rose-500 to-purple-500 hover:from-rose-600 hover:to-purple-600"
-                disabled={loading}
-              >
+              <Button type="submit" className="w-full bg-gradient-to-r from-rose-500 to-purple-500 hover:from-rose-600 hover:to-purple-600" disabled={loading}>
                 {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-                Send Reset Link
+                {t.sendLink}
               </Button>
-              
-              <button
-                type="button"
-                onClick={() => setAuthMode('signin')}
-                className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
+              <button type="button" onClick={() => setAuthMode('signin')} className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors">
                 <ArrowLeft className="h-4 w-4" />
-                Back to sign in
+                {t.backToSignIn}
               </button>
             </CardFooter>
           </form>
@@ -280,54 +261,31 @@ const CalmMagicAuth: React.FC = () => {
       return (
         <>
           <CardHeader className="space-y-1">
-            <CardTitle className="text-xl text-center">Set new password</CardTitle>
-            <CardDescription className="text-center">
-              Enter your new password below
-            </CardDescription>
+            <CardTitle className="text-xl text-center">{t.setNewTitle}</CardTitle>
+            <CardDescription className="text-center">{t.setNewDesc}</CardDescription>
           </CardHeader>
           <form onSubmit={handlePasswordReset}>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="newPassword">New Password</Label>
-                <Input
-                  id="newPassword"
-                  type="password"
-                  placeholder="••••••••"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  disabled={loading}
-                  required
-                  minLength={6}
-                />
+                <Label htmlFor="newPassword">{t.newPassword}</Label>
+                <Input id="newPassword" type="password" placeholder="••••••••" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} disabled={loading} required minLength={6} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  placeholder="••••••••"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  disabled={loading}
-                  required
-                  minLength={6}
-                />
+                <Label htmlFor="confirmPassword">{t.confirmPassword}</Label>
+                <Input id="confirmPassword" type="password" placeholder="••••••••" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} disabled={loading} required minLength={6} />
               </div>
             </CardContent>
             <CardFooter>
-              <Button 
-                type="submit" 
-                className="w-full bg-gradient-to-r from-rose-500 to-purple-500 hover:from-rose-600 hover:to-purple-600"
-                disabled={loading}
-              >
+              <Button type="submit" className="w-full bg-gradient-to-r from-rose-500 to-purple-500 hover:from-rose-600 hover:to-purple-600" disabled={loading}>
                 {loading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
-                Update Password
+                {t.updatePassword}
               </Button>
             </CardFooter>
           </form>
         </>
       );
     }
+
 
     // Sign In / Sign Up Mode
     return (
