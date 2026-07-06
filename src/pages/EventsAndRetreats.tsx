@@ -93,16 +93,18 @@ const EventsAndRetreats = () => {
           <div className="md:col-span-8">
             <div className="flex items-baseline gap-6 mb-6">
               <span className={cn(editorialType.serif, "text-4xl md:text-5xl leading-none", clay.numeral)}>02</span>
-              <p className={cn(editorialType.kicker, clay.kicker)}>Evening series</p>
+              <p className={cn(editorialType.kicker, clay.kicker)}>{isFr ? 'Série de soirées' : 'Evening series'}</p>
             </div>
             <h2 className={cn(editorialType.serif, "text-4xl md:text-6xl leading-[1.05] tracking-tight mb-6")}>
               Yutori <em className="italic font-light">Nights.</em>
             </h2>
             <p className="text-lg md:text-xl leading-relaxed opacity-85 mb-4 max-w-2xl">
-              A series of listening &amp; dance parties designed around hybrid cognition and creative somatics — a private event where AI meets sensory pleasures, music, and audio-visuals.
+              {isFr
+                ? "Une série de soirées d'écoute et de danse conçues autour de la cognition hybride et de la somatique créative — un événement privé où l'IA rencontre plaisirs sensoriels, musique et audiovisuel."
+                : "A series of listening & dance parties designed around hybrid cognition and creative somatics — a private event where AI meets sensory pleasures, music, and audio-visuals."}
             </p>
             <p className={cn(editorialType.caption, "opacity-70")}>
-              By invitation · dates announced per city
+              {isFr ? 'Sur invitation · dates annoncées par ville' : 'By invitation · dates announced per city'}
             </p>
           </div>
           <div className="md:col-span-4 md:text-right">
@@ -110,7 +112,7 @@ const EventsAndRetreats = () => {
               href="mailto:jbelisle@helloarchitekt.com?subject=Yutori%20Nights%20—%20save%20my%20chair"
               tone="clay"
             >
-              Save my chair
+              {isFr ? 'Réservez ma place' : 'Save my chair'}
             </EditorialCTA>
           </div>
         </div>
