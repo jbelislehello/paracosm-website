@@ -8,6 +8,7 @@ import EditorialClosing from "@/components/editorial/EditorialClosing";
 import EditorialBulletinsSection from "@/components/editorial/EditorialBulletinsSection";
 import { usePageSeo } from "@/hooks/usePageSeo";
 import { orgSchema, websiteSchema, webPageSchema } from "@/lib/structuredData";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 import atelier from "@/assets/retreats/atelier-circle.jpg";
 import mountain from "@/assets/retreats/mountain-summit.jpg";
