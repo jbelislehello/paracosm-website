@@ -341,13 +341,13 @@ const CalmMagicAuth: React.FC = () => {
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-3">
           <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] font-semibold text-[hsl(15_75%_45%)]">
-            Vol. 01 · Passage
+            {t.kicker}
           </p>
           <h1 className="font-serif text-4xl md:text-5xl leading-[1.05] tracking-tight text-foreground">
             Calm Magic Board
           </h1>
           <p className="text-sm text-foreground/70 max-w-sm mx-auto">
-            Your space for relational intelligence and living PRDs.
+            {t.tagline}
           </p>
         </div>
 
@@ -362,10 +362,11 @@ const CalmMagicAuth: React.FC = () => {
               className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] text-foreground/60 hover:text-foreground transition-colors"
             >
               <ArrowLeft className="h-3 w-3" />
-              Back to the front page
+              {t.backFront}
             </Link>
           </div>
         )}
+
       </div>
     </div>
   );
