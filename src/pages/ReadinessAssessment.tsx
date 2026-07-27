@@ -382,6 +382,13 @@ export default function ReadinessAssessment() {
                 <Download className="mr-2 h-4 w-4" />
                 Export PDF
               </Button>
+              <ShareReadinessDialog
+                sessionId={sessionId}
+                ownerId={userId}
+                buildSnapshot={() =>
+                  buildSnapshot({ ownerEmail: userEmail, overall, seasonScores, answers })
+                }
+              />
               <Button onClick={saveScores} disabled={saving} size="sm" variant="secondary">
                 {saving ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
