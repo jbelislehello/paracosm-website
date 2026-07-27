@@ -35,6 +35,7 @@ export default function ReadinessAssessment() {
     title: "Calm Magic Readiness Assessment | Paracosm",
     description:
       "A 5-season, 320-tile diagnostic mapping personal readiness against organizational maturity for relational AI adoption.",
+    path: "/readiness",
   });
 
   const navigate = useNavigate();
@@ -189,8 +190,8 @@ export default function ReadinessAssessment() {
       await supabase
         .from("readiness_sessions")
         .update({
-          season_scores: seasonScoreMap,
-          overall_score: overall,
+          season_scores: seasonScoreMap as never,
+          overall_score: overall as never,
           seasons_completed: completed,
           completed_at: allDone ? new Date().toISOString() : null,
         })

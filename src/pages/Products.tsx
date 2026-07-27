@@ -24,6 +24,7 @@ export default function Products() {
     title: "Paracosm Portfolio — 8 Products Emerging from Calm Magic",
     description:
       "The eight commercial surfaces of the Paracosm ecosystem: readiness platform, deck, book, agents, certification, retreats, music, and consulting.",
+    path: "/products",
   });
 
   return (
