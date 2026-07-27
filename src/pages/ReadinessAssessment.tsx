@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight, CheckCircle2, Download, Loader2, Save } from "lucide-react";
 import { exportReadinessPdf } from "@/lib/readiness/exportPdf";
 import { toast } from "sonner";
+import { trackEvent } from "@/lib/analytics";
 
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
