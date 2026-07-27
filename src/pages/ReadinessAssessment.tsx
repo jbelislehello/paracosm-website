@@ -42,6 +42,10 @@ export default function ReadinessAssessment() {
     path: "/readiness",
   });
 
+  useEffect(() => {
+    void trackEvent("readiness_assessment_viewed", {});
+  }, []);
+
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
