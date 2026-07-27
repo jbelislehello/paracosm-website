@@ -41,6 +41,7 @@ export default function ReadinessAssessment() {
 
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [loadingSession, setLoadingSession] = useState(true);
   const [saving, setSaving] = useState(false);
