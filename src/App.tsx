@@ -166,6 +166,7 @@ function App() {
                     <Route path="/agentic-demo" element={<AgenticDemo />} />
                     <Route path="/products" element={<Products />} />
                     <Route path="/readiness" element={<ProtectedRoute><ReadinessAssessment /></ProtectedRoute>} />
+                    <Route path="/r/:shareId" element={<ReadinessShareView />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Suspense>
