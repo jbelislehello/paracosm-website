@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowDown, ArrowRight, Globe } from "lucide-react";
 import logoParacosm from "@/assets/logo-paracosm.jpeg";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { trackEvent } from "@/lib/analytics";
 
 export default function EditorialHero() {
   const { language, setLanguage } = useLanguage();
