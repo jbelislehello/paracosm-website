@@ -11,6 +11,8 @@ import EditorialSiteHeader from "@/components/editorial/EditorialSiteHeader";
 import Footer from "@/components/Footer";
 import TileQuestionCard from "@/components/readiness/TileQuestionCard";
 import SeasonResultCard from "@/components/readiness/SeasonResultCard";
+import ShareReadinessDialog from "@/components/readiness/ShareReadinessDialog";
+import { buildSnapshot } from "@/lib/readiness/shares";
 
 import { SEASONS, SEASON_BY_ID, SEASON_ORDER } from "@/lib/readiness/data";
 import {
@@ -380,6 +382,13 @@ export default function ReadinessAssessment() {
                 <Download className="mr-2 h-4 w-4" />
                 Export PDF
               </Button>
+              <ShareReadinessDialog
+                sessionId={sessionId}
+                ownerId={userId}
+                buildSnapshot={() =>
+                  buildSnapshot({ ownerEmail: userEmail, overall, seasonScores, answers })
+                }
+              />
               <Button onClick={saveScores} disabled={saving} size="sm" variant="secondary">
                 {saving ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

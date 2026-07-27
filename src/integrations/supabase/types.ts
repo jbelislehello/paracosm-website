@@ -1981,6 +1981,94 @@ export type Database = {
         }
         Relationships: []
       }
+      readiness_share_codes: {
+        Row: {
+          attempts: number
+          code_hash: string
+          consumed_at: string | null
+          created_at: string
+          email: string
+          expires_at: string
+          id: string
+          share_id: string
+        }
+        Insert: {
+          attempts?: number
+          code_hash: string
+          consumed_at?: string | null
+          created_at?: string
+          email: string
+          expires_at: string
+          id?: string
+          share_id: string
+        }
+        Update: {
+          attempts?: number
+          code_hash?: string
+          consumed_at?: string | null
+          created_at?: string
+          email?: string
+          expires_at?: string
+          id?: string
+          share_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "readiness_share_codes_share_id_fkey"
+            columns: ["share_id"]
+            isOneToOne: false
+            referencedRelation: "readiness_shares"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      readiness_shares: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          note: string | null
+          owner_id: string
+          recipient_emails: string[]
+          revoked_at: string | null
+          session_id: string
+          snapshot: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          note?: string | null
+          owner_id: string
+          recipient_emails?: string[]
+          revoked_at?: string | null
+          session_id: string
+          snapshot: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          note?: string | null
+          owner_id?: string
+          recipient_emails?: string[]
+          revoked_at?: string | null
+          session_id?: string
+          snapshot?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "readiness_shares_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "readiness_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       revenue_opportunities: {
         Row: {
           amount_max: number | null
