@@ -71,6 +71,7 @@ const RehearsalArcOffering = lazy(() => import("./pages/RehearsalArcOffering"));
 const MyRehearsalArc = lazy(() => import("./pages/MyRehearsalArc"));
 const Products = lazy(() => import("./pages/Products"));
 const ReadinessAssessment = lazy(() => import("./pages/ReadinessAssessment"));
+const ReadinessShareView = lazy(() => import("./pages/ReadinessShareView"));
 
 const Contact = lazy(() => import("./pages/Contact"));
 const AgenticDemo = lazy(() => import("./pages/AgenticDemo"));
