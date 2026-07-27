@@ -71,6 +71,7 @@ export default function ReadinessAssessment() {
         return;
       }
       setUserId(uid);
+      setUserEmail(data?.user?.email ?? null);
 
       // Find most recent incomplete session, or create one
       const { data: sessions } = await supabase
