@@ -1,0 +1,2362 @@
+{
+  "season": "NOEMS",
+  "seasonId": "noems",
+  "axis": "MAGIC · Imagination",
+  "color": "#8055D0",
+  "description": "Conceptual intent & meaning · Spaciousness · Knowledge objects",
+  "tiles": [
+    {
+      "id": "MC",
+      "tileCode": "MC",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "What belief opens the door to an imaginative leap — a mental frame spacious enough to let you act before the full concept arrives?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Do shared mindsets in your organization create room for imaginative risk — a belief architecture that says yes to ideas before they are fully formed?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MH",
+      "tileCode": "MH",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Does your belief architecture carry the resonance of what truly matters — a core knowing that keeps imagination tethered to meaning rather than mere novelty?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Are your organization's shared beliefs grounded in deep principle — mindsets that give imagination a heartful direction to move toward?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MO",
+      "tileCode": "MO",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Can you hold your own beliefs lightly enough to witness them — seeing your mental frameworks as interesting constructs rather than fixed truths?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization cultivate the capacity to observe its own mindsets from a wider vantage — seeing belief architecture as something that can be questioned and reimagined?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MR",
+      "tileCode": "MR",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "When a familiar belief begins to constrain your imagination, can you invert it — turning a known framework upside down to find the new meaning waiting underneath?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization allow its mindsets to be disrupted — holding beliefs lightly enough that imagination can reverse and renew them when the moment calls for it?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MD",
+      "tileCode": "MD",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do you consciously craft your mental frameworks — designing beliefs that are spacious enough to hold both clear structure and emerging conceptual possibility?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization intentionally design its shared mindsets — building belief architectures that are generative, coherent, and open to conceptual expansion?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MS",
+      "tileCode": "MS",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are you planting beliefs today that will deepen your imaginative capacity over time — small conceptual seeds whose meaning may take seasons to fully unfold?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization seed the mindsets of its future — planting beliefs that will yield imaginative, meaning-rich thinking for years to come?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MM",
+      "tileCode": "MM",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do you have practices that actively cultivate expansive, imaginative thinking — methodical ways of growing a spacious and generative belief architecture?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization employ methods that build and sustain imaginative mindsets — regular practices that renew and expand the shared conceptual repertoire?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "M_SIG",
+      "tileCode": "M_SIG",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Is imaginative thinking woven into your entire belief system — a worldview where every mental framework connects to a coherent, meaning-rich whole?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Has imaginative mindset become a systemic condition in your organization — belief architecture embedded throughout culture, structure, and daily reality?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AC",
+      "tileCode": "AC",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do you move fluidly when an imaginative impulse calls you to act — shifting your behavior before the full concept has crystallized?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization demonstrate behavioral agility when imaginative chances arise — responding swiftly and gracefully to emerging conceptual signals?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AH",
+      "tileCode": "AH",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are your behavioral agilities rooted in what you genuinely care about — acting with imagination in ways that honor your deepest values?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization adapt its behaviors while staying anchored in its core principles — agile in form but unwavering in the meaning it serves?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AO",
+      "tileCode": "AO",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Can you witness your own behavioral patterns with curious spaciousness — noticing which habits expand your imaginative range and which quietly constrain it?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization observe its own behavioral repertoire with honest awareness — tracking which agilities serve imaginative capacity and which limit it?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AR",
+      "tileCode": "AR",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are you willing to release a habitual way of responding when imagination signals a different move — trading an old behavioral script for a fresh one?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization demonstrate the agility to disrupt its own behavioral norms — embracing renewal when imagination points toward a radically different way of moving?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AD",
+      "tileCode": "AD",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do you consciously shape your behavioral repertoire — intentionally designing practices and responses that expand your imaginative range?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization deliberately design its behavioral agilities — building repertoires shaped for conceptual depth and imaginative responsiveness?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AS",
+      "tileCode": "AS",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are you planting small behavioral seeds now that will grow into significant imaginative capacity — habits whose full meaning only becomes visible across time?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization invest in developing behavioral agilities that will yield imaginative capacity across seasons — nurturing emerging patterns as seeds of future fluency?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AM",
+      "tileCode": "AM",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do you have methodical practices that sharpen your imaginative agility — regular exercises that stretch and diversify your behavioral repertoire?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization use specific methods to develop and sustain imaginative behavioral agility — practices built into the natural rhythm of its work?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "A_SIG",
+      "tileCode": "A_SIG",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Is imaginative agility woven through everything you do — a systemic quality of being rather than an occasional capability you reach for?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Has imaginative agility become fully integrated into your organization's operating system — embedded across all roles, levels, and daily processes?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GC",
+      "tileCode": "GC",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do you set goals that require imaginative risk — aims that ask you to step beyond certainty into conceptual terrain you haven't yet mapped?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization establish goals that invite imaginative leaps — directional intent that opens unexplored conceptual space rather than only confirming the known?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GH",
+      "tileCode": "GH",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How consistently do your goals emerge from what truly matters to you — directional intent born from meaning rather than expectation or habit?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How consistently does your organization set goals that reflect its deepest values — purpose-rooted direction that imagination can genuinely serve?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GO",
+      "tileCode": "GO",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How often do you step back to witness your own goals — observing whether they still carry resonance or have quietly lost their living meaning?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How regularly does your organization pause to observe its goals from a wider vantage — seeing whether direction still holds imaginative and conceptual vitality?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GR",
+      "tileCode": "GR",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How willing are you to invert or dissolve a goal when imagination reveals a richer direction — releasing old aims in favor of more resonant ones?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How ready is your organization to disrupt its stated goals in service of deeper meaning — allowing imaginative signals to renew directional intent?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GD",
+      "tileCode": "GD",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How intentionally do you design your goals — crafting aims that are spacious enough for imaginative emergence yet oriented enough to carry genuine direction?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How deliberately does your organization design goals that balance direction with openness — leaving room for imaginative possibility to shape the path forward?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GS",
+      "tileCode": "GS",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How consciously do you plant goals as seeds — setting intentions that carry future meaning even when their full form has yet to emerge?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How thoughtfully does your organization plant directional seeds — goals that may take seasons to unfold but are held with deep imaginative intent?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GM",
+      "tileCode": "GM",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do you have clear practices for setting, revisiting, and reimagining your goals — methods that keep directional intent conceptually alive and resonant?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization use robust methods for establishing and renewing goals — practices that keep direction meaningful rather than merely procedural?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "G_SIG",
+      "tileCode": "G_SIG",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are your goals integrated into a coherent imaginative vision — each aim connecting to a larger meaning-making architecture rather than standing alone?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Has goal-setting become a fully integrated imaginative practice in your organization — woven into strategy, culture, and everyday decision-making?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "IC",
+      "tileCode": "IC",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do you trust your intuitions enough to act on what they signal — taking a chance on pre-verbal knowing before the concept fully arrives?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization create space for intuitive leaps — moments where sensing the landscape leads to bold imaginative action without waiting for full analytical confirmation?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "IH",
+      "tileCode": "IH",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How often does your intuition arise from what you most deeply care about — a felt knowing rooted in your values and oriented by love?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How regularly does your organization honor intuitive signals that emerge from its core values — listening to the felt sense of what matters before it can be fully named?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "IO",
+      "tileCode": "IO",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How skillfully do you observe your own intuitions — witnessing pre-verbal signals without immediately collapsing them into fixed meaning?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How well does your organization cultivate a collective capacity to hold intuitive signals — observing them with curiosity before rushing to interpret or dismiss?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "IR",
+      "tileCode": "IR",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "inner",
+      "personal": {
+        "type": "likert5",
+        "question": "How often does an intuitive signal arrive as an inversion — a felt sense that something needs to turn around before the landscape can be seen fresh?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How well does your organization follow intuitive signals toward renewal — allowing pre-verbal knowing to disrupt the familiar and open new terrain?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": {
+        "type": "open",
+        "question": "Describe a moment when an intuition signaled a reversal — something you sensed before you could name it that eventually turned a landscape upside down. What was the signal? What did it open?"
+      }
+    },
+    {
+      "id": "ID",
+      "tileCode": "ID",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "inner",
+      "personal": {
+        "type": "likert5",
+        "question": "How consciously do you let intuition shape your design choices — allowing pre-verbal knowing to form what you create rather than leaving it all to analysis?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How well does your organization integrate intuitive sensing into its design processes — trusting felt landscape awareness alongside structured analytical frameworks?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": {
+        "type": "open",
+        "question": "Recall a time when intuition shaped a design decision in ways that logic alone could not have reached. What was the felt signal? What did it make possible that would otherwise have been missed?"
+      }
+    },
+    {
+      "id": "IS",
+      "tileCode": "IS",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How attentively do you notice when an intuition is planting a seed — a faint signal that carries future imaginative potential even when its full form is unclear?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How open is your organization to holding intuitive signals as seeds — naming and nurturing early felt knowing without demanding premature resolution?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "IM",
+      "tileCode": "IM",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do you have practices that cultivate and clarify your intuitive signals — methods for accessing pre-verbal knowing and allowing it to speak with more precision?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization use structured methods to surface and work with intuitive landscape awareness — creating conditions where pre-verbal knowing can inform action?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "I_SIG",
+      "tileCode": "I_SIG",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Is intuitive knowing integrated into how you navigate all dimensions of your life — not a separate capacity but woven into your whole way of sensing and moving?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Has your organization integrated intuitive landscape awareness into its systemic intelligence — where sensing the terrain is as valued and cultivated as measuring it?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "CC",
+      "tileCode": "CC",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Does your inner compass point you toward imaginative risk — an energetic orientation that leans into the unknown rather than resting in the familiar?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization's collective compass orient it toward bold imaginative possibility — an energetic direction that welcomes rather than avoids conceptual uncertainty?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "CH",
+      "tileCode": "CH",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How clearly does your compass point from the heart — an energetic direction shaped by what you love and what you believe in most deeply?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How strongly does your organization's compass align with its core values — an energetic orientation grounded in principle rather than convenience or momentum?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "CO",
+      "tileCode": "CO",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How skillfully do you observe your own energetic orientations — noticing which compasses are active, which are dormant, and what each is actually pointing toward?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How well does your organization maintain an observational awareness of its collective energetic direction — seeing clearly where its compasses are actually pointing, not just where it intends them to?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "CR",
+      "tileCode": "CR",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "inner",
+      "personal": {
+        "type": "likert5",
+        "question": "How fluidly does your compass reorient when imagination reveals a new direction — releasing old energetic orientations in favor of ones that carry deeper resonance?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How well does your organization navigate energetic reversals — moments when the collective compass shifts and a new orientation must be trusted before it is fully understood?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": {
+        "type": "open",
+        "question": "Describe a moment when your compass completely reversed — when something in your energetic orientation turned and pointed toward a direction that surprised you. What did that feel like from the inside, and where did it ultimately lead?"
+      },
+      "navigator": true
+    },
+    {
+      "id": "CD",
+      "tileCode": "CD",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "inner",
+      "personal": {
+        "type": "likert5",
+        "question": "How intentionally do you let your compass shape what you design — allowing energetic orientation to inform the form and direction of what you bring into being?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How well does your organization bring its compass into its design work — ensuring that energetic direction is embedded in the structures, systems, and forms it creates?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": {
+        "type": "open",
+        "question": "Share an image or felt sense of a design that was truly compass-aligned — something built with an energetic orientation so clear that it seemed to organize itself around meaning. What made it feel magnetic rather than merely functional?"
+      }
+    },
+    {
+      "id": "CS",
+      "tileCode": "CS",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How consciously do you plant seeds of future energetic direction — small intentions now that hold the potential to redirect your compass across seasons?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How thoughtfully does your organization seed future energetic orientations — early signals and emerging intentions that may shape its compass for the years ahead?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "CM",
+      "tileCode": "CM",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do you have practices that help you clarify and recalibrate your compass — methods for sensing your energetic orientation and adjusting it when needed?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization use methods to sense and align its collective compass — practices that keep energetic direction visible, intentional, and open to imaginative refinement?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "C_SIG",
+      "tileCode": "C_SIG",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Is your compass integrated into your whole life — an energetic orientation that shapes your thinking, relationships, work, and imagination as one unified field?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Has compass orientation become fully integrated into your organization's systemic intelligence — an energetic direction woven through culture, strategy, and daily practice at every level?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NC",
+      "tileCode": "NC",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are the agreements you hold with yourself spacious enough to welcome imaginative risk — norms that open rather than close the door to bold conceptual moves?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization hold norms that actively invite imaginative risk — standards and agreements that make room for bold moves rather than requiring predictable ones?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NH",
+      "tileCode": "NH",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How deeply are your personal standards rooted in what genuinely matters — norms that emerge from care, conviction, and meaning rather than convention or fear?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How deeply are your organization's norms rooted in its core values — agreements and standards that carry heartful meaning rather than procedural habit?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NO",
+      "tileCode": "NO",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How skillfully do you observe the norms operating in your life — seeing which standards you hold, where they came from, and whether they still carry living meaning?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How well does your organization observe its own normative structures — seeing which agreements are alive with meaning and which have become hollow form?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NR",
+      "tileCode": "NR",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How willing are you to disrupt a norm when imagination calls for it — releasing a standard or agreement that has outlived its meaning or begun to constrain?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How ready is your organization to renew its norms — disrupting agreements and standards that no longer serve imaginative capacity or deeper collective purpose?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "ND",
+      "tileCode": "ND",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How consciously do you design the agreements you hold with yourself — crafting norms that support imaginative living and create conceptual spaciousness?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How deliberately does your organization design its norms — consciously building agreements, standards, and rules that support rather than constrain imaginative possibility?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NS",
+      "tileCode": "NS",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How intentionally do you plant normative seeds — small agreements with yourself now that will grow into meaningful structures of imaginative living over time?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How thoughtfully does your organization plant normative seeds — early agreements and emerging standards that will shape the quality of its imaginative culture across seasons?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NM",
+      "tileCode": "NM",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do you have clear practices for establishing, reviewing, and renewing your personal norms — methodical ways of keeping your standards alive with meaning rather than encrusted with habit?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization use methods to build, maintain, and evolve its normative structures — practices that keep agreements meaningful and imaginatively generative?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "N_SIG",
+      "tileCode": "N_SIG",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are your personal norms integrated into a coherent framework — a unified set of agreements that shapes how you live, relate, and imagine as a whole?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Has normative integration become systemic in your organization — where agreements, standards, and rules form a coherent and imaginatively generative whole rather than a collection of separate policies?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SC",
+      "tileCode": "SC",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do you take imaginative chances that arise from convergence — trusting the amplified energy when different ideas, people, or forces meet unexpectedly?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization take bold action when synergies emerge — capitalizing on imaginative convergences before their window of resonance closes?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SH",
+      "tileCode": "SH",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How often do your deepest values generate synergies with others — convergences that arise because you're both oriented by care and meaning rather than strategy alone?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How regularly does your organization experience synergies that emerge from shared values — amplifications born from alignment in what matters most rather than in what is merely convenient?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SO",
+      "tileCode": "SO",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How skillfully do you notice synergies as they begin to emerge — observing convergences as they form rather than only recognizing them in retrospect?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How well does your organization observe synergistic patterns — seeing convergences and amplifications as they arise and naming them before they dissolve?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SR",
+      "tileCode": "SR",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How open are you to synergies that arrive through disruption — convergences that become possible only after something old has been released or inverted?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How readily does your organization recognize renewal-driven synergies — amplifications that emerge only when old configurations dissolve and something new becomes possible?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SD",
+      "tileCode": "SD",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How intentionally do you design conditions for synergy — creating structures and contexts where meaningful convergences can arise and be recognized?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How deliberately does your organization design for synergy — consciously building environments where imaginative amplification is not accidental but cultivated?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SS",
+      "tileCode": "SS",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How consciously do you plant seeds of future synergy — small connections and initiatives now that might amplify into something larger and more resonant over time?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How thoughtfully does your organization seed future synergies — early relationships, collaborations, and initiatives that carry imaginative amplification potential?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SM",
+      "tileCode": "SM",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do you have clear methods for cultivating and sustaining synergies — practices that help you identify, amplify, and steward meaningful convergences?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization use methods to identify and nurture synergies — practices that make convergence and amplification more intentional and less accidental?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "S_SIG",
+      "tileCode": "S_SIG",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Have synergies become a systemic feature of your life — convergence and amplification woven into how you relate, imagine, and create rather than occurring only by chance?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Has synergistic capacity become fully integrated into your organization's operating system — where convergence and amplification are cultivated as core forms of intelligence?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_C",
+      "tileCode": "AP_C",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are your personal systems and protocols designed to support imaginative risk — structures that enable bold leaps rather than requiring certainty before each move?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization have governance architectures that welcome imaginative risk — protocols that enable bold moves rather than demanding pre-approval for every step into the unknown?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_H",
+      "tileCode": "AP_H",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are your personal systems grounded in your deepest values — architectures and protocols that carry meaning and moral orientation rather than just structural efficiency?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization build its governance systems on its core values — architectures and protocols that embody principle, care, and meaningful intent at every level?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_O",
+      "tileCode": "AP_O",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do you regularly observe your own personal systems — seeing your architectures and protocols clearly enough to know when they serve you and when they have quietly begun to constrain?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization maintain a clear-eyed view of its own governance structures — observing its architectures and protocols with enough distance to see their actual effects rather than their intended ones?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_R",
+      "tileCode": "AP_R",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are you willing to dismantle or invert a system or protocol when imagination calls for renewal — releasing structural forms that no longer hold the meaning they were built to carry?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization demonstrate the capacity to disrupt and renew its own governance architectures — systems that can be reimagined rather than only maintained?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_D",
+      "tileCode": "AP_D",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do you consciously design your personal systems and protocols — intentionally building structures that support imaginative living and create conceptual spaciousness?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization engage in intentional architectural design — building governance structures and protocols that are coherent, imaginative, and purpose-built rather than accumulated by default?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_S",
+      "tileCode": "AP_S",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are you planting systemic seeds — small structural choices now that will compound into significantly more imaginative and spacious architectures over time?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization plant architectural seeds — early systemic decisions and protocol choices that carry long-term imaginative and structural potential?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_M",
+      "tileCode": "AP_M",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do you have methods for building, reviewing, and evolving your personal architectures and protocols — practices that keep your systems alive, responsive, and imaginatively generative?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does your organization use robust methods for developing, auditing, and renewing its governance architectures — practices that keep systems both structurally sound and imaginatively generative?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_SIG",
+      "tileCode": "AP_SIG",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are all your personal architectures and protocols integrated into a coherent whole — a systemic self whose structures are fully aligned with your imaginative vision?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Has your organization achieved full integration of its architectures and protocols into a coherent systemic whole — governance structures that function as one unified imaginative organism rather than a collection of separate mechanisms?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    }
+  ]
+}

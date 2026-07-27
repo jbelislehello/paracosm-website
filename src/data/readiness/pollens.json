@@ -1,0 +1,2362 @@
+{
+  "season": "POLLENS",
+  "seasonId": "pollens",
+  "axis": "LOVE · Care",
+  "color": "#E05580",
+  "description": "Relational & cultural field · Self → Team → Organization",
+  "tiles": [
+    {
+      "id": "MC",
+      "tileCode": "MC",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I hold a belief that taking relational risks — initiating connection, reaching out first — is an act of love rather than vulnerability?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organizational culture actively encourage people to initiate new relationships and take relational risks as an expression of care?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MH",
+      "tileCode": "MH",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I genuinely believe that love and care are legitimate foundations for my decisions — not soft add-ons but the very architecture of a meaningful life?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization hold a core belief that heart-based values — compassion, care, and human dignity — belong at the center of how we operate, not at the periphery?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MO",
+      "tileCode": "MO",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I believe I can witness my own relational patterns — how I love and how I distance — with curiosity and self-compassion rather than shame or judgment?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our culture hold the belief that honest, compassionate observation of its relational dynamics is both possible and essential for growth?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MR",
+      "tileCode": "MR",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I believe that releasing outdated relational beliefs — about who deserves care, about what love costs — can open space for something truer and more nourishing?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization believe that disrupting and renewing its cultural assumptions about care and belonging is an ongoing responsibility — not a one-time effort?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MD",
+      "tileCode": "MD",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I believe that love and care can be consciously designed into how I structure my daily life — that belonging is something I can architect, not just hope for?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization believe that culture and belonging must be intentionally designed — that care doesn't just emerge but must be built into our structures and practices?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MS",
+      "tileCode": "MS",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I believe that small, consistent acts of care today are planting the seeds of belonging and trust I'll harvest years from now?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization hold the belief that long-term relational investment — tending culture and people with patience — yields a harvest worth waiting for?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MM",
+      "tileCode": "MM",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I believe that love and connection are deepened by intentional practice — that relational richness isn't accidental but cultivated through consistent methods and care?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization believe that care must be embedded in its methods and processes — that love without structure eventually becomes inconsistent and invisible?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "M_SIG",
+      "tileCode": "MΣ",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I hold a whole-system belief that love and care are not a separate dimension of my life but woven into every thread of how I think, work, and relate?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization hold a foundational belief that care and belonging belong integrated throughout all of its systems — not siloed in culture programs or HR policies?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AC",
+      "tileCode": "AC",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Am I genuinely able to initiate care — to reach out to someone I've been hesitant to contact, to take the relational risk of being the one who goes first?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Is our organization capable of taking relational risks — trying new forms of connection and care across teams, hierarchies, and differences — without needing a guarantee?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AH",
+      "tileCode": "AH",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Am I able to act from love in difficult moments — to choose care and tenderness even when I'm triggered, tired, or afraid?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Is our organization behaviorally capable of acting from its stated care values even under pressure — when the cost of care is real and visible?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AO",
+      "tileCode": "AO",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Am I able to pause and honestly witness how I'm showing up in my relationships — to notice patterns of warmth or withdrawal — without immediately trying to fix or justify them?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Is our organization capable of observing its own relational dynamics honestly and without defensiveness — seeing clearly where care is thriving and where it has faded?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AR",
+      "tileCode": "AR",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Am I able to release relational behaviors that no longer serve — old habits of guarding, withholding, or performing care — and open to new, truer ways of connecting?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Is our organization able to consciously disrupt relational habits and cultural patterns that have become harmful or hollow — and move toward more genuine expressions of care?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AD",
+      "tileCode": "AD",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Am I able to intentionally design how I love — creating rituals, practices, and structures in my relationships that make care visible, sustainable, and felt?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Is our organization able to design relational structures — meaningful rituals, collaborative practices, and caring norms — that actively foster belonging and nourish its people?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AS",
+      "tileCode": "AS",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Am I able to invest in relationships before I see their fruit — reaching out, nurturing, tending with patience even when I can't yet feel the return?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Is our organization capable of making long-term relational investments — caring for people and culture patiently, before the payoff is visible or measurable?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AM",
+      "tileCode": "AM",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I have consistent relational practices — recurring check-ins, moments of genuine presence, conversations that go beneath the surface — that I actually follow through on?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization have established methods and recurring practices for sustaining care and belonging — across teams, through change, and over time?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "A_SIG",
+      "tileCode": "AΣ",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are my caring behaviors integrated across every domain of my life — consistent whether I'm at home, at work, in community, or with strangers?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Is our organization's capacity for care and connection integrated across all its behavioral systems — showing up the same in leadership, operations, and how we treat every person in our ecosystem?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GC",
+      "tileCode": "GC",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Am I willing to set a bold, honest relational goal — naming what kind of love, belonging, or connection I genuinely want to create in my life, even if it feels vulnerable to name it?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Is our organization willing to set ambitious, authentic goals for the quality of care and connection it wants to foster — even without knowing the full path forward?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GH",
+      "tileCode": "GH",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Are my deepest goals genuinely aligned with what I love and care for — or am I pursuing goals that look meaningful from the outside but feel hollow within?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Are our organizational goals rooted in genuine care for people — customers, colleagues, community — as a living principle, not just as messaging or brand positioning?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GO",
+      "tileCode": "GO",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Can I honestly observe whether my relational goals are drawing me toward genuine love and care — or away from it, toward performance, approval, or comfort?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization have the honest observational capacity to assess whether its stated relational goals are being genuinely lived — and to course-correct when they are not?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GR",
+      "tileCode": "GR",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Am I willing to disrupt or release relational goals that have become stale or fear-driven — and renew my intentions around what I truly want to love and create?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Is our organization willing to disrupt or reverse relational goals that have grown hollow — setting new, genuinely care-centered intentions rather than maintaining comfortable theater?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GD",
+      "tileCode": "GD",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Am I intentionally designing my relational goals — thinking through what kind of love and belonging I want to cultivate, and what practices and conditions will help me get there?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization consciously design its relational goals — mapping out what kind of culture and community it intends to create, and how it will get there?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GS",
+      "tileCode": "GS",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Are my relational goals oriented toward the long arc — am I setting intentions that plant seeds of belonging and trust I'm willing to tend for years, even if the harvest is slow?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization set relational goals that honor long-term investment — caring for culture, trust, and belonging across seasons, not just in sprints or during high-visibility moments?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GM",
+      "tileCode": "GM",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I have clear methods and practices for moving toward my relational goals — concrete steps that close the gap between the connection I want and the one I'm actually building?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization have clear methodologies for pursuing its relational and cultural goals — structured approaches and practices, not just aspirations?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "G_SIG",
+      "tileCode": "GΣ",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are my relational goals woven into a coherent vision for my whole life — integrated with my creative, professional, and spiritual aspirations rather than siloed as a separate 'relationship goals' list?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization have an integrated strategic vision where relational goals are embedded across every domain — not treated as a soft add-on to harder business objectives?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "IC",
+      "tileCode": "IC",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I trust my gut sense of when a relationship is calling for a risk — when initiating contact or expressing care is exactly what the moment needs, even if I can't explain why?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization trust its collective relational intuition when it comes to taking chances — sensing when a bold act of care or connection is what the moment is calling for?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "IH",
+      "tileCode": "IH",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Can I sense in my body — not just think in my mind — which of my relational values are truly mine: felt, embodied, and alive rather than inherited or performed?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization have the collective attunement to sense where its heart-based principles are genuinely alive in its relational field — not just declared in documents and values statements?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "IO",
+      "tileCode": "IO",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Can I settle into quiet awareness and witness the relational landscape of my life — sensing which connections carry warmth, which carry weight — without rushing to change or explain anything?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization have the collective capacity to observe its relational terrain with open, compassionate attention — sensing the emotional temperature of its culture before naming or fixing it?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "IR",
+      "tileCode": "IR",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "inner",
+      "personal": {
+        "type": "likert5",
+        "question": "When I sense the relational landscape of my life with honest, tender attention, what feels ready to turn — which connections, patterns, or ways of loving are calling for renewal from within?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "When our organization senses its own relational field honestly and without defense, what reversal of care patterns is being called for — what needs releasing so something truer can grow?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": {
+        "type": "openText",
+        "question": "Describe a relationship or connection in your life that surprised you — where you felt something shift or turn before you could explain why. What did your body sense first, and what became possible after that moment of reversal?"
+      }
+    },
+    {
+      "id": "ID",
+      "tileCode": "ID",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "inner",
+      "personal": {
+        "type": "likert5",
+        "question": "When I sit quietly with my relational world and let my felt sense lead, what form does love want to take — what design of connection, care, or belonging is quietly trying to emerge?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "When our organization listens below its rational plans and senses its relational field, what shape of care and belonging feels most alive and most needed — what design is trying to emerge from within?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": {
+        "type": "openText",
+        "question": "Imagine the relational landscape of your life as a terrain you can walk through and sense with your whole body. Describe what you find — the warmth, the coolness, the places that need tending. What form of love or belonging is quietly trying to take shape here?"
+      }
+    },
+    {
+      "id": "IS",
+      "tileCode": "IS",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Can I feel in my body — not just believe in my mind — which seeds of care and love I've planted in my relationships are beginning to quietly stir or take root?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization have the intuitive attunement to sense which seeds of culture and relational trust are quietly taking root — before data or visible evidence can confirm it?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "IM",
+      "tileCode": "IM",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I have methods and practices that help me access my relational intuition — ways of slowing down, grounding, or creating space to sense what my connections actually need?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization have structured methods for accessing its collective relational intuition — going beyond metrics and surveys to sense what's truly alive or fading in its culture?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "I_SIG",
+      "tileCode": "IΣ",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Is my relational intuition integrated across the whole landscape of my inner life — informing not just my closest bonds but my full sense of the world I move through?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Is our organization's collective relational sensing integrated into how it reads all its landscapes — strategic, cultural, operational, and human — as a unified whole?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "CC",
+      "tileCode": "CC",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I feel a compass pull toward relational risk — an energetic draw toward initiating love and care even when I don't know how it will land?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization feel a collective energetic pull toward relational initiation — a shared compass that orients toward care and bold connection as part of its essential direction?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "CH",
+      "tileCode": "CH",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Is my energetic compass genuinely oriented by love and care — do I feel drawn, at the level of life-force, toward what truly nourishes both myself and others?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization's collective energetic orientation align with its heart-based principles — does it feel pulled toward genuine care as a living compass, not merely as policy?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "CO",
+      "tileCode": "CO",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Can I honestly observe my own relational energetic compass — noticing where my life-force genuinely flows toward love, and where it has been deflected by fear, habit, or old wounds?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization have the collective self-awareness to witness where its energy genuinely moves toward care — and where it is being drained or redirected away from its relational compass?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "CR",
+      "tileCode": "CR",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "inner",
+      "navigator": true,
+      "personal": {
+        "type": "likert5",
+        "question": "When I tune into the deepest compass of my being, what reversal or renewal does love call me toward — what old direction wants to release so a truer orientation can finally emerge?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "When our organization listens to the deepest layer of its collective energy, what renewal or disruption in how it cares is its compass calling for — what must be let go to follow love more truly?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": {
+        "type": "openText",
+        "question": "Describe a moment when your inner compass completely reoriented — when love or care pointed you in a direction you hadn't planned. What did you feel in your body as it turned? What became possible that wasn't before?"
+      }
+    },
+    {
+      "id": "CD",
+      "tileCode": "CD",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "inner",
+      "personal": {
+        "type": "likert5",
+        "question": "If I follow my deepest energetic compass all the way — what form does love want to design in my life? What shape of care, connection, and belonging is trying to emerge from within?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "What is our organization's deepest collective compass pointing us to design? What form of care, belonging, or culture is trying to take shape from within our shared energetic field?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": {
+        "type": "openText",
+        "question": "If your inner compass could speak right now about the design of your relational life, what would it say? Describe the form love is trying to take in you — the shape that hasn't yet been fully named or built."
+      }
+    },
+    {
+      "id": "CS",
+      "tileCode": "CS",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Is my energetic compass oriented toward long-term relational investment — do I feel drawn to plant seeds of care and trust, even when the fruit is far from certain?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization's energetic orientation support patient, long-term seed-planting in its relational culture — or does the compass swing only toward what's immediately visible and measurable?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "CM",
+      "tileCode": "CM",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I have consistent practices that help me return to my relational compass — methods for realigning with love and care when I've drifted into disconnection or distraction?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization have established methods for returning to its relational compass — practices for realigning collective energy with care when urgency or conflict has pulled it off course?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "C_SIG",
+      "tileCode": "CΣ",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Is my energetic compass integrated across all dimensions of my life — so that love orients not just my deepest relationships but my whole way of moving through the world?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Is our organization's relational compass integrated into its entire energetic field — shaping how every team, function, and system moves, not just its culture or wellbeing programs?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NC",
+      "tileCode": "NC",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I have a personal norm or agreement with myself that I will take relational risks — that reaching out, expressing care, and making myself known to others is something I genuinely commit to?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization have explicit norms and agreements that make relational risk-taking safe — protocols that encourage people to initiate care and connection without fear of exposure or judgment?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NH",
+      "tileCode": "NH",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Do my personal relational norms genuinely reflect what I love and value — or have I adopted relational rules that look caring from the outside but feel hollow or inherited on the inside?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Are our organizational norms genuinely rooted in care for people — or are they performative standards that look loving in the handbook but aren't deeply felt in the day-to-day culture?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NO",
+      "tileCode": "NO",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Can I honestly witness my own relational norms — seeing clearly which agreements genuinely serve love and which have become invisible constraints that quietly limit connection and tenderness?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization regularly observe its own norms around care — honestly assessing which standards foster real belonging and which quietly create exclusion, exhaustion, or distance?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NR",
+      "tileCode": "NR",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Am I willing to reverse or renew relational norms and self-agreements that are no longer serving love — even when breaking them feels uncomfortable or disloyal to an older version of myself?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Is our organization willing to disrupt or renew relational norms and cultural agreements that have become barriers to genuine care — even when those norms have grown familiar and comfortable?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "ND",
+      "tileCode": "ND",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Do I intentionally design the norms and agreements in my relationships — co-creating with people I love how we will care for each other, rather than drifting into inherited or default patterns?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization consciously design its norms and agreements around care — building relational standards with intention rather than inheriting them by default from industry or legacy culture?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NS",
+      "tileCode": "NS",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Do my relational norms include agreements to invest in care over time — to show up consistently, to be present across seasons rather than only in peaks of connection or moments of crisis?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization have norms that support long-term relational investment — cultural agreements for how we tend belonging and trust across seasons, not just during high-stakes or high-visibility moments?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NM",
+      "tileCode": "NM",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I have clear methods and rituals that make my relational norms real — structured practices that bring my care agreements to life in the texture of everyday connection?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization have clear methods for embedding its care norms in daily life — making relational agreements visible and alive through practice rather than policy documents?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "N_SIG",
+      "tileCode": "NΣ",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are my relational norms integrated across all areas of my life — consistent in how I show up with close friends, professional colleagues, strangers, and the broader communities I inhabit?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Are our care norms integrated throughout all of our organizational systems — shaping how we hire, develop, collaborate, lead, and part ways with every person in our ecosystem?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SC",
+      "tileCode": "SC",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I notice moments when taking a relational risk creates an unexpected synergy — when initiating care opens a field of connection and aliveness I could never have planned or predicted?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization recognize when bold, care-based initiatives create synergies — where relational risk-taking amplifies culture, trust, and belonging in ways that multiply the original gesture?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SH",
+      "tileCode": "SH",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Can I feel when my love and care principles begin to resonate with others — when shared values create a synergy that carries something neither of us could hold or sustain alone?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization experience genuine synergy when its heart-based principles are truly shared — moments when collective care creates something greater than the sum of individual intentions and efforts?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SO",
+      "tileCode": "SO",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Can I witness the synergies forming in my relational life — noticing where multiple connections are quietly weaving together into something more alive and nourishing than any single bond?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization observe the relational synergies forming within and across its teams — seeing where care and connection are amplifying collective vitality, creativity, and belonging?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SR",
+      "tileCode": "SR",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Am I able to let relational disruptions become the ground for new synergies — where a reversal or release creates space for deeper, more authentic convergences of love and care?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization harness the synergies that emerge from relational disruption and renewal — using change as a moment to deepen alignment, care, and collective belonging rather than fragment them?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SD",
+      "tileCode": "SD",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Am I able to design for relational synergy — intentionally creating conditions where different streams of care and connection can meet, weave, and amplify each other?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization design for relational synergy — deliberately weaving together people, teams, and communities so that care flows across boundaries and amplifies collective belonging?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SS",
+      "tileCode": "SS",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Can I sense the synergies emerging from seeds of care I planted long ago — feeling how past acts of patience and tenderness are now creating fields of belonging I could not have anticipated?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization recognize the synergies growing from its long-term relational investments — seeing how seeds planted in culture and trust are now amplifying connection across the whole system?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SM",
+      "tileCode": "SM",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I have practices and methods for cultivating relational synergy — ways of creating the conditions where diverse streams of care and connection can converge and strengthen each other?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization have methods for cultivating relational synergies — practices that intentionally bring together diverse relational streams to create amplified, shared belonging?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "S_SIG",
+      "tileCode": "SΣ",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are the synergies in my relational life integrated into a larger field of belonging — where all my connections weave together into something coherent, nourishing, and alive?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Are the relational synergies in our organization integrated into a whole-system field of belonging — where care reverberates across every layer and connection amplifies through the entire organism?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_C",
+      "tileCode": "AP-C",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Does my personal life architecture include built-in structures that make taking relational risks possible — routines, spaces, and commitments that give care-based initiation a reliable home?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organizational architecture include governance structures and explicit protocols that make relational risk-taking not just permitted but actively supported and celebrated?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_H",
+      "tileCode": "AP-H",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are love and care built into the architecture of how I organize my life — embedded in my daily structures and rhythms rather than squeezed in between obligations?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Are our heart-based care principles embedded into our organizational architecture — shaping our governance, decision-making structures, and structural design from the inside out?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_O",
+      "tileCode": "AP-O",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Does my personal life architecture include built-in moments for honest, compassionate witnessing of my relational life — scheduled space for reflecting on how I love and how I distance?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organizational architecture include systemic, recurring practices for observing its relational health — built-in moments of honest cultural assessment and compassionate collective witness?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_R",
+      "tileCode": "AP-R",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Does my personal architecture include structures for relational renewal — built-in moments for release, revision, and recommitment in my relationships as seasons and circumstances change?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organizational architecture include protocols for relational renewal — structured processes for disrupting stale norms, refreshing care agreements, and recommitting to belonging together?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_D",
+      "tileCode": "AP-D",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Is care designed into the architecture of my life — are my personal structures and routines built with relational nourishment as a core design principle, not an afterthought?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Is care designed into the architecture of our organization — are our structures, roles, and processes built with human belonging at the center of their design, not layered on top after the fact?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_S",
+      "tileCode": "AP-S",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Does my life architecture include structures for planting relational seeds — built-in practices and commitments that support long-term investment in care and belonging across time and change?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organizational architecture include protocols for long-term relational investment — systems that make caring for people and culture across years and seasons a structural priority, not a wish?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_M",
+      "tileCode": "AP-M",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I have clear, reliable methods embedded in my personal architecture for sustaining care — so that love doesn't get crowded out by urgency or slowly eroded by the pace of daily life?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization have clear, reliable protocols embedded in its architecture for sustaining care — methods that make love operational and consistent, not dependent on individual goodwill alone?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_SIG",
+      "tileCode": "AP-Σ",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Is care fully integrated into every layer of my personal architecture — so that love isn't a separate domain but the living foundation from which I build everything else in my life?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Is care fully integrated into every layer of our organizational architecture — so that love and belonging are foundational to our governance, operations, and culture, not an aspirational add-on?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    }
+  ]
+}
