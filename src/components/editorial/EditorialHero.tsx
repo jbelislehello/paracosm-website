@@ -89,6 +89,12 @@ export default function EditorialHero() {
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <Link
               to="/readiness"
+              onClick={() =>
+                void trackEvent("home_readiness_cta_click", {
+                  language,
+                  location: "editorial_hero",
+                })
+              }
               className="group inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all"
             >
               {isFr ? "Faire le diagnostic de préparation" : "Take the Readiness Assessment"}
