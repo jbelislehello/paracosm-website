@@ -1,0 +1,2349 @@
+{
+  "season": "POEMS",
+  "seasonId": "poems",
+  "axis": "CALM · Rigor",
+  "color": "#3080D8",
+  "description": "Experiential design · P.O.E.M.S. model · Structured refinement",
+  "tiles": [
+    {
+      "id": "MC",
+      "tileCode": "MC",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "When a moment demands you stake something real on what you believe, how precisely can you identify which beliefs are worth that commitment?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How clearly has your organization defined which foundational beliefs warrant bold commitment — and which need refinement before resources are staked on them?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MH",
+      "tileCode": "MH",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How carefully have you crafted the core beliefs that guide your most value-driven decisions — distinguishing conviction from inherited assumption?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How explicitly has your organization articulated the heart-based beliefs that shape its culture — not as slogans, but as rigorously held standards?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MO",
+      "tileCode": "MO",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How often do you examine your own belief structures with the precision of a craftsperson assessing their work — looking for flaws, gaps, and places to refine?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How rigorously does your organization create structured space for honest examination of its shared assumptions — treating beliefs as designs that can be observed and improved?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MR",
+      "tileCode": "MR",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "When a core belief no longer serves you, how deliberately do you dismantle it and redesign a more refined one in its place — rather than simply patching it?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How disciplined is your organization at identifying beliefs that have become constraints — and replacing them with more precisely calibrated ones through a clear process?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MD",
+      "tileCode": "MD",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How intentionally have you designed the architecture of your belief system — choosing your premises with care, as a craftsperson selects the materials that will bear the most weight?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How deliberately has your organization designed its shared belief architecture — treating foundational assumptions as structural choices worthy of craftsmanship and review?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MS",
+      "tileCode": "MS",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Which beliefs are you carefully cultivating now, knowing they will take deep root and shape your future capacity for discernment and clear action?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Which formative beliefs is your organization planting in new members and emerging leaders — with the precision of someone who understands what each seed will eventually produce?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MM",
+      "tileCode": "MM",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How consistent and refined is your personal practice for examining, testing, and updating your beliefs — a repeatable method rather than a sporadic inspection?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How systematic and rigorous are your organization's methods for surfacing, examining, and evolving its collective belief architecture — as a designed process, not a crisis response?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "M_SIG",
+      "tileCode": "M_SIG",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "SIG",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How integrated are your deepest beliefs into every layer of how you work, decide, and show up — not compartmentalized, but woven through the whole?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How fully are your organization's core beliefs integrated across all functions, processes, and decision-making structures — observable in the design of every system, not only in stated values?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AC",
+      "tileCode": "AC",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "When a high-stakes moment calls for a behavioral response you haven't fully rehearsed, how readily and precisely do you summon it?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How effectively does your organization mobilize new behavioral capabilities when the moment demands bold, well-executed action beyond established routine?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AH",
+      "tileCode": "AH",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How precisely do your daily behaviors express the values you hold most deeply — with little gap between what you feel and how you actually act?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How consistently do your organization's observable behaviors reflect its stated heart-based principles — as evidenced by what people actually do, not what they say they do?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AO",
+      "tileCode": "AO",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How refined is your capacity to observe your own behavioral patterns from a clean, honest vantage point — noticing what you do, not just what you intend?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How rigorously does your organization create structured opportunities for honest behavioral self-assessment — at every level, with enough safety to see clearly?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AR",
+      "tileCode": "AR",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "When you identify a behavioral pattern that no longer serves you, how deliberately do you disrupt it and practice a more precise replacement?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How systematically does your organization unlearn and replace behaviors that have become misaligned with its evolving purpose — as a designed process rather than an accident?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AD",
+      "tileCode": "AD",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How intentionally have you designed your behavioral repertoire — choosing which habits, rituals, and responses to cultivate with the care of someone shaping a refined craft?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How deliberately does your organization design the behavioral norms and practices it wants embedded across teams — treating behavioral design as a serious act of craftsmanship?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AS",
+      "tileCode": "AS",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Which new behavioral capacities are you carefully practicing now — with the patience of someone who knows that precision and naturalness take time to develop?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Which behavioral capabilities is your organization developing now as seeds for future organizational fitness — investing before the need becomes urgent?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AM",
+      "tileCode": "AM",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How consistent and well-structured is your personal methodology for building, refining, and expanding your behavioral repertoire over time?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How rigorous are your organization's methods for developing, measuring, and sustaining behavioral agility across its people — as a systematic practice, not a one-off training?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "A_SIG",
+      "tileCode": "A_SIG",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "SIG",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How coherently do your many behavioral capacities work together as an integrated, responsive repertoire — a unified craft rather than a collection of isolated techniques?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How fully are your organization's behavioral capabilities integrated into a coherent, adaptive whole — each capacity reinforcing the others across context and challenge?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GC",
+      "tileCode": "GC",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How precisely do you choose which goals to fully commit your energy to — investing with clarity rather than spreading across so many directions that none receive true craftsmanship?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How rigorously does your organization identify which directional bets are worth the full weight of its commitment — distinguishing high-signal goals from noise?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GH",
+      "tileCode": "GH",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How clearly do your most important goals arise from — and remain anchored to — your deepest held values, rather than drift toward what is merely expedient or impressive?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How explicitly are your organization's key goals designed to express its heart-based principles — not just strategic priorities, but directional intent rooted in what it genuinely cares about?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GO",
+      "tileCode": "GO",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How often do you pause to examine whether your current goals still reflect who you are becoming — rather than simply who you have been, or who others expect you to be?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How consistently does your organization step back to examine whether its goals remain aligned with its lived purpose — using honest observation rather than optimistic assumption?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GR",
+      "tileCode": "GR",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How comfortably do you dissolve a goal that is no longer aligned — and redesign a sharper, more fitting one — rather than persisting out of commitment to a direction that has lost its clarity?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How gracefully does your organization release outdated goals and reformulate more precise, aligned ones — without treating the reversal as a failure rather than a sign of discernment?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GD",
+      "tileCode": "GD",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How carefully do you design your goals — giving them precision, appropriate timelines, and clear markers of completion rather than leaving them as vague aspirations?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How deliberately does your organization architect its goals — making them clear, measurable, and connected to a larger designed intent rather than assembled from convenience?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GS",
+      "tileCode": "GS",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Which goals are you planting now with a long horizon in mind — committing to patient, precise cultivation rather than only pursuing what will produce quick, visible results?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How consistently does your organization invest in long-horizon goals — sustaining the structure and patience required to see them through to full form, even when short-term pressure pulls elsewhere?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GM",
+      "tileCode": "GM",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How structured and rigorous is your personal approach to setting, reviewing, and iterating your goals over time — as a designed practice, not a reactive recalibration?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How systematic are your organization's methods for goal-setting, progress tracking, and refinement through each cycle — with enough rigor to learn from each iteration?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "G_SIG",
+      "tileCode": "G_SIG",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "SIG",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How coherently do your personal goals across different domains of your life form an integrated, mutually reinforcing whole — rather than competing for energy and attention?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How well integrated are your organization's goals across functions — so that each reinforces the others rather than creating internal friction or misaligned effort?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "IC",
+      "tileCode": "IC",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How precisely can you distinguish the intuition that says 'this is the moment to move' from the impulse that says 'this feels exciting' — and trust the one most rooted in genuine discernment?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How well does your organization learn to read terrain signals before they become obvious — sensing the environment early enough to act with precision and advantage?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "IH",
+      "tileCode": "IH",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How clearly do your intuitions arise from — and remain grounded in — your deepest values, rather than from clever shortcuts, social pressure, or the desire for ease?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How well does your organization distinguish between gut signals rooted in genuine integrity and those driven by habit, expedience, or the discomfort of slowing down?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "IO",
+      "tileCode": "IO",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How refined is your ability to witness your own intuitive processes — noticing not just what you sense, but how the sensing itself arises and how reliable it tends to be?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How rigorously does your organization cultivate collective attentiveness to its operating landscape — including what is sensed but not yet named, and what is avoided because it is inconvenient?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "IR",
+      "tileCode": "IR",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "inner",
+      "personal": {
+        "type": "likert5",
+        "question": "How precisely do you sense when the landscape has fundamentally shifted — not just a detail changed, but the entire terrain requires a new map and a different kind of attention?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How attuned is your organization to inflection points — the moments when the environment has fundamentally changed and old sensing frameworks no longer yield accurate readings?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": "Describe a specific moment when you recognized — before others did — that the landscape had fundamentally changed. What did that sensing feel like in your body and thinking? What signal arrived first, and what did you do with it?"
+    },
+    {
+      "id": "ID",
+      "tileCode": "ID",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "inner",
+      "personal": {
+        "type": "likert5",
+        "question": "How intentionally do you design your environments and practices to sharpen your intuitive sensing — choosing conditions that cultivate precision of perception rather than leaving it to chance?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How deliberately does your organization design conditions that cultivate collective intuitive intelligence — structured attention, reflection practices, sensing rituals, and protected space for pre-analytical knowing?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": "Describe a specific practice, ritual, or designed condition — personal or organizational — that has demonstrably sharpened your capacity to sense the landscape. What was the design intent, what elements made it work, and what has it produced?"
+    },
+    {
+      "id": "IS",
+      "tileCode": "IS",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Which subtle signals in your current environment are you carefully attending to now — knowing they point toward something significant that is not yet fully formed but deserves precise, patient observation?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Which early, faint signals in your organizational landscape is your team tracking with discernment — seeds of shifts that deserve structured attention before they become crises or missed opportunities?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "IM",
+      "tileCode": "IM",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How consistent and structured is your practice of receiving, testing, and refining your intuitive impressions — so that sensing becomes a disciplined capacity rather than an unreliable gift?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How systematic are your organization's methods for gathering, processing, and acting on landscape intelligence — including the pre-verbal and pre-analytical signals that don't yet fit existing frameworks?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "I_SIG",
+      "tileCode": "I_SIG",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "SIG",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How fully integrated is your intuitive sensing with your analytical reasoning — each informing and checking the other, working together rather than competing for authority?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How well integrated is collective intuitive intelligence into your organization's formal decision-making, strategy, and governance — treated as a legitimate input, not a soft outlier?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "CC",
+      "tileCode": "CC",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How clearly does your inner compass guide you in moments of risk — pointing not just toward what is safe or comfortable, but toward what is most aligned with who you genuinely are?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How reliably does your organization's energetic orientation remain coherent under conditions of uncertainty — providing clear direction even when bold commitment creates discomfort?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "CH",
+      "tileCode": "CH",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How precisely calibrated is your inner compass to your deepest values — pointing consistently toward what you care about most, even when what is easiest or most impressive points elsewhere?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How clearly does your organization's energetic direction flow from its heart-based principles rather than from market pressure, competitive urgency, or the pull of what is currently fashionable?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "CO",
+      "tileCode": "CO",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How clearly can you observe the quality and direction of your own energy — noticing with precision when you are truly oriented versus when you are busy but adrift?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How rigorously does your organization observe and honestly assess the health and orientation of its collective energy — with enough clarity to see misalignment before it compounds?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "CR",
+      "tileCode": "CR",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "inner",
+      "personal": {
+        "type": "likert5",
+        "question": "How precisely do you recognize when your compass has drifted — and how rigorous and caring is your practice for recalibrating your orientation back to what is most true for you?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How attuned and responsive is your organization to the moments when its energetic direction has become misaligned — and how deliberately does it design a recalibration rather than simply pushing harder in the wrong direction?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": "Describe a specific moment of recalibration — when you or your organization recognized that the compass had drifted and deliberately designed a return to true north. What was the signal that drift had occurred? What did the recalibration process look like, and what made it work?"
+    },
+    {
+      "id": "CD",
+      "tileCode": "CD",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "inner",
+      "personal": {
+        "type": "likert5",
+        "question": "How intentionally have you designed the conditions, practices, and environments that keep your compass calibrated and your energy clear — not relying on willpower, but on craft?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How deliberately does your organization design its structural conditions — rhythms, spaces, practices, recovery cycles — to sustain healthy energetic orientation across its people and over time?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": "Describe a specific design — a practice, structure, ritual, or environmental condition — that you or your organization created to maintain energetic alignment and compass clarity. What was the thinking behind it, what problem was it solving, and what has it produced?"
+    },
+    {
+      "id": "CS",
+      "tileCode": "CS",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Which energetic orientations are you carefully cultivating now — the ones that will give your future work its clearest direction, deepest vitality, and most precise sense of purpose?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Which energetic capacities and orientations is your organization nurturing now as seeds for its next stage — investing in alignment before the demands of that stage arrive?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "CM",
+      "tileCode": "CM",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How consistent and refined is your personal methodology for checking, correcting, and sustaining your inner compass over time — a structured practice, not just an occasional reflection?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How systematic are your organization's methods for measuring, recalibrating, and sustaining collective energetic alignment — with enough regularity and rigor to catch drift before it becomes misalignment?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "C_SIG",
+      "tileCode": "C_SIG",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "SIG",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How fully integrated is your energetic orientation into the complete system of your life — work, relationships, body, and purpose all pointing in the same direction with discernible coherence?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How coherently integrated is your organization's energetic compass into every system it operates — strategy, culture, operations, and key relationships all aligned and mutually reinforcing?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NC",
+      "tileCode": "NC",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "When a moment demands something genuinely new, how precisely do you know which norms to honor, which to stretch, and which to consciously set aside — without simply rationalizing convenience?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How clearly does your organization distinguish between norms worth protecting under pressure and those that can flex to meet a bold new moment — without confusing flexibility with abandonment of standards?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NH",
+      "tileCode": "NH",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How closely are the standards you hold yourself to derived from genuine conviction — rather than social expectation, inherited convention, or the fear of being judged for falling short?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How transparently does your organization root its formal norms and agreements in explicit, heart-based values — making the 'why' behind each standard as clear as the standard itself?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NO",
+      "tileCode": "NO",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How clearly can you observe which norms you are following unconsciously — absorbed without examination — versus those you have consciously chosen and continue to choose with discernment?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How rigorously does your organization examine its operating norms — distinguishing the ones that still serve with precision from those that have become invisible constraints masquerading as given truths?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NR",
+      "tileCode": "NR",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How willingly and precisely do you dismantle norms that have outlived their usefulness — and co-design better agreements in their place, rather than simply tolerating what no longer works?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How disciplined and deliberate is your organization at identifying outdated norms and redesigning more effective, aligned agreements — treating the revision as craftsmanship, not disruption?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "ND",
+      "tileCode": "ND",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How intentionally do you design the personal standards and agreements you live by — crafting them with care for the quality of experience and relationship they create, not just the behavior they enforce?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How deliberately does your organization design its norms as considered artifacts — clear, purposeful, and built to produce specific cultural and operational results rather than accreted by habit?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NS",
+      "tileCode": "NS",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Which new standards or agreements are you carefully establishing now — knowing they will shape the quality of your work, relationships, and craft far into the future if planted with precision?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Which norms and agreements is your organization carefully seeding in emerging teams, projects, and new hires — shaping its culture with deliberate precision rather than leaving formation to chance?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NM",
+      "tileCode": "NM",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How consistent and structured is your approach to reviewing, refining, and renewing your personal standards and agreements — treating them as living designs, not fixed rules?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How systematic are your organization's methods for auditing, updating, and embedding its norms into everyday practice — with enough rigor and clarity that they are actually followed rather than formally stated?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "N_SIG",
+      "tileCode": "N_SIG",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "SIG",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How coherently do your personal norms and standards work together as an integrated whole — mutually reinforcing rather than creating internal contradiction and invisible friction?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How fully integrated are your organization's norms across all its systems — so that agreements made in one domain are honored and reflected throughout, not contradicted by adjacent structures?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SC",
+      "tileCode": "SC",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How deliberately do you seek out partnerships and convergences that amplify your capacity to take the risks that matter most — rather than working alone where collaboration would multiply your reach?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How skillfully does your organization identify and activate synergistic relationships when bold collective action is required — treating convergence as a designed capability, not a lucky accident?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SH",
+      "tileCode": "SH",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How precisely do you choose collaborations based on genuine value alignment — ensuring the combination is amplified by shared conviction rather than merely comfortable through familiarity?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How clearly does your organization ensure that its key partnerships and synergistic relationships are grounded in shared heart-based principles — not just complementary capabilities or strategic convenience?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SO",
+      "tileCode": "SO",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How clearly can you observe the actual quality of a convergence — noticing with precision when collaboration is genuinely generative versus when it feels harmonious but produces little of substance?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How rigorously does your organization examine its synergistic relationships to distinguish those that are truly amplifying from those that are merely comfortable, familiar, or politically useful?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SR",
+      "tileCode": "SR",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How willingly do you dissolve synergistic arrangements that have lost their generative power — and redesign more vital, aligned collaborations rather than maintaining ones that have become depleting?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How deliberately does your organization release partnerships that have become costly or misaligned — and intentionally redesign more potent synergies rather than defaulting to the relationships already in place?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SD",
+      "tileCode": "SD",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "How intentionally do you design your collaborations — creating the conditions, structures, and explicit agreements that make convergence genuinely amplifying rather than leaving it to improvisation?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "How carefully does your organization design the structures and conditions for synergy — engineering the convergence with precision rather than hoping that proximity or goodwill will produce amplification on its own?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SS",
+      "tileCode": "SS",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Which emerging collaborations or convergences are you carefully cultivating now — nurturing the conditions for amplification with the patience of someone who understands that the most powerful synergies take time to mature?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Which synergistic relationships and partnerships is your organization nurturing now as seeds for future amplified capability — investing in the relationship before the full need for its output has arrived?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SM",
+      "tileCode": "SM",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How consistent and structured is your approach to identifying, developing, and sustaining the collaborations that amplify your best work — as a designed practice rather than a series of chance encounters?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How systematic are your organization's methods for discovering, designing, and maintaining synergistic relationships over time — with enough rigor to distinguish what is working from what is only appearing to?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "S_SIG",
+      "tileCode": "S_SIG",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "SIG",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How well do the various convergences and collaborations in your life form an integrated web that amplifies rather than fragments your energy — each one reinforcing the others in a coherent whole?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How fully are your organization's synergistic relationships integrated into a coherent whole — each amplifying the others rather than operating in isolated pockets with no designed connection?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_C",
+      "tileCode": "AP_C",
+      "row": {
+        "code": "AP",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How precisely have you structured your personal systems to give you the stability and clarity needed to take well-considered risks with confidence — rather than improvising structure under pressure?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How robustly has your organization designed its governance architecture to support bold, well-structured initiatives — rather than defaulting to caution because the systemic scaffolding cannot hold the weight of ambition?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_H",
+      "tileCode": "AP_H",
+      "row": {
+        "code": "AP",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How clearly are the structural protocols you live by derived from and aligned with the values you hold most deeply — so that your systems are expressions of your principles, not contradictions of them?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How explicitly are your organization's formal architectures and protocols designed to express and protect its heart-based principles — so that structure and soul reinforce rather than undermine each other?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_O",
+      "tileCode": "AP_O",
+      "row": {
+        "code": "AP",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How clearly can you observe the structural patterns that govern your life — seeing your own protocols as designed artifacts that can be examined, questioned, and refined rather than fixed constraints?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How rigorously does your organization examine its own architectural assumptions — treating its governance systems as designs to be observed and assessed rather than permanent structures to be defended?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_R",
+      "tileCode": "AP_R",
+      "row": {
+        "code": "AP",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How precisely do you identify structural protocols that are constraining your growth — and dismantle them with deliberate care before redesigning something more effective in their place?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How disciplined is your organization at identifying governance structures that have become obstacles — and redesigning them with rigor rather than simply patching, tolerating, or working around them?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_D",
+      "tileCode": "AP_D",
+      "row": {
+        "code": "AP",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How intentionally have you designed the structural protocols of your life — giving each system a clear purpose, a clean form, and a quality standard worthy of the craft you're trying to do?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How deliberately and rigorously has your organization designed its core architectures — treating governance, process, and protocol as designed artifacts worthy of serious craftsmanship rather than bureaucratic necessity?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_S",
+      "tileCode": "AP_S",
+      "row": {
+        "code": "AP",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Which structural protocols are you carefully establishing now as the durable architecture for a future you're building — making foundational decisions with the precision they deserve before the load arrives?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Which foundational architectural decisions is your organization making now that will govern its operations for years to come — and are they being designed with the care and long-horizon thinking they require?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_M",
+      "tileCode": "AP_M",
+      "row": {
+        "code": "AP",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How consistent and refined is your personal approach to reviewing, updating, and improving the structural protocols that govern how you work — a systematic practice of architectural self-care?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How systematic and rigorous are your organization's methods for auditing, iterating, and improving its governance architectures over time — treating structural refinement as an ongoing discipline, not a crisis response?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_SIG",
+      "tileCode": "AP_SIG",
+      "row": {
+        "code": "AP",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "SIG",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "How fully integrated are all your personal structural protocols into a coherent whole — each system reinforcing the others to create a life of discernible clarity, order, and functional elegance?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "How completely integrated are your organization's architectures and protocols across every function and level — forming a coherent systemic whole rather than a patchwork of disconnected structures that create friction at every seam?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    }
+  ]
+}

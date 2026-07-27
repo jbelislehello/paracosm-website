@@ -1,0 +1,2358 @@
+{
+  "season": "TOTEMS",
+  "seasonId": "totems",
+  "axis": "OPEN · Workflow",
+  "color": "#20B870",
+  "description": "Technical substrate & infrastructure · Methods · Systems that hold",
+  "tiles": [
+    {
+      "id": "MC",
+      "tileCode": "MC",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I hold a mindset that actively supports taking informed operational risks — initiating new tools or approaches even without a guaranteed outcome?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization hold a shared mental framework that supports operational risk-taking and the initiation of new workflow experiments?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MH",
+      "tileCode": "MH",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are my beliefs about how work should be structured genuinely grounded in what I care about — not inherited defaults or productivity dogma?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization hold operational beliefs that are rooted in our core values — so the way we build and maintain systems reflects what we actually stand for?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MO",
+      "tileCode": "MO",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I have a practice of stepping back to observe my own assumptions about how work should flow — noticing when mental models are limiting what I can build?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization cultivate awareness of the mental models that shape how people design, evaluate, and maintain operational systems?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MR",
+      "tileCode": "MR",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Can I recognize when a core belief about how work should happen has become a constraint — and do I have a way to update or replace it?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization have a way to surface and challenge outdated operational beliefs — especially the ones that have calcified into inefficient systems no one questions?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MD",
+      "tileCode": "MD",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Have I intentionally designed the beliefs and mental models I rely on when building or maintaining my workflow — rather than letting assumptions accumulate by default?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization deliberately shape the belief architecture that governs how people approach operational design and infrastructure decisions?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MS",
+      "tileCode": "MS",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Am I cultivating beliefs now that will support a more functional and resilient workflow infrastructure as my work evolves over time?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Are we seeding the organizational beliefs and mental frameworks now that will grow into healthier operational culture and systemic capacity over time?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "MM",
+      "tileCode": "MM",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I have a structured practice for examining and evolving the mental models I rely on when designing or maintaining my workflow?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization use a documented methodology for surfacing, assessing, and updating the belief systems that shape how operational work gets designed and executed?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "M_SIG",
+      "tileCode": "M_SIG",
+      "row": {
+        "code": "M",
+        "full": "Mindsets",
+        "vel": 1,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are my beliefs about work fully integrated into how I actually operate — not held as ideals, but embedded in the systems and daily habits that govern my practice?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Are our organizational mindsets about workflow and infrastructure genuinely embedded in systemic practice — visible in how systems actually function, not just stated in values documents?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AC",
+      "tileCode": "AC",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I readily adapt my approach when a new or unfamiliar tool or workflow is needed — treating operational experiments as a normal part of my practice?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization have the behavioral flexibility to adopt new operational approaches, tools, or workflows when the moment calls for it?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AH",
+      "tileCode": "AH",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do my adaptive behaviors stay grounded in values that keep me steady when my workflow gets disrupted, replaced, or restructured?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization's operational adaptability remain anchored in core principles — even as processes, tools, and delivery structures evolve?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AO",
+      "tileCode": "AO",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I notice in real time when my habitual approach to a task is producing friction — with the awareness to shift before the cost accumulates?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our team have the awareness to recognize when established behavioral patterns are creating workflow inefficiency — and the capacity to name it without blame?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AR",
+      "tileCode": "AR",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Can I let go of familiar operational routines when they stop serving me — trading comfort for a more functional approach without significant resistance?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization regularly review and refresh its behavioral repertoire around workflow — questioning established habits and replacing what's no longer fit for purpose?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AD",
+      "tileCode": "AD",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Have I deliberately designed my range of operational responses — building a behavioral toolkit matched to the kinds of demands my work actually generates?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Has our organization intentionally built a repertoire of adaptive operational practices that can be deployed across varying workflow contexts and team conditions?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AS",
+      "tileCode": "AS",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Am I developing the flexible operational skills and behavioral habits now that will give me greater workflow capacity as my work grows in complexity?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Are we investing in the behavioral capabilities and adaptive practices now that will give our operational teams more range and resilience as the organization scales?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AM",
+      "tileCode": "AM",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I have a systematic approach for building and refreshing my behavioral toolkit — keeping my operational skill set matched to what my work actually requires?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization use a documented methodology for identifying behavioral gaps and developing the operational agilities needed for effective execution?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "A_SIG",
+      "tileCode": "A_SIG",
+      "row": {
+        "code": "A",
+        "full": "Agilities",
+        "vel": 2,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are the adaptive behaviors I rely on to navigate operational complexity integrated into how my day-to-day systems function — not just available in principle, but wired in?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Are our organizational agilities — the behavioral repertoire for handling complexity and change — embedded in the systems that govern how work happens across the whole operation?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GC",
+      "tileCode": "GC",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do my current goals push me to take real operational risks — to build something I haven't built before, or try a workflow approach that's genuinely uncertain?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization set goals that require initiating new operational approaches or infrastructure experiments — not just optimizing what already exists?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GH",
+      "tileCode": "GH",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Are the goals I'm currently working toward genuinely aligned with what I care about building — connected to my values, not just inherited from external expectations?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Are our organizational goals anchored in principles that guide not just what we're building but how and why we build it — reflecting the values we operate from?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GO",
+      "tileCode": "GO",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Can I regularly step back and observe whether my goals are directing my operational effort toward work that actually matters — or just toward work that's familiar?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization have a practice of auditing its goals to assess whether they're genuinely directing operational capacity toward what's most important right now?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GR",
+      "tileCode": "GR",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "When a goal is no longer serving the direction I want to move in, do I have a clear process for updating or replacing it — rather than maintaining momentum toward the wrong target?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization have a structured mechanism for sunsetting outdated goals and redirecting operational capacity toward what's current — without requiring a crisis to trigger the shift?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GD",
+      "tileCode": "GD",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Have I deliberately designed my goal-setting process to be specific, grounded, and connected to concrete implementation steps — not just aspirational framing?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization use a designed framework for goal-setting that connects strategic intent to operational capacity — ensuring goals can actually be executed, not just stated?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GS",
+      "tileCode": "GS",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Am I setting goals now that are scaffolding the infrastructure and workflow I want to have built in the next three to five years?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Are the goals we're pursuing today seeding the operational foundations, systems, and capacities that will sustain us over the long term?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "GM",
+      "tileCode": "GM",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I have a clear and repeatable methodology for tracking, reviewing, and adjusting my goals as conditions change — not just setting them and moving on?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization use a documented method for managing goal cycles — connecting targets to operational execution and adjusting course as the environment shifts?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "G_SIG",
+      "tileCode": "G_SIG",
+      "row": {
+        "code": "G",
+        "full": "Goals",
+        "vel": 3,
+        "module": "AGENDAS"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are my goals actually integrated into the daily systems that govern how I spend my time — driving real decisions about priorities, not just listed somewhere I rarely revisit?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Are our organizational goals embedded in the operational systems that govern resource allocation, prioritization, and delivery — or do they live separately from the work they're meant to direct?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "IC",
+      "tileCode": "IC",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I trust my intuitive reads on when the operational terrain has shifted enough to justify trying a new approach — even before I have clear data to confirm it?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization have mechanisms for acting on early intuitive signals about operational risk or opportunity — not waiting until a problem becomes obvious before moving?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "IH",
+      "tileCode": "IH",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Is my sense of the operational terrain I'm working in grounded in what I genuinely value — helping me sense what's worth building, not just what's technically possible?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization's landscape awareness stay connected to the values that guide how and why we invest in operational infrastructure — so sensing informs priorities, not just efficiency?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "IO",
+      "tileCode": "IO",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Do I have a sustained practice of observing the operational terrain around me — noticing what's shifting, what's stable, and what I might be missing in my environment?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization cultivate collective awareness of the operational and environmental conditions shaping how work happens — not just monitoring KPIs but sensing the landscape?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "IR",
+      "tileCode": "IR",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "inner",
+      "personal": {
+        "type": "likert5",
+        "question": "When I sense that my current operational landscape has fundamentally shifted, can I disrupt my existing approach and rebuild from what's actually true now — not from what used to work?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization have a way to act on intuitive signals that existing infrastructure needs to be rethought or rebuilt — before the system reaches a breaking point?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": {
+        "question": "What tool, system, or workflow practice is currently functioning in your work that helps you sense and respond to major shifts in your operational terrain?"
+      }
+    },
+    {
+      "id": "ID",
+      "tileCode": "ID",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "inner",
+      "personal": {
+        "type": "likert5",
+        "question": "Do I intentionally design my working environment to support clear operational sensing — creating the conditions where my intuition about what's working is reliable and well-informed?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization deliberately design the infrastructural conditions that make it possible to accurately read and respond to the operational landscape — not just react to what's already broken?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": {
+        "question": "What system, tool, or structured practice is currently in place that helps you or your team design the conditions for sharper situational and operational awareness?"
+      }
+    },
+    {
+      "id": "IS",
+      "tileCode": "IS",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Am I building the scanning habits and environmental awareness now that will help me read future operational terrain more clearly as my work grows more complex?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Are we investing in the sensing infrastructure and observational practices now that will give us better operational landscape awareness as the organization scales?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "IM",
+      "tileCode": "IM",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I have a repeatable method for scanning my operational environment — not just reacting to what I encounter, but actively reading the terrain on a regular basis?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization use a structured methodology for reading the environmental and infrastructural conditions that affect how work gets done — moving beyond anecdote and gut feel to systematic observation?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "I_SIG",
+      "tileCode": "I_SIG",
+      "row": {
+        "code": "I",
+        "full": "Intuitions & Landscapes",
+        "vel": 4,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Is my capacity to sense and respond to my operational environment integrated into the systems I rely on — part of my functional infrastructure, not just an occasional practice?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization have systems that continuously integrate operational landscape signals into planning and infrastructure decisions — so sensing is a built-in function, not a periodic event?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "CC",
+      "tileCode": "CC",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I use my sense of operational direction and energy to identify when it's time to take a risk or try something structurally new in how I work?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization read collective operational energy as a legitimate signal for when to initiate new directions — not just relying on data, but also on felt momentum?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "CH",
+      "tileCode": "CH",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Is my operational direction guided by what genuinely energizes me and aligns with what I care about building — or am I following paths that feel obligatory rather than oriented?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization's directional compass stay grounded in the values and principles that determine how and why we invest operational energy — not just toward efficiency, but toward meaningful work?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "CO",
+      "tileCode": "CO",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Do I regularly pause to observe where my operational energy is actually going — and whether what I'm building toward is where I actually want to go?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization have practices for observing and reflecting on where operational energy is being concentrated — assessing whether that concentration is intentional and aligned?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "CR",
+      "tileCode": "CR",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "inner",
+      "navigator": true,
+      "personal": {
+        "type": "likert5",
+        "question": "When my operational direction or energetic orientation has fundamentally shifted, can I disrupt my existing setup and reorient — not just adjust at the edges, but rebuild the compass from what's real now?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization have the capacity to recognize when collective operational energy has shifted significantly — and to restructure accordingly, not just issue new priorities over an unchanged system?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": {
+        "question": "What system, tool, or practice is currently functioning in your work that helps you reorient your operational direction when things have fundamentally changed — not just recalibrated, but rebuilt?"
+      }
+    },
+    {
+      "id": "CD",
+      "tileCode": "CD",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "inner",
+      "personal": {
+        "type": "likert5",
+        "question": "Have I deliberately designed my working environment to sustain and amplify the operational energy and directional clarity I need — not just hoping it happens, but actively scaffolding it?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization deliberately design the operational conditions — spaces, rhythms, tools, and structures — that sustain the energy and directional coherence needed for the work?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": {
+        "question": "What tool, designed environment, or operational system is currently in place that actively supports and sustains your team's energy, focus, and directional clarity?"
+      }
+    },
+    {
+      "id": "CS",
+      "tileCode": "CS",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Am I making operational investments now that will compound into greater energy, focus, and directional clarity as my work and responsibilities grow?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Are we seeding the infrastructure, rhythms, and conditions now that will generate increasing operational vitality and directional coherence as the organization scales?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "CM",
+      "tileCode": "CM",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I have a reliable method for checking in on my operational energy and recalibrating my direction when I've drifted from where I actually want to be going?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization use a structured method for assessing collective operational energy and maintaining directional alignment across teams and systems — built into operational rhythms, not just periodic all-hands?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "C_SIG",
+      "tileCode": "C_SIG",
+      "row": {
+        "code": "C",
+        "full": "Compasses & Energies",
+        "vel": 5,
+        "module": "LENS/fusion"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Is my energetic compass integrated into the actual systems that govern my workflow — reflected in how I've structured my time, tools, and priorities, rather than just held in my head?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization have fully integrated systems where operational energy, directional alignment, and infrastructure work together as a coherent whole — rather than being managed as separate concerns?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NC",
+      "tileCode": "NC",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do my personal operational standards and agreements create enough room for risk-taking and experimentation — or do my own norms quietly constrain what I'm willing to try?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization's operational culture and norm system create sufficient space for teams to experiment with new tools, workflows, or processes without requiring approval at every step?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NH",
+      "tileCode": "NH",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Are the operational norms and standards I hold to genuinely grounded in values I believe in — or are they inherited conventions I've never examined?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Are our organizational norms around workflow and process connected to the values we say we stand for — or are they relics of past priorities that no longer match our current commitments?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NO",
+      "tileCode": "NO",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Do I regularly observe and examine the standards and agreements that govern how I work — noticing which ones still serve me and which ones have become quiet obstacles?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization have a sustained practice of observing which operational norms are actually functioning — and which have quietly become bureaucratic drag or invisible constraints on execution?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NR",
+      "tileCode": "NR",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "When I recognize that an operational norm or agreement is no longer working, do I have a clear way to update or replace it — rather than complying with something that's lost its purpose?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization have a structured process for identifying outdated operational norms and revising them — through real operational change rather than just procedural reform that leaves the system unchanged?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "ND",
+      "tileCode": "ND",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Have I deliberately designed the standards and agreements that govern my workflow — or have they accumulated by default, layering up over time without intentional architecture?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Has our organization intentionally designed the operational norms, agreements, and standards that govern practice — or did they emerge without design and calcify into convention?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NS",
+      "tileCode": "NS",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Am I establishing operational norms and agreements now that will create a stronger, more functional foundation for how I want to work as my practice evolves?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Are we building the agreements, standards, and norms now that will scaffold the kind of operational culture we want in place as the organization grows and the work becomes more complex?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "NM",
+      "tileCode": "NM",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I have a clear method for creating, reviewing, documenting, and maintaining the standards and agreements that govern how I operate — treating my norms as infrastructure to manage, not just behavior to maintain?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization use a documented methodology for managing operational norms — creating them deliberately, surfacing conflicts, reviewing them on a cycle, and retiring what no longer serves?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "N_SIG",
+      "tileCode": "N_SIG",
+      "row": {
+        "code": "N",
+        "full": "Norms",
+        "vel": 6,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are my operational norms and standards embedded in the actual systems and tools I use — written into my infrastructure, not just understood informally and applied inconsistently?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Are our organizational norms and agreements integrated into the systems, platforms, and protocols that govern operational life — functioning as built-in enablers and constraints, not just referenced in documents no one reads?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SC",
+      "tileCode": "SC",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I actively seek out operational convergences and collaborations that expand what I'm able to risk and experiment with — using others' infrastructure as part of my own learning stack?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization leverage cross-team synergy and operational collaboration to amplify capacity for risk-taking and innovation — treating convergence as an infrastructure asset rather than a coordination cost?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SH",
+      "tileCode": "SH",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Are the collaborative workflows and operational synergies I invest in grounded in genuine shared values — built on real alignment, not just convenience or adjacency?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Do our cross-team synergies and operational collaborations stay anchored in shared principles — or do they fragment when values diverge or team priorities shift?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SO",
+      "tileCode": "SO",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Do I observe and reflect on where genuine operational amplification is happening in my collaborations — distinguishing real synergy from the appearance of it?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization have a way to observe and assess which operational convergences are producing real amplification — and which are generating coordination overhead without proportional payoff?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SR",
+      "tileCode": "SR",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "When a collaboration or workflow integration has run its course, can I let it end or restructure it — rather than maintaining it out of habit or relationship inertia?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization have a practice of reviewing cross-team collaborations and operational partnerships — dissolving, renewing, or restructuring them based on what's actually generating value?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SD",
+      "tileCode": "SD",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Have I deliberately designed the collaborative relationships and tool integrations that produce real operational amplification in my work — not just hoping synergy happens, but architecting for it?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Does our organization intentionally design the cross-functional connections, integrations, and partnerships that create genuine operational leverage — with clear purpose and architecture, not just proximity?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SS",
+      "tileCode": "SS",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "stretch",
+      "personal": {
+        "type": "likert5",
+        "question": "Am I cultivating collaborative relationships and building tool integrations now that will compound into greater operational capacity over the next few years?",
+        "labels": [
+          "Not at all",
+          "Rarely",
+          "Sometimes",
+          "Often",
+          "Fully"
+        ]
+      },
+      "organizational": {
+        "type": "likert5",
+        "question": "Are we building the collaborative infrastructure, cross-team connections, and integration patterns now that will generate increasing operational returns as the organization matures?",
+        "labels": [
+          "Not present",
+          "Beginning",
+          "Developing",
+          "Established",
+          "Integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "SM",
+      "tileCode": "SM",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I have a method for identifying, building, and maintaining the collaborations and integrations that genuinely amplify my operational capacity — rather than just accumulating connections?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization use a structured methodology for designing and managing operational synergies — ensuring cross-team work is actually integrated rather than just adjacent and parallel?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "S_SIG",
+      "tileCode": "S_SIG",
+      "row": {
+        "code": "S",
+        "full": "Synergies",
+        "vel": 7,
+        "module": "LENS"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are the synergies and collaborative amplifications in my work woven into my operational infrastructure — built into the systems themselves, not dependent on individual relationships that could disappear?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization have operational systems where cross-team synergies and integrations are fully embedded — creating compounding value through the architecture itself rather than through heroic individual collaboration?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_C",
+      "tileCode": "AP_C",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "C",
+        "full": "Chances Taken",
+        "lon": 1
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are the foundational systems and protocols I've built resilient enough to support genuine risk-taking and operational experimentation — without creating brittleness when something unexpected happens?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organizational architecture include built-in mechanisms for operational experimentation — protocols that enable and scaffold risk rather than just documenting and managing it?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_H",
+      "tileCode": "AP_H",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "H",
+        "full": "Heart Based Principles",
+        "lon": 2
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are the protocols and systems I've built genuinely grounded in the values I operate from — reflecting care and integrity in their design, not just efficiency?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Do our organizational architectures and operational protocols reflect the values we claim to operate from — or does the actual system reveal different priorities than the ones stated?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_O",
+      "tileCode": "AP_O",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "O",
+        "full": "Observer/Ontological",
+        "lon": 3
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I regularly observe how the architectures and systems I rely on are actually functioning in practice — not just assuming they work because I designed them or they worked once?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization have a sustained practice of observing and auditing its operational architectures — monitoring real-world function rather than assumed function based on design intent?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_R",
+      "tileCode": "AP_R",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "R",
+        "full": "Reversal/Renewal",
+        "lon": 4
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "When a core system or operational protocol has stopped serving me, do I have the capacity to dismantle and rebuild it — rather than indefinitely patching something that's fundamentally broken?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization have the capability to deprecate and rebuild core operational architectures when they've become outdated — without losing institutional function during the transition?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_D",
+      "tileCode": "AP_D",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "D",
+        "full": "Design",
+        "lon": 5
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Have I deliberately designed the protocols and systems that govern my workflow — with clear intent about what each component is for, how they connect, and what they're optimized to support?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization design its operational architectures with explicit intent — knowing what each system is for, how they integrate, and what outcomes they exist to support?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_S",
+      "tileCode": "AP_S",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "S",
+        "full": "Seeds",
+        "lon": 6
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Am I building the protocols and systemic foundations now that will scale with the scope and complexity of work I want to be doing in three to five years?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Is our organization investing in the architectural foundations and protocol infrastructure now that will support significantly larger operational scale — without requiring full reconstruction later?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_M",
+      "tileCode": "AP_M",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "M",
+        "full": "Methods",
+        "lon": 7
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Do I have a documented methodology for building, reviewing, and maintaining the protocols and systems that govern how I work — treating the architecture of my practice as something to actively manage?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization have a formal methodology for architectural governance — creating, auditing, maintaining, and evolving the operational systems that everything else runs on?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    },
+    {
+      "id": "AP_SIG",
+      "tileCode": "AP_SIG",
+      "row": {
+        "code": "A+P",
+        "full": "Architectures & Protocols",
+        "vel": 8,
+        "module": "MAPS"
+      },
+      "col": {
+        "code": "Σ",
+        "full": "Systems/Integration",
+        "lon": 8
+      },
+      "zone": "edge",
+      "personal": {
+        "type": "threePoint",
+        "question": "Are all the architectures and protocols I rely on integrated into a coherent operational whole — or are there gaps, redundancies, and shadow systems filling the cracks where the infrastructure doesn't connect?",
+        "labels": [
+          "Not yet part of my practice",
+          "Emerging in my awareness",
+          "Fully embodied"
+        ]
+      },
+      "organizational": {
+        "type": "threePoint",
+        "question": "Does our organization have complete operational integration — architectures, protocols, tools, and systems functioning together as a unified whole, with no critical seams, overlapping jurisdictions, or disconnected subsystems?",
+        "labels": [
+          "Not present in our organization",
+          "Beginning to emerge",
+          "Established and integrated"
+        ]
+      },
+      "open": null
+    }
+  ]
+}
