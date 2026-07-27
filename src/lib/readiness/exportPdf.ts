@@ -1,6 +1,9 @@
 import jsPDF from "jspdf";
 import { SEASONS } from "./data";
-import type { AnswersMap, OverallScore, SeasonId, SeasonScore } from "./types";
+import { normalize } from "./scoring";
+import type { AnswersMap, OverallScore, SeasonId, SeasonScore, Tile, TileAnswer, Zone } from "./types";
+
+const ZONE_WEIGHTS: Record<Zone, number> = { inner: 3, stretch: 2, edge: 1 };
 
 interface ExportInput {
   answers: AnswersMap;
@@ -12,6 +15,14 @@ interface ExportInput {
   }[];
   overall: OverallScore;
   userEmail?: string | null;
+}
+
+function tileRaw(tile: Tile, a: TileAnswer | undefined) {
+  if (!a) return { p: 0, o: 0, pw: 0, ow: 0, w: ZONE_WEIGHTS[tile.zone] };
+  const w = ZONE_WEIGHTS[tile.zone];
+  const p = a.personal >= 0 ? normalize(a.personal, tile.personal.type) : 0;
+  const o = a.organizational >= 0 ? normalize(a.organizational, tile.organizational.type) : 0;
+  return { p, o, pw: p * w, ow: o * w, w };
 }
 
 export function exportReadinessPdf({ answers, seasonScores, overall, userEmail }: ExportInput) {
@@ -55,10 +66,10 @@ export function exportReadinessPdf({ answers, seasonScores, overall, userEmail }
   text("Calm Magic", { size: 10, color: [120, 120, 120] });
   text("Readiness Assessment Report", { size: 22, bold: true });
   y += 6;
-  text(new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }), {
-    size: 9,
-    color: [120, 120, 120],
-  });
+  text(
+    new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }),
+    { size: 9, color: [120, 120, 120] },
+  );
   if (userEmail) text(userEmail, { size: 9, color: [120, 120, 120] });
   y += 10;
   hr();
@@ -83,15 +94,20 @@ export function exportReadinessPdf({ answers, seasonScores, overall, userEmail }
     doc.text(String(value), pageW - margin, y, { align: "right" });
     y += 14;
   });
-  y += 8;
+  y += 4;
+  text(
+    "Raw scoring: each tile is answered on two 1–5 scales (personal, organizational), weighted by zone (Inner ×3, Stretch ×2, Edge ×1). Season and overall percentages normalize weighted totals against the maximum possible.",
+    { size: 8, color: [120, 120, 120] },
+  );
+  y += 4;
   hr();
 
-  // Per-season
+  // Per-season with per-tile table
   SEASONS.forEach((season) => {
     const summary = seasonScores.find((s) => s.seasonId === season.seasonId);
     if (!summary || summary.answered === 0) return;
 
-    ensureSpace(60);
+    ensureSpace(80);
     const rgb = hexToRgb(season.color);
     text(`${season.season} · ${season.axis}`, { size: 13, bold: true, color: rgb });
     text(season.description, { size: 9, color: [100, 100, 100] });
@@ -114,16 +130,98 @@ export function exportReadinessPdf({ answers, seasonScores, overall, userEmail }
       size: 9,
       color: [120, 120, 120],
     });
-    y += 6;
+
+    if (summary.score.zones) {
+      const z = summary.score.zones;
+      text(
+        `Zones — Personal: Inner ${z.personal.inner} · Stretch ${z.personal.stretch} · Edge ${z.personal.edge}   |   Org: Inner ${z.organizational.inner} · Stretch ${z.organizational.stretch} · Edge ${z.organizational.edge}`,
+        { size: 8, color: [110, 110, 110] },
+      );
+    }
+    y += 8;
+
+    // Per-tile table
+    const cols = [
+      { key: "tile", label: "Tile", w: 46 },
+      { key: "pair", label: "Row × Column", w: 150 },
+      { key: "zone", label: "Zone", w: 44 },
+      { key: "p", label: "Personal", w: 130 },
+      { key: "o", label: "Organizational", w: 130 },
+    ];
+    const rowLeft = margin;
+    const drawHeader = () => {
+      ensureSpace(20);
+      doc.setFillColor(245, 245, 245);
+      doc.rect(rowLeft, y - 2, pageW - margin * 2, 16, "F");
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(8);
+      doc.setTextColor(80);
+      let x = rowLeft + 4;
+      cols.forEach((c) => {
+        doc.text(c.label, x, y + 9);
+        x += c.w;
+      });
+      y += 18;
+    };
+    drawHeader();
+
+    season.tiles.forEach((tile) => {
+      const a = answers[season.seasonId]?.[tile.id];
+      const raw = tileRaw(tile, a);
+      const personalLabel =
+        a && a.personal >= 0
+          ? `${tile.personal.labels[a.personal] ?? "—"}  (${raw.p}·w${raw.w}=${raw.pw})`
+          : "—";
+      const orgLabel =
+        a && a.organizational >= 0
+          ? `${tile.organizational.labels[a.organizational] ?? "—"}  (${raw.o}·w${raw.w}=${raw.ow})`
+          : "—";
+
+      const cells = [
+        tile.tileCode,
+        `${tile.row.full} × ${tile.col.full}`,
+        tile.zone,
+        personalLabel,
+        orgLabel,
+      ];
+
+      // Measure row height by wrapping every column
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8);
+      const wrapped = cols.map((c, i) =>
+        doc.splitTextToSize(String(cells[i]), c.w - 6) as string[],
+      );
+      const lineH = 10;
+      const rowH = Math.max(...wrapped.map((w) => w.length)) * lineH + 4;
+
+      ensureSpace(rowH + 4);
+      if (y > pageH - margin - rowH) {
+        doc.addPage();
+        y = margin;
+        drawHeader();
+      }
+
+      doc.setDrawColor(230);
+      doc.line(rowLeft, y - 2, pageW - margin, y - 2);
+      doc.setTextColor(30);
+      let x = rowLeft + 4;
+      wrapped.forEach((lines, i) => {
+        doc.text(lines, x, y + 7);
+        x += cols[i].w;
+      });
+      y += rowH;
+    });
+    doc.setDrawColor(230);
+    doc.line(rowLeft, y - 2, pageW - margin, y - 2);
+    y += 8;
 
     // Open reflections
     const reflections = season.tiles
       .map((tile) => {
-        const a = answers[season.seasonId]?.[tile.id];
-        if (!a?.openText?.trim()) return null;
-        return { tile, text: a.openText.trim() };
+        const t = answers[season.seasonId]?.[tile.id]?.openText?.trim();
+        return t ? { tile, text: t } : null;
       })
-      .filter(Boolean) as { tile: (typeof season.tiles)[number]; text: string }[];
+      .filter(Boolean) as { tile: Tile; text: string }[];
 
     if (reflections.length > 0) {
       text("Reflections", { size: 10, bold: true });
