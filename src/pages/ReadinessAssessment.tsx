@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, ArrowRight, CheckCircle2, Loader2, Save } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Download, Loader2, Save } from "lucide-react";
+import { exportReadinessPdf } from "@/lib/readiness/exportPdf";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -40,6 +41,7 @@ export default function ReadinessAssessment() {
 
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [loadingSession, setLoadingSession] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -69,6 +71,7 @@ export default function ReadinessAssessment() {
         return;
       }
       setUserId(uid);
+      setUserEmail(data?.user?.email ?? null);
 
       // Find most recent incomplete session, or create one
       const { data: sessions } = await supabase
@@ -365,14 +368,27 @@ export default function ReadinessAssessment() {
         <section className="mt-14">
           <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
             <h2 className="font-serif text-2xl">Live snapshot</h2>
-            <Button onClick={saveScores} disabled={saving} size="sm" variant="secondary">
-              {saving ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Save className="mr-2 h-4 w-4" />
-              )}
-              Save progress
-            </Button>
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                onClick={() =>
+                  exportReadinessPdf({ answers, seasonScores, overall, userEmail })
+                }
+                size="sm"
+                variant="outline"
+                disabled={seasonScores.every((s) => s.answered === 0)}
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Export PDF
+              </Button>
+              <Button onClick={saveScores} disabled={saving} size="sm" variant="secondary">
+                {saving ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="mr-2 h-4 w-4" />
+                )}
+                Save progress
+              </Button>
+            </div>
           </div>
 
           <div className="mb-6 grid grid-cols-2 gap-3 rounded-2xl border border-border bg-card/60 p-5 sm:grid-cols-4">
