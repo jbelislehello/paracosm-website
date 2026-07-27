@@ -132,6 +132,7 @@ function App() {
                     <Route path="/projects" element={<ProjectsDashboard />} />
                     <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                     <Route path="/admin/subscriptions" element={<ProtectedRoute><AdminSubscriptions /></ProtectedRoute>} />
+                    <Route path="/admin/readiness-funnel" element={<ProtectedRoute><AdminReadinessFunnel /></ProtectedRoute>} />
                     <Route path="/subscription-success" element={<SubscriptionSuccess />} />
                     <Route path="/subscription-canceled" element={<SubscriptionCanceled />} />
                     <Route path="/pattern-encyclopedia" element={<PatternEncyclopedia />} />
