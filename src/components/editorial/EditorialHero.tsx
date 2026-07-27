@@ -85,6 +85,18 @@ export default function EditorialHero() {
             </>
           )}
 
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            <Link
+              to="/readiness"
+              className="group inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all"
+            >
+              {isFr ? "Faire le diagnostic de préparation" : "Take the Readiness Assessment"}
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+            <span className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+              {isFr ? "5 saisons · 320 tuiles · gratuit" : "5 seasons · 320 tiles · free"}
+            </span>
+          </div>
         </div>
 
 
