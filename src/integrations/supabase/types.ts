@@ -1892,6 +1892,95 @@ export type Database = {
           },
         ]
       }
+      readiness_answers: {
+        Row: {
+          created_at: string
+          id: string
+          open_text: string | null
+          organizational_answer_index: number
+          personal_answer_index: number
+          season_id: string
+          session_id: string
+          tile_id: string
+          updated_at: string
+          user_id: string
+          zone: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          open_text?: string | null
+          organizational_answer_index: number
+          personal_answer_index: number
+          season_id: string
+          session_id: string
+          tile_id: string
+          updated_at?: string
+          user_id: string
+          zone: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          open_text?: string | null
+          organizational_answer_index?: number
+          personal_answer_index?: number
+          season_id?: string
+          session_id?: string
+          tile_id?: string
+          updated_at?: string
+          user_id?: string
+          zone?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "readiness_answers_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "readiness_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      readiness_sessions: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          overall_score: Json | null
+          season_scores: Json
+          seasons_completed: string[]
+          started_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          overall_score?: Json | null
+          season_scores?: Json
+          seasons_completed?: string[]
+          started_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          overall_score?: Json | null
+          season_scores?: Json
+          seasons_completed?: string[]
+          started_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       revenue_opportunities: {
         Row: {
           amount_max: number | null
