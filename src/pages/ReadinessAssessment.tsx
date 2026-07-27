@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, ArrowRight, CheckCircle2, Download, Loader2, Save } from "lucide-react";
 import { exportReadinessPdf } from "@/lib/readiness/exportPdf";
 import { toast } from "sonner";
+import { trackEvent } from "@/lib/analytics";
 
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -40,6 +41,10 @@ export default function ReadinessAssessment() {
       "A 5-season, 320-tile diagnostic mapping personal readiness against organizational maturity for relational AI adoption.",
     path: "/readiness",
   });
+
+  useEffect(() => {
+    void trackEvent("readiness_assessment_viewed", {});
+  }, []);
 
   const navigate = useNavigate();
   const [userId, setUserId] = useState<string | null>(null);
@@ -96,6 +101,7 @@ export default function ReadinessAssessment() {
           return;
         }
         sid = created.id;
+        void trackEvent("readiness_assessment_started", { session_id: sid });
       }
       setSessionId(sid);
 
@@ -201,6 +207,17 @@ export default function ReadinessAssessment() {
           completed_at: allDone ? new Date().toISOString() : null,
         })
         .eq("id", sessionId);
+      void trackEvent(
+        allDone ? "readiness_assessment_completed" : "readiness_assessment_progress_saved",
+        {
+          session_id: sessionId,
+          seasons_completed: completed.length,
+          composite: overall.composite,
+          personal: overall.personal,
+          organizational: overall.organizational,
+          gap: overall.gap,
+        },
+      );
       toast.success(allDone ? "Assessment complete — snapshot saved." : "Progress saved.");
     } catch (e) {
       toast.error("Could not save scores.");

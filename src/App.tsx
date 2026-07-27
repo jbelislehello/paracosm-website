@@ -72,6 +72,7 @@ const MyRehearsalArc = lazy(() => import("./pages/MyRehearsalArc"));
 const Products = lazy(() => import("./pages/Products"));
 const ReadinessAssessment = lazy(() => import("./pages/ReadinessAssessment"));
 const ReadinessShareView = lazy(() => import("./pages/ReadinessShareView"));
+const AdminReadinessFunnel = lazy(() => import("./pages/AdminReadinessFunnel"));
 
 const Contact = lazy(() => import("./pages/Contact"));
 const AgenticDemo = lazy(() => import("./pages/AgenticDemo"));
@@ -131,6 +132,7 @@ function App() {
                     <Route path="/projects" element={<ProjectsDashboard />} />
                     <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
                     <Route path="/admin/subscriptions" element={<ProtectedRoute><AdminSubscriptions /></ProtectedRoute>} />
+                    <Route path="/admin/readiness-funnel" element={<ProtectedRoute><AdminReadinessFunnel /></ProtectedRoute>} />
                     <Route path="/subscription-success" element={<SubscriptionSuccess />} />
                     <Route path="/subscription-canceled" element={<SubscriptionCanceled />} />
                     <Route path="/pattern-encyclopedia" element={<PatternEncyclopedia />} />
