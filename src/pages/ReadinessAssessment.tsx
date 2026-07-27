@@ -101,6 +101,7 @@ export default function ReadinessAssessment() {
           return;
         }
         sid = created.id;
+        void trackEvent("readiness_assessment_started", { session_id: sid });
       }
       setSessionId(sid);
 
