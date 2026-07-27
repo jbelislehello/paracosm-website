@@ -26,7 +26,6 @@ export default function ReadinessShareView() {
     title: "Shared readiness report | Paracosm",
     description: "View a Calm Magic readiness report shared with you.",
     path: `/r/${shareId}`,
-    noindex: true,
   });
 
   const [stage, setStage] = useState<Stage>("email");
