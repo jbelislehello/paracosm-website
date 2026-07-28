@@ -76,8 +76,8 @@ export default function EditorialHero() {
                 </span>
               </h1>
               <p className="max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed">
-                Paracosm tools the <b className="text-foreground">inventiveness</b> (the Dreams) and
-                the <b className="text-foreground">expressiveness</b> (the Learn) of executives, creative
+                Paracosm tools the <b className="text-foreground">inventiveness</b> and
+                the <b className="text-foreground">expressiveness</b> of executives, creative
                 teams and <b className="text-foreground">ambitious SMBs</b> — one continuous arc of{" "}
                 <b className="text-foreground">Foreplay</b>, <b className="text-foreground">Foresight</b>,
                 and <b className="text-foreground">Forecast</b> that turns AI questions into lived,
