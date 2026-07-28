@@ -59,8 +59,8 @@ export default function EditorialHero() {
                 </span>
               </h1>
               <p className="max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed">
-                Paracosm outille l'<b className="text-foreground">inventivité</b> (les Dreams) et
-                l'<b className="text-foreground">expressivité</b> (le Learn) des dirigeants, équipes
+                Paracosm outille l'<b className="text-foreground">inventivité</b> et
+                l'<b className="text-foreground">expressivité</b> des dirigeants, équipes
                 créatives et <b className="text-foreground">PME ambitieuses</b> — un même arc de{" "}
                 <b className="text-foreground">Foreplay</b>, <b className="text-foreground">Foresight</b>,
                 et <b className="text-foreground">Forecast</b> pour transformer les questions IA en
