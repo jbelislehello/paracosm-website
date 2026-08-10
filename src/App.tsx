@@ -71,6 +71,8 @@ const RehearsalArcOffering = lazy(() => import("./pages/RehearsalArcOffering"));
 const MyRehearsalArc = lazy(() => import("./pages/MyRehearsalArc"));
 const Products = lazy(() => import("./pages/Products"));
 const ReadinessAssessment = lazy(() => import("./pages/ReadinessAssessment"));
+const ReadinessChooser = lazy(() => import("./pages/ReadinessChooser"));
+const RelationalAssessment = lazy(() => import("./pages/RelationalAssessment"));
 const ReadinessShareView = lazy(() => import("./pages/ReadinessShareView"));
 const AdminReadinessFunnel = lazy(() => import("./pages/AdminReadinessFunnel"));
 
@@ -167,7 +169,9 @@ function App() {
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/agentic-demo" element={<AgenticDemo />} />
                     <Route path="/products" element={<Products />} />
-                    <Route path="/readiness" element={<ProtectedRoute><ReadinessAssessment /></ProtectedRoute>} />
+                    <Route path="/readiness" element={<ReadinessChooser />} />
+                    <Route path="/readiness/relational" element={<ProtectedRoute><RelationalAssessment /></ProtectedRoute>} />
+                    <Route path="/readiness/calm-magic" element={<ProtectedRoute><ReadinessAssessment /></ProtectedRoute>} />
                     <Route path="/r/:shareId" element={<ReadinessShareView />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>

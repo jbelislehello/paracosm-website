@@ -1,0 +1,284 @@
+{
+  "version": 1,
+  "scale": {
+    "en": ["Rarely", "Sometimes", "About half the time", "Often", "Almost always"],
+    "fr": ["Rarement", "Parfois", "Environ la moitié du temps", "Souvent", "Presque toujours"]
+  },
+  "dimensions": [
+    {
+      "id": "self-awareness",
+      "color": "#C2703D",
+      "name": { "en": "Self-awareness", "fr": "Conscience de soi" },
+      "blurb": {
+        "en": "Noticing your own state, triggers, and impact before you act.",
+        "fr": "Remarquer votre état, vos déclencheurs et votre impact avant d'agir."
+      },
+      "openPrompt": {
+        "en": "What usually tips you into reacting instead of choosing?",
+        "fr": "Qu'est-ce qui vous fait généralement réagir au lieu de choisir ?"
+      },
+      "practices": {
+        "en": [
+          "Before your next hard conversation, write one sentence naming what you're feeling and what you want.",
+          "End three meetings this week with 30 seconds noting how you showed up."
+        ],
+        "fr": [
+          "Avant votre prochaine conversation difficile, écrivez une phrase nommant ce que vous ressentez et ce que vous voulez.",
+          "Terminez trois réunions cette semaine en notant 30 secondes comment vous vous êtes présenté."
+        ]
+      },
+      "questions": [
+        {
+          "id": "sa1",
+          "self": { "en": "I notice when I'm getting activated before it shows in how I speak.", "fr": "Je remarque quand je m'active avant que cela paraisse dans ma façon de parler." },
+          "team": { "en": "People here catch their own reactions before they spill into the room.", "fr": "Les gens ici remarquent leurs réactions avant qu'elles ne se déversent dans la pièce." }
+        },
+        {
+          "id": "sa2",
+          "self": { "en": "I can name what I'm feeling in the moment, not just afterwards.", "fr": "Je peux nommer ce que je ressens sur le moment, pas seulement après coup." },
+          "team": { "en": "Naming how you feel about work is normal here, not awkward.", "fr": "Nommer ce qu'on ressent au travail est normal ici, pas gênant." }
+        },
+        {
+          "id": "sa3",
+          "self": { "en": "I know which situations reliably pull me off balance.", "fr": "Je sais quelles situations me déséquilibrent systématiquement." },
+          "team": { "en": "People here know their own patterns well enough to warn others.", "fr": "Les gens ici connaissent assez leurs patterns pour prévenir les autres." }
+        },
+        {
+          "id": "sa4",
+          "self": { "en": "I ask for feedback on my impact even when I expect it to sting.", "fr": "Je demande du retour sur mon impact même en m'attendant à ce que ça pique." },
+          "team": { "en": "Feedback about impact travels upward here, not just downward.", "fr": "Le retour sur l'impact circule vers le haut ici, pas seulement vers le bas." }
+        },
+        {
+          "id": "sa5",
+          "self": { "en": "I can tell the difference between a real problem and my own bad day.", "fr": "Je distingue un vrai problème d'une mauvaise journée personnelle." },
+          "team": { "en": "We separate real issues from momentary moods before deciding.", "fr": "Nous séparons les vrais enjeux des humeurs passagères avant de décider." }
+        },
+        {
+          "id": "sa6",
+          "self": { "en": "I take responsibility for my part out loud, without over-apologising.", "fr": "J'assume ma part à voix haute, sans m'excuser à l'excès." },
+          "team": { "en": "Owning your part is treated as strength here, not as exposure.", "fr": "Assumer sa part est vu comme une force ici, non comme une mise à nu." }
+        }
+      ]
+    },
+    {
+      "id": "attunement",
+      "color": "#3D7A6B",
+      "name": { "en": "Attunement", "fr": "Ajustement à l'autre" },
+      "blurb": {
+        "en": "Reading other people's signals and adjusting to what's actually happening.",
+        "fr": "Lire les signaux des autres et s'ajuster à ce qui se passe réellement."
+      },
+      "openPrompt": {
+        "en": "Whose signals do you tend to miss, and when?",
+        "fr": "Quels signaux avez-vous tendance à manquer, et quand ?"
+      },
+      "practices": {
+        "en": [
+          "Open one meeting by asking each person for a single word on their current capacity.",
+          "In your next 1:1, reflect back what you heard before responding to it."
+        ],
+        "fr": [
+          "Ouvrez une réunion en demandant à chacun un mot sur sa capacité actuelle.",
+          "Lors de votre prochain tête-à-tête, reformulez ce que vous avez entendu avant d'y répondre."
+        ]
+      },
+      "questions": [
+        {
+          "id": "at1",
+          "self": { "en": "I notice when someone has gone quiet for a reason.", "fr": "Je remarque quand quelqu'un se tait pour une raison." },
+          "team": { "en": "Silence gets noticed and gently checked here.", "fr": "Le silence est remarqué et vérifié avec délicatesse ici." }
+        },
+        {
+          "id": "at2",
+          "self": { "en": "I adjust my pace or tone when I sense someone is overwhelmed.", "fr": "J'ajuste mon rythme ou mon ton quand je sens quelqu'un dépassé." },
+          "team": { "en": "We slow down when someone in the group clearly can't keep up.", "fr": "Nous ralentissons quand quelqu'un du groupe ne peut clairement pas suivre." }
+        },
+        {
+          "id": "at3",
+          "self": { "en": "I check my read of a situation with the person instead of assuming.", "fr": "Je vérifie ma lecture d'une situation avec la personne plutôt que de supposer." },
+          "team": { "en": "People here ask rather than assume what others meant.", "fr": "Les gens ici demandent plutôt que de supposer ce que les autres voulaient dire." }
+        },
+        {
+          "id": "at4",
+          "self": { "en": "I can listen to something hard without immediately fixing it.", "fr": "Je peux écouter quelque chose de difficile sans vouloir le régler aussitôt." },
+          "team": { "en": "Difficult things can be voiced here without being instantly solved away.", "fr": "On peut exprimer des choses difficiles ici sans qu'elles soient aussitôt réglées." }
+        },
+        {
+          "id": "at5",
+          "self": { "en": "I notice who hasn't spoken and make room for them.", "fr": "Je remarque qui n'a pas parlé et je leur fais de la place." },
+          "team": { "en": "Airtime is distributed here, not captured by the loudest.", "fr": "Le temps de parole est réparti ici, non capté par les plus forts." }
+        },
+        {
+          "id": "at6",
+          "self": { "en": "I read the room accurately even when nobody says what's wrong.", "fr": "Je lis correctement l'ambiance même quand personne ne dit ce qui va mal." },
+          "team": { "en": "Unspoken tension gets surfaced here rather than left to grow.", "fr": "La tension non dite est mise au jour ici plutôt que laissée grandir." }
+        }
+      ]
+    },
+    {
+      "id": "co-regulation",
+      "color": "#4A6FA5",
+      "name": { "en": "Co-regulation", "fr": "Corégulation" },
+      "blurb": {
+        "en": "Helping a group settle under pressure instead of escalating it.",
+        "fr": "Aider un groupe à s'apaiser sous pression plutôt qu'à s'emballer."
+      },
+      "openPrompt": {
+        "en": "What happens to your team in the last hour before a deadline?",
+        "fr": "Qu'arrive-t-il à votre équipe dans la dernière heure avant une échéance ?"
+      },
+      "practices": {
+        "en": [
+          "Name the pressure out loud at the start of a tense meeting, then set one thing to decide.",
+          "Agree on a signal anyone can use to call a five-minute pause."
+        ],
+        "fr": [
+          "Nommez la pression à voix haute au début d'une réunion tendue, puis fixez une seule décision.",
+          "Convenez d'un signal que quiconque peut utiliser pour demander une pause de cinq minutes."
+        ]
+      },
+      "questions": [
+        {
+          "id": "cr1",
+          "self": { "en": "Under pressure I get steadier rather than sharper.", "fr": "Sous pression, je deviens plus stable plutôt que plus tranchant." },
+          "team": { "en": "Pressure makes this group more focused rather than more brittle.", "fr": "La pression rend ce groupe plus concentré plutôt que plus cassant." }
+        },
+        {
+          "id": "cr2",
+          "self": { "en": "I can call a pause when a conversation is heating past usefulness.", "fr": "Je peux demander une pause quand une conversation s'échauffe au-delà de l'utile." },
+          "team": { "en": "Anyone here can call a pause without losing standing.", "fr": "N'importe qui ici peut demander une pause sans perdre en crédibilité." }
+        },
+        {
+          "id": "cr3",
+          "self": { "en": "My presence tends to calm a room rather than charge it.", "fr": "Ma présence tend à calmer une pièce plutôt qu'à l'électriser." },
+          "team": { "en": "When one person spirals, the group steadies them.", "fr": "Quand une personne s'emballe, le groupe la stabilise." }
+        },
+        {
+          "id": "cr4",
+          "self": { "en": "I don't pass my stress downward as urgency.", "fr": "Je ne transmets pas mon stress vers le bas sous forme d'urgence." },
+          "team": { "en": "Urgency here reflects real deadlines, not someone's anxiety.", "fr": "L'urgence ici reflète de vraies échéances, non l'anxiété de quelqu'un." }
+        },
+        {
+          "id": "cr5",
+          "self": { "en": "I can stay in a disagreement without needing to win it now.", "fr": "Je peux rester dans un désaccord sans devoir le gagner tout de suite." },
+          "team": { "en": "Disagreements can stay open here for a day without damage.", "fr": "Les désaccords peuvent rester ouverts une journée ici sans dommage." }
+        },
+        {
+          "id": "cr6",
+          "self": { "en": "I notice when I'm running on adrenaline and stop before I crash.", "fr": "Je remarque quand je fonctionne à l'adrénaline et j'arrête avant l'effondrement." },
+          "team": { "en": "Rest and recovery are planned here, not improvised after burnout.", "fr": "Le repos et la récupération sont planifiés ici, non improvisés après l'épuisement." }
+        }
+      ]
+    },
+    {
+      "id": "repair",
+      "color": "#8C5A8F",
+      "name": { "en": "Repair", "fr": "Réparation" },
+      "blurb": {
+        "en": "Naming ruptures and restoring trust after conflict.",
+        "fr": "Nommer les ruptures et restaurer la confiance après un conflit."
+      },
+      "openPrompt": {
+        "en": "What's one rupture on your team that was never actually closed?",
+        "fr": "Quelle rupture dans votre équipe n'a jamais vraiment été refermée ?"
+      },
+      "practices": {
+        "en": [
+          "Go back to one unresolved moment and open it with: 'I've been carrying something from…'",
+          "Add a two-minute repair check to the end of any meeting that got tense."
+        ],
+        "fr": [
+          "Revenez sur un moment non résolu et ouvrez avec : « Je porte quelque chose depuis… »",
+          "Ajoutez une vérification de deux minutes à la fin de toute réunion qui a été tendue."
+        ]
+      },
+      "questions": [
+        {
+          "id": "rp1",
+          "self": { "en": "I go back to someone after a bad exchange instead of letting it sit.", "fr": "Je reviens vers quelqu'un après un mauvais échange plutôt que de laisser traîner." },
+          "team": { "en": "People here circle back after friction rather than moving on silently.", "fr": "Les gens ici reviennent après une friction plutôt que de passer à autre chose en silence." }
+        },
+        {
+          "id": "rp2",
+          "self": { "en": "I can apologise for impact without arguing about intent.", "fr": "Je peux m'excuser de l'impact sans débattre de l'intention." },
+          "team": { "en": "Apologies here address impact, not just intent.", "fr": "Les excuses ici traitent l'impact, non seulement l'intention." }
+        },
+        {
+          "id": "rp3",
+          "self": { "en": "I stay in relationship with people I've disagreed with.", "fr": "Je reste en relation avec les gens avec qui j'ai été en désaccord." },
+          "team": { "en": "Disagreement doesn't quietly end working relationships here.", "fr": "Le désaccord ne met pas discrètement fin aux relations de travail ici." }
+        },
+        {
+          "id": "rp4",
+          "self": { "en": "I can hear that I hurt someone without collapsing or defending.", "fr": "Je peux entendre que j'ai blessé quelqu'un sans m'effondrer ni me défendre." },
+          "team": { "en": "You can tell someone senior they hurt you here.", "fr": "On peut dire à un supérieur qu'il nous a blessé ici." }
+        },
+        {
+          "id": "rp5",
+          "self": { "en": "I follow through on what I said would change after a conflict.", "fr": "Je donne suite à ce que j'ai dit changer après un conflit." },
+          "team": { "en": "Commitments made after conflict actually get kept here.", "fr": "Les engagements pris après un conflit sont réellement tenus ici." }
+        },
+        {
+          "id": "rp6",
+          "self": { "en": "I name a rupture early, while it's still small.", "fr": "Je nomme une rupture tôt, quand elle est encore petite." },
+          "team": { "en": "Small ruptures get named here before they become stories.", "fr": "Les petites ruptures sont nommées ici avant de devenir des récits." }
+        }
+      ]
+    },
+    {
+      "id": "boundaries",
+      "color": "#A8603A",
+      "name": { "en": "Boundaries and consent", "fr": "Limites et consentement" },
+      "blurb": {
+        "en": "Holding limits clearly while staying in relationship.",
+        "fr": "Tenir ses limites clairement tout en restant en relation."
+      },
+      "openPrompt": {
+        "en": "Where are you saying yes when you mean no?",
+        "fr": "Où dites-vous oui alors que vous pensez non ?"
+      },
+      "practices": {
+        "en": [
+          "Say one clean no this week without a justification attached.",
+          "Ask before assigning anything urgent: 'What would you have to drop to take this?'"
+        ],
+        "fr": [
+          "Dites un non net cette semaine, sans justification attachée.",
+          "Avant d'assigner quelque chose d'urgent, demandez : « Que devriez-vous abandonner pour le prendre ? »"
+        ]
+      },
+      "questions": [
+        {
+          "id": "bd1",
+          "self": { "en": "I say no clearly without over-explaining or apologising.", "fr": "Je dis non clairement sans trop expliquer ni m'excuser." },
+          "team": { "en": "A clear no is respected here, not treated as resistance.", "fr": "Un non clair est respecté ici, non traité comme de la résistance." }
+        },
+        {
+          "id": "bd2",
+          "self": { "en": "I ask before adding to someone's load rather than assuming capacity.", "fr": "Je demande avant d'ajouter à la charge de quelqu'un plutôt que de supposer sa capacité." },
+          "team": { "en": "Work gets added with a conversation here, not by decree.", "fr": "Le travail s'ajoute ici par une conversation, non par décret." }
+        },
+        {
+          "id": "bd3",
+          "self": { "en": "I keep my own limits even when someone is disappointed.", "fr": "Je maintiens mes limites même quand quelqu'un est déçu." },
+          "team": { "en": "Limits hold here even under client or executive pressure.", "fr": "Les limites tiennent ici même sous la pression des clients ou de la direction." }
+        },
+        {
+          "id": "bd4",
+          "self": { "en": "I tell people what I need instead of hoping they notice.", "fr": "Je dis aux gens ce dont j'ai besoin au lieu d'espérer qu'ils le remarquent." },
+          "team": { "en": "Needs get stated plainly here rather than hinted at.", "fr": "Les besoins sont énoncés simplement ici plutôt que suggérés." }
+        },
+        {
+          "id": "bd5",
+          "self": { "en": "I don't use my position to get past someone's no.", "fr": "Je n'utilise pas ma position pour passer outre le non de quelqu'un." },
+          "team": { "en": "Seniority doesn't override consent here.", "fr": "L'ancienneté ne l'emporte pas sur le consentement ici." }
+        },
+        {
+          "id": "bd6",
+          "self": { "en": "I protect time that isn't available for work.", "fr": "Je protège le temps qui n'est pas disponible pour le travail." },
+          "team": { "en": "Off-hours are genuinely off here.", "fr": "Les heures hors travail sont réellement hors travail ici." }
+        }
+      ]
+    }
+  ]
+}

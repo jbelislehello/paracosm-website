@@ -34,12 +34,28 @@ import {
 interface Props {
   sessionId: string | null;
   ownerId: string | null;
-  buildSnapshot: () => ReadinessSnapshot;
+  buildSnapshot: () => unknown;
+  /** Optional override used by the Relational Intelligence variant (no readiness session row). */
+  createOverride?: (args: {
+    ownerId: string;
+    recipients: string[];
+    note?: string;
+    snapshot: unknown;
+
+    expiresInDays: number;
+  }) => Promise<{ id: string }>;
 }
+
 
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function ShareReadinessDialog({ sessionId, ownerId, buildSnapshot }: Props) {
+export default function ShareReadinessDialog({
+  sessionId,
+  ownerId,
+  buildSnapshot,
+  createOverride,
+}: Props) {
+
   const [open, setOpen] = useState(false);
   const [recipientsRaw, setRecipientsRaw] = useState("");
   const [note, setNote] = useState("");
@@ -76,7 +92,7 @@ export default function ShareReadinessDialog({ sessionId, ownerId, buildSnapshot
     );
 
   const create = async () => {
-    if (!sessionId || !ownerId) {
+    if (!ownerId || (!sessionId && !createOverride)) {
       toast.error("Sign in required.");
       return;
     }
@@ -93,14 +109,23 @@ export default function ShareReadinessDialog({ sessionId, ownerId, buildSnapshot
     setCreating(true);
     try {
       const snap = buildSnapshot();
-      const res = await createShare({
-        sessionId,
-        ownerId,
-        recipients: emails,
-        note: note.trim() || undefined,
-        snapshot: snap,
-        expiresInDays: Number(expiresDays),
-      });
+      const res = createOverride
+        ? await createOverride({
+            ownerId,
+            recipients: emails,
+            note: note.trim() || undefined,
+            snapshot: snap,
+            expiresInDays: Number(expiresDays),
+          })
+        : await createShare({
+            sessionId: sessionId as string,
+            ownerId,
+            recipients: emails,
+            note: note.trim() || undefined,
+            snapshot: snap as ReadinessSnapshot,
+            expiresInDays: Number(expiresDays),
+          });
+
       await navigator.clipboard.writeText(shareUrl(res.id)).catch(() => {});
       toast.success("Share link created and copied.");
       setRecipientsRaw("");

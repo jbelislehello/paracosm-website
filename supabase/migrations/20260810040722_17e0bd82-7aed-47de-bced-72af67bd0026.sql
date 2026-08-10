@@ -1,0 +1,1 @@
+ALTER TABLE public.readiness_shares ALTER COLUMN session_id DROP NOT NULL;
