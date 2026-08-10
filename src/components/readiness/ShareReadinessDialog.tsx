@@ -91,7 +91,7 @@ export default function ShareReadinessDialog({
     );
 
   const create = async () => {
-    if (!sessionId || !ownerId) {
+    if (!ownerId || (!sessionId && !createOverride)) {
       toast.error("Sign in required.");
       return;
     }
@@ -108,14 +108,23 @@ export default function ShareReadinessDialog({
     setCreating(true);
     try {
       const snap = buildSnapshot();
-      const res = await createShare({
-        sessionId,
-        ownerId,
-        recipients: emails,
-        note: note.trim() || undefined,
-        snapshot: snap,
-        expiresInDays: Number(expiresDays),
-      });
+      const res = createOverride
+        ? await createOverride({
+            ownerId,
+            recipients: emails,
+            note: note.trim() || undefined,
+            snapshot: snap,
+            expiresInDays: Number(expiresDays),
+          })
+        : await createShare({
+            sessionId: sessionId as string,
+            ownerId,
+            recipients: emails,
+            note: note.trim() || undefined,
+            snapshot: snap as ReadinessSnapshot,
+            expiresInDays: Number(expiresDays),
+          });
+
       await navigator.clipboard.writeText(shareUrl(res.id)).catch(() => {});
       toast.success("Share link created and copied.");
       setRecipientsRaw("");
