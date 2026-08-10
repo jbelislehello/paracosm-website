@@ -406,7 +406,7 @@ export default function RelationalAssessment() {
                       ownerId: args.ownerId,
                       recipients: args.recipients,
                       note: args.note,
-                      snapshot: args.snapshot as ReturnType<typeof buildRelationalSnapshot>,
+                      snapshot: args.snapshot as unknown as ReturnType<typeof buildRelationalSnapshot>,
                       expiresInDays: args.expiresInDays,
                     })
                   }
