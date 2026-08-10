@@ -2069,6 +2069,92 @@ export type Database = {
           },
         ]
       }
+      relational_answers: {
+        Row: {
+          created_at: string
+          dimension_id: string
+          id: string
+          open_text: string | null
+          question_id: string
+          self_answer_index: number
+          session_id: string
+          team_answer_index: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          dimension_id: string
+          id?: string
+          open_text?: string | null
+          question_id: string
+          self_answer_index?: number
+          session_id: string
+          team_answer_index?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          dimension_id?: string
+          id?: string
+          open_text?: string | null
+          question_id?: string
+          self_answer_index?: number
+          session_id?: string
+          team_answer_index?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "relational_answers_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "relational_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      relational_sessions: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          dimension_scores: Json
+          dimensions_completed: string[]
+          id: string
+          notes: string | null
+          overall_score: Json | null
+          started_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          dimension_scores?: Json
+          dimensions_completed?: string[]
+          id?: string
+          notes?: string | null
+          overall_score?: Json | null
+          started_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          dimension_scores?: Json
+          dimensions_completed?: string[]
+          id?: string
+          notes?: string | null
+          overall_score?: Json | null
+          started_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       revenue_opportunities: {
         Row: {
           amount_max: number | null
