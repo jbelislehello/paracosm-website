@@ -34,8 +34,17 @@ import {
 interface Props {
   sessionId: string | null;
   ownerId: string | null;
-  buildSnapshot: () => ReadinessSnapshot;
+  buildSnapshot: () => ReadinessSnapshot | Record<string, unknown>;
+  /** Optional override used by the Relational Intelligence variant (no readiness session row). */
+  createOverride?: (args: {
+    ownerId: string;
+    recipients: string[];
+    note?: string;
+    snapshot: ReadinessSnapshot | Record<string, unknown>;
+    expiresInDays: number;
+  }) => Promise<{ id: string }>;
 }
+
 
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
