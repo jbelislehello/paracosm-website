@@ -2031,7 +2031,7 @@ export type Database = {
           owner_id: string
           recipient_emails: string[]
           revoked_at: string | null
-          session_id: string
+          session_id: string | null
           snapshot: Json
           updated_at: string
         }
@@ -2043,7 +2043,7 @@ export type Database = {
           owner_id: string
           recipient_emails?: string[]
           revoked_at?: string | null
-          session_id: string
+          session_id?: string | null
           snapshot: Json
           updated_at?: string
         }
@@ -2055,7 +2055,7 @@ export type Database = {
           owner_id?: string
           recipient_emails?: string[]
           revoked_at?: string | null
-          session_id?: string
+          session_id?: string | null
           snapshot?: Json
           updated_at?: string
         }
