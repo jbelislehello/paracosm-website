@@ -48,7 +48,13 @@ interface Props {
 
 const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export default function ShareReadinessDialog({ sessionId, ownerId, buildSnapshot }: Props) {
+export default function ShareReadinessDialog({
+  sessionId,
+  ownerId,
+  buildSnapshot,
+  createOverride,
+}: Props) {
+
   const [open, setOpen] = useState(false);
   const [recipientsRaw, setRecipientsRaw] = useState("");
   const [note, setNote] = useState("");
